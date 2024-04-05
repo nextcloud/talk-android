@@ -1,27 +1,11 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Mario Danic
- * @author Marcel Hibbe
- * @author Andy Scherzinger
- * Copyright (C) 2021 Andy Scherzinger <info@andy-scherzinger.de>
- * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021 Andy Scherzinger <infoi@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 package com.nextcloud.talk.adapters.items;
 
 import android.annotation.SuppressLint;
@@ -50,10 +34,6 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 
 public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemViewHolder> implements
     ISectionable<ContactItem.ContactItemViewHolder, GenericTextHeaderItem>, IFilterable<String> {
-
-    public static final String PARTICIPANT_SOURCE_CIRCLES = "circles";
-    public static final String PARTICIPANT_SOURCE_GROUPS = "groups";
-    public static final String PARTICIPANT_SOURCE_USERS = "users";
 
     private final Participant participant;
     private final User user;
@@ -149,9 +129,7 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
 
         if (
             participant.getCalculatedActorType() == Participant.ActorType.GROUPS ||
-                PARTICIPANT_SOURCE_GROUPS.equals(participant.getSource()) ||
-                participant.getCalculatedActorType() == Participant.ActorType.CIRCLES ||
-                PARTICIPANT_SOURCE_CIRCLES.equals(participant.getSource())) {
+                participant.getCalculatedActorType() == Participant.ActorType.CIRCLES) {
 
             setGenericAvatar(holder, R.drawable.ic_avatar_group, R.drawable.ic_circular_group);
 
@@ -179,10 +157,12 @@ public class ContactItem extends AbstractFlexibleItem<ContactItem.ContactItemVie
             }
 
             ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, displayName, true, false);
-        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS ||
-            PARTICIPANT_SOURCE_USERS.equals(participant.getSource())) {
-            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView, user, participant.getCalculatedActorId(),
-                                                 true, false);
+        } else if (participant.getCalculatedActorType() == Participant.ActorType.USERS) {
+            ImageViewExtensionsKt.loadUserAvatar(holder.binding.avatarView,
+                                                 user,
+                                                 participant.getCalculatedActorId(),
+                                                 true,
+                                                 false);
         }
     }
 

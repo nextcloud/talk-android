@@ -1,28 +1,14 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Andy Scherzinger
- * @author Mario Danic
- * @author Marcel Hibbe
- * Copyright (C) 2023-2024 Marcel Hibbe <dev@mhibbe.de>
- * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.utils
 
+import android.util.Log
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 
@@ -74,11 +60,19 @@ enum class SpreedFeatures(val value: String) {
 object CapabilitiesUtil {
 
     //region Version checks
-    fun isServerEOL(serverVersion: Int): Boolean {
+    fun isServerEOL(serverVersion: Int?): Boolean {
+        if (serverVersion == null) {
+            Log.w(TAG, "serverVersion is unknown. It is assumed that it is up to date")
+            return false
+        }
         return (serverVersion < SERVER_VERSION_MIN_SUPPORTED)
     }
 
-    fun isServerAlmostEOL(serverVersion: Int): Boolean {
+    fun isServerAlmostEOL(serverVersion: Int?): Boolean {
+        if (serverVersion == null) {
+            Log.w(TAG, "serverVersion is unknown. It is assumed that it is up to date")
+            return false
+        }
         return (serverVersion < SERVER_VERSION_SUPPORT_WARNING)
     }
 
@@ -286,6 +280,7 @@ object CapabilitiesUtil {
 
     // endregion
 
+    private val TAG = CapabilitiesUtil::class.java.simpleName
     const val DEFAULT_CHAT_SIZE = 1000
     const val RECORDING_CONSENT_NOT_REQUIRED = 0
     const val RECORDING_CONSENT_REQUIRED = 1

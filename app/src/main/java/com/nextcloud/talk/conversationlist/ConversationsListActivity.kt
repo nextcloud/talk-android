@@ -1,29 +1,13 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Álvaro Brey
- * @author Andy Scherzinger
- * @author Marcel Hibbe
- * @author Mario Danic
- * @author Ezhil Shanmugham
- * Copyright (C) 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
- * Copyright (C) 2022 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2022-2024 Marcel Hibbe (dev@mhibbe.de)
- * Copyright (C) 2017-2020 Mario Danic (mario@lovelyhq.com)
- * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2022-2023 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2023 Tobias Kaminsky <tobias@kaminsky.me>
+ * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
+ * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
+ * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.conversationlist
 
@@ -37,6 +21,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -115,11 +101,15 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
@@ -131,10 +121,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
-import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
@@ -284,7 +270,7 @@ class ConversationsListActivity :
         }
         currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
-            if (isServerEOL(currentUser!!.serverVersion!!.major)) {
+            if (isServerEOL(currentUser!!.serverVersion?.major)) {
                 showServerEOLDialog()
                 return
             }
@@ -295,6 +281,7 @@ class ConversationsListActivity :
 
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
+            viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -695,62 +682,69 @@ class ConversationsListActivity :
     fun fetchRooms() {
         val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
 
-        dispose(null)
-        isRefreshing = true
-        conversationItems = ArrayList()
-        conversationItemsWithHeader = ArrayList()
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            currentUser!!,
-            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-        )
-        val startNanoTime = System.nanoTime()
-        Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-        roomsQueryDisposable = ncApi.getRooms(
-            credentials,
-            ApiUtils.getUrlForRooms(
-                apiVersion,
-                currentUser!!.baseUrl
-            ),
-            includeStatus
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ (ocs): RoomsOverall ->
-                Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
+        // checks internet connection before fetching rooms
+        if (isNetworkAvailable(context)) {
+            Log.d(TAG, "Internet connection available")
+            dispose(null)
+            isRefreshing = true
+            conversationItems = ArrayList()
+            conversationItemsWithHeader = ArrayList()
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                currentUser!!,
+                intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+            )
+            val startNanoTime = System.nanoTime()
+            Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
+            roomsQueryDisposable = ncApi.getRooms(
+                credentials,
+                ApiUtils.getUrlForRooms(
+                    apiVersion,
+                    currentUser!!.baseUrl
+                ),
+                includeStatus
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ (ocs): RoomsOverall ->
+                    Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
 
-                // This is invoked asynchronously, when server returns a response the view might have been
-                // unbound in the meantime. Check if the view is still there.
-                // FIXME - does it make sense to update internal data structures even when view has been unbound?
-                // if (view == null) {
-                //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
-                //     return@subscribe
-                // }
+                    // This is invoked asynchronously, when server returns a response the view might have been
+                    // unbound in the meantime. Check if the view is still there.
+                    // FIXME - does it make sense to update internal data structures even when view has been unbound?
+                    // if (view == null) {
+                    //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
+                    //     return@subscribe
+                    // }
 
-                if (adapterWasNull) {
-                    adapterWasNull = false
-                    binding?.loadingContent?.visibility = View.GONE
+                    if (adapterWasNull) {
+                        adapterWasNull = false
+                        binding?.loadingContent?.visibility = View.GONE
+                    }
+                    initOverallLayout(ocs!!.data!!.isNotEmpty())
+                    for (conversation in ocs.data!!) {
+                        addToConversationItems(conversation)
+                    }
+                    sortConversations(conversationItems)
+                    sortConversations(conversationItemsWithHeader)
+                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+                    filterConversation()
+                    adapter!!.updateDataSet(filterableConversationItems, false)
+                    Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
+                    fetchOpenConversations(apiVersion)
+                    binding?.swipeRefreshLayoutView?.isRefreshing = false
+                }, { throwable: Throwable ->
+                    handleHttpExceptions(throwable)
+                    binding?.swipeRefreshLayoutView?.isRefreshing = false
+                    dispose(roomsQueryDisposable)
+                }) {
+                    dispose(roomsQueryDisposable)
+                    binding?.swipeRefreshLayoutView?.isRefreshing = false
+                    isRefreshing = false
                 }
-                initOverallLayout(ocs!!.data!!.isNotEmpty())
-                for (conversation in ocs.data!!) {
-                    addToConversationItems(conversation)
-                }
-                sortConversations(conversationItems)
-                sortConversations(conversationItemsWithHeader)
-                if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
-                filterConversation()
-                adapter!!.updateDataSet(filterableConversationItems, false)
-                Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
-                fetchOpenConversations(apiVersion)
-                binding?.swipeRefreshLayoutView?.isRefreshing = false
-            }, { throwable: Throwable ->
-                handleHttpExceptions(throwable)
-                binding?.swipeRefreshLayoutView?.isRefreshing = false
-                dispose(roomsQueryDisposable)
-            }) {
-                dispose(roomsQueryDisposable)
-                binding?.swipeRefreshLayoutView?.isRefreshing = false
-                isRefreshing = false
-            }
+        } else {
+            Log.d(TAG, "No internet connection detected")
+            showNetworkErrorDialog()
+        }
     }
 
     private fun fetchPendingInvitations() {
@@ -854,6 +848,42 @@ class ConversationsListActivity :
                 dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
             )
         }
+    }
+
+    private fun showNetworkErrorDialog() {
+        binding.floatingActionButton.let {
+            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                .setIcon(
+                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
+                        context,
+                        R.drawable.ic_baseline_error_outline_24dp
+                    )
+                )
+                .setTitle(R.string.nc_check_your_internet)
+                .setCancelable(false)
+                .setNegativeButton(R.string.close, null)
+                .setNeutralButton(R.string.nc_refresh) { _, _ ->
+                    fetchRooms()
+                    fetchPendingInvitations()
+                }
+
+            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+            )
+        }
+    }
+
+    @Suppress("ReturnCount")
+    private fun isNetworkAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork ?: return false
+        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
     }
 
     private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {

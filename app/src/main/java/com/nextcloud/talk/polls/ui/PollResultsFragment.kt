@@ -1,25 +1,10 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Marcel Hibbe
- * @author Álvaro Brey
- * Copyright (C) 2022 Álvaro Brey
- * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
+ * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 package com.nextcloud.talk.polls.ui
 
 import android.os.Bundle
@@ -83,11 +68,17 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         }
 
         viewModel.items.observe(viewLifecycleOwner) {
-            val adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils).apply {
-                if (it != null) {
-                    list = it
+            val adapter = PollResultsAdapter(
+                parentViewModel.user,
+                parentViewModel.roomToken,
+                this,
+                viewThemeUtils
+            )
+                .apply {
+                    if (it != null) {
+                        list = it
+                    }
                 }
-            }
             binding.pollResultsList.adapter = adapter
         }
 
@@ -100,7 +91,12 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     private fun initAdapter() {
-        adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils)
+        adapter = PollResultsAdapter(
+            parentViewModel.user,
+            parentViewModel.roomToken,
+            this,
+            viewThemeUtils
+        )
         binding.pollResultsList.adapter = adapter
         binding.pollResultsList.layoutManager = LinearLayoutManager(context)
     }

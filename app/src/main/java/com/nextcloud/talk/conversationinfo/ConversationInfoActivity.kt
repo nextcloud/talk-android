@@ -1,31 +1,13 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Mario Danic
- * @author Andy Scherzinger
- * @author Tim Krüger
- * @author Marcel Hibbe
- * @author Ezhil Shanmugham
- * Copyright (C) 2022-2023 Marcel Hibbe (dev@mhibbe.de)
- * Copyright (C) 2021-2022 Tim Krüger <t@timkrueger.me>
- * Copyright (C) 2021 Andy Scherzinger (info@andy-scherzinger.de)
- * Copyright (C) 2017-2018 Mario Danic <mario@lovelyhq.com>
- * Copyright (C) 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
+ * SPDX-FileCopyrightText: 2021-2023 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2021-2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021-2022 Tim Krüger <t@timkrueger.me>
+ * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
@@ -510,7 +492,7 @@ class ConversationInfoActivity :
 
         for (i in participants.indices) {
             participant = participants[i]
-            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils)
+            userItem = ParticipantItem(this, participant, conversationUser, viewThemeUtils, conversationToken)
             if (participant.sessionId != null) {
                 userItem.isOnline = !participant.sessionId.equals("0")
             } else {
@@ -1044,7 +1026,7 @@ class ConversationInfoActivity :
 
             @SuppressLint("LongLogTag")
             override fun onError(e: Throwable) {
-                Log.e(TAG, "Error toggling moderator status", e)
+                Log.e(TAG, "Error toggling moderator status (legacy)", e)
             }
 
             override fun onComplete() {
@@ -1181,7 +1163,7 @@ class ConversationInfoActivity :
 
     @SuppressLint("CheckResult")
     override fun onItemClick(view: View?, position: Int): Boolean {
-        if (ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
+        if (!ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
             return true
         }
 

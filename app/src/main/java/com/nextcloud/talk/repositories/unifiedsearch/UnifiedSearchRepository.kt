@@ -1,3 +1,9 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
 package com.nextcloud.talk.repositories.unifiedsearch
 
 import com.nextcloud.talk.models.domain.SearchMessageEntry

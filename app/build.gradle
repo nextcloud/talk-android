@@ -33,8 +33,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 190000051
-        versionName "19.0.0 RC1"
+        versionCode 190000052
+        versionName "19.0.0 RC2"
 
         flavorDimensions "default"
         renderscriptTargetApi 19
@@ -128,7 +128,7 @@ android {
 ext {
     androidxCameraVersion = "1.3.2"
     coilKtVersion = "2.6.0"
-    daggerVersion = "2.51"
+    daggerVersion = "2.51.1"
     emojiVersion = "1.4.0"
     fidoVersion = "4.1.0-patch2"
     lifecycleVersion = '2.7.0'
@@ -137,7 +137,7 @@ ext {
     materialDialogsVersion = "3.3.0"
     parcelerVersion = "1.1.13"
     prismVersion = "2.0.0"
-    retrofit2Version = "2.10.0"
+    retrofit2Version = "2.11.0"
     roomVersion = "2.6.1"
     workVersion = "2.9.0"
     espressoVersion = "3.5.1"
@@ -155,7 +155,7 @@ dependencies {
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.0.0'
     implementation 'androidx.datastore:datastore-preferences:1.0.0'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.5")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 

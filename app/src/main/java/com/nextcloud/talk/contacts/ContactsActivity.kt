@@ -1,25 +1,10 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Mario Danic
- * @author Marcel Hibbe
- * @author Andy Scherzinger
- * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
- * Copyright (C) 2022 Marcel Hibbe <dev@mhibbe.de>
- * Copyright (C) 2022 Andy Scherzinger <info@andy-scherzinger.de>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
+ * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.contacts
 
@@ -589,7 +574,6 @@ class ContactsActivity :
         participant.actorId = autocompleteUser.id
         participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
         participant.displayName = autocompleteUser.label
-        participant.source = autocompleteUser.source
 
         return participant
     }
@@ -608,30 +592,30 @@ class ContactsActivity :
                 (o2 as GenericTextHeaderItem).model
             }
             if (o1 is ContactItem && o2 is ContactItem) {
-                val firstSource: String = o1.model.source!!
-                val secondSource: String = o2.model.source!!
+                val firstSource: Participant.ActorType = o1.model.actorType!!
+                val secondSource: Participant.ActorType = o2.model.actorType!!
                 if (firstSource == secondSource) {
                     return@sort firstName.compareTo(secondName, ignoreCase = true)
                 }
 
                 // First users
-                if ("users" == firstSource) {
+                if (Participant.ActorType.USERS == firstSource) {
                     return@sort -1
-                } else if ("users" == secondSource) {
+                } else if (Participant.ActorType.USERS == secondSource) {
                     return@sort 1
                 }
 
                 // Then groups
-                if ("groups" == firstSource) {
+                if (Participant.ActorType.GROUPS == firstSource) {
                     return@sort -1
-                } else if ("groups" == secondSource) {
+                } else if (Participant.ActorType.GROUPS == secondSource) {
                     return@sort 1
                 }
 
                 // Then circles
-                if ("circles" == firstSource) {
+                if (Participant.ActorType.CIRCLES == firstSource) {
                     return@sort -1
-                } else if ("circles" == secondSource) {
+                } else if (Participant.ActorType.CIRCLES == secondSource) {
                     return@sort 1
                 }
 
@@ -653,13 +637,13 @@ class ContactsActivity :
                 (o2 as GenericTextHeaderItem).model
             }
             if (o1 is ContactItem && o2 is ContactItem) {
-                if ("groups" == o1.model.source &&
-                    "groups" == o2.model.source
+                if (Participant.ActorType.GROUPS == o1.model.actorType &&
+                    Participant.ActorType.GROUPS == o2.model.actorType
                 ) {
                     return@sort firstName.compareTo(secondName, ignoreCase = true)
-                } else if ("groups" == o1.model.source) {
+                } else if (Participant.ActorType.GROUPS == o1.model.actorType) {
                     return@sort -1
-                } else if ("groups" == o2.model.source) {
+                } else if (Participant.ActorType.GROUPS == o2.model.actorType) {
                     return@sort 1
                 }
             }
@@ -790,7 +774,7 @@ class ContactsActivity :
 
     private fun createRoom(contactItem: ContactItem) {
         var roomType = "1"
-        if ("groups" == contactItem.model.source) {
+        if (Participant.ActorType.GROUPS == contactItem.model.actorType) {
             roomType = "2"
         }
         val apiVersion: Int = ApiUtils.getConversationApiVersion(currentUser!!, intArrayOf(ApiUtils.API_V4, 1))
@@ -832,19 +816,19 @@ class ContactsActivity :
     }
 
     private fun updateSelectionLists(participant: Participant) {
-        if ("groups" == participant.source) {
+        if (Participant.ActorType.GROUPS == participant.actorType) {
             if (participant.selected) {
                 selectedGroupIds.add(participant.calculatedActorId!!)
             } else {
                 selectedGroupIds.remove(participant.calculatedActorId!!)
             }
-        } else if ("emails" == participant.source) {
+        } else if (Participant.ActorType.EMAILS == participant.actorType) {
             if (participant.selected) {
                 selectedEmails.add(participant.calculatedActorId!!)
             } else {
                 selectedEmails.remove(participant.calculatedActorId!!)
             }
-        } else if ("circles" == participant.source) {
+        } else if (Participant.ActorType.CIRCLES == participant.actorType) {
             if (participant.selected) {
                 selectedCircleIds.add(participant.calculatedActorId!!)
             } else {
@@ -864,7 +848,8 @@ class ContactsActivity :
         participant: Participant,
         adapter: FlexibleAdapter<*>?
     ): Boolean {
-        return "groups" == contactItem.model.source && participant.selected && adapter?.selectedItemCount!! > 1
+        return Participant.ActorType.GROUPS == contactItem.model.actorType &&
+            participant.selected && adapter?.selectedItemCount!! > 1
     }
 
     private fun listOpenConversations() {
@@ -884,7 +869,7 @@ class ContactsActivity :
         for (i in 0 until adapter!!.itemCount) {
             if (adapter?.getItem(i) is ContactItem) {
                 val contactItem: ContactItem = adapter?.getItem(i) as ContactItem
-                if ("groups" == contactItem.model.source) {
+                if (Participant.ActorType.GROUPS == contactItem.model.actorType) {
                     contactItem.isEnabled = !isPublicCall
                 }
             }

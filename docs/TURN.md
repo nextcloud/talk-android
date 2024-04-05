@@ -1,3 +1,7 @@
+<!--
+ ~ SPDX-FileCopyrightText: 2018-2024 Nextcloud GmbH and Nextcloud contributors
+ ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
 ### Background
 The configuration of Nextcloud Talk mainly depends on your desired usage:
 - As long as it shall be used only **within one local network**, nothing should be needed at all. Just verify that all browsers support the underlying [WebRTC](https://en.wikipedia.org/wiki/WebRTC) protocol (all famous ones do on current versions) and you should be good to go.

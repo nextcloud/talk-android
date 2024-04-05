@@ -1,23 +1,9 @@
 /*
- * Nextcloud Talk application
+ * Nextcloud Talk - Android Client
  *
- * @author Marcel Hibbe
- * Copyright (C) 2023 Marcel Hibbe <dev@mhibbe.de>
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-License-Identifier: GPL-3.0-or-later
  */
-
 package com.nextcloud.talk.invitation
 
 import android.content.Intent
@@ -32,6 +18,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityInvitationsBinding
@@ -39,6 +26,7 @@ import com.nextcloud.talk.invitation.adapters.InvitationsAdapter
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
@@ -151,17 +139,12 @@ class InvitationsActivity : BaseActivity() {
 
                 is InvitationsViewModel.InvitationActionSuccessState -> {
                     if (state.action == ActionEnum.ACCEPT) {
-                        // val bundle = Bundle()
-                        // bundle.putString(BundleKeys.KEY_ROOM_TOKEN, ????) // ???
-                        //
-                        // val chatIntent = Intent(context, ChatActivity::class.java)
-                        // chatIntent.putExtras(bundle)
-                        // chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        // startActivity(chatIntent)
-
-                        val intent = Intent(this, ConversationsListActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        startActivity(intent)
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, state.invitation.localToken)
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
                     } else {
                         // adapter.currentList.remove(state.invitation)
                         // adapter.notifyDataSetChanged()  // leads to UnsupportedOperationException ?!
