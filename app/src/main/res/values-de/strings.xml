@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
+    <string name="nc_check_your_internet">Bitte die Internetverbindung prüfen</string>
     <string name="nc_clear_edit_button">Bearbeitung des Nachrichtentextes abbrechen</string>
     <string name="nc_clear_edit_message">Bearbeitungsnachricht löschen</string>
     <string name="nc_clear_history">Alle Nachrichten löschen</string>
@@ -338,6 +339,7 @@
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
+    <string name="nc_refresh">Aktualisieren</string>
     <string name="nc_remind">Erinnere mich später</string>
     <string name="nc_remote_audio_off">Entferntes Audio aus</string>
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>

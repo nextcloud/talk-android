@@ -254,6 +254,7 @@
     <string name="nc_push_disabled">Push/насочените/ известия са деактивирани</string>
     <string name="nc_push_to_talk">Натисни и говори</string>
     <string name="nc_push_to_talk_desc">Когато микрофонът е деактивиран, кликнете &amp; и задръжте, за да използвате „Натисни и говори“</string>
+    <string name="nc_refresh">Опресняване</string>
     <string name="nc_remind">Напомни ми по-късно</string>
     <string name="nc_remote_audio_off">Отдалеченото аудио е изключено</string>
     <string name="nc_remove_from_favorites">Премахни от любимите</string>
