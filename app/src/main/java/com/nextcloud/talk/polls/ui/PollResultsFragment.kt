@@ -83,11 +83,17 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
         }
 
         viewModel.items.observe(viewLifecycleOwner) {
-            val adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils).apply {
-                if (it != null) {
-                    list = it
+            val adapter = PollResultsAdapter(
+                parentViewModel.user,
+                parentViewModel.roomToken,
+                this,
+                viewThemeUtils
+            )
+                .apply {
+                    if (it != null) {
+                        list = it
+                    }
                 }
-            }
             binding.pollResultsList.adapter = adapter
         }
 
@@ -100,7 +106,12 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
     }
 
     private fun initAdapter() {
-        adapter = PollResultsAdapter(parentViewModel.user, this, viewThemeUtils)
+        adapter = PollResultsAdapter(
+            parentViewModel.user,
+            parentViewModel.roomToken,
+            this,
+            viewThemeUtils
+        )
         binding.pollResultsList.adapter = adapter
         binding.pollResultsList.layoutManager = LinearLayoutManager(context)
     }
