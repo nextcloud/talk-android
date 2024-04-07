@@ -274,6 +274,7 @@
     <string name="polls_options">Opciones</string>
     <string name="polls_private_poll">Encuesta privada</string>
     <string name="polls_question">Entruga</string>
+    <string name="polls_results_subtitle">Resultaos</string>
     <string name="polls_settings">Configuración</string>
     <string name="raise_hand">Alzar la mano</string>
     <string name="reactions_tab_all">Too</string>
