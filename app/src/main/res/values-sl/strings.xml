@@ -34,6 +34,7 @@
     <string name="file_list_loading">Poteka nalaganje …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 urah</string>
+    <string name="hint_edited_message">(urejano)</string>
     <string name="invisible">Drugim nevidno</string>
     <string name="load_more_results">Naloži več zadetkov</string>
     <string name="lock_symbol">Simbol zaklepa</string>
@@ -264,6 +265,7 @@
     <string name="nc_remove_from_favorites">Odstrani iz priljubljenih</string>
     <string name="nc_remove_group_and_members">Odstrani skupino in člane</string>
     <string name="nc_remove_participant">Odstrani udeležence</string>
+    <string name="nc_remove_team_and_members">odstrani ekipo in člane</string>
     <string name="nc_rename">Preimenuj pogovor</string>
     <string name="nc_rename_confirm">Preimenuj</string>
     <string name="nc_reply">Odgovori</string>
@@ -378,6 +380,7 @@
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_switch_account">Preklopi račun</string>
+    <string name="nc_teams">Skupine</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
     <string name="nc_upload_confirm_send_single">Ali želite poslati to datoteko osebi %1$s?</string>

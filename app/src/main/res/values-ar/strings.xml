@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
+    <string name="nc_check_your_internet">رجاءً، تحقَّق من اتصالك بالإنترنت</string>
     <string name="nc_clear_edit_button">محو زر التحرير</string>
     <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
