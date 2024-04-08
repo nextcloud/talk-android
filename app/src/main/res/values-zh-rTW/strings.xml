@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
+    <string name="nc_check_your_internet">請檢查您的網際網路連線</string>
     <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
     <string name="nc_clear_history">刪除所有訊息</string>

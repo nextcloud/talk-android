@@ -319,7 +319,7 @@
     <string name="nc_settings_notification_sounds">Звук сповіщень</string>
     <string name="nc_settings_notification_sounds_post_oreo">Сповіщення</string>
     <string name="nc_settings_other_notifications_ringtone">Повідомлення</string>
-    <string name="nc_settings_phone_book_integration_desc">Зіставлення контактів за номером телефону для створення ярликів на додатки \"Конференції\" в додатку системних контактів</string>
+    <string name="nc_settings_phone_book_integration_desc">Контакти, поруч з якими з\'явиться значок застосунку \"Talk\" у застосунку системних контактів</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Ви можете встановити свій номер телефону, щоб інші користувачі могли вас знайти</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Зазначте номер телефону</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильний номер телефону</string>
@@ -397,7 +397,7 @@
     <string name="online">Онлайн</string>
     <string name="online_status">Статус онлайну</string>
     <string name="openConversations">Відкрити розмови</string>
-    <string name="open_in_files_app">Відкрити в додатку Файли</string>
+    <string name="open_in_files_app">Відкрити у застосунку \"Файли\"</string>
     <string name="play_pause_voice_message">Відтворення/пауза голосового повідомлення</string>
     <string name="polls_add_option">Додати варіант</string>
     <string name="polls_edit_vote">Змінити голос</string>
