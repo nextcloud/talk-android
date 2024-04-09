@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
+    <string name="nc_check_your_internet">Por favor, verifique sua conexão à internet</string>
     <string name="nc_clear_edit_button">Botão Limpar Editar</string>
     <string name="nc_clear_edit_message">Limpar Editar Mensagem</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
