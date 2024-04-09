@@ -67,7 +67,10 @@
          <trusted-key id="475F3B8E59E6E63AA78067482C7B12F2A511E325" group="org.slf4j"/>
          <trusted-key id="4791825BDEA86EB9286A2ACE88BB19A33A18445F" group="net.ltgt.gradle.incap" name="incap" version="0.2"/>
          <trusted-key id="47EB6836245D2D40E89DFB4136D4E9618F3ADAB5" group="^io[.]github($|([.].*))" regex="true"/>
-         <trusted-key id="48B086A7D843CFA258E83286928FBF39003C0425" group="org.springframework" name="spring-framework-bom" version="5.3.31"/>
+         <trusted-key id="48B086A7D843CFA258E83286928FBF39003C0425">
+            <trusting group="org.springframework" name="spring-framework-bom" version="5.3.31"/>
+            <trusting group="org.springframework" name="spring-framework-bom" version="5.3.32"/>
+         </trusted-key>
          <trusted-key id="4A2E4BE286EDAE3ADB3A3C26C21CE653B639E41A" group="com.bluelinelabs"/>
          <trusted-key id="4BF79B8259007B566D2FCE82296CD27F60EED12C" group="com.google.crypto.tink" name="tink" version="1.7.0"/>
          <trusted-key id="4C5F68D09D42BA7FAC888DF9A929EA2321FDBF8F">
@@ -3087,6 +3090,11 @@
       </component>
       <component group="org.eclipse.jetty" name="jetty-bom" version="9.4.53.v20231009">
          <artifact name="jetty-bom-9.4.53.v20231009.pom">
+            <pgp value="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4"/>
+         </artifact>
+      </component>
+      <component group="org.eclipse.jetty" name="jetty-bom" version="9.4.54.v20240208">
+         <artifact name="jetty-bom-9.4.54.v20240208.pom">
             <pgp value="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4"/>
          </artifact>
       </component>
