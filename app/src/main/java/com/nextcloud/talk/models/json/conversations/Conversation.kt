@@ -185,10 +185,9 @@ data class Conversation(
     @Deprecated("Use ConversationUtil")
     fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator &&
-            ConversationUtils.isLockedOneToOne(
+            !ConversationUtils.isLockedOneToOne(
                 ConversationModel.mapToConversationModel(this),
-                conversationUser
-                    .capabilities?.spreedCapability!!
+                conversationUser.capabilities?.spreedCapability!!
             ) &&
             type != ConversationType.FORMER_ONE_TO_ONE &&
             !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(this))
