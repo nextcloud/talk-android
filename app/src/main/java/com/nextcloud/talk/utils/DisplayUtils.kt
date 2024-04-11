@@ -271,7 +271,7 @@ object DisplayUtils {
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
                 )
             }
-            if ("user" == type && conversationUser.userId != id) {
+            if ("user" == type && conversationUser.userId != id && !isFederated) {
                 spannableString.setSpan(clickableSpan, start, end, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
             }
         }
