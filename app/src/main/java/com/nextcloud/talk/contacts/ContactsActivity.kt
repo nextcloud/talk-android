@@ -147,6 +147,7 @@ class ContactsActivity :
         }
         if (isAddingParticipantsView) {
             binding.callHeaderLayout.visibility = View.GONE
+            binding.listOpenConversations.visibility = View.GONE
         } else {
             binding.listOpenConversations.setOnClickListener {
                 listOpenConversations()
