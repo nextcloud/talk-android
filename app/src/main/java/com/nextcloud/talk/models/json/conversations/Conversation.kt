@@ -22,9 +22,7 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -172,15 +170,6 @@ data class Conversation(
         get() = ParticipantType.OWNER == participantType ||
             ParticipantType.GUEST_MODERATOR == participantType ||
             ParticipantType.MODERATOR == participantType
-
-    @Deprecated("Use ConversationUtil")
-    private fun isLockedOneToOne(conversationUser: User): Boolean {
-        return type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(
-                conversationUser.capabilities?.spreedCapability!!,
-                SpreedFeatures.LOCKED_ONE_TO_ONE_ROOMS
-            )
-    }
 
     @Deprecated("Use ConversationUtil")
     fun canModerate(conversationUser: User): Boolean {
