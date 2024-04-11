@@ -132,7 +132,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             binding.messageAuthor.visibility = View.VISIBLE
             binding.messageAuthor.text = author
             binding.messageUserAvatar.setOnClickListener {
-                (payload as? MessagePayload)?.profileBottomSheet?.showFor(message.actorId!!, itemView.context)
+                (payload as? MessagePayload)?.profileBottomSheet?.showFor(message, itemView.context)
             }
         } else {
             binding.messageAuthor.setText(R.string.nc_nick_guest)
