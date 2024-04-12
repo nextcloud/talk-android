@@ -788,4 +788,5 @@ How to translate with transifex:
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
     <string name="note_to_self">Note to self</string>
+    <string name="nc_conversation_settings">Conversation settings</string>
 </resources>
