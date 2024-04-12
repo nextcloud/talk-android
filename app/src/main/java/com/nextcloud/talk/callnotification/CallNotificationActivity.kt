@@ -18,34 +18,25 @@ import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.CallBaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallNotificationActivityBinding
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.NotificationUtils
-import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import io.reactivex.disposables.Disposable
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -64,47 +55,108 @@ class CallNotificationActivity : CallBaseActivity() {
     @Inject
     lateinit var userManager: UserManager
 
-    @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    lateinit var callNotificationViewModel: CallNotificationViewModel
-
-    private val disposablesList: MutableList<Disposable> = ArrayList()
-    private var originalBundle: Bundle? = null
     private var roomToken: String? = null
     private var notificationTimestamp: Int? = null
+    private var displayName: String? = null
+    private var callFlag: Int = 0
+    private var isOneToOneCall: Boolean = true
+    private var conversationName: String? = null
+    private var internalUserId: Long = -1
+
     private var userBeingCalled: User? = null
-    private var credentials: String? = null
-    var currentConversation: ConversationModel? = null
     private var leavingScreen = false
     private var handler: Handler? = null
     private var binding: CallNotificationActivityBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         binding = CallNotificationActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
-        val extras = intent.extras
-        roomToken = extras!!.getString(KEY_ROOM_TOKEN, "")
-        notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
 
-        val internalUserId = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+        handleExtras()
         userBeingCalled = userManager.getUserWithId(internalUserId).blockingGet()
 
-        originalBundle = extras
-        credentials = ApiUtils.getCredentials(userBeingCalled!!.username, userBeingCalled!!.token)
+        setupCallTypeDescription()
+        binding!!.conversationNameTextView.text = displayName
+        setupAvatar(isOneToOneCall, conversationName)
+        initClickListeners()
+        setupNotificationCanceledRoutine()
+    }
 
-        callNotificationViewModel = ViewModelProvider(this, viewModelFactory)[CallNotificationViewModel::class.java]
+    private fun handleExtras() {
+        val extras = intent.extras!!
+        roomToken = extras.getString(KEY_ROOM_TOKEN, "")
+        notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
+        displayName = extras.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, "")
+        callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
+        isOneToOneCall = extras.getBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE)
+        conversationName = extras.getString(BundleKeys.KEY_CONVERSATION_NAME, "")
+        internalUserId = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
+    }
 
-        initObservers()
-
-        if (userManager.setUserAsActive(userBeingCalled!!).blockingGet()) {
-            setCallDescriptionText()
-            callNotificationViewModel.getRoom(userBeingCalled!!, roomToken!!)
+    private fun setupAvatar(isOneToOneCall: Boolean, conversationName: String?) {
+        if (isOneToOneCall) {
+            binding!!.avatarImageView.loadUserAvatar(
+                userBeingCalled!!,
+                conversationName!!,
+                true,
+                false
+            )
+        } else {
+            binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
         }
+    }
+
+    private fun setupCallTypeDescription() {
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            userBeingCalled!!,
+            intArrayOf(
+                ApiUtils.API_V4,
+                ApiUtils.API_V3,
+                1
+            )
+        )
+
+        if (apiVersion >= ApiUtils.API_V3) {
+            val hasCallFlags = hasSpreedFeatureCapability(
+                userBeingCalled?.capabilities?.spreedCapability!!,
+                SpreedFeatures.CONVERSATION_CALL_FLAGS
+            )
+            if (hasCallFlags) {
+                if (isInCallWithVideo(callFlag)) {
+                    binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                        resources.getString(R.string.nc_call_video),
+                        resources.getString(R.string.nc_app_product_name)
+                    )
+                } else {
+                    binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
+                        resources.getString(R.string.nc_call_voice),
+                        resources.getString(R.string.nc_app_product_name)
+                    )
+                }
+            }
+        } else {
+            val callDescriptionWithoutTypeInfo = String.format(
+                resources.getString(R.string.nc_call_unknown),
+                resources.getString(R.string.nc_app_product_name)
+            )
+            binding!!.incomingCallVoiceOrVideoTextView.text = callDescriptionWithoutTypeInfo
+        }
+    }
+
+    private fun setupNotificationCanceledRoutine() {
+        val notificationHandler = Handler(Looper.getMainLooper())
+        notificationHandler.post(object : Runnable {
+            override fun run() {
+                if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
+                    notificationHandler.postDelayed(this, ONE_SECOND)
+                } else {
+                    finish()
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -122,136 +174,26 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun initClickListeners() {
         binding!!.callAnswerVoiceOnlyView.setOnClickListener {
             Log.d(TAG, "accept call (voice only)")
-            originalBundle!!.putBoolean(KEY_CALL_VOICE_ONLY, true)
+            intent.extras!!.putBoolean(KEY_CALL_VOICE_ONLY, true)
             proceedToCall()
         }
         binding!!.callAnswerCameraView.setOnClickListener {
             Log.d(TAG, "accept call (with video)")
-            originalBundle!!.putBoolean(KEY_CALL_VOICE_ONLY, false)
+            intent.extras!!.putBoolean(KEY_CALL_VOICE_ONLY, false)
             proceedToCall()
         }
         binding!!.hangupButton.setOnClickListener { hangup() }
     }
 
-    private fun initObservers() {
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            userBeingCalled!!,
-            intArrayOf(
-                ApiUtils.API_V4,
-                ApiUtils.API_V3,
-                1
-            )
-        )
-
-        callNotificationViewModel.getRoomViewState.observe(this) { state ->
-            when (state) {
-                is CallNotificationViewModel.GetRoomSuccessState -> {
-                    currentConversation = state.conversationModel
-
-                    binding!!.conversationNameTextView.text = currentConversation!!.displayName
-                    if (currentConversation!!.type === ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                        binding!!.avatarImageView.loadUserAvatar(
-                            userBeingCalled!!,
-                            currentConversation!!.name!!,
-                            true,
-                            false
-                        )
-                    } else {
-                        binding!!.avatarImageView.setImageResource(R.drawable.ic_circular_group)
-                    }
-
-                    val notificationHandler = Handler(Looper.getMainLooper())
-                    notificationHandler.post(object : Runnable {
-                        override fun run() {
-                            if (NotificationUtils.isNotificationVisible(context, notificationTimestamp!!.toInt())) {
-                                notificationHandler.postDelayed(this, ONE_SECOND)
-                            } else {
-                                finish()
-                            }
-                        }
-                    })
-
-                    showAnswerControls()
-
-                    if (apiVersion >= ApiUtils.API_V3) {
-                        val hasCallFlags = hasSpreedFeatureCapability(
-                            userBeingCalled?.capabilities?.spreedCapability!!,
-                            SpreedFeatures.CONVERSATION_CALL_FLAGS
-                        )
-                        if (hasCallFlags) {
-                            if (isInCallWithVideo(currentConversation!!.callFlag)) {
-                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                                    resources.getString(R.string.nc_call_video),
-                                    resources.getString(R.string.nc_app_product_name)
-                                )
-                            } else {
-                                binding!!.incomingCallVoiceOrVideoTextView.text = String.format(
-                                    resources.getString(R.string.nc_call_voice),
-                                    resources.getString(R.string.nc_app_product_name)
-                                )
-                            }
-                        }
-                    }
-
-                    initClickListeners()
-                }
-
-                is CallNotificationViewModel.GetRoomErrorState -> {
-                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
-            }
-        }
-    }
-
-    private fun setCallDescriptionText() {
-        val callDescriptionWithoutTypeInfo = String.format(
-            resources.getString(R.string.nc_call_unknown),
-            resources.getString(R.string.nc_app_product_name)
-        )
-        binding!!.incomingCallVoiceOrVideoTextView.text = callDescriptionWithoutTypeInfo
-    }
-
-    private fun showAnswerControls() {
-        binding!!.callAnswerCameraView.visibility = View.VISIBLE
-        binding!!.callAnswerVoiceOnlyView.visibility = View.VISIBLE
-    }
-
     private fun hangup() {
         leavingScreen = true
-        dispose()
         finish()
     }
 
     private fun proceedToCall() {
-        if (currentConversation != null) {
-            originalBundle!!.putString(KEY_ROOM_TOKEN, currentConversation!!.token)
-            originalBundle!!.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
-
-            val participantPermission = ParticipantPermissions(
-                userBeingCalled!!.capabilities!!.spreedCapability!!,
-                currentConversation!!
-            )
-            originalBundle!!.putBoolean(
-                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO,
-                participantPermission.canPublishAudio()
-            )
-            originalBundle!!.putBoolean(
-                BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-                participantPermission.canPublishVideo()
-            )
-            originalBundle!!.putBoolean(
-                BundleKeys.KEY_IS_MODERATOR,
-                ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
-            )
-
-            val intent = Intent(this, CallActivity::class.java)
-            intent.putExtras(originalBundle!!)
-            startActivity(intent)
-        } else {
-            Log.w(TAG, "conversation was still null when clicked to answer call. User has to click another time.")
-        }
+        val callIntent = Intent(this, CallActivity::class.java)
+        callIntent.putExtras(intent.extras!!)
+        startActivity(callIntent)
     }
 
     private fun isInCallWithVideo(callFlag: Int): Boolean {
@@ -270,16 +212,7 @@ class CallNotificationActivity : CallBaseActivity() {
             handler!!.removeCallbacksAndMessages(null)
             handler = null
         }
-        dispose()
         super.onDestroy()
-    }
-
-    private fun dispose() {
-        for (disposable in disposablesList) {
-            if (!disposable.isDisposed) {
-                disposable.dispose()
-            }
-        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -308,7 +241,7 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     companion object {
-        const val TAG = "CallNotificationActivity"
+        private val TAG = CallNotificationActivity::class.simpleName
         const val ONE_SECOND: Long = 1000
     }
 }
