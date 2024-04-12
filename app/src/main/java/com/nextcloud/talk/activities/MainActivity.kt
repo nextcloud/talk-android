@@ -28,7 +28,6 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.callnotification.CallNotificationActivity
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
@@ -245,19 +244,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         if (user != null && userManager.setUserAsActive(user).blockingGet()) {
             if (intent.hasExtra(BundleKeys.KEY_REMOTE_TALK_SHARE)) {
                 if (intent.getBooleanExtra(BundleKeys.KEY_REMOTE_TALK_SHARE, false)) {
-                    val intent = Intent(this, InvitationsActivity::class.java)
-                    startActivity(intent)
+                    val invitationsIntent = Intent(this, InvitationsActivity::class.java)
+                    startActivity(invitationsIntent)
                 }
-            } else if (intent.hasExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL)) {
-                if (intent.getBooleanExtra(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false)) {
-                    val callNotificationIntent = Intent(this, CallNotificationActivity::class.java)
-                    intent.extras?.let { callNotificationIntent.putExtras(it) }
-                    startActivity(callNotificationIntent)
-                } else {
-                    val chatIntent = Intent(context, ChatActivity::class.java)
-                    chatIntent.putExtras(intent.extras!!)
-                    startActivity(chatIntent)
-                }
+            } else {
+                val chatIntent = Intent(context, ChatActivity::class.java)
+                chatIntent.putExtras(intent.extras!!)
+                startActivity(chatIntent)
             }
         } else {
             if (!appPreferences.isDbRoomMigrated) {
