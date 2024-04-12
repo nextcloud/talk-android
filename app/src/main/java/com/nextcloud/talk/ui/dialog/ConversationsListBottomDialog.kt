@@ -6,8 +6,6 @@
  */
 package com.nextcloud.talk.ui.dialog
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -33,6 +31,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
@@ -167,7 +166,7 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationLinkShare.setOnClickListener {
-            shareConversationLink()
+            ShareUtils.shareConversationLink(activity, currentUser.baseUrl, conversation.token, conversation.name)
             dismiss()
         }
 
@@ -182,35 +181,6 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.setOnClickListener {
             deleteConversation()
         }
-    }
-
-    private fun shareConversationLink() {
-        val activeAccountUrl = currentUser.baseUrl
-        val roomToken = conversation.token
-
-        val uriToShareConversation = Uri.parse(activeAccountUrl)
-            .buildUpon()
-            .appendPath("index.php")
-            .appendPath("call")
-            .appendPath(roomToken)
-            .build()
-
-        val shareConversationLink = String.format(
-            context.getString(
-                R.string.share_link_to_conversation,
-                conversation.name,
-                uriToShareConversation.toString()
-            )
-        )
-
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, shareConversationLink)
-            type = "text/plain"
-        }
-
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        context.startActivity(shareIntent)
     }
 
     private fun addConversationToFavorites() {
