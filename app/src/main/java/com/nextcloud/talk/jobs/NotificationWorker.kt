@@ -986,7 +986,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
-        bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
         return intent
     }
@@ -997,7 +996,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
-        bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
         intent.putExtras(bundle)
 
         val requestCode = System.currentTimeMillis().toInt()

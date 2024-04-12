@@ -35,13 +35,12 @@ import com.nextcloud.talk.upload.chunked.ChunkedFileUploader
 import com.nextcloud.talk.upload.chunked.OnDataTransferProgressListener
 import com.nextcloud.talk.upload.normal.FileUploader
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -295,7 +294,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putLong(KEY_INTERNAL_USER_ID, currentUser.id!!)
-        bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, false)
 
         intent.putExtras(bundle)
 
