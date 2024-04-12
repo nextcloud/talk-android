@@ -9,7 +9,6 @@ package com.nextcloud.talk.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.nextcloud.talk.callnotification.viewmodel.CallNotificationViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
@@ -118,11 +117,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ChatViewModel::class)
     abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(CallNotificationViewModel::class)
-    abstract fun callNotificationViewModel(viewModel: CallNotificationViewModel): ViewModel
 
     @Binds
     @IntoMap
