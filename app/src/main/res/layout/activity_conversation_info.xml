@@ -271,6 +271,7 @@
                 android:paddingEnd="@dimen/standard_margin"
                 android:paddingBottom="@dimen/standard_half_margin"
                 android:orientation="horizontal"
+                android:visibility = "gone"
                 android:background="?android:attr/selectableItemBackground">
 
 

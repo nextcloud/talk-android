@@ -211,6 +211,17 @@ class ConversationInfoActivity :
                 is ConversationInfoViewModel.GetRoomSuccessState -> {
                     conversation = state.conversationModel
                     viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
+                    if (conversation?.name != context.getString(R.string.note_to_self)) {
+                        binding.shareConversationButton.visibility = VISIBLE
+                    }
+                    binding.shareConversationButton.setOnClickListener {
+                        ShareUtils.shareConversationLink(
+                            this,
+                            conversationUser.baseUrl,
+                            conversation?.token,
+                            conversation?.name
+                        )
+                    }
                 }
 
                 is ConversationInfoViewModel.GetRoomErrorState -> {
