@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">更改驗證證書</string>
+    <string name="nc_check_your_internet">請檢查您的網際網路連線</string>
     <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
     <string name="nc_clear_history">刪除所有訊息</string>
@@ -173,7 +174,7 @@
     <string name="nc_diagnose_battery_optimization_title">電池設定</string>
     <string name="nc_diagnose_device_name_title">裝置</string>
     <string name="nc_diagnose_dialog_open_checklist">打開排憂解難清單：</string>
-    <string name="nc_diagnose_dialog_open_diagnose">打開診斷屏幕</string>
+    <string name="nc_diagnose_dialog_open_diagnose">打開診斷螢幕</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">打開 dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">最新的 firebase 推送權杖擷取</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">最新的 firebase 推送權杖産生</string>
@@ -430,8 +431,8 @@
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除賬號</string>
     <string name="nc_settings_remove_confirmation">請確認 是否要清除目前的賬號</string>
-    <string name="nc_settings_screen_lock_desc">使用Android屏幕鎖定或生物識別方法去鎖定%1$s</string>
-    <string name="nc_settings_screen_lock_timeout_title">屏幕鎖定不活動超時時間</string>
+    <string name="nc_settings_screen_lock_desc">使用Android螢幕鎖定或生物識別方法去鎖定%1$s</string>
+    <string name="nc_settings_screen_lock_timeout_title">螢幕鎖定不活動超時時間</string>
     <string name="nc_settings_screen_lock_title">螢幕鎖定</string>
     <string name="nc_settings_screen_security_desc">防止在最近列表和應用程序內截屏</string>
     <string name="nc_settings_screen_security_title">螢幕安全</string>
