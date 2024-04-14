@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
+    <string name="nc_check_your_internet">Please check your internet connection</string>
     <string name="nc_clear_edit_button">Clear Edit Button</string>
     <string name="nc_clear_edit_message">Clear Edit Message</string>
     <string name="nc_clear_history">Delete all messages</string>
@@ -338,6 +339,7 @@
     <string name="nc_push_disabled">Push notifications disabled</string>
     <string name="nc_push_to_talk">Press-to-transmit</string>
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
+    <string name="nc_refresh">Refresh</string>
     <string name="nc_remind">Remind me later</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
