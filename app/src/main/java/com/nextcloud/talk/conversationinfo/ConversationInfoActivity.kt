@@ -187,14 +187,6 @@ class ConversationInfoActivity :
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
 
-        binding.shareConversationButton.setOnClickListener {
-            ShareUtils.shareConversationLink(
-                this,
-                conversationUser.baseUrl,
-                conversation?.token,
-                conversation?.name
-            )
-        }
         viewModel.getRoom(conversationUser, conversationToken)
 
         themeTextViews()
@@ -211,8 +203,8 @@ class ConversationInfoActivity :
                 is ConversationInfoViewModel.GetRoomSuccessState -> {
                     conversation = state.conversationModel
                     viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
-                    if (conversation?.name != context.getString(R.string.note_to_self)) {
-                        binding.shareConversationButton.visibility = VISIBLE
+                    if (conversation?.name == context.getString(R.string.note_to_self)) {
+                        binding.shareConversationButton.visibility = GONE
                     }
                     binding.shareConversationButton.setOnClickListener {
                         ShareUtils.shareConversationLink(
@@ -881,11 +873,9 @@ class ConversationInfoActivity :
                 val v: String = resources.getStringArray(R.array.message_expiring_values)[position]
                 databaseStorageModule!!.saveString("conversation_settings_dropdown", v)
             }
-
-            binding.conversationSettingsDropdown.visibility = VISIBLE
-            binding.conversationInfoExpireMessagesExplanation.visibility = VISIBLE
+            binding.messageExpirationSettings.visibility = VISIBLE
         } else {
-            binding.conversationSettings.visibility = GONE
+            binding.messageExpirationSettings.visibility = GONE
         }
     }
 
