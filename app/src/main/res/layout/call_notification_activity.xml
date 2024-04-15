@@ -52,8 +52,6 @@
             android:background="@drawable/shape_oval"
             android:backgroundTint="@color/nc_darkGreen"
             android:src="@drawable/ic_videocam_white_24px"
-            android:visibility="gone"
-            tools:visibility="visible"
             android:contentDescription="@string/nc_call_button_content_description_answer_video_call" />
     </LinearLayout>
 
