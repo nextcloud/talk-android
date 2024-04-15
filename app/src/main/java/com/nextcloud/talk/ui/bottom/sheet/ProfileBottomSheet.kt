@@ -21,9 +21,11 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.EMAIL
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.PROFILE
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet.AllowedAppIds.SPREED
@@ -41,10 +43,15 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
 
     private val allowedAppIds = listOf(SPREED.stringValue, PROFILE.stringValue, EMAIL.stringValue)
 
-    fun showFor(user: String, context: Context) {
+    fun showFor(message: ChatMessage, context: Context) {
+        if (message.actorType == Participant.ActorType.FEDERATED.toString()) {
+            Log.d(TAG, "no actions for federated users are shown")
+            return
+        }
+
         ncApi.hoverCard(
             ApiUtils.getCredentials(userModel.username, userModel.token),
-            ApiUtils.getUrlForHoverCard(userModel.baseUrl!!, user)
+            ApiUtils.getUrlForHoverCard(userModel.baseUrl!!, message.actorId!!)
         ).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<HoverCardOverall> {
                 override fun onSubscribe(d: Disposable) {
@@ -55,13 +62,13 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
                     bottomSheet(
                         hoverCardOverall.ocs!!.data!!.actions!!,
                         hoverCardOverall.ocs!!.data!!.displayName!!,
-                        user,
+                        message.actorId!!,
                         context
                     )
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to get hover card for user $user", e)
+                    Log.e(TAG, "Failed to get hover card for user " + message.actorId, e)
                 }
 
                 override fun onComplete() {

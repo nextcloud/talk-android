@@ -172,7 +172,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
                 userAvatar.setOnClickListener { v: View ->
                     if (payload is MessagePayload) {
                         (payload as MessagePayload).profileBottomSheet.showFor(
-                            message.actorId!!,
+                            message,
                             v.context
                         )
                     }
