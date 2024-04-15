@@ -329,8 +329,7 @@ How to translate with transifex:
     <string name="nc_call_name">Conversation name</string>
     <string name="create_conversation">Create conversation</string>
     <string name="nc_add_emojis">Add emojis</string>
-    <string name="nc_share_subject">%1$s invitation</string>
-    <string name="nc_share_text_pass">\nPassword: %1$s</string>
+
 
 
     <string name="nc_push_to_talk">Push-to-talk</string>
@@ -713,7 +712,6 @@ How to translate with transifex:
     <string name="nc_conversation_description">Conversation description</string>
 
     <!-- Expiring messages -->
-    <string name="message_expiration_title">Message expiration</string>
     <string name="nc_expire_messages">Expire chat messages</string>
     <string name="nc_expire_message_off">Off</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
