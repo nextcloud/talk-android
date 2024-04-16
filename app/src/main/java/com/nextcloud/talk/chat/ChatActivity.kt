@@ -3968,7 +3968,7 @@ class ChatActivity :
     }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        val calculatedPage = page / MESSAGE_PULL_LIMIT
+        val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
             chatViewModel.refreshChatParams(
                 setupFieldsForPullChatMessages(
@@ -4991,5 +4991,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
+        private const val PAGE_SIZE = 50
     }
 }
