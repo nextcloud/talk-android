@@ -23,6 +23,8 @@ public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.Co
                 return Conversation.ConversationType.ROOM_SYSTEM;
             case 5:
                 return Conversation.ConversationType.FORMER_ONE_TO_ONE;
+            case 6:
+                return Conversation.ConversationType.NOTE_TO_SELF;
             default:
                 return Conversation.ConversationType.DUMMY;
         }
@@ -43,6 +45,8 @@ public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.Co
                 return 4;
             case FORMER_ONE_TO_ONE:
                 return 5;
+            case NOTE_TO_SELF:
+                return 6;
             default:
                 return 0;
         }
