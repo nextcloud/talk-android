@@ -28,7 +28,6 @@ import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
@@ -36,7 +35,6 @@ import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -170,19 +168,12 @@ class ConversationItem(
                     }
                 }
 
-                ConversationType.DUMMY -> {
-                    if (ConversationUtils.isNoteToSelfConversation(
-                            ConversationModel.mapToConversationModel(model)
-                        )
-                    ) {
-                        holder.binding.dialogAvatar.loadNoteToSelfAvatar()
-                    }
-                }
-
                 ConversationType.ROOM_GROUP_CALL,
                 ConversationType.FORMER_ONE_TO_ONE,
                 ConversationType.ROOM_PUBLIC_CALL ->
                     holder.binding.dialogAvatar.loadConversationAvatar(user, model, false, viewThemeUtils)
+                ConversationType.NOTE_TO_SELF ->
+                    holder.binding.dialogAvatar.loadNoteToSelfAvatar()
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
             }

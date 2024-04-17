@@ -13,7 +13,6 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
-    private const val NOTE_TO_SELF = "Note to self"
 
     fun isPublic(conversation: ConversationModel): Boolean {
         return ConversationType.ROOM_PUBLIC_CALL == conversation.type
@@ -76,6 +75,6 @@ object ConversationUtils {
     }
 
     fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean {
-        return currentConversation != null && currentConversation.name == NOTE_TO_SELF
+        return currentConversation != null && currentConversation.type == ConversationType.NOTE_TO_SELF
     }
 }
