@@ -238,7 +238,8 @@ data class Conversation(
         ROOM_GROUP_CALL,
         ROOM_PUBLIC_CALL,
         ROOM_SYSTEM,
-        FORMER_ONE_TO_ONE
+        FORMER_ONE_TO_ONE,
+        NOTE_TO_SELF
     }
 
     enum class ObjectType {
