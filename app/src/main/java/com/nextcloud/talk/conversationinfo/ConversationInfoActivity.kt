@@ -43,8 +43,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.contacts.ContactsActivity
-import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
+import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.events.EventStatus
@@ -69,12 +69,13 @@ import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -161,7 +162,6 @@ class ConversationInfoActivity :
         conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
-
         initObservers()
     }
 
@@ -203,6 +203,17 @@ class ConversationInfoActivity :
                 is ConversationInfoViewModel.GetRoomSuccessState -> {
                     conversation = state.conversationModel
                     viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
+                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
+                        binding.shareConversationButton.visibility = GONE
+                    }
+                    binding.shareConversationButton.setOnClickListener {
+                        ShareUtils.shareConversationLink(
+                            this,
+                            conversationUser.baseUrl,
+                            conversation?.token,
+                            conversation?.name
+                        )
+                    }
                 }
 
                 is ConversationInfoViewModel.GetRoomErrorState -> {
@@ -862,11 +873,9 @@ class ConversationInfoActivity :
                 val v: String = resources.getStringArray(R.array.message_expiring_values)[position]
                 databaseStorageModule!!.saveString("conversation_settings_dropdown", v)
             }
-
-            binding.conversationSettingsDropdown.visibility = VISIBLE
-            binding.conversationInfoExpireMessagesExplanation.visibility = VISIBLE
+            binding.messageExpirationSettings.visibility = VISIBLE
         } else {
-            binding.conversationSettings.visibility = GONE
+            binding.messageExpirationSettings.visibility = GONE
         }
     }
 

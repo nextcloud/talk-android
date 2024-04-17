@@ -329,9 +329,8 @@ How to translate with transifex:
     <string name="nc_call_name">Conversation name</string>
     <string name="create_conversation">Create conversation</string>
     <string name="nc_add_emojis">Add emojis</string>
-    <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_subject">%1$s invitation</string>
-    <string name="nc_share_text_pass">\nPassword: %1$s</string>
+
+
 
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">With microphone disabled, click&amp;hold to use Push-to-talk</string>
@@ -435,6 +434,7 @@ How to translate with transifex:
     <string name="nc_guest_access_resend_invitations">Resend invitations</string>
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_resend_invitations_failed">Invitations were not send due to an error.</string>
+    <string name="nc_share_link">Share link</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_send_message_button">Send message</string>
@@ -712,7 +712,6 @@ How to translate with transifex:
     <string name="nc_conversation_description">Conversation description</string>
 
     <!-- Expiring messages -->
-    <string name="message_expiration_title">Message expiration</string>
     <string name="nc_expire_messages">Expire chat messages</string>
     <string name="nc_expire_message_off">Off</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
@@ -785,4 +784,6 @@ How to translate with transifex:
     <string name="nc_edit_icon">Edit Icon</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
+    <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
+    <string name="nc_conversation_settings">Conversation settings</string>
 </resources>
