@@ -203,7 +203,7 @@ class ConversationInfoActivity :
                 is ConversationInfoViewModel.GetRoomSuccessState -> {
                     conversation = state.conversationModel
                     viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
-                    if (conversation?.name == context.getString(R.string.note_to_self)) {
+                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
                         binding.shareConversationButton.visibility = GONE
                     }
                     binding.shareConversationButton.setOnClickListener {

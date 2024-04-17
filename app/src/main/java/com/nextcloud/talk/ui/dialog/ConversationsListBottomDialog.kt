@@ -125,7 +125,7 @@ class ConversationsListBottomDialog(
             conversation.isNameEditable(currentUser)
         )
         binding.conversationLinkShare.visibility = setVisibleIf(
-            conversation.name != context.getString(R.string.note_to_self)
+            !conversation.isNoteToSelfConversation()
         )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
