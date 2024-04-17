@@ -949,10 +949,8 @@ class ConversationInfoActivity :
                 binding.avatarImage.loadSystemAvatar()
             }
 
-            ConversationType.DUMMY -> {
-                if (ConversationUtils.isNoteToSelfConversation(conversation!!)) {
-                    binding.avatarImage.loadNoteToSelfAvatar()
-                }
+            ConversationType.NOTE_TO_SELF -> {
+                binding.avatarImage.loadNoteToSelfAvatar()
             }
 
             else -> {
