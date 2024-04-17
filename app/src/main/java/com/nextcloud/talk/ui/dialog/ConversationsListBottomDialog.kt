@@ -30,10 +30,11 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.ShareUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.SpreedFeatures
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -123,6 +124,9 @@ class ConversationsListBottomDialog(
         binding.conversationOperationRename.visibility = setVisibleIf(
             conversation.isNameEditable(currentUser)
         )
+        binding.conversationLinkShare.visibility = setVisibleIf(
+            !conversation.isNoteToSelfConversation()
+        )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
             canModerate
@@ -159,6 +163,11 @@ class ConversationsListBottomDialog(
 
         binding.conversationMarkAsUnread.setOnClickListener {
             markConversationAsUnread()
+        }
+
+        binding.conversationLinkShare.setOnClickListener {
+            ShareUtils.shareConversationLink(activity, currentUser.baseUrl, conversation.token, conversation.name)
+            dismiss()
         }
 
         binding.conversationOperationRename.setOnClickListener {

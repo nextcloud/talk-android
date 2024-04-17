@@ -229,38 +229,75 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/standard_padding"
-                    android:text="@string/message_expiration_title"
+                    android:text="@string/nc_conversation_settings"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/conversation_info_chat_settings_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                <LinearLayout
+                    android:id="@+id/message_expiration_settings"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    android:layout_marginTop="@dimen/standard_half_margin"
-                    android:hint="@string/nc_expire_messages">
+                    android:orientation="vertical">
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/conversation_settings_dropdown"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/conversation_info_chat_settings_input_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:lines="1"
-                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
-                        android:text="" />
+                        android:layout_marginHorizontal="@dimen/standard_margin"
+                        android:layout_marginTop="@dimen/standard_half_margin"
+                        android:hint="@string/nc_expire_messages">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/conversation_settings_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:lines="1"
+                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                            android:text="" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/conversation_info_expire_messages_explanation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_margin"
+                        android:text="@string/nc_expire_messages_explanation"
+                        android:textColor="@color/disabled_text"
+                        android:textSize="@dimen/supporting_text_text_size" />
+                </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/share_conversation_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standard_margin"
+                android:paddingTop="@dimen/standard_half_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:paddingBottom="@dimen/standard_half_margin"
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
+
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_share_variant"
+                    app:tint="@color/grey_600" />
 
                 <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/conversation_info_expire_messages_explanation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/standard_margin"
-                    android:text="@string/nc_expire_messages_explanation"
-                    android:textColor="@color/disabled_text"
-                    android:textSize="@dimen/supporting_text_text_size" />
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/nc_guest_access_share_link"
+                    android:textSize="@dimen/headline_text_size" />
+
+            </LinearLayout>
+
             </LinearLayout>
 
             <LinearLayout

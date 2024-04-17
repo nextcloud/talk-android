@@ -214,6 +214,11 @@ data class Conversation(
         }
     }
 
+    @Deprecated("Use ConversationUtil")
+    fun isNoteToSelfConversation(): Boolean {
+        return type == ConversationType.NOTE_TO_SELF
+    }
+
     enum class NotificationLevel {
         DEFAULT,
         ALWAYS,

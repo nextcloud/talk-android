@@ -8,7 +8,6 @@
  */
 package com.nextcloud.talk.conversationinfo
 
-import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,8 +23,6 @@ import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.Mimetype
-import com.nextcloud.talk.utils.ShareUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -82,10 +79,6 @@ class GuestAccessHelper(
             }
         }
 
-        binding.guestAccessView.shareConversationButton.setOnClickListener {
-            shareUrl()
-        }
-
         binding.guestAccessView.resendInvitationsButton.setOnClickListener {
             conversationsRepository.resendInvitations(conversation.token!!).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread()).subscribe(ResendInvitationsObserver())
@@ -121,28 +114,6 @@ class GuestAccessHelper(
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )
-    }
-
-    private fun shareUrl() {
-        val sendIntent: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            type = Mimetype.TEXT_PLAIN
-            putExtra(
-                Intent.EXTRA_SUBJECT,
-                String.format(
-                    activity.resources.getString(R.string.nc_share_subject),
-                    activity.resources.getString(R.string.nc_app_product_name)
-                )
-            )
-
-            putExtra(
-                Intent.EXTRA_TEXT,
-                ShareUtils.getStringForIntent(activity, conversationUser, conversation)
-            )
-        }
-
-        val shareIntent = Intent.createChooser(sendIntent, null)
-        activity.startActivity(shareIntent)
     }
 
     inner class ResendInvitationsObserver : Observer<ConversationsRepository.ResendInvitationsResult> {
@@ -200,7 +171,6 @@ class GuestAccessHelper(
 
     private fun showAllOptions() {
         binding.guestAccessView.guestAccessSettingsPasswordProtection.visibility = View.VISIBLE
-        binding.guestAccessView.shareConversationButton.visibility = View.VISIBLE
         if (conversationUser.capabilities?.spreedCapability?.features?.contains("sip-support") == true) {
             binding.guestAccessView.resendInvitationsButton.visibility = View.VISIBLE
         }
@@ -208,7 +178,6 @@ class GuestAccessHelper(
 
     private fun hideAllOptions() {
         binding.guestAccessView.guestAccessSettingsPasswordProtection.visibility = View.GONE
-        binding.guestAccessView.shareConversationButton.visibility = View.GONE
         binding.guestAccessView.resendInvitationsButton.visibility = View.GONE
     }
 
