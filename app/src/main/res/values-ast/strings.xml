@@ -7,6 +7,7 @@
     <string name="audio_call">Llamada d\'audiu</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida d\'audiu</string>
+    <string name="audio_output_phone">Teléfonu</string>
     <string name="audio_output_speaker">Altavoz</string>
     <string name="audio_output_wired_headset">Cascos con cable</string>
     <string name="avatar">Avatar</string>
@@ -122,6 +123,7 @@
     <string name="nc_diagnose_gplay_available_title">Servicios de Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Los servicios de Google Play tán disponibles</string>
     <string name="nc_diagnose_meta_system_report_date">Xeneración del informe del sistema</string>
+    <string name="nc_diagnose_phone_category_title">Teléfonu</string>
     <string name="nc_diagnose_server_version">Versión del sirvidor</string>
     <string name="nc_dialog_invalid_password">La contraseña ye inválida</string>
     <string name="nc_dialog_maintenance_mode">Mou de caltenimientu</string>
