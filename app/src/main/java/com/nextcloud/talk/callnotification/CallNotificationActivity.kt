@@ -31,12 +31,12 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.NotificationUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
-import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import okhttp3.Cache
 import java.io.IOException
 import javax.inject.Inject
@@ -174,12 +174,12 @@ class CallNotificationActivity : CallBaseActivity() {
     private fun initClickListeners() {
         binding!!.callAnswerVoiceOnlyView.setOnClickListener {
             Log.d(TAG, "accept call (voice only)")
-            intent.extras!!.putBoolean(KEY_CALL_VOICE_ONLY, true)
+            intent.putExtra(KEY_CALL_VOICE_ONLY, true)
             proceedToCall()
         }
         binding!!.callAnswerCameraView.setOnClickListener {
             Log.d(TAG, "accept call (with video)")
-            intent.extras!!.putBoolean(KEY_CALL_VOICE_ONLY, false)
+            intent.putExtra(KEY_CALL_VOICE_ONLY, false)
             proceedToCall()
         }
         binding!!.hangupButton.setOnClickListener { hangup() }
