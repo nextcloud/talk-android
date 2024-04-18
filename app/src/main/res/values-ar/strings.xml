@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">اتصال فيديو</string>
     <string name="nc_conversation_menu_voice_call">اتصال فيديو</string>
     <string name="nc_conversation_not_found">المحادثة غير موجودة</string>
+    <string name="nc_conversation_settings">إعدادات المحادثة</string>
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">شارك جهة اتصال</string>
     <string name="nc_share_contact_permission">إذن قراءة جهات الاتصال لازمٌ</string>
     <string name="nc_share_current_location">شارك الموقع الحالي</string>
+    <string name="nc_share_link">رابط المشاركة</string>
     <string name="nc_share_location">مشاركة الموقع</string>
     <string name="nc_share_subject">%1$s دعوة</string>
     <string name="nc_share_text">انضم للمحادثة في %1$s /index.php/call/ %2$s</string>

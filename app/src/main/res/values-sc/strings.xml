@@ -90,6 +90,7 @@
     <string name="nc_conversation_menu_video_call">Mutida de vìdeu</string>
     <string name="nc_conversation_menu_voice_call">Mutida de boghe</string>
     <string name="nc_conversation_not_found">Resonada no agatada</string>
+    <string name="nc_conversation_settings">Cunfiguratzione de sa resonada</string>
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
@@ -302,6 +303,7 @@
     <string name="nc_settings_warning">Avisu</string>
     <string name="nc_settings_wrong_account">Isceti su contu atuale si podet torrare a autorizare</string>
     <string name="nc_share_current_location">Cumpartzi sa positzione atuale</string>
+    <string name="nc_share_link">Cumpartzi ligòngiu</string>
     <string name="nc_share_location">Cumpartzi positzione</string>
     <string name="nc_share_subject">%1$s invitu</string>
     <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>

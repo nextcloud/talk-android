@@ -140,6 +140,7 @@
     <string name="nc_conversation_menu_video_call">Appel vidéo</string>
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
     <string name="nc_conversation_not_found">Discussion non trouvée</string>
+    <string name="nc_conversation_settings">Paramètres de la conversation</string>
     <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
     <string name="nc_copy_message">Copier</string>
@@ -425,6 +426,7 @@
     <string name="nc_share_contact">Partager le contact</string>
     <string name="nc_share_contact_permission">Permission de lire les contacts requise</string>
     <string name="nc_share_current_location">Partager la position actuelle</string>
+    <string name="nc_share_link">Lien de partage</string>
     <string name="nc_share_location">Partager la position</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>

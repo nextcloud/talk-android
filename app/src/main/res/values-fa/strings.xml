@@ -123,6 +123,7 @@
     <string name="nc_conversation_menu_video_call">تماس تصویری</string>
     <string name="nc_conversation_menu_voice_call">تماس صوتی</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
+    <string name="nc_conversation_settings">تنظیمات گفتگو</string>
     <string name="nc_conversations_empty">عضو یک گفتگو شوید یا یک گفتگو جدید شروع کنید</string>
     <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
     <string name="nc_copy_message">کپی کردن</string>
@@ -382,6 +383,7 @@
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
     <string name="nc_share_current_location">Share current location</string>
+    <string name="nc_share_link">هم‌رسانی پیوند</string>
     <string name="nc_share_location">هم‌رسانی مکان</string>
     <string name="nc_share_subject">دعوت %1$s</string>
     <string name="nc_share_text">به مکالمه %1$s/index.php/call/%2$s ملحق شوید</string>

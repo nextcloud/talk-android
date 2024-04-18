@@ -142,6 +142,7 @@
     <string name="nc_conversation_menu_video_call">Video hovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
     <string name="nc_conversation_not_found">Konverzácia sa nenašla</string>
+    <string name="nc_conversation_settings">Nastavenia konverzácie</string>
     <string name="nc_conversations_empty">Pripojte sa ku konverzácii alebo začnite novú</string>
     <string name="nc_conversations_empty_details">Pozdravte svojich priateľov a kolegov!</string>
     <string name="nc_copy_message">Kopírovať</string>
@@ -453,6 +454,7 @@
     <string name="nc_share_contact">Zdieľať kontakt</string>
     <string name="nc_share_contact_permission">Je potrebné oprávnenie čítať kontakty</string>
     <string name="nc_share_current_location">Zdieľať súčasnú polohu</string>
+    <string name="nc_share_link">Zdieľať odkaz</string>
     <string name="nc_share_location">Zdieľať polohu</string>
     <string name="nc_share_subject">%1$sPozvánka</string>
     <string name="nc_share_text">Pripojte sa ku konverzácii na %1$s/index.php/call/%2$s</string>

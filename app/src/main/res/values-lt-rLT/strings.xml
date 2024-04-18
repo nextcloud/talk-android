@@ -73,6 +73,7 @@
     <string name="nc_conversation_menu_conversation_info">Pokalbio informacija</string>
     <string name="nc_conversation_menu_video_call">Vaizdo skambutis</string>
     <string name="nc_conversation_menu_voice_call">Balso skambutis</string>
+    <string name="nc_conversation_settings">Pokalbio nustatymai</string>
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
@@ -243,6 +244,7 @@
     <string name="nc_settings_theme_title">Apipavidalinimas</string>
     <string name="nc_settings_warning">Įspėjimas</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
+    <string name="nc_share_link">Bendrinimo nuoroda</string>
     <string name="nc_share_subject">%1$s pakvietimas</string>
     <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>

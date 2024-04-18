@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">Видео позив</string>
     <string name="nc_conversation_menu_voice_call">Аудио позив</string>
     <string name="nc_conversation_not_found">Разговор није нађен</string>
+    <string name="nc_conversation_settings">Подешавања разговора</string>
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">Дели контакт</string>
     <string name="nc_share_contact_permission">Неопходна је дозвола за читање контаката</string>
     <string name="nc_share_current_location">Дели тренутну локацију</string>
+    <string name="nc_share_link">Подели везу</string>
     <string name="nc_share_location">Дели локацију</string>
     <string name="nc_share_subject">%1$s позивница</string>
     <string name="nc_share_text">Придружи се разговору на%1$s/index.php/call/%2$s</string>

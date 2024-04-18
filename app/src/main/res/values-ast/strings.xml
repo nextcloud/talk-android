@@ -248,6 +248,7 @@
     <string name="nc_settings_theme_light">Claridá</string>
     <string name="nc_settings_theme_title">Estilu</string>
     <string name="nc_settings_warning">Alvertencia</string>
+    <string name="nc_share_link">Compartir l\'enllaz</string>
     <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_shared_items_empty">Nun hai nengún elementu compartíu</string>
     <string name="nc_shared_items_location">Llocalización</string>

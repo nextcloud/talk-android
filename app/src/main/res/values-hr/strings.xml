@@ -93,6 +93,7 @@
     <string name="nc_conversation_menu_conversation_info">Informacije o razgovoru</string>
     <string name="nc_conversation_menu_video_call">Videopoziv</string>
     <string name="nc_conversation_menu_voice_call">Glasovni poziv</string>
+    <string name="nc_conversation_settings">Postavke razgovora</string>
     <string name="nc_conversations_empty">Pridružite se razgovoru ili započnite novi</string>
     <string name="nc_conversations_empty_details">Pozdravi svoje prijatelje i kolege!</string>
     <string name="nc_copy_message">Kopiraj</string>
@@ -314,6 +315,7 @@
     <string name="nc_settings_wrong_account">Samo se predmetni račun može ponovno autorizirati</string>
     <string name="nc_share_contact">Dijeli kontakt</string>
     <string name="nc_share_current_location">Dijeli trenutačnu lokaciju</string>
+    <string name="nc_share_link">Dijeli poveznicu</string>
     <string name="nc_share_location">Dijeli lokaciju</string>
     <string name="nc_share_subject">%1$s pozivnica</string>
     <string name="nc_share_text">Pridruži se razgovoru na adresi %1$s/index.php/call/%2$s</string>

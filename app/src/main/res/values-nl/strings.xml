@@ -106,6 +106,7 @@
     <string name="nc_conversation_menu_conversation_info">Gespreksinformatie</string>
     <string name="nc_conversation_menu_video_call">Videogesprek</string>
     <string name="nc_conversation_menu_voice_call">Gesprek</string>
+    <string name="nc_conversation_settings">Gespreksinstellingen</string>
     <string name="nc_conversations_empty">Doe mee met een gesprek, of start een nieuw</string>
     <string name="nc_conversations_empty_details">Zeg hallo tegen je vrienden en collega\'s!</string>
     <string name="nc_copy_message">Kopie</string>
@@ -338,6 +339,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_contact">Deel contact</string>
     <string name="nc_share_contact_permission">Machtiging om contacten te lezen is vereist</string>
     <string name="nc_share_current_location">Deel huidige locatie</string>
+    <string name="nc_share_link">Deel link</string>
     <string name="nc_share_location">Deel locatie</string>
     <string name="nc_share_subject">%1$s uitnodiging</string>
     <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>

@@ -102,6 +102,7 @@
     <string name="nc_conversation_menu_conversation_info">会話情報</string>
     <string name="nc_conversation_menu_video_call">ビデオ通話</string>
     <string name="nc_conversation_menu_voice_call">音声通話</string>
+    <string name="nc_conversation_settings">会話設定</string>
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
@@ -333,6 +334,7 @@
     <string name="nc_share_contact">連絡先を共有</string>
     <string name="nc_share_contact_permission">連絡先を読み取る権限が必要です</string>
     <string name="nc_share_current_location">現在の位置を共有</string>
+    <string name="nc_share_link">共有リンク</string>
     <string name="nc_share_location">位置を共有</string>
     <string name="nc_share_subject">%1$s を招待</string>
     <string name="nc_share_text">%1$s/index.php/call/%2$s での会話に参加する</string>

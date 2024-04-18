@@ -116,6 +116,7 @@
     <string name="nc_conversation_menu_conversation_info">Podrobnosti pogovora</string>
     <string name="nc_conversation_menu_video_call">Video klic</string>
     <string name="nc_conversation_menu_voice_call">Glasovni klic</string>
+    <string name="nc_conversation_settings">Nastavitve pogovora</string>
     <string name="nc_conversations_empty">Pridružite se pogovoru, ali pa začnite novega.</string>
     <string name="nc_conversations_empty_details">Pozdravite prijatelje in znance.</string>
     <string name="nc_copy_message">Kopiraj</string>
@@ -365,6 +366,7 @@
     <string name="nc_share_contact">Posreduj podatke stika</string>
     <string name="nc_share_contact_permission">Zahtevano je dovoljenje za branje seznama stikov</string>
     <string name="nc_share_current_location">Objavi trenutno mesto</string>
+    <string name="nc_share_link">Povezava za souporabo</string>
     <string name="nc_share_location">Objavi trenutno mesto</string>
     <string name="nc_share_subject"> povabilo %1$s</string>
     <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>

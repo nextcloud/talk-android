@@ -212,6 +212,7 @@
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφωνο, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
+    <string name="nc_refresh">Ανανέωση</string>
     <string name="nc_remind">Θύμισέ μου αργότερα</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_remove_group_and_members">Αφαίρεση ομάδων και μελών</string>

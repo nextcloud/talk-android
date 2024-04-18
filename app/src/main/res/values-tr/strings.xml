@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">Görüntülü çağrı</string>
     <string name="nc_conversation_menu_voice_call">Sesli çağrı</string>
     <string name="nc_conversation_not_found">Görüşme bulunamadı</string>
+    <string name="nc_conversation_settings">Görüşme ayarları</string>
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">Kişiyi paylaş</string>
     <string name="nc_share_contact_permission">Kişileri okuma izni gerekiyor</string>
     <string name="nc_share_current_location">Geçerli konumu paylaş</string>
+    <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_location">Konumu paylaş</string>
     <string name="nc_share_subject">%1$s davet</string>
     <string name="nc_share_text">Çağrıya şuradan katılın %1$s/index.php/call/%2$s</string>

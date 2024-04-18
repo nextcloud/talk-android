@@ -126,6 +126,7 @@
     <string name="nc_conversation_menu_conversation_info">Beszélgetés információk</string>
     <string name="nc_conversation_menu_video_call">Videohívás</string>
     <string name="nc_conversation_menu_voice_call">Hanghívás</string>
+    <string name="nc_conversation_settings">Beszélgetésbeállítások</string>
     <string name="nc_conversations_empty">Csatlakozzon egy beszélgetéshez, vagy indítson egy újat</string>
     <string name="nc_conversations_empty_details">Üdvözölje a barátait és munkatársait!</string>
     <string name="nc_copy_message">Másolás</string>
@@ -387,6 +388,7 @@
     <string name="nc_share_contact">Névjegy megosztása</string>
     <string name="nc_share_contact_permission">A névjegyek olvasási engedélye szükséges</string>
     <string name="nc_share_current_location">Jelenlegi hely megosztása</string>
+    <string name="nc_share_link">Megosztási hivatkozás</string>
     <string name="nc_share_location">Hely megosztása</string>
     <string name="nc_share_subject">%1$s meghívás</string>
     <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
