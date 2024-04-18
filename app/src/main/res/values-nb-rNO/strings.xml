@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">Videosamtale</string>
     <string name="nc_conversation_menu_voice_call">Samtale</string>
     <string name="nc_conversation_not_found">Samtalen ble ikke funnet</string>
+    <string name="nc_conversation_settings">Samtale innstillinger</string>
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Si hei til venner og kolleger!</string>
     <string name="nc_copy_message">Kopier</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">Del kontakt</string>
     <string name="nc_share_contact_permission">Tillatelse til å lese kontakter kreves</string>
     <string name="nc_share_current_location">Del gjeldende plassering</string>
+    <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_location">Del plassering</string>
     <string name="nc_share_subject">%1$s invitasjon</string>
     <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>

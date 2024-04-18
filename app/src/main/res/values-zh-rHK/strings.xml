@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">視訊通話</string>
     <string name="nc_conversation_menu_voice_call">語音通話</string>
     <string name="nc_conversation_not_found">未找到對話</string>
+    <string name="nc_conversation_settings">對話設定</string>
     <string name="nc_conversations_empty">加入或者開一個新的對話</string>
     <string name="nc_conversations_empty_details">跟大家打招呼</string>
     <string name="nc_copy_message">複製</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">分享聯絡人</string>
     <string name="nc_share_contact_permission">需要讀取聯絡人的權限</string>
     <string name="nc_share_current_location">分享目前位置</string>
+    <string name="nc_share_link">分享連結</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_subject">%1$s 邀請</string>
     <string name="nc_share_text">加入於 %1$s/index.php/call/%2$s 的對話</string>

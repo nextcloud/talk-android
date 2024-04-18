@@ -166,6 +166,7 @@
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Push-to-talk</string>
+    <string name="nc_refresh">Opdater</string>
     <string name="nc_remind">Påmind mig senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
     <string name="nc_remove_participant">Fjern deltager</string>

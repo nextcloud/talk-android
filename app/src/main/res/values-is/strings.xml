@@ -238,6 +238,7 @@
     <string name="nc_settings_theme_title">Þema</string>
     <string name="nc_settings_warning">Aðvörun</string>
     <string name="nc_settings_wrong_account">Aðeins er hægt að endurauðkenna núverandi notandaaðgang</string>
+    <string name="nc_share_link">Tengill á sameign</string>
     <string name="nc_share_subject">%1$s boðskort</string>
     <string name="nc_share_text">Taktu þátt í samtalinu á %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nLykilorð: %1$s</string>

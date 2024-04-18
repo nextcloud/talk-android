@@ -106,6 +106,7 @@
     <string name="nc_conversation_menu_conversation_info">Informazioni di conversazione</string>
     <string name="nc_conversation_menu_video_call">Chiamata video</string>
     <string name="nc_conversation_menu_voice_call">Chiamata vocale</string>
+    <string name="nc_conversation_settings">Impostazioni conversazione</string>
     <string name="nc_conversations_empty">Unisciti a una conversazione o iniziane una nuova</string>
     <string name="nc_conversations_empty_details">Saluta i tuoi amici e i tuoi colleghi!</string>
     <string name="nc_copy_message">Copia</string>
@@ -337,6 +338,7 @@
     <string name="nc_share_contact">Condividi il contatto</string>
     <string name="nc_share_contact_permission">Necessaria l\'autorizzazione per leggere i contatti</string>
     <string name="nc_share_current_location">Condividi la posizione attuale</string>
+    <string name="nc_share_link">Collegamento di condivisione</string>
     <string name="nc_share_location">Condividi posizione</string>
     <string name="nc_share_subject">%1$s invito</string>
     <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>

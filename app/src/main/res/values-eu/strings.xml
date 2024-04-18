@@ -133,6 +133,7 @@
     <string name="nc_conversation_menu_video_call">Bideo-deia</string>
     <string name="nc_conversation_menu_voice_call">Ahots-deia</string>
     <string name="nc_conversation_not_found">Ez da elkarrizketa aurkitu</string>
+    <string name="nc_conversation_settings">Elkarrizketaren ezarpenak</string>
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
@@ -402,6 +403,7 @@
     <string name="nc_share_contact">Partekatu kontaktua</string>
     <string name="nc_share_contact_permission">Kontaktuak irakurtzeko baimena behar da</string>
     <string name="nc_share_current_location">Partekatu uneko kokapena</string>
+    <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_share_location">Partekatu kokapena</string>
     <string name="nc_share_subject">Gonbidapen %1$s</string>
     <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>

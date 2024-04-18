@@ -116,6 +116,7 @@
     <string name="nc_conversation_menu_video_call">Відеодзвінок</string>
     <string name="nc_conversation_menu_voice_call">Голосовий дзвінок</string>
     <string name="nc_conversation_not_found">Розмову не знайдено</string>
+    <string name="nc_conversation_settings">Налаштування розмови</string>
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>
@@ -358,6 +359,7 @@
     <string name="nc_share_contact">Поділіться контактом</string>
     <string name="nc_share_contact_permission">Потрібен дозвіл на читання контактів</string>
     <string name="nc_share_current_location">Поділіться поточним місцем розташування</string>
+    <string name="nc_share_link">Доступ за посиланням</string>
     <string name="nc_share_location">Поділіться місцем розташування</string>
     <string name="nc_share_subject">%1$s запрошення</string>
     <string name="nc_share_text">Приєднатися до бесіди в %1$s/index.php/call/%2$s</string>

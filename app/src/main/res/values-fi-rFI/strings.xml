@@ -91,6 +91,7 @@
     <string name="nc_conversation_menu_video_call">Videopuhelu</string>
     <string name="nc_conversation_menu_voice_call">Äänipuhelu</string>
     <string name="nc_conversation_not_found">Keskustelua ei löydy</string>
+    <string name="nc_conversation_settings">Keskustelun asetukset</string>
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi</string>
     <string name="nc_conversations_empty_details">Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_copy_message">Kopioi</string>
@@ -305,6 +306,7 @@
     <string name="nc_settings_wrong_account">Vain nykyinen tili voidaan valtuuttaa uudelleen</string>
     <string name="nc_share_contact_permission">Oikeus lukea yhteystiedot vaaditaan</string>
     <string name="nc_share_current_location">Jaa nykyinen sijainti</string>
+    <string name="nc_share_link">Jaa linkki</string>
     <string name="nc_share_location">Jaa sijainti</string>
     <string name="nc_share_subject">%1$s kutsu</string>
     <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>

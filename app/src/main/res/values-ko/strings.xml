@@ -108,6 +108,7 @@
     <string name="nc_conversation_menu_conversation_info">대화 정보</string>
     <string name="nc_conversation_menu_video_call">영상 통화</string>
     <string name="nc_conversation_menu_voice_call">음성 통화</string>
+    <string name="nc_conversation_settings">대화 설정</string>
     <string name="nc_conversations_empty">대화에 참가하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
