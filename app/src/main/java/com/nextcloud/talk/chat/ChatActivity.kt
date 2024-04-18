@@ -1159,15 +1159,6 @@ class ChatActivity :
         val filters = arrayOfNulls<InputFilter>(1)
         val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
-        binding.editView.editMessageView.visibility = View.GONE
-
-        if (editableBehaviorSubject.value!!) {
-            val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
-            binding.messageInputView.inputEditText.text = editableText
-            binding.messageInputView.inputEditText.setSelection(editableText.length)
-            binding.editView.editMessage.setText(editMessage.message)
-        }
-
         filters[0] = InputFilter.LengthFilter(lengthFilter)
         binding.messageInputView.inputEditText?.filters = filters
 
@@ -1229,9 +1220,6 @@ class ChatActivity :
             uploadFile(it.toString(), false)
         }
         initVoiceRecordButton()
-        if (editableBehaviorSubject.value!!) {
-            setEditUI()
-        }
 
         if (sharedText.isNotEmpty()) {
             binding.messageInputView.inputEditText?.setText(sharedText)
@@ -1243,17 +1231,6 @@ class ChatActivity :
 
         binding.messageInputView.button?.setOnClickListener {
             submitMessage(false)
-        }
-
-        binding.messageInputView.editMessageButton.setOnClickListener {
-            if (editMessage.message == editedTextBehaviorSubject.value!!) {
-                clearEditUI()
-                return@setOnClickListener
-            }
-            editMessageAPI(editMessage, editedMessageText = editedTextBehaviorSubject.value!!)
-        }
-        binding.editView.clearEdit.setOnClickListener {
-            clearEditUI()
         }
 
         if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
@@ -4918,6 +4895,24 @@ class ChatActivity :
         editableBehaviorSubject.onNext(true)
         editMessage = message
         initMessageInputView()
+
+        setEditUI()
+
+        val editableText = Editable.Factory.getInstance().newEditable(editMessage.message)
+        binding.messageInputView.inputEditText.text = editableText
+        binding.messageInputView.inputEditText.setSelection(editableText.length)
+        binding.editView.editMessage.text = editMessage.message
+
+        binding.messageInputView.editMessageButton.setOnClickListener {
+            if (editMessage.message == editedTextBehaviorSubject.value!!) {
+                clearEditUI()
+                return@setOnClickListener
+            }
+            editMessageAPI(editMessage, editedMessageText = editedTextBehaviorSubject.value!!)
+        }
+        binding.editView.clearEdit.setOnClickListener {
+            clearEditUI()
+        }
     }
 
     companion object {
