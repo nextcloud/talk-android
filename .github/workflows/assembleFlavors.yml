@@ -33,7 +33,7 @@ jobs:
           echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" >> gradle.properties
           ./gradlew assemble${{ matrix.flavor }}
       - name: Archive apk
-        uses: actions/upload-artifact@5d5d22a31266ced268874388b861e4b58bb5c2f3 # v4.3.1
+        uses: actions/upload-artifact@1746f4ab65b179e0ea60a494b83293b640dd5bba # v4.3.2
         if: ${{ always() }}
         with:
           name: Nextcloud-${{ matrix.flavor }}-APK
