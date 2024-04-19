@@ -562,6 +562,7 @@
     <string name="set_status">تعيين الحالة</string>
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شارِك</string>
+    <string name="share_link_to_conversation">الانضمام إلى المحادثة %1$s في %2$s</string>
     <string name="shared_items_audio">الصوت</string>
     <string name="shared_items_file">ملف</string>
     <string name="shared_items_media">وسائط</string>

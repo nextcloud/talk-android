@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_conversation_menu_voice_call">Voice call</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
+    <string name="nc_conversation_settings">Conversation settings</string>
     <string name="nc_conversations_empty">Join a conversation or start a new one</string>
     <string name="nc_conversations_empty_details">Say hi to your friends and colleagues!</string>
     <string name="nc_copy_message">Copy</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">Share contact</string>
     <string name="nc_share_contact_permission">Permission to read contacts is required</string>
     <string name="nc_share_current_location">Share current location</string>
+    <string name="nc_share_link">Share link</string>
     <string name="nc_share_location">Share location</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
@@ -560,6 +562,7 @@
     <string name="set_status">Set status</string>
     <string name="set_status_message">Set status message</string>
     <string name="share">Share</string>
+    <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">File</string>
     <string name="shared_items_media">Media</string>
