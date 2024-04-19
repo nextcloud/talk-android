@@ -143,6 +143,7 @@
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
     <string name="nc_conversation_menu_voice_call">Sprachanruf</string>
     <string name="nc_conversation_not_found">Unterhaltung nicht gefunden</string>
+    <string name="nc_conversation_settings">Unterhaltungseinstellungen</string>
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
@@ -454,6 +455,7 @@
     <string name="nc_share_contact">Kontakt teilen</string>
     <string name="nc_share_contact_permission">Leseberechtigung für Kontakte erforderlich</string>
     <string name="nc_share_current_location">Aktuelle Position teilen</string>
+    <string name="nc_share_link">Link teilen</string>
     <string name="nc_share_location">Ort teilen</string>
     <string name="nc_share_subject">%1$s Einladung </string>
     <string name="nc_share_text">Treten Sie der Unterhaltung %1$s/index.php/call/%2$s bei</string>
@@ -560,6 +562,7 @@
     <string name="set_status">Status setzen</string>
     <string name="set_status_message">Statusnachricht setzen</string>
     <string name="share">Freigabe</string>
+    <string name="share_link_to_conversation">Unterhaltung %1$s bei %2$s beitreten</string>
     <string name="shared_items_audio">Audio</string>
     <string name="shared_items_file">Datei</string>
     <string name="shared_items_media">Medien</string>

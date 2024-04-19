@@ -562,6 +562,7 @@
     <string name="set_status">設定狀態</string>
     <string name="set_status_message">設定狀態訊息</string>
     <string name="share">分享</string>
+    <string name="share_link_to_conversation">加入對話 %1$s 於 %2$s</string>
     <string name="shared_items_audio">音樂</string>
     <string name="shared_items_file">檔案</string>
     <string name="shared_items_media">多媒體</string>

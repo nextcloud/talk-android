@@ -133,6 +133,7 @@
     <string name="nc_conversation_menu_conversation_info">Informace o konverzaci</string>
     <string name="nc_conversation_menu_video_call">Videohovor</string>
     <string name="nc_conversation_menu_voice_call">Hlasový hovor</string>
+    <string name="nc_conversation_settings">Nastavení konverzace</string>
     <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
     <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_copy_message">Zkopírovat</string>
@@ -409,6 +410,7 @@
     <string name="nc_share_contact">Sdílet kontakt</string>
     <string name="nc_share_contact_permission">Je třeba oprávnění ke čtení kontaktů</string>
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
+    <string name="nc_share_link">Nasdílet odkaz</string>
     <string name="nc_share_location">Sdílet umístění</string>
     <string name="nc_share_subject">%1$s pozvání</string>
     <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
