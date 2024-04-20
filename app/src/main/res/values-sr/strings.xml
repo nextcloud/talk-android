@@ -562,6 +562,7 @@
     <string name="set_status">Постави статус</string>
     <string name="set_status_message">Постави статусну поруку</string>
     <string name="share">Подели</string>
+    <string name="share_link_to_conversation">Придружите се разговору %1$s на %2$s</string>
     <string name="shared_items_audio">Звук</string>
     <string name="shared_items_file">Фајл</string>
     <string name="shared_items_media">Мултимедија</string>
