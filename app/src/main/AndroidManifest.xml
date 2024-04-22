@@ -153,7 +153,20 @@
 
         <activity
             android:name=".chat.ChatActivity"
-            android:theme="@style/AppTheme" />
+            android:exported="true"
+            android:theme="@style/AppTheme" >
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="http"/>
+                <data android:scheme="https"/>
+                <data android:host="*"/>
+                <data android:pathPrefix="/index.php/call/..*"/>
+            </intent-filter>
+
+        </activity>
 
         <activity
             android:name=".activities.CallActivity"
