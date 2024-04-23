@@ -25,7 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class WebRTCUtils {
-    private static final String TAG = "MagicWebRTCUtils";
+    private static final String TAG = "WebRTCUtils";
 
     private static final Set<String> HARDWARE_ACCELERATION_DEVICE_EXCLUDE_SET = new HashSet<String>() {{
         add("GT-I9100"); // Samsung Galaxy S2

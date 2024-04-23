@@ -107,7 +107,7 @@ public class WebRtcBluetoothManager {
      * is connected and enabled:
      * UNINITIALIZED --> HEADSET_UNAVAILABLE --> HEADSET_AVAILABLE -->
      * SCO_CONNECTING --> SCO_CONNECTED <==> audio is now routed via BT SCO.
-     * Note that the MagicAudioManager is also involved in driving this state
+     * Note that the AudioManager is also involved in driving this state
      * change.
      */
     @SuppressLint("MissingPermission")

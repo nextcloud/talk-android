@@ -15,11 +15,11 @@ import com.otaliastudios.autocomplete.AutocompletePolicy;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MagicCharPolicy implements AutocompletePolicy {
+public class CharPolicy implements AutocompletePolicy {
 
     private final char character;
 
-    public MagicCharPolicy(char character) {
+    public CharPolicy(char character) {
         this.character = character;
     }
 

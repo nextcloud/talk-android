@@ -36,7 +36,7 @@ public class CertificateEvent {
         return x509Certificate;
     }
 
-    public TrustManager getMagicTrustManager() {
+    public TrustManager getTrustManager() {
         return trustManager;
     }
 }

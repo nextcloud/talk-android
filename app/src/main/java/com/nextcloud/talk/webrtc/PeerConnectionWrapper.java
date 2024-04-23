@@ -29,7 +29,6 @@ import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.RtpReceiver;
 import org.webrtc.RtpTransceiver;
-import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.VideoTrack;
 
@@ -68,7 +67,7 @@ public class PeerConnectionWrapper {
     private String sessionId;
     private final MediaConstraints mediaConstraints;
     private DataChannel dataChannel;
-    private final MagicSdpObserver magicSdpObserver;
+    private final SdpObserver sdpObserver;
 
     private final boolean hasInitiated;
 
@@ -127,13 +126,13 @@ public class PeerConnectionWrapper {
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
 
-        magicSdpObserver = new MagicSdpObserver();
+        sdpObserver = new SdpObserver();
         hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
 
         PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
         configuration.sdpSemantics = PeerConnection.SdpSemantics.UNIFIED_PLAN;
-        peerConnection = peerConnectionFactory.createPeerConnection(configuration, new MagicPeerConnectionObserver());
+        peerConnection = peerConnectionFactory.createPeerConnection(configuration, new InitialPeerConnectionObserver());
 
         this.signalingMessageReceiver = signalingMessageReceiver;
         this.signalingMessageReceiver.addListener(webRtcMessageListener, sessionId, videoStreamType);
@@ -155,9 +154,9 @@ public class PeerConnectionWrapper {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
                 dataChannel = peerConnection.createDataChannel("status", init);
-                dataChannel.registerObserver(new MagicDataChannelObserver());
+                dataChannel.registerObserver(new DataChannelObserver());
                 if (isMCUPublisher) {
-                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                    peerConnection.createOffer(sdpObserver, mediaConstraints);
                 } else if (hasMCU && "video".equals(this.videoStreamType)) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be requested only for videos.
@@ -168,7 +167,7 @@ public class PeerConnectionWrapper {
                 } else if (!hasMCU && hasInitiated && "video".equals(this.videoStreamType)) {
                     // If the connection type is "screen" the client sharing the screen will send an
                     // offer; offers should be created only for videos.
-                    peerConnection.createOffer(magicSdpObserver, mediaConstraints);
+                    peerConnection.createOffer(sdpObserver, mediaConstraints);
                 }
             }
         }
@@ -358,7 +357,7 @@ public class PeerConnectionWrapper {
                 sessionDescriptionStringWithPreferredCodec);
 
             if (getPeerConnection() != null) {
-                getPeerConnection().setRemoteDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+                getPeerConnection().setRemoteDescription(sdpObserver, sessionDescriptionWithPreferredCodec);
             }
         }
 
@@ -372,7 +371,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    private class MagicDataChannelObserver implements DataChannel.Observer {
+    private class DataChannelObserver implements DataChannel.Observer {
 
         @Override
         public void onBufferedAmountChange(long l) {
@@ -451,7 +450,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    private class MagicPeerConnectionObserver implements PeerConnection.Observer {
+    private class InitialPeerConnectionObserver implements PeerConnection.Observer {
 
         @Override
         public void onSignalingChange(PeerConnection.SignalingState signalingState) {
@@ -523,7 +522,7 @@ public class PeerConnectionWrapper {
                     + " exists, but received onDataChannel event for DataChannel with label " + dataChannel.label());
             }
             PeerConnectionWrapper.this.dataChannel = dataChannel;
-            PeerConnectionWrapper.this.dataChannel.registerObserver(new MagicDataChannelObserver());
+            PeerConnectionWrapper.this.dataChannel.registerObserver(new DataChannelObserver());
         }
 
         @Override
@@ -536,8 +535,8 @@ public class PeerConnectionWrapper {
         }
     }
 
-    private class MagicSdpObserver implements SdpObserver {
-        private static final String TAG = "MagicSdpObserver";
+    private class SdpObserver implements org.webrtc.SdpObserver {
+        private static final String TAG = "SdpObserver";
 
         @Override
         public void onCreateFailure(String s) {
@@ -573,7 +572,7 @@ public class PeerConnectionWrapper {
             signalingMessageSender.send(ncSignalingMessage);
 
             if (peerConnection != null) {
-                peerConnection.setLocalDescription(magicSdpObserver, sessionDescriptionWithPreferredCodec);
+                peerConnection.setLocalDescription(sdpObserver, sessionDescriptionWithPreferredCodec);
             }
         }
 
@@ -595,7 +594,7 @@ public class PeerConnectionWrapper {
                         Passed 'MediaConstraints' will be ignored by WebRTC when using UNIFIED PLAN.
                         See for details: https://docs.google.com/document/d/1PPHWV6108znP1tk_rkCnyagH9FK205hHeE9k5mhUzOg/edit#heading=h.9dcmkavg608r
                      */
-                    peerConnection.createAnswer(magicSdpObserver, new MediaConstraints());
+                    peerConnection.createAnswer(sdpObserver, new MediaConstraints());
 
                 }
 
