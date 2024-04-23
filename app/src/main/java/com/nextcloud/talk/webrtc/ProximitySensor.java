@@ -16,7 +16,7 @@ import android.util.Log;
 import org.webrtc.ThreadUtils;
 
 /**
- * MagicProximitySensor manages functions related to the proximity sensor in
+ * ProximitySensor manages functions related to the proximity sensor in
  * the app.
  * On most device, the proximity sensor is implemented as a boolean-sensor.
  * It returns just two values "NEAR" or "FAR". Thresholding is done on the LUX
@@ -24,8 +24,8 @@ import org.webrtc.ThreadUtils;
  * A LUX-value more than the threshold means the proximity sensor returns "FAR".
  * Anything less than the threshold value and the sensor  returns "NEAR".
  */
-public class MagicProximitySensor implements SensorEventListener {
-    private static final String TAG = "MagicProximitySensor";
+public class ProximitySensor implements SensorEventListener {
+    private static final String TAG = "ProximitySensor";
 
     // This class should be created, started and stopped on one thread
     // (e.g. the main thread). We use |nonThreadSafe| to ensure that this is
@@ -37,7 +37,7 @@ public class MagicProximitySensor implements SensorEventListener {
     private Sensor proximitySensor = null;
     private boolean lastStateReportIsNear = false;
 
-    private MagicProximitySensor(Context context, Runnable sensorStateListener) {
+    private ProximitySensor(Context context, Runnable sensorStateListener) {
         onSensorStateListener = sensorStateListener;
         sensorManager = ((SensorManager) context.getSystemService(Context.SENSOR_SERVICE));
     }
@@ -45,8 +45,8 @@ public class MagicProximitySensor implements SensorEventListener {
     /**
      * Construction
      */
-    static MagicProximitySensor create(Context context, Runnable sensorStateListener) {
-        return new MagicProximitySensor(context, sensorStateListener);
+    static ProximitySensor create(Context context, Runnable sensorStateListener) {
+        return new ProximitySensor(context, sensorStateListener);
     }
 
     /**

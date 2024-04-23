@@ -17,7 +17,7 @@ import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.mention.Mention;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.MagicCharPolicy;
+import com.nextcloud.talk.utils.CharPolicy;
 import com.nextcloud.talk.utils.text.Spans;
 import com.otaliastudios.autocomplete.AutocompleteCallback;
 import com.vanniktech.emoji.EmojiRange;
@@ -47,7 +47,7 @@ public class MentionAutocompleteCallback implements AutocompleteCallback<Mention
     @OptIn(markerClass = kotlin.ExperimentalStdlibApi.class)
     @Override
     public boolean onPopupItemClicked(Editable editable, Mention item) {
-        MagicCharPolicy.TextSpan range = MagicCharPolicy.getQueryRange(editable);
+        CharPolicy.TextSpan range = CharPolicy.getQueryRange(editable);
         if (range == null) {
             return false;
         }

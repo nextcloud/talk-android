@@ -56,7 +56,7 @@ public class WebRtcAudioManager {
     private AudioDevice userSelectedAudioDevice;
     private AudioDevice currentAudioDevice;
 
-    private MagicProximitySensor proximitySensor = null;
+    private ProximitySensor proximitySensor = null;
 
     private Set<AudioDevice> audioDevices = new HashSet<>();
 
@@ -83,7 +83,7 @@ public class WebRtcAudioManager {
         // Create and initialize the proximity sensor.
         // Tablet devices (e.g. Nexus 7) does not support proximity sensors.
         // Note that, the sensor will not be active until start() has been called.
-        proximitySensor = MagicProximitySensor.create(context, new Runnable() {
+        proximitySensor = ProximitySensor.create(context, new Runnable() {
             // This method will be called each time a state change is detected.
             // Example: user holds his hand over the device (closer than ~5 cm),
             // or removes his hand from the device.

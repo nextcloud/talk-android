@@ -233,7 +233,7 @@ open class BaseActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
-        showCertificateDialog(event.x509Certificate, event.magicTrustManager, event.sslErrorHandler)
+        showCertificateDialog(event.x509Certificate, event.trustManager, event.sslErrorHandler)
     }
 
     companion object {

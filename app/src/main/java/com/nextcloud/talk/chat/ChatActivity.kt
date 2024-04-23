@@ -190,7 +190,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
-import com.nextcloud.talk.utils.MagicCharPolicy
+import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -3379,7 +3379,7 @@ class ChatActivity :
                 mentionAutocomplete = Autocomplete.on<Mention>(binding.messageInputView.inputEditText)
                     .with(elevation)
                     .with(backgroundDrawable)
-                    .with(MagicCharPolicy('@'))
+                    .with(CharPolicy('@'))
                     .with(presenter)
                     .with(callback)
                     .build()
