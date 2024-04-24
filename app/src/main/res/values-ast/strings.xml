@@ -224,6 +224,7 @@
     <string name="nc_sent_poll_you">Unviesti una encuesta.</string>
     <string name="nc_sent_voice" formatted="true">%1$s unvió un mensaxe de voz.</string>
     <string name="nc_sent_voice_you">Unviesti un mensaxe de voz.</string>
+    <string name="nc_server_connect">Probar la conexón del sirvidor</string>
     <string name="nc_server_db_upgrade_needed">Anueva la base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Nun se pue importar la cuenta seleicionada</string>
     <string name="nc_server_not_installed">Fina la instalación de: %1$s</string>
@@ -287,10 +288,14 @@
     <string name="record_stopping">Dexando de grabar…</string>
     <string name="renamed_conversation">Renomóse la conversación «%1$s»</string>
     <string name="save">Guardar</string>
+    <string name="scope_federated_description">Namás sincronizar con sirvidores d\'enfotu</string>
     <string name="scope_federated_title">Federada</string>
     <string name="scope_local_description">Namás ye visible pa les persones d\'esta instancia y los convidaos</string>
     <string name="scope_local_title">Llocal</string>
+    <string name="scope_private_description">Namás ye visible pa les persones que concasen pela integración del númberu de teléfonu pente Talk en móviles</string>
     <string name="scope_private_title">Priváu</string>
+    <string name="scope_published_description">Sincroniza con sirvidores d\'enfotu y la llibreta de direiciones global y pública</string>
+    <string name="scope_published_title">Espublizóse</string>
     <string name="secondsAgo">hai segundos</string>
     <string name="send_email">Unviar un corréu electrónicu</string>
     <string name="send_to_forbidden">Nun tienes permisu pa compartir conteníu con esta charra</string>
@@ -301,6 +306,7 @@
     <string name="share">Compartir</string>
     <string name="shared_items_audio">Audiu</string>
     <string name="shared_items_file">Ficheru</string>
+    <string name="shared_items_media">Multimedia</string>
     <string name="shared_items_poll">Encuesta</string>
     <string name="shared_items_voice">Voz</string>
     <string name="starred">Meter en Favoritos</string>
@@ -321,6 +327,7 @@
     <string name="translation">Traducción</string>
     <string name="translation_copy_translated_text">Copiar el testu traducíu</string>
     <string name="translation_detect_language">Detectar la llingua</string>
+    <string name="translation_device_settings">Configuración del preséu</string>
     <string name="translation_error_message">Nun se pudo detectar la llingua</string>
     <string name="translation_from">De</string>
     <string name="translation_to">Pa</string>
