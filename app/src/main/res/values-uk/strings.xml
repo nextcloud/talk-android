@@ -258,7 +258,7 @@
     <string name="nc_refresh">Оновити</string>
     <string name="nc_remind">Нагадати пізніше</string>
     <string name="nc_remote_audio_off">Віддалене аудіо відключено</string>
-    <string name="nc_remove_from_favorites">Вилучено з улюбленого</string>
+    <string name="nc_remove_from_favorites">Прибрати зірочку</string>
     <string name="nc_remove_group_and_members">Вилучити групи та учасників</string>
     <string name="nc_remove_participant">Вилучити учасника</string>
     <string name="nc_rename">Перейменувати розмову</string>
@@ -435,7 +435,7 @@
     <string name="scope_published_title">Опубліковано</string>
     <string name="secondsAgo">секунд тому</string>
     <string name="selected_list_item">Selected</string>
-    <string name="send_email">Надіслати ел. листа</string>
+    <string name="send_email">Надіслати</string>
     <string name="set">Встановити</string>
     <string name="set_status">Встановити статус</string>
     <string name="set_status_message">Встановити повідомлення про стан</string>
@@ -445,7 +445,7 @@
     <string name="shared_items_media">Зображення та відео</string>
     <string name="shared_items_other">Інші</string>
     <string name="shared_items_voice">Голос</string>
-    <string name="starred">До улюблених</string>
+    <string name="starred">Із зірочкою</string>
     <string name="status_message">Повідомлення про статус</string>
     <string name="take_photo_send">Надіслати</string>
     <string name="take_photo_toggle_crop">Кадрувати зображення</string>

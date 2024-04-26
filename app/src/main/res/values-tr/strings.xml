@@ -562,6 +562,7 @@
     <string name="set_status">Durumu ayarla</string>
     <string name="set_status_message">Durum iletisini ayarla</string>
     <string name="share">Paylaş</string>
+    <string name="share_link_to_conversation">%2$s üzerindeki%1$s görüşmesine katıl</string>
     <string name="shared_items_audio">Ses</string>
     <string name="shared_items_file">Dosya</string>
     <string name="shared_items_media">Ortam</string>
