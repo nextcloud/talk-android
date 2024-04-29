@@ -720,13 +720,13 @@ class ConversationInfoActivity :
 
             setupWebinaryView()
 
-            if (ConversationUtils.canLeave(conversation!!)) {
+            if (!ConversationUtils.canLeave(conversation!!)) {
                 binding.leaveConversationAction.visibility = GONE
             } else {
                 binding.leaveConversationAction.visibility = VISIBLE
             }
 
-            if (ConversationUtils.canDelete(conversation!!, spreedCapabilities)) {
+            if (!ConversationUtils.canDelete(conversation!!, spreedCapabilities)) {
                 binding.deleteConversationAction.visibility = GONE
             } else {
                 binding.deleteConversationAction.visibility = VISIBLE
