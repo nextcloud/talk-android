@@ -91,6 +91,7 @@
         android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher"
+        android:taskAffinity=""
         tools:ignore="UnusedAttribute"
         tools:replace="label, icon, theme, name, allowBackup">
 
