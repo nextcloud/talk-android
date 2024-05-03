@@ -569,6 +569,26 @@ class ChatActivity :
     }
 
     private fun handleIntent(intent: Intent) {
+        val appLinkAction = intent.action
+        val appLinkData: Uri? = intent.data
+        val sharedLink = appLinkData.toString()
+        val roomPathPrefix1 = "${conversationUser?.baseUrl}/call"
+        val roomPathPrefix2 = "${conversationUser?.baseUrl}/index.php/call"
+        val isValidPrefix = sharedLink.contains(roomPathPrefix1, ignoreCase = true) ||
+            sharedLink.contains(roomPathPrefix2, ignoreCase = true)
+        if (appLinkAction == Intent.ACTION_VIEW && isValidPrefix) {
+            appLinkData?.let { linkUri ->
+                val host = linkUri.host
+                val roomToken = linkUri.lastPathSegment
+                val bundle = Bundle()
+                bundle.putString(KEY_ROOM_TOKEN, roomToken)
+                bundle.putString(BundleKeys.KEY_BASE_URL, host)
+                val chatIntent = Intent(context, ChatActivity::class.java)
+                chatIntent.putExtras(bundle)
+                startActivity(chatIntent)
+            }
+        }
+
         val extras: Bundle? = intent.extras
 
         roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
