@@ -166,7 +166,14 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationLinkShare.setOnClickListener {
-            ShareUtils.shareConversationLink(activity, currentUser.baseUrl, conversation.token, conversation.name)
+            val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(currentUser)
+            ShareUtils.shareConversationLink(
+                activity,
+                currentUser.baseUrl,
+                conversation.token,
+                conversation.name,
+                canGeneratePrettyURL
+            )
             dismiss()
         }
 

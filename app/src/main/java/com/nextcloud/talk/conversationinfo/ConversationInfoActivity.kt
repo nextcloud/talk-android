@@ -206,12 +206,14 @@ class ConversationInfoActivity :
                     if (ConversationUtils.isNoteToSelfConversation(conversation)) {
                         binding.shareConversationButton.visibility = GONE
                     }
+                    val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
                     binding.shareConversationButton.setOnClickListener {
                         ShareUtils.shareConversationLink(
                             this,
                             conversationUser.baseUrl,
                             conversation?.token,
-                            conversation?.name
+                            conversation?.name,
+                            canGeneratePrettyURL
                         )
                     }
                 }
