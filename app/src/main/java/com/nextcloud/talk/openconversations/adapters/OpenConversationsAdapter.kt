@@ -36,6 +36,7 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
         fun bindItem(conversation: OpenConversation) {
             currentConversation = conversation
             itemBinding.nameText.text = conversation.displayName
+            itemBinding.descriptionText.text = conversation.description
 
             // load avatar from server when https://github.com/nextcloud/spreed/issues/9600 is solved
             // itemBinding.avatarView.loadUserAvatar(user, conversation.displayName, true, false)
