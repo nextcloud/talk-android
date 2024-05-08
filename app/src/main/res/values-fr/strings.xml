@@ -288,7 +288,7 @@
     <string name="nc_notification_channel_messages">Messages</string>
     <string name="nc_notification_channel_messages_description">Notifier les messages entrants</string>
     <string name="nc_notification_channel_uploads">Envois</string>
-    <string name="nc_notification_channel_uploads_description">Notifier la progression du téléchargement</string>
+    <string name="nc_notification_channel_uploads_description">Notifier la progression du téléversement</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
     <string name="nc_notify_me_always">Toujours notifier</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
@@ -523,7 +523,7 @@
     <string name="secondsAgo">secondes avant</string>
     <string name="see_similar_system_messages">Voir les %1$s messages similaires</string>
     <string name="selected_list_item">Sélectionné</string>
-    <string name="send_email">Envoyer un courriel</string>
+    <string name="send_email">Envoyer un e-mail</string>
     <string name="send_to">Envoyer a</string>
     <string name="send_to_forbidden">Vous n\'êtes pas autorisé à partager du contenu dans cette conversation</string>
     <string name="send_to_three_dots">Envoyer à…</string>

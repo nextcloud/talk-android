@@ -71,6 +71,7 @@
     <string name="nc_conversation_menu_video_call">Videoopkald</string>
     <string name="nc_conversation_menu_voice_call">Stemmeopkald</string>
     <string name="nc_conversation_not_found">Samtalen blev ikke fundet</string>
+    <string name="nc_conversation_settings">Samtale indstillinger</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
@@ -245,6 +246,7 @@
     <string name="nc_settings_theme_title">Tema</string>
     <string name="nc_settings_warning">Advarsler</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
+    <string name="nc_share_link">Del link</string>
     <string name="nc_share_subject">%1$s invitation</string>
     <string name="nc_share_text">Deltag i samtalen på %1$s/index.php/call/%2$s</string>
     <string name="nc_share_text_pass">\nAdgangskode: %1$s</string>
