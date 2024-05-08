@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observable
 import retrofit2.Response
@@ -29,6 +30,7 @@ interface ChatRepository {
         timeStamp: Int,
         chatApiVersion: Int
     ): Observable<Reminder>
+
     fun getReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<Reminder>
     fun deleteReminder(user: User, roomToken: String, messageId: String, apiVersion: Int): Observable<GenericOverall>
     fun shareToNotes(
@@ -37,6 +39,7 @@ interface ChatRepository {
         message: String,
         displayName: String
     ): Observable<GenericOverall> // last two fields are false
+
     fun checkForNoteToSelf(credentials: String, url: String, includeStatus: Boolean): Observable<RoomsOverall>
     fun shareLocationToNotes(
         credentials: String,
@@ -45,6 +48,7 @@ interface ChatRepository {
         objectId: String,
         metadata: String
     ): Observable<GenericOverall>
+
     fun leaveRoom(credentials: String, url: String): Observable<GenericOverall>
     fun sendChatMessage(
         credentials: String,
@@ -54,9 +58,20 @@ interface ChatRepository {
         replyTo: Int,
         sendWithoutNotification: Boolean
     ): Observable<GenericOverall>
+
     fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage>
+    fun listBans(credentials: String, url: String): Observable<List<TalkBan>>
+    fun banActor(
+        credentials: String,
+        url: String,
+        actorType: String,
+        actorId: String,
+        internalNote: String
+    ): Observable<TalkBan>
+
+    fun unbanActor(credentials: String, url: String): Observable<GenericOverall>
 }

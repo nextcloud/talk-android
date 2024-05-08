@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ban_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ban_actor_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1"
+                android:textAlignment="viewStart"
+                android:textAppearance="@style/ListItem"
+                android:textSize="@dimen/md_title_textsize"
+                tools:text="User 2" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ban_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/sm_text_size"
+                tools:text="11th August, 2023" />
+
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/ban_reason"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:text="Was being mean"
+                android:padding="@dimen/standard_half_padding" />
+
+        </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/unban_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_half_margin"
+            android:layout_gravity="center"
+            android:text="@string/unban"
+            android:textColor="@color/hwSecurityRed"
+            style="@style/Widget.Material3.Button.TextButton"
+            />
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+
+
+

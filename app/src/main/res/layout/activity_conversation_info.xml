@@ -355,6 +355,35 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/list_bans_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standard_margin"
+                android:paddingTop="@dimen/standard_half_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:paddingBottom="@dimen/standard_half_margin"
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
+
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:contentDescription="@null"
+                    android:src="@drawable/baseline_block_24"
+                    app:tint="@color/grey_600" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="@string/show_banned_participants"
+                    android:textSize="@dimen/headline_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/danger_zone_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
