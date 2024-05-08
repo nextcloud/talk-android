@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2024 Julius Linus <julius.linus@nextcloud.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:background="@color/white"
+    tools:visibility="visible">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_margin"
+        android:text="@string/ban_actor"
+        android:textSize="@dimen/md_title_textsize" />
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:id="@+id/ban_actor_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_quarter_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        android:animateLayoutChanges="true"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/avatar_image"
+            android:layout_width="@dimen/avatar_size_big"
+            android:layout_height="@dimen/avatar_size_big"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:contentDescription="@string/avatar"
+            tools:src="@drawable/account_circle_48dp" />
+
+        <androidx.emoji2.widget.EmojiTextView
+            android:id="@+id/display_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/avatar_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_between_elements"
+            android:textSize="@dimen/headline_text_size"
+            tools:text="Jane Doe" />
+
+    </RelativeLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/ban_actor_edit_layout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/standard_margin"
+        android:hint="@string/internal_note">
+
+        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+            android:id="@+id/ban_actor_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textShortMessage"
+            android:lines="1"
+            android:padding="@dimen/standard_half_padding" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.divider.MaterialDivider
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_half_margin"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/dialog_padding"
+        android:paddingEnd="@dimen/dialog_padding"
+        android:paddingBottom="@dimen/dialog_padding_top_bottom">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_close"
+            style="@style/Button.Borderless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/close" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_ban"
+            style="@style/Button.Primary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/min_size_clickable_area"
+            android:text="@string/ban" />
+
+    </LinearLayout>
+
+</LinearLayout>
