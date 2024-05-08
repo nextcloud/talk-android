@@ -108,19 +108,6 @@ open class BaseActivity : AppCompatActivity() {
         colorizeNavigationBar()
     }
 
-    fun setupPrimaryColors() {
-        if (resources != null) {
-            DisplayUtils.applyColorToStatusBar(
-                this,
-                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
-            )
-            DisplayUtils.applyColorToNavigationBar(
-                window,
-                ResourcesCompat.getColor(resources!!, R.color.colorPrimary, null)
-            )
-        }
-    }
-
     open fun colorizeStatusBar() {
         if (resources != null) {
             if (appBarLayoutType == AppBarLayoutType.SEARCH_BAR) {
