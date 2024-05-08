@@ -86,6 +86,10 @@ object CapabilitiesUtil {
             user.capabilities?.coreCapability?.referenceApi == "true"
     }
 
+    fun canGeneratePrettyURL(user: User): Boolean {
+        return user.capabilities?.coreCapability?.modRewriteWorking == true
+    }
+
     // endregion
 
     //region SpreedCapabilities

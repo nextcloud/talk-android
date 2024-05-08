@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.utils
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -13,17 +14,29 @@ import com.nextcloud.talk.R
 
 object ShareUtils {
 
-    fun shareConversationLink(context: Activity, baseUrl: String?, roomToken: String?, conversationName: String?) {
+    @SuppressLint("StringFormatMatches")
+    fun shareConversationLink(
+        context: Activity,
+        baseUrl: String?,
+        roomToken: String?,
+        conversationName: String?,
+        canGeneratePrettyURL: Boolean
+    ) {
         if (baseUrl.isNullOrBlank() || roomToken.isNullOrBlank() || conversationName.isNullOrBlank()) {
             return
         }
 
-        val uriToShareConversation = Uri.parse(baseUrl)
+        val uriBuilder = Uri.parse(baseUrl)
             .buildUpon()
-            .appendPath("index.php")
-            .appendPath("call")
-            .appendPath(roomToken)
-            .build()
+
+        if (!canGeneratePrettyURL) {
+            uriBuilder.appendPath("index.php")
+        }
+
+        uriBuilder.appendPath("call")
+        uriBuilder.appendPath(roomToken)
+
+        val uriToShareConversation = uriBuilder.build()
 
         val shareConversationLink = String.format(
             context.getString(
