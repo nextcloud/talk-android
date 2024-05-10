@@ -3474,39 +3474,34 @@ class ChatActivity :
                 ""
             }
 
-        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
         if (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""
             if (currentConversation?.statusIcon != null) {
                 statusMessage += currentConversation?.statusIcon
             }
-
             if (currentConversation?.statusMessage != null) {
                 statusMessage += currentConversation?.statusMessage
             }
-
-            if (statusMessage.isNotEmpty()) {
-                viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
-                statusMessageView.text = statusMessage
-                statusMessageView.visibility = View.VISIBLE
-            } else {
-                statusMessageView.visibility = View.GONE
-            }
+            statusMessageViewContents(statusMessage)
         } else {
-            var descriptionMessage = ""
             if (currentConversation?.type == ConversationType.ROOM_GROUP_CALL ||
                 currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
             ) {
+                var descriptionMessage = ""
                 descriptionMessage += currentConversation?.description
-
-                if (descriptionMessage.isNotEmpty()) {
-                    viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
-                    statusMessageView.text = descriptionMessage
-                    statusMessageView.visibility = View.VISIBLE
-                } else {
-                    statusMessageView.visibility = View.GONE
-                }
+                statusMessageViewContents(descriptionMessage)
             }
+        }
+    }
+
+    private fun statusMessageViewContents(statusMessageContent: String) {
+        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
+        if (statusMessageContent.isNotEmpty()) {
+            viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
+            statusMessageView.text = statusMessageContent
+            statusMessageView.visibility = View.VISIBLE
+        } else {
+            statusMessageView.visibility = View.GONE
         }
     }
 

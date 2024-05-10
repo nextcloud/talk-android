@@ -40,13 +40,13 @@
         android:lines="1"
         android:textAlignment="viewStart"
         android:textColor="@color/low_emphasis_text"
-        android:textSize="14sp"
+        android:textSize="13sp"
         tools:text="Jane Doe" />
 
     <ImageView
         android:id="@+id/avatar_view"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="52dp"
+        android:layout_height="52dp"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/standard_margin"
         android:contentDescription="@string/avatar" />
