@@ -22,7 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/avatar_view"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="@dimen/standard_quarter_margin"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_toEndOf="@id/avatar_view"
         android:layout_below= "@id/name_text"
-        android:paddingTop="4dp"
+        android:paddingTop="@dimen/standard_quarter_margin"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
@@ -45,8 +45,8 @@
 
     <ImageView
         android:id="@+id/avatar_view"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
+        android:layout_width="@dimen/avatar_size_open_conversation_list"
+        android:layout_height="@dimen/avatar_size_open_conversation_list"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/standard_margin"
         android:contentDescription="@string/avatar" />
