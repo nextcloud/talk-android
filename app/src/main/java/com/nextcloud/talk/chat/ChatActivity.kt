@@ -3759,7 +3759,13 @@ class ChatActivity :
     }
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        val insertNewMessagesNotice = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
+        val newMessagesAvailable = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
+        val insertNewMessagesNotice = if (newMessagesAvailable) {
+            chatMessageList.any { it.actorId != conversationUser!!.userId }
+        } else {
+            false
+        }
+
         val scrollToEndOnUpdate = layoutManager?.findFirstVisibleItemPosition() == 0
 
         if (insertNewMessagesNotice) {
