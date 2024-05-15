@@ -574,7 +574,7 @@
     <string name="startCallForbidden">Није вам дозвољене да започнете позив</string>
     <string name="started_a_call">је започео позив</string>
     <string name="status_message">Порука стања</string>
-    <string name="switch_to_breakout_room">Пређи у собу за одмор</string>
+    <string name="switch_to_breakout_room">Пређи у сепаре</string>
     <string name="switch_to_main_room">Пређи у главну собу</string>
     <string name="take_photo">Сликај</string>
     <string name="take_photo_error_deleting_picture">Грешка приликом прављења слике</string>
