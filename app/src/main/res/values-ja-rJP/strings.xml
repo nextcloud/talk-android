@@ -127,6 +127,7 @@
     <string name="nc_diagnose_battery_optimization_title">バッテリー設定</string>
     <string name="nc_diagnose_device_name_title">端末</string>
     <string name="nc_diagnose_phone_category_title">携帯</string>
+    <string name="nc_diagnose_signaling_mode_extern">外部</string>
     <string name="nc_diagnose_signaling_mode_intern">非公開</string>
     <string name="nc_dialog_invalid_password">無効なパスワード</string>
     <string name="nc_dialog_maintenance_mode">メンテナンスモード</string>
