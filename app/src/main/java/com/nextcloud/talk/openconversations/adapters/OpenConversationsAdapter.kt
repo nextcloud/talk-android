@@ -7,7 +7,9 @@
 package com.nextcloud.talk.openconversations.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -34,8 +36,17 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
         }
 
         fun bindItem(conversation: OpenConversation) {
+            val nameTextLayoutParams: RelativeLayout.LayoutParams = itemBinding.nameText.layoutParams as
+                RelativeLayout.LayoutParams
+
             currentConversation = conversation
             itemBinding.nameText.text = conversation.displayName
+            if (conversation.description == "") {
+                itemBinding.descriptionText.visibility = View.GONE
+                nameTextLayoutParams.addRule(RelativeLayout.CENTER_VERTICAL)
+            } else {
+                itemBinding.descriptionText.text = conversation.description
+            }
 
             // load avatar from server when https://github.com/nextcloud/spreed/issues/9600 is solved
             // itemBinding.avatarView.loadUserAvatar(user, conversation.displayName, true, false)

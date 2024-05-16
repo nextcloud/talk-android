@@ -34,7 +34,8 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
                 OpenConversation(
                     conversation.roomId!!,
                     conversation.token!!,
-                    conversation.name!!
+                    conversation.name!!,
+                    conversation.description ?: ""
                 )
             }
         )

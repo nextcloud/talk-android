@@ -182,6 +182,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -190,7 +191,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.ImageEmojiEditText
-import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -3474,24 +3474,32 @@ class ChatActivity :
                 ""
             }
 
-        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
         if (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""
             if (currentConversation?.statusIcon != null) {
                 statusMessage += currentConversation?.statusIcon
             }
-
             if (currentConversation?.statusMessage != null) {
                 statusMessage += currentConversation?.statusMessage
             }
-
-            if (statusMessage.isNotEmpty()) {
-                viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
-                statusMessageView.text = statusMessage
-                statusMessageView.visibility = View.VISIBLE
-            } else {
-                statusMessageView.visibility = View.GONE
+            statusMessageViewContents(statusMessage)
+        } else {
+            if (currentConversation?.type == ConversationType.ROOM_GROUP_CALL ||
+                currentConversation?.type == ConversationType.ROOM_PUBLIC_CALL
+            ) {
+                var descriptionMessage = ""
+                descriptionMessage += currentConversation?.description
+                statusMessageViewContents(descriptionMessage)
             }
+        }
+    }
+
+    private fun statusMessageViewContents(statusMessageContent: String) {
+        val statusMessageView = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_status_message)
+        if (statusMessageContent.isNotEmpty()) {
+            viewThemeUtils.platform.colorTextView(statusMessageView, ColorRole.ON_SURFACE)
+            statusMessageView.text = statusMessageContent
+            statusMessageView.visibility = View.VISIBLE
         } else {
             statusMessageView.visibility = View.GONE
         }

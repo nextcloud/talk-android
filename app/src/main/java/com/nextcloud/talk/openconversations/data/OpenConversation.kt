@@ -9,5 +9,6 @@ package com.nextcloud.talk.openconversations.data
 data class OpenConversation(
     var roomId: String,
     var roomToken: String,
-    var displayName: String
+    var displayName: String,
+    var description: String?
 )

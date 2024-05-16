@@ -21,18 +21,32 @@
         android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
         android:layout_toEndOf="@id/avatar_view"
+        android:layout_marginTop="@dimen/standard_quarter_margin"
         android:ellipsize="end"
         android:lines="1"
         android:textAlignment="viewStart"
         android:textAppearance="@style/ListItem"
         tools:text="Jane Doe" />
 
+    <androidx.emoji2.widget.EmojiTextView
+        android:id="@+id/description_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/avatar_view"
+        android:layout_below= "@id/name_text"
+        android:paddingTop="@dimen/standard_quarter_margin"
+        android:ellipsize="end"
+        android:lines="1"
+        android:textAlignment="viewStart"
+        android:textColor="@color/low_emphasis_text"
+        android:textSize="13sp"
+        tools:text="Jane Doe" />
+
     <ImageView
         android:id="@+id/avatar_view"
-        android:layout_width="@dimen/avatar_size"
-        android:layout_height="@dimen/avatar_size"
+        android:layout_width="@dimen/avatar_size_open_conversation_list"
+        android:layout_height="@dimen/avatar_size_open_conversation_list"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/standard_margin"
         android:contentDescription="@string/avatar" />
