@@ -1156,92 +1156,94 @@ class ChatActivity :
     }
 
     private fun initMessageInputView() {
-        val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
+        if (binding.messageInputView.inputEditText?.filters?.isEmpty() == true) {
+            val filters = arrayOfNulls<InputFilter>(1)
+            val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
-        filters[0] = InputFilter.LengthFilter(lengthFilter)
-        binding.messageInputView.inputEditText?.filters = filters
+            filters[0] = InputFilter.LengthFilter(lengthFilter)
+            binding.messageInputView.inputEditText?.filters = filters
 
-        binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
+            binding.messageInputView.inputEditText?.addTextChangedListener(object : TextWatcher {
 
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
-                // unused atm
-            }
-
-            @Suppress("Detekt.TooGenericExceptionCaught")
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                updateOwnTypingStatus(s)
-
-                if (s.length >= lengthFilter) {
-                    binding.messageInputView.inputEditText?.error = String.format(
-                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
-                        lengthFilter.toString()
-                    )
-                } else {
-                    binding.messageInputView.inputEditText?.error = null
+                override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+                    // unused atm
                 }
 
-                val editable = binding.messageInputView.inputEditText?.editableText
-                editedTextBehaviorSubject.onNext(editable.toString().trim())
+                @Suppress("Detekt.TooGenericExceptionCaught")
+                override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                    updateOwnTypingStatus(s)
 
-                if (editable != null && binding.messageInputView.inputEditText != null) {
-                    val mentionSpans = editable.getSpans(
-                        0,
-                        binding.messageInputView.inputEditText!!.length(),
-                        Spans.MentionChipSpan::class.java
-                    )
-                    var mentionSpan: Spans.MentionChipSpan
-                    for (i in mentionSpans.indices) {
-                        mentionSpan = mentionSpans[i]
-                        if (start >= editable.getSpanStart(mentionSpan) &&
-                            start < editable.getSpanEnd(mentionSpan)
-                        ) {
-                            if (editable.subSequence(
-                                    editable.getSpanStart(mentionSpan),
-                                    editable.getSpanEnd(mentionSpan)
-                                ).toString().trim { it <= ' ' } != mentionSpan.label
+                    if (s.length >= lengthFilter) {
+                        binding.messageInputView.inputEditText?.error = String.format(
+                            Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
+                            lengthFilter.toString()
+                        )
+                    } else {
+                        binding.messageInputView.inputEditText?.error = null
+                    }
+
+                    val editable = binding.messageInputView.inputEditText?.editableText
+                    editedTextBehaviorSubject.onNext(editable.toString().trim())
+
+                    if (editable != null && binding.messageInputView.inputEditText != null) {
+                        val mentionSpans = editable.getSpans(
+                            0,
+                            binding.messageInputView.inputEditText!!.length(),
+                            Spans.MentionChipSpan::class.java
+                        )
+                        var mentionSpan: Spans.MentionChipSpan
+                        for (i in mentionSpans.indices) {
+                            mentionSpan = mentionSpans[i]
+                            if (start >= editable.getSpanStart(mentionSpan) &&
+                                start < editable.getSpanEnd(mentionSpan)
                             ) {
-                                editable.removeSpan(mentionSpan)
+                                if (editable.subSequence(
+                                        editable.getSpanStart(mentionSpan),
+                                        editable.getSpanEnd(mentionSpan)
+                                    ).toString().trim { it <= ' ' } != mentionSpan.label
+                                ) {
+                                    editable.removeSpan(mentionSpan)
+                                }
                             }
                         }
                     }
                 }
+
+                override fun afterTextChanged(s: Editable) {
+                    // unused atm
+                }
+            })
+
+            // Image keyboard support
+            // See: https://developer.android.com/guide/topics/text/image-keyboard
+
+            (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
+                uploadFile(it.toString(), false)
+            }
+            initVoiceRecordButton()
+
+            if (sharedText.isNotEmpty()) {
+                binding.messageInputView.inputEditText?.setText(sharedText)
             }
 
-            override fun afterTextChanged(s: Editable) {
-                // unused atm
+            binding.messageInputView.setAttachmentsListener {
+                AttachmentDialog(this, this).show()
             }
-        })
 
-        // Image keyboard support
-        // See: https://developer.android.com/guide/topics/text/image-keyboard
-
-        (binding.messageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFile(it.toString(), false)
-        }
-        initVoiceRecordButton()
-
-        if (sharedText.isNotEmpty()) {
-            binding.messageInputView.inputEditText?.setText(sharedText)
-        }
-
-        binding.messageInputView.setAttachmentsListener {
-            AttachmentDialog(this, this).show()
-        }
-
-        binding.messageInputView.button?.setOnClickListener {
-            submitMessage(false)
-        }
-
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
-            binding.messageInputView.button?.setOnLongClickListener {
-                showSendButtonMenu()
-                true
+            binding.messageInputView.button?.setOnClickListener {
+                submitMessage(false)
             }
-        }
 
-        binding.messageInputView.button?.contentDescription =
-            resources?.getString(R.string.nc_description_send_message_button)
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
+                binding.messageInputView.button?.setOnLongClickListener {
+                    showSendButtonMenu()
+                    true
+                }
+            }
+
+            binding.messageInputView.button?.contentDescription =
+                resources?.getString(R.string.nc_description_send_message_button)
+        }
     }
 
     private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
