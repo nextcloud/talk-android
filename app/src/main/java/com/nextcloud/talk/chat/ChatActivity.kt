@@ -3759,8 +3759,16 @@ class ChatActivity :
     }
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        val shouldAddNewMessagesNotice = layoutManager?.findFirstVisibleItemPosition()!! > 0
-        if (shouldAddNewMessagesNotice) {
+        val newMessagesAvailable = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
+        val insertNewMessagesNotice = if (newMessagesAvailable) {
+            chatMessageList.any { it.actorId != conversationUser!!.userId }
+        } else {
+            false
+        }
+
+        val scrollToEndOnUpdate = layoutManager?.findFirstVisibleItemPosition() == 0
+
+        if (insertNewMessagesNotice) {
             val unreadChatMessage = ChatMessage()
             unreadChatMessage.jsonMessageId = -1
             unreadChatMessage.actorId = "-1"
@@ -3769,7 +3777,41 @@ class ChatActivity :
             adapter?.addToStart(unreadChatMessage, false)
         }
 
-        addMessagesToAdapter(shouldAddNewMessagesNotice, chatMessageList)
+        if (!scrollToEndOnUpdate) {
+            binding.popupBubbleView.isShown.let {
+                if (it) {
+                    newMessagesCount++
+                } else {
+                    newMessagesCount = 1
+                    binding.scrollDownButton.visibility = View.GONE
+                    binding.popupBubbleView.show()
+                }
+            }
+        } else {
+            binding.scrollDownButton.visibility = View.GONE
+            newMessagesCount = 0
+        }
+
+        for (chatMessage in chatMessageList) {
+            chatMessage.activeUser = conversationUser
+
+            adapter?.let {
+                chatMessage.isGrouped = (
+                    it.isPreviousSameAuthor(chatMessage.actorId, -1) &&
+                        it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
+                        GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
+                    )
+                chatMessage.isOneToOneConversation =
+                    (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                chatMessage.isFormerOneToOneConversation =
+                    (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
+                it.addToStart(chatMessage, scrollToEndOnUpdate)
+            }
+        }
+
+        if (insertNewMessagesNotice && scrollToEndOnUpdate && adapter != null) {
+            scrollToFirstUnreadMessage()
+        }
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
@@ -3811,53 +3853,6 @@ class ChatActivity :
                 it.getMessagePositionByIdInReverse("-1"),
                 binding.messagesListView.height / 2
             )
-        }
-    }
-
-    private fun addMessagesToAdapter(shouldAddNewMessagesNotice: Boolean, chatMessageList: List<ChatMessage>) {
-        val isThereANewNotice =
-            shouldAddNewMessagesNotice || adapter?.getMessagePositionByIdInReverse("-1") != -1
-        for (chatMessage in chatMessageList) {
-            chatMessage.activeUser = conversationUser
-
-            val shouldScroll =
-                !isThereANewNotice &&
-                    !shouldAddNewMessagesNotice &&
-                    layoutManager?.findFirstVisibleItemPosition() == 0 ||
-                    adapter != null &&
-                    adapter?.itemCount == 0
-
-            modifyMessageCount(shouldAddNewMessagesNotice, shouldScroll)
-
-            adapter?.let {
-                chatMessage.isGrouped = (
-                    it.isPreviousSameAuthor(chatMessage.actorId, -1) &&
-                        it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
-                        GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
-                    )
-                chatMessage.isOneToOneConversation =
-                    (currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
-                chatMessage.isFormerOneToOneConversation =
-                    (currentConversation?.type == ConversationType.FORMER_ONE_TO_ONE)
-                it.addToStart(chatMessage, shouldScroll)
-            }
-        }
-    }
-
-    private fun modifyMessageCount(shouldAddNewMessagesNotice: Boolean, shouldScroll: Boolean) {
-        if (shouldAddNewMessagesNotice) {
-            binding.popupBubbleView.isShown.let {
-                if (it) {
-                    newMessagesCount++
-                } else {
-                    newMessagesCount = 1
-                    binding.scrollDownButton.visibility = View.GONE
-                    binding.popupBubbleView.show()
-                }
-            }
-        } else {
-            binding.scrollDownButton.visibility = View.GONE
-            newMessagesCount = 0
         }
     }
 
