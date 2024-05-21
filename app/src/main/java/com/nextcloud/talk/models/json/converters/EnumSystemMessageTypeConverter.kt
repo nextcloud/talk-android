@@ -8,6 +8,7 @@
  */
 package com.nextcloud.talk.models.json.converters
 
+import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.AUDIO_RECORDING_STARTED
@@ -75,6 +76,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage.SystemMessageType.USER_RE
 *
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
+    @TypeConverter
     override fun getFromString(string: String): ChatMessage.SystemMessageType {
         return when (string) {
             "conversation_created" -> CONVERSATION_CREATED
@@ -141,6 +143,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
     }
 
     @Suppress("Detekt.ComplexMethod")
+    @TypeConverter
     override fun convertToString(`object`: ChatMessage.SystemMessageType?): String {
         return when (`object`) {
             null -> ""

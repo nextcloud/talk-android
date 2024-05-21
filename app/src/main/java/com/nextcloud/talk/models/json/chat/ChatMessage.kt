@@ -28,6 +28,8 @@ import kotlinx.parcelize.Parcelize
 import java.security.MessageDigest
 import java.util.Date
 
+// TODO remove all Json tags, map ChatMessageJson to this
+
 @Parcelize
 @JsonObject
 data class ChatMessage(
