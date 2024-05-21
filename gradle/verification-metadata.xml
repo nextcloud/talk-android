@@ -147,6 +147,7 @@
          <trusted-key id="A413F67D71BEEC23ADD0CE0ACB43338E060CF9FA" group="com.google.code.findbugs" name="jsr305" version="2.0.2"/>
          <trusted-key id="A5BD02B93E7A40482EB1D66A5F69AD087600B22C" group="org.ow2.asm"/>
          <trusted-key id="A5F483CD733A4EBAEA378B2AE88979FB9B30ACF2">
+            <trusting group="androidx.activity"/>
             <trusting group="androidx.camera"/>
             <trusting group="androidx.core"/>
             <trusting group="androidx.transition" name="transition" version="1.5.0"/>

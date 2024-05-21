@@ -104,6 +104,7 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     @Override
     protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
         long onUserLeaveHintTime = System.currentTimeMillis();
         long diff = onUserLeaveHintTime - onCreateTime;
         Log.d(TAG, "onUserLeaveHintTime - onCreateTime: " + diff);
