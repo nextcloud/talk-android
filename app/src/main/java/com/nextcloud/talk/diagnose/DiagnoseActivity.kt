@@ -43,7 +43,6 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY
 import com.nextcloud.talk.utils.PushUtils.Companion.LATEST_PUSH_REGISTRATION_AT_SERVER
 import com.nextcloud.talk.utils.UserIdUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import javax.inject.Inject
@@ -61,9 +60,6 @@ class DiagnoseActivity : BaseActivity() {
 
     @Inject
     lateinit var userManager: UserManager
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil

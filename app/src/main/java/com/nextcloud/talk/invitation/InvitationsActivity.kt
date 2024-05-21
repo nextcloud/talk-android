@@ -27,7 +27,6 @@ import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
 import com.nextcloud.talk.invitation.viewmodels.InvitationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -40,9 +39,6 @@ class InvitationsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userProvider: CurrentUserProviderNew
 
     lateinit var invitationsViewModel: InvitationsViewModel
 
@@ -63,7 +59,7 @@ class InvitationsActivity : BaseActivity() {
 
         invitationsViewModel = ViewModelProvider(this, viewModelFactory)[InvitationsViewModel::class.java]
 
-        currentUser = userProvider.currentUser.blockingGet()
+        currentUser = currentUserProvider.currentUser.blockingGet()
         invitationsViewModel.fetchInvitations(currentUser)
 
         binding = ActivityInvitationsBinding.inflate(layoutInflater)

@@ -10,8 +10,10 @@ package com.nextcloud.talk.activities
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +36,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.FileViewerUtils
+import com.nextcloud.talk.utils.UriUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
@@ -64,6 +69,9 @@ open class BaseActivity : AppCompatActivity() {
 
     @Inject
     lateinit var context: Context
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     open val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.TOOLBAR
@@ -221,6 +229,34 @@ open class BaseActivity : AppCompatActivity() {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(event: CertificateEvent) {
         showCertificateDialog(event.x509Certificate, event.trustManager, event.sslErrorHandler)
+    }
+
+    override fun startActivity(intent: Intent) {
+        val user = currentUserProvider.currentUser.blockingGet()
+        if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
+            val uri = intent.data.toString()
+            if (uri.startsWith(user.baseUrl!!)) {
+                if (UriUtils.isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/f/41
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileShareFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrl(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileId(uri))
+                } else if (UriUtils.isInstanceInternalFileUrlNew(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
+                    val fileViewerUtils = FileViewerUtils(applicationContext, user)
+                    fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
+                } else {
+                    super.startActivity(intent)
+                }
+            } else {
+                super.startActivity(intent)
+            }
+        } else {
+            super.startActivity(intent)
+        }
     }
 
     companion object {

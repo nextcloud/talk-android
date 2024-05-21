@@ -22,6 +22,7 @@ class UriUtils {
 
         fun isInstanceInternalFileShareUrl(baseUrl: String, url: String): Boolean {
             // https://cloud.nextcloud.com/f/41
+            // https://cloud.nextcloud.com/index.php/f/41
             return (url.startsWith("$baseUrl/f/") || url.startsWith("$baseUrl/index.php/f/")) &&
                 Regex(".*/f/\\d*").matches(url)
         }

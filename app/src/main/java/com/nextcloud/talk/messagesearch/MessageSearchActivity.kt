@@ -29,7 +29,6 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMessageSearchBinding
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.rx.SearchViewObservable.Companion.observeSearchView
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
@@ -46,9 +45,6 @@ class MessageSearchActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userProvider: CurrentUserProviderNew
 
     private lateinit var binding: ActivityMessageSearchBinding
     private lateinit var searchView: SearchView
@@ -77,7 +73,7 @@ class MessageSearchActivity : BaseActivity() {
         setupSystemColors()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
-        user = userProvider.currentUser.blockingGet()
+        user = currentUserProvider.currentUser.blockingGet()
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         viewModel.initialize(roomToken)
         setupStateObserver()

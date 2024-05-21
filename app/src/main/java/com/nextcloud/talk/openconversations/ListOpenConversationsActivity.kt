@@ -23,7 +23,6 @@ import com.nextcloud.talk.openconversations.adapters.OpenConversationsAdapter
 import com.nextcloud.talk.openconversations.data.OpenConversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -36,9 +35,6 @@ class ListOpenConversationsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var userProvider: CurrentUserProviderNew
 
     lateinit var openConversationsViewModel: OpenConversationsViewModel
 
@@ -57,7 +53,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         setContentView(binding.root)
         setupSystemColors()
 
-        val user = userProvider.currentUser.blockingGet()
+        val user = currentUserProvider.currentUser.blockingGet()
 
         adapter = OpenConversationsAdapter(user) { conversation -> adapterOnClick(conversation) }
         binding.openConversationsRecyclerView.adapter = adapter
