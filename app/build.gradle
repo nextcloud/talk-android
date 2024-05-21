@@ -297,7 +297,7 @@ dependencies {
 
      implementation 'androidx.activity:activity-ktx:1.9.0'
 
-    implementation 'com.github.nextcloud.android-common:ui:0.20.0'
+    implementation 'com.github.nextcloud.android-common:ui:0.21.0'
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
 }
