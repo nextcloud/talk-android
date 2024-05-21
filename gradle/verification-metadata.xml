@@ -149,6 +149,7 @@
          <trusted-key id="A5F483CD733A4EBAEA378B2AE88979FB9B30ACF2">
             <trusting group="androidx.camera"/>
             <trusting group="androidx.core"/>
+            <trusting group="androidx.datastore"/>
             <trusting group="androidx.transition" name="transition" version="1.5.0"/>
             <trusting group="^androidx[.]compose($|([.].*))" regex="true"/>
          </trusted-key>
