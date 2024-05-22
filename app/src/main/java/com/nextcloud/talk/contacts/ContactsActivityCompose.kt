@@ -64,6 +64,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.conversationcreation.ConversationCreationActivity
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -278,7 +279,11 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
 fun ConversationCreationOptions(context: Context) {
     Column {
         Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                .clickable {
+                    val intent = Intent(context, ConversationCreationActivity::class.java)
+                    context.startActivity(intent)
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -325,6 +330,8 @@ fun ConversationCreationOptions(context: Context) {
         }
     }
 }
+
+
 
 class CompanionClass {
     companion object {
