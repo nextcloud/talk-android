@@ -12,10 +12,8 @@ buildscript {
 
     ext {
       kotlinVersion = '1.9.23'
-      hilt_version = '2.44'
-      kotlinVersion = '2.0.0'
+        hilt_version = '2.44'
     }
-
 
     repositories {
         google()
