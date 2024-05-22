@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
@@ -18,6 +19,7 @@ import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 class ConversationCreationViewModel @Inject constructor(
@@ -26,6 +28,12 @@ class ConversationCreationViewModel @Inject constructor(
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
+
+    private val _uploadState = MutableStateFlow<UploadAvatarState>(UploadAvatarState.Loading)
+    val uploadState: StateFlow<UploadAvatarState> = _uploadState
+
+    private val _deleteState = MutableStateFlow<DeleteAvatarState>(DeleteAvatarState.Loading)
+    val deleteState: StateFlow<DeleteAvatarState> = _deleteState
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
@@ -116,6 +124,28 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
+    fun uploadConversationAvatar(file: File, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = repository.uploadConversationAvatar(file, roomToken)
+                _uploadState.value = UploadAvatarState.Success(response)
+            } catch (e: Exception) {
+                _uploadState.value = UploadAvatarState.Error(e)
+            }
+        }
+    }
+
+    fun deleteConversationAvatar(roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val result = repository.deleteConversationAvatar(roomToken)
+                _deleteState.value = DeleteAvatarState.Success(result)
+            } catch (e: Exception) {
+                _deleteState.value = DeleteAvatarState.Error(e)
+            }
+        }
+    }
+
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
     }
@@ -153,4 +183,16 @@ sealed class AddParticipantsUiState {
     data object None : AddParticipantsUiState()
     data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
+}
+
+sealed class UploadAvatarState {
+    object Loading : UploadAvatarState()
+    data class Success(val roomOverall: ConversationModel) : UploadAvatarState()
+    data class Error(val exception: Exception) : UploadAvatarState()
+}
+
+sealed class DeleteAvatarState {
+    object Loading : DeleteAvatarState()
+    data class Success(val roomOverall: ConversationModel) : DeleteAvatarState()
+    data class Error(val exception: Exception) : DeleteAvatarState()
 }

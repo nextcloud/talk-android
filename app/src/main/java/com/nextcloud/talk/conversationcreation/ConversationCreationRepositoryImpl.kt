@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationcreation
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -17,6 +18,11 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipantWithSource
+import com.nextcloud.talk.utils.Mimetype
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import java.io.File
 
 class ConversationCreationRepositoryImpl(
     private val ncApiCoroutines: NcApiCoroutines,
@@ -124,6 +130,33 @@ class ConversationCreationRepositoryImpl(
             password
         )
         return result
+    }
+
+    override suspend fun uploadConversationAvatar(file: File, roomToken: String): ConversationModel {
+        val builder = MultipartBody.Builder()
+        builder.setType(MultipartBody.FORM)
+        builder.addFormDataPart(
+            "file",
+            file.name,
+            file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
+        )
+        val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
+            "file",
+            file.name,
+            file.asRequestBody(Mimetype.IMAGE_JPG.toMediaTypeOrNull())
+        )
+        val response = ncApiCoroutines.uploadConversationAvatar(
+            credentials!!,
+            ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, roomToken),
+            filePart
+        )
+        return ConversationModel.mapToConversationModel(response.ocs?.data!!, _currentUser)
+    }
+
+    override suspend fun deleteConversationAvatar(roomToken: String): ConversationModel {
+        val url = ApiUtils.getUrlForConversationAvatar(1, _currentUser.baseUrl!!, roomToken)
+        val response = ncApiCoroutines.deleteConversationAvatar(credentials!!, url)
+        return ConversationModel.mapToConversationModel(response.ocs?.data!!, _currentUser)
     }
 
     override suspend fun allowGuests(token: String, allow: Boolean): GenericOverall {
