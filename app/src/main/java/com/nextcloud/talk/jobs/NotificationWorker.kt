@@ -519,7 +519,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
             .setLargeIcon(getLargeIcon())
-            .setSmallIcon(R.drawable.ic_logo)
+            .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
             .setSubText(baseUrl)
