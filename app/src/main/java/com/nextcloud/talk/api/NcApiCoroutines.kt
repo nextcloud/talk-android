@@ -11,13 +11,16 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import okhttp3.MultipartBody
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.PUT
+import retrofit2.http.Part
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import retrofit2.http.Url
@@ -96,4 +99,15 @@ interface NcApiCoroutines {
         @Url url: String?,
         @Field("password") password: String?
     ): GenericOverall
+
+    @Multipart
+    @POST
+    suspend fun uploadConversationAvatar(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Part("attachment") attachment: MultipartBody.Part
+    ): RoomOverall
+
+    @DELETE
+    suspend fun deleteConversationAvatar(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 }
