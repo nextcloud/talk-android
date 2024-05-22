@@ -98,7 +98,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
             message,
             ncApi,
             binding.referenceInclude,
-            context
+            itemView.context
         )
         binding.referenceInclude.referenceWrapper.setOnLongClickListener { l: View? ->
             commonMessageInterface.onOpenMessageActionsDialog(message)
