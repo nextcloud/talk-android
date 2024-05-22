@@ -17,7 +17,7 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import retrofit2.http.Url
 
-interface NcAPI{
+interface NcAPI {
     @GET
     fun getContactsWithSearchParam(
         @Header("Authorization") authorization: String?,
@@ -40,5 +40,3 @@ interface NcAPI{
         @QueryMap options: Map<String?, String?>
     ): Flow<RoomOverall?>
 }
-
-

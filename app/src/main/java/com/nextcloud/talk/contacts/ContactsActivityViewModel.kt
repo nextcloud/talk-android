@@ -13,8 +13,5 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class ContactsActivityViewModel @Inject constructor(private val api:NcAPI):ViewModel(){
-
-
-
+class ContactsActivityViewModel @Inject constructor(private val api: NcAPI) : ViewModel() {
 }
