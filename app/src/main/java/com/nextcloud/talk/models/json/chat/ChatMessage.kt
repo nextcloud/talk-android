@@ -9,12 +9,8 @@
  */
 package com.nextcloud.talk.models.json.chat
 
-import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
-import com.bluelinelabs.logansquare.annotation.JsonField
-import com.bluelinelabs.logansquare.annotation.JsonIgnore
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
@@ -24,99 +20,67 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
-import kotlinx.parcelize.Parcelize
 import java.security.MessageDigest
 import java.util.Date
 
-// TODO remove all Json tags, map ChatMessageJson to this
-
-@Parcelize
-@JsonObject
 data class ChatMessage(
-    @JsonIgnore
     var isGrouped: Boolean = false,
 
-    @JsonIgnore
     var isOneToOneConversation: Boolean = false,
 
-    @JsonIgnore
     var isFormerOneToOneConversation: Boolean = false,
 
-    @JsonIgnore
     var activeUser: User? = null,
 
-    @JsonIgnore
     var selectedIndividualHashMap: Map<String?, String?>? = null,
 
-    @JsonIgnore
     var isDeleted: Boolean = false,
 
-    @JsonField(name = ["id"])
     var jsonMessageId: Int = 0,
 
-    @JsonIgnore
     var previousMessageId: Int = -1,
 
-    @JsonField(name = ["token"])
     var token: String? = null,
 
     // guests or users
-    @JsonField(name = ["actorType"])
     var actorType: String? = null,
 
-    @JsonField(name = ["actorId"])
     var actorId: String? = null,
 
     // send when crafting a message
-    @JsonField(name = ["actorDisplayName"])
     var actorDisplayName: String? = null,
 
-    @JsonField(name = ["timestamp"])
     var timestamp: Long = 0,
 
     // send when crafting a message, max 1000 lines
-    @JsonField(name = ["message"])
     var message: String? = null,
 
-    @JsonField(name = ["messageParameters"])
     var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
 
-    @JsonField(name = ["systemMessage"], typeConverter = EnumSystemMessageTypeConverter::class)
     var systemMessageType: SystemMessageType? = null,
 
-    @JsonField(name = ["isReplyable"])
     var replyable: Boolean = false,
 
-    @JsonField(name = ["parent"])
     var parentMessage: ChatMessage? = null,
 
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
-    @JsonField(name = ["messageType"])
     var messageType: String? = null,
 
-    @JsonField(name = ["reactions"])
     var reactions: LinkedHashMap<String, Int>? = null,
 
-    @JsonField(name = ["reactionsSelf"])
     var reactionsSelf: ArrayList<String>? = null,
 
-    @JsonField(name = ["expirationTimestamp"])
     var expirationTimestamp: Int = 0,
 
-    @JsonField(name = ["markdown"])
     var renderMarkdown: Boolean? = null,
 
-    @JsonField(name = ["lastEditActorDisplayName"])
     var lastEditActorDisplayName: String? = null,
 
-    @JsonField(name = ["lastEditActorId"])
     var lastEditActorId: String? = null,
 
-    @JsonField(name = ["lastEditActorType"])
     var lastEditActorType: String? = null,
 
-    @JsonField(name = ["lastEditTimestamp"])
     var lastEditTimestamp: Long = 0,
 
     var isDownloadingVoiceMessage: Boolean = false,
@@ -147,12 +111,11 @@ data class ChatMessage(
 
     var openWhenDownloaded: Boolean = true
 
-) : Parcelable, MessageContentType, MessageContentType.Image {
+) : MessageContentType, MessageContentType.Image {
 
     var extractedUrlToPreview: String? = null
 
     // messageTypesToIgnore is weird. must be deleted by refactoring!!!
-    @JsonIgnore
     var messageTypesToIgnore = listOf(
         MessageType.REGULAR_TEXT_MESSAGE,
         MessageType.SYSTEM_MESSAGE,

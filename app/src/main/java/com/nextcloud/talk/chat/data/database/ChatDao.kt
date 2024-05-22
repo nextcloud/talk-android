@@ -16,5 +16,5 @@ abstract class ChatDao {
     @Query(
         "SELECT * FROM Messages WHERE token = :roomToken"
     )
-    abstract fun pullChatMessages(roomToken: String): List<ChatMessageEntity>
+    abstract fun getAllMessagesWhere(roomToken: String): List<ChatMessageEntity>
 }

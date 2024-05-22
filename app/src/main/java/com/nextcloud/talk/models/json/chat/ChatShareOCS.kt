@@ -10,14 +10,13 @@ package com.nextcloud.talk.models.json.chat
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import java.util.HashMap
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 data class ChatShareOCS(
     @JsonField(name = ["data"])
-    var data: HashMap<String, ChatMessage>? = null
+    var data: HashMap<String, ChatMessage>? = null // FIXME figure out where to map this from json to message
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)

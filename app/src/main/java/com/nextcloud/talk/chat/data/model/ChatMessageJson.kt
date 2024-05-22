@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import kotlinx.parcelize.Parcelize
 
-// TODO map it to ChatMessage
 @Parcelize
 @JsonObject
 data class ChatMessageJson(
@@ -52,7 +51,7 @@ data class ChatMessageJson(
     var replyable: Boolean = false,
 
     @JsonField(name = ["parent"])
-    var parentMessage: ChatMessage? = null,
+    var parentMessage: ChatMessageJson? = null,
 
     @JsonField(name = ["messageType"])
     var messageType: String? = null,

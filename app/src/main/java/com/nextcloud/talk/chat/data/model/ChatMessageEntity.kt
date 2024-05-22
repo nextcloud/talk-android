@@ -54,7 +54,7 @@ data class ChatMessageEntity(
     var replyable: Boolean = false,
 
     @ColumnInfo(name = "parent")
-    var parentMessage: ChatMessage? = null,
+    var parentMessage: ChatMessage? = null, // FIXME figure this out, might replace w/ parent id
 
     @ColumnInfo(name = "messageType")
     var messageType: String? = null,

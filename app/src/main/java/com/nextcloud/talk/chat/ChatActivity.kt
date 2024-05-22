@@ -137,6 +137,7 @@ import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
+import com.nextcloud.talk.chat.data.utils.ChatMessageDataMapper
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -610,10 +611,10 @@ class ChatActivity :
 
     override fun onSaveInstanceState(outState: Bundle) {
         if (currentlyPlayedVoiceMessage != null) {
-            outState.putString(CURRENT_AUDIO_MESSAGE_KEY, currentlyPlayedVoiceMessage!!.getId())
+            outState.putString(CURRENT_AUDIO_MESSAGE_KEY, currentlyPlayedVoiceMessage!!.id)
             outState.putInt(CURRENT_AUDIO_POSITION_KEY, currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds)
             outState.putBoolean(CURRENT_AUDIO_WAS_PLAYING_KEY, currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage)
-            Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.getId())
+            Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.id)
             Log.d(
                 RESUME_AUDIO_TAG,
                 "Audio Position: " + currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds
@@ -898,7 +899,11 @@ class ChatActivity :
                         HTTP_CODE_OK -> {
                             Log.d(TAG, "lookIntoFuture: ${state.lookIntoFuture}")
                             val chatOverall = state.response.body() as ChatOverall?
-                            var chatMessageList = chatOverall?.ocs!!.data!!
+                            var chatMessageList = chatOverall?.ocs!!.data!!.map {
+                                ChatMessageDataMapper.mapToMessage(
+                                    it
+                                )
+                            }
 
                             processHeaderChatLastGiven(state.response, state.lookIntoFuture)
 
@@ -3946,7 +3951,7 @@ class ChatActivity :
                 } else {
                     Log.d(
                         RESUME_AUDIO_TAG,
-                        "voiceMessagePosition is -1, adapter # of items: " + adapter!!.getItemCount()
+                        "voiceMessagePosition is -1, adapter # of items: " + adapter!!.itemCount
                     )
                 }
             } else {
@@ -4608,7 +4613,8 @@ class ChatActivity :
 
     private fun showMicrophoneButton(show: Boolean) {
         if (show && CapabilitiesUtil.hasSpreedFeatureCapability(
-                spreedCapabilities, SpreedFeatures.VOICE_MESSAGE_SHARING
+                spreedCapabilities,
+                SpreedFeatures.VOICE_MESSAGE_SHARING
             )
         ) {
             Log.d(TAG, "Microphone shown")

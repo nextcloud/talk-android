@@ -68,7 +68,7 @@ data class Conversation(
     var unreadMention: Boolean = false,
 
     @JsonField(name = ["lastMessage"])
-    var lastMessage: ChatMessage? = null,
+    var lastMessage: ChatMessage? = null, // FIXME here figure out where to map this from JSON to chatmessage
 
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
     var objectType: ObjectType? = null,
