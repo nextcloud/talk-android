@@ -386,6 +386,7 @@ How to translate with transifex:
     <string name="close_icon">Close Icon</string>
     <string name="nc_refresh">Refresh</string>
     <string name="nc_check_your_internet">Please check your internet connection</string>
+    <string name="nc_visible">Visible</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message …</string>
