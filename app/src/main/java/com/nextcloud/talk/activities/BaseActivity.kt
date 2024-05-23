@@ -33,11 +33,13 @@ import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
 import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.UriUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.ssl.TrustManager
@@ -248,6 +250,14 @@ open class BaseActivity : AppCompatActivity() {
                     // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
                     val fileViewerUtils = FileViewerUtils(applicationContext, user)
                     fileViewerUtils.openFileInFilesApp(uri, UriUtils.extractInstanceInternalFileFileIdNew(uri))
+                } else if (UriUtils.isInstanceInternalTalkUrl(user.baseUrl!!, uri)) {
+                    // https://cloud.nextcloud.com/call/123456789
+                    val bundle = Bundle()
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, UriUtils.extractRoomTokenFromTalkUrl(uri))
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(bundle)
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    startActivity(chatIntent)
                 } else {
                     super.startActivity(intent)
                 }
