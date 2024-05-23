@@ -9,6 +9,40 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [19.0.1] - 2024-05-23
+
+### Fixed
+- Wrong availability of "leave conversation" and "delete conversation"
+- Chats jump to last message instead to first unread message
+- Sent text from "share to" feature is set repeatedly for text input
+- Shared files from Nextcloud fail to open Nextcloud files app
+- Minor bugs
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/83?closed=1
+
+## [19.0.0] - 2024-04-23
+
+### Added
+- Federated conversations
+- Message editing
+
+### Changed
+- Updated file icons
+
+### Fixed
+- Participants in conversation info screen are missing
+- Flickering appbar when scrolling conversation list
+- Call notification screen is sometimes incomplete/unresponsive
+- Polls won't open
+- Note to self icon is not shown for languages other than english
+- Minor bugs
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/81?closed=1
+
 ## [18.1.0] - 2024-03-12
 
 ### Added
