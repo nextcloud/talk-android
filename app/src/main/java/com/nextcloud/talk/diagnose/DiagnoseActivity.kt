@@ -36,6 +36,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.databinding.ActivityDiagnoseBinding
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils
@@ -115,8 +116,7 @@ class DiagnoseActivity : BaseActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.create_issue).isVisible =
-            applicationContext.packageName.equals(ORIGINAL_NEXTCLOUD_TALK_APPLICATION_ID)
+        menu.findItem(R.id.create_issue).isVisible = BrandingUtils.isOriginalNextcloudClient(applicationContext)
         return true
     }
 
