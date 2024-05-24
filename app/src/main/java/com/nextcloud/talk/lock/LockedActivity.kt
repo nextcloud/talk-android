@@ -13,6 +13,7 @@ import android.app.KeyguardManager
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.ActivityLockedBinding
+import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.util.concurrent.Executor
@@ -55,11 +57,18 @@ class LockedActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        hideLogoForBrandedClients()
 
         binding.unlockContainer.setOnClickListener {
             checkIfWeAreSecure()
         }
         checkIfWeAreSecure()
+    }
+
+    private fun hideLogoForBrandedClients() {
+        if (!BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
+            binding.appLogo.visibility = View.GONE
+        }
     }
 
     private fun checkIfWeAreSecure() {
