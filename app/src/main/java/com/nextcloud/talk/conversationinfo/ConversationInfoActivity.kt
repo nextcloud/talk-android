@@ -76,7 +76,6 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -102,9 +101,6 @@ class ConversationInfoActivity :
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var conversationsRepository: ConversationsRepository

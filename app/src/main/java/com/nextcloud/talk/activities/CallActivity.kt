@@ -120,7 +120,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
@@ -182,10 +181,6 @@ class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject
     var ncApi: NcApi? = null
-
-    @JvmField
-    @Inject
-    var currentUserProvider: CurrentUserProviderNew? = null
 
     @JvmField
     @Inject
@@ -375,7 +370,7 @@ class CallActivity : CallBaseActivity() {
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
-        conversationUser = currentUserProvider!!.currentUser.blockingGet()
+        conversationUser = currentUserProvider.currentUser.blockingGet()
         val extras = intent.extras
         roomId = extras!!.getString(KEY_ROOM_ID, "")
         roomToken = extras.getString(KEY_ROOM_TOKEN, "")

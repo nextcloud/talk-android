@@ -41,7 +41,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -56,9 +55,6 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     @Inject
     lateinit var ncApi: NcApi
-
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

@@ -22,12 +22,24 @@ class UriUtils {
 
         fun isInstanceInternalFileShareUrl(baseUrl: String, url: String): Boolean {
             // https://cloud.nextcloud.com/f/41
+            // https://cloud.nextcloud.com/index.php/f/41
             return (url.startsWith("$baseUrl/f/") || url.startsWith("$baseUrl/index.php/f/")) &&
                 Regex(".*/f/\\d*").matches(url)
         }
 
+        fun isInstanceInternalTalkUrl(baseUrl: String, url: String): Boolean {
+            // https://cloud.nextcloud.com/call/123456789
+            return (url.startsWith("$baseUrl/call/") || url.startsWith("$baseUrl/index.php/call/")) &&
+                Regex(".*/call/\\d*").matches(url)
+        }
+
         fun extractInstanceInternalFileShareFileId(url: String): String {
             // https://cloud.nextcloud.com/f/41
+            return Uri.parse(url).lastPathSegment ?: ""
+        }
+
+        fun extractRoomTokenFromTalkUrl(url: String): String {
+            // https://cloud.nextcloud.com/call/123456789
             return Uri.parse(url).lastPathSegment ?: ""
         }
 
