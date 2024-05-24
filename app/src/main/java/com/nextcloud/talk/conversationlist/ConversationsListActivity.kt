@@ -101,6 +101,7 @@ import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
@@ -959,6 +960,8 @@ class ConversationsListActivity :
 
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
+        hideLogoForBrandedClients()
+
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
@@ -1017,6 +1020,12 @@ class ConversationsListActivity :
             )
         }
         binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
+    }
+
+    private fun hideLogoForBrandedClients() {
+        if (!BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
+            binding.emptyListIcon.visibility = View.GONE
+        }
     }
 
     @SuppressLint("CheckResult")
