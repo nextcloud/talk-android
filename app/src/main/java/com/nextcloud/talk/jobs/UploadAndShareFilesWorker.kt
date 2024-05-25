@@ -18,6 +18,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
+import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
@@ -380,7 +381,15 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             }
         }
 
-        fun upload(fileUri: String, roomToken: String, conversationName: String, metaData: String?) {
+        fun upload(
+            fileUri: String,
+            roomToken: String,
+            conversationName: String,
+            metaData: String?,
+            progressBarCallback: (Boolean) -> Unit
+        ) {
+            progressBarCallback(true)
+
             val data: Data = Data.Builder()
                 .putString(DEVICE_SOURCE_FILE, fileUri)
                 .putString(ROOM_TOKEN, roomToken)
@@ -392,5 +401,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .build()
             WorkManager.getInstance().enqueueUniqueWork(fileUri, ExistingWorkPolicy.KEEP, uploadWorker)
         }
+    }
+
+    private fun showToast(context: Context, message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }
