@@ -8,7 +8,6 @@
 package com.nextcloud.talk.api
 
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import kotlinx.coroutines.flow.Flow
 import okhttp3.ResponseBody
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -19,12 +18,12 @@ import retrofit2.http.Url
 
 interface NcAPI {
     @GET
-    fun getContactsWithSearchParam(
-        @Header("Authorization") authorization: String?,
-        @Url url: String?,
-        @Query("shareTypes[]") listOfShareTypes: List<String?>?,
-        @QueryMap options: Map<String?, Any?>
-    ): Flow<ResponseBody?>
+    suspend fun getContactsWithSearchParam(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Query("shareTypes[]") listOfShareTypes: List<String>?,
+        @QueryMap options: Map<String, Any>
+    ): ResponseBody
 
     /*
         QueryMap items are as follows:
@@ -34,9 +33,9 @@ interface NcAPI {
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room
      */
     @POST
-    fun createRoom(
-        @Header("Authorization") authorization: String?,
-        @Url url: String?,
-        @QueryMap options: Map<String?, String?>
-    ): Flow<RoomOverall?>
+    suspend fun createRoom(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @QueryMap options: Map<String, String>
+    ): RoomOverall
 }

@@ -8,10 +8,16 @@
 package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.api.NcAPI
-import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
-@HiltViewModel
 class ContactsActivityViewModel @Inject constructor(private val api: NcAPI) : ViewModel() {
+
+}
+
+sealed class ContactsUiState {
+    object Loading : ContactsUiState()
+    data class Success(val contacts: List<ContactItem>) : ContactsUiState()
+    data class Error(val message: String) : ContactsUiState()
 }
