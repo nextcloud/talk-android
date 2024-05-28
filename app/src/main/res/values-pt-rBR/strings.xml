@@ -562,6 +562,7 @@
     <string name="set_status">Definir status</string>
     <string name="set_status_message">Definir mensagem de status</string>
     <string name="share">Compartilhar </string>
+    <string name="share_link_to_conversation">Participe da conversa %1$s em %2$s</string>
     <string name="shared_items_audio">Áudio</string>
     <string name="shared_items_file">Arquivo</string>
     <string name="shared_items_media">Meios de comunicação</string>
