@@ -12,9 +12,7 @@ import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.api.NcAPI
 import javax.inject.Inject
 
-class ContactsActivityViewModel @Inject constructor(private val api: NcAPI) : ViewModel() {
-
-}
+class ContactsActivityViewModel @Inject constructor(private val api: NcAPI) : ViewModel()
 
 sealed class ContactsUiState {
     object Loading : ContactsUiState()
