@@ -393,7 +393,7 @@ class ChatActivity :
     private var voicePreviewObjectAnimator: ObjectAnimator? = null
 
     var mediaPlayer: MediaPlayer? = null
-    lateinit var mediaPlayerHandler: Handler
+    var mediaPlayerHandler: Handler? = null
 
     private var currentlyPlayedVoiceMessage: ChatMessage? = null
 
@@ -610,10 +610,10 @@ class ChatActivity :
 
     override fun onSaveInstanceState(outState: Bundle) {
         if (currentlyPlayedVoiceMessage != null) {
-            outState.putString(CURRENT_AUDIO_MESSAGE_KEY, currentlyPlayedVoiceMessage!!.getId())
+            outState.putString(CURRENT_AUDIO_MESSAGE_KEY, currentlyPlayedVoiceMessage!!.id)
             outState.putInt(CURRENT_AUDIO_POSITION_KEY, currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds)
             outState.putBoolean(CURRENT_AUDIO_WAS_PLAYING_KEY, currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage)
-            Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.getId())
+            Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.id)
             Log.d(
                 RESUME_AUDIO_TAG,
                 "Audio Position: " + currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds
@@ -2407,7 +2407,7 @@ class ChatActivity :
                             }
                         }
                     }
-                    mediaPlayerHandler.postDelayed(this, MILISEC_15)
+                    mediaPlayerHandler?.postDelayed(this, MILISEC_15)
                 }
             })
 
@@ -2481,7 +2481,7 @@ class ChatActivity :
         currentlyPlayedVoiceMessage = null
         lastRecordMediaPosition = 0 // this ensures that if audio track is changed, then it is played from the beginning
 
-        mediaPlayerHandler.removeCallbacksAndMessages(null)
+        mediaPlayerHandler?.removeCallbacksAndMessages(null)
 
         try {
             mediaPlayer?.let {
@@ -3509,7 +3509,7 @@ class ChatActivity :
             actionBar?.setIcon(null)
         }
 
-        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
+        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
 
         adapter = null
         Log.d(TAG, "inConversation was set to false!")
@@ -3938,7 +3938,7 @@ class ChatActivity :
                 } else {
                     Log.d(
                         RESUME_AUDIO_TAG,
-                        "voiceMessagePosition is -1, adapter # of items: " + adapter!!.getItemCount()
+                        "voiceMessagePosition is -1, adapter # of items: " + adapter!!.itemCount
                     )
                 }
             } else {
@@ -4600,7 +4600,8 @@ class ChatActivity :
 
     private fun showMicrophoneButton(show: Boolean) {
         if (show && CapabilitiesUtil.hasSpreedFeatureCapability(
-                spreedCapabilities, SpreedFeatures.VOICE_MESSAGE_SHARING
+                spreedCapabilities,
+                SpreedFeatures.VOICE_MESSAGE_SHARING
             )
         ) {
             Log.d(TAG, "Microphone shown")
