@@ -300,7 +300,7 @@
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
-    <string name="nc_remove_team_and_members">Kendu taldea eta kideak</string>
+    <string name="nc_remove_team_and_members">Kendu lantaldea eta kideak</string>
     <string name="nc_rename">Aldatu izena elkarrizktari</string>
     <string name="nc_rename_confirm">Berrizendatu</string>
     <string name="nc_reply">Erantzun</string>
@@ -419,8 +419,8 @@
     <string name="nc_sort_by">Ordenatu honen arabera</string>
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>
-    <string name="nc_team">Taldea</string>
-    <string name="nc_teams">Taldeak</string>
+    <string name="nc_team">Lantaldea</string>
+    <string name="nc_teams">Lantaldeak</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
