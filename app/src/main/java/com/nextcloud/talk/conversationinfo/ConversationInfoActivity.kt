@@ -162,7 +162,6 @@ class ConversationInfoActivity :
         conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
-        initObservers()
     }
 
     override fun onStart() {
@@ -195,6 +194,7 @@ class ConversationInfoActivity :
         binding.addParticipantsAction.visibility = GONE
 
         binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
+        initObservers()
     }
 
     private fun initObservers() {
