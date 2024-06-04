@@ -1,0 +1,41 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.nextcloud.talk.data.database.dao
+
+import androidx.room.Dao
+import androidx.room.Query
+import androidx.room.Update
+import androidx.room.Upsert
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import kotlinx.coroutines.flow.Flow
+
+@Dao
+interface ChatMessagesDao {
+    @Query("SELECT * FROM ChatMessages where internal_conversation_id = :conversationId")
+    fun getMessagesForConversation(conversationId: Long): Flow<List<ChatMessageEntity>>
+
+    @Upsert
+    fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
+
+    @Query("SELECT * FROM ChatMessages where id = :messageId")
+    fun getChatMessage(messageId: Long): Flow<ChatMessageEntity>
+
+    /**
+     * Deletes rows in the db matching the specified [messageIds]
+     */
+    @Query(
+        value = """
+            DELETE FROM chatmessages
+            WHERE id in (:messageIds)
+        """
+    )
+    fun deleteChatMessages(messageIds: List<Int>)
+
+    @Update
+    fun updateChatMessage(message: ChatMessageEntity)
+}

@@ -17,6 +17,7 @@ import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
@@ -143,9 +144,13 @@ data class ChatMessage(
 
     var hiddenByCollapse: Boolean = false,
 
-    var openWhenDownloaded: Boolean = true
+    var openWhenDownloaded: Boolean = true,
 
-) : Parcelable, MessageContentType, MessageContentType.Image {
+    override var changedId: Int = jsonMessageId,
+
+    override var markedForDeletion: Boolean = "comment_deleted" == messageType
+
+) : Parcelable, MessageContentType, MessageContentType.Image, SyncableModel {
 
     var extractedUrlToPreview: String? = null
 

@@ -1,0 +1,156 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.nextcloud.talk.data.database.dao
+
+import android.content.Context
+import android.util.Log
+import androidx.room.Room
+import androidx.test.core.app.ApplicationProvider
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.source.local.TalkDatabase
+import com.nextcloud.talk.data.user.UsersDao
+import com.nextcloud.talk.data.user.model.UserEntity
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.test.runTest
+import org.junit.After
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+
+@RunWith(AndroidJUnit4::class)
+class ChatMessagesDaoTest {
+
+    private lateinit var usersDao: UsersDao
+    private lateinit var conversationsDao: ConversationsDao
+    private lateinit var chatMessagesDao: ChatMessagesDao
+    private lateinit var db: TalkDatabase
+    private val tag = ChatMessagesDaoTest::class.java.simpleName
+
+    @Before
+    fun createDb() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        db = Room.inMemoryDatabaseBuilder(
+            context,
+            TalkDatabase::class.java
+        ).build()
+        usersDao = db.usersDao()
+        conversationsDao = db.conversationsDao()
+        chatMessagesDao = db.chatMessagesDao()
+    }
+
+    @After
+    fun closeDb() = db.close()
+
+    @Test
+    fun test() =
+        runTest {
+            usersDao.saveUser(createUserEntity("account1", "Account 1"))
+            usersDao.saveUser(createUserEntity("account2", "Account 2"))
+
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+            val account2 = usersDao.getUserWithUserId("account2").blockingGet()
+
+            conversationsDao.upsertConversations(
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        roomName = "Conversation One"
+                    ),
+                    createConversationEntity(
+                        accountId = account1.id,
+                        roomName = "Conversation Two"
+                    ),
+                    createConversationEntity(
+                        accountId = account2.id,
+                        roomName = "Conversation Three"
+                    )
+                )
+            )
+
+            assertEquals(2, conversationsDao.getConversationsForUser(account1.id).first().size)
+            assertEquals(1, conversationsDao.getConversationsForUser(account2.id).first().size)
+
+            // Lets imagine we are on conversations screen...
+            conversationsDao.getConversationsForUser(account1.id).first().forEach {
+                Log.d(tag, "- next Conversation for account1 -")
+                Log.d(tag, "id (PK): " + it.id)
+                Log.d(tag, "accountId: " + it.accountId)
+                Log.d(tag, "name: " + it.name)
+                Log.d(tag, "token: " + it.token)
+            }
+
+            // User sees all conversations and clicks on a item. That's how we get a conversation
+            val conversation1 = conversationsDao.getConversationsForUser(account1.id).first()[0]
+            val conversation2 = conversationsDao.getConversationsForUser(account1.id).first()[1]
+
+            // Having a conversation token, we can also get a conversation directly
+            val conversation1GotByToken = conversationsDao.getConversationForUser(account1.id, conversation1.token!!)
+
+            assertEquals(conversation1, conversation1GotByToken)
+
+            // Lets insert some messages to the conversations
+            chatMessagesDao.upsertChatMessages(
+                listOf(
+                    createChatMessageEntity(conversation1.id, "hello"),
+                    createChatMessageEntity(conversation1.id, "here"),
+                    createChatMessageEntity(conversation1.id, "are"),
+                    createChatMessageEntity(conversation1.id, "some"),
+                    createChatMessageEntity(conversation1.id, "messages")
+                )
+            )
+            chatMessagesDao.upsertChatMessages(
+                listOf(
+                    createChatMessageEntity(conversation2.id, "first message in conversation 2")
+                )
+            )
+
+            // by having a conversation, we can query it's messages
+            val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.id)
+            assertEquals(5, chatMessagesConv1.first().size)
+
+            val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.id)
+            assertEquals(1, chatMessagesConv2.first().size)
+
+            assertEquals(chatMessagesConv1.first()[3].message, "some")
+        }
+
+    private fun createUserEntity(userId: String, userName: String) =
+        UserEntity(
+            userId = userId,
+            username = userName,
+            baseUrl = null,
+            token = null,
+            displayName = null,
+            pushConfigurationState = null,
+            capabilities = null,
+            serverVersion = null,
+            clientCertificate = null,
+            externalSignalingServer = null,
+            current = java.lang.Boolean.FALSE,
+            scheduledForDeletion = java.lang.Boolean.FALSE
+        )
+
+    private fun createConversationEntity(accountId: Long, roomName: String): ConversationEntity {
+        val token = (0..10000000).random().toString()
+
+        return ConversationEntity(
+            accountId = accountId,
+            token = token,
+            name = roomName
+        )
+    }
+
+    private fun createChatMessageEntity(internalConversationId: Long, message: String) =
+        ChatMessageEntity(
+            internalConversationId = internalConversationId,
+            message = message
+        )
+}
