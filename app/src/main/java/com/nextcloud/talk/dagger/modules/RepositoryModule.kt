@@ -10,14 +10,20 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
+import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
+import com.nextcloud.talk.conversationinfo.data.ConversationInfoRepository
+import com.nextcloud.talk.conversationinfo.data.OfflineFirstConversationInfoRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
 import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
 import com.nextcloud.talk.conversationlist.data.ConversationsListRepositoryImpl
+import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
@@ -47,6 +53,7 @@ import com.nextcloud.talk.translate.repositories.TranslateRepository
 import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -149,5 +156,23 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
         return InvitationsRepositoryImpl(ncApi)
+    }
+
+    @Provides
+    fun provideOfflineFirstChatRepository(
+        dao: ChatMessagesDao,
+        repository: ChatRepository,
+        appPreferences: AppPreferences
+    ): ChatMessageRepository {
+        return OfflineFirstChatRepository(dao, repository, appPreferences)
+    }
+
+    @Provides
+    fun provideOfflineFirstConversation(
+        dao: ConversationsDao,
+        repository: ChatRepository,
+        currentUserProviderNew: CurrentUserProviderNew
+    ): ConversationInfoRepository {
+        return OfflineFirstConversationInfoRepository(dao, repository, currentUserProviderNew)
     }
 }
