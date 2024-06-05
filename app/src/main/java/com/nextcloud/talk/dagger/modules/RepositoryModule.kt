@@ -9,9 +9,12 @@
  */
 package com.nextcloud.talk.dagger.modules
 
+import com.nextcloud.talk.api.NcAPI
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
+import com.nextcloud.talk.contacts.ContactsRepository
+import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
@@ -149,5 +152,10 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
         return InvitationsRepositoryImpl(ncApi)
+    }
+
+    @Provides
+    fun provideContactsRepository(ncAPI: NcAPI): ContactsRepository {
+        return ContactsRepositoryImpl(ncAPI)
     }
 }

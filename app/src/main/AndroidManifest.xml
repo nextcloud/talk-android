@@ -126,6 +126,9 @@
             android:name=".account.WebViewLoginActivity"
             android:theme="@style/AppTheme" />
 
+        <activity android:name=".contacts.ContactsActivityCompose"
+            android:theme="@style/AppTheme"/>
+
         <activity
             android:name=".account.AccountVerificationActivity"
             android:theme="@style/AppTheme" />

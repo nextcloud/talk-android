@@ -20,6 +20,7 @@ apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdk 34
@@ -39,6 +40,7 @@ android {
         flavorDimensions "default"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
+        javaCompileOptions.annotationProcessorOptions.arguments['dagger.hilt.disableModulesHaveInstallInCheck'] = 'true'
 
         productFlavors {
             // used for f-droid
@@ -115,6 +117,11 @@ android {
     buildFeatures {
         viewBinding true
         buildConfig = true
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.13"
     }
 
     lint {
@@ -123,6 +130,9 @@ android {
         htmlOutput file("$project.buildDir/reports/lint/lint.html")
         htmlReport true
     }
+}
+kapt {
+    correctErrorTypes = true
 }
 
 ext {
@@ -273,6 +283,19 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.13.1'
 
+    //compose
+    implementation(platform("androidx.compose:compose-bom:2024.02.01"))
+    implementation("androidx.compose.ui:ui")
+    implementation 'androidx.compose.material3:material3'
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation 'androidx.activity:activity-compose:1.9.0'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.1'
+    debugImplementation("androidx.compose.ui:ui-tooling")
+
+    //tests
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.12.0'
     androidTestImplementation 'org.mockito:mockito-android:5.12.0'
@@ -300,6 +323,9 @@ dependencies {
     implementation 'com.github.nextcloud.android-common:ui:0.21.0'
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
+
+    implementation "com.google.dagger:hilt-android:$hilt_version"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 }
 
 tasks.register('installGitHooks', Copy) {
