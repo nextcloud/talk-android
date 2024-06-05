@@ -335,8 +335,7 @@ class MessageActionsDialog(
 
     private fun initMenuEditMessage(visible: Boolean) {
         dialogMessageActionsBinding.menuEditMessage.setOnClickListener {
-            chatActivity.editMessage(message)
-            Log.d("EDIT MESSAGE", "$message")
+            chatActivity.messageInputViewModel.edit(message)
             dismiss()
         }
 
@@ -357,7 +356,7 @@ class MessageActionsDialog(
     private fun initMenuReplyToMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuReplyToMessage.setOnClickListener {
-                chatActivity.replyToMessage(message)
+                chatActivity.messageInputViewModel.reply(message)
                 dismiss()
             }
         }
