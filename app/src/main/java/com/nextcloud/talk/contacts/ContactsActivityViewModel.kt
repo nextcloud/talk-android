@@ -9,10 +9,10 @@ package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.adapters.items.ContactItem
-import com.nextcloud.talk.api.NcAPI
+import com.nextcloud.talk.api.NcApiCoroutines
 import javax.inject.Inject
 
-class ContactsActivityViewModel @Inject constructor(private val api: NcAPI) : ViewModel()
+class ContactsActivityViewModel @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) : ViewModel()
 
 sealed class ContactsUiState {
     object Loading : ContactsUiState()
