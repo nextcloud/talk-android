@@ -506,6 +506,7 @@ class ChatActivity :
                     .toString() + " | isPLaying: " + currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage
             )
         }
+        chatViewModel.handleOrientationChange()
         super.onSaveInstanceState(outState)
     }
 

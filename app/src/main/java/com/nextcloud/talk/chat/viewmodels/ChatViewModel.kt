@@ -615,6 +615,10 @@ class ChatViewModel @Inject constructor(
         audioFocusRequestManager.audioFocusRequest(request, callback)
     }
 
+    fun handleOrientationChange() {
+        _getCapabilitiesViewState.value = GetCapabilitiesStartState
+    }
+
     inner class GetRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
             // unused atm
