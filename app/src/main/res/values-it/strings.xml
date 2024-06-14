@@ -353,6 +353,7 @@
     <string name="nc_sort_by">Ordina per</string>
     <string name="nc_start_time">Ora di inizio</string>
     <string name="nc_switch_account">Cambia account</string>
+    <string name="nc_team">Team</string>
     <string name="nc_upload_choose_local_files">Scegli i file</string>
     <string name="nc_upload_confirm_send_multiple">Inviare questi file a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Inviare questo file a %1$s?</string>
