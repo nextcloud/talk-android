@@ -13,5 +13,4 @@ import com.nextcloud.talk.models.json.participants.Participant
 data class ContactEntry(
     val participant: Participant,
     val user: User
-) {
-}
+)

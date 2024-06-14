@@ -10,31 +10,42 @@ package com.nextcloud.talk.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ContactsActivityViewModel @Inject constructor(private val ncApiCoroutines: NcApiCoroutines) : ViewModel() {
+class ContactsActivityViewModel @Inject constructor(
+    private val ncApiCoroutines: NcApiCoroutines,
+    private val userManager: UserManager
+) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
 
-    fun getContactsFromSearchParams(
-        baseUrl: String,
-        ocsApiVersion: String,
-        shareList: List<String>,
-        options: Map<String, Any>
-    ) {
+    init {
+        getContactsFromSearchParams()
+    }
+
+    private fun getContactsFromSearchParams() {
+        val currentUser = userManager.currentUser.blockingGet()
+        val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+        val retrofitBucket: RetrofitBucket =
+            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, "")
+        val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
+        val shareTypesList = listOf("users")
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
                 val contacts = ncApiCoroutines.getContactsWithSearchParam(
-                    baseUrl,
-                    ocsApiVersion,
-                    shareList,
-                    options
+                    credentials,
+                    retrofitBucket.url,
+                    shareTypesList,
+                    modifiedQueryMap
                 )
                 val contactsList: List<AutocompleteUser>? = contacts.data
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
@@ -46,7 +57,6 @@ class ContactsActivityViewModel @Inject constructor(private val ncApiCoroutines:
 }
 
 sealed class ContactsUiState {
-
     object None : ContactsUiState()
     object Loading : ContactsUiState()
     data class Success(val contacts: List<AutocompleteUser>?) : ContactsUiState()
