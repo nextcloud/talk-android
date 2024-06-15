@@ -176,7 +176,7 @@
     <string name="nc_guest_access_password_title">암호 보호</string>
     <string name="nc_guest_access_password_weak_alert_title">약한 암호</string>
     <string name="nc_guest_access_resend_invitations">초대 재전송</string>
-    <string name="nc_guest_access_resend_invitations_failed">초대장이 에러로 인하여 전송되지 못했습니다.</string>
+    <string name="nc_guest_access_resend_invitations_failed">초대장이 오류로 인하여 전송되지 못했습니다.</string>
     <string name="nc_guest_access_resend_invitations_successful">초대장이 다시 전송되었습니다.</string>
     <string name="nc_guest_access_share_link">대화 링크 공유</string>
     <string name="nc_hint_enter_a_message">메시지 입력…</string>
@@ -457,7 +457,7 @@
     <string name="switch_to_breakout_room">소회의실로 전환</string>
     <string name="switch_to_main_room">주 대화방으로 전환</string>
     <string name="take_photo">사진 찍기</string>
-    <string name="take_photo_error_deleting_picture">사진 촬영 에러</string>
+    <string name="take_photo_error_deleting_picture">사진 촬영 오류</string>
     <string name="take_photo_permission">허가 없이 사진을 찍을 수 없습니다.</string>
     <string name="take_photo_retake_photo">사진을 다시 찍다</string>
     <string name="take_photo_send">보내기</string>
