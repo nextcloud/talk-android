@@ -217,9 +217,9 @@
     <string name="nc_important_conversation_desc">As notificacións nesta conversa anularán os axustes de «Non molestar»</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
-    <string name="nc_last_moderator_title">Non foi posíbel abandonar a conversa</string>
+    <string name="nc_last_moderator_title">Non foi posíbel dixar a conversa</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
-    <string name="nc_leave">Abandonar a conversa</string>
+    <string name="nc_leave">Deixar a conversa</string>
     <string name="nc_leaving_call">Abandonando a chamada…</string>
     <string name="nc_license_summary">Licenza Pública Xeral GNU, versión 3</string>
     <string name="nc_license_title">licenza</string>
