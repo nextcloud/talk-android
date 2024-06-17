@@ -82,7 +82,6 @@ class AudioFocusRequestManager(private val context: Context) {
                 audioManager.abandonAudioFocusRequest(focusRequest)
             }
         } else {
-            @Deprecated("This method was deprecated in API level 26.")
             if (shouldRequestFocus) {
                 audioManager.requestAudioFocus(audioFocusChangeListener, AudioManager.STREAM_MUSIC, duration)
             } else {
