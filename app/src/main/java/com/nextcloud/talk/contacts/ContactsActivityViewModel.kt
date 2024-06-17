@@ -35,9 +35,13 @@ class ContactsActivityViewModel @Inject constructor(
         val currentUser = userManager.currentUser.blockingGet()
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         val retrofitBucket: RetrofitBucket =
-            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, "")
+            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, null)
         val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
-        val shareTypesList = listOf("users")
+        modifiedQueryMap["limit"] = 50
+        val shareTypesList: ArrayList<String> = ArrayList()
+        shareTypesList.add("0")
+
+        modifiedQueryMap["shareTypes[]"] = shareTypesList
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
