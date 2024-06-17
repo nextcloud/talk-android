@@ -12,9 +12,14 @@ import com.github.spotbugs.snom.Confidence
 import com.github.spotbugs.snom.Effort
 import com.github.spotbugs.snom.SpotBugsTask
 
+plugins {
+    id "org.jetbrains.kotlin.plugin.compose" version "2.0.0"
+    id "org.jetbrains.kotlin.kapt"
+    id 'com.google.devtools.ksp' version '2.0.0-1.0.21'
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
@@ -152,6 +157,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation("androidx.compose.runtime:runtime:1.6.8")
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.1.1'
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
@@ -222,7 +228,7 @@ dependencies {
 
     implementation "androidx.room:room-runtime:${roomVersion}"
     implementation "androidx.room:room-rxjava2:${roomVersion}"
-    kapt "androidx.room:room-compiler:${roomVersion}"
+    ksp "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:${roomVersion}"
 
     implementation "org.parceler:parceler-api:$parcelerVersion"
@@ -349,4 +355,8 @@ tasks.named("detekt").configure {
 detekt {
     config.setFrom("../detekt.yml")
     source.setFrom("src/")
+}
+
+ksp {
+    arg('room.schemaLocation', "$projectDir/schemas")
 }
