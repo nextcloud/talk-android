@@ -158,6 +158,8 @@
     <string name="nc_diagnose_battery_optimization_title">Axustes da batería</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Abrir dontkillmyapp.com</string>
+    <string name="nc_diagnose_firebase_push_token_missing">Non se definiu ningún testemuño «push» de Firebase. Cree un informe de fallos.</string>
+    <string name="nc_diagnose_server_talk_version">Versión de Talk do servidor</string>
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
@@ -265,6 +267,7 @@
     <string name="nc_notification_channel_uploads">Envíos</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progreso do envío</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">O permiso de notificación e os axustes da batería están configurados correctamente para recibir notificacións. Se ten problemas para recibir notificacións de todos os xeitos, comprobe se as canles de notificación para chamadas e mensaxes están activadas. Pódese atopar máis axuda en DontKillMyApp.com ou na lista de verificación de solución de problemas. Se isto non lle é de axuda, vaia á pantalla de diagnóstico e envíe un informe de fallo.</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
     <string name="nc_notify_me_never">Non notificar nunca</string>
@@ -349,6 +352,7 @@
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
+    <string name="nc_settings_diagnose_subtitle">Abrir a pantalla de diagnóstico para comprobar os axustes ou crear un informe de fallos</string>
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
