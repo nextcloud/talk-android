@@ -60,19 +60,19 @@ class MessageInput : MessageInput {
     }
 
     var messageInput: EmojiEditText
-        get() = messageInput
+        get() = super.messageInput
         set(messageInput) {
             super.messageInput = messageInput
         }
 
     var attachmentButton: ImageButton
-        get() = attachmentButton
+        get() = super.attachmentButton
         set(attachmentButton) {
             super.attachmentButton = attachmentButton
         }
 
     var messageSendButton: ImageButton
-        get() = messageSendButton
+        get() = super.messageSendButton
         set(messageSendButton) {
             super.messageSendButton = messageSendButton
         }
