@@ -40,6 +40,7 @@ class ContactsActivityViewModel @Inject constructor(
         modifiedQueryMap["limit"] = 50
         val shareTypesList: ArrayList<String> = ArrayList()
         shareTypesList.add("0")
+        shareTypesList.add("1")
 
         modifiedQueryMap["shareTypes[]"] = shareTypesList
         _contactsViewState.value = ContactsUiState.Loading
@@ -51,6 +52,7 @@ class ContactsActivityViewModel @Inject constructor(
                     shareTypesList,
                     modifiedQueryMap
                 )
+
                 val contactsList: List<AutocompleteUser>? = contacts.data
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
