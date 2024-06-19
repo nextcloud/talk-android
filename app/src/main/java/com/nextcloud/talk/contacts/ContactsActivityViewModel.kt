@@ -53,7 +53,7 @@ class ContactsActivityViewModel @Inject constructor(
                     modifiedQueryMap
                 )
 
-                val contactsList: List<AutocompleteUser>? = contacts.data
+                val contactsList: List<AutocompleteUser>? = contacts.ocs!!.data
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
