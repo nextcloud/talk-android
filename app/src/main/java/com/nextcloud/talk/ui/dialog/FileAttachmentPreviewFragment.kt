@@ -45,7 +45,7 @@ class FileAttachmentPreviewFragment : DialogFragment() {
             filesList = it.getStringArrayList(FILES_TO_UPLOAD_ARG)!!
         }
 
-        binding = DialogFileAttachmentPreviewBinding.inflate(LayoutInflater.from(context))
+        binding = DialogFileAttachmentPreviewBinding.inflate(layoutInflater)
         return MaterialAlertDialogBuilder(requireContext()).setView(binding.root).create()
     }
 

@@ -37,12 +37,13 @@ import com.nextcloud.talk.ui.StatusDrawable;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
 import com.nextcloud.talk.utils.CapabilitiesUtil;
+import com.nextcloud.talk.utils.DisplayUtils;
 
 import java.net.CookieManager;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -94,7 +95,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        binding = DialogChooseAccountBinding.inflate(LayoutInflater.from(requireContext()));
+        binding = DialogChooseAccountBinding.inflate(getLayoutInflater());
         dialogView = binding.getRoot();
 
         return new MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create();
@@ -103,7 +104,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
         User user = userManager.getCurrentUser().blockingGet();
 
         themeViews();
