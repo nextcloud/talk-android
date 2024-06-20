@@ -148,7 +148,8 @@ data class ChatMessage(
 
     override var changedId: Int = jsonMessageId,
 
-    override var markedForDeletion: Boolean = "comment_deleted" == messageType
+    // override var markedForDeletion: Boolean = "comment_deleted" == messageType
+    override var markedForDeletion: Boolean = false
 
 ) : Parcelable, MessageContentType, MessageContentType.Image, SyncableModel {
 

@@ -133,6 +133,7 @@
     <string name="nc_diagnose_app_users_amount">등록된 사용자</string>
     <string name="nc_diagnose_battery_optimization_title">배터리 설정</string>
     <string name="nc_diagnose_device_name_title">장치</string>
+    <string name="nc_diagnose_signaling_mode_extern">외부</string>
     <string name="nc_diagnose_signaling_mode_intern">내부</string>
     <string name="nc_dialog_invalid_password">잘못된 암호</string>
     <string name="nc_dialog_maintenance_mode">유지 보수 모드</string>

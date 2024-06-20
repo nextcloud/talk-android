@@ -92,7 +92,10 @@ class ChatMessagesDaoTest {
             val conversation2 = conversationsDao.getConversationsForUser(account1.id).first()[1]
 
             // Having a conversation token, we can also get a conversation directly
-            val conversation1GotByToken = conversationsDao.getConversationForUser(account1.id, conversation1.token!!)
+            val conversation1GotByToken = conversationsDao.getConversationForUser(
+                account1.id,
+                conversation1.token!!
+            ).first()
 
             assertEquals(conversation1, conversation1GotByToken)
 
@@ -112,6 +115,14 @@ class ChatMessagesDaoTest {
                 )
             )
 
+            chatMessagesDao.getMessagesForConversation(conversation1.id).first().forEach {
+                Log.d(tag, "- next Message for conversation1 (account1)-")
+                Log.d(tag, "id (PK): " + it.id)
+                Log.d(tag, "message: " + it.message)
+            }
+
+            val conv1chatMessage3 = chatMessagesDao.getChatMessageForConversation(conversation1.id, 3).first()
+
             // by having a conversation, we can query it's messages
             val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.id)
             assertEquals(5, chatMessagesConv1.first().size)
@@ -119,7 +130,15 @@ class ChatMessagesDaoTest {
             val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.id)
             assertEquals(1, chatMessagesConv2.first().size)
 
-            assertEquals(chatMessagesConv1.first()[3].message, "some")
+            assertEquals("some", chatMessagesConv1.first()[3].message)
+
+            val chatMessagesConv1Since =
+                chatMessagesDao.getMessagesForConversationSince(conversation1.id, conv1chatMessage3.id)
+            assertEquals(3, chatMessagesConv1Since.first().size)
+
+            val chatMessagesConv1To =
+                chatMessagesDao.getMessagesForConversationTo(conversation1.id, conv1chatMessage3.id)
+            assertEquals(3, chatMessagesConv1To.first().size)
         }
 
     private fun createUserEntity(userId: String, userName: String) =

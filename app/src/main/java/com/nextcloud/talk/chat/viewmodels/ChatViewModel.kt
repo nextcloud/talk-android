@@ -369,6 +369,8 @@ class ChatViewModel @Inject constructor(
     }
 
     fun pullChatMessages(credentials: String, url: String) {
+        // TODO: this would be the palce to call chatRepository.sync() ??
+
         chatRepository.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
             .subscribeOn(Schedulers.io())
             .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
