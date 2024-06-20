@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
+import com.nextcloud.talk.chat.data.ChatMessageRepository.InsertionStrategy
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.model.ChatMessageModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
@@ -24,22 +25,84 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val network: ChatRepository,
     private val datastore: AppPreferences
-) : ChatMessageRepository {
+) : ChatMessageRepository, Synchronizer {
 
-    override fun getMessages(id: Long): Flow<List<ChatMessageModel>> =
-        chatDao.getMessagesForConversation(id).map {
-            it.map(ChatMessageEntity::asModel)
+    override val messageFlow:
+        Flow<
+            Pair<
+                InsertionStrategy,
+                List<ChatMessageModel>>>
+        get() = _messageFlow
+
+    private val _messageFlow:
+        MutableSharedFlow<
+            Pair<
+                InsertionStrategy,
+                List<ChatMessageModel>>> = MutableSharedFlow()
+
+    override fun loadMoreMessages(
+        beforeMessageId: Long,
+        withConversationId: Long,
+        withMessageLimit: Int,
+        withNetworkParams: Bundle
+    ): Unit = runBlocking {
+        launch {
+            val strategy = InsertionStrategy.PREPEND
+
+            var attempts = 0
+            do {
+                attempts++
+                val maxAttemptsAreNotReached = (attempts < 2)
+
+                val list = getMessages(
+                    beforeMessageId,
+                    withConversationId,
+                    withMessageLimit
+                )
+
+                if (list.isNotEmpty()) {
+                    val pair = Pair(strategy, list)
+                    _messageFlow.emit(pair)
+                    break
+                } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
+            } while (maxAttemptsAreNotReached)
         }
+    }
 
-    override fun getMessage(id: Long): Flow<ChatMessageModel> =
-        chatDao.getChatMessage(id).map(ChatMessageEntity::asModel)
+    override fun initMessagePolling(withConversationId: Long): Unit = runBlocking {
+        launch {
+            // init field map with vars
+            while (true) {
+                // retrieve last known message Id for conversation id from datastore
+                // sync database with server ( This is a long blocking call b/c long polling is set )
+                // get messages after last known message id, if not empty -> emit to flow with APPEND TODO impl func
+                // update field map vars for next cycle
+            }
+        }
+    }
+
+    private suspend fun getMessages(
+        beforeId: Long,    // TODO needed for proper filtering
+        roomId: Long,
+        messageLimit: Int     // TODO needed for proper filtering
+    ): List<ChatMessageModel> =
+        chatDao.getMessagesForConversation(roomId).map {
+            it.map(ChatMessageEntity::asModel)
+        }.first()
+
+    override fun getMessage(withId: Long): Flow<ChatMessageModel> =
+        chatDao.getChatMessage(withId).map(ChatMessageEntity::asModel)
 
     @Suppress("UNCHECKED_CAST")
     private fun getMessagesFromServer(bundle: Bundle): List<ChatMessage> {
@@ -47,6 +110,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val url = bundle.getString(BundleKeys.KEY_CHAT_URL)
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
 
+        // TODO this needs to be lifecycle aware
         val list = network.pullChatMessages(credentials!!, url!!, fieldMap)
             .firstElement()
             .subscribeOn(Schedulers.io())
