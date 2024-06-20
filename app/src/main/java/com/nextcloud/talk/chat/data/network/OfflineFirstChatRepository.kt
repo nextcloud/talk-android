@@ -27,6 +27,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -101,8 +102,12 @@ class OfflineFirstChatRepository @Inject constructor(
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-    override fun getMessage(withId: Long): Flow<ChatMessageModel> =
-        chatDao.getChatMessage(withId).map(ChatMessageEntity::asModel)
+    override fun getMessage(withId: Long): Flow<ChatMessageModel> {
+        // TODO figure this out tmrw
+        // =
+        // chatDao.getChatMessageForConversation(withId).map(ChatMessageEntity::asModel)
+        return flowOf()
+    }
 
     @Suppress("UNCHECKED_CAST")
     private fun getMessagesFromServer(bundle: Bundle): List<ChatMessage> {
