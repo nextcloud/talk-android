@@ -33,13 +33,13 @@ class OfflineFirstChatRepository @Inject constructor(
     private val datastore: AppPreferences
 ) : ChatMessageRepository {
 
-    override fun getMessages(id: Long): Flow<List<ChatMessageModel>> =
-        chatDao.getMessagesForConversation(id).map {
+    override fun getMessages(conversationId: Long): Flow<List<ChatMessageModel>> =
+        chatDao.getMessagesForConversation(conversationId).map {
             it.map(ChatMessageEntity::asModel)
         }
 
-    override fun getMessage(id: Long): Flow<ChatMessageModel> =
-        chatDao.getChatMessage(id).map(ChatMessageEntity::asModel)
+    override fun getMessage(conversationId: Long, messageId: Long): Flow<ChatMessageModel> =
+        chatDao.getChatMessageForConversation(conversationId, messageId).map(ChatMessageEntity::asModel)
 
     @Suppress("UNCHECKED_CAST")
     private fun getMessagesFromServer(bundle: Bundle): List<ChatMessage> {

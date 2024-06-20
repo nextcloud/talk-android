@@ -22,8 +22,8 @@ interface ChatMessagesDao {
     @Upsert
     fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 
-    @Query("SELECT * FROM ChatMessages where id = :messageId")
-    fun getChatMessage(messageId: Long): Flow<ChatMessageEntity>
+    @Query("SELECT * FROM ChatMessages where internal_conversation_id = :conversationId AND id = :messageId")
+    fun getChatMessageForConversation(conversationId: Long, messageId: Long): Flow<ChatMessageEntity>
 
     /**
      * Deletes rows in the db matching the specified [messageIds]
@@ -38,4 +38,14 @@ interface ChatMessagesDao {
 
     @Update
     fun updateChatMessage(message: ChatMessageEntity)
+
+    @Query(
+        "SELECT * FROM ChatMessages WHERE internal_conversation_id = :conversationId AND id >= :messageId ORDER BY timestamp ASC, id ASC"
+    )
+    fun getMessagesForConversationSince(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        "SELECT * FROM ChatMessages WHERE internal_conversation_id = :conversationId AND id <= :messageId ORDER BY timestamp DESC, id DESC"
+    )
+    fun getMessagesForConversationTo(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
 }

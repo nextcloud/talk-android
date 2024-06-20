@@ -16,10 +16,10 @@ interface ChatMessageRepository : Syncable {
     /**
      * Gets available messages as a stream
      */
-    fun getMessages(id: Long): Flow<List<ChatMessageModel>>
+    fun getMessages(conversationId: Long): Flow<List<ChatMessageModel>>
 
     /**
      * Gets a individual message
      */
-    fun getMessage(id: Long): Flow<ChatMessageModel>
+    fun getMessage(conversationId: Long, messageId: Long): Flow<ChatMessageModel>
 }
