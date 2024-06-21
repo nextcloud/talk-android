@@ -300,6 +300,7 @@
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
     <string name="nc_remove_group_and_members">Retirar grupo e membros</string>
     <string name="nc_remove_participant">Retirar participante</string>
+    <string name="nc_remove_team_and_members">Retirar equipo e membros</string>
     <string name="nc_rename">Renomear a conversa</string>
     <string name="nc_rename_confirm">Renomear</string>
     <string name="nc_reply">Responder</string>
