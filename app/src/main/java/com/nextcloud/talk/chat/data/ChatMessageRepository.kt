@@ -26,7 +26,9 @@ interface ChatMessageRepository : Syncable {
         Flow<
             Pair<
                 InsertionStrategy,
-                List<ChatMessageModel>>>
+                List<ChatMessageModel>
+                >
+            >
 
     /**
      * Loads messages from local storage. If the messages are not found, then it
@@ -45,9 +47,7 @@ interface ChatMessageRepository : Syncable {
     /**
      * TODO should be lifecycle and network aware
      */
-    fun initMessagePolling(
-        withConversationId: Long,
-    )
+    fun initMessagePolling(withConversationId: Long)
 
     /**
      * Gets a individual message.

@@ -43,62 +43,68 @@ class OfflineFirstChatRepository @Inject constructor(
         Flow<
             Pair<
                 InsertionStrategy,
-                List<ChatMessageModel>>>
+                List<ChatMessageModel>
+                >
+            >
         get() = _messageFlow
 
     private val _messageFlow:
         MutableSharedFlow<
             Pair<
                 InsertionStrategy,
-                List<ChatMessageModel>>> = MutableSharedFlow()
+                List<ChatMessageModel>
+                >
+            > = MutableSharedFlow()
 
     override fun loadMoreMessages(
         beforeMessageId: Long,
         withConversationId: Long,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    ): Unit = runBlocking {
-        launch {
-            val strategy = InsertionStrategy.PREPEND
+    ): Unit =
+        runBlocking {
+            launch {
+                val strategy = InsertionStrategy.PREPEND
 
-            var attempts = 0
-            do {
-                attempts++
-                val maxAttemptsAreNotReached = (attempts < 2)
+                var attempts = 0
+                do {
+                    attempts++
+                    val maxAttemptsAreNotReached = (attempts < 2)
 
-                val list = getMessages(
-                    beforeMessageId,
-                    withConversationId,
-                    withMessageLimit
-                )
+                    val list = getMessages(
+                        beforeMessageId,
+                        withConversationId,
+                        withMessageLimit
+                    )
 
-                if (list.isNotEmpty()) {
-                    val pair = Pair(strategy, list)
-                    _messageFlow.emit(pair)
-                    break
-                } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
-            } while (maxAttemptsAreNotReached)
-        }
-    }
-
-    override fun initMessagePolling(withConversationId: Long): Unit = runBlocking {
-        launch {
-            // init field map with vars
-            while (true) {
-                // retrieve last known message Id for conversation id from datastore
-                // sync database with server ( This is a long blocking call b/c long polling is set )
-                // get messages after last known message id, if not empty -> emit to flow with APPEND TODO impl func
-                // update field map vars for next cycle
+                    if (list.isNotEmpty()) {
+                        val pair = Pair(strategy, list)
+                        _messageFlow.emit(pair)
+                        break
+                    } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
+                } while (maxAttemptsAreNotReached)
             }
         }
-    }
+
+    override fun initMessagePolling(withConversationId: Long): Unit =
+        runBlocking {
+            launch {
+                // init field map with vars
+                while (true) {
+                    // retrieve last known message Id for conversation id from datastore
+                    // sync database with server ( This is a long blocking call b/c long polling is set )
+                    // get messages after last known message id, if not empty -> emit to flow with APPEND TODO impl func
+                    // update field map vars for next cycle
+                }
+            }
+        }
 
     private suspend fun getMessages(
-        beforeId: Long,    // TODO needed for proper filtering
+        beforeId: Long, // TODO needed for proper filtering
         roomId: Long,
-        messageLimit: Int     // TODO needed for proper filtering
+        messageLimit: Int // TODO needed for proper filtering
     ): List<ChatMessageModel> =
-        chatDao.getMessagesForConversation(roomId).map {
+        chatDao.getMessagesForConversationBefore(roomId, beforeId).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 

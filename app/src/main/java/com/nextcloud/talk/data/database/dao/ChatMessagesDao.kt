@@ -16,18 +16,27 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ChatMessagesDao {
-    @Query("SELECT * FROM ChatMessages where internal_conversation_id = :conversationId")
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internal_conversation_id = :conversationId
+        """
+    )
     fun getMessagesForConversation(conversationId: Long): Flow<List<ChatMessageEntity>>
 
     @Upsert
     fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 
-    @Query("SELECT * FROM ChatMessages where internal_conversation_id = :conversationId AND id = :messageId")
+    @Query(
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internal_conversation_id = :conversationId AND id = :messageId
+        """
+    )
     fun getChatMessageForConversation(conversationId: Long, messageId: Long): Flow<ChatMessageEntity>
 
-    /**
-     * Deletes rows in the db matching the specified [messageIds]
-     */
     @Query(
         value = """
             DELETE FROM chatmessages
@@ -40,12 +49,22 @@ interface ChatMessagesDao {
     fun updateChatMessage(message: ChatMessageEntity)
 
     @Query(
-        "SELECT * FROM ChatMessages WHERE internal_conversation_id = :conversationId AND id >= :messageId ORDER BY timestamp ASC, id ASC"
+        """
+        SELECT * 
+        FROM ChatMessages 
+        WHERE internal_conversation_id = :conversationId AND id >= :messageId 
+        ORDER BY timestamp ASC, id ASC
+        """
     )
     fun getMessagesForConversationSince(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
 
     @Query(
-        "SELECT * FROM ChatMessages WHERE internal_conversation_id = :conversationId AND id <= :messageId ORDER BY timestamp DESC, id DESC"
+        """
+        SELECT * 
+        FROM ChatMessages
+        WHERE internal_conversation_id = :conversationId AND id <= :messageId
+        ORDER BY timestamp ASC, id ASC
+        """
     )
-    fun getMessagesForConversationTo(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversationBefore(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
 }

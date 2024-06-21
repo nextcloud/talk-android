@@ -121,24 +121,30 @@ class ChatMessagesDaoTest {
                 Log.d(tag, "message: " + it.message)
             }
 
-            val conv1chatMessage3 = chatMessagesDao.getChatMessageForConversation(conversation1.id, 3).first()
-
-            // by having a conversation, we can query it's messages
             val chatMessagesConv1 = chatMessagesDao.getMessagesForConversation(conversation1.id)
             assertEquals(5, chatMessagesConv1.first().size)
 
             val chatMessagesConv2 = chatMessagesDao.getMessagesForConversation(conversation2.id)
             assertEquals(1, chatMessagesConv2.first().size)
 
-            assertEquals("some", chatMessagesConv1.first()[3].message)
+            assertEquals("here", chatMessagesConv1.first()[1].message)
+
+            val conv1chatMessage3 = chatMessagesDao.getChatMessageForConversation(conversation1.id, 3).first()
+            assertEquals("are", conv1chatMessage3.message)
 
             val chatMessagesConv1Since =
                 chatMessagesDao.getMessagesForConversationSince(conversation1.id, conv1chatMessage3.id)
             assertEquals(3, chatMessagesConv1Since.first().size)
+            assertEquals("are", chatMessagesConv1Since.first()[0].message)
+            assertEquals("some", chatMessagesConv1Since.first()[1].message)
+            assertEquals("messages", chatMessagesConv1Since.first()[2].message)
 
             val chatMessagesConv1To =
-                chatMessagesDao.getMessagesForConversationTo(conversation1.id, conv1chatMessage3.id)
+                chatMessagesDao.getMessagesForConversationBefore(conversation1.id, conv1chatMessage3.id)
             assertEquals(3, chatMessagesConv1To.first().size)
+            assertEquals("hello", chatMessagesConv1To.first()[0].message)
+            assertEquals("here", chatMessagesConv1To.first()[1].message)
+            assertEquals("are", chatMessagesConv1To.first()[2].message)
         }
 
     private fun createUserEntity(userId: String, userName: String) =
