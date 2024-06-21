@@ -10,6 +10,7 @@ package com.nextcloud.talk.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.users.UserManager
@@ -26,14 +27,15 @@ class ContactsActivityViewModel @Inject constructor(
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
+    private val _currentUser = userManager.currentUser.blockingGet()
+    val currentUser: User = _currentUser
 
     init {
         getContactsFromSearchParams()
     }
 
     private fun getContactsFromSearchParams() {
-        val currentUser = userManager.currentUser.blockingGet()
-        val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
+        val credentials = ApiUtils.getCredentials(_currentUser!!.username, _currentUser!!.token)
         val retrofitBucket: RetrofitBucket =
             ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, null)
         val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
