@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.data.database.dao
 
+import android.Manifest
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
@@ -173,9 +174,20 @@ class ChatMessagesDaoTest {
         )
     }
 
-    private fun createChatMessageEntity(internalConversationId: Long, message: String) =
-        ChatMessageEntity(
+    private fun createChatMessageEntity(internalConversationId: Long, message: String) : ChatMessageEntity {
+        // val reactions = LinkedHashMap<String, Int>()
+        // reactions["😀"] = 2
+
+        val reactionsSelf = ArrayList<String>()
+        reactionsSelf.add("😜")
+
+        val entity = ChatMessageEntity(
             internalConversationId = internalConversationId,
-            message = message
+            message = message,
+            // reactions = reactions,
+            reactionsSelf = reactionsSelf
         )
+        return entity
+    }
 }
+
