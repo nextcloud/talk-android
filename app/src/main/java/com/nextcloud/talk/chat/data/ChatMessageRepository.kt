@@ -35,7 +35,7 @@ interface ChatMessageRepository : Syncable {
      * synchronizes the database with the server, before retrying exactly once. Only
      * emits to [messageFlow] if the message list is not empty.
      *
-     * [withNetworkParams] credentials, url, and field map.
+     * [withNetworkParams] credentials and url
      */
     fun loadMoreMessages(
         beforeMessageId: Long,
@@ -45,9 +45,14 @@ interface ChatMessageRepository : Syncable {
     )
 
     /**
-     * TODO should be lifecycle and network aware
+     * TODO should be lifecycle (ends onStop) and network aware (starts on connection gained)
+     * Long polls the server for any updates to the chat, if found, it synchronizes
+     * the database with the server and emits the new messages to [messageFlow],
+     * else it simply retries after timeout.
+     *
+     * [withNetworkParams] credentials and url.
      */
-    fun initMessagePolling(withConversationId: Long)
+    fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle)
 
     /**
      * Gets a individual message.

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import retrofit2.Response
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
@@ -56,29 +57,39 @@ class OfflineFirstChatRepository @Inject constructor(
                 >
             > = MutableSharedFlow()
 
+    private var newXChatLastCommonRead = 0
+
     override fun loadMoreMessages(
-        beforeMessageId: Long,
+        messageId: Long,
         withConversationId: Long,
         withMessageLimit: Int,
         withNetworkParams: Bundle
     ): Unit =
         runBlocking {
             launch {
-                val strategy = InsertionStrategy.PREPEND
+                val fieldMap = getFieldMap(
+                    withConversationId,
+                    false,
+                    null,
+                    true
+                )
+                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+
+                val prepend = InsertionStrategy.PREPEND
 
                 var attempts = 0
                 do {
                     attempts++
                     val maxAttemptsAreNotReached = (attempts < 2)
 
-                    val list = getMessages(
-                        beforeMessageId,
+                    val list = getMessagesBefore(
+                        messageId,
                         withConversationId,
                         withMessageLimit
                     )
 
                     if (list.isNotEmpty()) {
-                        val pair = Pair(strategy, list)
+                        val pair = Pair(prepend, list)
                         _messageFlow.emit(pair)
                         break
                     } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
@@ -86,25 +97,68 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override fun initMessagePolling(withConversationId: Long): Unit =
+    override fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Unit =
         runBlocking {
             launch {
-                // init field map with vars
+                val append = InsertionStrategy.APPEND
+                var fieldMap = getFieldMap(withConversationId, true, 0, true)
                 while (true) {
-                    // retrieve last known message Id for conversation id from datastore
+                    // retrieve last known message Id for conversation id from datastore TODO change to long
+                    val lastKnownId = datastore.getLastKnownId(withConversationId, 0)
+
                     // sync database with server ( This is a long blocking call b/c long polling is set )
-                    // get messages after last known message id, if not empty -> emit to flow with APPEND TODO impl func
+                    withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                    this@OfflineFirstChatRepository.sync(withNetworkParams)
+
+                    // get messages after last known message id, if not empty -> emit to flow with APPEND
+                    val list = getMessagesAfter(lastKnownId.toLong(), withConversationId)
+                    if (list.isNotEmpty()) {
+                        val pair = Pair(append, list)
+                        _messageFlow.emit(pair)
+                    }
                     // update field map vars for next cycle
+                    fieldMap = getFieldMap(withConversationId, true, newXChatLastCommonRead, true)
                 }
             }
         }
 
-    private suspend fun getMessages(
-        beforeId: Long, // TODO needed for proper filtering
+    private fun getFieldMap(
+        fromConversationId: Long,
+        lookIntoFuture: Boolean,
+        xChatLastCommonRead: Int?,
+        setReadMarker: Boolean
+    ): HashMap<String, Int> {
+        val fieldMap = HashMap<String, Int>()
+
+        fieldMap["includeLastKnown"] = if (!lookIntoFuture) 1 else 0
+
+        val lastKnown = datastore.getLastKnownId(fromConversationId, 0)
+        fieldMap["lastKnownMessageId"] = lastKnown
+
+        xChatLastCommonRead?.let { fieldMap["lastCommonReadId"] = it }
+
+        fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
+        fieldMap["limit"] = 100
+        fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
+        fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
+
+        return fieldMap
+    }
+
+    private suspend fun getMessagesBefore(
+        messageId: Long,
         roomId: Long,
         messageLimit: Int // TODO needed for proper filtering
     ): List<ChatMessageModel> =
-        chatDao.getMessagesForConversationBefore(roomId, beforeId).map {
+        chatDao.getMessagesForConversationBefore(roomId, messageId).map {
+            it.map(ChatMessageEntity::asModel)
+        }.first()
+
+    private suspend fun getMessagesAfter(
+        messageId: Long,
+        roomId: Long
+    ): List<ChatMessageModel> =
+        chatDao.getMessagesForConversationSince(roomId, messageId).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 
@@ -115,17 +169,54 @@ class OfflineFirstChatRepository @Inject constructor(
         return flowOf()
     }
 
+    private fun process(response: Response<*>, conversationId: Long) {
+        when (response.code()) {
+            HTTP_CODE_OK -> {
+                newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
+                    Integer.parseInt(it)
+                } ?: 0
+
+                val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
+                val lastKnownId = if (response.headers().size > 0 &&
+                    xChatLastGivenHeader?.isNotEmpty() == true
+                ) {
+                    xChatLastGivenHeader.toInt()
+                } else {
+                    return
+                }
+
+                if (lastKnownId > 0) {
+                    datastore.saveLastKnownId(conversationId, lastKnownId)
+                }
+            }
+
+            HTTP_CODE_NOT_MODIFIED -> {
+                // unused atm
+            }
+
+            HTTP_CODE_PRECONDITION_FAILED -> {
+                // unused atm
+            }
+
+            else -> {}
+        }
+    }
+
     @Suppress("UNCHECKED_CAST")
     private fun getMessagesFromServer(bundle: Bundle): List<ChatMessage> {
         val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)
         val url = bundle.getString(BundleKeys.KEY_CHAT_URL)
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+        val withConversationId = bundle.getLong(BundleKeys.KEY_CONVERSATION_ID)
 
         // TODO this needs to be lifecycle aware
         val list = network.pullChatMessages(credentials!!, url!!, fieldMap)
             .firstElement()
             .subscribeOn(Schedulers.io())
-            .map { (it.body() as ChatOverall).ocs!!.data }
+            .map {
+                process(it, withConversationId)
+                (it.body() as ChatOverall).ocs!!.data
+            }
             .observeOn(AndroidSchedulers.mainThread())
             .blockingGet()
         return list ?: listOf()
@@ -136,15 +227,18 @@ class OfflineFirstChatRepository @Inject constructor(
             modelFetcher = {
                 return@changeListSync getMessagesFromServer(bundle)
             },
-            versionUpdater = { newLastReadId ->
-                val conversationId = bundle.getLong(BundleKeys.KEY_CONVERSATION_ID)
-                datastore.saveLastReadId(conversationId, newLastReadId)
-            },
-            modelDeleter = chatDao::deleteChatMessages,
+            versionUpdater = {}, // not needed
+            modelDeleter = {}, // not needed
             modelUpdater = { model ->
                 chatDao.upsertChatMessages(
                     model.filterIsInstance<ChatMessage>().map { it.asEntity() }
                 )
             }
         )
+
+    companion object {
+        private const val HTTP_CODE_OK: Int = 200
+        private const val HTTP_CODE_NOT_MODIFIED = 304
+        private const val HTTP_CODE_PRECONDITION_FAILED = 412
+    }
 }
