@@ -13,10 +13,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
-// TODO: ChatMessageEntity.java:5: warning: internal_conversation_id column references a foreign key but it is not
-//  part of an index. This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
-//     public final class ChatMessageEntity {
-
 @Entity(
     tableName = "ChatMessages",
     foreignKeys = [
@@ -26,6 +22,9 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
             childColumns = arrayOf("internal_conversation_id"),
             onDelete = ForeignKey.CASCADE
         )
+    ],
+    indices = [
+        androidx.room.Index(value = ["internal_conversation_id"])
     ]
 )
 data class ChatMessageEntity(
