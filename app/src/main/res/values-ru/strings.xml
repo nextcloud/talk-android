@@ -176,6 +176,7 @@
     <string name="nc_external_server_failed">Не удалось получить параметры сигнализации</string>
     <string name="nc_federation_invitation_accept">Принять</string>
     <string name="nc_federation_invitation_reject">Отклонить</string>
+    <string name="nc_federation_no_invitations">Нет ожидающих приглашений</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Требуется разрешение на доступ к файлу</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
@@ -452,6 +453,8 @@
     <string name="record_stop_confirm_title">Остановить запись звонка</string>
     <string name="record_stop_description">Остановить запись</string>
     <string name="record_stopping">Запись останавливается...</string>
+    <string name="recording_consent_all">Согласие на запись вызова требуется для всех вызовов</string>
+    <string name="recording_consent_for_conversation_description">Требовать согласие на запись вызова перед присоединением к вызову в этом обсуждении</string>
     <string name="recording_consent_for_conversation_title">Согласие на запись вызова</string>
     <string name="recording_consent_title">Звонок может быть записан.</string>
     <string name="recording_settings_title">Запись</string>
