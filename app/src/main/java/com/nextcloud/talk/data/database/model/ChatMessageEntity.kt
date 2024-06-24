@@ -45,7 +45,8 @@ data class ChatMessageEntity(
     // TODO refactor code to deal with this
     @ColumnInfo(name = "parent") var parentMessageId: Long? = null,
     @ColumnInfo(name = "messageType") var messageType: String? = null,
-    // @ColumnInfo(name = "reactions") var reactions: LinkedHashMap<String, Int>? = null,
+    // TODO: change to LinkedHashMap if possible (to save the order of reactions from server?)
+    @ColumnInfo(name = "reactions") var reactions: HashMap<String, Int>? = null,
     @ColumnInfo(name = "reactionsSelf") var reactionsSelf: ArrayList<String>? = null,
     @ColumnInfo(name = "expirationTimestamp") var expirationTimestamp: Int = 0,
     @ColumnInfo(name = "markdown") var renderMarkdown: Boolean? = null,

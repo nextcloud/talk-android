@@ -148,16 +148,14 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun getMessagesBefore(
         messageId: Long,
         roomId: Long,
-        messageLimit: Int // TODO needed for proper filtering
+        // TODO needed for proper filtering
+        messageLimit: Int
     ): List<ChatMessageModel> =
         chatDao.getMessagesForConversationBefore(roomId, messageId).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-    private suspend fun getMessagesAfter(
-        messageId: Long,
-        roomId: Long
-    ): List<ChatMessageModel> =
+    private suspend fun getMessagesAfter(messageId: Long, roomId: Long): List<ChatMessageModel> =
         chatDao.getMessagesForConversationSince(roomId, messageId).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
@@ -227,8 +225,10 @@ class OfflineFirstChatRepository @Inject constructor(
             modelFetcher = {
                 return@changeListSync getMessagesFromServer(bundle)
             },
-            versionUpdater = {}, // not needed
-            modelDeleter = {}, // not needed
+            // not needed
+            versionUpdater = {},
+            // not needed
+            modelDeleter = {},
             modelUpdater = { model ->
                 chatDao.upsertChatMessages(
                     model.filterIsInstance<ChatMessage>().map { it.asEntity() }

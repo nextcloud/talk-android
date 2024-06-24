@@ -95,7 +95,7 @@ data class ChatMessage(
     var messageType: String? = null,
 
     @JsonField(name = ["reactions"])
-    var reactions: LinkedHashMap<String, Int>? = null,
+    var reactions: HashMap<String, Int>? = null,
 
     @JsonField(name = ["reactionsSelf"])
     var reactionsSelf: ArrayList<String>? = null,

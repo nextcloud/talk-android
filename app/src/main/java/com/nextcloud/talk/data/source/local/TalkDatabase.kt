@@ -25,7 +25,7 @@ import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
-import com.nextcloud.talk.data.source.local.converters.LinkedHashMapConverter
+import com.nextcloud.talk.data.source.local.converters.HashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
 import com.nextcloud.talk.data.source.local.converters.ServerVersionConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
@@ -59,7 +59,7 @@ import java.util.Locale
     ExternalSignalingServerConverter::class,
     SignalingSettingsConverter::class,
     HashMapHashMapConverter::class,
-    LinkedHashMapConverter::class,
+    HashMapConverter::class,
     ArrayListConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {

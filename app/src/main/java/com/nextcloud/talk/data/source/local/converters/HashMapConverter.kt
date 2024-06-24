@@ -10,22 +10,22 @@ package com.nextcloud.talk.data.source.local.converters
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
 
-class LinkedHashMapConverter {
+class HashMapConverter {
     @TypeConverter
-    fun linkedHashMapToString(map: LinkedHashMap<String, Int>?): String? {
+    fun linkedHashMapToString(map: HashMap<String, Int>?): String? {
         return if (map == null) {
             LoganSquare.serialize(hashMapOf<String, Int>())
         } else {
-            return LoganSquare.serialize(map)
+            return LoganSquare.serialize(HashMap<String, Int>(map))
         }
     }
 
     @TypeConverter
-    fun stringToLinkedHashMap(value: String?): LinkedHashMap<String, Int>? {
+    fun stringToLinkedHashMap(value: String?): HashMap<String, Int>? {
         if (value.isNullOrEmpty()) {
-            return hashMapOf<String, Int>() as LinkedHashMap<String, Int>
+            return hashMapOf()
         }
 
-        return LoganSquare.parseMap(value, HashMap::class.java) as LinkedHashMap<String, Int>?
+        return LoganSquare.parseMap(value, HashMap::class.java) as HashMap<String, Int>?
     }
 }
