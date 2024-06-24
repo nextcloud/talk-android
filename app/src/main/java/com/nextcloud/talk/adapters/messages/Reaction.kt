@@ -52,8 +52,8 @@ class Reaction {
                 val textColor = viewThemeUtils.talk.getTextColor(isOutgoingMessage, isSelfReaction, binding)
                 val emojiWithAmountWrapper = getEmojiWithAmountWrapperLayout(
                     binding.reactionsEmojiWrapper.context,
-                    emoji,
-                    amount,
+                    emoji!!,
+                    amount!!,
                     EmojiWithAmountWrapperLayoutInfo(
                         textColor,
                         amountParams,

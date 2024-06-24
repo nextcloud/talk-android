@@ -8,24 +8,39 @@
 package com.nextcloud.talk.data.source.local.converters
 
 import androidx.room.TypeConverter
-import com.bluelinelabs.logansquare.LoganSquare
+import com.fasterxml.jackson.core.JsonFactory
+import java.io.IOException
 
 class HashMapConverter {
+    private val converter = HashMapStringIntConverter()
+    private val jsonFactory = JsonFactory()
+
     @TypeConverter
-    fun linkedHashMapToString(map: HashMap<String, Int>?): String? {
-        return if (map == null) {
-            LoganSquare.serialize(hashMapOf<String, Int>())
-        } else {
-            return LoganSquare.serialize(HashMap<String, Int>(map))
+    fun hashMapToString(map: HashMap<String, Int>?): String {
+        return try {
+            val stringWriter = java.io.StringWriter()
+            jsonFactory.createGenerator(stringWriter).use { generator ->
+                converter.serialize(map ?: hashMapOf(), null, false, generator)
+            }
+            stringWriter.toString()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            ""
         }
     }
 
     @TypeConverter
-    fun stringToLinkedHashMap(value: String?): HashMap<String, Int>? {
+    fun stringToHashMap(value: String?): HashMap<String, Int> {
         if (value.isNullOrEmpty()) {
             return hashMapOf()
         }
-
-        return LoganSquare.parseMap(value, HashMap::class.java) as HashMap<String, Int>?
+        return try {
+            jsonFactory.createParser(value).use { parser ->
+                converter.parse(parser)
+            }
+        } catch (e: IOException) {
+            e.printStackTrace()
+            hashMapOf()
+        }
     }
 }

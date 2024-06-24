@@ -22,7 +22,7 @@ data class ChatMessageModel(
     var replyable: Boolean = false,
     var parentMessageId: Long? = null,
     var messageType: String? = null,
-    var reactions: HashMap<String, Int>? = null,
+    var reactions: HashMap<String, Int>?,
     var reactionsSelf: ArrayList<String>? = null,
     var expirationTimestamp: Int = 0,
     var renderMarkdown: Boolean? = null,
