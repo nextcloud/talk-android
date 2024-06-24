@@ -9,9 +9,9 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatMessageRepository.InsertionStrategy
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.model.ChatMessageModel
+import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
@@ -43,7 +43,7 @@ class OfflineFirstChatRepository @Inject constructor(
     override val messageFlow:
         Flow<
             Pair<
-                InsertionStrategy,
+                Boolean,
                 List<ChatMessageModel>
                 >
             >
@@ -52,12 +52,13 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _messageFlow:
         MutableSharedFlow<
             Pair<
-                InsertionStrategy,
+                Boolean,
                 List<ChatMessageModel>
                 >
             > = MutableSharedFlow()
 
     private var newXChatLastCommonRead = 0
+    private var newMessageIds: List<Long> = listOf()
 
     override fun loadMoreMessages(
         messageId: Long,
@@ -69,13 +70,10 @@ class OfflineFirstChatRepository @Inject constructor(
             launch {
                 val fieldMap = getFieldMap(
                     withConversationId,
-                    false,
-                    null,
-                    true
+                    lookIntoFuture = false,
+                    setReadMarker = true
                 )
                 withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-
-                val prepend = InsertionStrategy.PREPEND
 
                 var attempts = 0
                 do {
@@ -89,7 +87,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     )
 
                     if (list.isNotEmpty()) {
-                        val pair = Pair(prepend, list)
+                        val pair = Pair(false, list)
                         _messageFlow.emit(pair)
                         break
                     } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
@@ -100,24 +98,20 @@ class OfflineFirstChatRepository @Inject constructor(
     override fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Unit =
         runBlocking {
             launch {
-                val append = InsertionStrategy.APPEND
-                var fieldMap = getFieldMap(withConversationId, true, 0, true)
+                var fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
                 while (true) {
-                    // retrieve last known message Id for conversation id from datastore TODO change to long
-                    val lastKnownId = datastore.getLastKnownId(withConversationId, 0)
-
                     // sync database with server ( This is a long blocking call b/c long polling is set )
                     withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
                     this@OfflineFirstChatRepository.sync(withNetworkParams)
 
-                    // get messages after last known message id, if not empty -> emit to flow with APPEND
-                    val list = getMessagesAfter(lastKnownId.toLong(), withConversationId)
+                    // get new messages, if not empty -> emit to flow with APPEND
+                    val list = getMessagesFrom(newMessageIds)
                     if (list.isNotEmpty()) {
-                        val pair = Pair(append, list)
+                        val pair = Pair(true, list)
                         _messageFlow.emit(pair)
                     }
                     // update field map vars for next cycle
-                    fieldMap = getFieldMap(withConversationId, true, newXChatLastCommonRead, true)
+                    fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
                 }
             }
         }
@@ -125,7 +119,6 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun getFieldMap(
         fromConversationId: Long,
         lookIntoFuture: Boolean,
-        xChatLastCommonRead: Int?,
         setReadMarker: Boolean
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
@@ -135,7 +128,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val lastKnown = datastore.getLastKnownId(fromConversationId, 0)
         fieldMap["lastKnownMessageId"] = lastKnown
 
-        xChatLastCommonRead?.let { fieldMap["lastCommonReadId"] = it }
+        fieldMap["lastCommonReadId"] = newXChatLastCommonRead
 
         fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
         fieldMap["limit"] = 100
@@ -148,20 +141,19 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun getMessagesBefore(
         messageId: Long,
         roomId: Long,
-        // TODO needed for proper filtering
         messageLimit: Int
     ): List<ChatMessageModel> =
-        chatDao.getMessagesForConversationBefore(roomId, messageId).map {
+        chatDao.getMessagesForConversationBefore(roomId, messageId, messageLimit).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-    private suspend fun getMessagesAfter(messageId: Long, roomId: Long): List<ChatMessageModel> =
-        chatDao.getMessagesForConversationSince(roomId, messageId).map {
+    private suspend fun getMessagesFrom(messageIds: List<Long>): List<ChatMessageModel> =
+        chatDao.getMessagesFromIds(messageIds).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
+
 
     override fun getMessage(withId: Long): Flow<ChatMessageModel> {
-        // TODO figure this out tmrw
         // =
         // chatDao.getChatMessageForConversation(withId).map(ChatMessageEntity::asModel)
         return flowOf()
@@ -229,9 +221,10 @@ class OfflineFirstChatRepository @Inject constructor(
             versionUpdater = {},
             // not needed
             modelDeleter = {},
-            modelUpdater = { model ->
+            modelUpdater = { models ->
+                newMessageIds = models.map(SyncableModel::changedId)
                 chatDao.upsertChatMessages(
-                    model.filterIsInstance<ChatMessage>().map { it.asEntity() }
+                    models.filterIsInstance<ChatMessage>().map { it.asEntity() }
                 )
             }
         )

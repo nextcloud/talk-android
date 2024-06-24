@@ -14,18 +14,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface ChatMessageRepository : Syncable {
 
-    enum class InsertionStrategy {
-        APPEND,
-        PREPEND
-    }
 
     /**
-     * Stream of a list of messages to be handled using the associated [InsertionStrategy].
+     * Stream of a list of messages to be handled using the associated boolean
+     * false for past messages, true for future messages.
      */
     val messageFlow:
         Flow<
             Pair<
-                InsertionStrategy,
+                Boolean,
                 List<ChatMessageModel>
                 >
             >

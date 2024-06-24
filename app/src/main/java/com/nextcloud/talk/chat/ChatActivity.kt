@@ -59,6 +59,7 @@ import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -183,6 +184,8 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -745,6 +748,51 @@ class ChatActivity :
                     ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
                 )
             }
+        }
+
+        chatViewModel.chatMessageViewState.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.ChatMessageStartState -> {
+                    // TODO
+
+                    // handle UI on first load
+                }
+
+                is ChatViewModel.ChatMessageUpdateState -> {
+                    // unused atm
+                }
+
+                is ChatViewModel.ChatMessageErrorState -> {
+                    // unused atm
+                }
+
+                else -> {}
+            }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getMessageFlow
+                .onEach { pair ->
+                    val lookIntoFuture = pair.first
+                    var chatMessageList = pair.second
+
+                    // TODO
+
+                    // handle system messages
+
+                    // determine previous message id
+
+                    // handle expandable system messages
+
+                    // clear chat if needed
+
+                    // process messages from future or from past
+
+                    // update read status of all messages
+
+                    // process call started messages
+                }
+                .collect()
         }
 
         chatViewModel.pullChatMessageViewState.observe(this) { state ->

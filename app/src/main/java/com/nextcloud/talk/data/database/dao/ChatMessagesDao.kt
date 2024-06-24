@@ -50,6 +50,15 @@ interface ChatMessagesDao {
 
     @Query(
         """
+        SELECT *
+        FROM chatmessages
+        WHERE id in (:messageIds)
+        """
+    )
+    fun getMessagesFromIds(messageIds: List<Long>): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
         SELECT * 
         FROM ChatMessages 
         WHERE internal_conversation_id = :conversationId AND id >= :messageId 
@@ -64,7 +73,9 @@ interface ChatMessagesDao {
         FROM ChatMessages
         WHERE internal_conversation_id = :conversationId AND id <= :messageId
         ORDER BY timestamp ASC, id ASC
+        LIMIT :limit
         """
     )
-    fun getMessagesForConversationBefore(conversationId: Long, messageId: Long): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversationBefore(conversationId: Long, messageId: Long, limit: Int):
+        Flow<List<ChatMessageEntity>>
 }

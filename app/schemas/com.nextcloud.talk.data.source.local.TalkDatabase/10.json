@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "b68443cf6a728f0b418ea8e9e646bd67",
+      "identityHash": "a55156bb4ca2110d313000a0128ed081",
     "entities": [
       {
         "tableName": "User",
@@ -438,7 +438,7 @@
       },
       {
         "tableName": "ChatMessages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internal_conversation_id` INTEGER, `message` TEXT, `token` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `messageParameters` TEXT, `systemMessage` TEXT, `isReplyable` INTEGER NOT NULL, `parent` INTEGER, `messageType` TEXT, `reactionsSelf` TEXT, `expirationTimestamp` INTEGER NOT NULL, `markdown` INTEGER, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER NOT NULL, FOREIGN KEY(`internal_conversation_id`) REFERENCES `Conversations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+          "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internal_conversation_id` INTEGER, `message` TEXT, `token` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `messageParameters` TEXT, `systemMessage` TEXT, `isReplyable` INTEGER NOT NULL, `parent` INTEGER, `messageType` TEXT, `reactions` TEXT, `reactionsSelf` TEXT, `expirationTimestamp` INTEGER NOT NULL, `markdown` INTEGER, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER NOT NULL, FOREIGN KEY(`internal_conversation_id`) REFERENCES `Conversations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -518,6 +518,12 @@
             "affinity": "TEXT",
             "notNull": false
           },
+            {
+                "fieldPath": "reactions",
+                "columnName": "reactions",
+                "affinity": "TEXT",
+                "notNull": false
+          },
           {
             "fieldPath": "reactionsSelf",
             "columnName": "reactionsSelf",
@@ -596,7 +602,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b68443cf6a728f0b418ea8e9e646bd67')"
+        "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a55156bb4ca2110d313000a0128ed081')"
     ]
   }
 }

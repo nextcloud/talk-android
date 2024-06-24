@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
@@ -35,13 +36,16 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.onEach
 import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
-    private val chatRepository: ChatRepository,
+    private val chatDatasource: ChatRepository, // Unfortunately named -_-
+    private val chatRepository: ChatMessageRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager
@@ -89,9 +93,22 @@ class ChatViewModel @Inject constructor(
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
 
+    // TODO remove this
     private val _getFieldMapForChat: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
     val getFieldMapForChat: LiveData<HashMap<String, Int>>
         get() = _getFieldMapForChat
+
+    val getMessageFlow = chatRepository.messageFlow
+        .onEach {
+            _chatMessageViewState.value = if (_chatMessageViewState.value == ChatMessageInitialState) {
+                ChatMessageStartState
+            } else {
+                ChatMessageUpdateState
+            }
+        }.catch {
+            _chatMessageViewState.value = ChatMessageErrorState
+        }
+
     sealed interface ViewState
 
     object GetReminderStartState : ViewState
@@ -147,6 +164,7 @@ class ChatViewModel @Inject constructor(
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
 
+    // TODO remove this all
     object PullChatMessageStartState : ViewState
     class PullChatMessageSuccessState(val response: Response<*>, val lookIntoFuture: Boolean) : ViewState
     object PullChatMessageErrorState : ViewState
@@ -154,6 +172,15 @@ class ChatViewModel @Inject constructor(
     private val _pullChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(PullChatMessageStartState)
     val pullChatMessageViewState: LiveData<ViewState>
         get() = _pullChatMessageViewState
+
+    object ChatMessageInitialState : ViewState
+    object ChatMessageStartState : ViewState
+    object ChatMessageUpdateState : ViewState
+    object ChatMessageErrorState : ViewState
+
+    private val _chatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(ChatMessageInitialState)
+    val chatMessageViewState: LiveData<ViewState>
+        get() = _chatMessageViewState
 
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
@@ -182,6 +209,7 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
+    // TODO remove this
     fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
         if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
             _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
@@ -191,7 +219,7 @@ class ChatViewModel @Inject constructor(
 
     fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
-        chatRepository.getRoom(user, token)
+        chatDatasource.getRoom(user, token)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
@@ -208,7 +236,7 @@ class ChatViewModel @Inject constructor(
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
         } else {
-            chatRepository.getCapabilities(user, token)
+            chatDatasource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
@@ -238,7 +266,7 @@ class ChatViewModel @Inject constructor(
 
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatRepository.joinRoom(user, token, roomPassword)
+        chatDatasource.joinRoom(user, token, roomPassword)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
@@ -246,21 +274,21 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        chatRepository.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+        chatDatasource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(SetReminderObserver())
     }
 
     fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatRepository.getReminder(user, roomToken, messageId, chatApiVersion)
+        chatDatasource.getReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetReminderObserver())
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatRepository.deleteReminder(user, roomToken, messageId, chatApiVersion)
+        chatDatasource.deleteReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -284,7 +312,7 @@ class ChatViewModel @Inject constructor(
 
     fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         val startNanoTime = System.nanoTime()
-        chatRepository.leaveRoom(credentials, url)
+        chatDatasource.leaveRoom(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -309,7 +337,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun createRoom(credentials: String, url: String, queryMap: Map<String, String>) {
-        chatRepository.createRoom(credentials, url, queryMap)
+        chatDatasource.createRoom(credentials, url, queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
@@ -340,7 +368,7 @@ class ChatViewModel @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
-        chatRepository.sendChatMessage(
+        chatDatasource.sendChatMessage(
             credentials,
             url,
             message,
@@ -369,9 +397,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun pullChatMessages(credentials: String, url: String) {
-        // TODO: this would be the palce to call chatRepository.sync() ??
-
-        chatRepository.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
+        chatDatasource.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
             .subscribeOn(Schedulers.io())
             .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -399,7 +425,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun deleteChatMessages(credentials: String, url: String, messageId: String) {
-        chatRepository.deleteChatMessage(credentials, url)
+        chatDatasource.deleteChatMessage(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
@@ -428,7 +454,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatRepository.setChatReadMarker(credentials, url, previousMessageId)
+        chatDatasource.setChatReadMarker(credentials, url, previousMessageId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -451,7 +477,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        chatRepository.shareToNotes(credentials, url, message, displayName)
+        chatDatasource.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -474,13 +500,13 @@ class ChatViewModel @Inject constructor(
     }
 
     fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
-        chatRepository.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
+        chatDatasource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(CheckForNoteToSelfObserver())
     }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
-        chatRepository.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+        chatDatasource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
