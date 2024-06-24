@@ -176,7 +176,9 @@ class ChatMessagesDaoTest {
     private fun createChatMessageEntity(internalConversationId: Long, message: String): ChatMessageEntity {
         val emoji1 = "\uD83D\uDE00" // 😀
         val emoji2 = "\uD83D\uDE1C" // 😜
-        val reactions: HashMap<String, Int> = hashMapOf(emoji1 to 3, emoji2 to 4)
+        val reactions = LinkedHashMap<String, Int>()
+        reactions[emoji1] = 3
+        reactions[emoji2] = 4
 
         val reactionsSelf = ArrayList<String>()
         reactionsSelf.add(emoji1)

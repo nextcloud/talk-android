@@ -2,7 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2021 Tim Krüger <t@timkrueger.me>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -95,7 +95,7 @@ data class ChatMessage(
     var messageType: String? = null,
 
     @JsonField(name = ["reactions"])
-    var reactions: HashMap<String, Int>? = null,
+    var reactions: LinkedHashMap<String, Int>? = null,
 
     @JsonField(name = ["reactionsSelf"])
     var reactionsSelf: ArrayList<String>? = null,

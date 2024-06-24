@@ -2,6 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -22,7 +23,7 @@ data class ChatMessageModel(
     var replyable: Boolean = false,
     var parentMessageId: Long? = null,
     var messageType: String? = null,
-    var reactions: HashMap<String, Int>?,
+    var reactions: LinkedHashMap<String, Int>?,
     var reactionsSelf: ArrayList<String>? = null,
     var expirationTimestamp: Int = 0,
     var renderMarkdown: Boolean? = null,

@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -25,7 +25,7 @@ import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
-import com.nextcloud.talk.data.source.local.converters.HashMapConverter
+import com.nextcloud.talk.data.source.local.converters.LinkedHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
 import com.nextcloud.talk.data.source.local.converters.ServerVersionConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
@@ -59,7 +59,7 @@ import java.util.Locale
     ExternalSignalingServerConverter::class,
     SignalingSettingsConverter::class,
     HashMapHashMapConverter::class,
-    HashMapConverter::class,
+    LinkedHashMapConverter::class,
     ArrayListConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
