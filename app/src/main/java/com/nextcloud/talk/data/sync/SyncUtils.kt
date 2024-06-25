@@ -70,8 +70,8 @@ private suspend fun <T> suspendRunCatching(block: suspend () -> T): Result<T> =
  */
 suspend fun Synchronizer.changeListSync(
     modelFetcher: suspend () -> List<SyncableModel>,
-    versionUpdater: (Int) -> Unit,
-    modelDeleter: suspend (List<Int>) -> Unit,
+    versionUpdater: (Long) -> Unit,
+    modelDeleter: suspend (List<Long>) -> Unit,
     modelUpdater: suspend (List<SyncableModel>) -> Unit
 ) = suspendRunCatching {
     // Fetch the change list since last sync (akin to a git fetch)
