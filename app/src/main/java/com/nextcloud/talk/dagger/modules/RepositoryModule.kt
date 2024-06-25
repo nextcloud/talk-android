@@ -11,8 +11,8 @@ package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatRepository
-import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
+import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
@@ -136,8 +136,8 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideChatRepository(ncApi: NcApi): ChatRepository {
-        return NetworkChatRepositoryImpl(ncApi)
+    fun provideChatRepository(ncApi: NcApi): ChatNetworkDataSource {
+        return RetrofitChatNetwork(ncApi)
     }
 
     @Provides
@@ -161,7 +161,7 @@ class RepositoryModule {
     @Provides
     fun provideOfflineFirstChatRepository(
         dao: ChatMessagesDao,
-        repository: ChatRepository,
+        repository: ChatNetworkDataSource,
         appPreferences: AppPreferences
     ): ChatMessageRepository {
         return OfflineFirstChatRepository(dao, repository, appPreferences)
@@ -170,7 +170,7 @@ class RepositoryModule {
     @Provides
     fun provideOfflineFirstConversation(
         dao: ConversationsDao,
-        repository: ChatRepository,
+        repository: ChatNetworkDataSource,
         currentUserProviderNew: CurrentUserProviderNew
     ): ConversationInfoRepository {
         return OfflineFirstConversationInfoRepository(dao, repository, currentUserProviderNew)

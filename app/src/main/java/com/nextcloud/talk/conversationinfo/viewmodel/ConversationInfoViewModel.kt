@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -23,7 +23,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ConversationInfoViewModel @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val chatNetworkDataSource: ChatNetworkDataSource
 ) : ViewModel() {
 
     object LifeCycleObserver : DefaultLifecycleObserver {
@@ -67,7 +67,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
-        chatRepository.getRoom(user, token)
+        chatNetworkDataSource.getRoom(user, token)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
@@ -79,7 +79,7 @@ class ConversationInfoViewModel @Inject constructor(
         if (conversationModel.remoteServer.isNullOrEmpty()) {
             _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(user.capabilities!!.spreedCapability!!)
         } else {
-            chatRepository.getCapabilities(user, token)
+            chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {

@@ -49,7 +49,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationType
@@ -125,7 +125,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     @Inject
     var retrofit: Retrofit? = null
 
-    var chatRepository: ChatRepository? = null
+    var chatNetworkDataSource: ChatNetworkDataSource? = null
         @Inject set
 
     @Inject
@@ -300,7 +300,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             checkIfCallIsActive(signatureVerification, conversation)
         }
 
-        chatRepository?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
+        chatNetworkDataSource?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ConversationModel> {

@@ -15,7 +15,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.data.user.model.User
@@ -44,7 +44,7 @@ import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
-    private val chatDatasource: ChatRepository, // Unfortunately named -_-
+    private val chatNetworkDataSource: ChatNetworkDataSource, // should be removed here. Use it via RetrofitChatNetwork
     private val chatRepository: ChatMessageRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
@@ -219,7 +219,7 @@ class ChatViewModel @Inject constructor(
 
     fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
-        chatDatasource.getRoom(user, token)
+        chatNetworkDataSource.getRoom(user, token)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
@@ -236,7 +236,7 @@ class ChatViewModel @Inject constructor(
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
         } else {
-            chatDatasource.getCapabilities(user, token)
+            chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
@@ -266,7 +266,7 @@ class ChatViewModel @Inject constructor(
 
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatDatasource.joinRoom(user, token, roomPassword)
+        chatNetworkDataSource.joinRoom(user, token, roomPassword)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
@@ -274,21 +274,21 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        chatDatasource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+        chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(SetReminderObserver())
     }
 
     fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatDatasource.getReminder(user, roomToken, messageId, chatApiVersion)
+        chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetReminderObserver())
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatDatasource.deleteReminder(user, roomToken, messageId, chatApiVersion)
+        chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -312,7 +312,7 @@ class ChatViewModel @Inject constructor(
 
     fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         val startNanoTime = System.nanoTime()
-        chatDatasource.leaveRoom(credentials, url)
+        chatNetworkDataSource.leaveRoom(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -337,7 +337,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun createRoom(credentials: String, url: String, queryMap: Map<String, String>) {
-        chatDatasource.createRoom(credentials, url, queryMap)
+        chatNetworkDataSource.createRoom(credentials, url, queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
@@ -368,7 +368,7 @@ class ChatViewModel @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
-        chatDatasource.sendChatMessage(
+        chatNetworkDataSource.sendChatMessage(
             credentials,
             url,
             message,
@@ -397,7 +397,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun pullChatMessages(credentials: String, url: String) {
-        chatDatasource.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
+        chatNetworkDataSource.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
             .subscribeOn(Schedulers.io())
             .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -425,7 +425,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun deleteChatMessages(credentials: String, url: String, messageId: String) {
-        chatDatasource.deleteChatMessage(credentials, url)
+        chatNetworkDataSource.deleteChatMessage(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
@@ -454,7 +454,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatDatasource.setChatReadMarker(credentials, url, previousMessageId)
+        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -477,7 +477,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        chatDatasource.shareToNotes(credentials, url, message, displayName)
+        chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -500,13 +500,13 @@ class ChatViewModel @Inject constructor(
     }
 
     fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
-        chatDatasource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
+        chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(CheckForNoteToSelfObserver())
     }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
-        chatDatasource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+        chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {

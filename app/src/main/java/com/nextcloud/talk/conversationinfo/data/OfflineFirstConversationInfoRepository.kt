@@ -8,7 +8,7 @@
 package com.nextcloud.talk.conversationinfo.data
 
 import android.os.Bundle
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class OfflineFirstConversationInfoRepository @Inject constructor(
     private val dao: ConversationsDao,
-    private val network: ChatRepository,
+    private val network: ChatNetworkDataSource,
     private val currentUserProviderNew: CurrentUserProviderNew
 ) : ConversationInfoRepository {
 

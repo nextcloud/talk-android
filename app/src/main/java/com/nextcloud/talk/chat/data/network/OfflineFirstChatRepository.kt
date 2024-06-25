@@ -9,7 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.model.ChatMessageModel
 import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
-    private val network: ChatRepository,
+    private val network: ChatNetworkDataSource,
     private val datastore: AppPreferences
 ) : ChatMessageRepository, Synchronizer {
 
