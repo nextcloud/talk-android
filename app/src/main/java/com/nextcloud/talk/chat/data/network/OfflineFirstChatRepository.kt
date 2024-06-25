@@ -9,7 +9,6 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.model.ChatMessageModel
 import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao

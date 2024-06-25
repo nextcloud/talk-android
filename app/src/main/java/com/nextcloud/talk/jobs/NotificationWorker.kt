@@ -49,7 +49,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
-import com.nextcloud.talk.chat.data.ChatNetworkDataSource
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ConversationType

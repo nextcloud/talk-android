@@ -7,7 +7,6 @@
 package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.chat.data.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability

@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH
@@ -11,17 +11,17 @@ package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.ChatNetworkDataSource
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
-import com.nextcloud.talk.conversationinfo.data.ConversationInfoRepository
-import com.nextcloud.talk.conversationinfo.data.OfflineFirstConversationInfoRepository
+import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
+import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
-import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
-import com.nextcloud.talk.conversationlist.data.ConversationsListRepositoryImpl
+import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNetwork
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.source.local.TalkDatabase
@@ -131,13 +131,13 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideConversationsListRepository(ncApi: NcApi): ConversationsListRepository {
-        return ConversationsListRepositoryImpl(ncApi)
+    fun provideChatNetworkDataSource(ncApi: NcApi): ChatNetworkDataSource {
+        return RetrofitChatNetwork(ncApi)
     }
 
     @Provides
-    fun provideChatRepository(ncApi: NcApi): ChatNetworkDataSource {
-        return RetrofitChatNetwork(ncApi)
+    fun provideConversationsNetworkDataSource(ncApi: NcApi): ConversationsNetworkDataSource {
+        return RetrofitConversationsNetwork(ncApi)
     }
 
     @Provides
@@ -161,18 +161,18 @@ class RepositoryModule {
     @Provides
     fun provideOfflineFirstChatRepository(
         dao: ChatMessagesDao,
-        repository: ChatNetworkDataSource,
+        dataSource: ChatNetworkDataSource,
         appPreferences: AppPreferences
     ): ChatMessageRepository {
-        return OfflineFirstChatRepository(dao, repository, appPreferences)
+        return OfflineFirstChatRepository(dao, dataSource, appPreferences)
     }
 
     @Provides
-    fun provideOfflineFirstConversation(
+    fun provideOfflineFirstConversationsRepository(
         dao: ConversationsDao,
-        repository: ChatNetworkDataSource,
+        dataSource: ConversationsNetworkDataSource,
         currentUserProviderNew: CurrentUserProviderNew
-    ): ConversationInfoRepository {
-        return OfflineFirstConversationInfoRepository(dao, repository, currentUserProviderNew)
+    ): ConversationsListRepository {
+        return OfflineFirstConversationsRepository(dao, dataSource, currentUserProviderNew)
     }
 }

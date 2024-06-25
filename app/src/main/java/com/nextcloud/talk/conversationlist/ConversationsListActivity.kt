@@ -681,7 +681,9 @@ class ConversationsListActivity :
     }
 
     fun fetchRooms() {
-        val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
+        val includeStatus = isUserStatusAvailable(currentUser!!)
+
+        // TODO use conversationsListViewModel.getRooms(currentUser) + observer here, and remove direct api call
 
         // checks internet connection before fetching rooms
         if (isNetworkAvailable(context)) {
