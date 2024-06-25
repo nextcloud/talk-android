@@ -8,7 +8,21 @@
 
 package com.nextcloud.talk.chat.data.model
 
+import android.text.TextUtils
+import android.util.Log
+import com.bluelinelabs.logansquare.annotation.JsonIgnore
+import com.nextcloud.talk.R
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
+import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.stfalcon.chatkit.commons.models.IUser
+import com.stfalcon.chatkit.commons.models.MessageContentType
+import java.security.MessageDigest
+import java.util.Date
 
 data class ChatMessageModel(
     var id: Int = 0,
@@ -30,5 +44,447 @@ data class ChatMessageModel(
     var lastEditActorDisplayName: String? = null,
     var lastEditActorId: String? = null,
     var lastEditActorType: String? = null,
-    var lastEditTimestamp: Long = 0
-)
+    var lastEditTimestamp: Long = 0,
+
+    /**
+     * Non Json related variables
+     */
+
+    var isDownloadingVoiceMessage: Boolean = false,
+
+    var resetVoiceMessage: Boolean = false,
+
+    var isPlayingVoiceMessage: Boolean = false,
+
+    var voiceMessageDuration: Int = 0,
+
+    var voiceMessagePlayedSeconds: Int = 0,
+
+    var voiceMessageDownloadProgress: Int = 0,
+
+    var voiceMessageSeekbarProgress: Int = 0,
+
+    var voiceMessageFloatArray: FloatArray? = null,
+
+    var expandableParent: Boolean = false,
+
+    var isExpanded: Boolean = false,
+
+    var lastItemOfExpandableGroup: Int = 0,
+
+    var expandableChildrenAmount: Int = 0,
+
+    var hiddenByCollapse: Boolean = false,
+
+    var openWhenDownloaded: Boolean = true,
+
+    var isGrouped: Boolean = false,
+
+    var isOneToOneConversation: Boolean = false,
+
+    var isFormerOneToOneConversation: Boolean = false,
+
+    var activeUser: User? = null,
+
+    var selectedIndividualHashMap: Map<String?, String?>? = null,
+
+    var isDeleted: Boolean = false,
+
+    var previousMessageId: Int = -1,
+) : MessageContentType, MessageContentType.Image {
+
+    var extractedUrlToPreview: String? = null
+
+    // messageTypesToIgnore is weird. must be deleted by refactoring!!!
+    @JsonIgnore
+    var messageTypesToIgnore = listOf(
+        MessageType.REGULAR_TEXT_MESSAGE,
+        MessageType.SYSTEM_MESSAGE,
+        MessageType.SINGLE_LINK_VIDEO_MESSAGE,
+        MessageType.SINGLE_LINK_AUDIO_MESSAGE,
+        MessageType.SINGLE_LINK_MESSAGE,
+        MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
+        MessageType.VOICE_MESSAGE,
+        MessageType.POLL_MESSAGE
+    )
+
+    fun hasFileAttachment(): Boolean {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun hasGeoLocation(): Boolean {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "geo-location")) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    fun isPoll(): Boolean {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "talk-poll")) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    @Suppress("ReturnCount")
+    fun isLinkPreview(): Boolean {
+        if (CapabilitiesUtil.isLinkPreviewAvailable(activeUser!!)) {
+            val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
+
+            val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+            val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+
+            val messageCharSequence: CharSequence = StringBuffer(message!!)
+
+            if (regexFromServer != null) {
+                val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
+                if (foundLinkInServerRegex) {
+                    extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                    return true
+                }
+            }
+
+            val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
+            if (foundLinkInDefaultRegex) {
+                extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                return true
+            }
+        }
+        return false
+    }
+
+    @Suppress("Detekt.NestedBlockDepth")
+    override fun getImageUrl(): String? {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
+                    // FIX-ME: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
+                    //  it just feels wrong to fill this here inside getImageUrl()
+                    selectedIndividualHashMap = individualHashMap
+                    if (!isVoiceMessage) {
+                        if (activeUser != null && activeUser!!.baseUrl != null) {
+                            return ApiUtils.getUrlForFilePreviewWithFileId(
+                                activeUser!!.baseUrl!!,
+                                individualHashMap["id"]!!,
+                                sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                            )
+                        } else {
+                            Log.e(
+                                TAG,
+                                "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        return if (!messageTypesToIgnore.contains(getCalculateMessageType())) {
+            message!!.trim { it <= ' ' }
+        } else {
+            null
+        }
+    }
+
+    fun getCalculateMessageType(): MessageType {
+        return if (!TextUtils.isEmpty(systemMessage)) {
+            MessageType.SYSTEM_MESSAGE
+        } else if (isVoiceMessage) {
+            MessageType.VOICE_MESSAGE
+        } else if (hasFileAttachment()) {
+            MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+        } else if (hasGeoLocation()) {
+            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+        } else if (isPoll()) {
+            MessageType.POLL_MESSAGE
+        } else {
+            MessageType.REGULAR_TEXT_MESSAGE
+        }
+    }
+
+    override fun getId(): String {
+        return id.toString()
+    }
+
+    override fun getText(): String {
+        return if (message != null) {
+            getParsedMessage(message, messageParameters)!!
+        } else {
+            ""
+        }
+    }
+
+    val lastMessageDisplayText: String
+        get() {
+            if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
+                getCalculateMessageType() == MessageType.SYSTEM_MESSAGE ||
+                getCalculateMessageType() == MessageType.SINGLE_LINK_MESSAGE
+            ) {
+                return text
+            } else {
+                if (MessageType.SINGLE_LINK_GIPHY_MESSAGE == getCalculateMessageType() ||
+                    MessageType.SINGLE_LINK_TENOR_MESSAGE == getCalculateMessageType() ||
+                    MessageType.SINGLE_LINK_GIF_MESSAGE == getCalculateMessageType()
+                ) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_a_gif_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_a_gif),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_attachment_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_location_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_location),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.VOICE_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_voice_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_voice),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_audio_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_audio),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_VIDEO_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_a_video_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_a_video),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_IMAGE_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_image_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.POLL_MESSAGE == getCalculateMessageType()) {
+                    return if (actorId == activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_poll_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_poll),
+                            getNullsafeActorDisplayName()
+                        )
+                    }
+                }
+            }
+            return ""
+        }
+
+    private fun getNullsafeActorDisplayName() =
+        if (!TextUtils.isEmpty(actorDisplayName)) {
+            actorDisplayName
+        } else {
+            sharedApplication!!.getString(R.string.nc_guest)
+        }
+
+    override fun getUser(): IUser {
+        return object : IUser {
+            override fun getId(): String {
+                return "$actorType/$actorId"
+            }
+
+            override fun getName(): String {
+                return if (!TextUtils.isEmpty(actorDisplayName)) {
+                    actorDisplayName!!
+                } else {
+                    sharedApplication!!.getString(R.string.nc_guest)
+                }
+            }
+
+            override fun getAvatar(): String? {
+                return when {
+                    activeUser == null -> {
+                        null
+                    }
+
+                    actorType == "users" -> {
+                        ApiUtils.getUrlForAvatar(activeUser!!.baseUrl!!, actorId, true)
+                    }
+
+                    actorType == "bridged" -> {
+                        ApiUtils.getUrlForAvatar(
+                            activeUser!!.baseUrl!!,
+                            "bridge-bot",
+                            true
+                        )
+                    }
+
+                    else -> {
+                        var apiId: String? = sharedApplication!!.getString(R.string.nc_guest)
+                        if (!TextUtils.isEmpty(actorDisplayName)) {
+                            apiId = actorDisplayName
+                        }
+                        ApiUtils.getUrlForGuestAvatar(activeUser!!.baseUrl!!, apiId, true)
+                    }
+                }
+            }
+        }
+    }
+
+    override fun getCreatedAt(): Date {
+        return Date(timestamp * MILLIES)
+    }
+
+    override fun getSystemMessage(): String {
+        return EnumSystemMessageTypeConverter().convertToString(systemMessageType)
+    }
+
+    private fun isHashMapEntryEqualTo(map: HashMap<String?, String?>, key: String, searchTerm: String): Boolean {
+        return map != null && MessageDigest.isEqual(map[key]!!.toByteArray(), searchTerm.toByteArray())
+    }
+
+    // needed a equals and hashcode function to fix detekt errors
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (javaClass != other?.javaClass) return false
+        return false
+    }
+
+    override fun hashCode(): Int {
+        return 0
+    }
+
+    val isVoiceMessage: Boolean
+        get() = "voice-message" == messageType
+    val isCommandMessage: Boolean
+        get() = "command" == messageType
+    val isDeletedCommentMessage: Boolean
+        get() = "comment_deleted" == messageType
+
+    enum class MessageType {
+        REGULAR_TEXT_MESSAGE,
+        SYSTEM_MESSAGE,
+        SINGLE_LINK_GIPHY_MESSAGE,
+        SINGLE_LINK_TENOR_MESSAGE,
+        SINGLE_LINK_GIF_MESSAGE,
+        SINGLE_LINK_MESSAGE,
+        SINGLE_LINK_VIDEO_MESSAGE,
+        SINGLE_LINK_IMAGE_MESSAGE,
+        SINGLE_LINK_AUDIO_MESSAGE,
+        SINGLE_NC_ATTACHMENT_MESSAGE,
+        SINGLE_NC_GEOLOCATION_MESSAGE,
+        POLL_MESSAGE,
+        VOICE_MESSAGE
+    }
+
+    /**
+     * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
+     */
+    enum class SystemMessageType {
+        DUMMY,
+        CONVERSATION_CREATED,
+        CONVERSATION_RENAMED,
+        DESCRIPTION_REMOVED,
+        DESCRIPTION_SET,
+        CALL_STARTED,
+        CALL_JOINED,
+        CALL_LEFT,
+        CALL_ENDED,
+        CALL_ENDED_EVERYONE,
+        CALL_MISSED,
+        CALL_TRIED,
+        READ_ONLY_OFF,
+        READ_ONLY,
+        LISTABLE_NONE,
+        LISTABLE_USERS,
+        LISTABLE_ALL,
+        LOBBY_NONE,
+        LOBBY_NON_MODERATORS,
+        LOBBY_OPEN_TO_EVERYONE,
+        GUESTS_ALLOWED,
+        GUESTS_DISALLOWED,
+        PASSWORD_SET,
+        PASSWORD_REMOVED,
+        USER_ADDED,
+        USER_REMOVED,
+        GROUP_ADDED,
+        GROUP_REMOVED,
+        CIRCLE_ADDED,
+        CIRCLE_REMOVED,
+        MODERATOR_PROMOTED,
+        MODERATOR_DEMOTED,
+        GUEST_MODERATOR_PROMOTED,
+        GUEST_MODERATOR_DEMOTED,
+        MESSAGE_DELETED,
+        MESSAGE_EDITED,
+        FILE_SHARED,
+        OBJECT_SHARED,
+        MATTERBRIDGE_CONFIG_ADDED,
+        MATTERBRIDGE_CONFIG_EDITED,
+        MATTERBRIDGE_CONFIG_REMOVED,
+        MATTERBRIDGE_CONFIG_ENABLED,
+        MATTERBRIDGE_CONFIG_DISABLED,
+        CLEARED_CHAT,
+        REACTION,
+        REACTION_DELETED,
+        REACTION_REVOKED,
+        POLL_VOTED,
+        POLL_CLOSED,
+        MESSAGE_EXPIRATION_ENABLED,
+        MESSAGE_EXPIRATION_DISABLED,
+        RECORDING_STARTED,
+        RECORDING_STOPPED,
+        AUDIO_RECORDING_STARTED,
+        AUDIO_RECORDING_STOPPED,
+        RECORDING_FAILED,
+        BREAKOUT_ROOMS_STARTED,
+        BREAKOUT_ROOMS_STOPPED,
+        AVATAR_SET,
+        AVATAR_REMOVED
+    }
+
+    companion object {
+        private const val TAG = "ChatMessage"
+        private const val MILLIES: Long = 1000L
+
+        private const val REGEX_STRING_DEFAULT =
+            """(\s|\n|^)(https?:\/\/)((?:[-A-Z0-9+_]+\.)+[-A-Z]+(?:\/[-A-Z0-9+&@#%?=~_|!:,.;()]*)*)(\s|\n|$)"""
+    }
+}
+
