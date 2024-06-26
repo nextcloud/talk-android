@@ -68,7 +68,7 @@ data class Conversation(
     var unreadMention: Boolean = false,
 
     @JsonField(name = ["lastMessage"])
-    var lastMessage: ChatMessageJson? = null, // TODO get this from Json -> map to ChatMessage
+    var lastMessage: ChatMessageJson? = null, // TODO get this from Json -> map to ChatMessage and fix error
 
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
     var objectType: ObjectType? = null,

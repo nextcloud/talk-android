@@ -582,7 +582,12 @@ class ChatActivity :
                     setActionBarTitle()
                     updateRoomTimerHandler()
 
-                    // TODO call initMessagePolling
+                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                    chatViewModel.initMessagePolling(
+                        withCredentials = credentials!!,
+                        withUrl = urlForChatting,
+                        withConversationId = currentConversation!!.changedId
+                    )
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -773,8 +778,7 @@ class ChatActivity :
                         adapter?.notifyDataSetChanged()
                     }
 
-                    if (
-                        lookIntoFuture) {
+                    if (lookIntoFuture) {
                         processMessagesFromTheFuture(chatMessageList)
                     } else {
                         processMessagesNotFromTheFuture(chatMessageList)
@@ -2713,7 +2717,15 @@ class ChatActivity :
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
-            // TODO call on load more
+            val id = 0 // TODO figure out the paging mechanics
+            val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+            chatViewModel.loadMoreMessages(
+                beforeMessageId = 0,
+                withUrl = urlForChatting,
+                withCredentials = credentials!!,
+                withMessageLimit = MESSAGE_PULL_LIMIT,
+                withConversationId = currentConversation!!.changedId
+            )
         }
     }
 

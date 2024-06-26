@@ -22,6 +22,8 @@ import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.data.database.mappers.asEntity
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
 import com.nextcloud.talk.extensions.loadConversationAvatar
@@ -34,9 +36,8 @@ import com.nextcloud.talk.models.json.conversations.Conversation.ConversationTyp
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.DisplayUtils
-
+import com.nextcloud.talk.utils.SpreedFeatures
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -54,6 +55,7 @@ class ConversationItem(
     ISectionable<ConversationItemViewHolder, GenericTextHeaderItem?>,
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
+    private val chatMessage = model.lastMessage!!.asEntity().asModel() // TODO fix this work around
 
     constructor(
         conversation: Conversation,
@@ -172,6 +174,7 @@ class ConversationItem(
                 ConversationType.FORMER_ONE_TO_ONE,
                 ConversationType.ROOM_PUBLIC_CALL ->
                     holder.binding.dialogAvatar.loadConversationAvatar(user, model, false, viewThemeUtils)
+
                 ConversationType.NOTE_TO_SELF ->
                     holder.binding.dialogAvatar.loadNoteToSelfAvatar()
 
@@ -213,7 +216,7 @@ class ConversationItem(
     }
 
     private fun setLastMessage(holder: ConversationItemViewHolder, appContext: Context) {
-        if (model.lastMessage != null) {
+        if (chatMessage != null) {
             holder.binding.dialogDate.visibility = View.VISIBLE
             holder.binding.dialogDate.text = DateUtils.getRelativeTimeSpanString(
                 model.lastActivity * MILLIES,
@@ -221,20 +224,20 @@ class ConversationItem(
                 0,
                 DateUtils.FORMAT_ABBREV_RELATIVE
             )
-            if (!TextUtils.isEmpty(model.lastMessage!!.systemMessage) ||
+            if (!TextUtils.isEmpty(chatMessage.systemMessage) ||
                 ConversationType.ROOM_SYSTEM === model.type
             ) {
-                holder.binding.dialogLastMessage.text = model.lastMessage!!.text
+                holder.binding.dialogLastMessage.text = chatMessage.text
             } else {
-                model.lastMessage!!.activeUser = user
+                chatMessage.activeUser = user
 
                 val text =
                     if (
-                        model.lastMessage!!.getCalculateMessageType() === ChatMessage.MessageType.REGULAR_TEXT_MESSAGE
+                        chatMessage.getCalculateMessageType() === ChatMessage.MessageType.REGULAR_TEXT_MESSAGE
                     ) {
                         calculateRegularLastMessageText(appContext)
                     } else {
-                        model.lastMessage!!.lastMessageDisplayText
+                        chatMessage.lastMessageDisplayText
                     }
                 holder.binding.dialogLastMessage.text = text
             }
@@ -245,16 +248,16 @@ class ConversationItem(
     }
 
     private fun calculateRegularLastMessageText(appContext: Context): String {
-        return if (model.lastMessage!!.actorId == user.userId) {
+        return if (chatMessage.actorId == user.userId) {
             String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
-                model.lastMessage!!.lastMessageDisplayText
+                chatMessage.lastMessageDisplayText
             )
         } else {
             val authorDisplayName =
-                if (!TextUtils.isEmpty(model.lastMessage!!.actorDisplayName)) {
-                    model.lastMessage!!.actorDisplayName
-                } else if ("guests" == model.lastMessage!!.actorType) {
+                if (!TextUtils.isEmpty(chatMessage.actorDisplayName)) {
+                    chatMessage.actorDisplayName
+                } else if ("guests" == chatMessage.actorType) {
                     appContext.getString(R.string.nc_guest)
                 } else {
                     ""
@@ -262,7 +265,7 @@ class ConversationItem(
             String.format(
                 appContext.getString(R.string.nc_formatted_message),
                 authorDisplayName,
-                model.lastMessage!!.lastMessageDisplayText
+                chatMessage.lastMessageDisplayText
             )
         }
     }

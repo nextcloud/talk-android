@@ -8,6 +8,7 @@ package com.nextcloud.talk.chat.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -15,9 +16,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -32,6 +33,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -56,6 +58,7 @@ class ChatViewModel @Inject constructor(
         RESUMED,
         STOPPED
     }
+
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -78,6 +81,7 @@ class ChatViewModel @Inject constructor(
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
         mediaRecorderManager.handleOnStop()
     }
+
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
 
@@ -153,6 +157,7 @@ class ChatViewModel @Inject constructor(
 
     object LeaveRoomStartState : ViewState
     class LeaveRoomSuccessState(val funToCallWhenLeaveSuccessful: (() -> Unit)?) : ViewState
+
     private val _leaveRoomViewState: MutableLiveData<ViewState> = MutableLiveData(LeaveRoomStartState)
     val leaveRoomViewState: LiveData<ViewState>
         get() = _leaveRoomViewState
@@ -160,6 +165,7 @@ class ChatViewModel @Inject constructor(
     object SendChatMessageStartState : ViewState
     class SendChatMessageSuccessState(val message: CharSequence) : ViewState
     class SendChatMessageErrorState(val e: Throwable, val message: CharSequence) : ViewState
+
     private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
@@ -169,6 +175,7 @@ class ChatViewModel @Inject constructor(
     class PullChatMessageSuccessState(val response: Response<*>, val lookIntoFuture: Boolean) : ViewState
     object PullChatMessageErrorState : ViewState
     object PullChatMessageCompleteState : ViewState
+
     private val _pullChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(PullChatMessageStartState)
     val pullChatMessageViewState: LiveData<ViewState>
         get() = _pullChatMessageViewState
@@ -185,6 +192,7 @@ class ChatViewModel @Inject constructor(
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
     object DeleteChatMessageErrorState : ViewState
+
     private val _deleteChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(DeleteChatMessageStartState)
     val deleteChatMessageViewState: LiveData<ViewState>
         get() = _deleteChatMessageViewState
@@ -199,12 +207,14 @@ class ChatViewModel @Inject constructor(
 
     object ReactionAddedStartState : ViewState
     class ReactionAddedSuccessState(val reactionAddedModel: ReactionAddedModel) : ViewState
+
     private val _reactionAddedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionAddedStartState)
     val reactionAddedViewState: LiveData<ViewState>
         get() = _reactionAddedViewState
 
     object ReactionDeletedStartState : ViewState
     class ReactionDeletedSuccessState(val reactionDeletedModel: ReactionDeletedModel) : ViewState
+
     private val _reactionDeletedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionDeletedStartState)
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
@@ -424,6 +434,35 @@ class ChatViewModel @Inject constructor(
             })
     }
 
+    fun loadMoreMessages(
+        beforeMessageId: Long,
+        withConversationId: Long,
+        withMessageLimit: Int,
+        withCredentials: String,
+        withUrl: String
+    ) {
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+        chatRepository.loadMoreMessages(
+            beforeMessageId,
+            withConversationId,
+            withMessageLimit,
+            withNetworkParams = bundle
+        )
+    }
+
+    fun initMessagePolling(
+        withCredentials: String,
+        withUrl: String,
+        withConversationId: Long
+    ) {
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_CHAT_URL, withCredentials)
+        bundle.putString(BundleKeys.KEY_CREDENTIALS, withUrl)
+        chatRepository.initMessagePolling(withConversationId, withNetworkParams = bundle)
+    }
+
     fun deleteChatMessages(credentials: String, url: String, messageId: String) {
         chatNetworkDataSource.deleteChatMessage(credentials, url)
             .subscribeOn(Schedulers.io())
@@ -603,6 +642,7 @@ class ChatViewModel @Inject constructor(
             uploadFile(uri.toString(), room, displayName, metaData)
         }
     }
+
     fun stopAndDiscardAudioRecording() {
         stopAudioRecording()
         Log.d(TAG, "File discarded")
