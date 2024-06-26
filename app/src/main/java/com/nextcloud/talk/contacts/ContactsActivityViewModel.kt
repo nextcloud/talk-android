@@ -63,9 +63,9 @@ class ContactsActivityViewModel @Inject constructor(
         }
     }
 
-    private fun getImageUri(baseUrl: String, avatarId: String, requestBigSize: Boolean): String  {
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return ApiUtils.getUrlForAvatar(
-            baseUrl,
+            _currentUser.baseUrl,
             avatarId,
             requestBigSize
         )
