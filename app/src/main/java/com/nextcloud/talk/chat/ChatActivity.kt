@@ -582,13 +582,7 @@ class ChatActivity :
                     setActionBarTitle()
                     updateRoomTimerHandler()
 
-                    chatViewModel.refreshChatParams(
-                        setupFieldsForPullChatMessages(
-                            false,
-                            0,
-                            false
-                        )
-                    )
+                    // TODO call initMessagePolling
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -740,22 +734,11 @@ class ChatActivity :
             }
         }
 
-        // TODO remove this
-        // chatViewModel.getFieldMapForChat.observe(this) { fieldMap ->
-        //     if (fieldMap.isNotEmpty()) {
-        //         chatViewModel.pullChatMessages(
-        //             credentials!!,
-        //             ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-        //         )
-        //     }
-        // }
-
         chatViewModel.chatMessageViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.ChatMessageStartState -> {
                     // Handle UI on first load
                     cancelNotificationsForCurrentConversation()
-                    isFirstMessagesProcessing = false
                     binding.progressBar.visibility = View.GONE
                     binding.messagesListView.visibility = View.VISIBLE
                     collapseSystemMessages()
@@ -779,152 +762,34 @@ class ChatActivity :
                     val lookIntoFuture = pair.first
                     var chatMessageList = pair.second
 
-                    // TODO figure this out
-                    // chatMessageList = handleSystemMessages(chatMessageList)
-                    //
-                    // determinePreviousMessageIds(chatMessageList)
-                    //
-                    // handleExpandableSystemMessages(chatMessageList)
-                    //
-                    // if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
-                    //     adapter?.clear()
-                    //     adapter?.notifyDataSetChanged()
-                    // }
-                    //
-                    //
-                    // if (
-                    //     lookIntoFuture) {
-                    //     processMessagesFromTheFuture(chatMessageList)
-                    // } else {
-                    //     processMessagesNotFromTheFuture(chatMessageList)
-                    //     collapseSystemMessages()
-                    // }
-                    //
-                    // // FIXME
-                    // // updateReadStatusOfAllMessages(newXChatLastCommonRead)
-                    //
-                    // processCallStartedMessages(chatMessageList)
-                    //
-                    // adapter?.notifyDataSetChanged()
+                    chatMessageList = handleSystemMessages(chatMessageList)
+
+                    determinePreviousMessageIds(chatMessageList)
+
+                    handleExpandableSystemMessages(chatMessageList)
+
+                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
+                        adapter?.clear()
+                        adapter?.notifyDataSetChanged()
+                    }
+
+                    if (
+                        lookIntoFuture) {
+                        processMessagesFromTheFuture(chatMessageList)
+                    } else {
+                        processMessagesNotFromTheFuture(chatMessageList)
+                        collapseSystemMessages()
+                    }
+
+                    // FIXME
+                    // updateReadStatusOfAllMessages(newXChatLastCommonRead)
+
+                    processCallStartedMessages(chatMessageList)
+
+                    adapter?.notifyDataSetChanged()
                 }
                 .collect()
         }
-
-        // TODO remove this
-        // chatViewModel.pullChatMessageViewState.observe(this) { state ->
-        //     when (state) {
-        //         is ChatViewModel.PullChatMessageSuccessState -> {
-        //             Log.d(TAG, "PullChatMessageSuccess: Code: ${state.response.code()}")
-        //             when (state.response.code()) {
-        //                 HTTP_CODE_OK -> {
-        //                     Log.d(TAG, "lookIntoFuture: ${state.lookIntoFuture}")
-        //                     val chatOverall = state.response.body() as ChatOverall?
-        //                     var chatMessageList = chatOverall?.ocs!!.data!!
-        //
-        //                     val newXChatLastCommonRead = state.response.headers()["X-Chat-Last-Common-Read"]?.let {
-        //                         Integer.parseInt(it)
-        //                     }
-        //
-        //                     processHeaderChatLastGiven(state.response, state.lookIntoFuture)
-        //
-        //                     chatMessageList = handleSystemMessages(chatMessageList)
-        //
-        //                     if (chatMessageList.isEmpty()) {
-        //                         chatViewModel.refreshChatParams(
-        //                             setupFieldsForPullChatMessages(
-        //                                 true,
-        //                                 newXChatLastCommonRead,
-        //                                 true
-        //                             )
-        //                         )
-        //                         return@observe
-        //                     }
-        //
-        //                     determinePreviousMessageIds(chatMessageList)
-        //
-        //                     handleExpandableSystemMessages(chatMessageList)
-        //
-        //                     if (chatMessageList.isNotEmpty() &&
-        //                         ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-        //                     ) {
-        //                         adapter?.clear()
-        //                         adapter?.notifyDataSetChanged()
-        //                     }
-        //
-        //                     var lastAdapterId = getLastAdapterId()
-        //                     val oneNewMessage = (lastAdapterId != 0 || chatMessageList.size == 1)
-        //
-        //                     if (
-        //                         state.lookIntoFuture &&
-        //                         oneNewMessage &&
-        //                         chatMessageList[0].jsonMessageId > lastAdapterId
-        //                     ) {
-        //                         processMessagesFromTheFuture(chatMessageList)
-        //                     } else if (!state.lookIntoFuture) {
-        //                         processMessagesNotFromTheFuture(chatMessageList)
-        //                         collapseSystemMessages()
-        //                     }
-        //
-        //                     updateReadStatusOfAllMessages(newXChatLastCommonRead)
-        //
-        //                     processCallStartedMessages(chatMessageList)
-        //
-        //                     adapter?.notifyDataSetChanged()
-        //
-        //                     chatViewModel.refreshChatParams(
-        //                         setupFieldsForPullChatMessages(
-        //                             true,
-        //                             newXChatLastCommonRead,
-        //                             true
-        //                         )
-        //                     )
-        //                 }
-        //
-        //                 HTTP_CODE_NOT_MODIFIED -> {
-        //                     chatViewModel.refreshChatParams(
-        //                         setupFieldsForPullChatMessages(
-        //                             true,
-        //                             globalLastKnownPastMessageId,
-        //                             true
-        //                         )
-        //                     )
-        //                 }
-        //
-        //                 HTTP_CODE_PRECONDITION_FAILED -> {
-        //                     chatViewModel.refreshChatParams(
-        //                         setupFieldsForPullChatMessages(
-        //                             true,
-        //                             globalLastKnownPastMessageId,
-        //                             true
-        //                         )
-        //                     )
-        //                 }
-        //
-        //                 else -> {}
-        //             }
-        //
-        //             processExpiredMessages()
-        //             if (isFirstMessagesProcessing) {
-        //                 cancelNotificationsForCurrentConversation()
-        //                 isFirstMessagesProcessing = false
-        //                 binding.progressBar.visibility = View.GONE
-        //                 binding.messagesListView.visibility = View.VISIBLE
-        //
-        //                 collapseSystemMessages()
-        //             }
-        //         }
-        //
-        //         is ChatViewModel.PullChatMessageCompleteState -> {
-        //             Log.d(TAG, "PullChatMessageCompleted")
-        //         }
-        //
-        //         is ChatViewModel.PullChatMessageErrorState -> {
-        //             Log.d(TAG, "PullChatMessageError")
-        //         }
-        //
-        //         else -> {}
-        //     }
-        // }
 
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
             when (state) {
@@ -2848,13 +2713,7 @@ class ChatActivity :
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
-            chatViewModel.refreshChatParams(
-                setupFieldsForPullChatMessages(
-                    false,
-                    null,
-                    true
-                )
-            )
+            // TODO call on load more
         }
     }
 

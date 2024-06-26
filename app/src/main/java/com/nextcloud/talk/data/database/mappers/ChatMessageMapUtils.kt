@@ -7,13 +7,13 @@
 
 package com.nextcloud.talk.data.database.mappers
 
-import com.nextcloud.talk.chat.data.model.ChatMessageModel
+import com.nextcloud.talk.chat.data.model.ChatMessageJson
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
-fun ChatMessage.asEntity() =
+fun ChatMessageJson.asEntity() =
     ChatMessageEntity(
-        id = jsonMessageId.toLong(),
+        id = id.toLong(),
         message = message,
         token = token,
         actorType = actorType,
@@ -36,8 +36,8 @@ fun ChatMessage.asEntity() =
     )
 
 fun ChatMessageEntity.asModel() =
-    ChatMessageModel(
-        id = id.toInt(),
+    ChatMessage(
+        jsonMessageId = id.toInt(),
         message = message,
         token = token,
         actorType = actorType,
@@ -47,7 +47,7 @@ fun ChatMessageEntity.asModel() =
         messageParameters = messageParameters,
         systemMessageType = systemMessageType,
         replyable = replyable,
-        parentMessageId = parentMessageId,
+        // parentMessageId = parentMessageId,
         messageType = messageType,
         reactions = reactions,
         reactionsSelf = reactionsSelf,

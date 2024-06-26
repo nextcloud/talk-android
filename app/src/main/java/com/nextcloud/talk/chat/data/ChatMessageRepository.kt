@@ -8,8 +8,9 @@
 package com.nextcloud.talk.chat.data
 
 import android.os.Bundle
-import com.nextcloud.talk.chat.data.model.ChatMessageModel
+import com.nextcloud.talk.chat.data.model.ChatMessageJson
 import com.nextcloud.talk.data.sync.Syncable
+import com.nextcloud.talk.models.json.chat.ChatMessage
 import kotlinx.coroutines.flow.Flow
 
 interface ChatMessageRepository : Syncable {
@@ -23,7 +24,7 @@ interface ChatMessageRepository : Syncable {
         Flow<
             Pair<
                 Boolean,
-                List<ChatMessageModel>
+                List<ChatMessage>
                 >
             >
 
@@ -54,5 +55,5 @@ interface ChatMessageRepository : Syncable {
     /**
      * Gets a individual message.
      */
-    fun getMessage(withId: Long): Flow<ChatMessageModel>
+    fun getMessage(withId: Long): Flow<ChatMessageJson>
 }

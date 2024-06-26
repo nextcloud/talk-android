@@ -9,7 +9,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
-import com.nextcloud.talk.chat.data.model.ChatMessageModel
+import com.nextcloud.talk.chat.data.model.ChatMessageJson
 import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -43,7 +43,7 @@ class OfflineFirstChatRepository @Inject constructor(
         Flow<
             Pair<
                 Boolean,
-                List<ChatMessageModel>
+                List<ChatMessage>
                 >
             >
         get() = _messageFlow
@@ -52,7 +52,7 @@ class OfflineFirstChatRepository @Inject constructor(
         MutableSharedFlow<
             Pair<
                 Boolean,
-                List<ChatMessageModel>
+                List<ChatMessage>
                 >
             > = MutableSharedFlow()
 
@@ -141,18 +141,17 @@ class OfflineFirstChatRepository @Inject constructor(
         messageId: Long,
         roomId: Long,
         messageLimit: Int
-    ): List<ChatMessageModel> =
+    ): List<ChatMessage> =
         chatDao.getMessagesForConversationBefore(roomId, messageId, messageLimit).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-    private suspend fun getMessagesFrom(messageIds: List<Long>): List<ChatMessageModel> =
+    private suspend fun getMessagesFrom(messageIds: List<Long>): List<ChatMessage> =
         chatDao.getMessagesFromIds(messageIds).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-
-    override fun getMessage(withId: Long): Flow<ChatMessageModel> {
+    override fun getMessage(withId: Long): Flow<ChatMessageJson> {
         // =
         // chatDao.getChatMessageForConversation(withId).map(ChatMessageEntity::asModel)
         return flowOf()
@@ -192,7 +191,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     @Suppress("UNCHECKED_CAST")
-    private fun getMessagesFromServer(bundle: Bundle): List<ChatMessage> {
+    private fun getMessagesFromServer(bundle: Bundle): List<ChatMessageJson> {
         val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)
         val url = bundle.getString(BundleKeys.KEY_CHAT_URL)
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
@@ -223,7 +222,7 @@ class OfflineFirstChatRepository @Inject constructor(
             modelUpdater = { models ->
                 newMessageIds = models.map(SyncableModel::changedId)
                 chatDao.upsertChatMessages(
-                    models.filterIsInstance<ChatMessage>().map { it.asEntity() }
+                    models.filterIsInstance<ChatMessageJson>().map { it.asEntity() }
                 )
             }
         )
