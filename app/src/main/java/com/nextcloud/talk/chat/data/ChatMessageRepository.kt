@@ -8,12 +8,14 @@
 package com.nextcloud.talk.chat.data
 
 import android.os.Bundle
+import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessageJson
 import com.nextcloud.talk.data.sync.Syncable
 import com.nextcloud.talk.models.json.chat.ChatMessage
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
-interface ChatMessageRepository : Syncable {
+interface ChatMessageRepository : Syncable, LifecycleAwareManager {
 
 
     /**
@@ -40,17 +42,16 @@ interface ChatMessageRepository : Syncable {
         withConversationId: Long,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    )
+    ): Job
 
     /**
-     * TODO should be lifecycle (ends onStop) and network aware (starts on connection gained)
      * Long polls the server for any updates to the chat, if found, it synchronizes
      * the database with the server and emits the new messages to [messageFlow],
      * else it simply retries after timeout.
      *
      * [withNetworkParams] credentials and url.
      */
-    fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle)
+    fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Job
 
     /**
      * Gets a individual message.

@@ -82,12 +82,12 @@ suspend fun Synchronizer.changeListSync(
     val (deleted, updated) = changeList.partition(SyncableModel::markedForDeletion)
 
     // Delete models that have been deleted server-side
-    modelDeleter(deleted.map(SyncableModel::changedId))
+    modelDeleter(deleted.map(SyncableModel::id))
 
     // Using the fetch list, pull down and upsert the changes (akin to a git pull)
     modelUpdater(updated)
 
     // Update the last synced version (akin to updating local git HEAD)
-    val latestVersion = changeList.last().changedId
+    val latestVersion = changeList.last().id
     versionUpdater(latestVersion)
 }.isSuccess

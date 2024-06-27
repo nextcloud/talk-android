@@ -55,7 +55,7 @@ class ConversationItem(
     ISectionable<ConversationItemViewHolder, GenericTextHeaderItem?>,
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
-    private val chatMessage = model.lastMessage!!.asEntity().asModel() // TODO fix this work around
+    private val chatMessage = model.lastMessage?.asEntity()?.asModel() // TODO fix this work around
 
     constructor(
         conversation: Conversation,
@@ -248,16 +248,16 @@ class ConversationItem(
     }
 
     private fun calculateRegularLastMessageText(appContext: Context): String {
-        return if (chatMessage.actorId == user.userId) {
+        return if (chatMessage?.actorId == user.userId) {
             String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
-                chatMessage.lastMessageDisplayText
+                chatMessage?.lastMessageDisplayText
             )
         } else {
             val authorDisplayName =
-                if (!TextUtils.isEmpty(chatMessage.actorDisplayName)) {
-                    chatMessage.actorDisplayName
-                } else if ("guests" == chatMessage.actorType) {
+                if (!TextUtils.isEmpty(chatMessage?.actorDisplayName)) {
+                    chatMessage?.actorDisplayName
+                } else if ("guests" == chatMessage?.actorType) {
                     appContext.getString(R.string.nc_guest)
                 } else {
                     ""
@@ -265,7 +265,7 @@ class ConversationItem(
             String.format(
                 appContext.getString(R.string.nc_formatted_message),
                 authorDisplayName,
-                chatMessage.lastMessageDisplayText
+                chatMessage?.lastMessageDisplayText
             )
         }
     }

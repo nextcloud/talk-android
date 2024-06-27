@@ -13,7 +13,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessage
 
 fun ChatMessageJson.asEntity() =
     ChatMessageEntity(
-        id = id.toLong(),
+        id = id,
         message = message,
         token = token,
         actorType = actorType,

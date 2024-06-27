@@ -15,7 +15,7 @@ class ArrayListConverter {
     @TypeConverter
     fun arrayListToString(list: ArrayList<String>?): String? {
         return if (list == null) {
-            LoganSquare.serialize(listOf<String>())
+            null
         } else {
             return LoganSquare.serialize(list)
         }
@@ -24,7 +24,7 @@ class ArrayListConverter {
     @TypeConverter
     fun stringToArrayList(value: String?): ArrayList<String>? {
         if (value.isNullOrEmpty()) {
-            return listOf<String>() as ArrayList<String>
+            return null
         }
 
         return LoganSquare.parseList(value, List::class.java) as ArrayList<String>?

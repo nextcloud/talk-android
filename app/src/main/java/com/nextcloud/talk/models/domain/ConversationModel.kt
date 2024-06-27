@@ -55,7 +55,7 @@ class ConversationModel(
     var recordingConsentRequired: Int = 0,
     var remoteServer: String? = null,
     var remoteToken: String? = null,
-    override var changedId: Long = roomId!!.toLong(),
+    override var id: Long = roomId!!.toLong(),
     override var markedForDeletion: Boolean = false
 ) : SyncableModel {
 

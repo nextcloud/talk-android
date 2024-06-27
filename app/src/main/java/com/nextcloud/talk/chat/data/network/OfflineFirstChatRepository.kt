@@ -10,11 +10,11 @@ package com.nextcloud.talk.chat.data.network
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessageJson
-import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.sync.Synchronizer
 import com.nextcloud.talk.data.sync.changeListSync
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -23,20 +23,23 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import retrofit2.Response
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val network: ChatNetworkDataSource,
-    private val datastore: AppPreferences
+    private val datastore: AppPreferences,
+    private val monitor: NetworkMonitor
 ) : ChatMessageRepository, Synchronizer {
 
     override val messageFlow:
@@ -58,45 +61,45 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private var newXChatLastCommonRead = 0
     private var newMessageIds: List<Long> = listOf()
+    private var itIsPaused = false
+    private val scope = CoroutineScope(Dispatchers.IO)
 
     override fun loadMoreMessages(
         messageId: Long,
         withConversationId: Long,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    ): Unit =
-        runBlocking {
-            launch {
-                val fieldMap = getFieldMap(
+    ): Job =
+        scope.launch {
+            val fieldMap = getFieldMap(
+                withConversationId,
+                lookIntoFuture = false,
+                setReadMarker = true
+            )
+            withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+
+            var attempts = 0
+            do {
+                attempts++
+                val maxAttemptsAreNotReached = (attempts < 2)
+
+                val list = getMessagesBefore(
+                    messageId,
                     withConversationId,
-                    lookIntoFuture = false,
-                    setReadMarker = true
+                    withMessageLimit
                 )
-                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
-                var attempts = 0
-                do {
-                    attempts++
-                    val maxAttemptsAreNotReached = (attempts < 2)
-
-                    val list = getMessagesBefore(
-                        messageId,
-                        withConversationId,
-                        withMessageLimit
-                    )
-
-                    if (list.isNotEmpty()) {
-                        val pair = Pair(false, list)
-                        _messageFlow.emit(pair)
-                        break
-                    } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
-                } while (maxAttemptsAreNotReached)
-            }
+                if (list.isNotEmpty()) {
+                    val pair = Pair(false, list)
+                    _messageFlow.emit(pair)
+                    break
+                } else if (maxAttemptsAreNotReached) this@OfflineFirstChatRepository.sync(withNetworkParams)
+            } while (maxAttemptsAreNotReached)
         }
 
-    override fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Unit =
-        runBlocking {
-            launch {
+    override fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Job =
+        scope.launch {
+            // monitor.isOnline.onEach { online ->
                 var fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
                 while (true) {
                     // sync database with server ( This is a long blocking call b/c long polling is set )
@@ -112,8 +115,9 @@ class OfflineFirstChatRepository @Inject constructor(
                     // update field map vars for next cycle
                     fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
                 }
+            // }.collect()
             }
-        }
+
 
     private fun getFieldMap(
         fromConversationId: Long,
@@ -160,6 +164,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun process(response: Response<*>, conversationId: Long) {
         when (response.code()) {
             HTTP_CODE_OK -> {
+                // FIXME infinite loop, not calling HTTP_CODE_NOT_MODIFIED
                 newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
                     Integer.parseInt(it)
                 } ?: 0
@@ -197,16 +202,20 @@ class OfflineFirstChatRepository @Inject constructor(
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
         val withConversationId = bundle.getLong(BundleKeys.KEY_CONVERSATION_ID)
 
-        // TODO this needs to be lifecycle aware
         val list = network.pullChatMessages(credentials!!, url!!, fieldMap)
-            .firstElement()
             .subscribeOn(Schedulers.io())
+            .takeUntil { itIsPaused }
+            .observeOn(AndroidSchedulers.mainThread())
             .map {
                 process(it, withConversationId)
-                (it.body() as ChatOverall).ocs!!.data
+                if (it.body() != null) {
+                    return@map (it.body() as ChatOverall).ocs!!.data
+                } else {
+                    return@map null
+                }
             }
-            .observeOn(AndroidSchedulers.mainThread())
-            .blockingGet()
+            .blockingSingle()
+
         return list ?: listOf()
     }
 
@@ -220,12 +229,23 @@ class OfflineFirstChatRepository @Inject constructor(
             // not needed
             modelDeleter = {},
             modelUpdater = { models ->
-                newMessageIds = models.map(SyncableModel::changedId)
-                chatDao.upsertChatMessages(
-                    models.filterIsInstance<ChatMessageJson>().map { it.asEntity() }
-                )
+                newMessageIds = models.map { it.id }
+                val list = models.filterIsInstance<ChatMessageJson>().map { it.asEntity() }
+                chatDao.upsertChatMessages(list)
             }
         )
+
+    override fun handleOnPause() {
+        itIsPaused = true
+    }
+
+    override fun handleOnResume() {
+        itIsPaused = false
+    }
+
+    override fun handleOnStop() {
+        // unused atm
+    }
 
     companion object {
         private const val HTTP_CODE_OK: Int = 200

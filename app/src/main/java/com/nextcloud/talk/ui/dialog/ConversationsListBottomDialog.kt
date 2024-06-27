@@ -323,7 +323,7 @@ class ConversationsListBottomDialog(
                 currentUser.baseUrl!!,
                 conversation.token!!
             ),
-            messageId
+            messageId?.toInt()
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

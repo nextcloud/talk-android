@@ -12,18 +12,19 @@ package com.nextcloud.talk.dagger.modules
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
+import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
-import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
-import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
+import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
 import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNetwork
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
@@ -162,9 +163,10 @@ class RepositoryModule {
     fun provideOfflineFirstChatRepository(
         dao: ChatMessagesDao,
         dataSource: ChatNetworkDataSource,
-        appPreferences: AppPreferences
+        appPreferences: AppPreferences,
+        networkMonitor: NetworkMonitor
     ): ChatMessageRepository {
-        return OfflineFirstChatRepository(dao, dataSource, appPreferences)
+        return OfflineFirstChatRepository(dao, dataSource, appPreferences, networkMonitor)
     }
 
     @Provides

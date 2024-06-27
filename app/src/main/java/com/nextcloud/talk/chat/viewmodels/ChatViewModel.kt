@@ -66,6 +66,7 @@ class ChatViewModel @Inject constructor(
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
+        chatRepository.handleOnResume()
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -74,12 +75,14 @@ class ChatViewModel @Inject constructor(
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         mediaRecorderManager.handleOnPause()
+        chatRepository.handleOnPause()
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
         mediaRecorderManager.handleOnStop()
+        chatRepository.handleOnStop()
     }
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
@@ -458,8 +461,8 @@ class ChatViewModel @Inject constructor(
         withConversationId: Long
     ) {
         val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_CHAT_URL, withCredentials)
-        bundle.putString(BundleKeys.KEY_CREDENTIALS, withUrl)
+        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
         chatRepository.initMessagePolling(withConversationId, withNetworkParams = bundle)
     }
 

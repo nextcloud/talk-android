@@ -22,7 +22,9 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class NetworkMonitorImpl @Inject constructor(
     private val context: Context
 ) : NetworkMonitor {

@@ -16,7 +16,7 @@ interface SyncableModel {
     /**
      * Model identifier.
      */
-    var changedId: Long
+    var id: Long
 
     /**
      * Model deletion checker.
