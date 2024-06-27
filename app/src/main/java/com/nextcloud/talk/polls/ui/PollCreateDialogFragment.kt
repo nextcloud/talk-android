@@ -57,7 +57,7 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogPollCreateBinding.inflate(LayoutInflater.from(context))
+        binding = DialogPollCreateBinding.inflate(layoutInflater)
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
             .setView(binding.root)

@@ -68,7 +68,7 @@ class RenameConversationDialogFragment : DialogFragment() {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogRenameConversationBinding.inflate(LayoutInflater.from(context))
+        binding = DialogRenameConversationBinding.inflate(layoutInflater)
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
             .setTitle(resources.getString(R.string.nc_rename))

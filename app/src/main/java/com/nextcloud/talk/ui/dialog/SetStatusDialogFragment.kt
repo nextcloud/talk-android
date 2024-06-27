@@ -155,7 +155,7 @@ class SetStatusDialogFragment :
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogSetStatusBinding.inflate(LayoutInflater.from(context))
+        binding = DialogSetStatusBinding.inflate(layoutInflater)
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
         viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
