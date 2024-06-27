@@ -410,6 +410,7 @@
     <string name="nc_sort_by">排序依据</string>
     <string name="nc_start_time">开始时间</string>
     <string name="nc_switch_account">切换账户</string>
+    <string name="nc_team">团队</string>
     <string name="nc_teams">团队</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>

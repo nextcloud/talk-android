@@ -562,6 +562,7 @@
     <string name="set_status">Velg status</string>
     <string name="set_status_message">Velg statusmelding</string>
     <string name="share">Del</string>
+    <string name="share_link_to_conversation">Bli med samtale %1$s på %2$s</string>
     <string name="shared_items_audio">Lyd</string>
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Media</string>
