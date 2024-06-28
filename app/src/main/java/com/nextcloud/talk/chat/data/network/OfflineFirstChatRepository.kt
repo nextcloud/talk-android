@@ -88,8 +88,11 @@ class OfflineFirstChatRepository @Inject constructor(
                 attempts++
                 val maxAttemptsAreNotReached = (attempts < 2)
 
+                val lastKnown = datastore.getLastKnownId(withConversationId, 0)
+                val id = if (messageId > 0) messageId else lastKnown.toLong()
+
                 val list = getMessagesBefore(
-                    messageId,
+                    id,
                     withConversationId,
                     withMessageLimit
                 )

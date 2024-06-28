@@ -585,6 +585,13 @@ class ChatActivity :
                     // TODO load original messages too, might require a rework of onLoadMore
 
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                    chatViewModel.loadMoreMessages(
+                        beforeMessageId = -1, // gets history of conversation
+                        withCredentials = credentials!!,
+                        withUrl = urlForChatting,
+                        withConversationId = currentConversation!!.roomId!!.toLong(),
+                        withMessageLimit = MESSAGE_PULL_LIMIT
+                    )
                     chatViewModel.initMessagePolling(
                         withCredentials = credentials!!,
                         withUrl = urlForChatting,
@@ -787,9 +794,6 @@ class ChatActivity :
                         processMessagesNotFromTheFuture(chatMessageList)
                         collapseSystemMessages()
                     }
-
-                    // FIXME
-                    // updateReadStatusOfAllMessages(newXChatLastCommonRead)
 
                     processCallStartedMessages(chatMessageList)
 
@@ -2720,6 +2724,12 @@ class ChatActivity :
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
+            /**
+             * FIXME
+             *  Process: com.nextcloud.talk2, PID: 10753
+             *  java.lang.ClassCastException: java.util.Date cannot be cast to com.nextcloud.talk.models.json.chat.ChatMessage
+             *     at com.nextcloud.talk.chat.ChatActivity.onLoadMore(ChatActivity.kt:2727)
+             */
             val id = (adapter?.items?.last()?.item as ChatMessage).jsonMessageId
             val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
             chatViewModel.loadMoreMessages(
@@ -3330,13 +3340,15 @@ class ChatActivity :
     }
 
     private fun updateAdapterForReaction(message: IMessage?) {
-        val messageTemp = message as ChatMessage
+        message?.let {
+            val messageTemp = message as ChatMessage
 
-        messageTemp.isOneToOneConversation =
-            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-        messageTemp.activeUser = conversationUser
+            messageTemp.isOneToOneConversation =
+                currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            messageTemp.activeUser = conversationUser
 
-        adapter?.update(messageTemp)
+            adapter?.update(messageTemp)
+        }
     }
 
     fun updateUiToAddReaction(message: ChatMessage, emoji: String) {
