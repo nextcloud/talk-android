@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.sync.Synchronizer
 import com.nextcloud.talk.data.sync.changeListSync
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,9 +29,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import javax.inject.Inject
@@ -59,7 +63,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 >
             > = MutableSharedFlow()
 
-    private var newXChatLastCommonRead = 0
+    private var newXChatLastCommonRead: Int? = null
     private var newMessageIds: List<Long> = listOf()
     private var itIsPaused = false
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -77,6 +81,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 setReadMarker = true
             )
             withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+            withNetworkParams.putLong(BundleKeys.KEY_CONVERSATION_ID, withConversationId)
 
             var attempts = 0
             do {
@@ -99,15 +104,31 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun initMessagePolling(withConversationId: Long, withNetworkParams: Bundle): Job =
         scope.launch {
-            // monitor.isOnline.onEach { online ->
+            monitor.isOnline.onEach { online ->
                 var fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
-                while (true) {
+                while (!itIsPaused) {
+                    if (!online) Thread.sleep(500)
+
                     // sync database with server ( This is a long blocking call b/c long polling is set )
                     withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                    withNetworkParams.putLong(BundleKeys.KEY_CONVERSATION_ID, withConversationId)
                     this@OfflineFirstChatRepository.sync(withNetworkParams)
 
                     // get new messages, if not empty -> emit to flow with APPEND
-                    val list = getMessagesFrom(newMessageIds)
+                    var list = getMessagesFrom(newMessageIds)
+
+                    // Process read status if not null
+                    val lastKnown = datastore.getLastKnownId(withConversationId, 0)
+                    list = list.map { chatMessage ->
+                        chatMessage.readStatus = if (chatMessage.jsonMessageId <= lastKnown) {
+                            ReadStatus.READ
+                        } else {
+                            ReadStatus.SENT
+                        }
+
+                        return@map chatMessage
+                    }
+
                     if (list.isNotEmpty()) {
                         val pair = Pair(true, list)
                         _messageFlow.emit(pair)
@@ -115,8 +136,9 @@ class OfflineFirstChatRepository @Inject constructor(
                     // update field map vars for next cycle
                     fieldMap = getFieldMap(withConversationId, lookIntoFuture = true, setReadMarker = true)
                 }
-            // }.collect()
             }
+                .flowOn(Dispatchers.IO).collect()
+        }
 
 
     private fun getFieldMap(
@@ -131,7 +153,9 @@ class OfflineFirstChatRepository @Inject constructor(
         val lastKnown = datastore.getLastKnownId(fromConversationId, 0)
         fieldMap["lastKnownMessageId"] = lastKnown
 
-        fieldMap["lastCommonReadId"] = newXChatLastCommonRead
+        newXChatLastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = if (it > 0) it else lastKnown
+        }
 
         fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
         fieldMap["limit"] = 100
@@ -167,7 +191,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 // FIXME infinite loop, not calling HTTP_CODE_NOT_MODIFIED
                 newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
                     Integer.parseInt(it)
-                } ?: 0
+                }
 
                 val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
                 val lastKnownId = if (response.headers().size > 0 &&
@@ -204,7 +228,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
         val list = network.pullChatMessages(credentials!!, url!!, fieldMap)
             .subscribeOn(Schedulers.io())
-            .takeUntil { itIsPaused }
             .observeOn(AndroidSchedulers.mainThread())
             .map {
                 process(it, withConversationId)

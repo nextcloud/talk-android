@@ -2872,17 +2872,17 @@ class ChatActivity :
 
             // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
                     // the message to delete has to be modified directly inside the adapter
                     setMessageAsDeleted(currentMessage.value.parentMessage)
                 } else {
-                    chatMessageMap[currentMessage.value.parentMessage!!.id]!!.isDeleted = true
+                    chatMessageMap[currentMessage.value.parentMessage?.id]!!.isDeleted = true
                 }
                 chatMessageIterator.remove()
             } else if (isReactionsMessage(currentMessage)) {
                 // delete reactions system messages
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
@@ -2891,7 +2891,7 @@ class ChatActivity :
                 // delete poll system messages
                 chatMessageIterator.remove()
             } else if (isEditMessage(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     setMessageAsEdited(currentMessage.value.parentMessage)
                 }
 
