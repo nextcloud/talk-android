@@ -32,6 +32,8 @@ class ContactsActivityViewModel @Inject constructor(
     val roomViewState: StateFlow<RoomUiState> = _roomViewState
     private val _currentUser = userManager.currentUser.blockingGet()
     val currentUser: User = _currentUser
+    private val _searchQuery = MutableStateFlow("")
+    val searchQuery: StateFlow<String> = _searchQuery
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
@@ -39,9 +41,13 @@ class ContactsActivityViewModel @Inject constructor(
         getContactsFromSearchParams()
     }
 
-    private fun getContactsFromSearchParams() {
+    fun updateSearchQuery(query: String)  {
+        _searchQuery.value = query
+    }
+
+    fun getContactsFromSearchParams() {
         val retrofitBucket: RetrofitBucket =
-            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, null)
+            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, searchQuery.value)
         val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
         modifiedQueryMap["limit"] = 50
         val shareTypesList: ArrayList<String> = ArrayList()
@@ -67,7 +73,7 @@ class ContactsActivityViewModel @Inject constructor(
         }
     }
 
-    fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?)  {
+    fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
             _currentUser.baseUrl,
