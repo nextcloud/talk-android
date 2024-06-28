@@ -174,7 +174,7 @@
     <string name="nc_diagnose_battery_optimization_not_ignored">Non se ignora a optimización da batería. Isto debería cambiarse!</string>
     <string name="nc_diagnose_battery_optimization_title">Axustes da batería</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
-    <string name="nc_diagnose_dialog_open_checklist">Abrir a lista de verificación de solución de problemas</string>
+    <string name="nc_diagnose_dialog_open_checklist">Abrir a lista de comprobación de solución de problemas</string>
     <string name="nc_diagnose_dialog_open_diagnose">Abrir a pantalla de diagnóstico</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Abrir dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Última recuperación do testemuño de envío de Firebase</string>
@@ -312,7 +312,7 @@
     <string name="nc_notification_channel_uploads">Envíos</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progreso do envío</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">O permiso de notificación e os axustes da batería están configurados correctamente para recibir notificacións. Se ten problemas para recibir notificacións de todos os xeitos, comprobe se as canles de notificación para chamadas e mensaxes están activadas. Pódese atopar máis axuda en DontKillMyApp.com ou na lista de verificación de solución de problemas. Se isto non lle é de axuda, vaia á pantalla de diagnóstico e envíe un informe de fallo.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">O permiso de notificación e os axustes da batería están configurados correctamente para recibir notificacións. Se ten problemas para recibir notificacións de todos os xeitos, comprobe se as canles de notificación para chamadas e mensaxes están activadas. Pódese atopar máis axuda en DontKillMyApp.com ou na lista de comprobación de solución de problemas. Se isto non lle é de axuda, vaia á pantalla de diagnóstico e envíe un informe de fallo.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Resolución de problemas de notificación</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
     <string name="nc_notify_me_mention">Notificar cando son mencionado</string>
