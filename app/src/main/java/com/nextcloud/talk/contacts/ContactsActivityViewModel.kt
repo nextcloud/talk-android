@@ -41,7 +41,7 @@ class ContactsActivityViewModel @Inject constructor(
         getContactsFromSearchParams()
     }
 
-    fun updateSearchQuery(query: String)  {
+    fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
 
