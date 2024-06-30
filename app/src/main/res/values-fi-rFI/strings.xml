@@ -10,6 +10,7 @@
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
     <string name="calendar">Kalenteri</string>
+    <string name="call_running_since_one_hour">Tämä puhelu on kestänyt yhden tunnin.</string>
     <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
     <string name="camera_permission_granted">Kameraoikeus myönnetty. Valitse kamera uudelleen.</string>
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
@@ -28,6 +29,7 @@
     <string name="file_list_loading">Ladataan…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 tuntia</string>
+    <string name="hint_edited_message">(muokattu)</string>
     <string name="invisible">Näkymätön</string>
     <string name="later_today">Myöhemmin tänään</string>
     <string name="load_more_results">Lataa lisää tuloksia</string>
@@ -135,6 +137,7 @@
     <string name="nc_expire_messages_explanation">Keskusteluviestit on mahdollista vanhentaa tietyn ajan jälkeen. Huomio: Keskustelussa jaetut tiedostot eivät poistu omistajalta, mutta ne eivät ole enää jaettu keskustelussa.</string>
     <string name="nc_federation_invitation_accept">Hyväksy</string>
     <string name="nc_federation_invitation_reject">Hylkää</string>
+    <string name="nc_federation_no_invitations">Ei odottavia kutsuja</string>
     <string name="nc_file_browser_back">Takaisin</string>
     <string name="nc_formatted_message_you">Sinä: %1$s</string>
     <string name="nc_forward_message">Välitä</string>
@@ -218,6 +221,7 @@
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
     <string name="nc_remove_participant">Poista osallistuja</string>
+    <string name="nc_remove_team_and_members">Poista tiimi ja jäsenet</string>
     <string name="nc_rename">Nimeä keskustelu uudelleen</string>
     <string name="nc_rename_confirm">Nimeä uudelleen</string>
     <string name="nc_reply">Vastaa</string>
@@ -323,6 +327,7 @@
     <string name="nc_start_time">Aloitusaika</string>
     <string name="nc_switch_account">Vaihda tiliä</string>
     <string name="nc_team">Tiimi</string>
+    <string name="nc_teams">Tiimit</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_from_device">Lähetä laitteelta</string>
