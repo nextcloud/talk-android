@@ -26,7 +26,8 @@ import com.nextcloud.talk.models.domain.ParticipantType
             entity = UserEntity::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("account_id"),
-            onDelete = ForeignKey.CASCADE
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
         )
     ],
     indices = [

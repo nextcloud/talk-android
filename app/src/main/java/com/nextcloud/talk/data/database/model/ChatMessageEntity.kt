@@ -9,23 +9,26 @@ package com.nextcloud.talk.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.models.json.chat.ChatMessage
 
 @Entity(
     tableName = "ChatMessages",
-    foreignKeys = [
-        ForeignKey(
-            entity = ConversationEntity::class,
-            parentColumns = arrayOf("id"),
-            childColumns = arrayOf("internal_conversation_id"),
-            onDelete = ForeignKey.CASCADE
-        )
-    ],
-    indices = [
-        androidx.room.Index(value = ["internal_conversation_id"])
-    ]
+    // TODO fix this weird error with foreign keys causing SQLite constraint exception
+    //  when I set internal_conversation_id
+    // foreignKeys = [
+    //     ForeignKey(
+    //         entity = ConversationEntity::class,
+    //         parentColumns = arrayOf("id"),
+    //         childColumns = arrayOf("internal_conversation_id"),
+    //         onDelete = ForeignKey.CASCADE,
+    //         onUpdate = ForeignKey.CASCADE,
+    //     )
+    // ],
+    // indices = [
+    //     Index(value = ["id"], unique = true),
+    //     Index(value = ["internal_conversation_id"])
+    // ]
 )
 data class ChatMessageEntity(
     @PrimaryKey(autoGenerate = true)

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-      "identityHash": "a55156bb4ca2110d313000a0128ed081",
+      "identityHash": "482937f14afa95a62c2dea77613938e7",
     "entities": [
       {
         "tableName": "User",
@@ -138,7 +138,7 @@
       },
       {
         "tableName": "Conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `account_id` INTEGER, `token` TEXT, `name` TEXT, `displayName` TEXT, `description` TEXT, `type` TEXT, `lastPing` INTEGER NOT NULL, `participantType` TEXT, `hasPassword` INTEGER NOT NULL, `sessionId` TEXT, `actorId` TEXT, `actorType` TEXT, `isFavorite` INTEGER NOT NULL, `lastActivity` INTEGER NOT NULL, `unreadMessages` INTEGER NOT NULL, `unreadMention` INTEGER NOT NULL, `lastMessage` INTEGER, `objectType` TEXT, `notificationLevel` TEXT, `readOnly` TEXT, `lobbyState` TEXT, `lobbyTimer` INTEGER, `lastReadMessage` INTEGER NOT NULL, `hasCall` INTEGER NOT NULL, `callFlag` INTEGER NOT NULL, `canStartCall` INTEGER NOT NULL, `canLeaveConversation` INTEGER, `canDeleteConversation` INTEGER, `unreadMentionDirect` INTEGER, `notificationCalls` INTEGER, `permissions` INTEGER NOT NULL, `messageExpiration` INTEGER NOT NULL, `status` TEXT, `statusIcon` TEXT, `statusMessage` TEXT, `statusClearAt` INTEGER, `callRecording` INTEGER NOT NULL, `avatarVersion` TEXT, `isCustomAvatar` INTEGER, `callStartTime` INTEGER, `recordingConsent` INTEGER NOT NULL, `remoteServer` TEXT, `remoteToken` TEXT, FOREIGN KEY(`account_id`) REFERENCES `User`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+          "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `account_id` INTEGER, `token` TEXT, `name` TEXT, `displayName` TEXT, `description` TEXT, `type` TEXT, `lastPing` INTEGER NOT NULL, `participantType` TEXT, `hasPassword` INTEGER NOT NULL, `sessionId` TEXT, `actorId` TEXT, `actorType` TEXT, `isFavorite` INTEGER NOT NULL, `lastActivity` INTEGER NOT NULL, `unreadMessages` INTEGER NOT NULL, `unreadMention` INTEGER NOT NULL, `lastMessage` INTEGER, `objectType` TEXT, `notificationLevel` TEXT, `readOnly` TEXT, `lobbyState` TEXT, `lobbyTimer` INTEGER, `lastReadMessage` INTEGER NOT NULL, `hasCall` INTEGER NOT NULL, `callFlag` INTEGER NOT NULL, `canStartCall` INTEGER NOT NULL, `canLeaveConversation` INTEGER, `canDeleteConversation` INTEGER, `unreadMentionDirect` INTEGER, `notificationCalls` INTEGER, `permissions` INTEGER NOT NULL, `messageExpiration` INTEGER NOT NULL, `status` TEXT, `statusIcon` TEXT, `statusMessage` TEXT, `statusClearAt` INTEGER, `callRecording` INTEGER NOT NULL, `avatarVersion` TEXT, `isCustomAvatar` INTEGER, `callStartTime` INTEGER, `recordingConsent` INTEGER NOT NULL, `remoteServer` TEXT, `remoteToken` TEXT, FOREIGN KEY(`account_id`) REFERENCES `User`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -426,7 +426,7 @@
           {
             "table": "User",
             "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
+              "onUpdate": "CASCADE",
             "columns": [
               "account_id"
             ],
@@ -438,7 +438,7 @@
       },
       {
         "tableName": "ChatMessages",
-          "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internal_conversation_id` INTEGER, `message` TEXT, `token` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `messageParameters` TEXT, `systemMessage` TEXT, `isReplyable` INTEGER NOT NULL, `parent` INTEGER, `messageType` TEXT, `reactions` TEXT, `reactionsSelf` TEXT, `expirationTimestamp` INTEGER NOT NULL, `markdown` INTEGER, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER NOT NULL, FOREIGN KEY(`internal_conversation_id`) REFERENCES `Conversations`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+          "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internal_conversation_id` INTEGER, `message` TEXT, `token` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `messageParameters` TEXT, `systemMessage` TEXT, `isReplyable` INTEGER NOT NULL, `parent` INTEGER, `messageType` TEXT, `reactions` TEXT, `reactionsSelf` TEXT, `expirationTimestamp` INTEGER NOT NULL, `markdown` INTEGER, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -573,36 +573,14 @@
             "id"
           ]
         },
-        "indices": [
-          {
-            "name": "index_ChatMessages_internal_conversation_id",
-            "unique": false,
-            "columnNames": [
-              "internal_conversation_id"
-            ],
-            "orders": [],
-            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessages_internal_conversation_id` ON `${TABLE_NAME}` (`internal_conversation_id`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "Conversations",
-            "onDelete": "CASCADE",
-            "onUpdate": "NO ACTION",
-            "columns": [
-              "internal_conversation_id"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
-          }
-        ]
+          "indices": [],
+          "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-        "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a55156bb4ca2110d313000a0128ed081')"
+        "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '482937f14afa95a62c2dea77613938e7')"
     ]
   }
 }

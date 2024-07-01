@@ -71,8 +71,8 @@ interface ChatMessagesDao {
         """
         SELECT * 
         FROM ChatMessages
-        WHERE internal_conversation_id = :conversationId AND id <= :messageId
-        ORDER BY timestamp ASC, id ASC
+        WHERE internal_conversation_id = :conversationId AND id < :messageId
+        ORDER BY timestamp DESC, id DESC
         LIMIT :limit
         """
     )

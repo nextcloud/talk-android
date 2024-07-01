@@ -89,7 +89,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 val maxAttemptsAreNotReached = (attempts < 2)
 
                 val lastKnown = datastore.getLastKnownId(withConversationId, 0)
-                val id = if (messageId > 0) messageId else lastKnown.toLong()
+                val id = if (messageId > 0) messageId else (lastKnown.toLong() + 1) // so it includes lastKnown
 
                 val list = getMessagesBefore(
                     id,
@@ -191,7 +191,6 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun process(response: Response<*>, conversationId: Long) {
         when (response.code()) {
             HTTP_CODE_OK -> {
-                // FIXME infinite loop, not calling HTTP_CODE_NOT_MODIFIED
                 newXChatLastCommonRead = response.headers()["X-Chat-Last-Common-Read"]?.let {
                     Integer.parseInt(it)
                 }
@@ -237,7 +236,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 if (it.body() != null) {
                     return@map (it.body() as ChatOverall).ocs!!.data
                 } else {
-                    return@map null
+                    return@map null // FIXME returning null here causes a duplicate, for some weird reason
                 }
             }
             .blockingSingle()
@@ -255,8 +254,13 @@ class OfflineFirstChatRepository @Inject constructor(
             // not needed
             modelDeleter = {},
             modelUpdater = { models ->
+                val conversationId = bundle.getLong(BundleKeys.KEY_CONVERSATION_ID)
                 newMessageIds = models.map { it.id }
-                val list = models.filterIsInstance<ChatMessageJson>().map { it.asEntity() }
+                val list = models.filterIsInstance<ChatMessageJson>().map {
+                    it.asEntity().apply {
+                        internalConversationId = conversationId
+                    }
+                }
                 chatDao.upsertChatMessages(list)
             }
         )

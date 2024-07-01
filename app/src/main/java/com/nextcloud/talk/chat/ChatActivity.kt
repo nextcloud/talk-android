@@ -582,8 +582,6 @@ class ChatActivity :
                     setActionBarTitle()
                     updateRoomTimerHandler()
 
-                    // TODO load original messages too, might require a rework of onLoadMore
-
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
                     chatViewModel.loadMoreMessages(
                         beforeMessageId = -1, // gets history of conversation
@@ -2724,13 +2722,10 @@ class ChatActivity :
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
-            /**
-             * FIXME
-             *  Process: com.nextcloud.talk2, PID: 10753
-             *  java.lang.ClassCastException: java.util.Date cannot be cast to com.nextcloud.talk.models.json.chat.ChatMessage
-             *     at com.nextcloud.talk.chat.ChatActivity.onLoadMore(ChatActivity.kt:2727)
-             */
-            val id = (adapter?.items?.last()?.item as ChatMessage).jsonMessageId
+            val id = (adapter?.items?.last {
+                it.item is ChatMessage
+            }?.item as ChatMessage).jsonMessageId
+
             val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
             chatViewModel.loadMoreMessages(
                 beforeMessageId = id.toLong(),
