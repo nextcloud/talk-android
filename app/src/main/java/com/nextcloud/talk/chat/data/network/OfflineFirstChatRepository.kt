@@ -119,6 +119,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
                     // get new messages, if not empty -> emit to flow with APPEND
                     var list = getMessagesFrom(newMessageIds)
+                    newMessageIds = listOf() // Clear it after use to prevent duplicates
 
                     // Process read status if not null
                     val lastKnown = datastore.getLastKnownId(withConversationId, 0)
@@ -231,13 +232,10 @@ class OfflineFirstChatRepository @Inject constructor(
         val list = network.pullChatMessages(credentials!!, url!!, fieldMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+            .filter { it.body() != null }
             .map {
                 process(it, withConversationId)
-                if (it.body() != null) {
-                    return@map (it.body() as ChatOverall).ocs!!.data
-                } else {
-                    return@map null // FIXME returning null here causes a duplicate, for some weird reason
-                }
+                return@map (it.body() as ChatOverall).ocs!!.data
             }
             .blockingSingle()
 
