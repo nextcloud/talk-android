@@ -9,7 +9,6 @@ package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -22,7 +21,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactsActivityViewModel @Inject constructor(
-    private val ncApiCoroutines: NcApiCoroutines,
+    private val repository: ContactsRepository,
     private val userManager: UserManager
 ) : ViewModel() {
 
@@ -58,9 +57,9 @@ class ContactsActivityViewModel @Inject constructor(
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
-                val contacts = ncApiCoroutines.getContactsWithSearchParam(
-                    credentials,
-                    retrofitBucket.url,
+                val contacts = repository.getContacts(
+                    credentials!!,
+                    retrofitBucket.url!!,
                     shareTypesList,
                     modifiedQueryMap
                 )
@@ -84,10 +83,10 @@ class ContactsActivityViewModel @Inject constructor(
         )
         viewModelScope.launch {
             try {
-                val room = ncApiCoroutines.createRoom(
-                    credentials,
-                    retrofitBucket.url,
-                    retrofitBucket.queryMap
+                val room = repository.createRoom(
+                    credentials!!,
+                    retrofitBucket.url!!,
+                    retrofitBucket.queryMap!!
                 )
 
                 val conversation: Conversation? = room.ocs?.data
