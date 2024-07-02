@@ -40,7 +40,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
-import retrofit2.Response
 import java.io.File
 import javax.inject.Inject
 
@@ -99,11 +98,6 @@ class ChatViewModel @Inject constructor(
     private val _getVoiceRecordingLocked: MutableLiveData<Boolean> = MutableLiveData()
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
-
-    // TODO remove this
-    private val _getFieldMapForChat: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
-    val getFieldMapForChat: LiveData<HashMap<String, Int>>
-        get() = _getFieldMapForChat
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -165,24 +159,6 @@ class ChatViewModel @Inject constructor(
     val leaveRoomViewState: LiveData<ViewState>
         get() = _leaveRoomViewState
 
-    object SendChatMessageStartState : ViewState
-    class SendChatMessageSuccessState(val message: CharSequence) : ViewState
-    class SendChatMessageErrorState(val e: Throwable, val message: CharSequence) : ViewState
-
-    private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
-    val sendChatMessageViewState: LiveData<ViewState>
-        get() = _sendChatMessageViewState
-
-    // TODO remove this all
-    object PullChatMessageStartState : ViewState
-    class PullChatMessageSuccessState(val response: Response<*>, val lookIntoFuture: Boolean) : ViewState
-    object PullChatMessageErrorState : ViewState
-    object PullChatMessageCompleteState : ViewState
-
-    private val _pullChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(PullChatMessageStartState)
-    val pullChatMessageViewState: LiveData<ViewState>
-        get() = _pullChatMessageViewState
-
     object ChatMessageInitialState : ViewState
     object ChatMessageStartState : ViewState
     object ChatMessageUpdateState : ViewState
@@ -221,14 +197,6 @@ class ChatViewModel @Inject constructor(
     private val _reactionDeletedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionDeletedStartState)
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
-
-    // TODO remove this
-    fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
-        if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
-            _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
-            Log.d(TAG, "FieldMap Refreshed with $pullChatMessagesFieldMap vs ${_getFieldMapForChat.value}")
-        }
-    }
 
     fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
@@ -369,70 +337,6 @@ class ChatViewModel @Inject constructor(
 
                 override fun onNext(t: RoomOverall) {
                     _createRoomViewState.value = CreateRoomSuccessState(t)
-                }
-            })
-    }
-
-    fun sendChatMessage(
-        credentials: String,
-        url: String,
-        message: CharSequence,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean
-    ) {
-        chatNetworkDataSource.sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification
-        ).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(e, message)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: GenericOverall) {
-                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
-                }
-            })
-    }
-
-    fun pullChatMessages(credentials: String, url: String) {
-        chatNetworkDataSource.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
-            .subscribeOn(Schedulers.io())
-            .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<Response<*>> {
-                override fun onSubscribe(d: Disposable) {
-                    Log.d(TAG, "pullChatMessages - pullChatMessages SUBSCRIBE")
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "pullChatMessages - pullChatMessages ERROR", e)
-                    _pullChatMessageViewState.value = PullChatMessageErrorState
-                }
-
-                override fun onComplete() {
-                    Log.d(TAG, "pullChatMessages - pullChatMessages COMPLETE")
-                    _pullChatMessageViewState.value = PullChatMessageCompleteState
-                }
-
-                override fun onNext(response: Response<*>) {
-                    val lookIntoFuture = getFieldMapForChat.value?.get("lookIntoFuture") == 1
-                    _pullChatMessageViewState.value = PullChatMessageSuccessState(response, lookIntoFuture)
                 }
             })
     }
