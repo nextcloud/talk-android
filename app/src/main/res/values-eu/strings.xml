@@ -190,6 +190,7 @@
     <string name="nc_external_server_failed">Akatsa seinaleen konfigurazioa berreskuratzean</string>
     <string name="nc_federation_invitation_accept">Onartu</string>
     <string name="nc_federation_invitation_reject">Ukatu</string>
+    <string name="nc_federation_no_invitations">Ez duzu gonbidapenik zain</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
     <string name="nc_filter">Filtratu elkarrizketa</string>
