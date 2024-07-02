@@ -164,5 +164,9 @@ public interface AppPreferences {
 
     Float[] getWaveFormFromFile(String filename);
 
+    void saveLastKnownId(long conversationId, int lastReadId);
+
+    int getLastKnownId(long conversationId, int defaultValue);
+
     void clear();
 }

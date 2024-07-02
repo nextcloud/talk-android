@@ -21,17 +21,23 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
-    private val conversationsListRepository: ConversationsListRepository
+    private val conversationsListRepository: ConversationsListRepository,
+    var userManager: UserManager
 ) :
     ViewModel() {
 
     @Inject
     lateinit var invitationsRepository: InvitationsRepository
 
-    @Inject
-    lateinit var userManager: UserManager
-
     sealed interface ViewState
+
+    // object GetRoomsStartState : ViewState
+    // object GetRoomsErrorState : ViewState
+    // open class GetRoomsSuccessState(val conversationModel: ConversationModel) : ViewState
+    //
+    // private val _getRoomsViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomsStartState)
+    // val getRoomsViewState: LiveData<ViewState>
+    //     get() = _getRoomsViewState
 
     object GetFederationInvitationsStartState : ViewState
     object GetFederationInvitationsErrorState : ViewState

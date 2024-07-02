@@ -59,6 +59,7 @@ import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -125,7 +126,6 @@ import com.nextcloud.talk.models.domain.LobbyState
 import com.nextcloud.talk.models.domain.ObjectType
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -183,6 +183,8 @@ import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
@@ -580,13 +582,20 @@ class ChatActivity :
                     setActionBarTitle()
                     updateRoomTimerHandler()
 
-                    chatViewModel.refreshChatParams(
-                        setupFieldsForPullChatMessages(
-                            false,
-                            0,
-                            false
-                        )
+                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                    chatViewModel.loadMoreMessages(
+                        beforeMessageId = -1, // gets history of conversation
+                        withCredentials = credentials!!,
+                        withUrl = urlForChatting,
+                        withConversationId = currentConversation!!.roomId!!.toLong(),
+                        withMessageLimit = MESSAGE_PULL_LIMIT
                     )
+                    chatViewModel.initMessagePolling(
+                        withCredentials = credentials!!,
+                        withUrl = urlForChatting,
+                        withConversationId = currentConversation!!.roomId!!.toLong()
+                    )
+
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -738,128 +747,57 @@ class ChatActivity :
             }
         }
 
-        chatViewModel.getFieldMapForChat.observe(this) { fieldMap ->
-            if (fieldMap.isNotEmpty()) {
-                chatViewModel.pullChatMessages(
-                    credentials!!,
-                    ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-                )
-            }
-        }
-
-        chatViewModel.pullChatMessageViewState.observe(this) { state ->
+        chatViewModel.chatMessageViewState.observe(this) { state ->
             when (state) {
-                is ChatViewModel.PullChatMessageSuccessState -> {
-                    Log.d(TAG, "PullChatMessageSuccess: Code: ${state.response.code()}")
-                    when (state.response.code()) {
-                        HTTP_CODE_OK -> {
-                            Log.d(TAG, "lookIntoFuture: ${state.lookIntoFuture}")
-                            val chatOverall = state.response.body() as ChatOverall?
-                            var chatMessageList = chatOverall?.ocs!!.data!!
-
-                            val newXChatLastCommonRead = state.response.headers()["X-Chat-Last-Common-Read"]?.let {
-                                Integer.parseInt(it)
-                            }
-
-                            processHeaderChatLastGiven(state.response, state.lookIntoFuture)
-
-                            chatMessageList = handleSystemMessages(chatMessageList)
-
-                            if (chatMessageList.isEmpty()) {
-                                chatViewModel.refreshChatParams(
-                                    setupFieldsForPullChatMessages(
-                                        true,
-                                        newXChatLastCommonRead,
-                                        true
-                                    )
-                                )
-                                return@observe
-                            }
-
-                            determinePreviousMessageIds(chatMessageList)
-
-                            handleExpandableSystemMessages(chatMessageList)
-
-                            if (chatMessageList.isNotEmpty() &&
-                                ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-                            ) {
-                                adapter?.clear()
-                                adapter?.notifyDataSetChanged()
-                            }
-
-                            var lastAdapterId = getLastAdapterId()
-                            val oneNewMessage = (lastAdapterId != 0 || chatMessageList.size == 1)
-
-                            if (
-                                state.lookIntoFuture &&
-                                oneNewMessage &&
-                                chatMessageList[0].jsonMessageId > lastAdapterId
-                            ) {
-                                processMessagesFromTheFuture(chatMessageList)
-                            } else if (!state.lookIntoFuture) {
-                                processMessagesNotFromTheFuture(chatMessageList)
-                                collapseSystemMessages()
-                            }
-
-                            updateReadStatusOfAllMessages(newXChatLastCommonRead)
-
-                            processCallStartedMessages(chatMessageList)
-
-                            adapter?.notifyDataSetChanged()
-
-                            chatViewModel.refreshChatParams(
-                                setupFieldsForPullChatMessages(
-                                    true,
-                                    newXChatLastCommonRead,
-                                    true
-                                )
-                            )
-                        }
-
-                        HTTP_CODE_NOT_MODIFIED -> {
-                            chatViewModel.refreshChatParams(
-                                setupFieldsForPullChatMessages(
-                                    true,
-                                    globalLastKnownPastMessageId,
-                                    true
-                                )
-                            )
-                        }
-
-                        HTTP_CODE_PRECONDITION_FAILED -> {
-                            chatViewModel.refreshChatParams(
-                                setupFieldsForPullChatMessages(
-                                    true,
-                                    globalLastKnownPastMessageId,
-                                    true
-                                )
-                            )
-                        }
-
-                        else -> {}
-                    }
-
-                    processExpiredMessages()
-                    if (isFirstMessagesProcessing) {
-                        cancelNotificationsForCurrentConversation()
-                        isFirstMessagesProcessing = false
-                        binding.progressBar.visibility = View.GONE
-                        binding.messagesListView.visibility = View.VISIBLE
-
-                        collapseSystemMessages()
-                    }
+                is ChatViewModel.ChatMessageStartState -> {
+                    // Handle UI on first load
+                    cancelNotificationsForCurrentConversation()
+                    binding.progressBar.visibility = View.GONE
+                    binding.messagesListView.visibility = View.VISIBLE
+                    collapseSystemMessages()
                 }
 
-                is ChatViewModel.PullChatMessageCompleteState -> {
-                    Log.d(TAG, "PullChatMessageCompleted")
+                is ChatViewModel.ChatMessageUpdateState -> {
+                    // unused atm
                 }
 
-                is ChatViewModel.PullChatMessageErrorState -> {
-                    Log.d(TAG, "PullChatMessageError")
+                is ChatViewModel.ChatMessageErrorState -> {
+                    // unused atm
                 }
 
                 else -> {}
             }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getMessageFlow
+                .onEach { pair ->
+                    val lookIntoFuture = pair.first
+                    var chatMessageList = pair.second
+
+                    chatMessageList = handleSystemMessages(chatMessageList)
+
+                    determinePreviousMessageIds(chatMessageList)
+
+                    handleExpandableSystemMessages(chatMessageList)
+
+                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
+                        adapter?.clear()
+                        adapter?.notifyDataSetChanged()
+                    }
+
+                    if (lookIntoFuture) {
+                        processMessagesFromTheFuture(chatMessageList)
+                    } else {
+                        processMessagesNotFromTheFuture(chatMessageList)
+                        collapseSystemMessages()
+                    }
+
+                    processCallStartedMessages(chatMessageList)
+
+                    adapter?.notifyDataSetChanged()
+                }
+                .collect()
         }
 
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
@@ -2784,12 +2722,17 @@ class ChatActivity :
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val calculatedPage = totalItemsCount / PAGE_SIZE
         if (calculatedPage > 0) {
-            chatViewModel.refreshChatParams(
-                setupFieldsForPullChatMessages(
-                    false,
-                    null,
-                    true
-                )
+            val id = (adapter?.items?.last {
+                it.item is ChatMessage
+            }?.item as ChatMessage).jsonMessageId
+
+            val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+            chatViewModel.loadMoreMessages(
+                beforeMessageId = id.toLong(),
+                withUrl = urlForChatting,
+                withCredentials = credentials!!,
+                withMessageLimit = MESSAGE_PULL_LIMIT,
+                withConversationId = currentConversation!!.roomId!!.toLong()
             )
         }
     }
@@ -2934,17 +2877,17 @@ class ChatActivity :
 
             // setDeletionFlagsAndRemoveInfomessages
             if (isInfoMessageAboutDeletion(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
                     // the message to delete has to be modified directly inside the adapter
                     setMessageAsDeleted(currentMessage.value.parentMessage)
                 } else {
-                    chatMessageMap[currentMessage.value.parentMessage!!.id]!!.isDeleted = true
+                    chatMessageMap[currentMessage.value.parentMessage?.id]!!.isDeleted = true
                 }
                 chatMessageIterator.remove()
             } else if (isReactionsMessage(currentMessage)) {
                 // delete reactions system messages
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     updateAdapterForReaction(currentMessage.value.parentMessage)
                 }
 
@@ -2953,7 +2896,7 @@ class ChatActivity :
                 // delete poll system messages
                 chatMessageIterator.remove()
             } else if (isEditMessage(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage!!.id)) {
+                if (!chatMessageMap.containsKey(currentMessage.value.parentMessage?.id)) {
                     setMessageAsEdited(currentMessage.value.parentMessage)
                 }
 
@@ -3392,13 +3335,15 @@ class ChatActivity :
     }
 
     private fun updateAdapterForReaction(message: IMessage?) {
-        val messageTemp = message as ChatMessage
+        message?.let {
+            val messageTemp = message as ChatMessage
 
-        messageTemp.isOneToOneConversation =
-            currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-        messageTemp.activeUser = conversationUser
+            messageTemp.isOneToOneConversation =
+                currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            messageTemp.activeUser = conversationUser
 
-        adapter?.update(messageTemp)
+            adapter?.update(messageTemp)
+        }
     }
 
     fun updateUiToAddReaction(message: ChatMessage, emoji: String) {

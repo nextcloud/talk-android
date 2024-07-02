@@ -460,6 +460,19 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return if (string.isNotEmpty()) string.convertStringToArray() else floatArrayOf().toTypedArray()
     }
 
+    override fun saveLastKnownId(conversationId: Long, lastReadId: Int) {
+        runBlocking<Unit> {
+            async {
+                writeString(conversationId.toString(), lastReadId.toString())
+            }
+        }
+    }
+
+    override fun getLastKnownId(conversationId: Long, defaultValue: Int): Int {
+        val lastReadId = runBlocking { async { readString(conversationId.toString()).first() } }.getCompleted()
+        return if (lastReadId.isNotEmpty()) lastReadId.toInt() else defaultValue
+    }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =

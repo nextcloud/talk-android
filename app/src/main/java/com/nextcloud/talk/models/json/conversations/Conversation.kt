@@ -12,9 +12,9 @@ package com.nextcloud.talk.models.json.conversations
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.chat.data.model.ChatMessageJson
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -68,7 +68,7 @@ data class Conversation(
     var unreadMention: Boolean = false,
 
     @JsonField(name = ["lastMessage"])
-    var lastMessage: ChatMessage? = null,
+    var lastMessage: ChatMessageJson? = null, // TODO get this from Json -> map to ChatMessage and fix error
 
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
     var objectType: ObjectType? = null,
