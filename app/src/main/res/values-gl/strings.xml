@@ -67,7 +67,7 @@
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquisa</string>
     <string name="message_search_begin_empty">Sen resultados de busca</string>
-    <string name="message_search_begin_typing">Comece a escribir para buscar</string>
+    <string name="message_search_begin_typing">Comece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar…</string>
     <string name="messages">Mensaxes</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
