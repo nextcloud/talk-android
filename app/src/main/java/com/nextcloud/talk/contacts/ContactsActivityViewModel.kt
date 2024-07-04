@@ -51,8 +51,6 @@ class ContactsActivityViewModel @Inject constructor(
         modifiedQueryMap["limit"] = 50
         val shareTypesList: ArrayList<String> = ArrayList()
         shareTypesList.add("0")
-        shareTypesList.add("1")
-
         modifiedQueryMap["shareTypes[]"] = shareTypesList
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
