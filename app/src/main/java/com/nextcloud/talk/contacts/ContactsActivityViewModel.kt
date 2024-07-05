@@ -33,6 +33,9 @@ class ContactsActivityViewModel @Inject constructor(
     val currentUser: User = _currentUser
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
+    private val shareTypes: MutableList<String> = mutableListOf("0")
+    val shareTypeList: List<String> = shareTypes
+
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
@@ -44,22 +47,17 @@ class ContactsActivityViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+    fun updateShareTypes(value: String) {
+        shareTypes.add(value)
+    }
+
     fun getContactsFromSearchParams() {
-        val retrofitBucket: RetrofitBucket =
-            ApiUtils.getRetrofitBucketForContactsSearchFor14(currentUser!!.baseUrl!!, searchQuery.value)
-        val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
-        modifiedQueryMap["limit"] = 50
-        val shareTypesList: ArrayList<String> = ArrayList()
-        shareTypesList.add("0")
-        modifiedQueryMap["shareTypes[]"] = shareTypesList
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
                 val contacts = repository.getContacts(
-                    credentials!!,
-                    retrofitBucket.url!!,
-                    shareTypesList,
-                    modifiedQueryMap
+                    searchQuery.value,
+                    shareTypeList
                 )
 
                 val contactsList: List<AutocompleteUser>? = contacts.ocs!!.data
@@ -105,14 +103,14 @@ class ContactsActivityViewModel @Inject constructor(
 }
 
 sealed class ContactsUiState {
-    object None : ContactsUiState()
-    object Loading : ContactsUiState()
+    data object None : ContactsUiState()
+    data object Loading : ContactsUiState()
     data class Success(val contacts: List<AutocompleteUser>?) : ContactsUiState()
     data class Error(val message: String) : ContactsUiState()
 }
 
 sealed class RoomUiState {
-    object None : RoomUiState()
+    data object None : RoomUiState()
     data class Success(val conversation: Conversation?) : RoomUiState()
     data class Error(val message: String) : RoomUiState()
 }
