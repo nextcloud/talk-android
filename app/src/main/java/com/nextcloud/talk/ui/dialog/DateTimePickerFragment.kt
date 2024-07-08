@@ -56,7 +56,7 @@ class DateTimePickerFragment : DialogFragment() {
     lateinit var viewThemeUtils: ViewThemeUtils
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogDateTimePickerBinding.inflate(LayoutInflater.from(context))
+        binding = DialogDateTimePickerBinding.inflate(layoutInflater)
         dialogView = binding.root
         viewModel = (requireActivity() as ChatActivity).chatViewModel
         arguments?.let {

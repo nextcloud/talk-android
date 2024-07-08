@@ -40,7 +40,7 @@ class FilterConversationFragment : DialogFragment() {
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogFilterConversationBinding.inflate(LayoutInflater.from(context))
+        binding = DialogFilterConversationBinding.inflate(layoutInflater)
         dialogView = binding.root
         filterState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             arguments?.getSerializable(FILTER_STATE_ARG, HashMap::class.java) as HashMap<String, Boolean>

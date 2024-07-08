@@ -83,7 +83,7 @@ public class SortingOrderDialogFragment extends DialogFragment implements View.O
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        binding = SortingOrderFragmentBinding.inflate(LayoutInflater.from(requireContext()));
+        binding = SortingOrderFragmentBinding.inflate(getLayoutInflater());
         dialogView = binding.getRoot();
 
         return new MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create();

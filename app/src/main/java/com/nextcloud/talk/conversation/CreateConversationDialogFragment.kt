@@ -98,7 +98,7 @@ class CreateConversationDialogFragment : DialogFragment() {
 
     @SuppressLint("InflateParams")
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogCreateConversationBinding.inflate(LayoutInflater.from(context))
+        binding = DialogCreateConversationBinding.inflate(layoutInflater)
 
         val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context)
             .setTitle(resources.getString(R.string.create_conversation))
