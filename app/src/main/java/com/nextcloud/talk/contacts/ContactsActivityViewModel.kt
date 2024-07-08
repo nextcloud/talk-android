@@ -33,7 +33,7 @@ class ContactsActivityViewModel @Inject constructor(
     val currentUser: User = _currentUser
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
-    private val shareTypes: MutableList<String> = mutableListOf("0")
+    private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
     val shareTypeList: List<String> = shareTypes
 
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
