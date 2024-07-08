@@ -1,0 +1,30 @@
+# SPDX-FileCopyrightText: 2024 Nextcloud GmbH and Nextcloud contributors
+# SPDX-License-Identifier: GPL-3.0-or-later
+version = 1
+SPDX-PackageName = "Nextcloud Talk - Android Client"
+SPDX-PackageSupplier = "Nextcloud Android team <android@nextcloud.com>"
+SPDX-PackageDownloadLocation = "https://github.com/nextcloud/talk-android"
+
+[[annotations]]
+path = ["app/src/main/res/values-**/strings.xml", "**/.gitignore", ".idea/**", "app/src/test/resources/robolectric.properties", "app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker", "fastlane/metadata/**", "app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/**.json", "app/src/generic/fastlane/metadata/android/**/full_description.txt"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017-2024 Nextcloud GmbH and Nextcloud contributors"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = ["app/src/**/res/mipmap-**dpi/ic_launcher.png", "app/src/**/ic_launcher-web.png"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2017-2024 Nextcloud GmbH. All rights reserved. Trademarks apply, see https://nextcloud.com/trademarks/"
+SPDX-License-Identifier = "GPL-3.0-or-later"
+
+[[annotations]]
+path = "app/src/main/res/raw/tr110_1_kap8_3_freiton1.ogg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2007 arvedkrynil"
+SPDX-License-Identifier = "CC-BY-SA-3.0"
+
+[[annotations]]
+path = ["app/src/main/res/raw/librem_by_feandesign_call.ogg", "app/src/main/res/raw/librem_by_feandesign_message.ogg"]
+precedence = "aggregate"
+SPDX-FileCopyrightText = "Feandesign"
+SPDX-License-Identifier = "CC0-1.0"
