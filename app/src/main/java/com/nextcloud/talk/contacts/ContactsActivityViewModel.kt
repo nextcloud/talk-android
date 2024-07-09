@@ -10,7 +10,6 @@ package com.nextcloud.talk.contacts
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.users.UserManager
@@ -35,9 +34,6 @@ class ContactsActivityViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = _searchQuery
     private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
     val shareTypeList: List<String> = shareTypes
-
-    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
-    val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
     init {
         getContactsFromSearchParams()
@@ -69,20 +65,13 @@ class ContactsActivityViewModel @Inject constructor(
     }
 
     fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
-        val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            _currentUser.baseUrl,
-            roomType,
-            sourceType,
-            userId,
-            conversationName
-        )
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(
-                    credentials!!,
-                    retrofitBucket.url!!,
-                    retrofitBucket.queryMap!!
+                    roomType,
+                    sourceType,
+                    userId,
+                    conversationName
                 )
 
                 val conversation: Conversation? = room.ocs?.data
