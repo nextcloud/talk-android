@@ -327,6 +327,8 @@ fun ConversationCreationOptions(context: Context) {
     }
 }
 
+
+
 class CompanionClass {
     companion object {
         internal val TAG = ContactsActivityCompose::class.simpleName
