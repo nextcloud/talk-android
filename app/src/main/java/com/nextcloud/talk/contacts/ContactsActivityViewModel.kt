@@ -55,7 +55,6 @@ class ContactsActivityViewModel @Inject constructor(
                     searchQuery.value,
                     shareTypeList
                 )
-
                 val contactsList: List<AutocompleteUser>? = contacts.ocs!!.data
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
