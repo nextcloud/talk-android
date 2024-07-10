@@ -76,7 +76,7 @@ class ContactsActivityViewModel @Inject constructor(
                 val conversation: Conversation? = room.ocs?.data
                 _roomViewState.value = RoomUiState.Success(conversation)
             } catch (exception: Exception) {
-                _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
+                _roomViewState.value = RoomUiState.Error(exception.message ?: "")
             }
         }
     }
