@@ -38,6 +38,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
+    <string name="message_expiration_title">Meddelande löper ut</string>
     <string name="message_search_begin_empty">Inga sökresultat</string>
     <string name="message_search_begin_typing">Börja skriva för att söka ...</string>
     <string name="message_search_hint">Sök ...</string>
@@ -53,6 +54,7 @@
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
     <string name="nc_allow_guests">Tillåt gäster</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
+    <string name="nc_call_button_content_description_pip">Öppna bild i bild-läge</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
     <string name="nc_call_timeout">Inget svar på 45 sekunder, tryck för att försöka igen</string>
@@ -95,6 +97,7 @@
     <string name="nc_delete_conversation_more">Om du raderar konversationen, kommer den även att raderas för alla andra deltagare.</string>
     <string name="nc_delete_message">Radera</string>
     <string name="nc_demote">Degradera från moderator</string>
+    <string name="nc_description_record_voice">Spela in röstmeddelande</string>
     <string name="nc_description_send_message_button">Skicka meddelande</string>
     <string name="nc_diagnose_account_category_title">Nuvarande konto</string>
     <string name="nc_diagnose_account_server">Server</string>
@@ -118,6 +121,7 @@
     <string name="nc_expire_message_one_day">1 dag</string>
     <string name="nc_expire_message_one_hour">1 timme</string>
     <string name="nc_expire_message_one_week">1 vecka</string>
+    <string name="nc_expire_messages_explanation">Chattmeddelanden kan löpa ut efter en viss tid. Notera: Filer som delas i chatten kommer inte att raderas för ägaren, men kommer inte längre att delas i konversationen.</string>
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_federation_invitation_accept">Acceptera</string>
     <string name="nc_federation_invitation_reject">Avvisa</string>
@@ -131,6 +135,7 @@
     <string name="nc_group">Grupp</string>
     <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gäst</string>
+    <string name="nc_guest_access">Gäståtkomst</string>
     <string name="nc_guest_access_allow_title">Tillåt gäster</string>
     <string name="nc_guest_access_password_dialog_hint">Ange ett lösenord</string>
     <string name="nc_guest_access_password_title">Lösenordsskydd</string>
@@ -333,6 +338,7 @@
     <string name="starred">Favorit</string>
     <string name="status_message">Statusmeddelande</string>
     <string name="take_photo">Ta en bild</string>
+    <string name="take_photo_error_deleting_picture">Det gick inte att ta bilden</string>
     <string name="take_photo_send">Skicka</string>
     <string name="take_photo_switch_camera">Växla kamera</string>
     <string name="take_photo_toggle_torch">Starta lampa</string>
