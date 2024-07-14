@@ -132,7 +132,7 @@
     <string name="nc_common_disabled">Desactivado</string>
     <string name="nc_common_dismiss">Rexeitar</string>
     <string name="nc_common_error_sorry">Desculpe, algo foi mal!</string>
-    <string name="nc_common_set">Estabelecer</string>
+    <string name="nc_common_set">Definir</string>
     <string name="nc_common_skip">Omitir</string>
     <string name="nc_common_unknown">Descoñecido</string>
     <string name="nc_configure_cert_auth">Seleccionar o certificado de autenticación</string>
@@ -251,7 +251,7 @@
     <string name="nc_guest_access_password_dialog_hint">Introduza un contrasinal</string>
     <string name="nc_guest_access_password_dialog_title">Contrasinal de acceso para convidados</string>
     <string name="nc_guest_access_password_failed">Produciuse un erro ao configurar/desactivar o contrasinal.</string>
-    <string name="nc_guest_access_password_summary">Estabelecer un contrasinal para restrinxir quen pode usar a ligazón pública.</string>
+    <string name="nc_guest_access_password_summary">Definir un contrasinal para restrinxir quen pode usar a ligazón pública.</string>
     <string name="nc_guest_access_password_title">Protección por contrasinal</string>
     <string name="nc_guest_access_password_weak_alert_title">Contrasinal feble</string>
     <string name="nc_guest_access_resend_invitations">Volver enviar os convites</string>
@@ -282,7 +282,7 @@
     <string name="nc_location_unknown">Posición descoñecida</string>
     <string name="nc_locked">Bloqueado</string>
     <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
-    <string name="nc_manual">Sen estabelecer</string>
+    <string name="nc_manual">Sen definir</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como sen ler</string>
     <string name="nc_message_failed_to_send">Produciuse un fallo ao enviar a mensaxe:</string>
@@ -414,7 +414,7 @@
     <string name="nc_settings_other_notifications_ringtone">Mensaxes</string>
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Talk na lista de teléfonos</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429, demasiadas solicitudes</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode estabelecer o seu número de teléfono para que outros usuarios poidan atopalo</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode definir o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduza o número de teléfono</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Número de teléfono non válido</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_success">O número de teléfono foi estabelecido correctamente</string>
@@ -557,10 +557,10 @@
     <string name="send_to_forbidden">Non ten permiso para compartir contido nesta parola</string>
     <string name="send_to_three_dots">Enviar a…</string>
     <string name="send_without_notification">Enviar sen notificación</string>
-    <string name="set">Estabelecer</string>
-    <string name="set_avatar_from_camera">Estabelecer o avatar dende a cámara</string>
-    <string name="set_status">Estabelecer o estado</string>
-    <string name="set_status_message">Estabelecer a mensaxe de estado</string>
+    <string name="set">Definir</string>
+    <string name="set_avatar_from_camera">Definir o avatar dende a cámara</string>
+    <string name="set_status">Definir o estado</string>
+    <string name="set_status_message">Definir a mensaxe de estado</string>
     <string name="share">Compartir</string>
     <string name="share_link_to_conversation">Únase á conversa %1$s en %2$s</string>
     <string name="shared_items_audio">Son</string>
