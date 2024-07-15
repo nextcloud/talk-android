@@ -9,6 +9,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Iväg</string>
     <string name="calendar">Kalender</string>
+    <string name="call_without_notification">Samtal utan avisering</string>
     <string name="choose_avatar_from_cloud">Välj avatar från moln</string>
     <string name="clear_status_message">Rensa statusmeddelande</string>
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
@@ -28,6 +29,7 @@
     <string name="file_list_loading">Läser in …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timmar</string>
+    <string name="hint_edited_message">(redigerad)</string>
     <string name="invisible">Osynlig</string>
     <string name="later_today">Senare idag</string>
     <string name="load_more_results">Visa fler resultat</string>
@@ -125,6 +127,7 @@
     <string name="nc_external_server_failed">Misslyckades med att hämta signaleringsinställningar</string>
     <string name="nc_federation_invitation_accept">Acceptera</string>
     <string name="nc_federation_invitation_reject">Avvisa</string>
+    <string name="nc_federation_no_invitations">Inga väntande inbjudningar</string>
     <string name="nc_file_browser_back">Tillbaka</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>
@@ -140,6 +143,7 @@
     <string name="nc_guest_access_password_dialog_hint">Ange ett lösenord</string>
     <string name="nc_guest_access_password_title">Lösenordsskydd</string>
     <string name="nc_guest_access_password_weak_alert_title">Svagt lösenord</string>
+    <string name="nc_guest_access_resend_invitations">Skicka inbjudningar igen</string>
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
@@ -152,6 +156,7 @@
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
     <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby_start_soon">Mötet börjar snart</string>
     <string name="nc_lobby_waiting">Du väntar för närvarande i lobbyn.</string>
     <string name="nc_locked">Låst</string>
     <string name="nc_locked_tap_to_unlock">Tryck för att låsa upp</string>
@@ -163,6 +168,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>
+    <string name="nc_new_mention">Olästa omnämnanden</string>
     <string name="nc_new_messages">Olästa meddelanden</string>
     <string name="nc_nick_guest">Gäst</string>
     <string name="nc_no">Nej</string>
@@ -307,6 +313,7 @@
     <string name="oneHour">1 timme</string>
     <string name="online">Online</string>
     <string name="online_status">Online-status</string>
+    <string name="openConversations">Öppna konversationer</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_options">Alternativ</string>
     <string name="polls_private_poll">Privat omröstning</string>
@@ -315,6 +322,7 @@
     <string name="polls_settings">Inställningar</string>
     <string name="polls_submit_vote">Rösta</string>
     <string name="reactions_tab_all">Alla</string>
+    <string name="recording_consent_title">Samtalet kan spelas in.</string>
     <string name="save">Spara</string>
     <string name="scope_federated_description">Synkronisera endast med betrodda servrar</string>
     <string name="scope_federated_title">Federerad</string>
@@ -325,9 +333,11 @@
     <string name="scope_published_description">Synkronisera med betrodda servrar och den globala och offentliga adressboken</string>
     <string name="scope_published_title">Publicerad</string>
     <string name="scope_toggle_description">Ändra hemlighetsnivå för %1$s</string>
+    <string name="scroll_to_bottom">Bläddra till botten</string>
     <string name="secondsAgo">sekunder sedan</string>
     <string name="selected_list_item">Vald</string>
     <string name="send_email">Skicka e-post</string>
+    <string name="send_without_notification">Skicka utan avisering</string>
     <string name="set">Sätt</string>
     <string name="set_status">Sätt status</string>
     <string name="set_status_message">Sätt statusmeddelande</string>
@@ -336,6 +346,7 @@
     <string name="shared_items_file">Fil</string>
     <string name="shared_items_media">Media</string>
     <string name="shared_items_other">Annat</string>
+    <string name="shared_items_poll">Omröstning</string>
     <string name="shared_items_voice">Röst</string>
     <string name="starred">Favorit</string>
     <string name="status_message">Statusmeddelande</string>
@@ -351,6 +362,7 @@
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>
+    <string name="translation_copy_translated_text">Kopiera översatt text</string>
     <string name="translation_detect_language">Upptäck språk</string>
     <string name="translation_device_settings">Enhetsinställningar</string>
     <string name="translation_error_message">Kunde inte identifiera språk</string>
