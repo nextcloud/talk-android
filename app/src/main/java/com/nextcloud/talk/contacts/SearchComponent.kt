@@ -17,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -38,23 +39,24 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(Color.White)
+
     ) {
         val keyboardController = LocalSoftwareKeyboardController.current
         TextField(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface),
             value = text,
             onValueChange = { onTextChange(it) },
             placeholder = {
                 Text(
                     text = stringResource(R.string.nc_search),
-                    color = Color.DarkGray
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             },
 
             textStyle = TextStyle(
-                color = Color.Black,
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 16.sp
             ),
             singleLine = true,
@@ -68,7 +70,7 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
                     Icon(
                         imageVector = Icons.AutoMirrored.Default.ArrowBack,
                         contentDescription = stringResource(R.string.back_button),
-                        tint = Color.Black
+                        tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
             },
@@ -83,7 +85,7 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = stringResource(R.string.close_icon),
-                            tint = Color.Black
+                            tint = MaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
