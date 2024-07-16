@@ -7,6 +7,7 @@
          <trust group="com.android.tools.build" name="aapt2" version="8.4.1-11315950" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
          <trust group="com.github.nextcloud-deps" name="android-talk-webrtc" version="110.5481.0" reason="ships OS specific artifacts (win/linux) - temp global trust"/>
          <trust file=".*-sources[.]jar" regex="true"/>
+		 <trust file="tensorflow-lite-metadata-0.1.0-rc2.pom" reason="differing hash on every CI run - temp global trust"/>
       </trusted-artifacts>
       <ignored-keys>
          <ignored-key id="23778689FBFBE047" reason="Key couldn't be downloaded from any key server"/>
