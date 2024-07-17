@@ -17,7 +17,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
-import com.nextcloud.talk.models.json.chat.ChatMessage;
+import com.nextcloud.talk.chat.data.model.ChatMessage;
 import com.nextcloud.talk.utils.TextMatchers;
 
 import java.util.HashMap;

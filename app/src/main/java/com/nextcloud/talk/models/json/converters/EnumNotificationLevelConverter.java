@@ -8,26 +8,27 @@ package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationEnums;
 
-public class EnumNotificationLevelConverter extends IntBasedTypeConverter<Conversation.NotificationLevel> {
+public class EnumNotificationLevelConverter extends IntBasedTypeConverter<ConversationEnums.NotificationLevel> {
     @Override
-    public Conversation.NotificationLevel getFromInt(int i) {
+    public ConversationEnums.NotificationLevel getFromInt(int i) {
         switch (i) {
             case 0:
-                return Conversation.NotificationLevel.DEFAULT;
+                return ConversationEnums.NotificationLevel.DEFAULT;
             case 1:
-                return Conversation.NotificationLevel.ALWAYS;
+                return ConversationEnums.NotificationLevel.ALWAYS;
             case 2:
-                return Conversation.NotificationLevel.MENTION;
+                return ConversationEnums.NotificationLevel.MENTION;
             case 3:
-                return Conversation.NotificationLevel.NEVER;
+                return ConversationEnums.NotificationLevel.NEVER;
             default:
-                return Conversation.NotificationLevel.DEFAULT;
+                return ConversationEnums.NotificationLevel.DEFAULT;
         }
     }
 
     @Override
-    public int convertToInt(Conversation.NotificationLevel object) {
+    public int convertToInt(ConversationEnums.NotificationLevel object) {
         switch (object) {
             case DEFAULT:
                 return 0;

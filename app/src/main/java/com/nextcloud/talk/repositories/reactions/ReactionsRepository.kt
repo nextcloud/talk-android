@@ -8,7 +8,7 @@ package com.nextcloud.talk.repositories.reactions
 
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import io.reactivex.Observable
 
 interface ReactionsRepository {

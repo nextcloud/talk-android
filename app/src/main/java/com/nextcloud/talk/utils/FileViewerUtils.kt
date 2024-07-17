@@ -29,7 +29,7 @@ import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
@@ -128,7 +128,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
     ) {
         val file = File(context.cacheDir, fileInfo.fileName)
         if (file.exists()) {
-            openFileByMimetype(fileInfo.fileName!!, mimetype)
+            openFileByMimetype(fileInfo.fileName, mimetype)
         } else {
             downloadFileToCache(
                 fileInfo,
@@ -267,7 +267,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         openWhenDownloaded: Boolean
     ) {
         // check if download worker is already running
-        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileInfo.fileId!!)
+        val workers = WorkManager.getInstance(context).getWorkInfosByTag(fileInfo.fileId)
         try {
             for (workInfo in workers.get()) {
                 if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {

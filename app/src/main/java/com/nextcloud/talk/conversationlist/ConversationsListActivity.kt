@@ -45,6 +45,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -91,8 +92,8 @@ import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
@@ -107,6 +108,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.ParticipantPermissions
@@ -134,6 +136,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -190,7 +195,7 @@ class ConversationsListActivity :
     private var isRefreshing = false
     private var showShareToScreen = false
     private var filesToShare: ArrayList<String>? = null
-    private var selectedConversation: Conversation? = null
+    private var selectedConversation: ConversationModel? = null
     private var textToPaste: String? = ""
     private var selectedMessageId: String? = null
     private var forwardMessage: Boolean = false
@@ -259,7 +264,7 @@ class ConversationsListActivity :
         if (adapter == null) {
             adapter = FlexibleAdapter(conversationItems, this, true)
         } else {
-            binding?.loadingContent?.visibility = View.GONE
+            binding.loadingContent?.visibility = View.GONE
         }
         adapter!!.addListener(this)
         prepareViews()
@@ -334,6 +339,51 @@ class ConversationsListActivity :
                 else -> {}
             }
         }
+
+        conversationsListViewModel.getRoomsViewState.observe(this) { state ->
+            when (state) {
+                is ConversationsListViewModel.GetRoomsSuccessState -> {
+                    if (adapterWasNull) {
+                        adapterWasNull = false
+                        binding.loadingContent.visibility = View.GONE
+                    }
+                    initOverallLayout(state.listIsNotEmpty)
+                    binding.swipeRefreshLayoutView.isRefreshing = false
+                }
+
+                is ConversationsListViewModel.GetRoomsErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.getRoomsFlow
+                .onEach { list ->
+                    // Update Conversations
+                    conversationItems.clear()
+                    for (conversation in list) {
+                        addToConversationItems(conversation)
+                    }
+                    sortConversations(conversationItems)
+                    sortConversations(conversationItemsWithHeader)
+
+                    // Filter Conversations
+                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+                    filterConversation()
+                    adapter!!.updateDataSet(filterableConversationItems, false)
+                    Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
+
+                    // Fetch Open Conversations
+                    val apiVersion = ApiUtils.getConversationApiVersion(
+                        currentUser!!,
+                        intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+                    )
+                    fetchOpenConversations(apiVersion)
+                }.collect()
+        }
     }
 
     fun filterConversation() {
@@ -374,7 +424,7 @@ class ConversationsListActivity :
         updateFilterConversationButtonColor()
     }
 
-    private fun filter(conversation: Conversation): Boolean {
+    private fun filter(conversation: ConversationModel): Boolean {
         var result = true
         for ((k, v) in filterState) {
             if (v) {
@@ -383,8 +433,8 @@ class ConversationsListActivity :
                         (
                             result &&
                                 (
-                                    conversation.type == Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-                                        conversation.type == Conversation.ConversationType.FORMER_ONE_TO_ONE
+                                    conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+                                        conversation.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE
                                     ) &&
                                 (conversation.unreadMessages > 0)
                             )
@@ -573,7 +623,7 @@ class ConversationsListActivity :
                     if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    binding?.swipeRefreshLayoutView?.isEnabled = false
+                    binding.swipeRefreshLayoutView?.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
                 }
@@ -586,10 +636,10 @@ class ConversationsListActivity :
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
-                        binding?.swipeRefreshLayoutView?.isRefreshing = false
+                        binding.swipeRefreshLayoutView?.isRefreshing = false
                         searchBehaviorSubject.onNext(false)
                     }
-                    binding?.swipeRefreshLayoutView?.isEnabled = true
+                    binding.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
                     binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -602,7 +652,7 @@ class ConversationsListActivity :
                         viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
                     }
 
-                    val layoutManager = binding?.recyclerView?.layoutManager as SmoothScrollLinearLayoutManager?
+                    val layoutManager = binding.recyclerView?.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
@@ -681,67 +731,68 @@ class ConversationsListActivity :
     }
 
     fun fetchRooms() {
-        val includeStatus = isUserStatusAvailable(userManager.currentUser.blockingGet())
+        val includeStatus = isUserStatusAvailable(currentUser!!)
+        conversationsListViewModel.getRooms()
 
         // checks internet connection before fetching rooms
         if (isNetworkAvailable(context)) {
-            Log.d(TAG, "Internet connection available")
-            dispose(null)
-            isRefreshing = true
-            conversationItems = ArrayList()
-            conversationItemsWithHeader = ArrayList()
-            val apiVersion = ApiUtils.getConversationApiVersion(
-                currentUser!!,
-                intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-            )
-            val startNanoTime = System.nanoTime()
-            Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-            roomsQueryDisposable = ncApi.getRooms(
-                credentials,
-                ApiUtils.getUrlForRooms(
-                    apiVersion,
-                    currentUser!!.baseUrl
-                ),
-                includeStatus
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (ocs): RoomsOverall ->
-                    Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
-
-                    // This is invoked asynchronously, when server returns a response the view might have been
-                    // unbound in the meantime. Check if the view is still there.
-                    // FIXME - does it make sense to update internal data structures even when view has been unbound?
-                    // if (view == null) {
-                    //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
-                    //     return@subscribe
-                    // }
-
-                    if (adapterWasNull) {
-                        adapterWasNull = false
-                        binding?.loadingContent?.visibility = View.GONE
-                    }
-                    initOverallLayout(ocs!!.data!!.isNotEmpty())
-                    for (conversation in ocs.data!!) {
-                        addToConversationItems(conversation)
-                    }
-                    sortConversations(conversationItems)
-                    sortConversations(conversationItemsWithHeader)
-                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
-                    filterConversation()
-                    adapter!!.updateDataSet(filterableConversationItems, false)
-                    Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
-                    fetchOpenConversations(apiVersion)
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                }, { throwable: Throwable ->
-                    handleHttpExceptions(throwable)
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                    dispose(roomsQueryDisposable)
-                }) {
-                    dispose(roomsQueryDisposable)
-                    binding?.swipeRefreshLayoutView?.isRefreshing = false
-                    isRefreshing = false
-                }
+            // Log.d(TAG, "Internet connection available")
+            // dispose(null)
+            // isRefreshing = true
+            // conversationItems = ArrayList()
+            // conversationItemsWithHeader = ArrayList()
+            // val apiVersion = ApiUtils.getConversationApiVersion(
+            //     currentUser!!,
+            //     intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+            // )
+            // val startNanoTime = System.nanoTime()
+            // Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
+            // roomsQueryDisposable = ncApi.getRooms(
+            //     credentials,
+            //     ApiUtils.getUrlForRooms(
+            //         apiVersion,
+            //         currentUser!!.baseUrl
+            //     ),
+            //     includeStatus
+            // )
+            //     .subscribeOn(Schedulers.io())
+            //     .observeOn(AndroidSchedulers.mainThread())
+            //     .subscribe({ (ocs): RoomsOverall ->
+            //         Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
+            //
+            //         // This is invoked asynchronously, when server returns a response the view might have been
+            //         // unbound in the meantime. Check if the view is still there.
+            //         // FIXME - does it make sense to update internal data structures even when view has been unbound?
+            //         // if (view == null) {
+            //         //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
+            //         //     return@subscribe
+            //         // }
+            //
+            //         if (adapterWasNull) {
+            //             adapterWasNull = false
+            //             binding?.loadingContent?.visibility = View.GONE
+            //         }
+            //         initOverallLayout(ocs!!.data!!.isNotEmpty())
+            //         for (conversation in ocs.data!!) {
+            //             addToConversationItems(conversation)
+            //         }
+            //         sortConversations(conversationItems)
+            //         sortConversations(conversationItemsWithHeader)
+            //         if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+            //         filterConversation()
+            //         adapter!!.updateDataSet(filterableConversationItems, false)
+            //         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
+            //         fetchOpenConversations(apiVersion)
+            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
+            //     }, { throwable: Throwable ->
+            //         handleHttpExceptions(throwable)
+            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
+            //         dispose(roomsQueryDisposable)
+            //     }) {
+            //         dispose(roomsQueryDisposable)
+            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
+            //         isRefreshing = false
+            //     }
         } else {
             Log.d(TAG, "No internet connection detected")
             showNetworkErrorDialog()
@@ -760,31 +811,31 @@ class ConversationsListActivity :
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
         if (isConversationListNotEmpty) {
-            if (binding?.emptyLayout?.visibility != View.GONE) {
-                binding?.emptyLayout?.visibility = View.GONE
+            if (binding.emptyLayout?.visibility != View.GONE) {
+                binding.emptyLayout?.visibility = View.GONE
             }
-            if (binding?.swipeRefreshLayoutView?.visibility != View.VISIBLE) {
-                binding?.swipeRefreshLayoutView?.visibility = View.VISIBLE
+            if (binding.swipeRefreshLayoutView?.visibility != View.VISIBLE) {
+                binding.swipeRefreshLayoutView?.visibility = View.VISIBLE
             }
         } else {
-            if (binding?.emptyLayout?.visibility != View.VISIBLE) {
-                binding?.emptyLayout?.visibility = View.VISIBLE
+            if (binding.emptyLayout?.visibility != View.VISIBLE) {
+                binding.emptyLayout?.visibility = View.VISIBLE
             }
-            if (binding?.swipeRefreshLayoutView?.visibility != View.GONE) {
-                binding?.swipeRefreshLayoutView?.visibility = View.GONE
+            if (binding.swipeRefreshLayoutView?.visibility != View.GONE) {
+                binding.swipeRefreshLayoutView?.visibility = View.GONE
             }
         }
     }
 
-    private fun addToConversationItems(conversation: Conversation) {
+    private fun addToConversationItems(conversation: ConversationModel) {
         if (intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) != null &&
             intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) == conversation.roomId
         ) {
             return
         }
 
-        if (conversation.objectType == Conversation.ObjectType.ROOM &&
-            conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY
+        if (conversation.objectType == ConversationEnums.ObjectType.ROOM &&
+            conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY
         ) {
             return
         }
@@ -909,35 +960,35 @@ class ConversationsListActivity :
             )
         ) {
             val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-            openConversationsQueryDisposable = ncApi.getOpenConversations(
-                credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!)
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (ocs): RoomsOverall ->
-                    for (conversation in ocs!!.data!!) {
-                        val headerTitle = resources!!.getString(R.string.openConversations)
-                        var genericTextHeaderItem: GenericTextHeaderItem
-                        if (!callHeaderItems.containsKey(headerTitle)) {
-                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                            callHeaderItems[headerTitle] = genericTextHeaderItem
-                        }
-                        val conversationItem = ConversationItem(
-                            conversation,
-                            currentUser!!,
-                            this,
-                            callHeaderItems[headerTitle],
-                            viewThemeUtils
-                        )
-                        openConversationItems.add(conversationItem)
-                    }
-                    searchableConversationItems.addAll(openConversationItems)
-                }, { throwable: Throwable ->
-                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
-                    handleHttpExceptions(throwable)
-                    dispose(openConversationsQueryDisposable)
-                }) { dispose(openConversationsQueryDisposable) }
+            // openConversationsQueryDisposable = ncApi.getOpenConversations(
+            //     credentials,
+            //     ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!)
+            // )
+            //     .subscribeOn(Schedulers.io())
+            //     .observeOn(AndroidSchedulers.mainThread())
+            //     .subscribe({ (ocs): RoomsOverall ->
+            //         for (conversation in ocs!!.data!!) {
+            //             val headerTitle = resources!!.getString(R.string.openConversations)
+            //             var genericTextHeaderItem: GenericTextHeaderItem
+            //             if (!callHeaderItems.containsKey(headerTitle)) {
+            //                 genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+            //                 callHeaderItems[headerTitle] = genericTextHeaderItem
+            //             }
+            //             val conversationItem = ConversationItem(
+            //                 conversation,
+            //                 currentUser!!,
+            //                 this,
+            //                 callHeaderItems[headerTitle],
+            //                 viewThemeUtils
+            //             )
+            //             openConversationItems.add(conversationItem)
+            //         }
+            //         searchableConversationItems.addAll(openConversationItems)
+            //     }, { throwable: Throwable ->
+            //         Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
+            //         handleHttpExceptions(throwable)
+            //         dispose(openConversationsQueryDisposable)
+            //     }) { dispose(openConversationsQueryDisposable) }
         } else {
             Log.d(TAG, "no open conversations fetched because of missing capability")
         }
@@ -979,24 +1030,24 @@ class ConversationsListActivity :
                 }
             }
         })
-        binding?.recyclerView?.setOnTouchListener { v: View, _: MotionEvent? ->
+        binding.recyclerView?.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
         }
-        binding?.swipeRefreshLayoutView?.setOnRefreshListener {
+        binding.swipeRefreshLayoutView?.setOnRefreshListener {
             fetchRooms()
             fetchPendingInvitations()
         }
-        binding?.swipeRefreshLayoutView?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-        binding?.emptyLayout?.setOnClickListener { showNewConversationsScreen() }
-        binding?.floatingActionButton?.setOnClickListener {
+        binding.swipeRefreshLayoutView?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
+        binding.emptyLayout?.setOnClickListener { showNewConversationsScreen() }
+        binding.floatingActionButton?.setOnClickListener {
             run(context)
             showNewConversationsScreen()
         }
-        binding?.floatingActionButton?.let { viewThemeUtils.material.themeFAB(it) }
+        binding.floatingActionButton?.let { viewThemeUtils.material.themeFAB(it) }
 
         binding.switchAccountButton.setOnClickListener {
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
@@ -1015,13 +1066,13 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
-        binding?.newMentionPopupBubble?.hide()
-        binding?.newMentionPopupBubble?.setPopupBubbleListener {
-            binding?.recyclerView?.smoothScrollToPosition(
+        binding.newMentionPopupBubble?.hide()
+        binding.newMentionPopupBubble?.setPopupBubbleListener {
+            binding.recyclerView?.smoothScrollToPosition(
                 nextUnreadConversationScrollPosition
             )
         }
-        binding?.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
+        binding.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
     private fun hideLogoForBrandedClients() {
@@ -1041,17 +1092,17 @@ class ConversationsListActivity :
                 try {
                     val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
                     for (flexItem in conversationItems) {
-                        val conversation: Conversation = (flexItem as ConversationItem).model
+                        val conversation: ConversationModel = (flexItem as ConversationItem).model
                         val position = adapter!!.getGlobalPositionOf(flexItem)
                         if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
-                            if (!binding?.newMentionPopupBubble?.isShown!!) {
-                                binding?.newMentionPopupBubble?.show()
+                            if (!binding.newMentionPopupBubble?.isShown!!) {
+                                binding.newMentionPopupBubble?.show()
                             }
                             return@subscribe
                         }
                         nextUnreadConversationScrollPosition = 0
-                        binding?.newMentionPopupBubble?.hide()
+                        binding.newMentionPopupBubble?.hide()
                     }
                 } catch (e: NullPointerException) {
                     Log.d(
@@ -1066,10 +1117,10 @@ class ConversationsListActivity :
         }
     }
 
-    private fun hasUnreadItems(conversation: Conversation) =
+    private fun hasUnreadItems(conversation: ConversationModel) =
         conversation.unreadMention ||
             conversation.unreadMessages > 0 &&
-            conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivityCompose::class.java)
@@ -1157,7 +1208,7 @@ class ConversationsListActivity :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        binding?.swipeRefreshLayoutView?.isRefreshing = true
+        binding.swipeRefreshLayoutView?.isRefreshing = true
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -1214,7 +1265,7 @@ class ConversationsListActivity :
     }
 
     @Suppress("Detekt.ComplexMethod")
-    private fun handleConversation(conversation: Conversation?) {
+    private fun handleConversation(conversation: ConversationModel?) {
         selectedConversation = conversation
         if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(
@@ -1244,19 +1295,19 @@ class ConversationsListActivity :
         }
     }
 
-    private fun shouldShowLobby(conversation: Conversation): Boolean {
+    private fun shouldShowLobby(conversation: ConversationModel): Boolean {
         val participantPermissions = ParticipantPermissions(
             currentUser!!.capabilities?.spreedCapability!!,
-            conversation
+            selectedConversation!!
         )
-        return conversation.lobbyState == Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-            !conversation.canModerate(currentUser!!) &&
+        return conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+            !ConversationUtils.canModerate(conversation, currentUser!!.capabilities!!.spreedCapability!!) &&
             !participantPermissions.canIgnoreLobby()
     }
 
-    private fun isReadOnlyConversation(conversation: Conversation): Boolean {
+    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean {
         return conversation.conversationReadOnlyState ===
-            Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY
+            ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
     }
 
     private fun handleSharedData() {
@@ -1519,7 +1570,7 @@ class ConversationsListActivity :
         }, BOTTOM_SHEET_DELAY)
     }
 
-    fun showDeleteConversationDialog(conversation: Conversation) {
+    fun showDeleteConversationDialog(conversation: ConversationModel) {
         binding.floatingActionButton.let {
             val dialogBuilder = MaterialAlertDialogBuilder(it.context)
                 .setIcon(
@@ -1751,7 +1802,7 @@ class ConversationsListActivity :
         }
     }
 
-    private fun deleteConversation(conversation: Conversation) {
+    private fun deleteConversation(conversation: ConversationModel) {
         val data = Data.Builder()
         data.putLong(
             KEY_INTERNAL_USER_ID,
@@ -1810,15 +1861,15 @@ class ConversationsListActivity :
                 }
                 // add unified search result at the end of the list
                 adapter!!.addItems(adapter!!.mainItemCount + adapter!!.scrollableHeaders.size, adapterItems)
-                binding?.recyclerView?.scrollToPosition(0)
+                binding.recyclerView?.scrollToPosition(0)
             }
         }
-        binding?.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView?.isRefreshing = false
     }
 
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        binding?.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView?.isRefreshing = false
         showErrorDialog()
     }
 

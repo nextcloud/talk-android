@@ -77,4 +77,7 @@ object BundleKeys {
     const val KEY_REMOTE_TALK_SHARE = "KEY_REMOTE_TALK_SHARE"
     const val KEY_CHAT_API_VERSION = "KEY_CHAT_API_VERSION"
     const val KEY_CALL_FLAG = "KEY_CALL_FLAG"
+    const val KEY_CREDENTIALS: String = "KEY_CREDENTIALS"
+    const val KEY_FIELD_MAP: String = "KEY_FIELD_MAP"
+    const val KEY_CHAT_URL: String = "KEY_CHAT_URL"
 }

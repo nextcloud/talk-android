@@ -37,7 +37,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.databinding.DialogCreateConversationBinding
 import com.nextcloud.talk.jobs.AddParticipantsToConversation
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -66,7 +66,7 @@ class CreateConversationDialogFragment : DialogFragment() {
 
     private var emojiPopup: EmojiPopup? = null
 
-    private var conversationType: Conversation.ConversationType? = null
+    private var conversationType: ConversationEnums.ConversationType? = null
     private var usersToInvite: ArrayList<String> = ArrayList()
     private var groupsToInvite: ArrayList<String> = ArrayList()
     private var emailsToInvite: ArrayList<String> = ArrayList()

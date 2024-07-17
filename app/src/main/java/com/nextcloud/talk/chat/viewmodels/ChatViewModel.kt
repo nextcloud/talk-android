@@ -8,22 +8,25 @@ package com.nextcloud.talk.chat.viewmodels
 
 import android.content.Context
 import android.net.Uri
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
+import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -31,20 +34,30 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.utils.ConversationUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import retrofit2.Response
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import java.io.File
 import javax.inject.Inject
 
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
-    private val chatRepository: ChatRepository,
+    // should be removed here. Use it via RetrofitChatNetwork
+    private val chatNetworkDataSource: ChatNetworkDataSource,
+    private val chatRepository: ChatMessageRepository,
+    private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager
+    private val audioFocusRequestManager: AudioFocusRequestManager,
+    private val userProvider: CurrentUserProviderNew
 ) : ViewModel(), DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
@@ -52,6 +65,7 @@ class ChatViewModel @Inject constructor(
         RESUMED,
         STOPPED
     }
+
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
@@ -59,6 +73,7 @@ class ChatViewModel @Inject constructor(
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
+        chatRepository.handleOnResume()
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -67,13 +82,16 @@ class ChatViewModel @Inject constructor(
         disposableSet.forEach { disposable -> disposable.dispose() }
         disposableSet.clear()
         mediaRecorderManager.handleOnPause()
+        chatRepository.handleOnPause()
     }
 
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
         mediaRecorderManager.handleOnStop()
+        chatRepository.handleOnStop()
     }
+
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
 
@@ -89,9 +107,26 @@ class ChatViewModel @Inject constructor(
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
 
-    private val _getFieldMapForChat: MutableLiveData<HashMap<String, Int>> = MutableLiveData()
-    val getFieldMapForChat: LiveData<HashMap<String, Int>>
-        get() = _getFieldMapForChat
+    val getMessageFlow = chatRepository.messageFlow
+        .onEach {
+            _chatMessageViewState.value = if (_chatMessageViewState.value == ChatMessageInitialState) {
+                ChatMessageStartState
+            } else {
+                ChatMessageUpdateState
+            }
+        }.catch {
+            _chatMessageViewState.value = ChatMessageErrorState
+        }
+
+    val getUpdateMessageFlow = chatRepository.updateMessageFlow
+
+    val getConversationFlow = conversationRepository.conversationFlow
+        .onEach {
+            _getRoomViewState.value = GetRoomSuccessState
+        }.catch {
+            _getRoomViewState.value = GetRoomErrorState
+        }
+
     sealed interface ViewState
 
     object GetReminderStartState : ViewState
@@ -111,7 +146,7 @@ class ChatViewModel @Inject constructor(
 
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
-    open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
+    object GetRoomSuccessState : ViewState
 
     private val _getRoomViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
     val getRoomViewState: LiveData<ViewState>
@@ -136,28 +171,24 @@ class ChatViewModel @Inject constructor(
 
     object LeaveRoomStartState : ViewState
     class LeaveRoomSuccessState(val funToCallWhenLeaveSuccessful: (() -> Unit)?) : ViewState
+
     private val _leaveRoomViewState: MutableLiveData<ViewState> = MutableLiveData(LeaveRoomStartState)
     val leaveRoomViewState: LiveData<ViewState>
         get() = _leaveRoomViewState
 
-    object SendChatMessageStartState : ViewState
-    class SendChatMessageSuccessState(val message: CharSequence) : ViewState
-    class SendChatMessageErrorState(val e: Throwable, val message: CharSequence) : ViewState
-    private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
-    val sendChatMessageViewState: LiveData<ViewState>
-        get() = _sendChatMessageViewState
+    object ChatMessageInitialState : ViewState
+    object ChatMessageStartState : ViewState
+    object ChatMessageUpdateState : ViewState
+    object ChatMessageErrorState : ViewState
 
-    object PullChatMessageStartState : ViewState
-    class PullChatMessageSuccessState(val response: Response<*>, val lookIntoFuture: Boolean) : ViewState
-    object PullChatMessageErrorState : ViewState
-    object PullChatMessageCompleteState : ViewState
-    private val _pullChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(PullChatMessageStartState)
-    val pullChatMessageViewState: LiveData<ViewState>
-        get() = _pullChatMessageViewState
+    private val _chatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(ChatMessageInitialState)
+    val chatMessageViewState: LiveData<ViewState>
+        get() = _chatMessageViewState
 
     object DeleteChatMessageStartState : ViewState
     class DeleteChatMessageSuccessState(val msg: ChatOverallSingleMessage) : ViewState
     object DeleteChatMessageErrorState : ViewState
+
     private val _deleteChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(DeleteChatMessageStartState)
     val deleteChatMessageViewState: LiveData<ViewState>
         get() = _deleteChatMessageViewState
@@ -172,29 +203,38 @@ class ChatViewModel @Inject constructor(
 
     object ReactionAddedStartState : ViewState
     class ReactionAddedSuccessState(val reactionAddedModel: ReactionAddedModel) : ViewState
+
     private val _reactionAddedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionAddedStartState)
     val reactionAddedViewState: LiveData<ViewState>
         get() = _reactionAddedViewState
 
     object ReactionDeletedStartState : ViewState
     class ReactionDeletedSuccessState(val reactionDeletedModel: ReactionDeletedModel) : ViewState
+
     private val _reactionDeletedViewState: MutableLiveData<ViewState> = MutableLiveData(ReactionDeletedStartState)
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun refreshChatParams(pullChatMessagesFieldMap: HashMap<String, Int>, overrideRefresh: Boolean = false) {
-        if (pullChatMessagesFieldMap != _getFieldMapForChat.value || overrideRefresh) {
-            _getFieldMapForChat.postValue(pullChatMessagesFieldMap)
-            Log.d(TAG, "FieldMap Refreshed with $pullChatMessagesFieldMap vs ${_getFieldMapForChat.value}")
-        }
+    fun setData(
+        conversationModel: ConversationModel,
+        credentials: String,
+        urlForChatting: String
+    ) {
+        chatRepository.setData(
+            conversationModel,
+            credentials,
+            urlForChatting
+        )
     }
 
     fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
-        chatRepository.getRoom(user, token)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(GetRoomObserver())
+        conversationRepository.getConversationSettings(token)
+
+        // chatNetworkDataSource.getRoom(user, token)
+        //     .subscribeOn(Schedulers.io())
+        //     ?.observeOn(AndroidSchedulers.mainThread())
+        //     ?.subscribe(GetRoomObserver())
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -208,7 +248,7 @@ class ChatViewModel @Inject constructor(
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
         } else {
-            chatRepository.getCapabilities(user, token)
+            chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
@@ -238,7 +278,7 @@ class ChatViewModel @Inject constructor(
 
     fun joinRoom(user: User, token: String, roomPassword: String) {
         _joinRoomViewState.value = JoinRoomStartState
-        chatRepository.joinRoom(user, token, roomPassword)
+        chatNetworkDataSource.joinRoom(user, token, roomPassword)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
@@ -246,21 +286,21 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
-        chatRepository.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
+        chatNetworkDataSource.setReminder(user, roomToken, messageId, timestamp, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(SetReminderObserver())
     }
 
     fun getReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatRepository.getReminder(user, roomToken, messageId, chatApiVersion)
+        chatNetworkDataSource.getReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetReminderObserver())
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
-        chatRepository.deleteReminder(user, roomToken, messageId, chatApiVersion)
+        chatNetworkDataSource.deleteReminder(user, roomToken, messageId, chatApiVersion)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -284,7 +324,7 @@ class ChatViewModel @Inject constructor(
 
     fun leaveRoom(credentials: String, url: String, funToCallWhenLeaveSuccessful: (() -> Unit)?) {
         val startNanoTime = System.nanoTime()
-        chatRepository.leaveRoom(credentials, url)
+        chatNetworkDataSource.leaveRoom(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -309,7 +349,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun createRoom(credentials: String, url: String, queryMap: Map<String, String>) {
-        chatRepository.createRoom(credentials, url, queryMap)
+        chatNetworkDataSource.createRoom(credentials, url, queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<RoomOverall> {
@@ -332,72 +372,42 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun sendChatMessage(
-        credentials: String,
-        url: String,
-        message: CharSequence,
-        displayName: String,
-        replyTo: Int,
-        sendWithoutNotification: Boolean
+    fun loadMessages(withCredentials: String, withUrl: String) {
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+        chatRepository.loadInitialMessages(
+            withNetworkParams = bundle
+        )
+    }
+
+    fun loadMoreMessages(
+        beforeMessageId: Long,
+        roomToken: String,
+        withMessageLimit: Int,
+        withCredentials: String,
+        withUrl: String
     ) {
-        chatRepository.sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification
-        ).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(e, message)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: GenericOverall) {
-                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
-                }
-            })
+        val bundle = Bundle()
+        bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+        bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+        chatRepository.loadMoreMessages(
+            beforeMessageId,
+            roomToken,
+            withMessageLimit,
+            withNetworkParams = bundle
+        )
     }
 
-    fun pullChatMessages(credentials: String, url: String) {
-        chatRepository.pullChatMessages(credentials, url, _getFieldMapForChat.value!!)
-            .subscribeOn(Schedulers.io())
-            .takeUntil { (currentLifeCycleFlag == LifeCycleFlag.PAUSED) }
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<Response<*>> {
-                override fun onSubscribe(d: Disposable) {
-                    Log.d(TAG, "pullChatMessages - pullChatMessages SUBSCRIBE")
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "pullChatMessages - pullChatMessages ERROR", e)
-                    _pullChatMessageViewState.value = PullChatMessageErrorState
-                }
-
-                override fun onComplete() {
-                    Log.d(TAG, "pullChatMessages - pullChatMessages COMPLETE")
-                    _pullChatMessageViewState.value = PullChatMessageCompleteState
-                }
-
-                override fun onNext(response: Response<*>) {
-                    val lookIntoFuture = getFieldMapForChat.value?.get("lookIntoFuture") == 1
-                    _pullChatMessageViewState.value = PullChatMessageSuccessState(response, lookIntoFuture)
-                }
-            })
-    }
+    // fun initMessagePolling(withCredentials: String, withUrl: String, roomToken: String) {
+    //     val bundle = Bundle()
+    //     bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
+    //     bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
+    //     chatRepository.initMessagePolling(roomToken, withNetworkParams = bundle)
+    // }
 
     fun deleteChatMessages(credentials: String, url: String, messageId: String) {
-        chatRepository.deleteChatMessage(credentials, url)
+        chatNetworkDataSource.deleteChatMessage(credentials, url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ChatOverallSingleMessage> {
@@ -426,7 +436,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatRepository.setChatReadMarker(credentials, url, previousMessageId)
+        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -449,7 +459,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun shareToNotes(credentials: String, url: String, message: String, displayName: String) {
-        chatRepository.shareToNotes(credentials, url, message, displayName)
+        chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -472,13 +482,13 @@ class ChatViewModel @Inject constructor(
     }
 
     fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
-        chatRepository.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
+        chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(CheckForNoteToSelfObserver())
     }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
-        chatRepository.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
+        chatNetworkDataSource.shareLocationToNotes(credentials, url, objectType, objectId, metadata)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {
@@ -575,6 +585,7 @@ class ChatViewModel @Inject constructor(
             uploadFile(uri.toString(), room, displayName, metaData)
         }
     }
+
     fun stopAndDiscardAudioRecording() {
         stopAudioRecording()
         Log.d(TAG, "File discarded")
@@ -619,24 +630,38 @@ class ChatViewModel @Inject constructor(
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
-    inner class GetRoomObserver : Observer<ConversationModel> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
+    suspend fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
+        flow {
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_CHAT_URL, url)
+            bundle.putString(
+                BundleKeys.KEY_CREDENTIALS,
+                userProvider.currentUser.blockingGet().getCredentials()
+            )
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token!!)
+
+            val message = chatRepository.getMessage(messageId, bundle)
+            emit(message.first())
         }
 
-        override fun onNext(conversationModel: ConversationModel) {
-            _getRoomViewState.value = GetRoomSuccessState(conversationModel)
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when fetching room")
-            _getRoomViewState.value = GetRoomErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
+// inner class GetRoomObserver : Observer<ConversationModel> {
+//     override fun onSubscribe(d: Disposable) {
+//         // unused atm
+//     }
+//
+//     override fun onNext(conversationModel: ConversationModel) {
+//         _getRoomViewState.value = GetRoomSuccessState(conversationModel)
+//     }
+//
+//     override fun onError(e: Throwable) {
+//         Log.e(TAG, "Error when fetching room")
+//         _getRoomViewState.value = GetRoomErrorState
+//     }
+//
+//     override fun onComplete() {
+//         // unused atm
+//     }
+// }
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
@@ -704,7 +729,7 @@ class ChatViewModel @Inject constructor(
             rooms?.let {
                 try {
                     val noteToSelf = rooms.first {
-                        val model = ConversationModel.mapToConversationModel(it)
+                        val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
                         ConversationUtils.isNoteToSelfConversation(model)
                     }
                     _getNoteToSelfAvaliability.value = NoteToSelfAvaliableState(noteToSelf.token!!)

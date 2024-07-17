@@ -9,6 +9,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -20,8 +21,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -29,6 +30,11 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -91,14 +97,14 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
-            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
         } else {
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
 
         // parent message handling
-        if (!message.isDeleted && message.parentMessage != null) {
+        if (!message.isDeleted && message.parentMessageId != null) {
             processParentMessage(message)
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -148,36 +154,58 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
     }
 
     private fun processParentMessage(message: ChatMessage) {
-        val parentChatMessage = message.parentMessage
-        parentChatMessage!!.activeUser = message.activeUser
-        parentChatMessage.imageUrl?.let {
-            binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-            binding.messageQuote.quotedMessageImage.load(it) {
-                addHeader(
-                    "Authorization",
-                    ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
-                )
+        if (message.parentMessageId != null && !message.isDeleted) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val chatActivity = commonMessageInterface as ChatActivity
+                    val urlForChatting = ApiUtils.getUrlForChat(
+                        chatActivity.chatApiVersion,
+                        chatActivity.conversationUser?.baseUrl,
+                        chatActivity.roomToken
+                    )
+
+                    val parentChatMessage = withContext(Dispatchers.IO) {
+                        chatActivity.chatViewModel.getMessageById(
+                            urlForChatting,
+                            chatActivity.currentConversation!!,
+                            message.parentMessageId!!
+                        ).first()
+                    }
+
+                    parentChatMessage!!.activeUser = message.activeUser
+                    parentChatMessage.imageUrl?.let {
+                        binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                        binding.messageQuote.quotedMessageImage.load(it) {
+                            addHeader(
+                                "Authorization",
+                                ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+                            )
+                        }
+                    } ?: run {
+                        binding.messageQuote.quotedMessageImage.visibility = View.GONE
+                    }
+                    binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
+                        ?: context.getText(R.string.nc_nick_guest)
+                    binding.messageQuote.quotedMessage.text = messageUtils
+                        .enrichChatReplyMessageText(
+                            binding.messageQuote.quotedMessage.context,
+                            parentChatMessage,
+                            false,
+                            viewThemeUtils
+                        )
+
+                    viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+                    viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+                    viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
+
+                    binding.messageQuote.quotedChatMessageView.setOnClickListener {
+                        val chatActivity = commonMessageInterface as ChatActivity
+                        chatActivity.jumpToQuotedMessage(parentChatMessage)
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "Error when processing parent message in view holder", e)
+                }
             }
-        } ?: run {
-            binding.messageQuote.quotedMessageImage.visibility = View.GONE
-        }
-        binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-            ?: context.getText(R.string.nc_nick_guest)
-        binding.messageQuote.quotedMessage.text = messageUtils
-            .enrichChatReplyMessageText(
-                binding.messageQuote.quotedMessage.context,
-                parentChatMessage,
-                false,
-                viewThemeUtils
-            )
-
-        viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
-        viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
-        viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
-
-        binding.messageQuote.quotedChatMessageView.setOnClickListener {
-            val chatActivity = commonMessageInterface as ChatActivity
-            chatActivity.jumpToQuotedMessage(parentChatMessage)
         }
     }
 
@@ -191,5 +219,6 @@ class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewH
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        private val TAG = OutcomingTextMessageViewHolder::class.java.simpleName
     }
 }
