@@ -13,7 +13,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -52,7 +51,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -63,23 +61,20 @@ import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
-import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ContactsActivityCompose : ComponentActivity() {
+class ContactsActivityCompose : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var contactsViewModel: ContactsViewModel
-
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
 
     @SuppressLint("UnrememberedMutableState")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,8 +83,9 @@ class ContactsActivityCompose : ComponentActivity() {
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
 
         setContent {
+            val colorScheme = viewThemeUtils.getColorScheme(this)
             MaterialTheme(
-                colorScheme = viewThemeUtils.getColorScheme(this)
+                colorScheme = colorScheme
             ) {
                 val context = LocalContext.current
                 Scaffold(
@@ -288,8 +284,8 @@ fun ConversationCreationOptions(context: Context) {
                     .height(40.dp)
                     .padding(8.dp),
                 painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
-                contentDescription = stringResource(R.string.new_conversation_creation_icon),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                contentDescription = stringResource(R.string.new_conversation_creation_icon)
+                // colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
             )
             Text(
                 modifier = Modifier
@@ -297,8 +293,8 @@ fun ConversationCreationOptions(context: Context) {
                     .wrapContentHeight(),
                 text = stringResource(R.string.nc_create_new_conversation),
                 maxLines = 1,
-                fontSize = 16.sp,
-                color = MaterialTheme.colorScheme.onSurface
+                fontSize = 16.sp
+                //    color = MaterialTheme.colorScheme.onSurface
             )
         }
         Row(
@@ -316,8 +312,8 @@ fun ConversationCreationOptions(context: Context) {
                     .height(40.dp)
                     .padding(8.dp),
                 painter = painterResource(R.drawable.baseline_format_list_bulleted_24),
-                contentDescription = stringResource(R.string.join_open_conversations_icon),
-                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                contentDescription = stringResource(R.string.join_open_conversations_icon)
+                // colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
             )
             Text(
                 modifier = Modifier
