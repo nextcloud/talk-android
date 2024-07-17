@@ -10,7 +10,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/fragment_connection_lost"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/connection_lost_sent_messages_are_queued"
+        android:textColor="@color/white"
+        android:background="@color/hwSecurityRed"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
         <include
             android:id="@+id/fragment_editView"

@@ -10,6 +10,10 @@ package com.nextcloud.talk.utils.preferences;
 
 import android.annotation.SuppressLint;
 
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel;
+
+import java.util.List;
+
 @SuppressLint("NonConstantResourceId")
 public interface AppPreferences {
 
@@ -163,6 +167,15 @@ public interface AppPreferences {
     void saveWaveFormForFile(String filename, Float[] array);
 
     Float[] getWaveFormFromFile(String filename);
+
+    void saveLastKnownId(String internalConversationId, int lastReadId);
+
+    int getLastKnownId(String internalConversationId, int defaultValue);
+
+    void saveMessageQueue(String internalConversationId, List<MessageInputViewModel.QueuedMessage> queue);
+
+    List<MessageInputViewModel.QueuedMessage> getMessageQueue(String internalConversationId);
+
 
     void clear();
 }

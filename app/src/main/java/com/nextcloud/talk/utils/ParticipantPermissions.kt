@@ -9,7 +9,6 @@ package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.conversations.Conversation
 
 /**
  * see https://nextcloud-talk.readthedocs.io/en/latest/constants/#attendee-permissions
@@ -18,13 +17,6 @@ class ParticipantPermissions(
     private val spreedCapabilities: SpreedCapability,
     private val conversation: ConversationModel
 ) {
-
-    @Deprecated("Use ChatRepository.ConversationModel")
-    constructor(spreedCapabilities: SpreedCapability, conversation: Conversation) : this(
-        spreedCapabilities,
-        ConversationModel.mapToConversationModel(conversation)
-    )
-
     val isDefault = (conversation.permissions and DEFAULT) == DEFAULT
     val isCustom = (conversation.permissions and CUSTOM) == CUSTOM
     private val canStartCall = (conversation.permissions and START_CALL) == START_CALL

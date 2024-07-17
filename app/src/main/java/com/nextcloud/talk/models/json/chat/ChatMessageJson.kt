@@ -1,0 +1,49 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.nextcloud.talk.models.json.chat
+
+import android.os.Parcelable
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.data.changeListVersion.SyncableModel
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType
+import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+@JsonObject
+data class ChatMessageJson(
+    @JsonField(name = ["id"]) override var id: Long = 0,
+    @JsonField(name = ["token"]) var token: String? = null,
+    @JsonField(name = ["actorType"]) var actorType: String? = null,
+    @JsonField(name = ["actorId"]) var actorId: String? = null,
+    @JsonField(name = ["actorDisplayName"]) var actorDisplayName: String? = null,
+    @JsonField(name = ["timestamp"]) var timestamp: Long = 0,
+    @JsonField(name = ["message"]) var message: String? = null,
+
+    @JsonField(name = ["messageParameters"])
+    var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
+
+    @JsonField(name = ["systemMessage"], typeConverter = EnumSystemMessageTypeConverter::class)
+    var systemMessageType: SystemMessageType? = null,
+
+    @JsonField(name = ["isReplyable"]) var replyable: Boolean = false,
+    @JsonField(name = ["parent"]) var parentMessage: ChatMessageJson? = null,
+    @JsonField(name = ["messageType"]) var messageType: String? = null,
+    @JsonField(name = ["reactions"]) var reactions: LinkedHashMap<String, Int>? = null,
+    @JsonField(name = ["reactionsSelf"]) var reactionsSelf: ArrayList<String>? = null,
+    @JsonField(name = ["expirationTimestamp"]) var expirationTimestamp: Int = 0,
+    @JsonField(name = ["markdown"]) var renderMarkdown: Boolean? = null,
+    @JsonField(name = ["lastEditActorDisplayName"]) var lastEditActorDisplayName: String? = null,
+    @JsonField(name = ["lastEditActorId"]) var lastEditActorId: String? = null,
+    @JsonField(name = ["lastEditActorType"]) var lastEditActorType: String? = null,
+    @JsonField(name = ["lastEditTimestamp"]) var lastEditTimestamp: Long? = 0,
+
+    // override var markedForDeletion: Boolean = "comment_deleted" == messageType
+    override var markedForDeletion: Boolean = false
+) : Parcelable, SyncableModel

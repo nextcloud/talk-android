@@ -16,7 +16,7 @@ import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.CallStartedMessageBinding
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils

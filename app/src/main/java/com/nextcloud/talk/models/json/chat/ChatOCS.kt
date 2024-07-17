@@ -19,7 +19,7 @@ data class ChatOCS(
     @JsonField(name = ["meta"])
     var meta: GenericMeta?,
     @JsonField(name = ["data"])
-    var data: List<ChatMessage>? = null
+    var data: List<ChatMessageJson>? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)

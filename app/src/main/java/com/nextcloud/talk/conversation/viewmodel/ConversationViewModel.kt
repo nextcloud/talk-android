@@ -10,7 +10,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.conversation.repository.ConversationRepository
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,7 +40,7 @@ class ConversationViewModel @Inject constructor(private val repository: Conversa
         disposable?.dispose()
     }
 
-    fun createConversation(roomName: String, conversationType: Conversation.ConversationType?) {
+    fun createConversation(roomName: String, conversationType: ConversationEnums.ConversationType?) {
         _viewState.value = CreatingState
 
         repository.createConversation(

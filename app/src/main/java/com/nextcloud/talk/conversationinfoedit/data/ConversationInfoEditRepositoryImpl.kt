@@ -31,7 +31,7 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
         builder.setType(MultipartBody.FORM)
         builder.addFormDataPart(
             "file",
-            file!!.name,
+            file.name,
             file.asRequestBody(Mimetype.IMAGE_PREFIX_GENERIC.toMediaTypeOrNull())
         )
         val filePart: MultipartBody.Part = MultipartBody.Part.createFormData(
@@ -44,13 +44,13 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken),
             filePart
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
+        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
     override fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel> {
         return ncApi.deleteConversationAvatar(
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
+        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 }

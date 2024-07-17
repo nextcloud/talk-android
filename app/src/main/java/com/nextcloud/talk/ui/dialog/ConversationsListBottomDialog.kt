@@ -25,12 +25,13 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
@@ -45,7 +46,7 @@ import javax.inject.Inject
 class ConversationsListBottomDialog(
     val activity: ConversationsListActivity,
     val currentUser: User,
-    val conversation: Conversation
+    val conversation: ConversationModel
 ) : BottomSheetDialog(activity) {
 
     private lateinit var binding: DialogConversationOperationsBinding
@@ -98,7 +99,7 @@ class ConversationsListBottomDialog(
             currentUser.capabilities?.spreedCapability!!,
             SpreedFeatures.FAVORITES
         )
-        val canModerate = conversation.canModerate(currentUser)
+        val canModerate = ConversationUtils.canModerate(conversation, currentUser.capabilities?.spreedCapability!!)
 
         binding.conversationRemoveFromFavorites.visibility = setVisibleIf(
             hasFavoritesCapability && conversation.favorite
@@ -122,10 +123,10 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationRename.visibility = setVisibleIf(
-            conversation.isNameEditable(currentUser)
+            ConversationUtils.isNameEditable(conversation, currentUser.capabilities!!.spreedCapability!!)
         )
         binding.conversationLinkShare.visibility = setVisibleIf(
-            !conversation.isNoteToSelfConversation()
+            !ConversationUtils.isNoteToSelfConversation(conversation)
         )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
@@ -133,10 +134,10 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
-            conversation.canLeave() &&
+            ConversationUtils.canLeave(conversation) &&
                 // leaving is by api not possible for the last user with moderator permissions.
                 // for now, hide this option for all moderators.
-                !conversation.canModerate(currentUser)
+                !ConversationUtils.canModerate(conversation, currentUser.capabilities!!.spreedCapability!!)
         )
     }
 
@@ -311,7 +312,7 @@ class ConversationsListBottomDialog(
 
     private fun markConversationAsRead() {
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) {
-            conversation.lastMessage!!.jsonMessageId
+            conversation.lastMessageViaConversationList?.id
         } else {
             null
         }
@@ -323,7 +324,7 @@ class ConversationsListBottomDialog(
                 currentUser.baseUrl!!,
                 conversation.token!!
             ),
-            messageId
+            messageId?.toInt()
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

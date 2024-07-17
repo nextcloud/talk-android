@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.models.domain
 
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 
 data class ReactionDeletedModel(
     var chatMessage: ChatMessage,

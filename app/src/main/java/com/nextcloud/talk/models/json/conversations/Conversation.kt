@@ -12,9 +12,10 @@ package com.nextcloud.talk.models.json.conversations
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -39,7 +40,7 @@ data class Conversation(
     @JsonField(name = ["description"])
     var description: String? = null,
     @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
-    var type: ConversationType? = null,
+    var type: ConversationEnums.ConversationType? = null,
     @JsonField(name = ["lastPing"])
     var lastPing: Long = 0,
     @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
@@ -67,20 +68,21 @@ data class Conversation(
     @JsonField(name = ["unreadMention"])
     var unreadMention: Boolean = false,
 
+    // TODO get this from Json -> map to ChatMessage and fix error
     @JsonField(name = ["lastMessage"])
-    var lastMessage: ChatMessage? = null,
+    var lastMessage: ChatMessageJson? = null,
 
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
-    var objectType: ObjectType? = null,
+    var objectType: ConversationEnums.ObjectType? = null,
 
     @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
-    var notificationLevel: NotificationLevel? = null,
+    var notificationLevel: ConversationEnums.NotificationLevel? = null,
 
     @JsonField(name = ["readOnly"], typeConverter = EnumReadOnlyConversationConverter::class)
-    var conversationReadOnlyState: ConversationReadOnlyState? = null,
+    var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState? = null,
 
     @JsonField(name = ["lobbyState"], typeConverter = EnumLobbyStateConverter::class)
-    var lobbyState: LobbyState? = null,
+    var lobbyState: ConversationEnums.LobbyState? = null,
 
     @JsonField(name = ["lobbyTimer"])
     var lobbyTimer: Long? = null,
@@ -149,15 +151,15 @@ data class Conversation(
     var remoteServer: String? = null,
 
     @JsonField(name = ["remoteToken"])
-    var remoteToken: String? = null
+    var remoteToken: String? = null,
 
-) : Parcelable {
-    // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(null, null)
+    override var id: Long = 0,
+    override var markedForDeletion: Boolean = false
 
+) : Parcelable, SyncableModel {
     @Deprecated("Use ConversationUtil")
     val isPublic: Boolean
-        get() = ConversationType.ROOM_PUBLIC_CALL == type
+        get() = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == type
 
     @Deprecated("Use ConversationUtil")
     val isGuest: Boolean
@@ -175,22 +177,27 @@ data class Conversation(
     fun canModerate(conversationUser: User): Boolean {
         return isParticipantOwnerOrModerator &&
             !ConversationUtils.isLockedOneToOne(
-                ConversationModel.mapToConversationModel(this),
+                ConversationModel.mapToConversationModel(this, conversationUser),
                 conversationUser.capabilities?.spreedCapability!!
             ) &&
-            type != ConversationType.FORMER_ONE_TO_ONE &&
-            !ConversationUtils.isNoteToSelfConversation(ConversationModel.mapToConversationModel(this))
+            type != ConversationEnums.ConversationType.FORMER_ONE_TO_ONE &&
+            !ConversationUtils.isNoteToSelfConversation(
+                ConversationModel.mapToConversationModel(this, conversationUser)
+            )
     }
 
     @Deprecated("Use ConversationUtil")
     fun isLobbyViewApplicable(conversationUser: User): Boolean {
         return !canModerate(conversationUser) &&
-            (type == ConversationType.ROOM_GROUP_CALL || type == ConversationType.ROOM_PUBLIC_CALL)
+            (
+                type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+                    type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
+                )
     }
 
     @Deprecated("Use ConversationUtil")
     fun isNameEditable(conversationUser: User): Boolean {
-        return canModerate(conversationUser) && ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != type
+        return canModerate(conversationUser) && ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != type
     }
 
     @Deprecated("Use ConversationUtil")
@@ -216,41 +223,6 @@ data class Conversation(
 
     @Deprecated("Use ConversationUtil")
     fun isNoteToSelfConversation(): Boolean {
-        return type == ConversationType.NOTE_TO_SELF
-    }
-
-    enum class NotificationLevel {
-        DEFAULT,
-        ALWAYS,
-        MENTION,
-        NEVER
-    }
-
-    enum class LobbyState {
-        LOBBY_STATE_ALL_PARTICIPANTS,
-        LOBBY_STATE_MODERATORS_ONLY
-    }
-
-    enum class ConversationReadOnlyState {
-        CONVERSATION_READ_WRITE,
-        CONVERSATION_READ_ONLY
-    }
-
-    @Parcelize
-    enum class ConversationType : Parcelable {
-        DUMMY,
-        ROOM_TYPE_ONE_TO_ONE_CALL,
-        ROOM_GROUP_CALL,
-        ROOM_PUBLIC_CALL,
-        ROOM_SYSTEM,
-        FORMER_ONE_TO_ONE,
-        NOTE_TO_SELF
-    }
-
-    enum class ObjectType {
-        DEFAULT,
-        SHARE_PASSWORD,
-        FILE,
-        ROOM
+        return type == ConversationEnums.ConversationType.NOTE_TO_SELF
     }
 }

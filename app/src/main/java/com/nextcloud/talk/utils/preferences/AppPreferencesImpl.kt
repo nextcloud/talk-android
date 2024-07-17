@@ -7,6 +7,7 @@
 package com.nextcloud.talk.utils.preferences
 
 import android.content.Context
+import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -15,6 +16,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
@@ -460,6 +462,62 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return if (string.isNotEmpty()) string.convertStringToArray() else floatArrayOf().toTypedArray()
     }
 
+    override fun saveLastKnownId(internalConversationId: String, lastReadId: Int) {
+        runBlocking<Unit> {
+            async {
+                writeString(internalConversationId, lastReadId.toString())
+            }
+        }
+    }
+
+    override fun getLastKnownId(internalConversationId: String, defaultValue: Int): Int {
+        val lastReadId = runBlocking { async { readString(internalConversationId).first() } }.getCompleted()
+        return if (lastReadId.isNotEmpty()) lastReadId.toInt() else defaultValue
+    }
+
+    override fun saveMessageQueue(
+        internalConversationId: String,
+        queue: MutableList<MessageInputViewModel.QueuedMessage>?
+    ) {
+        runBlocking<Unit> {
+            async {
+                var queueStr = ""
+                queue?.let {
+                    for (msg in queue) {
+                        val msgStr = "[${msg.message},${msg.replyTo},${msg.displayName},${msg.sendWithoutNotification}]"
+                        queueStr += msgStr
+                    }
+                }
+                writeString(internalConversationId + MESSAGE_QUEUE, queueStr)
+            }
+        }
+    }
+
+    override fun getMessageQueue(internalConversationId: String): MutableList<MessageInputViewModel.QueuedMessage> {
+        val queueStr =
+            runBlocking { async { readString(internalConversationId + MESSAGE_QUEUE).first() } }.getCompleted()
+
+        val queue: MutableList<MessageInputViewModel.QueuedMessage> = mutableListOf()
+        if (queueStr.isEmpty()) return queue
+
+        for (msgStr in queueStr.split("]")) {
+            try {
+                val msgArray = msgStr.replace("[", "").split(",")
+                val message = msgArray[0]
+                val replyTo = msgArray[1].toInt()
+                val displayName = msgArray[2]
+                val silent = msgArray[3].toBoolean()
+
+                val qMsg = MessageInputViewModel.QueuedMessage(message, displayName, replyTo, silent)
+                queue.add(qMsg)
+            } catch (e: IndexOutOfBoundsException) {
+                Log.e(TAG, "Message string: $msgStr\n $e")
+            }
+        }
+
+        return queue
+    }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =
@@ -538,6 +596,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
+        const val MESSAGE_QUEUE = "@message_queue"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()
