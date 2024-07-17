@@ -792,6 +792,9 @@ How to translate with transifex:
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
     <string name="nc_conversation_settings">Conversation settings</string>
+    <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
+    <string name="connection_gained">Connection gained</string>
+    <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="show_banned_participants">Show Banned Participants</string>
     <string name="bans_list">Bans List</string>
     <string name="unban">Unban</string>

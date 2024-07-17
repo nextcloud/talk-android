@@ -7,17 +7,23 @@
  */
 package com.nextcloud.talk.models.domain
 
+import com.nextcloud.talk.data.changeListVersion.SyncableModel
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 
 class ConversationModel(
+    var internalId: String,
     var roomId: String? = null,
     var token: String? = null,
     var name: String? = null,
     var displayName: String? = null,
     var description: String? = null,
-    var type: ConversationType? = null,
+    var type: ConversationEnums.ConversationType? = null,
     var lastPing: Long = 0,
-    var participantType: ParticipantType? = null,
+    var participantType: Participant.ParticipantType? = null,
     var hasPassword: Boolean = false,
     var sessionId: String? = null,
     var actorId: String? = null,
@@ -27,11 +33,12 @@ class ConversationModel(
     var lastActivity: Long = 0,
     var unreadMessages: Int = 0,
     var unreadMention: Boolean = false,
-    // var lastMessage: .....? = null,
-    var objectType: ObjectType? = null,
-    var notificationLevel: NotificationLevel? = null,
-    var conversationReadOnlyState: ConversationReadOnlyState? = null,
-    var lobbyState: LobbyState? = null,
+    // var lastMessageViaConversationList: LastMessageJson? = null,
+    var lastMessageViaConversationList: ChatMessageJson? = null,
+    var objectType: ConversationEnums.ObjectType? = null,
+    var notificationLevel: ConversationEnums.NotificationLevel? = null,
+    var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState? = null,
+    var lobbyState: ConversationEnums.LobbyState? = null,
     var lobbyTimer: Long? = null,
     var lastReadMessage: Int = 0,
     var hasCall: Boolean = false,
@@ -53,20 +60,23 @@ class ConversationModel(
     var callStartTime: Long? = null,
     var recordingConsentRequired: Int = 0,
     var remoteServer: String? = null,
-    var remoteToken: String? = null
-) {
+    var remoteToken: String? = null,
+    override var id: Long = roomId?.toLong() ?: 0,
+    override var markedForDeletion: Boolean = false
+) : SyncableModel {
 
     companion object {
-        fun mapToConversationModel(conversation: Conversation): ConversationModel {
+        fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel {
             return ConversationModel(
+                internalId = user.id!!.toString() + "@" + conversation.token,
                 roomId = conversation.roomId,
                 token = conversation.token,
                 name = conversation.name,
                 displayName = conversation.displayName,
                 description = conversation.description,
-                type = conversation.type?.let { ConversationType.valueOf(it.name) },
+                type = conversation.type?.let { ConversationEnums.ConversationType.valueOf(it.name) },
                 lastPing = conversation.lastPing,
-                participantType = conversation.participantType?.let { ParticipantType.valueOf(it.name) },
+                participantType = conversation.participantType?.let { Participant.ParticipantType.valueOf(it.name) },
                 hasPassword = conversation.hasPassword,
                 sessionId = conversation.sessionId,
                 actorId = conversation.actorId,
@@ -77,18 +87,18 @@ class ConversationModel(
                 unreadMessages = conversation.unreadMessages,
                 unreadMention = conversation.unreadMention,
                 // lastMessage = conversation.lastMessage,     to do...
-                objectType = conversation.objectType?.let { ObjectType.valueOf(it.name) },
+                objectType = conversation.objectType?.let { ConversationEnums.ObjectType.valueOf(it.name) },
                 notificationLevel = conversation.notificationLevel?.let {
-                    NotificationLevel.valueOf(
+                    ConversationEnums.NotificationLevel.valueOf(
                         it.name
                     )
                 },
                 conversationReadOnlyState = conversation.conversationReadOnlyState?.let {
-                    ConversationReadOnlyState.valueOf(
+                    ConversationEnums.ConversationReadOnlyState.valueOf(
                         it.name
                     )
                 },
-                lobbyState = conversation.lobbyState?.let { LobbyState.valueOf(it.name) },
+                lobbyState = conversation.lobbyState?.let { ConversationEnums.LobbyState.valueOf(it.name) },
                 lobbyTimer = conversation.lobbyTimer,
                 lastReadMessage = conversation.lastReadMessage,
                 hasCall = conversation.hasCall,
@@ -116,46 +126,46 @@ class ConversationModel(
     }
 }
 
-enum class ConversationType {
-    DUMMY,
-    ROOM_TYPE_ONE_TO_ONE_CALL,
-    ROOM_GROUP_CALL,
-    ROOM_PUBLIC_CALL,
-    ROOM_SYSTEM,
-    FORMER_ONE_TO_ONE,
-    NOTE_TO_SELF
-}
-
-enum class ParticipantType {
-    DUMMY,
-    OWNER,
-    MODERATOR,
-    USER,
-    GUEST,
-    USER_FOLLOWING_LINK,
-    GUEST_MODERATOR
-}
-
-enum class ObjectType {
-    DEFAULT,
-    SHARE_PASSWORD,
-    FILE,
-    ROOM
-}
-
-enum class NotificationLevel {
-    DEFAULT,
-    ALWAYS,
-    MENTION,
-    NEVER
-}
-
-enum class ConversationReadOnlyState {
-    CONVERSATION_READ_WRITE,
-    CONVERSATION_READ_ONLY
-}
-
-enum class LobbyState {
-    LOBBY_STATE_ALL_PARTICIPANTS,
-    LOBBY_STATE_MODERATORS_ONLY
-}
+// enum class ConversationType {
+//     DUMMY,
+//     ROOM_TYPE_ONE_TO_ONE_CALL,
+//     ROOM_GROUP_CALL,
+//     ROOM_PUBLIC_CALL,
+//     ROOM_SYSTEM,
+//     FORMER_ONE_TO_ONE,
+//     NOTE_TO_SELF
+// }
+//
+// enum class ParticipantType {
+//     DUMMY,
+//     OWNER,
+//     MODERATOR,
+//     USER,
+//     GUEST,
+//     USER_FOLLOWING_LINK,
+//     GUEST_MODERATOR
+// }
+//
+// enum class ObjectType {
+//     DEFAULT,
+//     SHARE_PASSWORD,
+//     FILE,
+//     ROOM
+// }
+//
+// enum class NotificationLevel {
+//     DEFAULT,
+//     ALWAYS,
+//     MENTION,
+//     NEVER
+// }
+//
+// enum class ConversationReadOnlyState {
+//     CONVERSATION_READ_WRITE,
+//     CONVERSATION_READ_ONLY
+// }
+//
+// enum class LobbyState {
+//     LOBBY_STATE_ALL_PARTICIPANTS,
+//     LOBBY_STATE_MODERATORS_ONLY
+// }

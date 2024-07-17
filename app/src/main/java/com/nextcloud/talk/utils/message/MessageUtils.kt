@@ -14,7 +14,7 @@ import android.text.Spanned
 import android.util.Log
 import android.view.View
 import com.nextcloud.talk.R
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import io.noties.markwon.AbstractMarkwonPlugin

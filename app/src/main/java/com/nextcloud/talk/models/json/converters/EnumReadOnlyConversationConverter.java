@@ -8,22 +8,23 @@ package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationEnums;
 
-public class EnumReadOnlyConversationConverter extends IntBasedTypeConverter<Conversation.ConversationReadOnlyState> {
+public class EnumReadOnlyConversationConverter extends IntBasedTypeConverter<ConversationEnums.ConversationReadOnlyState> {
     @Override
-    public Conversation.ConversationReadOnlyState getFromInt(int i) {
+    public ConversationEnums.ConversationReadOnlyState getFromInt(int i) {
         switch (i) {
             case 0:
-                return Conversation.ConversationReadOnlyState.CONVERSATION_READ_WRITE;
+                return ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE;
             case 1:
-                return Conversation.ConversationReadOnlyState.CONVERSATION_READ_ONLY;
+                return ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY;
             default:
-                return Conversation.ConversationReadOnlyState.CONVERSATION_READ_WRITE;
+                return ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE;
         }
     }
 
     @Override
-    public int convertToInt(Conversation.ConversationReadOnlyState object) {
+    public int convertToInt(ConversationEnums.ConversationReadOnlyState object) {
         switch (object) {
             case CONVERSATION_READ_WRITE:
                 return 0;

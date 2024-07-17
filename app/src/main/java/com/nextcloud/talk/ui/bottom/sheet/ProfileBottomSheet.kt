@@ -21,7 +21,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall

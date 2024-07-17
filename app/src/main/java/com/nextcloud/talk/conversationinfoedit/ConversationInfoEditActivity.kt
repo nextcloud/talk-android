@@ -34,8 +34,8 @@ import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
@@ -124,10 +124,6 @@ class ConversationInfoEditActivity : BaseActivity() {
         pickImage = PickImage(this, conversationUser)
 
         initObservers()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     private fun initObservers() {
@@ -349,15 +345,18 @@ class ConversationInfoEditActivity : BaseActivity() {
         setupAvatarOptions()
 
         when (conversation!!.type) {
-            ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(
+                    conversation!!.name
+                )
+            ) {
                 conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
 
-            ConversationType.ROOM_GROUP_CALL, ConversationType.ROOM_PUBLIC_CALL -> {
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL, ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> {
                 binding.avatarImage.loadConversationAvatar(conversationUser, conversation!!, false, viewThemeUtils)
             }
 
-            ConversationType.ROOM_SYSTEM -> {
+            ConversationEnums.ConversationType.ROOM_SYSTEM -> {
                 binding.avatarImage.loadSystemAvatar()
             }
 

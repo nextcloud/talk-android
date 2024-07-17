@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.adapters.messages
 
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 
 interface PreviewMessageInterface {
     fun onPreviewMessageLongClick(chatMessage: ChatMessage)

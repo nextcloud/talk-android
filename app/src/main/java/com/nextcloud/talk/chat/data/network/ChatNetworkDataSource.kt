@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.chat.data
+package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -19,7 +19,7 @@ import io.reactivex.Observable
 import retrofit2.Response
 
 @Suppress("LongParameterList", "TooManyFunctions")
-interface ChatRepository {
+interface ChatNetworkDataSource {
     fun getRoom(user: User, roomToken: String): Observable<ConversationModel>
     fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability>
     fun joinRoom(user: User, roomToken: String, roomPassword: String): Observable<ConversationModel>

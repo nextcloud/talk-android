@@ -9,18 +9,21 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder.Companion
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ItemCustomOutcomingPollMessageBinding
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -29,6 +32,11 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -153,34 +161,53 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) :
     }
 
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
-        if (!message.isDeleted && message.parentMessage != null) {
-            val parentChatMessage = message.parentMessage
-            parentChatMessage!!.activeUser = message.activeUser
-            parentChatMessage.imageUrl?.let {
-                binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-                binding.messageQuote.quotedMessageImage.load(it) {
-                    addHeader(
-                        "Authorization",
-                        ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+        if (message.parentMessageId != null && !message.isDeleted) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val chatActivity = commonMessageInterface as ChatActivity
+                    val urlForChatting = ApiUtils.getUrlForChat(
+                        chatActivity.chatApiVersion,
+                        chatActivity.conversationUser?.baseUrl,
+                        chatActivity.roomToken
                     )
-                }
-            } ?: run {
-                binding.messageQuote.quotedMessageImage.visibility = View.GONE
-            }
-            binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
-                ?: context.getText(R.string.nc_nick_guest)
-            binding.messageQuote.quotedMessage.text = messageUtils
-                .enrichChatReplyMessageText(
-                    binding.messageQuote.quotedMessage.context,
-                    parentChatMessage,
-                    false,
-                    viewThemeUtils
-                )
-            viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
-            viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
-            viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+                    val parentChatMessage = withContext(Dispatchers.IO) {
+                        chatActivity.chatViewModel.getMessageById(
+                            urlForChatting,
+                            chatActivity.currentConversation!!,
+                            message.parentMessageId!!
+                        ).first()
+                    }
+                    parentChatMessage.activeUser = message.activeUser
+                    parentChatMessage.imageUrl?.let {
+                        binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                        binding.messageQuote.quotedMessageImage.load(it) {
+                            addHeader(
+                                "Authorization",
+                                ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+                            )
+                        }
+                    } ?: run {
+                        binding.messageQuote.quotedMessageImage.visibility = View.GONE
+                    }
+                    binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
+                        ?: context.getText(R.string.nc_nick_guest)
+                    binding.messageQuote.quotedMessage.text = messageUtils
+                        .enrichChatReplyMessageText(
+                            binding.messageQuote.quotedMessage.context,
+                            parentChatMessage,
+                            false,
+                            viewThemeUtils
+                        )
+                    viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+                    viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+                    viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
+
+                    binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+                } catch (e: Exception) {
+                    Log.d(TAG, "Error when processing parent message in view holder", e)
+                }
+            }
         } else {
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }

@@ -29,9 +29,9 @@ import coil.transform.RoundedCornersTransformation
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -49,7 +49,7 @@ fun ImageView.loadConversationAvatar(
 ): io.reactivex.disposables.Disposable {
     return loadConversationAvatar(
         user,
-        ConversationModel.mapToConversationModel(conversation),
+        ConversationModel.mapToConversationModel(conversation, user),
         ignoreCache,
         viewThemeUtils
     )
@@ -72,10 +72,10 @@ fun ImageView.loadConversationAvatar(
 
     if (conversation.avatarVersion.isNullOrEmpty() && viewThemeUtils != null) {
         when (conversation.type) {
-            ConversationType.ROOM_GROUP_CALL ->
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL ->
                 return loadDefaultGroupCallAvatar(viewThemeUtils)
 
-            ConversationType.ROOM_PUBLIC_CALL ->
+            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
                 return loadDefaultPublicCallAvatar(viewThemeUtils)
 
             else -> {}
@@ -86,10 +86,10 @@ fun ImageView.loadConversationAvatar(
     // when no own images are set. (although these default avatars can not be themed for the android app..)
     val errorPlaceholder =
         when (conversation.type) {
-            ConversationType.ROOM_GROUP_CALL ->
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL ->
                 ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
 
-            ConversationType.ROOM_PUBLIC_CALL ->
+            ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
                 ContextCompat.getDrawable(context, R.drawable.ic_circular_link)
 
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
