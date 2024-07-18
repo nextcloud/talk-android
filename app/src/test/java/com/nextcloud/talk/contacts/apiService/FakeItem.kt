@@ -7,5 +7,4 @@
 
 package com.nextcloud.talk.contacts.apiService
 
-object FakeItem {
-}
+object FakeItem

@@ -15,7 +15,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -81,9 +81,9 @@ class ContactsActivityCompose : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
-
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+            val uiState = contactsViewModel.contactsViewState.collectAsState()
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
@@ -97,7 +97,6 @@ class ContactsActivityCompose : BaseActivity() {
                         )
                     },
                     content = {
-                        val uiState = contactsViewModel.contactsViewState.collectAsState()
                         Column(Modifier.padding(it)) {
                             ConversationCreationOptions(context = context)
                             ContactsList(
@@ -242,8 +241,10 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
 fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
+
     TopAppBar(
         title = { Text(text = title) },
+
         navigationIcon = {
             IconButton(onClick = {
                 (context as? Activity)?.finish()
@@ -278,14 +279,13 @@ fun ConversationCreationOptions(context: Context) {
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_chat_bubble_outline_24),
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp)
                     .padding(8.dp),
-                painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
-                contentDescription = stringResource(R.string.new_conversation_creation_icon)
-                // colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                contentDescription = null
             )
             Text(
                 modifier = Modifier
@@ -294,7 +294,6 @@ fun ConversationCreationOptions(context: Context) {
                 text = stringResource(R.string.nc_create_new_conversation),
                 maxLines = 1,
                 fontSize = 16.sp
-                //    color = MaterialTheme.colorScheme.onSurface
             )
         }
         Row(
@@ -306,14 +305,13 @@ fun ConversationCreationOptions(context: Context) {
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            Icon(
+                Icons.AutoMirrored.Filled.List,
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp)
                     .padding(8.dp),
-                painter = painterResource(R.drawable.baseline_format_list_bulleted_24),
-                contentDescription = stringResource(R.string.join_open_conversations_icon)
-                // colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.onSurface)
+                contentDescription = null
             )
             Text(
                 modifier = Modifier
