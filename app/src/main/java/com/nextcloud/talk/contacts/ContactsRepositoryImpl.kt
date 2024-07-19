@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ContactUtils
 
 class ContactsRepositoryImpl(
     private val ncApiCoroutines: NcApiCoroutines,
@@ -29,8 +30,9 @@ class ContactsRepositoryImpl(
             currentUser.baseUrl!!,
             searchQuery
         )
+
         val modifiedQueryMap: HashMap<String, Any> = HashMap(retrofitBucket.queryMap)
-        modifiedQueryMap["limit"] = 50
+        modifiedQueryMap["limit"] = ContactUtils.MAX_CONTACT_LIMIT
         modifiedQueryMap["shareTypes[]"] = shareTypes
         val response = ncApiCoroutines.getContactsWithSearchParam(
             credentials,
