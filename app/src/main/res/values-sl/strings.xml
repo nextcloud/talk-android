@@ -382,6 +382,7 @@
     <string name="nc_sort_by">Razvrsti po</string>
     <string name="nc_start_time">Čas začetka</string>
     <string name="nc_switch_account">Preklopi račun</string>
+    <string name="nc_team">Skupina</string>
     <string name="nc_teams">Skupine</string>
     <string name="nc_upload_choose_local_files">Izbor datotek</string>
     <string name="nc_upload_confirm_send_multiple">Ali želite poslati te datoteke osebi %1$s?</string>
