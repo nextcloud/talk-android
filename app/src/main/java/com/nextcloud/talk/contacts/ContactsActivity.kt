@@ -125,8 +125,10 @@ class ContactsActivity :
 
         existingParticipants = ArrayList()
         if (intent.hasExtra(BundleKeys.KEY_NEW_CONVERSATION)) {
+            // adding a new conversation, setting a flag.
             isNewConversationView = true
         } else if (intent.hasExtra(BundleKeys.KEY_ADD_PARTICIPANTS)) {
+            // adding the participants in the conversation also opens this activity, setting a flag for it.
             isAddingParticipantsView = true
             conversationToken = intent.getStringExtra(BundleKeys.KEY_TOKEN)
             if (intent.hasExtra(BundleKeys.KEY_EXISTING_PARTICIPANTS)) {
@@ -258,6 +260,7 @@ class ContactsActivity :
 
     private fun selectionDone() {
         if (isAddingParticipantsView) {
+            // add participants in the view
             addParticipantsToConversation()
         } else {
             // if there is only 1 participant, directly add him while creating room (which can only add 'one')
@@ -477,9 +480,11 @@ class ContactsActivity :
                 }
 
                 override fun onNext(responseBody: ResponseBody) {
+                    // getting contacts
                     val newUserItemList = processAutocompleteUserList(responseBody)
 
                     userHeaderItems = HashMap()
+                    // getting the contact list from the endpoints.
                     contactItems!!.addAll(newUserItemList)
 
                     sortUserItems(newUserItemList)
@@ -539,7 +544,7 @@ class ContactsActivity :
                 }
                 val newContactItem = ContactItem(
                     participant,
-                    currentUser,
+                    currentUser!!,
                     userHeaderItems[headerTitle],
                     viewThemeUtils
                 )
@@ -551,6 +556,7 @@ class ContactsActivity :
         return newUserItemList
     }
 
+    // this function displays the title of the contacts activity
     private fun getHeaderTitle(participant: Participant): String {
         return when {
             participant.calculatedActorType == Participant.ActorType.GROUPS -> {

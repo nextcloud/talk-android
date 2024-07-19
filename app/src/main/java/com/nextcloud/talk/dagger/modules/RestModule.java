@@ -14,6 +14,7 @@ import com.github.aurae.retrofit2.LoganSquareConverterFactory;
 import com.nextcloud.talk.BuildConfig;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
+import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -35,6 +36,7 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
@@ -58,6 +60,7 @@ import okhttp3.internal.tls.OkHostnameVerifier;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(includes = DatabaseModule.class)
 public class RestModule {
@@ -74,6 +77,13 @@ public class RestModule {
     NcApi provideNcApi(Retrofit retrofit) {
         return retrofit.create(NcApi.class);
     }
+
+    @Singleton
+    @Provides
+    NcApiCoroutines provideNcApiCoroutines(Retrofit retrofit) {
+        return retrofit.create(NcApiCoroutines.class);
+    }
+
 
     @Singleton
     @Provides

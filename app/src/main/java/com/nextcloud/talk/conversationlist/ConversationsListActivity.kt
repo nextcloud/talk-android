@@ -78,7 +78,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.contacts.ContactsActivity
+import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationsBinding
@@ -1072,7 +1072,7 @@ class ConversationsListActivity :
             conversation.type === Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
-        val intent = Intent(context, ContactsActivity::class.java)
+        val intent = Intent(context, ContactsActivityCompose::class.java)
         intent.putExtra(KEY_NEW_CONVERSATION, true)
         startActivity(intent)
     }
