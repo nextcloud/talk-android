@@ -8,12 +8,13 @@
 package com.nextcloud.talk.contacts.repository
 
 import com.nextcloud.talk.contacts.ContactsRepository
+import com.nextcloud.talk.contacts.apiService.FakeItem
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 class FakeRepositorySuccess() : ContactsRepository {
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
-        TODO("Not yet implemented")
+        return FakeItem.contactsOverall
     }
 
     override suspend fun createRoom(
@@ -22,6 +23,10 @@ class FakeRepositorySuccess() : ContactsRepository {
         userId: String,
         conversationName: String?
     ): RoomOverall {
+        TODO("Not yet implemented")
+    }
+
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         TODO("Not yet implemented")
     }
 }

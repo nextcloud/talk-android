@@ -13,7 +13,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 class FakeRepositoryError() : ContactsRepository {
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
-        TODO("Not yet implemented")
+        throw Exception("unknown error occurred")
     }
 
     override suspend fun createRoom(
@@ -22,6 +22,10 @@ class FakeRepositoryError() : ContactsRepository {
         userId: String,
         conversationName: String?
     ): RoomOverall {
-        TODO("Not yet implemented")
+        throw Exception("unknown error occurred")
+    }
+
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
+        throw Exception("unknown error occurred")
     }
 }

@@ -170,6 +170,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
             }
             items(contactsForInitial) { contact ->
                 ContactItemRow(contact = contact, contactsViewModel = contactsViewModel, context = context)
+                Log.d(CompanionClass.TAG, "Contacts:$contact")
             }
         }
     }

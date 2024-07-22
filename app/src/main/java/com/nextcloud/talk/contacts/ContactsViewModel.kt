@@ -9,27 +9,21 @@ package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
-    private val repository: ContactsRepository,
-    private val userManager: UserManager
+    private val repository: ContactsRepository
 ) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
     private val _roomViewState = MutableStateFlow<RoomUiState>(RoomUiState.None)
     val roomViewState: StateFlow<RoomUiState> = _roomViewState
-    private val _currentUser = userManager.currentUser.blockingGet()
-    val currentUser: User = _currentUser
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
     private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
@@ -86,13 +80,8 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
-
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return ApiUtils.getUrlForAvatar(
-            _currentUser.baseUrl,
-            avatarId,
-            requestBigSize
-        )
+        return repository.getImageUri(avatarId, requestBigSize)
     }
 }
 
