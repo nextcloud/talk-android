@@ -61,25 +61,24 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
             }
         },
 
-            trailingIcon = {
-                if (text.isNotEmpty()) {
-                    IconButton(
-                        onClick = {
-                            onTextChange("")
-                        }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = stringResource(R.string.close_icon),
-                            //tint = MaterialTheme.colorScheme.onSurface
-                        )
+        trailingIcon = {
+            if (text.isNotEmpty()) {
+                IconButton(
+                    onClick = {
+                        onTextChange("")
                     }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = stringResource(R.string.close_icon)
+                    )
                 }
-            },
+            }
+        },
 
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Search
-            ),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search
+        ),
 
         keyboardActions = KeyboardActions(
             onSearch = {
