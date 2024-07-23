@@ -10,8 +10,11 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
+import com.nextcloud.talk.contacts.ContactsRepository
+import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
@@ -45,6 +48,7 @@ import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.translate.repositories.TranslateRepository
 import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import dagger.Module
@@ -149,5 +153,10 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
         return InvitationsRepositoryImpl(ncApi)
+    }
+
+    @Provides
+    fun provideContactsRepository(ncApiCoroutines: NcApiCoroutines, userManager: UserManager): ContactsRepository {
+        return ContactsRepositoryImpl(ncApiCoroutines, userManager)
     }
 }

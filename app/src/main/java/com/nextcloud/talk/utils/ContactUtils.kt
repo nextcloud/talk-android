@@ -11,6 +11,8 @@ import android.provider.ContactsContract
 
 object ContactUtils {
 
+    const val MAX_CONTACT_LIMIT = 50
+
     fun getDisplayNameFromDeviceContact(context: Context, id: String?): String? {
         var displayName: String? = null
         val whereName =

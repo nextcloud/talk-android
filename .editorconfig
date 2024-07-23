@@ -51,3 +51,4 @@ ktlint_standard_import-ordering = disabled
 ktlint_standard_wrapping = enabled
 ij_kotlin_allow_trailing_comma = false
 ij_kotlin_allow_trailing_comma_on_call_site = false
+ktlint_function_naming_ignore_when_annotated_with = Composable
