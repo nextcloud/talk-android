@@ -404,6 +404,7 @@
     <string name="nc_sort_by">Rendezés elve</string>
     <string name="nc_start_time">Kezdési idő</string>
     <string name="nc_switch_account">Fiókváltás</string>
+    <string name="nc_teams">Csapatok</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
     <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
