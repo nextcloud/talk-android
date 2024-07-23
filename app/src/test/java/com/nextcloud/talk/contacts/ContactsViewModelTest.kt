@@ -8,6 +8,7 @@
 package com.nextcloud.talk.contacts
 
 import com.nextcloud.talk.contacts.apiService.FakeItem
+import com.nextcloud.talk.contacts.repository.FakeRepositoryError
 import com.nextcloud.talk.contacts.repository.FakeRepositorySuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -38,16 +39,24 @@ class ContactsViewModelTest {
     }
 
     @Before
-    fun setUp()  {
+    fun setUp() {
         viewModel = ContactsViewModel(repository)
     }
 
     @Test
     fun `fetch contacts`() =
         runTest {
+            viewModel = ContactsViewModel(repository)
             viewModel.getContactsFromSearchParams()
             assert(viewModel.contactsViewState.value is ContactsUiState.Success)
             val successState = viewModel.contactsViewState.value as ContactsUiState.Success
             assert(successState.contacts == FakeItem.contacts)
+        }
+
+    @Test
+    fun `fetch contacts with error`() =
+        runTest {
+            viewModel = ContactsViewModel(FakeRepositoryError())
+            assert(viewModel.contactsViewState.value is ContactsUiState.Error)
         }
 }
