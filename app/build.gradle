@@ -258,8 +258,6 @@ dependencies {
     implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:${fidoVersion}"
     implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:${fidoVersion}"
 
-    implementation 'com.novoda:merlin:1.2.1'
-
     implementation 'com.github.nextcloud:PopupBubble:2.0.0'
     implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
 
