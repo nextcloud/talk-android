@@ -2,6 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -47,7 +48,6 @@ allprojects {
         google()
         mavenCentral()
         maven { url 'https://jitpack.io' }
-        gradlePluginPortal() // for jcenter mirroring, remove ASAP
     }
 }
 
