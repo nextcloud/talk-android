@@ -3384,6 +3384,10 @@ class ChatActivity :
         val messageTemp = message as ChatMessage
         messageTemp.lastEditTimestamp = message.lastEditTimestamp
 
+        val index = adapter?.getMessagePositionById(messageTemp.id) ?: 0
+        val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
+
+        messageTemp.parentMessage = adapterMsg.parentMessage
         messageTemp.isOneToOneConversation =
             currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
