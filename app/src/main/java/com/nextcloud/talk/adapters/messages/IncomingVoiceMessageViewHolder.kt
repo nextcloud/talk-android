@@ -16,17 +16,16 @@ import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.load
-import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ItemCustomIncomingVoiceMessageBinding
+import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.models.json.chat.ChatMessage
@@ -259,16 +258,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         } else if (message.actorType == "bots" && message.actorId == "changelog") {
             binding.messageUserAvatar.loadChangelogBotAvatar()
         } else if (message.actorType == "bots") {
-            val drawable = TextDrawable.builder()
-                .beginConfig()
-                .bold()
-                .endConfig()
-                .buildRound(
-                    ">",
-                    ResourcesCompat.getColor(context!!.resources, R.color.black, null)
-                )
-            binding.messageUserAvatar.visibility = View.VISIBLE
-            binding.messageUserAvatar.setImageDrawable(drawable)
+            binding.messageUserAvatar.loadBotsAvatar()
         } else if (message.actorType == "federated_users") {
             binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
