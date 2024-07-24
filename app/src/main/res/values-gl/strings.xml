@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Únase a unha conversa ou inicie unha nova</string>
     <string name="nc_conversations_empty_details">Saúde aos seus amigos e compañeiros!</string>
     <string name="nc_copy_message">Copiar</string>
+    <string name="nc_create_new_conversation">Crear unha nova conversa</string>
     <string name="nc_create_poll">Crear enquisa</string>
     <string name="nc_date_header_today">Hoxe</string>
     <string name="nc_date_header_yesterday">Onte</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificacións nesta conversa anularán os axustes de «Non molestar»</string>
     <string name="nc_invitations">Convites</string>
+    <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
     <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
     <string name="nc_last_moderator_title">Non foi posíbel dixar a conversa</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">e %1$s máis están a escribir…</string>
     <string name="unread">Sen ler</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar dende o dispositivo</string>
+    <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">Correo-e</string>

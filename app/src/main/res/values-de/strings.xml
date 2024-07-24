@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Treten Sie einer Unterhaltung bei oder starten Sie eine neue</string>
     <string name="nc_conversations_empty_details">Begrüßen Sie Ihre Freunde und Kollegen!</string>
     <string name="nc_copy_message">Kopieren</string>
+    <string name="nc_create_new_conversation">Neue Unterhaltung erstellen</string>
     <string name="nc_create_poll">Umfrage erstellen</string>
     <string name="nc_date_header_today">Heute</string>
     <string name="nc_date_header_yesterday">Gestern</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
     <string name="nc_invitations">Einladungen</string>
+    <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
     <string name="nc_last_moderator">Sie müssen einen neuen Moderator bestimmen, bevor Sie %1$s verlassen können.</string>
     <string name="nc_last_moderator_title">Unterhaltung konnte nicht verlassen werden</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">und %1$s andere schreiben…</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
+    <string name="user_avatar">Benutzer-Avatar</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Vollständiger Name</string>
     <string name="user_info_email">E-Mail</string>

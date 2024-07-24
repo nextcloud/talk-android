@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Glac páirt i gcomhrá nó cuir tús le ceann nua</string>
     <string name="nc_conversations_empty_details">Abair Dia duit a chairde agus a chomhghleacaithe!</string>
     <string name="nc_copy_message">Cóipeáil</string>
+    <string name="nc_create_new_conversation">Cruthaigh comhrá nua</string>
     <string name="nc_create_poll">Cruthaigh vótaíocht</string>
     <string name="nc_date_header_today">Inniu</string>
     <string name="nc_date_header_yesterday">Inné</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
     <string name="nc_important_conversation_desc">Sáróidh fógraí sa chomhrá seo na socruithe Ná Cuir Isteach</string>
     <string name="nc_invitations">cuirí</string>
+    <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
     <string name="nc_last_moderator">Ní mór duit modhnóir nua a chur chun cinn sular féidir leat %1$s a fhágáil.</string>
     <string name="nc_last_moderator_title">Níorbh fhéidir an comhrá a fhágáil</string>
     <string name="nc_last_modified">%1$s | Athraithe is déanaí: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">agus %1$s eile ag clóscríobh …</string>
     <string name="unread">Neamhléite</string>
     <string name="upload_new_avatar_from_device">Íosluchtaigh avatar nua ar an teileafón</string>
+    <string name="user_avatar">Avatar úsáideoir</string>
     <string name="user_info_address">Seoladh</string>
     <string name="user_info_displayname">Ainm iomlán</string>
     <string name="user_info_email">Ríomhphost</string>

@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">加入一個對話或者開一個新的</string>
     <string name="nc_conversations_empty_details">跟大家打個招呼！</string>
     <string name="nc_copy_message">複製</string>
+    <string name="nc_create_new_conversation">建立新對話</string>
     <string name="nc_create_poll">建立調查活動</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
     <string name="nc_invitations">邀請</string>
+    <string name="nc_join_open_conversations">加入開放對話</string>
     <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>
     <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">以及另外 %1$s 個人正在輸入……</string>
     <string name="unread">未讀</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新大頭照</string>
+    <string name="user_avatar">使用者頭像</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>
     <string name="user_info_email">電子郵件</string>

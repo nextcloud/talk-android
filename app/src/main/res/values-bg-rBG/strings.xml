@@ -491,6 +491,7 @@
     <string name="translation_to">До</string>
     <string name="unread">Непрочетено</string>
     <string name="upload_new_avatar_from_device">Качеване на нов аватар от устройството</string>
+    <string name="user_avatar">Потребителски аватар</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Пълно име</string>
     <string name="user_info_email">Имейл</string>

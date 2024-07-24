@@ -138,6 +138,7 @@
     <string name="nc_conversations_empty">Připojte se ke konverzaci, nebo začněte novou</string>
     <string name="nc_conversations_empty_details">Pozdravte své přátele a kolegy!</string>
     <string name="nc_copy_message">Zkopírovat</string>
+    <string name="nc_create_new_conversation">Vytvořit novou konverzaci</string>
     <string name="nc_create_poll">Vytvořit anketu</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
@@ -228,6 +229,7 @@
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
     <string name="nc_invitations">Pozvání</string>
+    <string name="nc_join_open_conversations">Přidat se do všem přístupných konverzací</string>
     <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
     <string name="nc_last_moderator_title">Konverzaci zatím nemůžete opustit</string>
     <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
@@ -560,6 +562,7 @@
     <string name="typing_x_others">a %1$s ostatní píší…</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
+    <string name="user_avatar">Zástupný obrázek uživatele</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>
     <string name="user_info_email">E-mail</string>

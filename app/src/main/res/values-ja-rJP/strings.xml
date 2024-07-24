@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">会話に参加するか、新しいのを開始</string>
     <string name="nc_conversations_empty_details">友達や同僚に挨拶しましょう！</string>
     <string name="nc_copy_message">コピー</string>
+    <string name="nc_create_new_conversation">新しい会話を作成する</string>
     <string name="nc_create_poll">投票を作成</string>
     <string name="nc_date_header_today">今日</string>
     <string name="nc_date_header_yesterday">昨日</string>
@@ -263,6 +264,7 @@
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_invitations">招待</string>
+    <string name="nc_join_open_conversations">オープンな会話に参加する</string>
     <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>
     <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
@@ -603,6 +605,7 @@
     <string name="typing_x_others">他の%1$s人が入力中です…</string>
     <string name="unread">未読</string>
     <string name="upload_new_avatar_from_device">デバイスから新しいアバターをアップロード</string>
+    <string name="user_avatar">ユーザーのアバター</string>
     <string name="user_info_address">住所</string>
     <string name="user_info_displayname">フルネーム</string>
     <string name="user_info_email">メールアドレス</string>

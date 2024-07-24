@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Bir görüşmeye katılın ya da yeni bir görüşme başlatın</string>
     <string name="nc_conversations_empty_details">Tanıdık ve çalışma arkadaşlarınıza selam verin!</string>
     <string name="nc_copy_message">Kopyala</string>
+    <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
     <string name="nc_create_poll">Anket ekle</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_invitations">Davetler</string>
+    <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
     <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için başka bir kullanıcıyı sorumluluğa yükseltmelisiniz.</string>
     <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">ve %1$s diğer kişi yazıyor…</string>
     <string name="unread">Okunmamış</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
+    <string name="user_avatar">Kullanıcı avatarı</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Tam ad</string>
     <string name="user_info_email">E-posta</string>

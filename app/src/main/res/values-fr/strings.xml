@@ -144,6 +144,7 @@
     <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
     <string name="nc_copy_message">Copier</string>
+    <string name="nc_create_new_conversation">Créer une nouvelle conversation</string>
     <string name="nc_create_poll">Créer un sondage</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
@@ -242,6 +243,7 @@
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
     <string name="nc_invitations">Invitations</string>
+    <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
     <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>
     <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
@@ -577,6 +579,7 @@
     <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
     <string name="unread">Non lu</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
+    <string name="user_avatar">Avatar utilisateur</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">E-mail</string>

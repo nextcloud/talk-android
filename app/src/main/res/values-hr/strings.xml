@@ -400,6 +400,7 @@
     <string name="translation_from">Od</string>
     <string name="translation_to">Do</string>
     <string name="upload_new_avatar_from_device">Otpremi novi avatar s uređaja</string>
+    <string name="user_avatar">Avatar korisnika</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Puno ime</string>
     <string name="user_info_email">E-pošta</string>

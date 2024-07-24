@@ -90,6 +90,7 @@
     <string name="nc_conversations_empty">Anslut till en konversation eller starta en ny</string>
     <string name="nc_conversations_empty_details">Säg hej till dina vänner och kollegor!</string>
     <string name="nc_copy_message">Kopia</string>
+    <string name="nc_create_new_conversation">Skapa en ny konversation</string>
     <string name="nc_create_poll">Skapa omröstning</string>
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_date_header_yesterday">Igår</string>
@@ -147,6 +148,7 @@
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
+    <string name="nc_join_open_conversations">Gå med i öppna konversationer</string>
     <string name="nc_last_moderator">Du måste tilldela en ny moderator innan du kan lämna %1$s.</string>
     <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
@@ -378,6 +380,7 @@
     <string name="translation_to">Till</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
+    <string name="user_avatar">Användar-avatar</string>
     <string name="user_info_address">Adress</string>
     <string name="user_info_displayname">Fullständigt namn</string>
     <string name="user_info_email">E-post</string>

@@ -127,6 +127,7 @@
     <string name="nc_conversations_empty">عضو یک گفتگو شوید یا یک گفتگو جدید شروع کنید</string>
     <string name="nc_conversations_empty_details">به رفقا و هم‌قطاران‌تان سلام کنید!</string>
     <string name="nc_copy_message">کپی کردن</string>
+    <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
     <string name="nc_date_header_today">امروز</string>
     <string name="nc_date_header_yesterday">دیروز</string>
@@ -203,6 +204,7 @@
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
     <string name="nc_invitations">دعوت ها</string>
+    <string name="nc_join_open_conversations">Join open conversations</string>
     <string name="nc_last_moderator">قبل از ترک ، باید یک مدیر جدید را تعیین کنید %1$s.</string>
     <string name="nc_last_moderator_title">نمی توان مکالمه را ترک کرد</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
@@ -524,6 +526,7 @@
     <string name="typing_x_others">and %1$s others are typing …</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
+    <string name="user_avatar">آواتار کاربر</string>
     <string name="user_info_address">نشانی</string>
     <string name="user_info_displayname">نام کامل</string>
     <string name="user_info_email">رایانامه</string>

@@ -403,6 +403,7 @@
     <string name="translation_to">Έως</string>
     <string name="unread">Μη αναγνωσμένο</string>
     <string name="upload_new_avatar_from_device">Μεταφόρτωση νέας εικόνας προφίλ από την συσκευή</string>
+    <string name="user_avatar">Άβαταρ χρήστη</string>
     <string name="user_info_address">Διεύθυνση</string>
     <string name="user_info_displayname">Πλήρες όνομα</string>
     <string name="user_info_email">Ηλ. ταχυδρομείο</string>

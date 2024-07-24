@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Ta del i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Si hei til venner og kolleger!</string>
     <string name="nc_copy_message">Kopier</string>
+    <string name="nc_create_new_conversation">Opprett en ny samtale</string>
     <string name="nc_create_poll">Opprett avstemning</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
     <string name="nc_invitations">Invitasjoner</string>
+    <string name="nc_join_open_conversations">Bli med i åpne samtaler</string>
     <string name="nc_last_moderator">Du må utnevne en ny moderator før du kan forlate %1$s.</string>
     <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">og %1$s andre skriver...</string>
     <string name="unread">Ulest</string>
     <string name="upload_new_avatar_from_device">Last opp et nytt profilbilde fra enhet</string>
+    <string name="user_avatar">Bruker avatar</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fullt navn</string>
     <string name="user_info_email">E-post</string>

@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
+    <string name="nc_create_new_conversation">أنشِيءْ محادثة جديدة</string>
     <string name="nc_create_poll">صَوّت، رجاءً</string>
     <string name="nc_date_header_today">اليوم</string>
     <string name="nc_date_header_yesterday">أمس</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
+    <string name="nc_join_open_conversations">إنضَمَّ إلى محادثات جارية</string>
     <string name="nc_last_moderator">يجب عليك ترقية مشرف لاحد المشاركين قبل مغادرة %1$s.</string>
     <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
     <string name="unread">غير مقروء</string>
     <string name="upload_new_avatar_from_device">رفع رمز تجسيدي avatar جديد من الجهاز</string>
+    <string name="user_avatar">صورة المستخدم الشخصية </string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>
     <string name="user_info_email">البريد الإلكتروني</string>

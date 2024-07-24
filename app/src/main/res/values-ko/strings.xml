@@ -112,6 +112,7 @@
     <string name="nc_conversations_empty">대화에 참가하거나 새 대화 시작</string>
     <string name="nc_conversations_empty_details">여러분의 친구들과 동료들에게 인사하세요!</string>
     <string name="nc_copy_message">복사</string>
+    <string name="nc_create_new_conversation">새 대화 만들기</string>
     <string name="nc_create_poll">투표 만들기</string>
     <string name="nc_date_header_today">오늘</string>
     <string name="nc_date_header_yesterday">어제</string>
@@ -182,6 +183,7 @@
     <string name="nc_guest_access_share_link">대화 링크 공유</string>
     <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
+    <string name="nc_join_open_conversations">공개 대화에 참가</string>
     <string name="nc_last_moderator">%1$s(을)를 떠나기 전에 새로운 중재자를 임명해야 합니다.</string>
     <string name="nc_last_moderator_title">대화를 떠날 수 없습니다.</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
@@ -487,6 +489,7 @@
     <string name="typing_x_others">및 다른 %1$s명이 입력 중 ...</string>
     <string name="unread">읽지 않음</string>
     <string name="upload_new_avatar_from_device">장치에서 새로운 아바타를 업로드하다</string>
+    <string name="user_avatar">사용자 아바타</string>
     <string name="user_info_address">주소</string>
     <string name="user_info_displayname">전체 이름</string>
     <string name="user_info_email">이메일</string>
