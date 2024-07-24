@@ -190,6 +190,7 @@
          <trusted-key id="AFCC4C7594D09E2182C60E0F7A01B0F236E5430F" group="com.google.code.gson"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
          <trusted-key id="B087A0EB8416563AFE64CEBA4604091C01C3086A" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.4"/>
+         <trusted-key id="B17136D06153558101DB7DF723778689FBFBE047" group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.29"/>
          <trusted-key id="B41089A2DA79B0FA5810252872385FF0AF338D52">
             <trusting group="joda-time" name="joda-time" version="2.12.6"/>
             <trusting group="joda-time" name="joda-time" version="2.12.7"/>
@@ -212,6 +213,7 @@
          <trusted-key id="CA491704D613780D2BEE00F2C6FC46EB51CF569C" group="jaxen"/>
          <trusted-key id="CBD134820A0E04D230AEC5D5D9B2BC72A3754BEA" group="^com[.]github[.]lukaspili($|([.].*))" regex="true"/>
          <trusted-key id="CD5464315F0B98C77E6E8ECD9DAADC1C9FCC82D0" group="org.apache.commons" name="commons-lang3"/>
+         <trusted-key id="CE0E1BC443809579D8718F4FB943F5CB616566CD" group="de.mannodermaus.retrofit2" name="converter-logansquare" version="1.4.1"/>
          <trusted-key id="CE8075A251547BEE249BC151A2115AE15F6B8B72" group="org.apache.commons"/>
          <trusted-key id="CFC10B69382CBCF5387E51484ECE492B63E38ACF" group="com.h3xstream.findsecbugs"/>
          <trusted-key id="D410F787672BA63BC2DD192B0C907617691418AE" group="org.greenrobot"/>
