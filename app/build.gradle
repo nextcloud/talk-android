@@ -321,7 +321,7 @@ dependencies {
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.4'
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.5.0'
-    gplayImplementation "com.google.firebase:firebase-messaging:23.4.1"
+    gplayImplementation "com.google.firebase:firebase-messaging:24.0.0"
 
      implementation 'androidx.activity:activity-ktx:1.9.1'
 
