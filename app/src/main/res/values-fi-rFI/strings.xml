@@ -97,6 +97,7 @@
     <string name="nc_conversations_empty">Liity keskusteluun tai aloita uusi</string>
     <string name="nc_conversations_empty_details">Sano hei ystävillesi ja työkavereillesi!</string>
     <string name="nc_copy_message">Kopioi</string>
+    <string name="nc_create_new_conversation">Luo uusi keskustelu</string>
     <string name="nc_create_poll">Luo kysely</string>
     <string name="nc_date_header_today">Tänään</string>
     <string name="nc_date_header_yesterday">Eilen</string>
@@ -160,6 +161,7 @@
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
     <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>
     <string name="nc_invitations">Kutsut</string>
+    <string name="nc_join_open_conversations">Liity avoimiin keskusteluihin</string>
     <string name="nc_last_moderator_title">Ei voitu poistua keskustelusta</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>
     <string name="nc_leave">Poistu keskustelusta</string>
@@ -410,6 +412,7 @@
     <string name="translation_from">Lähettäjä</string>
     <string name="translation_to">Vastaanottaja</string>
     <string name="unread">Lukematon</string>
+    <string name="user_avatar">Käyttäjän avatar</string>
     <string name="user_info_address">Osoite</string>
     <string name="user_info_displayname">Koko nimi</string>
     <string name="user_info_email">Sähköposti</string>

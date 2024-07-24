@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Придружи се разговору или започни нови</string>
     <string name="nc_conversations_empty_details">Поздравите Ваше пријатеље и колеге!</string>
     <string name="nc_copy_message">Копија</string>
+    <string name="nc_create_new_conversation">Креирај нови разговор</string>
     <string name="nc_create_poll">Направи гласање</string>
     <string name="nc_date_header_today">Данас</string>
     <string name="nc_date_header_yesterday">Јуче</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>
     <string name="nc_invitations">Позивнице</string>
+    <string name="nc_join_open_conversations">Придружи се отвореном разговору</string>
     <string name="nc_last_moderator">Морате одредити новог модератора пре него што напустите %1$s.</string>
     <string name="nc_last_moderator_title">Не можете напустити разговор</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">и %1$s других куцају…</string>
     <string name="unread">Непрочитано</string>
     <string name="upload_new_avatar_from_device">Отпреми нови аватар са уређаја</string>
+    <string name="user_avatar">Кориснички аватар</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Пуно име</string>
     <string name="user_info_email">Е-пошта</string>

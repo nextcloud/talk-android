@@ -511,6 +511,7 @@
     <string name="typing_x_others">y %1$s personas más están escribiendo...</string>
     <string name="unread">No leído</string>
     <string name="upload_new_avatar_from_device">Subir nuevo avatar desde el dispositivo</string>
+    <string name="user_avatar">Avatar de usuario</string>
     <string name="user_info_address">Dirección</string>
     <string name="user_info_displayname">Nombre completo</string>
     <string name="user_info_email">Correo electrónico</string>

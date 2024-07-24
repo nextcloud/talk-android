@@ -129,6 +129,7 @@
     <string name="nc_conversations_empty">Присоединитесь к обсуждению или же начните новое</string>
     <string name="nc_conversations_empty_details">Поприветствуйте своих друзей и коллег.</string>
     <string name="nc_copy_message">Копировать</string>
+    <string name="nc_create_new_conversation">Создать новое обсуждение</string>
     <string name="nc_create_poll">Создать опрос</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
@@ -206,6 +207,7 @@
     <string name="nc_important_conversation">Важное обсуждение</string>
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_invitations">Приглашения</string>
+    <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
     <string name="nc_last_moderator">Перед выходом из обсуждения %1$s необходимо назначить нового модератора.</string>
     <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
@@ -526,6 +528,7 @@
     <string name="typing_x_others">и ещё %1$s собеседника печатают...</string>
     <string name="unread">Непрочитанное</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
+    <string name="user_avatar">Изображение профиля</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Полное имя</string>
     <string name="user_info_email">Эл. почта</string>

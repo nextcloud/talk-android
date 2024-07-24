@@ -147,6 +147,7 @@
     <string name="nc_conversations_empty">Dołącz do rozmowy lub rozpocznij nową</string>
     <string name="nc_conversations_empty_details">Przywitaj się z przyjaciółmi i współpracownikami!</string>
     <string name="nc_copy_message">Kopiuj</string>
+    <string name="nc_create_new_conversation">Utwórz nową rozmowę</string>
     <string name="nc_create_poll">Utwórz sondę</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
@@ -264,6 +265,7 @@
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
     <string name="nc_invitations">Zaproszenia</string>
+    <string name="nc_join_open_conversations">Dołącz do otwartych rozmów</string>
     <string name="nc_last_moderator">Musisz promować nowego moderatora, zanim opuścisz %1$s.</string>
     <string name="nc_last_moderator_title">Nie udało się opuścić rozmowy</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
@@ -607,6 +609,7 @@
     <string name="typing_x_others">i %1$s innych pisze…</string>
     <string name="unread">Nieprzeczytane</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
+    <string name="user_avatar">Awatar użytkownika</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Pełna nazwa</string>
     <string name="user_info_email">E-mail</string>

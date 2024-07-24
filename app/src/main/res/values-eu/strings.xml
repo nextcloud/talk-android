@@ -137,6 +137,7 @@
     <string name="nc_conversations_empty">Batu elkarrizketa batera edo hasi berri bat</string>
     <string name="nc_conversations_empty_details">Esan kaixo zure lagun eta lankideei!</string>
     <string name="nc_copy_message">Kopiatu</string>
+    <string name="nc_create_new_conversation">Sortu elkarrizketa berri bat</string>
     <string name="nc_create_poll">Sortu galdeketa</string>
     <string name="nc_date_header_today">Gaur</string>
     <string name="nc_date_header_yesterday">Atzo</string>
@@ -221,6 +222,7 @@
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_invitations">Gonbidapenak</string>
+    <string name="nc_join_open_conversations">Sartu elkarrizketa irekietara</string>
     <string name="nc_last_moderator">Moderatzaile berri bat hautatu behar duzu %1$s utzi baino lehen.</string>
     <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
@@ -555,6 +557,7 @@
     <string name="typing_x_others">eta beste %1$s idazten ari dira ...</string>
     <string name="unread">Irakurri gabe</string>
     <string name="upload_new_avatar_from_device">Igo avatar berria gailutik</string>
+    <string name="user_avatar">Erabltzaile-avatarra</string>
     <string name="user_info_address">Helbidea</string>
     <string name="user_info_displayname">Izen osoa</string>
     <string name="user_info_email">E-posta</string>
