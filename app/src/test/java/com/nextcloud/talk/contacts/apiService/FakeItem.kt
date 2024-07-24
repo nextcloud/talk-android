@@ -10,7 +10,11 @@ package com.nextcloud.talk.contacts.apiService
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOCS
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.RoomOCS
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericMeta
+import org.mockito.Mockito.mock
 
 object FakeItem {
     val contacts: List<AutocompleteUser>? =
@@ -39,6 +43,16 @@ object FakeItem {
                 message = "OK"
             ),
             data = contacts
+        )
+    )
+    val roomOverall: RoomOverall = RoomOverall(
+        ocs = RoomOCS(
+            meta = GenericMeta(
+                status = "ok",
+                statusCode = 200,
+                message = "OK"
+            ),
+            data = mock(Conversation::class.java)
         )
     )
 }

@@ -23,10 +23,10 @@ class FakeRepositorySuccess() : ContactsRepository {
         userId: String,
         conversationName: String?
     ): RoomOverall {
-        TODO("Not yet implemented")
+        return FakeItem.roomOverall
     }
 
     override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        TODO("Not yet implemented")
+        return "https://mydomain.com/index.php/avatar/$avatarId/512"
     }
 }

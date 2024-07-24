@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -58,5 +58,51 @@ class ContactsViewModelTest {
         runTest {
             viewModel = ContactsViewModel(FakeRepositoryError())
             assert(viewModel.contactsViewState.value is ContactsUiState.Error)
+        }
+
+    @Test
+    fun `update search query`()  {
+        viewModel.updateSearchQuery("Ma")
+        assert(viewModel.searchQuery.value == "Ma")
+    }
+
+    @Test
+    fun `initial search query is empty string`()  {
+        viewModel.updateSearchQuery("")
+        assert(viewModel.searchQuery.value == "")
+    }
+
+    @Test
+    fun `initial shareType is User`() {
+        assert(viewModel.shareTypeList.contains(ShareType.User.shareType))
+    }
+
+    @Test
+    fun `update shareTypes`() {
+        viewModel.updateShareTypes(ShareType.Group.shareType)
+        assert(viewModel.shareTypeList.contains(ShareType.Group.shareType))
+    }
+
+    @Test
+    fun `initial room state is none`() =
+        runTest {
+            assert(viewModel.roomViewState.value is RoomUiState.None)
+        }
+
+    @Test
+    fun `test success room state`() =
+        runTest {
+            viewModel.createRoom("1", "users", "s@gmail.com", null)
+            assert(viewModel.roomViewState.value is RoomUiState.Success)
+            val successState = viewModel.roomViewState.value as RoomUiState.Success
+            assert(successState.conversation == FakeItem.roomOverall.ocs!!.data)
+        }
+
+    @Test
+    fun `test failure room state`() =
+        runTest {
+            viewModel = ContactsViewModel(FakeRepositoryError())
+            viewModel.createRoom("1", "users", "s@gmail.com", null)
+            assert(viewModel.roomViewState.value is RoomUiState.Error)
         }
 }
