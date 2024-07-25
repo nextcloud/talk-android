@@ -58,16 +58,18 @@ class ContactsViewModelTest {
         runTest {
             viewModel = ContactsViewModel(FakeRepositoryError())
             assert(viewModel.contactsViewState.value is ContactsUiState.Error)
+            val errorState = viewModel.contactsViewState.value as ContactsUiState.Error
+            assert(errorState.message == "unable to fetch contacts")
         }
 
     @Test
-    fun `update search query`()  {
+    fun `update search query`() {
         viewModel.updateSearchQuery("Ma")
         assert(viewModel.searchQuery.value == "Ma")
     }
 
     @Test
-    fun `initial search query is empty string`()  {
+    fun `initial search query is empty string`() {
         viewModel.updateSearchQuery("")
         assert(viewModel.searchQuery.value == "")
     }
@@ -104,5 +106,21 @@ class ContactsViewModelTest {
             viewModel = ContactsViewModel(FakeRepositoryError())
             viewModel.createRoom("1", "users", "s@gmail.com", null)
             assert(viewModel.roomViewState.value is RoomUiState.Error)
+            val errorState = viewModel.roomViewState.value as RoomUiState.Error
+            assert(errorState.message == "unable to create room")
         }
+
+    @Test
+    fun `test image uri`() {
+        val expectedImageUri = "https://mydomain.com/index.php/avatar/vidya/512"
+        val imageUri = viewModel.getImageUri("vidya", false)
+        assert(imageUri == expectedImageUri)
+    }
+
+    @Test
+    fun `test error image uri`() {
+        val expectedImageUri = "https://mydoman.com/index.php/avatar/vidya/512"
+        val imageUri = viewModel.getImageUri("vidya", false)
+        assert(imageUri != expectedImageUri)
+    }
 }

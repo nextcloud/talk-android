@@ -13,7 +13,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 class FakeRepositoryError() : ContactsRepository {
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
-        throw Exception("unknown error occurred")
+        throw Exception("unable to fetch contacts")
     }
 
     override suspend fun createRoom(
@@ -22,10 +22,10 @@ class FakeRepositoryError() : ContactsRepository {
         userId: String,
         conversationName: String?
     ): RoomOverall {
-        throw Exception("unknown error occurred")
+        throw Exception("unable to create room")
     }
 
     override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        throw Exception("unknown error occurred")
+        return "https://mydoman.com/index.php/avatar/$avatarId/512"
     }
 }
