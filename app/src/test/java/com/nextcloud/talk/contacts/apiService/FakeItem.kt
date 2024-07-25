@@ -17,7 +17,7 @@ import com.nextcloud.talk.models.json.generic.GenericMeta
 import org.mockito.Mockito.mock
 
 object FakeItem {
-    val contacts: List<AutocompleteUser>? =
+    val contacts: List<AutocompleteUser> =
         listOf(
             AutocompleteUser(id = "android", label = "Android", source = "users"),
             AutocompleteUser(id = "android1", label = "Android 1", source = "users"),
