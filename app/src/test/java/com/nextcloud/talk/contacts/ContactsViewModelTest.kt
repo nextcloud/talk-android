@@ -54,7 +54,7 @@ class ContactsViewModelTest {
         }
 
     @Test
-    fun `fetch contacts with error`() =
+    fun `test error contacts state`() =
         runTest {
             viewModel = ContactsViewModel(FakeRepositoryError())
             assert(viewModel.contactsViewState.value is ContactsUiState.Error)
