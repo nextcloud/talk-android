@@ -117,6 +117,7 @@
     <string name="nc_conversations_empty">Uniu-vos a una conversa o inicieu-ne una de nova</string>
     <string name="nc_conversations_empty_details">Saludeu els vostres amics i col·legues!</string>
     <string name="nc_copy_message">Copia</string>
+    <string name="nc_create_new_conversation">Crea una conversa nova</string>
     <string name="nc_create_poll">Crea enquesta</string>
     <string name="nc_date_header_today">Avui</string>
     <string name="nc_date_header_yesterday">Ahir</string>
@@ -189,6 +190,7 @@
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
+    <string name="nc_join_open_conversations">Uneix-te a converses obertes</string>
     <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
     <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
@@ -494,6 +496,7 @@
     <string name="translation_to">A</string>
     <string name="unread">Per llegir</string>
     <string name="upload_new_avatar_from_device">Puja l\'avatar nou des del dispositiu</string>
+    <string name="user_avatar">Utilitzar avatar</string>
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>
     <string name="user_info_email">Correu electrònic</string>
