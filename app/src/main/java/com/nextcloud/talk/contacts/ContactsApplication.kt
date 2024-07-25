@@ -13,18 +13,19 @@ import coil.ImageLoaderFactory
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
+import com.nextcloud.talk.utils.ContactUtils
 
-class MyApplication : Application(), ImageLoaderFactory {
+class ContactsApplication : Application(), ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         val imageLoader = ImageLoader.Builder(this)
             .memoryCache {
                 MemoryCache.Builder(this)
-                    .maxSizePercent(0.1)
+                    .maxSizePercent(ContactUtils.CACHE_MEMORY_SIZE_PERCENTAGE)
                     .build()
             }
             .diskCache {
                 DiskCache.Builder()
-                    .maxSizePercent(0.02)
+                    .maxSizePercent(ContactUtils.CACHE_DISK_SIZE_PERCENTAGE)
                     .directory(cacheDir)
                     .build()
             }

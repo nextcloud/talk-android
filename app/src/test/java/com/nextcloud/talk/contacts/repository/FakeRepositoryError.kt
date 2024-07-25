@@ -11,7 +11,7 @@ import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 
-class FakeRepositoryError() : ContactsRepository {
+class FakeRepositoryError : ContactsRepository {
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
         throw Exception("unable to fetch contacts")
     }

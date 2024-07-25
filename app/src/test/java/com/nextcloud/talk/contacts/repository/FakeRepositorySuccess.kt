@@ -12,7 +12,7 @@ import com.nextcloud.talk.contacts.apiService.FakeItem
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 
-class FakeRepositorySuccess() : ContactsRepository {
+class FakeRepositorySuccess : ContactsRepository {
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
         return FakeItem.contactsOverall
     }
