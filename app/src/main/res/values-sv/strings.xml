@@ -328,6 +328,7 @@
     <string name="polls_submit_vote">Rösta</string>
     <string name="raise_hand">Räck upp handen</string>
     <string name="reactions_tab_all">Alla</string>
+    <string name="record_failed_info">Samtalsinspelning misslyckades. Kontakta din administratör.</string>
     <string name="recording_consent_all">Samtycke för inspelning krävs för alla samtal</string>
     <string name="recording_consent_for_conversation_description">Kräv inspelningssamtycke för att gå med i samtalet i den här konversationen</string>
     <string name="recording_consent_for_conversation_title">Samtycke för inspelning</string>
