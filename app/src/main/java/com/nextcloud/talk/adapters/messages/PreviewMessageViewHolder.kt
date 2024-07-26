@@ -42,6 +42,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.FileViewerUtils.ProgressUi
+import com.nextcloud.talk.utils.MimetypeUtils.isGif
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.IncomingImageMessageViewHolder
 import io.reactivex.Single
@@ -232,6 +233,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
         if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
             val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+            if (isGif(mimetype!!)) {
+                return message
+            }
+
             val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
             var drawable = ContextCompat.getDrawable(context!!, drawableResourceId)
             if (drawable != null &&
