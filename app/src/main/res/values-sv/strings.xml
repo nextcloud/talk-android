@@ -9,6 +9,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Iväg</string>
     <string name="calendar">Kalender</string>
+    <string name="call_running_since_one_hour">Samtalet har pågått i en timme.</string>
     <string name="call_without_notification">Samtal utan avisering</string>
     <string name="choose_avatar_from_cloud">Välj avatar från moln</string>
     <string name="clear_status_message">Rensa statusmeddelande</string>
@@ -34,6 +35,7 @@
     <string name="later_today">Senare idag</string>
     <string name="load_more_results">Visa fler resultat</string>
     <string name="lock_symbol">Låssymbol</string>
+    <string name="lower_hand">Ta ner handen</string>
     <string name="menu_item_sort_by_date_newest_first">Nyast först</string>
     <string name="menu_item_sort_by_date_oldest_first">Äldst först</string>
     <string name="menu_item_sort_by_name_a_z">A - Ö</string>
@@ -203,7 +205,9 @@
     <string name="nc_refresh">Uppdatera</string>
     <string name="nc_remind">Påminn mig senare</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
+    <string name="nc_remove_group_and_members">Ta bort grupp och medlemmar</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
+    <string name="nc_remove_team_and_members">Ta bort team och medlemmar</string>
     <string name="nc_rename">Byt namn på konversation</string>
     <string name="nc_rename_confirm">Döp om</string>
     <string name="nc_reply">Svara</string>
@@ -328,11 +332,15 @@
     <string name="polls_submit_vote">Rösta</string>
     <string name="raise_hand">Räck upp handen</string>
     <string name="reactions_tab_all">Alla</string>
+    <string name="record_cancel_start">Avbryt start av inspelning</string>
     <string name="record_failed_info">Samtalsinspelning misslyckades. Kontakta din administratör.</string>
+    <string name="record_start_description">Starta inspelning</string>
+    <string name="record_stop_description">Stoppa inspelning</string>
     <string name="recording_consent_all">Samtycke för inspelning krävs för alla samtal</string>
     <string name="recording_consent_for_conversation_description">Kräv inspelningssamtycke för att gå med i samtalet i den här konversationen</string>
     <string name="recording_consent_for_conversation_title">Samtycke för inspelning</string>
     <string name="recording_consent_title">Samtalet kan spelas in.</string>
+    <string name="recording_settings_title">Inspelning</string>
     <string name="save">Spara</string>
     <string name="scope_federated_description">Synkronisera endast med betrodda servrar</string>
     <string name="scope_federated_title">Federerad</string>
