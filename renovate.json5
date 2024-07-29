@@ -9,4 +9,10 @@
     "dependencies",
     "3. to review"
   ],
+  "packageRules": [
+    {
+      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity"],
+      "autoMerge": false
+    }
+  ],
 }
