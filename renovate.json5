@@ -12,7 +12,7 @@
   "packageRules": [
     {
       "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity"],
-      "autoMerge": false
+      "automerge": false
     }
   ],
 }
