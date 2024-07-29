@@ -11,8 +11,9 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity"],
-      "automerge": false
+      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion"],
+      "automerge": false,
+	  "enabled": false
     }
   ],
 }
