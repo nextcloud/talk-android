@@ -50,7 +50,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -188,7 +187,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import pl.droidsonroids.gif.GifDrawable
 import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
@@ -1077,27 +1075,10 @@ class ChatActivity :
             initMessageHolders(),
             ImageLoader { imageView, url, data ->
                 try {
-                    if ((data is ChatMessage)) { // It's a GIF
-                        val filename = data.selectedIndividualHashMap!!["name"]
-                        val path = context.cacheDir.absolutePath + "/" + filename
-                        val file = File(context.cacheDir, filename!!)
-                        if (file.exists()) {
-                            val gifFromUri = GifDrawable(path)
-                            imageView.setImageDrawable(gifFromUri)
-                        } else {
-                            // TODO download file to cache can't be called here -_-, need to figure out another way
-                            // to get this preloaded, likely in PreviewMessageViewHolder
-                            val placeholder = ContextCompat.getDrawable(context, R.drawable.ic_mimetype_file)
-                            imageView.setImageDrawable(placeholder)
-                            downloadFileToCache(data, false) {
-                                val gifFromUri = GifDrawable(path)
-                                imageView.setImageDrawable(gifFromUri)
-                            }
-                        }
-                    } else { // Not a GIF
+                    if ((data !is ChatMessage)) { // It's Not a GIF
                         imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, data as Drawable?)
                     }
-                } catch (e: java.lang.IllegalStateException) {
+                } catch (e: Exception) {
                     Log.e(TAG, "Error in ImageLoading in initAdapter $e")
                 }
 

@@ -22,21 +22,28 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.emoji2.widget.EmojiTextView
+import androidx.work.Data
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.card.MaterialCardView
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
+import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
@@ -50,8 +57,11 @@ import io.reactivex.SingleObserver
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
+import pl.droidsonroids.gif.GifDrawable
 import java.io.ByteArrayInputStream
+import java.io.File
 import java.io.IOException
+import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -102,10 +112,25 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         viewThemeUtils!!.platform.colorCircularProgressBar(progressBar!!, ColorRole.PRIMARY)
         clickView = image
         messageText.visibility = View.VISIBLE
+
         if (message.getCalculateMessageType() === ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE) {
             fileViewerUtils = FileViewerUtils(context!!, message.activeUser!!)
             val fileName = message.selectedIndividualHashMap!![KEY_NAME]
 
+            if (message.selectedIndividualHashMap!!.containsKey(KEY_MIMETYPE)) {
+                val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+                if (isGif(mimetype!!)) {
+                    val file = File(context!!.cacheDir, fileName!!)
+                    if (file.exists()) {
+                        setGif(fileName)
+                    } else {
+                        // downloads the file to cache
+                        downloadFileToCache(message, openWhenDownloaded = false) {
+                            setGif(fileName)
+                        }
+                    }
+                }
+            }
             messageText.text = fileName
 
             if (message.activeUser != null &&
@@ -191,6 +216,15 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             previewMessageInterface!!.onPreviewMessageLongClick(message)
             true
         }
+    }
+
+    private fun setGif(fileName: String?) {
+        val path = context!!.cacheDir.absolutePath + "/" + fileName
+        val gifFromUri = GifDrawable(path)
+        (clickView as ImageView).setImageDrawable(gifFromUri)
+        (clickView as ImageView).scaleType = ImageView.ScaleType.CENTER_CROP
+        (clickView as ImageView).layoutParams.width = 800
+        (clickView as ImageView).layoutParams.height = 800
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -316,6 +350,70 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
     fun assignPreviewMessageInterface(previewMessageInterface: PreviewMessageInterface?) {
         this.previewMessageInterface = previewMessageInterface
+    }
+
+    private fun downloadFileToCache(
+        message: ChatMessage,
+        openWhenDownloaded: Boolean,
+        funToCallWhenDownloadSuccessful: (() -> Unit)
+    ) {
+        message.isDownloadingVoiceMessage = true
+        message.openWhenDownloaded = openWhenDownloaded
+
+        val baseUrl = message.activeUser!!.baseUrl
+        val userId = message.activeUser!!.userId
+        val attachmentFolder = CapabilitiesUtil.getAttachmentFolder(
+            message.activeUser!!.capabilities!!
+                .spreedCapability!!
+        )
+        val fileName = message.selectedIndividualHashMap!!["name"]
+        var size = message.selectedIndividualHashMap!!["size"]
+        if (size == null) {
+            size = "-1"
+        }
+        val fileSize = size.toLong()
+        val fileId = message.selectedIndividualHashMap!!["id"]
+        val path = message.selectedIndividualHashMap!!["path"]
+
+        // check if download worker is already running
+        val workers = WorkManager.getInstance(
+            context!!
+        ).getWorkInfosByTag(fileId!!)
+        try {
+            for (workInfo in workers.get()) {
+                if (workInfo.state == WorkInfo.State.RUNNING || workInfo.state == WorkInfo.State.ENQUEUED) {
+                    Log.d(ChatActivity.TAG, "Download worker for $fileId is already running or scheduled")
+                    return
+                }
+            }
+        } catch (e: ExecutionException) {
+            Log.e(ChatActivity.TAG, "Error when checking if worker already exists", e)
+        } catch (e: InterruptedException) {
+            Log.e(ChatActivity.TAG, "Error when checking if worker already exists", e)
+        }
+
+        val data: Data = Data.Builder()
+            .putString(DownloadFileToCacheWorker.KEY_BASE_URL, baseUrl)
+            .putString(DownloadFileToCacheWorker.KEY_USER_ID, userId)
+            .putString(DownloadFileToCacheWorker.KEY_ATTACHMENT_FOLDER, attachmentFolder)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_NAME, fileName)
+            .putString(DownloadFileToCacheWorker.KEY_FILE_PATH, path)
+            .putLong(DownloadFileToCacheWorker.KEY_FILE_SIZE, fileSize)
+            .build()
+
+        val downloadWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(DownloadFileToCacheWorker::class.java)
+            .setInputData(data)
+            .addTag(fileId)
+            .build()
+
+        WorkManager.getInstance().enqueue(downloadWorker)
+
+        WorkManager.getInstance(context!!).getWorkInfoByIdLiveData(downloadWorker.id)
+            .observeForever { workInfo: WorkInfo ->
+                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+                    funToCallWhenDownloadSuccessful()
+                }
+            }
     }
 
     abstract val messageText: EmojiTextView

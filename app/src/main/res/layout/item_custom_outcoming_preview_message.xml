@@ -42,7 +42,6 @@
             <pl.droidsonroids.gif.GifImageView
                 android:id="@id/image"
                 android:layout_width="match_parent"
-                android:minHeight="200dp"
                 android:layout_height="wrap_content"
                 tools:src="@drawable/ic_call_black_24dp"
                 tools:ignore="ContentDescription" />
