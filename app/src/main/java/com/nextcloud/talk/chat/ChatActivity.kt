@@ -1294,28 +1294,31 @@ class ChatActivity :
         }
 
         runOnUiThread {
-            binding.typingIndicator.text = typingString
+            binding.typingIndicator.text = typingString.append("\nTESTING LINE 2\nTESTING LINE 3\nTESTING LINE 4")
 
             if (participantNames.size > 0) {
+                binding.typingIndicatorWrapper.visibility = View.VISIBLE
                 binding.typingIndicatorWrapper.animate()
-                    .translationY(binding.fragmentContainerActivityChat.y - DisplayUtils.convertDpToPixel(18f, context))
+                    .translationYBy(DisplayUtils.convertDpToPixel(-18f, context))
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
             } else {
-                if (binding.typingIndicator.lineCount == 1) {
-                    binding.typingIndicatorWrapper.animate()
-                        .translationY(binding.fragmentContainerActivityChat.y)
-                        .setInterpolator(AccelerateDecelerateInterpolator())
-                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
-                } else if (binding.typingIndicator.lineCount == 2) {
-                    binding.typingIndicatorWrapper.animate()
-                        .translationY(
-                            binding.fragmentContainerActivityChat.y +
-                                DisplayUtils.convertDpToPixel(15f, context)
-                        )
-                        .setInterpolator(AccelerateDecelerateInterpolator())
-                        .duration = TYPING_INDICATOR_ANIMATION_DURATION
-                }
+                binding.typingIndicatorWrapper.visibility = View.GONE
+                binding.typingIndicatorWrapper.y += DisplayUtils.convertDpToPixel(18f, context)
+                // if (binding.typingIndicator.lineCount == 1) { // FIXME ???? Seems like some weird formatting code
+                //     binding.typingIndicatorWrapper.animate()
+                //         .translationY(binding.fragmentContainerActivityChat.y)
+                //         .setInterpolator(AccelerateDecelerateInterpolator())
+                //         .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                // } else if (binding.typingIndicator.lineCount == 2) {
+                //     binding.typingIndicatorWrapper.animate()
+                //         .translationY(
+                //             binding.fragmentContainerActivityChat.y +
+                //                 DisplayUtils.convertDpToPixel(15f, context)
+                //         )
+                //         .setInterpolator(AccelerateDecelerateInterpolator())
+                //         .duration = TYPING_INDICATOR_ANIMATION_DURATION
+                // }
             }
         }
     }
@@ -3384,10 +3387,10 @@ class ChatActivity :
         val messageTemp = message as ChatMessage
         messageTemp.lastEditTimestamp = message.lastEditTimestamp
 
-        val index = adapter?.getMessagePositionById(messageTemp.id) ?: 0
-        val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
+        // val index = adapter?.getMessagePositionById(messageTemp.id) ?: 0
+        // val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
 
-        messageTemp.parentMessage = adapterMsg.parentMessage
+        // messageTemp.parentMessage = adapterMsg.parentMessage
         messageTemp.isOneToOneConversation =
             currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
