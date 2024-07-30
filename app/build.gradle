@@ -15,7 +15,7 @@ import com.github.spotbugs.snom.SpotBugsTask
 plugins {
     id "org.jetbrains.kotlin.plugin.compose" version "2.0.0"
     id "org.jetbrains.kotlin.kapt"
-    id 'com.google.devtools.ksp' version '2.0.0-1.0.23'
+    id 'com.google.devtools.ksp' version '2.0.0-1.0.24'
 }
 
 apply plugin: 'com.android.application'
