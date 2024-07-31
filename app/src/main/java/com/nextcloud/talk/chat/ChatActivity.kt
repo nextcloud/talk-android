@@ -3285,7 +3285,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {
