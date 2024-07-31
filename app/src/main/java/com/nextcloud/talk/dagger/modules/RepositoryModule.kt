@@ -17,6 +17,8 @@ import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
+import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
+import com.nextcloud.talk.conversationcreation.ConversationCreationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
 import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
@@ -158,5 +160,13 @@ class RepositoryModule {
     @Provides
     fun provideContactsRepository(ncApiCoroutines: NcApiCoroutines, userManager: UserManager): ContactsRepository {
         return ContactsRepositoryImpl(ncApiCoroutines, userManager)
+    }
+
+    @Provides
+    fun provideConversationCreationRepository(
+        ncApiCoroutines: NcApiCoroutines,
+        userManager: UserManager
+    ): ConversationCreationRepository {
+        return ConversationCreationRepositoryImpl(ncApiCoroutines, userManager)
     }
 }
