@@ -1081,7 +1081,6 @@ class ChatActivity :
                 } catch (e: Exception) {
                     Log.e(TAG, "Error in ImageLoading in initAdapter $e")
                 }
-
             },
             this
         )
