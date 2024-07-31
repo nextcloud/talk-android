@@ -1073,8 +1073,14 @@ class ChatActivity :
         adapter = TalkMessagesListAdapter(
             senderId,
             initMessageHolders(),
-            ImageLoader { imageView, url, placeholder ->
-                imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, placeholder as Drawable?)
+            ImageLoader { imageView, url, data ->
+                try {
+                    if ((data !is ChatMessage)) { // It's Not a GIF
+                        imageView.loadAvatarOrImagePreview(url!!, conversationUser!!, data as Drawable?)
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error in ImageLoading in initAdapter $e")
+                }
             },
             this
         )
@@ -3384,10 +3390,6 @@ class ChatActivity :
         val messageTemp = message as ChatMessage
         messageTemp.lastEditTimestamp = message.lastEditTimestamp
 
-        val index = adapter?.getMessagePositionById(messageTemp.id) ?: 0
-        val adapterMsg = adapter?.items?.get(index)?.item as ChatMessage
-
-        messageTemp.parentMessage = adapterMsg.parentMessage
         messageTemp.isOneToOneConversation =
             currentConversation?.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
