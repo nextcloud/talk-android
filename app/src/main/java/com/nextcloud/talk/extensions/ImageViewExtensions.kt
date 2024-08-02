@@ -10,13 +10,13 @@
 
 package com.nextcloud.talk.extensions
 
+import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Build
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.load
@@ -26,7 +26,6 @@ import coil.request.SuccessResult
 import coil.result
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
-import com.amulyakhare.textdrawable.TextDrawable
 import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -36,6 +35,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.TextDrawable
 
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
@@ -315,15 +315,20 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-    return loadUserAvatar(
-        TextDrawable.builder()
-            .beginConfig()
-            .bold()
-            .endConfig()
-            .buildRound(
-                ">",
-                ResourcesCompat.getColor(context.resources, R.color.black, null)
-            )
+    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val layers = arrayOfNulls<Drawable>(2)
+        layers[0] = ColorDrawable(context.getColor(R.color.black))
+        layers[1] = TextDrawable(context, ">")
+        val layerDrawable = LayerDrawable(layers)
+        layerDrawable
+    } else {
+        R.mipmap.ic_launcher
+    }
+
+    return DisposableWrapper(
+        load(data) {
+            transformations(CircleCropTransformation())
+        }
     )
 }
 
