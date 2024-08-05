@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -193,7 +194,7 @@ fun AddParticipants(contactsViewModel: ContactsViewModel) {
     Text(
         text = stringResource(id = R.string.nc_participants).uppercase(),
         fontSize = 14.sp,
-        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
+        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
     )
 
     Row(
@@ -217,30 +218,88 @@ fun AddParticipants(contactsViewModel: ContactsViewModel) {
 
 @Composable
 fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewModel) {
-    val isChecked = conversationCreationViewModel.isGuestsAllowed.value
+    var isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
+    var isConversationAvailableForRegisteredUsers = conversationCreationViewModel
+        .isConversationAvailableForRegisteredUsers.value
+    var isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
+
     Text(
         text = stringResource(id = R.string.nc_visible).uppercase(),
         fontSize = 14.sp,
         modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
     )
-    Row(
-        modifier = Modifier.padding(start = 16.dp, top = 16.dp, end = 16.dp).fillMaxWidth(),
-        verticalAlignment = Alignment
-            .CenterVertically
-    ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_avatar_link),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp)
-        )
-        Text(text = stringResource(id = R.string.nc_guest_access_allow_title))
 
-        Spacer(modifier = Modifier.weight(1f))
-        Switch(
-            checked = isChecked,
-            onCheckedChange = {
-                conversationCreationViewModel.isGuestsAllowed.value = it
+    ConversationOptions(
+        icon = R.drawable.ic_avatar_link,
+        text = R.string.nc_guest_access_allow_title,
+        switch = {
+            Switch(
+                checked = isGuestsAllowed,
+                onCheckedChange = {
+                    conversationCreationViewModel.isGuestsAllowed.value = it
+                }
+            )
+        }
+    )
+
+    if (isGuestsAllowed) {
+        ConversationOptions(
+            icon = R.drawable.ic_lock_grey600_24px,
+            text = R.string.nc_set_password
+        )
+    }
+
+    ConversationOptions(
+        icon = R.drawable.baseline_format_list_bulleted_24,
+        text = R.string.nc_open_conversation_to_registered_users,
+        switch = {
+            Switch(
+                checked = isConversationAvailableForRegisteredUsers,
+                onCheckedChange = {
+                    conversationCreationViewModel.isConversationAvailableForRegisteredUsers.value = it
+                }
+            )
+        }
+    )
+
+    if (isConversationAvailableForRegisteredUsers) {
+        ConversationOptions(
+            text = R.string.nc_open_to_guest_app_users,
+            switch = {
+                Switch(
+                    checked = isOpenForGuestAppUsers,
+                    onCheckedChange = {
+                        conversationCreationViewModel.openForGuestAppUsers.value = it
+                    }
+                )
             }
         )
+    }
+}
+
+@Composable
+fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() -> Unit)? = null) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 16.dp, end = 16.dp, bottom = 8.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (icon != null) {
+            Icon(
+                painter = painterResource(id = icon),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+        } else {
+            Spacer(modifier = Modifier.width(40.dp))
+        }
+        Text(
+            text = stringResource(id = text),
+            modifier = Modifier.weight(1f)
+        )
+        switch?.invoke()
     }
 }
