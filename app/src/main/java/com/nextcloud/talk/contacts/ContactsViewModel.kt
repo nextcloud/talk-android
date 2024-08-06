@@ -30,6 +30,8 @@ class ContactsViewModel @Inject constructor(
     val shareTypeList: List<String> = shareTypes
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
+    private val _isAddParticipantsView = MutableStateFlow(false)
+    val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
     init {
         getContactsFromSearchParams()
@@ -45,6 +47,10 @@ class ContactsViewModel @Inject constructor(
 
     fun updateShareTypes(value: String) {
         shareTypes.add(value)
+    }
+
+    fun updateIsAddParticipants(value: Boolean) {
+        _isAddParticipantsView.value = value
     }
 
     fun getContactsFromSearchParams() {
