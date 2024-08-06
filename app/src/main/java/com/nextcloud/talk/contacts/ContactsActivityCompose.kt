@@ -12,15 +12,10 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,20 +24,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -54,7 +44,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -82,6 +71,8 @@ class ContactsActivityCompose : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
+        val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
+        contactsViewModel.updateIsAddParticipants(isAddParticipants)
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsState()
@@ -99,7 +90,7 @@ class ContactsActivityCompose : BaseActivity() {
                     },
                     content = {
                         Column(Modifier.padding(it)) {
-                            ConversationCreationOptions(context = context)
+                            ConversationCreationOptions(context = context, contactsViewModel = contactsViewModel)
                             ContactsList(
                                 contactsUiState = uiState.value,
                                 contactsViewModel = contactsViewModel,
@@ -110,85 +101,7 @@ class ContactsActivityCompose : BaseActivity() {
                 )
             }
         }
-        setupSystemColors()
     }
-}
-
-@Composable
-fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsViewModel, context: Context) {
-    when (contactsUiState) {
-        is ContactsUiState.None -> {
-        }
-        is ContactsUiState.Loading -> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
-        }
-        is ContactsUiState.Success -> {
-            val contacts = contactsUiState.contacts
-            Log.d(CompanionClass.TAG, "Contacts:$contacts")
-            if (contacts != null) {
-                ContactsItem(contacts, contactsViewModel, context)
-            }
-        }
-        is ContactsUiState.Error -> {
-            val errorMessage = contactsUiState.message
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsViewModel, context: Context) {
-    val groupedContacts: Map<String, List<AutocompleteUser>> = contacts.groupBy { contact ->
-        (
-            if (contact.source == "users") {
-                contact.label?.first()?.uppercase()
-            } else {
-                contact.source?.replaceFirstChar { actorType ->
-                    actorType.uppercase()
-                }
-            }
-            ).toString()
-    }
-    LazyColumn(
-        modifier = Modifier
-            .padding(8.dp)
-            .fillMaxWidth(),
-        contentPadding = PaddingValues(all = 10.dp),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        groupedContacts.forEach { (initial, contactsForInitial) ->
-            stickyHeader {
-                Column {
-                    Surface(Modifier.fillParentMaxWidth()) {
-                        Header(initial)
-                    }
-                    HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
-                }
-            }
-            items(contactsForInitial) { contact ->
-                ContactItemRow(contact = contact, contactsViewModel = contactsViewModel, context = context)
-                Log.d(CompanionClass.TAG, "Contacts:$contact")
-            }
-        }
-    }
-}
-
-@Composable
-fun Header(header: String) {
-    Text(
-        text = header,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Transparent)
-            .padding(start = 60.dp),
-        color = MaterialTheme.colorScheme.primary,
-        fontWeight = FontWeight.Bold
-    )
 }
 
 @Composable
@@ -231,7 +144,7 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
         is RoomUiState.Error -> {
             val errorMessage = (roomUiState as RoomUiState.Error).message
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
+                Text(text = "Error: $errorMessage", color = Color.Red)
             }
         }
         is RoomUiState.None -> {}
@@ -276,57 +189,61 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
 }
 
 @Composable
-fun ConversationCreationOptions(context: Context) {
-    Column {
-        Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
-                .clickable {
-                    val intent = Intent(context, ConversationCreationActivity::class.java)
-                    context.startActivity(intent)
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_chat_bubble_outline_24),
+fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsViewModel) {
+    val isAddParticipants by contactsViewModel.isAddParticipantsView.collectAsState()
+    if (!isAddParticipants) {
+        Column {
+            Row(
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
-                    .padding(8.dp),
-                contentDescription = null
-            )
-            Text(
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp)
+                    .clickable {
+                        val intent = Intent(context, ConversationCreationActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_chat_bubble_outline_24),
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .padding(8.dp),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    text = stringResource(R.string.nc_create_new_conversation),
+                    maxLines = 1,
+                    fontSize = 16.sp
+                )
+            }
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                text = stringResource(R.string.nc_create_new_conversation),
-                maxLines = 1,
-                fontSize = 16.sp
-            )
-        }
-        Row(
-            modifier = Modifier
-                .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-                .clickable {
-                    val intent = Intent(context, ListOpenConversationsActivity::class.java)
-                    context.startActivity(intent)
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                Icons.AutoMirrored.Filled.List,
-                modifier = Modifier
-                    .width(40.dp)
-                    .height(40.dp)
-                    .padding(8.dp),
-                contentDescription = null
-            )
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight(),
-                text = stringResource(R.string.nc_join_open_conversations),
-                fontSize = 16.sp
-            )
+                    .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
+                    .clickable {
+                        val intent = Intent(context, ListOpenConversationsActivity::class.java)
+                        context.startActivity(intent)
+                    },
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.AutoMirrored.Filled.List,
+                    modifier = Modifier
+                        .width(40.dp)
+                        .height(40.dp)
+                        .padding(8.dp),
+                    contentDescription = null
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight(),
+                    text = stringResource(R.string.nc_join_open_conversations),
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }

@@ -8,6 +8,8 @@
 package com.nextcloud.talk.conversationcreation
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -46,6 +48,7 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.ContactsViewModel
 import javax.inject.Inject
 
@@ -54,7 +57,6 @@ class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var conversationCreationViewModel: ConversationCreationViewModel
-    private lateinit var contactsViewModel: ContactsViewModel
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +64,8 @@ class ConversationCreationActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         conversationCreationViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationCreationViewModel::class.java]
-        contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
+        val contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
+
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             MaterialTheme(
@@ -73,7 +76,6 @@ class ConversationCreationActivity : BaseActivity() {
                     topBar = {
                         TopAppBar(
                             title = { Text(text = stringResource(id = R.string.nc_new_conversation)) },
-
                             navigationIcon = {
                                 IconButton(onClick = {
                                     (context as? Activity)?.finish()
@@ -91,7 +93,7 @@ class ConversationCreationActivity : BaseActivity() {
                             DefaultUserAvatar()
                             UploadAvatar()
                             ConversationNameAndDescription(conversationCreationViewModel)
-                            AddParticipants(contactsViewModel)
+                            AddParticipants(contactsViewModel, context)
                             RoomCreationOptions(conversationCreationViewModel)
                         }
                     }
@@ -190,7 +192,7 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 }
 
 @Composable
-fun AddParticipants(contactsViewModel: ContactsViewModel) {
+fun AddParticipants(contactsViewModel: ContactsViewModel, context: Context) {
     Text(
         text = stringResource(id = R.string.nc_participants).uppercase(),
         fontSize = 14.sp,
@@ -201,7 +203,9 @@ fun AddParticipants(contactsViewModel: ContactsViewModel) {
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp)
             .clickable {
-                // Show contacts
+                val intent = Intent(context, ContactsActivityCompose::class.java)
+                intent.putExtra("isAddParticipants", true)
+                context.startActivity(intent)
             },
         verticalAlignment = Alignment
             .CenterVertically
