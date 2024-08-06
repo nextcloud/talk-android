@@ -572,4 +572,12 @@ object ApiUtils {
     fun getUrlForRoomCapabilities(version: Int, baseUrl: String?, token: String?): String {
         return getUrlForRooms(version, baseUrl) + "/" + token + "/capabilities"
     }
+
+    fun getUrlForBans(baseUrl: String, token: String): String {
+        return "$baseUrl/ocs/v1.php$SPREED_API_VERSION/ban/$token"
+    }
+
+    fun getUrlForUnban(baseUrl: String, token: String, banId: Int): String {
+        return "${getUrlForBans(baseUrl, token)}/$banId"
+    }
 }

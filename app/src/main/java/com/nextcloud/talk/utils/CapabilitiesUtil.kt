@@ -53,7 +53,8 @@ enum class SpreedFeatures(val value: String) {
     CHAT_PERMISSION("chat-permission"),
     CONVERSATION_PERMISSION("conversation-permissions"),
     FEDERATION_V1("federation-v1"),
-    DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited")
+    DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited"),
+    BAN_V1("ban-v1")
 }
 
 @Suppress("TooManyFunctions")
@@ -211,6 +212,10 @@ object CapabilitiesUtil {
             }
         }
         return RECORDING_CONSENT_NOT_REQUIRED
+    }
+
+    fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean {
+        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
     }
 
     // endregion

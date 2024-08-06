@@ -16,6 +16,9 @@ import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -31,8 +34,9 @@ class ConversationInfoViewModel @Inject constructor(
             PAUSED,
             RESUMED
         }
+
         lateinit var currentLifeCycleFlag: LifeCycleFlag
-        public val disposableSet = mutableSetOf<Disposable>()
+        val disposableSet = mutableSetOf<Disposable>()
 
         override fun onResume(owner: LifecycleOwner) {
             super.onResume(owner)
@@ -48,6 +52,27 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     sealed interface ViewState
+
+    class ListBansSuccessState(val talkBans: List<TalkBan>) : ViewState
+    object ListBansErrorState : ViewState
+
+    private val _getTalkBanState: MutableLiveData<ViewState> = MutableLiveData()
+    val getTalkBanState: LiveData<ViewState>
+        get() = _getTalkBanState
+
+    class BanActorSuccessState(val talkBan: TalkBan) : ViewState
+    object BanActorErrorState : ViewState
+
+    private val _getBanActorState: MutableLiveData<ViewState> = MutableLiveData()
+    val getBanActorState: LiveData<ViewState>
+        get() = _getBanActorState
+
+    object UnBanActorSuccessState : ViewState
+    object UnBanActorErrorState : ViewState
+
+    private val _getUnBanActorState: MutableLiveData<ViewState> = MutableLiveData()
+    val getUnBanActorState: LiveData<ViewState>
+        get() = _getUnBanActorState
 
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
@@ -101,6 +126,78 @@ class ConversationInfoViewModel @Inject constructor(
                     }
                 })
         }
+    }
+
+    fun listBans(user: User, token: String) {
+        val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
+        chatRepository.listBans(user.getCredentials(), url)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<List<TalkBan>> {
+                override fun onSubscribe(p0: Disposable) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    _getTalkBanState.value = ListBansErrorState
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onNext(talkBans: List<TalkBan>) {
+                    _getTalkBanState.value = ListBansSuccessState(talkBans)
+                }
+            })
+    }
+
+    fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {
+        val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
+        chatRepository.banActor(user.getCredentials(), url, actorType, actorId, internalNote)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<TalkBan> {
+                override fun onSubscribe(p0: Disposable) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    _getBanActorState.value = BanActorErrorState
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onNext(talkBan: TalkBan) {
+                    _getBanActorState.value = BanActorSuccessState(talkBan)
+                }
+            })
+    }
+
+    fun unbanActor(user: User, token: String, banId: Int) {
+        val url = ApiUtils.getUrlForUnban(user.baseUrl!!, token, banId)
+        chatRepository.unbanActor(user.getCredentials(), url)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(p0: Disposable) {
+                    // unused atm
+                }
+
+                override fun onError(p0: Throwable) {
+                    _getUnBanActorState.value = UnBanActorErrorState
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onNext(p0: GenericOverall) {
+                    _getUnBanActorState.value = UnBanActorSuccessState
+                }
+            })
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {

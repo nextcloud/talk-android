@@ -25,6 +25,8 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
+import com.nextcloud.talk.models.json.participants.TalkBan;
+import com.nextcloud.talk.models.json.participants.TalkBanOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall;
 import com.nextcloud.talk.models.json.reminder.ReminderOverall;
@@ -333,7 +335,7 @@ public interface NcApi {
     */
     @DELETE
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
-                                                               @QueryMap Map<String,String> fields);
+                                                               @QueryMap Map<String, String> fields);
 
     @FormUrlEncoded
     @PUT
@@ -704,9 +706,25 @@ public interface NcApi {
 
     @POST
     Observable<GenericOverall> acceptInvitation(@Header("Authorization") String authorization,
-                                                 @Url String url);
+                                                @Url String url);
 
     @DELETE
     Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
-                                                   @Url String url);
+                                                @Url String url);
+
+    @GET
+    Observable<TalkBanOverall> listBans(@Header("Authorization") String authorization,
+                                        @Url String url);
+
+    @FormUrlEncoded
+    @POST
+    Observable<TalkBan> banActor(@Header("Authorization") String authorization,
+                                 @Url String url,
+                                 @Field("actorType") String actorType,
+                                 @Field("actorId") String actorId,
+                                 @Field("internalNote") String internalNote);
+
+    @DELETE
+    Observable<GenericOverall> unbanActor(@Header("Authorization") String authorization,
+                                          @Url String url);
 }

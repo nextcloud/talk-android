@@ -22,6 +22,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -47,6 +48,7 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
+import com.nextcloud.talk.databinding.DialogBanActorBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
@@ -60,6 +62,7 @@ import com.nextcloud.talk.models.domain.LobbyState
 import com.nextcloud.talk.models.domain.NotificationLevel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
@@ -68,6 +71,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
+import com.nextcloud.talk.ui.dialog.DialogBanListFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ConversationUtils
@@ -181,6 +185,7 @@ class ConversationInfoActivity :
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
+        binding.listBansButton.setOnClickListener { listBans() }
 
         viewModel.getRoom(conversationUser, conversationToken)
 
@@ -228,6 +233,20 @@ class ConversationInfoActivity :
                     spreedCapabilities = state.spreedCapabilities
 
                     handleConversation()
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.getBanActorState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.BanActorSuccessState -> {
+                    getListOfParticipants() // Refresh the list of participants
+                }
+
+                ConversationInfoViewModel.BanActorErrorState -> {
+                    Snackbar.make(binding.root, "Error banning actor", Snackbar.LENGTH_SHORT).show()
                 }
 
                 else -> {}
@@ -569,6 +588,17 @@ class ConversationInfoActivity :
             })
     }
 
+    private fun listBans() {
+        val fragmentManager = supportFragmentManager
+        val newFragment = DialogBanListFragment(conversationToken)
+        val transaction = fragmentManager.beginTransaction()
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction
+            .add(android.R.id.content, newFragment)
+            .addToBackStack(null)
+            .commit()
+    }
+
     private fun addParticipants() {
         val bundle = Bundle()
         val existingParticipantsId = arrayListOf<String>()
@@ -733,6 +763,15 @@ class ConversationInfoActivity :
             if (ConversationType.ROOM_SYSTEM == conversation!!.type) {
                 binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
             }
+
+            binding.listBansButton.visibility =
+                if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities) &&
+                    ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation!!.type
+                ) {
+                    VISIBLE
+                } else {
+                    GONE
+                }
 
             if (conversation!!.notificationCalls === null) {
                 binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
@@ -1068,6 +1107,10 @@ class ConversationInfoActivity :
         }
     }
 
+    private fun banActor(actorType: String, actorId: String, internalNote: String) {
+        viewModel.banActor(conversationUser, conversationToken, actorType, actorId, internalNote)
+    }
+
     private fun removeAttendeeFromConversation(apiVersion: Int, participant: Participant) {
         if (apiVersion >= ApiUtils.API_V4) {
             ncApi.removeAttendeeFromConversation(
@@ -1264,6 +1307,15 @@ class ConversationInfoActivity :
             )
         )
 
+        if (CapabilitiesUtil.isBanningAvailable(conversationUser.capabilities?.spreedCapability!!)) {
+            items.add(
+                BasicListItemWithImage(
+                    R.drawable.baseline_block_24,
+                    "Ban Participant"
+                )
+            )
+        }
+
         if (participant.type == Participant.ParticipantType.MODERATOR ||
             participant.type == Participant.ParticipantType.GUEST_MODERATOR
         ) {
@@ -1296,23 +1348,59 @@ class ConversationInfoActivity :
                         actionToTrigger++
                     }
 
-                    if (actionToTrigger == 0) {
-                        // Pin, nothing to do
-                    } else if (actionToTrigger == 1) {
-                        // Promote/demote
-                        if (apiVersion >= ApiUtils.API_V4) {
-                            toggleModeratorStatus(apiVersion, participant)
-                        } else {
-                            toggleModeratorStatusLegacy(apiVersion, participant)
+                    when (actionToTrigger) {
+                        DEMOTE_OR_PROMOTE -> {
+                            if (apiVersion >= ApiUtils.API_V4) {
+                                toggleModeratorStatus(apiVersion, participant)
+                            } else {
+                                toggleModeratorStatusLegacy(apiVersion, participant)
+                            }
                         }
-                    } else if (actionToTrigger == 2) {
-                        // Remove from conversation
-                        removeAttendeeFromConversation(apiVersion, participant)
+
+                        REMOVE_FROM_CONVERSATION -> {
+                            removeAttendeeFromConversation(apiVersion, participant)
+                        }
+
+                        BAN_FROM_CONVERSATION -> {
+                            handleBan(participant)
+                        }
+
+                        else -> {}
                     }
                 }
             }
         }
         return true
+    }
+
+    private fun MaterialDialog.handleBan(participant: Participant) {
+        val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
+        val binding = DialogBanActorBinding.inflate(layoutInflater)
+        val actorTypeConverter = EnumActorTypeConverter()
+        val dialog = MaterialAlertDialogBuilder(context)
+            .setView(binding.root)
+            .create()
+        binding.avatarImage.loadUserAvatar(
+            conversationUser,
+            participant.actorId!!,
+            true,
+            false
+        )
+        binding.displayNameText.text = participant.actorId
+        binding.buttonBan.setOnClickListener {
+            banActor(
+                actorTypeConverter.convertToString(participant.actorType!!),
+                participant.actorId!!,
+                binding.banActorEdit.text.toString()
+            )
+            removeAttendeeFromConversation(apiVersion, participant)
+            dialog.dismiss()
+        }
+        binding.buttonClose.setOnClickListener { dialog.dismiss() }
+        viewThemeUtils.material.colorTextInputLayout(binding.banActorEditLayout)
+        viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.buttonBan)
+        viewThemeUtils.material.colorMaterialButtonText(binding.buttonClose)
+        dialog.show()
     }
 
     private fun setUpNotificationSettings(module: DatabaseStorageModule) {
@@ -1353,6 +1441,9 @@ class ConversationInfoActivity :
         private const val LOW_EMPHASIS_OPACITY: Float = 0.38f
         private const val RECORDING_CONSENT_NOT_REQUIRED_FOR_CONVERSATION: Int = 0
         private const val RECORDING_CONSENT_REQUIRED_FOR_CONVERSATION: Int = 1
+        private const val DEMOTE_OR_PROMOTE = 1
+        private const val REMOVE_FROM_CONVERSATION = 2
+        private const val BAN_FROM_CONVERSATION = 3
     }
 
     /**
