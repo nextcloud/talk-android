@@ -612,6 +612,7 @@
     <string name="typing_are_typing">ag clóscríobh…</string>
     <string name="typing_is_typing">ag clóscríobh…</string>
     <string name="typing_x_others">agus %1$s eile ag clóscríobh …</string>
+    <string name="unban">Dícosc</string>
     <string name="unread">Neamhléite</string>
     <string name="upload_new_avatar_from_device">Íosluchtaigh avatar nua ar an teileafón</string>
     <string name="user_avatar">Avatar úsáideoir</string>

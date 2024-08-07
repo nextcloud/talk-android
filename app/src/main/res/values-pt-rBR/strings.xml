@@ -612,6 +612,7 @@
     <string name="typing_are_typing">estão digitando…</string>
     <string name="typing_is_typing">está digitando …</string>
     <string name="typing_x_others">e %1$s outros estão digitando...</string>
+    <string name="unban">Proibir</string>
     <string name="unread">Não lido</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
     <string name="user_avatar">Avatar do usuário</string>

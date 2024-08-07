@@ -612,6 +612,7 @@
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_x_others">and %1$s others are typing …</string>
+    <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
     <string name="user_avatar">User avatar</string>

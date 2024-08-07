@@ -612,6 +612,7 @@
     <string name="typing_are_typing">正在打字 …</string>
     <string name="typing_is_typing">正在打字 …</string>
     <string name="typing_x_others">還有 %1$s 個人正在打字 …</string>
+    <string name="unban">解除封禁</string>
     <string name="unread">未讀</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新虛擬化身大頭照</string>
     <string name="user_avatar">用戶虛擬化身大頭照</string>

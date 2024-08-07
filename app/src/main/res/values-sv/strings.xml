@@ -22,6 +22,7 @@
     <string name="clear_status_message">Rensa statusmeddelande</string>
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
     <string name="close">Stäng</string>
+    <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
     <string name="conversations">Konversationer</string>
     <string name="create_conversation">Skapa konversation</string>
@@ -33,6 +34,7 @@
     <string name="dontClear">Rensa inte</string>
     <string name="edit">Ändra</string>
     <string name="edit_error_24_hours_old_message">Kan inte redigera meddelanden äldre än 24 timmar</string>
+    <string name="edit_message_icon_description">Redigera meddelandeikon</string>
     <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
@@ -42,8 +44,11 @@
     <string name="file_list_loading">Läser in …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 timmar</string>
+    <string name="get_invitations_error">Kunde inte hämta väntande inbjudningar</string>
     <string name="hint_edited_message">(redigerad)</string>
     <string name="invisible">Osynlig</string>
+    <string name="languages_error_message">Kunde inte hämta språk</string>
+    <string name="languages_error_title">Hämtning misslyckades</string>
     <string name="later_today">Senare idag</string>
     <string name="left_conversation">Du lämnade konversationen %1$s</string>
     <string name="load_more_results">Visa fler resultat</string>
@@ -80,9 +85,14 @@
     <string name="nc_allow_guests">Tillåt gäster</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
+    <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
     <string name="nc_call_button_content_description_advanced">Avancerade samtalsalternativ</string>
+    <string name="nc_call_button_content_description_answer_video_call">Svara som videosamtal</string>
+    <string name="nc_call_button_content_description_answer_voice_only">Svara endast som röstsamtal</string>
     <string name="nc_call_button_content_description_audio_output">Ändra ljudutgång</string>
+    <string name="nc_call_button_content_description_camera">Växla kamera</string>
     <string name="nc_call_button_content_description_hangup">Lägg på</string>
+    <string name="nc_call_button_content_description_microphone">Växla mikrofon</string>
     <string name="nc_call_button_content_description_pip">Öppna bild i bild-läge</string>
     <string name="nc_call_incoming">INKOMMANDE</string>
     <string name="nc_call_name">Samtalsnamn</string>
@@ -106,6 +116,8 @@
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
     <string name="nc_check_your_internet">Kontrollerar din internetanslutning</string>
+    <string name="nc_clear_edit_button">Rensa redigeringsknapp</string>
+    <string name="nc_clear_edit_message">Rensa redigera meddelande</string>
     <string name="nc_clear_history">Radera alla meddelanden</string>
     <string name="nc_clear_history_success">Alla meddelanden raderades</string>
     <string name="nc_clear_history_warning">Vill du verkligen ta bort alla meddelanden i den här konversationen?</string>
@@ -158,8 +170,16 @@
     <string name="nc_diagnose_app_name_title">Appnamn</string>
     <string name="nc_diagnose_app_users_amount">Registrerade användare</string>
     <string name="nc_diagnose_app_version_title">Appversion</string>
+    <string name="nc_diagnose_battery_optimization_ignored">Batterioptimering ignoreras, allt är bra</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Batterioptimering ignoreras inte. Detta borde ändras!</string>
     <string name="nc_diagnose_battery_optimization_title">Batteriinställningar</string>
     <string name="nc_diagnose_device_name_title">Enhet</string>
+    <string name="nc_diagnose_dialog_open_checklist">Öppna checklista för felsökning</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Öppna diagnosskärmen</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Öppna dontkillmyapp.com</string>
+    <string name="nc_diagnose_gplay_available_no">Google Play-tjänster är inte tillgängliga. Aviseringar stöds inte</string>
+    <string name="nc_diagnose_gplay_available_title">Google Play-tjänster</string>
+    <string name="nc_diagnose_gplay_available_yes">Google Play-tjänster är tillgängliga</string>
     <string name="nc_diagnose_meta_category_title">Metainformation</string>
     <string name="nc_diagnose_meta_system_report_date">Generering av systemrapport</string>
     <string name="nc_diagnose_notification_permission">Aviseringsbehörigheter</string>
@@ -453,6 +473,7 @@
     <string name="translation_error_title">Översättning misslyckades</string>
     <string name="translation_from">Från</string>
     <string name="translation_to">Till</string>
+    <string name="unban">Tillåt</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
     <string name="user_avatar">Användar-avatar</string>

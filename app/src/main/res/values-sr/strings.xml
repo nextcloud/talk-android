@@ -607,6 +607,7 @@
     <string name="typing_are_typing">куцају...</string>
     <string name="typing_is_typing">куца...</string>
     <string name="typing_x_others">и %1$s других куцају…</string>
+    <string name="unban">Уклони забрану</string>
     <string name="unread">Непрочитано</string>
     <string name="upload_new_avatar_from_device">Отпреми нови аватар са уређаја</string>
     <string name="user_avatar">Кориснички аватар</string>

@@ -612,6 +612,7 @@
     <string name="typing_are_typing">skriver...</string>
     <string name="typing_is_typing">skriver...</string>
     <string name="typing_x_others">og %1$s andre skriver...</string>
+    <string name="unban">Opphev utestengelsen</string>
     <string name="unread">Ulest</string>
     <string name="upload_new_avatar_from_device">Last opp et nytt profilbilde fra enhet</string>
     <string name="user_avatar">Bruker avatar</string>
