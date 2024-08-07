@@ -9,8 +9,6 @@ package com.nextcloud.talk.chat.data
 
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.data.sync.Syncable
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.Job

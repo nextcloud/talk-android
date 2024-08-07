@@ -58,6 +58,7 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "lastEditActorType") var lastEditActorType: String? = null,
     @ColumnInfo(name = "lastEditActorId") var lastEditActorId: String? = null,
     @ColumnInfo(name = "lastEditActorDisplayName") var lastEditActorDisplayName: String? = null,
-    @ColumnInfo(name = "lastEditTimestamp") var lastEditTimestamp: Long? = 0
+    @ColumnInfo(name = "lastEditTimestamp") var lastEditTimestamp: Long? = 0,
+    @ColumnInfo(name = "deleted") var deleted: Boolean = false,
     // TODO: add "silent"
 )
