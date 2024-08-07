@@ -66,21 +66,11 @@ class OfflineFirstChatRepository @Inject constructor(
             > = MutableSharedFlow()
 
     override val updateMessageFlow:
-        Flow<
-            Pair<
-                Boolean,
-                List<ChatMessage>
-                >
-            >
+        Flow<ChatMessage>
         get() = _updateMessageFlow
 
     private val _updateMessageFlow:
-        MutableSharedFlow<
-            Pair<
-                Boolean,
-                List<ChatMessage>
-                >
-            > = MutableSharedFlow()
+        MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
@@ -480,10 +470,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     messageJson.parentMessage?.let { parentMessageJson ->
                         val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
                         chatDao.upsertChatMessage(parentMessageEntity)
-                        // TODO: inform UI to update this message!!
-
-                        val pair = Pair(true, listOf(parentMessageEntity.asModel()))
-                        _updateMessageFlow.emit(pair)
+                        _updateMessageFlow.emit(parentMessageEntity.asModel())
                     }
                 }
 

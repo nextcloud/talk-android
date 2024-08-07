@@ -30,13 +30,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
                 >
             >
 
-    val updateMessageFlow:
-        Flow<
-            Pair<
-                Boolean,
-                List<ChatMessage>
-                >
-            >
+    val updateMessageFlow: Flow<ChatMessage>
 
     fun setData(
         conversationModel: ConversationModel,
