@@ -26,6 +26,17 @@
         app:liftOnScrollTargetViewId="@id/recycler_view"
         app:liftOnScrollColor="@color/bg_default">
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/chat_list_connection_lost"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/connection_lost"
+            android:textColor="@color/white"
+            android:background="@color/hwSecurityRed"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
