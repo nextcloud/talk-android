@@ -81,6 +81,7 @@ import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationsBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -106,7 +107,6 @@ import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -172,6 +172,9 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
 
@@ -300,6 +303,12 @@ class ConversationsListActivity :
     }
 
     private fun initObservers() {
+        this.lifecycleScope.launch {
+            networkMonitor.isOnline.onEach { isOnline ->
+                showNetworkErrorDialog(!isOnline)
+            }.collect()
+        }
+
         conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetFederationInvitationsStartState -> {
@@ -315,7 +324,9 @@ class ConversationsListActivity :
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
+                    if (isNetworkAvailable(context)) {
+                        Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
+                    }
                 }
 
                 else -> {}
@@ -731,72 +742,7 @@ class ConversationsListActivity :
     }
 
     fun fetchRooms() {
-        val includeStatus = isUserStatusAvailable(currentUser!!)
         conversationsListViewModel.getRooms()
-
-        // checks internet connection before fetching rooms
-        if (isNetworkAvailable(context)) {
-            // Log.d(TAG, "Internet connection available")
-            // dispose(null)
-            // isRefreshing = true
-            // conversationItems = ArrayList()
-            // conversationItemsWithHeader = ArrayList()
-            // val apiVersion = ApiUtils.getConversationApiVersion(
-            //     currentUser!!,
-            //     intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-            // )
-            // val startNanoTime = System.nanoTime()
-            // Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
-            // roomsQueryDisposable = ncApi.getRooms(
-            //     credentials,
-            //     ApiUtils.getUrlForRooms(
-            //         apiVersion,
-            //         currentUser!!.baseUrl
-            //     ),
-            //     includeStatus
-            // )
-            //     .subscribeOn(Schedulers.io())
-            //     .observeOn(AndroidSchedulers.mainThread())
-            //     .subscribe({ (ocs): RoomsOverall ->
-            //         Log.d(TAG, "fetchData - getRooms - got response: $startNanoTime")
-            //
-            //         // This is invoked asynchronously, when server returns a response the view might have been
-            //         // unbound in the meantime. Check if the view is still there.
-            //         // FIXME - does it make sense to update internal data structures even when view has been unbound?
-            //         // if (view == null) {
-            //         //     Log.d(TAG, "fetchData - getRooms - view is not bound: $startNanoTime")
-            //         //     return@subscribe
-            //         // }
-            //
-            //         if (adapterWasNull) {
-            //             adapterWasNull = false
-            //             binding?.loadingContent?.visibility = View.GONE
-            //         }
-            //         initOverallLayout(ocs!!.data!!.isNotEmpty())
-            //         for (conversation in ocs.data!!) {
-            //             addToConversationItems(conversation)
-            //         }
-            //         sortConversations(conversationItems)
-            //         sortConversations(conversationItemsWithHeader)
-            //         if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
-            //         filterConversation()
-            //         adapter!!.updateDataSet(filterableConversationItems, false)
-            //         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
-            //         fetchOpenConversations(apiVersion)
-            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
-            //     }, { throwable: Throwable ->
-            //         handleHttpExceptions(throwable)
-            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
-            //         dispose(roomsQueryDisposable)
-            //     }) {
-            //         dispose(roomsQueryDisposable)
-            //         binding?.swipeRefreshLayoutView?.isRefreshing = false
-            //         isRefreshing = false
-            //     }
-        } else {
-            Log.d(TAG, "No internet connection detected")
-            showNetworkErrorDialog()
-        }
     }
 
     private fun fetchPendingInvitations() {
@@ -902,31 +848,8 @@ class ConversationsListActivity :
         }
     }
 
-    private fun showNetworkErrorDialog() {
-        binding.floatingActionButton.let {
-            val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                .setIcon(
-                    viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                        context,
-                        R.drawable.ic_baseline_error_outline_24dp
-                    )
-                )
-                .setTitle(R.string.nc_check_your_internet)
-                .setCancelable(false)
-                .setNegativeButton(R.string.close, null)
-                .setNeutralButton(R.string.nc_refresh) { _, _ ->
-                    fetchRooms()
-                    fetchPendingInvitations()
-                }
-
-            viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-            val dialog = dialogBuilder.show()
-            viewThemeUtils.platform.colorTextButtons(
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
-            )
-        }
+    private fun showNetworkErrorDialog(show: Boolean) {
+        binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     @Suppress("ReturnCount")

@@ -175,6 +175,8 @@ class MessageInputFragment : Fragment() {
                 wasOnline = !binding.fragmentMessageInputView.isShown
                 Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
 
+                // FIXME I think this might be called when remote server is null, because I joined when no internet
+                //  thus room not joined. I would need to make sure that the room is joined before I send messages
                 handleMessageQueue(isOnline)
                 handleUI(isOnline, connectionGained)
             }.collect()

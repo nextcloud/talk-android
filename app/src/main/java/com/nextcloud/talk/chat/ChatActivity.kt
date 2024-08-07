@@ -657,9 +657,7 @@ class ChatActivity :
                     }
                 }
 
-                is ChatViewModel.JoinRoomErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
+                is ChatViewModel.JoinRoomErrorState -> {}
 
                 else -> {}
             }
@@ -812,7 +810,6 @@ class ChatActivity :
                     ) {
                         adapter?.clear()
                         adapter?.notifyDataSetChanged()
-                        // TODO: remove messages from DB, Should be handled beforehand (in viewModel?)
                     }
 
                     if (lookIntoFuture) {
