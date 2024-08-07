@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "93ef64fac7a9a811c4a3c2f5a6406f87",
+    "identityHash": "234cdb754d42d9ebf2349763a58a4578",
     "entities": [
       {
         "tableName": "User",
@@ -438,7 +438,7 @@
       },
       {
         "tableName": "ChatMessages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER, `token` TEXT, `id` INTEGER NOT NULL, `internalConversationId` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `systemMessage` TEXT, `messageType` TEXT, `isReplyable` INTEGER NOT NULL, `message` TEXT, `messageParameters` TEXT, `expirationTimestamp` INTEGER NOT NULL, `parent` INTEGER, `reactions` TEXT, `reactionsSelf` TEXT, `markdown` INTEGER, `lastEditActorType` TEXT, `lastEditActorId` TEXT, `lastEditActorDisplayName` TEXT, `lastEditTimestamp` INTEGER, PRIMARY KEY(`internalId`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER, `token` TEXT, `id` INTEGER NOT NULL, `internalConversationId` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `systemMessage` TEXT, `messageType` TEXT, `isReplyable` INTEGER NOT NULL, `message` TEXT, `messageParameters` TEXT, `expirationTimestamp` INTEGER NOT NULL, `parent` INTEGER, `reactions` TEXT, `reactionsSelf` TEXT, `markdown` INTEGER, `lastEditActorType` TEXT, `lastEditActorId` TEXT, `lastEditActorDisplayName` TEXT, `lastEditTimestamp` INTEGER, `deleted` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "internalId",
@@ -577,6 +577,12 @@
             "columnName": "lastEditTimestamp",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -667,7 +673,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '93ef64fac7a9a811c4a3c2f5a6406f87')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '234cdb754d42d9ebf2349763a58a4578')"
     ]
   }
 }

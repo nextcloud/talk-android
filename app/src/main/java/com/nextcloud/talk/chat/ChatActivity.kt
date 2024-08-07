@@ -829,7 +829,7 @@ class ChatActivity :
         this.lifecycleScope.launch {
             chatViewModel.getUpdateMessageFlow
                 .onEach {
-                    updateAdapterForReaction(it)
+                    updateMessageInsideAdapter(it)
                 }
                 .collect()
         }
@@ -2923,42 +2923,17 @@ class ChatActivity :
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
+
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
 
-            // setDeletionFlagsAndRemoveInfomessages
-            if (isInfoMessageAboutDeletion(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessageId.toString())) {
-                    // if chatMessageMap doesn't contain message to delete (this happens when lookingIntoFuture),
-                    // the message to delete has to be modified directly inside the adapter
 
-                    val id = currentMessage.value.parentMessageId.toString()
-                    val index = adapter?.getMessagePositionById(id) ?: 0
-
-                    if (index > 0) {
-                        val message = adapter?.items?.get(index)?.item as ChatMessage
-                        setMessageAsDeleted(message)
-                    }
-                } else {
-                    chatMessageMap[currentMessage.value.parentMessageId.toString()]!!.isDeleted = true
-                }
-                chatMessageIterator.remove()
-            } else if (isReactionsMessage(currentMessage)) {
-                // delete reactions system messages
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessageId.toString())) {
-                    // updateAdapterForReaction(currentMessage.value.parentMessage) TODO
-                }
-
-                chatMessageIterator.remove()
-            } else if (isPollVotedMessage(currentMessage)) {
-                // delete poll system messages
-                chatMessageIterator.remove()
-            } else if (isEditMessage(currentMessage)) {
-                if (!chatMessageMap.containsKey(currentMessage.value.parentMessageId.toString())) {
-                    // setMessageAsEdited(currentMessage.value.parentMessage) TODO
-                }
-
+            if (isInfoMessageAboutDeletion(currentMessage) ||
+                isReactionsMessage(currentMessage) ||
+                isPollVotedMessage(currentMessage) ||
+                isEditMessage(currentMessage)
+            ) {
                 chatMessageIterator.remove()
             }
         }
@@ -3401,10 +3376,11 @@ class ChatActivity :
         adapter?.update(messageTemp)
     }
 
-    private fun updateAdapterForReaction(message: IMessage?) {
+    private fun updateMessageInsideAdapter(message: IMessage?) {
         message?.let {
             val messageTemp = message as ChatMessage
 
+            // TODO is this needed?
             messageTemp.isOneToOneConversation =
                 currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             messageTemp.activeUser = conversationUser

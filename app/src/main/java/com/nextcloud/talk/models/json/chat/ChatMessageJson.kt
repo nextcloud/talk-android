@@ -18,7 +18,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonObject
 data class ChatMessageJson(
-    @JsonField(name = ["id"]) override var id: Long = 0,
+    @JsonField(name = ["id"]) var id: Long = 0,
     @JsonField(name = ["token"]) var token: String? = null,
     @JsonField(name = ["actorType"]) var actorType: String? = null,
     @JsonField(name = ["actorId"]) var actorId: String? = null,
@@ -43,7 +43,5 @@ data class ChatMessageJson(
     @JsonField(name = ["lastEditActorId"]) var lastEditActorId: String? = null,
     @JsonField(name = ["lastEditActorType"]) var lastEditActorType: String? = null,
     @JsonField(name = ["lastEditTimestamp"]) var lastEditTimestamp: Long? = 0,
-
-    // override var markedForDeletion: Boolean = "comment_deleted" == messageType
-    override var markedForDeletion: Boolean = false
-) : Parcelable, SyncableModel
+    @JsonField(name = ["deleted"]) var deleted: Boolean = false,
+) : Parcelable

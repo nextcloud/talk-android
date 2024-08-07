@@ -38,7 +38,8 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         lastEditActorDisplayName = lastEditActorDisplayName,
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
-        lastEditTimestamp = lastEditTimestamp
+        lastEditTimestamp = lastEditTimestamp,
+        deleted = deleted
     )
 
 fun ChatMessageEntity.asModel() =
@@ -62,7 +63,8 @@ fun ChatMessageEntity.asModel() =
         lastEditActorDisplayName = lastEditActorDisplayName,
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
-        lastEditTimestamp = lastEditTimestamp
+        lastEditTimestamp = lastEditTimestamp,
+        isDeleted = deleted
     )
 
 fun ChatMessageJson.asModel() =
@@ -86,5 +88,6 @@ fun ChatMessageJson.asModel() =
         lastEditActorDisplayName = lastEditActorDisplayName,
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
-        lastEditTimestamp = lastEditTimestamp
+        lastEditTimestamp = lastEditTimestamp,
+        isDeleted = deleted
     )
