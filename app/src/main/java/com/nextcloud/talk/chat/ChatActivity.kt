@@ -827,14 +827,12 @@ class ChatActivity :
                     adapter?.notifyDataSetChanged()
                 }
                 .collect()
+        }
 
-
+        this.lifecycleScope.launch {
             chatViewModel.getUpdateMessageFlow
-                .onEach { pair ->
-                    val lookIntoFuture = pair.first
-                    var chatMessageList = pair.second
-
-                    adapter!!.update(chatMessageList[0])
+                .onEach {
+                    updateAdapterForReaction(it)
                 }
                 .collect()
         }
