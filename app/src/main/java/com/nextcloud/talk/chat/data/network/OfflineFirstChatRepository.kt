@@ -322,6 +322,7 @@ class OfflineFirstChatRepository @Inject constructor(
             val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+                // .timeout(3, TimeUnit.SECONDS)
                 .map {
                     when (it.code()) {
                         HTTP_CODE_OK -> {
