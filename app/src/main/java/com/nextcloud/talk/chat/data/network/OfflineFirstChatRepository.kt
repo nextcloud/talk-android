@@ -415,9 +415,7 @@ class OfflineFirstChatRepository @Inject constructor(
         if (result.second.isNotEmpty()) {
             val chatMessagesJson = result.second
 
-            if (lookIntoFuture) {
-                handleUpdateMessages(chatMessagesJson)
-            }
+            handleUpdateMessages(chatMessagesJson)
 
             chatMessagesFromSync = chatMessagesJson.map {
                 it.asEntity(currentUser.id!!)
@@ -467,32 +465,19 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun handleUpdateMessages(messagesJson: List<ChatMessageJson>) {
         messagesJson.forEach { messageJson ->
             when (messageJson.systemMessageType) {
-                ChatMessage.SystemMessageType.REACTION -> {
+                ChatMessage.SystemMessageType.REACTION,
+                ChatMessage.SystemMessageType.REACTION_REVOKED,
+                ChatMessage.SystemMessageType.REACTION_DELETED,
+                ChatMessage.SystemMessageType.MESSAGE_DELETED,
+                ChatMessage.SystemMessageType.POLL_VOTED,
+                ChatMessage.SystemMessageType.MESSAGE_EDITED -> {
+                    // the parent message is always the newest state, no matter how old the system message is.
+                    // that's why we can just take the parent, update it in DB and update the UI
                     messageJson.parentMessage?.let { parentMessageJson ->
                         val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
                         chatDao.upsertChatMessage(parentMessageEntity)
                         _updateMessageFlow.emit(parentMessageEntity.asModel())
                     }
-                }
-
-                ChatMessage.SystemMessageType.REACTION_REVOKED -> {
-                    // TODO
-                }
-
-                ChatMessage.SystemMessageType.REACTION_DELETED -> {
-                    // TODO
-                }
-
-                ChatMessage.SystemMessageType.MESSAGE_DELETED -> {
-                    // TODO
-                }
-
-                ChatMessage.SystemMessageType.POLL_VOTED -> {
-                    // TODO
-                }
-
-                ChatMessage.SystemMessageType.MESSAGE_EDITED -> {
-                    // TODO
                 }
 
                 ChatMessage.SystemMessageType.CLEARED_CHAT -> {
