@@ -120,6 +120,8 @@ class ChatViewModel @Inject constructor(
 
     val getUpdateMessageFlow = chatRepository.updateMessageFlow
 
+    val getLastCommonReadFlow = chatRepository.lastCommonReadFlow
+
     val getConversationFlow = conversationRepository.conversationFlow
         .onEach {
             _getRoomViewState.value = GetRoomSuccessState

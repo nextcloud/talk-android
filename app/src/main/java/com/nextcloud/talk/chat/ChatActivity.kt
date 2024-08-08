@@ -834,6 +834,14 @@ class ChatActivity :
                 .collect()
         }
 
+        this.lifecycleScope.launch {
+            chatViewModel.getLastCommonReadFlow
+                .onEach {
+                    updateReadStatusOfAllMessages(it)
+                }
+                .collect()
+        }
+
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.ReactionDeletedSuccessState -> {
@@ -2526,6 +2534,7 @@ class ChatActivity :
                     updateReadStatusOfMessage(message, it)
                 }
             }
+            adapter!!.notifyDataSetChanged()
         }
     }
 

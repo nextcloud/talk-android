@@ -30,6 +30,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val updateMessageFlow: Flow<ChatMessage>
 
+    val lastCommonReadFlow: Flow<Int>
+
     fun setData(
         conversationModel: ConversationModel,
         credentials: String,
