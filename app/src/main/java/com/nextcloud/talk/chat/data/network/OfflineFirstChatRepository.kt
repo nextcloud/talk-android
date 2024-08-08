@@ -481,8 +481,15 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
 
                 ChatMessage.SystemMessageType.CLEARED_CHAT -> {
-                    val pattern = "$internalConversationId%" // LIKE "<accountId>@<conversationId>@%"
-                    chatDao.clearAllMessagesForUser(pattern)
+                    // for lookIntoFuture just deleting everything would be fine.
+                    // But lets say we did not open the chat for a while and in between it was cleared.
+                    // We just load the last 100 messages but this don't contain the system message.
+                    // We scroll up and load the system message. Deleting everything is not an option as we
+                    // would loose the messages that we want to keep. We only want to
+                    // delete the messages and chatBlocks older than the system message.
+
+                    chatDao.deleteMessagesOlderThan(internalConversationId, messageJson.id)
+                    chatBlocksDao.deleteChatBlocksOlderThan(internalConversationId, messageJson.id)
                 }
 
                 else -> {}
