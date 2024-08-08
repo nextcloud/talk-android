@@ -68,6 +68,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "lobbyState") var lobbyState: ConversationEnums.LobbyState? = null,
     @ColumnInfo(name = "lobbyTimer") var lobbyTimer: Long? = null,
     @ColumnInfo(name = "lastReadMessage") var lastReadMessage: Int = 0,
+    @ColumnInfo(name = "lastCommonReadMessage") var lastCommonReadMessage: Int = 0,
     @ColumnInfo(name = "hasCall") var hasCall: Boolean = false,
     @ColumnInfo(name = "callFlag") var callFlag: Int = 0,
     @ColumnInfo(name = "canStartCall") var canStartCall: Boolean = false,
