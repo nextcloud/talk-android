@@ -131,4 +131,13 @@ interface ChatMessagesDao {
         """
     )
     fun clearAllMessagesForUser(pattern: String)
+
+    @Query(
+        """
+        DELETE FROM chatmessages
+        WHERE internalConversationId = :internalConversationId 
+        AND id < :messageId
+        """
+    )
+    fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long)
 }
