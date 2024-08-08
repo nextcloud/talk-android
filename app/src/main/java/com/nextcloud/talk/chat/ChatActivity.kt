@@ -698,8 +698,8 @@ class ChatActivity :
                 is MessageInputViewModel.SendChatMessageSuccessState -> {
                     myFirstMessage = state.message
 
-                    if (binding.popupBubbleView.isShown == true) {
-                        binding.popupBubbleView.hide()
+                    if (binding.unreadMessagesPopup.isShown == true) {
+                        binding.unreadMessagesPopup.hide()
                     }
                     binding.messagesListView.smoothScrollToPosition(0)
                 }
@@ -710,8 +710,8 @@ class ChatActivity :
                         if (code.toString().startsWith("2")) {
                             myFirstMessage = state.message
 
-                            if (binding.popupBubbleView.isShown == true) {
-                                binding.popupBubbleView.hide()
+                            if (binding.unreadMessagesPopup.isShown == true) {
+                                binding.unreadMessagesPopup.hide()
                             }
 
                             binding.messagesListView.smoothScrollToPosition(0)
@@ -955,9 +955,9 @@ class ChatActivity :
 
         setupSwipeToReply()
 
-        binding.popupBubbleView.setRecyclerView(binding.messagesListView)
+        binding.unreadMessagesPopup.setRecyclerView(binding.messagesListView)
 
-        binding.popupBubbleView.setPopupBubbleListener { _ ->
+        binding.unreadMessagesPopup.setPopupBubbleListener { _ ->
             if (newMessagesCount != 0) {
                 val scrollPosition = if (newMessagesCount - 1 < 0) {
                     0
@@ -982,7 +982,7 @@ class ChatActivity :
 
         binding.let { viewThemeUtils.material.themeFAB(it.voiceRecordingLock) }
 
-        binding.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it.popupBubbleView) }
+        binding.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it.unreadMessagesPopup) }
 
         binding.messagesListView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -999,8 +999,8 @@ class ChatActivity :
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (binding.popupBubbleView.isShown == true) {
-                                binding.popupBubbleView.hide()
+                            if (binding.unreadMessagesPopup.isShown == true) {
+                                binding.unreadMessagesPopup.hide()
                             }
                         }
                     }
@@ -2560,22 +2560,22 @@ class ChatActivity :
             unreadChatMessage.timestamp = chatMessageList[0].timestamp
             unreadChatMessage.message = context.getString(R.string.nc_new_messages)
             adapter?.addToStart(unreadChatMessage, false)
-        }
 
-        if (!scrollToEndOnUpdate) {
-            binding.popupBubbleView.isShown.let {
-                if (it) {
+
+            if (scrollToEndOnUpdate) {
+                binding.scrollDownButton.visibility = View.GONE
+                newMessagesCount = 0
+            } else {
+                if (binding.unreadMessagesPopup.isShown) {
                     newMessagesCount++
                 } else {
                     newMessagesCount = 1
                     binding.scrollDownButton.visibility = View.GONE
-                    binding.popupBubbleView.show()
+                    binding.unreadMessagesPopup.show()
                 }
             }
-        } else {
-            binding.scrollDownButton.visibility = View.GONE
-            newMessagesCount = 0
         }
+
 
         for (chatMessage in chatMessageList) {
             chatMessage.activeUser = conversationUser
