@@ -188,12 +188,14 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                contactsViewModel.createRoom(
-                    CompanionClass.ROOM_TYPE_ONE_ONE,
-                    contact.source!!,
-                    contact.id!!,
-                    null
-                )
+                if (!contactsViewModel.isAddParticipantsView.value) {
+                    contactsViewModel.createRoom(
+                        CompanionClass.ROOM_TYPE_ONE_ONE,
+                        contact.source!!,
+                        contact.id!!,
+                        null
+                    )
+                }
             },
         verticalAlignment = Alignment.CenterVertically
     ) {
