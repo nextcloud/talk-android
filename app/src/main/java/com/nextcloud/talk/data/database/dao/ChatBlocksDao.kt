@@ -89,4 +89,13 @@ interface ChatBlocksDao {
         """
     )
     fun clearChatBlocksForUser(pattern: String)
+
+    @Query(
+        """
+        DELETE FROM ChatBlocks
+        WHERE internalConversationId = :internalConversationId
+        AND oldestMessageId < :messageId
+        """
+    )
+    fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long)
 }
