@@ -989,7 +989,8 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0) {
+                    if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0 &&
+                        !binding.unreadMessagesPopup.isShown) {
                         binding.scrollDownButton.visibility = View.VISIBLE
                     } else {
                         binding.scrollDownButton.visibility = View.GONE
@@ -999,7 +1000,7 @@ class ChatActivity :
                         if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
                             newMessagesCount = 0
 
-                            if (binding.unreadMessagesPopup.isShown == true) {
+                            if (binding.unreadMessagesPopup.isShown) {
                                 binding.unreadMessagesPopup.hide()
                             }
                         }
@@ -1280,7 +1281,7 @@ class ChatActivity :
                     .setInterpolator(AccelerateDecelerateInterpolator())
                     .duration = TYPING_INDICATOR_ANIMATION_DURATION
             } else {
-                binding.typingIndicatorWrapper.visibility = View.GONE
+                binding.typingIndicatorWrapper.visibility = View.INVISIBLE
                 binding.typingIndicatorWrapper.y += DisplayUtils.convertDpToPixel(18f, context)
             }
         }
