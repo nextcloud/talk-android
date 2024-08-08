@@ -166,7 +166,7 @@
             android:layout_marginStart="64dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="64dp"
-            android:layout_marginBottom="26dp"
+            android:layout_marginBottom="45dp"
             android:layout_toStartOf="@+id/scrollDownButton"
             android:ellipsize="middle"
             android:minHeight="@dimen/min_size_clickable_area"

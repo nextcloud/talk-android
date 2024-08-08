@@ -89,7 +89,6 @@ class OfflineFirstChatRepository @Inject constructor(
         this.conversationModel = conversationModel
         this.credentials = credentials
         this.urlForChatting = urlForChatting
-        // internalConversationId = userProvider.currentUser.blockingGet().id!!.toString() + "@" + conversationModel.token
         internalConversationId = conversationModel.internalId
     }
 
@@ -134,26 +133,11 @@ class OfflineFirstChatRepository @Inject constructor(
                 lastKnown = beforeMessageId.toInt()
             )
             withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-            // withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
 
             val loadFromServer = hasToLoadPreviousMessagesFromServer(beforeMessageId)
 
-            if (loadFromServer) {
-                if (monitor.isOnline.first()) {
-                    sync(withNetworkParams)
-                } else {
-                    // TODO: handle how user is informed about gaps when being offline. Something like:
-                    // val offlineChatMessage = ChatMessage(
-                    //     message = "you are offline. Some messages might be missing here."
-                    // )
-                    // val list = mutableListOf<ChatMessage>()
-                    // list.add(offlineChatMessage)
-                    //
-                    // if (list.isNotEmpty()) {
-                    //     val pair = Pair(false, list)
-                    //     _messageFlow.emit(pair)
-                    // }
-                }
+            if (loadFromServer && monitor.isOnline.first()) {
+                sync(withNetworkParams)
             }
 
             showLast100MessagesBefore(internalConversationId, beforeMessageId)
@@ -161,8 +145,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun initMessagePolling(): Job =
         scope.launch {
-            // monitor.isOnline.onEach { online ->
-
             Log.d(TAG, "---- initMessagePolling ------------")
 
             val initialMessageId = chatDao.getNewestMessageId(internalConversationId).toInt()
@@ -180,15 +162,10 @@ class OfflineFirstChatRepository @Inject constructor(
             while (!itIsPaused) {
                 if (!monitor.isOnline.first()) Thread.sleep(500)
 
-                // sync database with server ( This is a long blocking call b/c long polling is set )
+                // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
                 networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-                // withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
-
-                // this@OfflineFirstChatRepository.sync(withNetworkParams)
-                // sync(withNetworkParams)
 
                 val resultsFromSync = sync(networkParams)
-                // TODO: load from DB?! at least make sure no changes are made here that are not saved to DB then!
 
                 Log.d(TAG, "got result from longpolling")
                 if (!resultsFromSync.isNullOrEmpty()) {
@@ -209,18 +186,16 @@ class OfflineFirstChatRepository @Inject constructor(
                 //     return@map chatMessage
                 // }
 
-                val newestMessage2 = chatDao.getNewestMessageId(internalConversationId).toInt()
-                Log.d(TAG, "newestMessage in loop: $newestMessage2")
+                val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
 
                 // update field map vars for next cycle
                 fieldMap = getFieldMap(
                     lookIntoFuture = true,
                     includeLastKnown = false,
                     setReadMarker = true,
-                    lastKnown = newestMessage2
+                    lastKnown = newestMessage
                 )
             }
-            // }.flowOn(Dispatchers.IO).collect()
         }
 
     private suspend fun hasToLoadPreviousMessagesFromServer(
@@ -282,11 +257,6 @@ class OfflineFirstChatRepository @Inject constructor(
         return fieldMap
     }
 
-    private suspend fun getMessagesFrom(messageIds: List<Long>): List<ChatMessage> =
-        chatDao.getMessagesFromIds(messageIds).map {
-            it.map(ChatMessageEntity::asModel)
-        }.first()
-
     override suspend fun getMessage(messageId: Long, bundle: Bundle):
         Flow<ChatMessage> {
 
@@ -314,8 +284,6 @@ class OfflineFirstChatRepository @Inject constructor(
     @Suppress("UNCHECKED_CAST")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         Log.d(TAG, "An online request is made!!!!!!!!!!!!!!!!!!!!")
-        // val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)
-        // val url = bundle.getString(BundleKeys.KEY_CHAT_URL)
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
 
         try {
@@ -393,7 +361,6 @@ class OfflineFirstChatRepository @Inject constructor(
         val lookIntoFuture = fieldMap["lookIntoFuture"] == 1
 
         val statusCode = result.first
-        // val statusCode = result.first
 
         val hasHistory = getHasHistory(statusCode, lookIntoFuture)
 
@@ -487,7 +454,6 @@ class OfflineFirstChatRepository @Inject constructor(
                     // We scroll up and load the system message. Deleting everything is not an option as we
                     // would loose the messages that we want to keep. We only want to
                     // delete the messages and chatBlocks older than the system message.
-
                     chatDao.deleteMessagesOlderThan(internalConversationId, messageJson.id)
                     chatBlocksDao.deleteChatBlocksOlderThan(internalConversationId, messageJson.id)
                 }
