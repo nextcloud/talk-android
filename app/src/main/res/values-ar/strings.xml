@@ -612,6 +612,7 @@
     <string name="typing_are_typing">يكتبون ...</string>
     <string name="typing_is_typing">يكتب...</string>
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
+    <string name="unban">رفع الحظر</string>
     <string name="unread">غير مقروء</string>
     <string name="upload_new_avatar_from_device">رفع رمز تجسيدي avatar جديد من الجهاز</string>
     <string name="user_avatar">صورة المستخدم الشخصية </string>

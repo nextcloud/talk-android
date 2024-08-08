@@ -13,6 +13,7 @@
     <string name="avatar">Avatar</string>
     <string name="away">Iväg</string>
     <string name="back_button">Tillbakaknapp</string>
+    <string name="ban">Blockera</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avancerade samtalsalternativ</string>
     <string name="call_running_since_one_hour">Samtalet har pågått i en timme.</string>
@@ -46,6 +47,7 @@
     <string name="fourHours">4 timmar</string>
     <string name="get_invitations_error">Kunde inte hämta väntande inbjudningar</string>
     <string name="hint_edited_message">(redigerad)</string>
+    <string name="internal_note">Intern anteckning</string>
     <string name="invisible">Osynlig</string>
     <string name="languages_error_message">Kunde inte hämta språk</string>
     <string name="languages_error_title">Hämtning misslyckades</string>
@@ -454,18 +456,24 @@
     <string name="shared_items_voice">Röst</string>
     <string name="starred">Favorit</string>
     <string name="status_message">Statusmeddelande</string>
+    <string name="switch_to_breakout_room">Byt till grupprum</string>
     <string name="take_photo">Ta en bild</string>
     <string name="take_photo_error_deleting_picture">Det gick inte att ta bilden</string>
+    <string name="take_photo_retake_photo">Ta om foto</string>
     <string name="take_photo_send">Skicka</string>
     <string name="take_photo_switch_camera">Växla kamera</string>
+    <string name="take_photo_toggle_crop">Beskär foto</string>
+    <string name="take_photo_toggle_lowres">Minska bildstorlek</string>
     <string name="take_photo_toggle_torch">Starta lampa</string>
     <string name="thirtyMinutes">30 minuter</string>
     <string name="thisWeek">Denna vecka</string>
+    <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
     <string name="title_attachments">Bilagor</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>
+    <string name="translation">Översättning</string>
     <string name="translation_copy_translated_text">Kopiera översatt text</string>
     <string name="translation_detect_language">Upptäck språk</string>
     <string name="translation_device_settings">Enhetsinställningar</string>
@@ -473,6 +481,10 @@
     <string name="translation_error_title">Översättning misslyckades</string>
     <string name="translation_from">Från</string>
     <string name="translation_to">Till</string>
+    <string name="typing_1_other">och 1 annan skriver ...</string>
+    <string name="typing_are_typing">skriver ...</string>
+    <string name="typing_is_typing">skriver ...</string>
+    <string name="typing_x_others">och %1$s andra skriver …</string>
     <string name="unban">Tillåt</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
@@ -484,7 +496,13 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Hemsida</string>
     <string name="user_status">Status</string>
+    <string name="userinfo_error_text">Kunde inte hämta personlig användarinformation.</string>
     <string name="userinfo_no_info_headline">Ingen personlig info inställd</string>
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
+    <string name="video_call">Videosamtal</string>
     <string name="whats_your_status">Vad är din status?</string>
-    </resources>
+    <plurals name="polls_amount_voters">
+        <item quantity="one">%d röst</item>
+        <item quantity="other">%d röster</item>
+    </plurals>
+</resources>

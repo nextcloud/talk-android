@@ -13,6 +13,9 @@
     <string name="avatar">Avatar</string>
     <string name="away">Away</string>
     <string name="back_button">Back button</string>
+    <string name="ban">Ban</string>
+    <string name="ban_actor">Ban Actor</string>
+    <string name="bans_list">Bans List</string>
     <string name="calendar">Calendar</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">Note: the call has been going on for an hour already.</string>
@@ -41,6 +44,7 @@
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
+    <string name="error_unbanning">Error occured when unbanning actor</string>
     <string name="failed_to_save">Failed to save %1$s</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
@@ -48,6 +52,7 @@
     <string name="fourHours">4 hours</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="hint_edited_message">(edited)</string>
+    <string name="internal_note">Internal Note</string>
     <string name="invisible">Invisible</string>
     <string name="join_open_conversations_icon">Join Open Conversations Icon</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
@@ -577,6 +582,8 @@
     <string name="shared_items_poll">Poll</string>
     <string name="shared_items_recording">Call recording</string>
     <string name="shared_items_voice">Voice</string>
+    <string name="show_ban_reason">Show ban reason</string>
+    <string name="show_banned_participants">Show Banned Participants</string>
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="started_a_call">started a call</string>
