@@ -30,6 +30,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
@@ -72,6 +73,13 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _updateMessageFlow:
         MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
+    override val lastCommonReadFlow:
+        Flow<Int>
+        get() = _lastCommonReadFlow
+
+    private val _lastCommonReadFlow:
+        MutableSharedFlow<Int> = MutableSharedFlow()
+
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -96,6 +104,8 @@ class OfflineFirstChatRepository @Inject constructor(
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
 
+            newXChatLastCommonRead = conversationModel.lastCommonReadMessage
+
             val fieldMap = getFieldMap(
                 lookIntoFuture = false,
                 includeLastKnown = true,
@@ -113,9 +123,23 @@ class OfflineFirstChatRepository @Inject constructor(
                 internalConversationId,
                 chatDao.getNewestMessageId(internalConversationId)
             )
+            updateUiForLastCommonRead()
 
             initMessagePolling()
         }
+
+    private fun updateUiForLastCommonRead(){
+        scope.launch {
+            // TODO improve...
+            // delay is a dirty workaround to make sure messages are added to adapter on initial load before setting
+            // their read status.
+            // This workaround causes that the checkmarks seem to switch whenever sending a message
+            delay(200)
+            newXChatLastCommonRead?.let {
+                _lastCommonReadFlow.emit(it)
+            }
+        }
+    }
 
     override fun loadMoreMessages(
         beforeMessageId: Long,
@@ -141,6 +165,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
 
             showLast100MessagesBefore(internalConversationId, beforeMessageId)
+            updateUiForLastCommonRead()
         }
 
     override fun initMessagePolling(): Job =
@@ -173,6 +198,8 @@ class OfflineFirstChatRepository @Inject constructor(
                     val pair = Pair(true, chatMessages)
                     _messageFlow.emit(pair)
                 }
+
+                updateUiForLastCommonRead()
 
                 // Process read status if not null
                 // val lastKnown = datastore.getLastKnownId(internalConversationId, 0)
@@ -245,9 +272,9 @@ class OfflineFirstChatRepository @Inject constructor(
             fieldMap["lastKnownMessageId"] = lastKnown
         }
 
-        // newXChatLastCommonRead?.let {
-        //     fieldMap["lastCommonReadId"] = if (it > 0) it else lastKnown
-        // }
+        newXChatLastCommonRead?.let {
+            fieldMap["lastCommonReadId"] = it
+        }
 
         fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
         fieldMap["limit"] = 100
@@ -291,26 +318,13 @@ class OfflineFirstChatRepository @Inject constructor(
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 // .timeout(3, TimeUnit.SECONDS)
-                .map {
+                .map { it ->
                     when (it.code()) {
                         HTTP_CODE_OK -> {
                             Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
-                            // newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
-                            //     Integer.parseInt(it)
-                            // }
-                            //
-                            // val xChatLastGivenHeader: String? = it.headers()["X-Chat-Last-Given"]
-                            // val lastKnownId = if (it.headers().size > 0 &&
-                            //     xChatLastGivenHeader?.isNotEmpty() == true
-                            // ) {
-                            //     xChatLastGivenHeader.toInt()
-                            // } else {
-                            //
-                            // }
-                            //
-                            // // if (lastKnownId > 0) {
-                            // datastore.saveLastKnownId(internalConversationId, lastKnownId)
-                            // // }
+                            newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
+                                Integer.parseInt(it)
+                            }
 
                             return@map Pair(
                                 HTTP_CODE_OK,

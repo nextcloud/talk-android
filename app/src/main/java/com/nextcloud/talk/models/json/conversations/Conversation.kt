@@ -90,6 +90,9 @@ data class Conversation(
     @JsonField(name = ["lastReadMessage"])
     var lastReadMessage: Int = 0,
 
+    @JsonField(name = ["lastCommonReadMessage"])
+    var lastCommonReadMessage: Int = 0,
+
     @JsonField(name = ["hasCall"])
     var hasCall: Boolean = false,
 
