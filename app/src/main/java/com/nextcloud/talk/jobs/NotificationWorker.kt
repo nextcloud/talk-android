@@ -49,11 +49,11 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.notifications.NotificationOverall
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall
@@ -125,7 +125,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     @Inject
     var retrofit: Retrofit? = null
 
-    var chatRepository: ChatRepository? = null
+    var chatNetworkDataSource: ChatNetworkDataSource? = null
         @Inject set
 
     @Inject
@@ -231,7 +231,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
-            val isOneToOneCall = conversation.type === ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            val isOneToOneCall = conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
             bundle.putBoolean(KEY_ROOM_ONE_TO_ONE, isOneToOneCall) // ggf change in Activity? not necessary????
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.name)
@@ -300,7 +300,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             checkIfCallIsActive(signatureVerification, conversation)
         }
 
-        chatRepository?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
+        chatNetworkDataSource?.getRoom(userBeingCalled, roomToken = pushMessage.id!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<ConversationModel> {

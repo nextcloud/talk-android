@@ -12,7 +12,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 
 class HashMapHashMapConverter {
     @TypeConverter
-    fun fromDoubleHashMapToString(map: HashMap<String, HashMap<String, String>>?): String? {
+    fun fromDoubleHashMapToString(map: HashMap<String?, HashMap<String?, String?>>?): String? {
         return if (map == null) {
             LoganSquare.serialize(hashMapOf<String, HashMap<String, String>>())
         } else {
@@ -21,11 +21,11 @@ class HashMapHashMapConverter {
     }
 
     @TypeConverter
-    fun fromStringToDoubleHashMap(value: String?): HashMap<String, HashMap<String, String>>? {
+    fun fromStringToDoubleHashMap(value: String?): HashMap<String?, HashMap<String?, String?>>? {
         if (value.isNullOrEmpty()) {
             return hashMapOf()
         }
 
-        return LoganSquare.parseMap(value, HashMap::class.java) as HashMap<String, HashMap<String, String>>?
+        return LoganSquare.parseMap(value, HashMap::class.java) as HashMap<String?, HashMap<String?, String?>>?
     }
 }

@@ -7,52 +7,52 @@
 package com.nextcloud.talk.utils
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
-import com.nextcloud.talk.models.domain.ParticipantType
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 
 object ConversationUtils {
     private val TAG = ConversationUtils::class.java.simpleName
 
     fun isPublic(conversation: ConversationModel): Boolean {
-        return ConversationType.ROOM_PUBLIC_CALL == conversation.type
+        return ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == conversation.type
     }
 
     fun isGuest(conversation: ConversationModel): Boolean {
-        return ParticipantType.GUEST == conversation.participantType ||
-            ParticipantType.GUEST_MODERATOR == conversation.participantType ||
-            ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
+        return Participant.ParticipantType.GUEST == conversation.participantType ||
+            Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
+            Participant.ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
     }
 
     fun isParticipantOwnerOrModerator(conversation: ConversationModel): Boolean {
-        return ParticipantType.OWNER == conversation.participantType ||
-            ParticipantType.GUEST_MODERATOR == conversation.participantType ||
-            ParticipantType.MODERATOR == conversation.participantType
+        return Participant.ParticipantType.OWNER == conversation.participantType ||
+            Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
+            Participant.ParticipantType.MODERATOR == conversation.participantType
     }
 
     fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
-        return conversation.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+        return conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.LOCKED_ONE_TO_ONE)
     }
 
     fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return isParticipantOwnerOrModerator(conversation) &&
             !isLockedOneToOne(conversation, spreedCapabilities) &&
-            conversation.type != ConversationType.FORMER_ONE_TO_ONE &&
+            conversation.type != ConversationEnums.ConversationType.FORMER_ONE_TO_ONE &&
             !isNoteToSelfConversation(conversation)
     }
 
     fun isLobbyViewApplicable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return !canModerate(conversation, spreedCapabilities) &&
             (
-                conversation.type == ConversationType.ROOM_GROUP_CALL ||
-                    conversation.type == ConversationType.ROOM_PUBLIC_CALL
+                conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+                    conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
                 )
     }
 
     fun isNameEditable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return canModerate(conversation, spreedCapabilities) &&
-            ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation.type
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation.type
     }
 
     fun canLeave(conversation: ConversationModel): Boolean {
@@ -75,6 +75,7 @@ object ConversationUtils {
     }
 
     fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean {
-        return currentConversation != null && currentConversation.type == ConversationType.NOTE_TO_SELF
+        return currentConversation != null &&
+            currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
     }
 }

@@ -18,7 +18,10 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class ConversationsRepositoryImpl(private val api: NcApi, private val userProvider: CurrentUserProviderNew) :
+class ConversationsRepositoryImpl(
+    private val api: NcApi,
+    private val userProvider: CurrentUserProviderNew
+) :
     ConversationsRepository {
 
     private val user: User

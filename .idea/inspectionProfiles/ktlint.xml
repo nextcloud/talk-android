@@ -39,5 +39,6 @@
       <option name="previewFile" value="true" />
     </inspection_tool>
     <inspection_tool class="RedundantSemicolon" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="SerializableCtor" enabled="true" level="WARNING" enabled_by_default="true" />
   </profile>
 </component>

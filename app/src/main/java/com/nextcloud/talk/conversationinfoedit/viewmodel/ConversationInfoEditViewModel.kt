@@ -10,7 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -22,7 +22,7 @@ import java.io.File
 import javax.inject.Inject
 
 class ConversationInfoEditViewModel @Inject constructor(
-    private val repository: ChatRepository,
+    private val repository: ChatNetworkDataSource,
     private val conversationInfoEditRepository: ConversationInfoEditRepository
 ) : ViewModel() {
 

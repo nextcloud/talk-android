@@ -11,9 +11,11 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.text.TextUtils
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -25,7 +27,7 @@ import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -33,6 +35,13 @@ import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -99,14 +108,14 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
-            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp)
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
         } else {
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
 
         // parent message handling
-        if (!message.isDeleted && message.parentMessage != null) {
+        if (!message.isDeleted && message.parentMessageId != null) {
             processParentMessage(message)
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -176,44 +185,73 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     }
 
     private fun processParentMessage(message: ChatMessage) {
-        val parentChatMessage = message.parentMessage
-        parentChatMessage!!.activeUser = message.activeUser
-        parentChatMessage.imageUrl?.let {
-            binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-            binding.messageQuote.quotedMessageImage.load(it) {
-                addHeader(
-                    "Authorization",
-                    ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
-                )
+        if (message.parentMessageId != null && !message.isDeleted) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val chatActivity = commonMessageInterface as ChatActivity
+                    val urlForChatting = ApiUtils.getUrlForChat(
+                        chatActivity.chatApiVersion,
+                        chatActivity.conversationUser?.baseUrl,
+                        chatActivity.roomToken
+                    )
+
+                    val parentChatMessage = withContext(Dispatchers.IO) {
+                        chatActivity.chatViewModel.getMessageById(
+                            urlForChatting,
+                            chatActivity.currentConversation!!,
+                            message.parentMessageId!!
+                        ).first()
+                    }
+
+                    parentChatMessage.activeUser = message.activeUser
+                    parentChatMessage.imageUrl?.let {
+                        binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                        binding.messageQuote.quotedMessageImage.load(it) {
+                            addHeader(
+                                "Authorization",
+                                ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+                            )
+                        }
+                    } ?: run {
+                        binding.messageQuote.quotedMessageImage.visibility = View.GONE
+                    }
+                    binding.messageQuote.quotedMessageAuthor.text =
+                        if (parentChatMessage.actorDisplayName.isNullOrEmpty()) {
+                            context.getText(R.string.nc_nick_guest)
+                        } else {
+                            parentChatMessage.actorDisplayName
+                        }
+
+                    binding.messageQuote.quotedMessage.text = messageUtils
+                        .enrichChatReplyMessageText(
+                            binding.messageQuote.quotedMessage.context,
+                            parentChatMessage,
+                            true,
+                            viewThemeUtils
+                        )
+
+                    if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
+                        viewThemeUtils.platform.colorViewBackground(
+                            binding.messageQuote.quoteColoredView,
+                            ColorRole.PRIMARY
+                        )
+                    } else {
+                        binding.messageQuote.quoteColoredView.setBackgroundColor(
+                            ContextCompat.getColor(
+                                binding.messageQuote.quoteColoredView.context,
+                                R.color.high_emphasis_text
+                            )
+                        )
+                    }
+
+                    binding.messageQuote.quotedChatMessageView.setOnClickListener {
+                        val chatActivity = commonMessageInterface as ChatActivity
+                        chatActivity.jumpToQuotedMessage(parentChatMessage)
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "Error when processing parent message in view holder", e)
+                }
             }
-        } ?: run {
-            binding.messageQuote.quotedMessageImage.visibility = View.GONE
-        }
-        binding.messageQuote.quotedMessageAuthor.text = if (parentChatMessage.actorDisplayName.isNullOrEmpty()) {
-            context.getText(R.string.nc_nick_guest)
-        } else {
-            parentChatMessage.actorDisplayName
-        }
-
-        binding.messageQuote.quotedMessage.text = messageUtils
-            .enrichChatReplyMessageText(
-                binding.messageQuote.quotedMessage.context,
-                parentChatMessage,
-                true,
-                viewThemeUtils
-            )
-
-        if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-            viewThemeUtils.platform.colorViewBackground(binding.messageQuote.quoteColoredView, ColorRole.PRIMARY)
-        } else {
-            binding.messageQuote.quoteColoredView.setBackgroundColor(
-                ContextCompat.getColor(binding.messageQuote.quoteColoredView.context, R.color.high_emphasis_text)
-            )
-        }
-
-        binding.messageQuote.quotedChatMessageView.setOnClickListener {
-            val chatActivity = commonMessageInterface as ChatActivity
-            chatActivity.jumpToQuotedMessage(parentChatMessage)
         }
     }
 
@@ -234,5 +272,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
+        private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
     }
 }

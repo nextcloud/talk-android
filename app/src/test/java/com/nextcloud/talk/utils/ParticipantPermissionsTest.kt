@@ -17,7 +17,7 @@ class ParticipantPermissionsTest : TestCase() {
     @Test
     fun test_areFlagsSet() {
         val spreedCapability = SpreedCapability()
-        val conversation = Conversation()
+        val conversation = Conversation(null, null)
         conversation.permissions = ParticipantPermissions.PUBLISH_SCREEN or
             ParticipantPermissions.JOIN_CALL or
             ParticipantPermissions.DEFAULT

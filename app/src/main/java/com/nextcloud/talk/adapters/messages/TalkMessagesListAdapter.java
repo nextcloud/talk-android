@@ -33,7 +33,7 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        super.onBindViewHolder(holder, position);
+
 
         if (holder instanceof IncomingTextMessageViewHolder) {
             ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
@@ -66,5 +66,7 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof CallStartedViewHolder) {
             ((CallStartedViewHolder) holder).assignCallStartedMessageInterface(chatActivity);
         }
+
+        super.onBindViewHolder(holder, position);
     }
 }

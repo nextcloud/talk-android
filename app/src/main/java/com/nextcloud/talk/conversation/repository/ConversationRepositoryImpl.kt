@@ -9,7 +9,7 @@ package com.nextcloud.talk.conversation.repository
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
@@ -43,29 +43,30 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
 
     override fun createConversation(
         roomName: String,
-        conversationType: Conversation.ConversationType?
+        conversationType: ConversationEnums.ConversationType?
     ): Observable<RoomOverall> {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
-        val retrofitBucket: RetrofitBucket = if (conversationType == Conversation.ConversationType.ROOM_PUBLIC_CALL) {
-            ApiUtils.getRetrofitBucketForCreateRoom(
-                apiVersion,
-                currentUser.baseUrl!!,
-                ROOM_TYPE_PUBLIC,
-                null,
-                null,
-                roomName
-            )
-        } else {
-            ApiUtils.getRetrofitBucketForCreateRoom(
-                apiVersion,
-                currentUser.baseUrl!!,
-                ROOM_TYPE_GROUP,
-                null,
-                null,
-                roomName
-            )
-        }
+        val retrofitBucket: RetrofitBucket =
+            if (conversationType == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
+                ApiUtils.getRetrofitBucketForCreateRoom(
+                    apiVersion,
+                    currentUser.baseUrl!!,
+                    ROOM_TYPE_PUBLIC,
+                    null,
+                    null,
+                    roomName
+                )
+            } else {
+                ApiUtils.getRetrofitBucketForCreateRoom(
+                    apiVersion,
+                    currentUser.baseUrl!!,
+                    ROOM_TYPE_GROUP,
+                    null,
+                    null,
+                    roomName
+                )
+            }
         return ncApi.createRoom(credentials, retrofitBucket.url, retrofitBucket.queryMap)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

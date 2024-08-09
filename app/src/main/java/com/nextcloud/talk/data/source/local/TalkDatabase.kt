@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -10,15 +10,24 @@ package com.nextcloud.talk.data.source.local
 
 import android.content.Context
 import android.util.Log
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.nextcloud.talk.R
+import com.nextcloud.talk.data.database.dao.ChatBlocksDao
+import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.model.ChatBlockEntity
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
+import com.nextcloud.talk.data.source.local.converters.LinkedHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
 import com.nextcloud.talk.data.source.local.converters.ServerVersionConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
@@ -31,10 +40,15 @@ import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
 import net.sqlcipher.database.SupportFactory
 import java.util.Locale
-import androidx.room.AutoMigration
 
 @Database(
-    entities = [UserEntity::class, ArbitraryStorageEntity::class],
+    entities = [
+        UserEntity::class,
+        ArbitraryStorageEntity::class,
+        ConversationEntity::class,
+        ChatMessageEntity::class,
+        ChatBlockEntity::class
+    ],
     version = 10,
     autoMigrations = [
         AutoMigration(from = 9, to = 10)
@@ -47,11 +61,16 @@ import androidx.room.AutoMigration
     ServerVersionConverter::class,
     ExternalSignalingServerConverter::class,
     SignalingSettingsConverter::class,
-    HashMapHashMapConverter::class
+    HashMapHashMapConverter::class,
+    LinkedHashMapConverter::class,
+    ArrayListConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
 
     abstract fun usersDao(): UsersDao
+    abstract fun conversationsDao(): ConversationsDao
+    abstract fun chatMessagesDao(): ChatMessagesDao
+    abstract fun chatBlocksDao(): ChatBlocksDao
     abstract fun arbitraryStoragesDao(): ArbitraryStoragesDao
 
     companion object {
@@ -89,7 +108,7 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
-                .openHelperFactory(factory)
+                // .openHelperFactory(factory) // TODO: uncomment when offline support is production ready!!!!!!!
                 .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8, Migrations.MIGRATION_8_9)
                 .allowMainThreadQueries()
                 .addCallback(
