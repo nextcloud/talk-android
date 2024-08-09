@@ -123,18 +123,19 @@ class OfflineFirstChatRepository @Inject constructor(
                 internalConversationId,
                 chatDao.getNewestMessageId(internalConversationId)
             )
-            updateUiForLastCommonRead()
+            updateUiForLastCommonRead(200)
 
             initMessagePolling()
         }
 
-    private fun updateUiForLastCommonRead(){
+    private fun updateUiForLastCommonRead(delay: Long) {
         scope.launch {
-            // TODO improve...
             // delay is a dirty workaround to make sure messages are added to adapter on initial load before setting
-            // their read status.
-            // This workaround causes that the checkmarks seem to switch whenever sending a message
-            delay(200)
+            // their read status(otherwise there is a race condition between adding messages and setting their read
+            // status).
+            if (delay > 0) {
+                delay(delay)
+            }
             newXChatLastCommonRead?.let {
                 _lastCommonReadFlow.emit(it)
             }
@@ -165,7 +166,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
 
             showLast100MessagesBefore(internalConversationId, beforeMessageId)
-            updateUiForLastCommonRead()
+            updateUiForLastCommonRead(0)
         }
 
     override fun initMessagePolling(): Job =
@@ -199,7 +200,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     _messageFlow.emit(pair)
                 }
 
-                updateUiForLastCommonRead()
+                updateUiForLastCommonRead(0)
 
                 // Process read status if not null
                 // val lastKnown = datastore.getLastKnownId(internalConversationId, 0)
