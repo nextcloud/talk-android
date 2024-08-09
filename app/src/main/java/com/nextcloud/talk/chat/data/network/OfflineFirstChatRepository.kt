@@ -193,8 +193,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
                 val resultsFromSync = sync(networkParams)
-
-                Log.d(TAG, "got result from longpolling")
                 if (!resultsFromSync.isNullOrEmpty()) {
                     val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
                     val pair = Pair(true, chatMessages)
@@ -202,18 +200,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
 
                 updateUiForLastCommonRead(0)
-
-                // Process read status if not null
-                // val lastKnown = datastore.getLastKnownId(internalConversationId, 0)
-                // list = list.map { chatMessage ->
-                //     chatMessage.readStatus = if (chatMessage.jsonMessageId <= lastKnown) {
-                //         ReadStatus.READ
-                //     } else {
-                //         ReadStatus.SENT
-                //     }
-                //
-                //     return@map chatMessage
-                // }
 
                 val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
 
