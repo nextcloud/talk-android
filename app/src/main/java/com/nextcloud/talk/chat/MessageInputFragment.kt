@@ -175,9 +175,8 @@ class MessageInputFragment : Fragment() {
                 wasOnline = !binding.fragmentMessageInputView.isShown
                 Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
 
-                // FIXME I think this might be called when remote server is null, because I joined when no internet
-                //  thus room not joined. I would need to make sure that the room is joined before I send messages
-                handleMessageQueue(isOnline)
+                // FIXME timeout exception - maybe something to do with the room?
+                // handleMessageQueue(isOnline)
                 handleUI(isOnline, connectionGained)
             }.collect()
         }
@@ -212,6 +211,7 @@ class MessageInputFragment : Fragment() {
 
             binding.fragmentMessageInputView.attachmentButton.isEnabled = true
             binding.fragmentMessageInputView.recordAudioButton.isEnabled = true
+            binding.fragmentMessageInputView.messageInput.isEnabled = true
         } else {
             binding.fragmentConnectionLost.clearAnimation()
             binding.fragmentConnectionLost.visibility = View.GONE
@@ -221,6 +221,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.isEnabled = false
             binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
+            binding.fragmentMessageInputView.messageInput.isEnabled = false
         }
     }
 
