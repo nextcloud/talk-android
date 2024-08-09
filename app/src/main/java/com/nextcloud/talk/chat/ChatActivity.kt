@@ -2606,46 +2606,29 @@ class ChatActivity :
     }
 
     /**
-     * this method must be called after that the adatper has finished loading ChatMessages items
-     * it searches by ID the message that was playing,
+     * this method must be called after that the adapter has finished loading ChatMessages items
+     * it searches by ID the message that was playing,s
      * then, if it finds it, it restores audio position
      * and eventually resumes audio playback
      * @author Giacomo Pacini
      */
     private fun resumeAudioPlaybackIfNeeded() {
-        if (!voiceMessageToRestoreId.equals("")) {
+        if (voiceMessageToRestoreId != "") {
             Log.d(RESUME_AUDIO_TAG, "begin method to resume audio playback")
 
-            // TODO: replace this logic by calling getItemFromAdapter(messageId)
-            if (adapter != null) {
-                Log.d(RESUME_AUDIO_TAG, "adapter is not null, proceeding")
-                val voiceMessagePosition = adapter!!.items!!.indexOfFirst {
-                    it.item is ChatMessage && (it.item as ChatMessage).id == voiceMessageToRestoreId
-                }
-                if (voiceMessagePosition >= 0) {
-                    val currentItem = adapter?.items?.get(voiceMessagePosition)?.item
-                    if (currentItem is ChatMessage && currentItem.id == voiceMessageToRestoreId) {
-                        currentlyPlayedVoiceMessage = currentItem
-                        lastRecordMediaPosition = voiceMessageToRestoreAudioPosition * 1000
-                        Log.d(RESUME_AUDIO_TAG, "trying to resume audio")
-                        binding.messagesListView.scrollToPosition(voiceMessagePosition)
-                        // WORKAROUND TO FETCH FILE INFO:
-                        currentlyPlayedVoiceMessage!!.getImageUrl()
-                        // see getImageUrl() source code
-                        setUpWaveform(currentlyPlayedVoiceMessage!!, voiceMessageToRestoreWasPlaying)
-                        Log.d(RESUME_AUDIO_TAG, "resume audio procedure completed")
-                    } else {
-                        Log.d(RESUME_AUDIO_TAG, "currentItem retrieved was not chatmessage or its id was not correct")
-                    }
-                } else {
-                    Log.d(
-                        RESUME_AUDIO_TAG,
-                        "voiceMessagePosition is -1, adapter # of items: " + adapter!!.itemCount
-                    )
-                }
-            } else {
-                Log.d(RESUME_AUDIO_TAG, "TalkMessagesListAdapter is null")
-            }
+            val pair = getItemFromAdapter(voiceMessageToRestoreId)
+            currentlyPlayedVoiceMessage = pair?.first
+            val voiceMessagePosition = pair?.second!!
+
+            lastRecordMediaPosition = voiceMessageToRestoreAudioPosition * 1000
+            Log.d(RESUME_AUDIO_TAG, "trying to resume audio")
+            binding.messagesListView.scrollToPosition(voiceMessagePosition)
+            // WORKAROUND TO FETCH FILE INFO:
+            currentlyPlayedVoiceMessage!!.getImageUrl()
+            // see getImageUrl() source code
+            setUpWaveform(currentlyPlayedVoiceMessage!!, voiceMessageToRestoreWasPlaying)
+            Log.d(RESUME_AUDIO_TAG, "resume audio procedure completed")
+
         } else {
             Log.d(RESUME_AUDIO_TAG, "No voice message to restore")
         }
@@ -2654,7 +2637,7 @@ class ChatActivity :
         voiceMessageToRestoreWasPlaying = false
     }
 
-    private fun getItemFromAdapter(messageId: String): ChatMessage? {
+    private fun getItemFromAdapter(messageId: String): Pair<ChatMessage,Int>? {
         if (adapter != null) {
             val messagePosition = adapter!!.items!!.indexOfFirst {
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
@@ -2662,7 +2645,7 @@ class ChatActivity :
             if (messagePosition >= 0) {
                 val currentItem = adapter?.items?.get(messagePosition)?.item
                 if (currentItem is ChatMessage && currentItem.id == messageId) {
-                    return currentItem
+                    return Pair(currentItem, messagePosition)
                 } else {
                     Log.d(TAG, "currentItem retrieved was not chatmessage or its id was not correct")
                 }
