@@ -159,7 +159,7 @@ ext {
     espressoVersion = "3.6.1"
     media3_version = "1.4.0"
     coroutines_version = "1.8.1"
-    mockitoKotlinVersion = "4.1.0"
+    mockitoKotlinVersion = "5.4.0"
 }
 
 configurations.configureEach {
