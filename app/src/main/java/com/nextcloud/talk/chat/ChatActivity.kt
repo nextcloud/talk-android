@@ -804,6 +804,7 @@ class ChatActivity :
                         collapseSystemMessages()
                     }
 
+                    processExpiredMessages()
                     processCallStartedMessages(chatMessageList)
 
                     adapter?.notifyDataSetChanged()
@@ -823,6 +824,7 @@ class ChatActivity :
             chatViewModel.getLastCommonReadFlow
                 .onEach {
                     updateReadStatusOfAllMessages(it)
+                    processExpiredMessages()
                 }
                 .collect()
         }

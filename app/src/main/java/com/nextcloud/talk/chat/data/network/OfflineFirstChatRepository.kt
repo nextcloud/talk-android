@@ -362,7 +362,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 .blockingSingle()
             return result
         } catch (e: Exception) {
-            Log.e(TAG, "some exception", e)
+            Log.e(TAG, "Something went wrong when pulling chat messages", e)
         }
         return null
     }
