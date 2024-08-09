@@ -48,7 +48,7 @@ import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
-import com.nextcloud.talk.databinding.DialogBanActorBinding
+import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
@@ -1311,7 +1311,7 @@ class ConversationInfoActivity :
             items.add(
                 BasicListItemWithImage(
                     R.drawable.baseline_block_24,
-                    "Ban Participant"
+                    context.getString(R.string.ban_participant)
                 )
             )
         }
@@ -1375,7 +1375,7 @@ class ConversationInfoActivity :
 
     private fun MaterialDialog.handleBan(participant: Participant) {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
-        val binding = DialogBanActorBinding.inflate(layoutInflater)
+        val binding = DialogBanParticipantBinding.inflate(layoutInflater)
         val actorTypeConverter = EnumActorTypeConverter()
         val dialog = MaterialAlertDialogBuilder(context)
             .setView(binding.root)
@@ -1391,13 +1391,13 @@ class ConversationInfoActivity :
             banActor(
                 actorTypeConverter.convertToString(participant.actorType!!),
                 participant.actorId!!,
-                binding.banActorEdit.text.toString()
+                binding.banParticipantEdit.text.toString()
             )
             removeAttendeeFromConversation(apiVersion, participant)
             dialog.dismiss()
         }
         binding.buttonClose.setOnClickListener { dialog.dismiss() }
-        viewThemeUtils.material.colorTextInputLayout(binding.banActorEditLayout)
+        viewThemeUtils.material.colorTextInputLayout(binding.banParticipantEditLayout)
         viewThemeUtils.material.colorMaterialButtonPrimaryFilled(binding.buttonBan)
         viewThemeUtils.material.colorMaterialButtonText(binding.buttonClose)
         dialog.show()
