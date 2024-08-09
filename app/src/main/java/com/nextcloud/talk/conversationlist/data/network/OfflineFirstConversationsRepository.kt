@@ -1,24 +1,23 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package com.nextcloud.talk.conversationlist.data.network
 
-import android.os.Bundle
-import androidx.core.os.bundleOf
+import android.util.Log
+import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.database.model.ConversationEntity
-import com.nextcloud.talk.data.sync.Synchronizer
-import com.nextcloud.talk.data.sync.changeListSync
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,9 +34,9 @@ import javax.inject.Inject
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
+    private val monitor: NetworkMonitor,
     private val currentUserProviderNew: CurrentUserProviderNew
-) : OfflineConversationsRepository, Synchronizer {
-
+) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
     private val _roomListFlow: MutableSharedFlow<List<ConversationModel>> = MutableSharedFlow()
@@ -56,7 +55,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 if (list.isNotEmpty()) {
                     _roomListFlow.emit(list)
                 }
-                this@OfflineFirstConversationsRepository.sync(bundleOf())
+                sync()
             }
         }
 
@@ -64,39 +63,28 @@ class OfflineFirstConversationsRepository @Inject constructor(
         scope.launch {
             val id = user.id!!
             val model = getConversation(id, roomToken)
-            model?.let { _conversationFlow.emit(model) }
+            model.let { _conversationFlow.emit(model) }
         }
 
-    override suspend fun syncWith(bundle: Bundle, synchronizer: Synchronizer): Boolean =
-        synchronizer.changeListSync(
-            modelFetcher = {
-                return@changeListSync getConversationsFromServer()
-            },
-            // not needed
-            versionUpdater = {},
-            modelDeleter = {},
-            modelUpdater = { models ->
-                val list = models.filterIsInstance<Conversation>().map {
-                    it.asEntity(user.id!!)
-                }
-                dao.upsertConversations(list)
-            }
-        )
+    private suspend fun sync() {
+        if (!monitor.isOnline.first()) {
+            Log.d(OfflineFirstChatRepository.TAG, "Device is offline, can't load conversations from server")
+            return
+        }
 
-    private fun getConversationsFromServer(): List<Conversation> {
-        val list = network.getRooms(user, user.baseUrl!!, false)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { list ->
-                return@map list.map {
-                    it.apply {
-                        id = roomId!!.toLong()
-                    }
-                }
-            }
-            .blockingSingle()
+        try {
+            val conversationsList = network.getRooms(user, user.baseUrl!!, false)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .blockingSingle()
 
-        return list ?: listOf()
+            val list = conversationsList.map {
+                it.asEntity(user.id!!)
+            }
+            dao.upsertConversations(list)
+        } catch (e: Exception) {
+            Log.e(TAG, "Something went wrong when fetching conversations", e)
+        }
     }
 
     private suspend fun getListOfConversations(accountId: Long): List<ConversationModel> =
@@ -104,8 +92,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
             it.map(ConversationEntity::asModel)
         }.first()
 
-    private suspend fun getConversation(accountId: Long, token: String): ConversationModel? {
+    private suspend fun getConversation(accountId: Long, token: String): ConversationModel {
         val entity = dao.getConversationForUser(accountId, token).first()
-        return entity?.asModel()
+        return entity.asModel()
+    }
+
+    companion object {
+        val TAG = OfflineFirstConversationsRepository::class.simpleName
     }
 }

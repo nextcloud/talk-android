@@ -7,12 +7,11 @@
 
 package com.nextcloud.talk.conversationlist.data
 
-import com.nextcloud.talk.data.sync.Syncable
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
-interface OfflineConversationsRepository : Syncable {
+interface OfflineConversationsRepository {
 
     /**
      * Stream of a list of rooms, for use in the conversation list.
