@@ -24,7 +24,7 @@
         android:layout_height="wrap_content" />
 
     <RelativeLayout
-        android:id="@+id/ban_actor_profile"
+        android:id="@+id/ban_participant_profile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/standard_margin"
@@ -55,7 +55,7 @@
     </RelativeLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/ban_actor_edit_layout"
+        android:id="@+id/ban_participant_edit_layout"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
         android:hint="@string/internal_note">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
-            android:id="@+id/ban_actor_edit"
+            android:id="@+id/ban_participant_edit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textShortMessage"
