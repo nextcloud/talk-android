@@ -36,7 +36,7 @@ data class ConversationEntity(
     var internalId: String,
 
     // Defines to which talk app account this conversation belongs to
-    @ColumnInfo(name = "accountId") var accountId: Long? = null,
+    @ColumnInfo(name = "accountId") var accountId: Long,
 
     // We don't use token as primary key as we have to manage multiple talk app accounts on
     // the phone, thus multiple accounts can have the same conversation in their list. That's why the servers

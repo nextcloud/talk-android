@@ -16,6 +16,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 fun ConversationModel.asEntity() =
     ConversationEntity(
         internalId = internalId,
+        accountId = accountId,
         token = token,
         name = name,
         displayName = displayName,
@@ -64,6 +65,7 @@ fun ConversationModel.asEntity() =
 fun ConversationEntity.asModel() =
     ConversationModel(
         internalId = internalId,
+        accountId = accountId,
         token = token,
         name = name,
         displayName = displayName,

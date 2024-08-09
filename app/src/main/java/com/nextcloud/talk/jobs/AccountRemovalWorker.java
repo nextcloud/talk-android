@@ -182,20 +182,11 @@ public class AccountRemovalWorker extends Worker {
 
             try {
                 arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(user.getId());
-                deleteAllUserInfo(user);
                 deleteUser(user);
             } catch (Throwable e) {
                 Log.e(TAG, "error while trying to delete All Entries For Account Identifier", e);
             }
         }
-    }
-
-    private void deleteAllUserInfo(User user) {
-        String accountId = Objects.requireNonNull(user.getId()).toString();
-        String pattern = accountId + "@%"; // ... LIKE "<accountId>@%"
-        chatMessagesDao.clearAllMessagesForUser(pattern);
-        conversationsDao.clearAllConversationsForUser(user.getId());
-        chatBlocksDao.clearChatBlocksForUser(pattern);
     }
 
     private void deleteUser(User user) {

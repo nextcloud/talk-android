@@ -421,6 +421,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val newChatBlock = ChatBlockEntity(
                 internalConversationId = internalConversationId,
+                accountId = conversationModel.accountId,
+                token = conversationModel.token,
                 oldestMessageId = oldestMessageIdForNewChatBlock,
                 newestMessageId = newestMessageIdForNewChatBlock,
                 hasHistory = hasHistory
@@ -531,6 +533,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val newChatBlock = ChatBlockEntity(
                 internalConversationId = internalConversationId,
+                accountId = conversationModel.accountId,
+                token = conversationModel.token,
                 oldestMessageId = oldestIdFromDbChatBlocks,
                 newestMessageId = newestIdFromDbChatBlocks,
                 hasHistory = hasHistory

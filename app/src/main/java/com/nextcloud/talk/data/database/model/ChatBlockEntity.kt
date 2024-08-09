@@ -12,18 +12,24 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "ChatBlocks"
-    // indices = [
-    //     androidx.room.Index(value = ["accountId"])
-    // ]
+    tableName = "ChatBlocks",
+    foreignKeys = [
+    androidx.room.ForeignKey(
+        entity = ConversationEntity::class,
+        parentColumns = arrayOf("internalId"),
+        childColumns = arrayOf("internalConversationId"),
+        onDelete = androidx.room.ForeignKey.CASCADE,
+        onUpdate = androidx.room.ForeignKey.CASCADE
+    )
+    ],
 )
 data class ChatBlockEntity(
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id") var id: Int = 0,
+    @ColumnInfo(name = "id") var id: Long = 0,
     // accountId@token
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
-    // @ColumnInfo(name = "accountId") var accountId: Long? = null,
-    // @ColumnInfo(name = "token") var token: String?,
+    @ColumnInfo(name = "accountId") var accountId: Long? = null,
+    @ColumnInfo(name = "token") var token: String?,
     @ColumnInfo(name = "oldestMessageId") var oldestMessageId: Long,
     @ColumnInfo(name = "newestMessageId") var newestMessageId: Long,
     @ColumnInfo(name = "hasHistory") var hasHistory: Boolean

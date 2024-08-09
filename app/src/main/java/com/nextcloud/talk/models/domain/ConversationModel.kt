@@ -15,6 +15,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 
 class ConversationModel(
     var internalId: String,
+    var accountId: Long,
     var roomId: String? = null,
     var token: String? = null,
     var name: String? = null,
@@ -32,7 +33,6 @@ class ConversationModel(
     var lastActivity: Long = 0,
     var unreadMessages: Int = 0,
     var unreadMention: Boolean = false,
-    // var lastMessageViaConversationList: LastMessageJson? = null,
     var lastMessageViaConversationList: ChatMessageJson? = null,
     var objectType: ConversationEnums.ObjectType? = null,
     var notificationLevel: ConversationEnums.NotificationLevel? = null,
@@ -67,6 +67,7 @@ class ConversationModel(
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel {
             return ConversationModel(
                 internalId = user.id!!.toString() + "@" + conversation.token,
+                accountId = user.id!!,
                 roomId = conversation.roomId,
                 token = conversation.token,
                 name = conversation.name,
