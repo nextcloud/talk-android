@@ -50,12 +50,13 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRooms(): Job =
         scope.launch {
-            repeat(2) {
-                val list = getListOfConversations(user.id!!)
-                if (list.isNotEmpty()) {
-                    _roomListFlow.emit(list)
-                }
-                sync()
+            val resultsFromSync = sync()
+            if (!resultsFromSync.isNullOrEmpty()) {
+                val conversations = resultsFromSync.map(ConversationEntity::asModel)
+                _roomListFlow.emit(conversations)
+            } else {
+                val conversationsFromDb = getListOfConversations(user.id!!)
+                _roomListFlow.emit(conversationsFromDb)
             }
         }
 
@@ -66,10 +67,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
             model.let { _conversationFlow.emit(model) }
         }
 
-    private suspend fun sync() {
+    private suspend fun sync(): List<ConversationEntity>? {
+        var conversationsFromSync: List<ConversationEntity>? = null
+
         if (!monitor.isOnline.first()) {
             Log.d(OfflineFirstChatRepository.TAG, "Device is offline, can't load conversations from server")
-            return
+            return null
         }
 
         try {
@@ -78,13 +81,25 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .blockingSingle()
 
-            val list = conversationsList.map {
+            conversationsFromSync = conversationsList.map {
                 it.asEntity(user.id!!)
             }
-            dao.upsertConversations(list)
+
+            deleteLeftConversations(conversationsFromSync)
+            dao.upsertConversations(conversationsFromSync)
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
         }
+        return conversationsFromSync
+    }
+
+    private suspend fun deleteLeftConversations(conversationsFromSync: List<ConversationEntity>) {
+        val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
+
+        val conversationsToDelete = oldConversationsFromDb.filterNot { conversationsFromSync.contains(it) }
+        val conversationIdsToDelete = conversationsToDelete.map { it.internalId }
+
+        dao.deleteConversations(conversationIdsToDelete)
     }
 
     private suspend fun getListOfConversations(accountId: Long): List<ConversationModel> =

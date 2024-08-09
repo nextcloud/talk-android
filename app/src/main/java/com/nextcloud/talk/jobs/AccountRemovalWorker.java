@@ -194,7 +194,7 @@ public class AccountRemovalWorker extends Worker {
         String accountId = Objects.requireNonNull(user.getId()).toString();
         String pattern = accountId + "@%"; // ... LIKE "<accountId>@%"
         chatMessagesDao.clearAllMessagesForUser(pattern);
-        conversationsDao.clearAllConversationsForUser(pattern);
+        conversationsDao.clearAllConversationsForUser(user.getId());
         chatBlocksDao.clearChatBlocksForUser(pattern);
     }
 

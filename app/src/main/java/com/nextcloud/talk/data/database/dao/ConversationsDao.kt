@@ -34,16 +34,16 @@ interface ConversationsDao {
             WHERE internalId in (:conversationIds)
         """
     )
-    fun deleteConversation(conversationIds: List<Long>)
+    fun deleteConversations(conversationIds: List<String>)
 
     @Update
     fun updateConversation(conversationEntity: ConversationEntity)
 
     @Query(
         """
-        DELETE FROM conversations
-        WHERE internalId LIKE :pattern
+        DELETE FROM Conversations
+        WHERE accountId = :accountId
         """
     )
-    fun clearAllConversationsForUser(pattern: String)
+    fun clearAllConversationsForUser(accountId: Long)
 }
