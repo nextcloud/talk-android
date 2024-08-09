@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -161,7 +162,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val loadFromServer = hasToLoadPreviousMessagesFromServer(beforeMessageId)
 
-            if (loadFromServer && monitor.isOnline.first()) {
+            if (loadFromServer) {
                 sync(withNetworkParams)
             }
 
@@ -292,7 +293,6 @@ class OfflineFirstChatRepository @Inject constructor(
         val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId)
 
         if (loadFromServer) {
-
             val fieldMap = getFieldMap(
                 lookIntoFuture = false,
                 includeLastKnown = true,
@@ -368,6 +368,11 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
+        if (!monitor.isOnline.first()) {
+            Log.d(TAG, "Device is offline, can't load chat messages from server")
+            return null
+        }
+
         val result = getMessagesFromServer(bundle) ?: return listOf()
         var chatMessagesFromSync: List<ChatMessageEntity>? = null
 

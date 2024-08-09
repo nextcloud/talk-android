@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -10,7 +10,6 @@ package com.nextcloud.talk.models.json.chat
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import kotlinx.parcelize.Parcelize

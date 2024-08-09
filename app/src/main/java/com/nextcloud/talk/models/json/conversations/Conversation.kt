@@ -12,10 +12,9 @@ package com.nextcloud.talk.models.json.conversations
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
 import com.nextcloud.talk.models.json.converters.EnumNotificationLevelConverter
@@ -156,10 +155,7 @@ data class Conversation(
     @JsonField(name = ["remoteToken"])
     var remoteToken: String? = null,
 
-    override var id: Long = 0,
-    override var markedForDeletion: Boolean = false
-
-) : Parcelable, SyncableModel {
+) : Parcelable {
     @Deprecated("Use ConversationUtil")
     val isPublic: Boolean
         get() = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == type

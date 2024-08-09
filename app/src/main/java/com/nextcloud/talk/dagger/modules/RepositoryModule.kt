@@ -191,9 +191,10 @@ class RepositoryModule {
     fun provideOfflineFirstConversationsRepository(
         dao: ConversationsDao,
         dataSource: ConversationsNetworkDataSource,
+        networkMonitor: NetworkMonitor,
         currentUserProviderNew: CurrentUserProviderNew
     ): OfflineConversationsRepository {
-        return OfflineFirstConversationsRepository(dao, dataSource, currentUserProviderNew)
+        return OfflineFirstConversationsRepository(dao, dataSource, networkMonitor, currentUserProviderNew)
     }
 
     @Provides

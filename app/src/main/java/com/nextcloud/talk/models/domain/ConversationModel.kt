@@ -7,7 +7,6 @@
  */
 package com.nextcloud.talk.models.domain
 
-import com.nextcloud.talk.data.changeListVersion.SyncableModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.Conversation
@@ -62,9 +61,7 @@ class ConversationModel(
     var recordingConsentRequired: Int = 0,
     var remoteServer: String? = null,
     var remoteToken: String? = null,
-    override var id: Long = roomId?.toLong() ?: 0,
-    override var markedForDeletion: Boolean = false
-) : SyncableModel {
+) {
 
     companion object {
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel {
