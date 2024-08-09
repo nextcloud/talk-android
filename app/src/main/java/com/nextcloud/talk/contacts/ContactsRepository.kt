@@ -13,4 +13,5 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 interface ContactsRepository {
     suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall
     suspend fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?): RoomOverall
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String
 }

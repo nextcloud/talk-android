@@ -13,10 +13,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,9 +60,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -72,7 +70,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ContactsActivityCompose : ComponentActivity() {
+class ContactsActivityCompose : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -83,9 +81,12 @@ class ContactsActivityCompose : ComponentActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
-
         setContent {
-            MaterialTheme {
+            val colorScheme = viewThemeUtils.getColorScheme(this)
+            val uiState = contactsViewModel.contactsViewState.collectAsState()
+            MaterialTheme(
+                colorScheme = colorScheme
+            ) {
                 val context = LocalContext.current
                 Scaffold(
                     topBar = {
@@ -96,7 +97,6 @@ class ContactsActivityCompose : ComponentActivity() {
                         )
                     },
                     content = {
-                        val uiState = contactsViewModel.contactsViewState.collectAsState()
                         Column(Modifier.padding(it)) {
                             ConversationCreationOptions(context = context)
                             ContactsList(
@@ -170,6 +170,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
             }
             items(contactsForInitial) { contact ->
                 ContactItemRow(contact = contact, contactsViewModel = contactsViewModel, context = context)
+                Log.d(CompanionClass.TAG, "Contacts:$contact")
             }
         }
     }
@@ -205,15 +206,10 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
         verticalAlignment = Alignment.CenterVertically
     ) {
         val imageUri = contact.id?.let { contactsViewModel.getImageUri(it, true) }
-        val imageRequest = ImageRequest.Builder(context)
-            .data(imageUri)
-            .transformations(CircleCropTransformation())
-            .error(R.drawable.account_circle_96dp)
-            .placeholder(R.drawable.account_circle_96dp)
-            .build()
-
+        val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+        val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
         AsyncImage(
-            model = imageRequest,
+            model = loadedImage,
             contentDescription = stringResource(R.string.user_avatar),
             modifier = Modifier.size(width = 45.dp, height = 45.dp)
         )
@@ -246,8 +242,10 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
 fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
+
     TopAppBar(
         title = { Text(text = title) },
+
         navigationIcon = {
             IconButton(onClick = {
                 (context as? Activity)?.finish()
@@ -282,13 +280,13 @@ fun ConversationCreationOptions(context: Context) {
             modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            Icon(
+                painter = painterResource(id = R.drawable.baseline_chat_bubble_outline_24),
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp)
                     .padding(8.dp),
-                painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
-                contentDescription = stringResource(R.string.new_conversation_creation_icon)
+                contentDescription = null
             )
             Text(
                 modifier = Modifier
@@ -308,13 +306,13 @@ fun ConversationCreationOptions(context: Context) {
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
+            Icon(
+                Icons.AutoMirrored.Filled.List,
                 modifier = Modifier
                     .width(40.dp)
                     .height(40.dp)
                     .padding(8.dp),
-                painter = painterResource(R.drawable.baseline_format_list_bulleted_24),
-                contentDescription = stringResource(R.string.join_open_conversations_icon)
+                contentDescription = null
             )
             Text(
                 modifier = Modifier

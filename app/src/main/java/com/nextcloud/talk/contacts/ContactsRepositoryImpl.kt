@@ -64,4 +64,12 @@ class ContactsRepositoryImpl(
         )
         return response
     }
+
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
+        return ApiUtils.getUrlForAvatar(
+            _currentUser.baseUrl,
+            avatarId,
+            requestBigSize
+        )
+    }
 }

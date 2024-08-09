@@ -12,6 +12,8 @@ import android.provider.ContactsContract
 object ContactUtils {
 
     const val MAX_CONTACT_LIMIT = 50
+    const val CACHE_MEMORY_SIZE_PERCENTAGE = 0.1
+    const val CACHE_DISK_SIZE_PERCENTAGE = 0.02
 
     fun getDisplayNameFromDeviceContact(context: Context, id: String?): String? {
         var displayName: String? = null
