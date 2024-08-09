@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/standard_margin"
-        android:text="@string/ban_actor"
+        android:text="@string/ban_participant"
         android:textSize="@dimen/md_title_textsize" />
 
     <com.google.android.material.divider.MaterialDivider

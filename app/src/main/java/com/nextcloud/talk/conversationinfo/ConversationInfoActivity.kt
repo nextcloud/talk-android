@@ -1311,7 +1311,7 @@ class ConversationInfoActivity :
             items.add(
                 BasicListItemWithImage(
                     R.drawable.baseline_block_24,
-                    "Ban Participant"
+                    context.getString(R.string.ban_participant)
                 )
             )
         }
