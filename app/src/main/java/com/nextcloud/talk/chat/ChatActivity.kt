@@ -284,8 +284,6 @@ class ChatActivity :
     private var roomPassword: String = ""
     var credentials: String? = null
     var currentConversation: ConversationModel? = null
-    private var globalLastKnownFutureMessageId = -1
-    private var globalLastKnownPastMessageId = -1
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
@@ -295,7 +293,6 @@ class ChatActivity :
     var startCallFromRoomSwitch: Boolean = false
     lateinit var roomId: String
     var voiceOnly: Boolean = true
-    var isFirstMessagesProcessing = true
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -594,12 +591,6 @@ class ChatActivity :
                         binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                     }
 
-                    // if (adapter == null) {
-                    //     initAdapter()
-                    //     binding.messagesListView.setAdapter(adapter)
-                    //     layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
-                    // }
-
                     loadAvatarForStatusBar()
                     setupSwipeToReply()
                     setActionBarTitle()
@@ -611,12 +602,6 @@ class ChatActivity :
                         withCredentials = credentials!!,
                         withUrl = urlForChatting,
                     )
-
-                    // chatViewModel.initMessagePolling(
-                    //     withCredentials = credentials!!,
-                    //     withUrl = urlForChatting,
-                    //     roomToken = currentConversation!!.token!!
-                    // )
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -2085,10 +2070,6 @@ class ChatActivity :
         }
     }
 
-    private fun hasGrantedPermissions(grantResults: IntArray): Boolean {
-        return permissionUtil.isFilesPermissionGranted()
-    }
-
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == UploadAndShareFilesWorker.REQUEST_PERMISSION) {
@@ -2452,56 +2433,6 @@ class ChatActivity :
         }
     }
 
-    private fun setupFieldsForPullChatMessages(
-        lookIntoFuture: Boolean,
-        xChatLastCommonRead: Int?,
-        setReadMarker: Boolean
-    ): HashMap<String, Int> {
-        val fieldMap = HashMap<String, Int>()
-        fieldMap["includeLastKnown"] = 0
-
-        if (!lookIntoFuture && isFirstMessagesProcessing) {
-            if (currentConversation != null) {
-                globalLastKnownFutureMessageId = currentConversation!!.lastReadMessage
-                globalLastKnownPastMessageId = currentConversation!!.lastReadMessage
-                fieldMap["includeLastKnown"] = 1
-            }
-        }
-
-        val lastKnown = if (lookIntoFuture) {
-            globalLastKnownFutureMessageId
-        } else {
-            globalLastKnownPastMessageId
-        }
-
-        fieldMap["lastKnownMessageId"] = lastKnown
-        xChatLastCommonRead?.let {
-            fieldMap["lastCommonReadId"] = it
-        }
-
-        val timeout = if (lookIntoFuture) {
-            LOOKING_INTO_FUTURE_TIMEOUT
-        } else {
-            0
-        }
-
-        fieldMap["timeout"] = timeout
-        fieldMap["limit"] = MESSAGE_PULL_LIMIT
-
-        if (lookIntoFuture) {
-            fieldMap["lookIntoFuture"] = 1
-        } else {
-            fieldMap["lookIntoFuture"] = 0
-        }
-
-        if (setReadMarker) {
-            fieldMap["setReadMarker"] = 1
-        } else {
-            fieldMap["setReadMarker"] = 0
-        }
-        return fieldMap
-    }
-
     private fun processExpiredMessages() {
         @SuppressLint("NotifyDataSetChanged")
         fun deleteExpiredMessages() {
@@ -2671,29 +2602,6 @@ class ChatActivity :
             }
 
             previousMessageId = chatMessage.jsonMessageId
-        }
-    }
-
-    private fun processHeaderChatLastGiven(response: Response<*>, isFromTheFuture: Boolean) {
-        val xChatLastGivenHeader: String? = response.headers()["X-Chat-Last-Given"]
-
-        val header = if (response.headers().size > 0 &&
-            xChatLastGivenHeader?.isNotEmpty() == true
-        ) {
-            xChatLastGivenHeader.toInt()
-        } else {
-            return
-        }
-
-        if (header > 0) {
-            if (isFromTheFuture) {
-                globalLastKnownFutureMessageId = header
-            } else {
-                if (globalLastKnownFutureMessageId == -1) {
-                    globalLastKnownFutureMessageId = header
-                }
-                globalLastKnownPastMessageId = header
-            }
         }
     }
 
