@@ -12,6 +12,8 @@
     <string name="audio_output_wired_headset">Kablolu kulaklık</string>
     <string name="avatar">Avatar</string>
     <string name="away">Uzakta</string>
+    <string name="back_button">Geri düğmesi</string>
+    <string name="ban">Yasakla</string>
     <string name="calendar">Takvim</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
     <string name="call_running_since_one_hour">Çağrı bir saattir sürüyor.</string>
@@ -21,6 +23,7 @@
     <string name="clear_status_message">Durum iletisini kaldır</string>
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
     <string name="close">Kapat</string>
+    <string name="close_icon">Kapatma simgesi</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
     <string name="conversations">Görüşmeler</string>
@@ -47,6 +50,7 @@
     <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="invisible">Görünmez</string>
+    <string name="join_open_conversations_icon">Açık görüşmelere katıl simgesi</string>
     <string name="languages_error_message">Diller alınamadı</string>
     <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
@@ -495,6 +499,7 @@
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
     <string name="nc_yes">Evet</string>
+    <string name="new_conversation_creation_icon">Yeni görüşme oluştur simgesi</string>
     <string name="next_week">Sonraki hafta</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="oneHour">1 saat</string>
@@ -551,6 +556,7 @@
     <string name="scope_toggle">Ölçeği değiştir</string>
     <string name="scope_toggle_description">%1$s gizlilik düzeyini değiştir</string>
     <string name="scroll_to_bottom">Aşağıya kaydır</string>
+    <string name="search_icon">Arama simgesi</string>
     <string name="secondsAgo">saniye önce</string>
     <string name="see_similar_system_messages">Benzer %1$s iletiye bakın</string>
     <string name="selected_list_item">Seçilmiş</string>
@@ -572,6 +578,7 @@
     <string name="shared_items_poll">Anket</string>
     <string name="shared_items_recording">Çağrı kaydı</string>
     <string name="shared_items_voice">Ses</string>
+    <string name="show_ban_reason">Yasaklama nedeni görüntülensin</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="started_a_call">bir çağrı başlattı</string>
@@ -607,6 +614,7 @@
     <string name="typing_are_typing">kişi yazıyor…</string>
     <string name="typing_is_typing">yazıyor…</string>
     <string name="typing_x_others">ve %1$s diğer kişi yazıyor…</string>
+    <string name="unban">Yasaklamayı kaldır</string>
     <string name="unread">Okunmamış</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
     <string name="user_avatar">Kullanıcı avatarı</string>

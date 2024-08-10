@@ -14,8 +14,6 @@
     <string name="away">Abwesend</string>
     <string name="back_button">Zurück-Schaltfläche</string>
     <string name="ban">Sperren</string>
-    <string name="ban_actor">Schauspieler sperren</string>
-    <string name="bans_list">Sperrliste</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
     <string name="call_running_since_one_hour">Der Anruf läuft seit einer Stunde.</string>
@@ -44,7 +42,6 @@
     <string name="emoji_category_recent">Neueste</string>
     <string name="encrypted">Verschlüsselt</string>
     <string name="error_loading_chats">Beim Laden Ihrer Chats ist ein Problem aufgetreten</string>
-    <string name="error_unbanning">Beim Aufheben der Sperre des Schauspielers ist ein Fehler aufgetreten</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
     <string name="file_list_folder">Ordner</string>
     <string name="file_list_loading">Lade …</string>
@@ -52,7 +49,6 @@
     <string name="fourHours">4 Stunden</string>
     <string name="get_invitations_error">Ausstehende Einladungen konnten nicht abgerufen werden</string>
     <string name="hint_edited_message">(Bearbeitet)</string>
-    <string name="internal_note">Interne Notiz</string>
     <string name="invisible">Unsichtbar</string>
     <string name="join_open_conversations_icon">Offenen Unterhaltungen beitreten-Symbol</string>
     <string name="languages_error_message">Sprachen konnten nicht abgerufen werden</string>
@@ -583,7 +579,6 @@
     <string name="shared_items_recording">Anrufaufnahmen</string>
     <string name="shared_items_voice">Sprachnachrichten</string>
     <string name="show_ban_reason">Sperrgrund anzeigen</string>
-    <string name="show_banned_participants">Gesperrte Teilnehmer anzeigen</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="started_a_call">hat einen Anruf begonnen</string>

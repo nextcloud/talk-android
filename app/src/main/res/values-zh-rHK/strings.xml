@@ -14,8 +14,6 @@
     <string name="away">不在</string>
     <string name="back_button">返回按鈕</string>
     <string name="ban">封禁</string>
-    <string name="ban_actor">封禁行為者</string>
-    <string name="bans_list">封禁清單</string>
     <string name="calendar">日曆</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_running_since_one_hour">請注意，通話已經持續一個小時了。</string>
@@ -44,7 +42,6 @@
     <string name="emoji_category_recent">最新</string>
     <string name="encrypted">已加密</string>
     <string name="error_loading_chats">載入您的聊天記錄時時發生問題</string>
-    <string name="error_unbanning">取消封禁行為者時發生錯誤</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">加載中 …</string>
@@ -52,7 +49,6 @@
     <string name="fourHours">4 小時</string>
     <string name="get_invitations_error">無法擷取待定的邀請</string>
     <string name="hint_edited_message">（已編輯）</string>
-    <string name="internal_note">內部備註</string>
     <string name="invisible">隱藏</string>
     <string name="join_open_conversations_icon">加入公開對話圖示</string>
     <string name="languages_error_message">無法擷取語言</string>
@@ -583,7 +579,6 @@
     <string name="shared_items_recording">通話錄音</string>
     <string name="shared_items_voice">音頻</string>
     <string name="show_ban_reason">顯示封禁原因</string>
-    <string name="show_banned_participants">顯示被封禁的參與者</string>
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>
     <string name="started_a_call">發起了通話</string>
