@@ -14,6 +14,8 @@
     <string name="away">بالخارج</string>
     <string name="back_button">زر للخلف</string>
     <string name="ban">حظر</string>
+    <string name="ban_participant">حظر مشارك</string>
+    <string name="bans_list">قائمة المحظورين</string>
     <string name="calendar">التقويم Calendar</string>
     <string name="call_more_actions_dialog_headline">خيارات الاتصال المتقدمة</string>
     <string name="call_running_since_one_hour">المكالمة ما زالت مستمرة منذ حوالي الساعة.</string>
@@ -42,6 +44,7 @@
     <string name="emoji_category_recent">مؤخّراً recednt</string>
     <string name="encrypted">مُشفّر</string>
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
+    <string name="error_unbanning">حدث خطأ عند محاولة رفع الحظر عن مشارك</string>
     <string name="failed_to_save">تعذّر حفظ %1$s</string>
     <string name="file_list_folder">مُجلّد</string>
     <string name="file_list_loading">التحميل جارٍ …</string>
@@ -49,6 +52,7 @@
     <string name="fourHours">4 ساعات</string>
     <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
     <string name="hint_edited_message">(مُعدّلة)</string>
+    <string name="internal_note">ملاحظة داخلية</string>
     <string name="invisible">غير مرئي</string>
     <string name="join_open_conversations_icon">أيقونة الانضمام لمحادثة مفتوحة</string>
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
@@ -579,6 +583,7 @@
     <string name="shared_items_recording">تسجيل المكالمة</string>
     <string name="shared_items_voice">صوت</string>
     <string name="show_ban_reason">أظهِر سبب الحظر</string>
+    <string name="show_banned_participants">عرض المشاركين المحظورين</string>
     <string name="starred">المفضلة</string>
     <string name="startCallForbidden">لا يُمكنُك إجراءُ مكالمة</string>
     <string name="started_a_call">بدأت مكالمةً</string>

@@ -14,6 +14,8 @@
     <string name="away">Iväg</string>
     <string name="back_button">Tillbakaknapp</string>
     <string name="ban">Blockera</string>
+    <string name="ban_participant">Blockera deltagare</string>
+    <string name="bans_list">Blockeringslista</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avancerade samtalsalternativ</string>
     <string name="call_running_since_one_hour">Samtalet har pågått i en timme.</string>
@@ -40,6 +42,7 @@
     <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
     <string name="error_loading_chats">Det gick inte att ladda dina chattar</string>
+    <string name="error_unbanning">Fel uppstod när deltagare skulle avblockeras</string>
     <string name="failed_to_save">Misslyckades att spara  %1$s</string>
     <string name="file_list_folder">mapp</string>
     <string name="file_list_loading">Läser in …</string>
@@ -47,6 +50,7 @@
     <string name="fourHours">4 timmar</string>
     <string name="get_invitations_error">Kunde inte hämta väntande inbjudningar</string>
     <string name="hint_edited_message">(redigerad)</string>
+    <string name="internal_note">Intern anteckning</string>
     <string name="invisible">Osynlig</string>
     <string name="languages_error_message">Kunde inte hämta språk</string>
     <string name="languages_error_title">Hämtning misslyckades</string>
@@ -569,6 +573,7 @@
     <string name="shared_items_recording">Samtalsinspelning</string>
     <string name="shared_items_voice">Röst</string>
     <string name="show_ban_reason">Visa orsak till blockering</string>
+    <string name="show_banned_participants">Visa blockerade deltagare</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
     <string name="started_a_call">startade ett samtal</string>
