@@ -14,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -93,10 +92,4 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
         ),
         maxLines = 1
     )
-    if (isAddParticipants.value) {
-        Button(onClick = {
-        }, modifier = Modifier.fillMaxWidth(0.2f)) {
-            Text(text = "Done")
-        }
-    }
 }

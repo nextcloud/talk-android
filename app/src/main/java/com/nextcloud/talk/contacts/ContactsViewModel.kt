@@ -45,8 +45,8 @@ class ContactsViewModel @Inject constructor(
         _searchState.value = searchState
     }
 
-    fun updateShareTypes(value: String) {
-        shareTypes.add(value)
+    fun updateShareTypes(value: List<String>) {
+        shareTypes.addAll(value)
     }
 
     fun updateIsAddParticipants(value: Boolean) {

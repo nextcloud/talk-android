@@ -17,6 +17,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,9 +42,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -73,6 +76,17 @@ class ContactsActivityCompose : BaseActivity() {
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
         val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
         contactsViewModel.updateIsAddParticipants(isAddParticipants)
+        if (isAddParticipants) {
+            contactsViewModel.updateShareTypes(
+                listOf(
+                    ShareType.Group.shareType,
+                    ShareType.Email.shareType,
+                    ShareType
+                        .Circle.shareType
+                )
+            )
+            contactsViewModel.getContactsFromSearchParams()
+        }
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsState()
@@ -184,17 +198,24 @@ fun Header(header: String) {
 @Composable
 fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewModel, context: Context) {
     val roomUiState by contactsViewModel.roomViewState.collectAsState()
+    val isAddParticipants = contactsViewModel.isAddParticipantsView.value
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (!contactsViewModel.isAddParticipantsView.value) {
+                if (!isAddParticipants) {
                     contactsViewModel.createRoom(
                         CompanionClass.ROOM_TYPE_ONE_ONE,
                         contact.source!!,
                         contact.id!!,
                         null
                     )
+                } else {
+                    if (isSelected) {
+                        selectedContacts.remove(contact.id!!)
+                    } else {
+                        selectedContacts.add(contact.id!!)
+                    }
                 }
             },
         verticalAlignment = Alignment.CenterVertically
@@ -208,6 +229,17 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
             modifier = Modifier.size(width = 45.dp, height = 45.dp)
         )
         Text(modifier = Modifier.padding(16.dp), text = contact.label!!)
+        if (isAddParticipants) {
+            if (isSelected) {
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
+                    contentDescription = "Selected",
+                    tint = Color.Blue,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
+        }
     }
     when (roomUiState) {
         is RoomUiState.Success -> {
@@ -253,17 +285,33 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
             }) {
                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
             }
+            if (contactsViewModel.isAddParticipantsView.value) {
+                Text(
+                    text = stringResource(id = R.string.nc_contacts_done),
+                    modifier = Modifier.clickable {
+                    }
+                )
+            }
         }
     )
     if (searchState.value) {
-        DisplaySearch(
-            text = searchQuery,
-            onTextChange = { searchQuery ->
-                contactsViewModel.updateSearchQuery(query = searchQuery)
-                contactsViewModel.getContactsFromSearchParams()
-            },
-            contactsViewModel = contactsViewModel
-        )
+        Row {
+            DisplaySearch(
+                text = searchQuery,
+                onTextChange = { searchQuery ->
+                    contactsViewModel.updateSearchQuery(query = searchQuery)
+                    contactsViewModel.getContactsFromSearchParams()
+                },
+                contactsViewModel = contactsViewModel
+            )
+            if (contactsViewModel.isAddParticipantsView.value) {
+                Text(
+                    text = stringResource(id = R.string.nc_contacts_done),
+                    modifier = Modifier.clickable {
+                    }
+                )
+            }
+        }
     }
 }
 
