@@ -10,6 +10,7 @@ package com.nextcloud.talk.data.database.model
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -27,7 +28,7 @@ import com.nextcloud.talk.models.json.participants.Participant
         )
     ],
     indices = [
-        androidx.room.Index(value = ["accountId"])
+        Index(value = ["accountId"])
     ]
 )
 data class ConversationEntity(

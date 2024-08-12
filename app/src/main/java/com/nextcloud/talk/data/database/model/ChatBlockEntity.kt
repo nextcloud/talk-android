@@ -9,21 +9,24 @@ package com.nextcloud.talk.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
-
-// ChatBlockEntity.kt:26: internalConversationId column references a foreign key but it is not part of an index. This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
 
 @Entity(
     tableName = "ChatBlocks",
     foreignKeys = [
-    androidx.room.ForeignKey(
-        entity = ConversationEntity::class,
-        parentColumns = arrayOf("internalId"),
-        childColumns = arrayOf("internalConversationId"),
-        onDelete = androidx.room.ForeignKey.CASCADE,
-        onUpdate = androidx.room.ForeignKey.CASCADE
-    )
+        ForeignKey(
+            entity = ConversationEntity::class,
+            parentColumns = arrayOf("internalId"),
+            childColumns = arrayOf("internalConversationId"),
+            onDelete = ForeignKey.CASCADE,
+            onUpdate = ForeignKey.CASCADE
+        )
     ],
+    indices = [
+        Index(value = ["internalConversationId"])
+    ]
 )
 data class ChatBlockEntity(
     @PrimaryKey(autoGenerate = true)
