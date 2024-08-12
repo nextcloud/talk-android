@@ -487,7 +487,7 @@
     <string name="nc_upload_in_progess">Laddar upp</string>
     <string name="nc_upload_notification_text">%1$s till %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Ta en bild</string>
-    <string name="nc_upload_video_from_cam">Ta video</string>
+    <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
     <string name="nc_video_filename">Videoinspelning från %1$s</string>
     <string name="nc_voice_message_filename">Talk-inspelning från %1$s (%2$s)</string>
