@@ -10,7 +10,7 @@ package com.nextcloud.talk.contacts
 enum class ShareType(val shareType: String) {
     User("0"),
     Group("1"),
-    Email(""),
-    Circle(""),
-    Federated("")
+    Email("4"),
+    Remote("5"),
+    Circle("7")
 }

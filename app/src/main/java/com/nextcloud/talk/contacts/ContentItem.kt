@@ -25,6 +25,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -72,6 +74,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
             }
             ).toString()
     }
+    val selectedContacts = remember { mutableStateListOf<String>() }
     LazyColumn(
         modifier = Modifier
             .padding(8.dp)
@@ -89,7 +92,12 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
                 }
             }
             items(contactsForInitial) { contact ->
-                ContactItemRow(contact = contact, contactsViewModel = contactsViewModel, context = context)
+                ContactItemRow(
+                    contact = contact,
+                    contactsViewModel = contactsViewModel,
+                    context = context,
+                    selectedContacts = selectedContacts
+                )
                 Log.d(CompanionClass.TAG, "Contacts:$contact")
             }
         }
