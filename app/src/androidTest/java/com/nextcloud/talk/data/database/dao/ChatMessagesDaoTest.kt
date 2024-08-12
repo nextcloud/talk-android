@@ -12,11 +12,14 @@ import android.util.Log
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.runner.AndroidJUnit4
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -178,7 +181,48 @@ class ChatMessagesDaoTest {
             internalId = "$accountId@$token",
             accountId = accountId,
             token = token,
-            name = roomName
+            name = roomName,
+            actorId = "",
+            actorType = "",
+            messageExpiration = 0,
+            unreadMessages = 0,
+            statusMessage = null,
+            lastMessage = null,
+            canDeleteConversation = false,
+            canLeaveConversation = false,
+            lastCommonReadMessage = 0,
+            lastReadMessage = 0,
+            type = ConversationEnums.ConversationType.DUMMY,
+            status = "",
+            callFlag = 1,
+            favorite = false,
+            lastPing = 0,
+            hasCall = false,
+            sessionId = "",
+            canStartCall = false,
+            lastActivity = 0,
+            remoteServer = "",
+            avatarVersion = "",
+            unreadMentionDirect = false,
+            callRecording = 1,
+            callStartTime = 0,
+            statusClearAt = 0,
+            unreadMention = false,
+            lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY,
+            lobbyTimer = 0,
+            objectType = ConversationEnums.ObjectType.FILE,
+            statusIcon = null,
+            description = "",
+            displayName = "",
+            hasPassword = false,
+            permissions = 0,
+            notificationCalls = 0,
+            remoteToken = "",
+            notificationLevel = ConversationEnums.NotificationLevel.ALWAYS,
+            conversationReadOnlyState = ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY,
+            hasCustomAvatar = false,
+            participantType = Participant.ParticipantType.DUMMY,
+            recordingConsentRequired = 1
         )
     }
 
@@ -200,7 +244,25 @@ class ChatMessagesDaoTest {
             id = id,
             message = message,
             reactions = reactions,
-            reactionsSelf = reactionsSelf
+            reactionsSelf = reactionsSelf,
+            deleted = false,
+            token = "",
+            actorId = "",
+            actorType = "",
+            accountId = 1,
+            messageParameters = null,
+            messageType = "",
+            parentMessageId = null,
+            systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+            replyable = false,
+            timestamp = 0,
+            expirationTimestamp = 0,
+            actorDisplayName = "",
+            lastEditActorType = null,
+            lastEditTimestamp = null,
+            renderMarkdown = true,
+            lastEditActorId = "",
+            lastEditActorDisplayName = ""
         )
         return entity
     }
