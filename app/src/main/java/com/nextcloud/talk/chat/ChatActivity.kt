@@ -322,6 +322,7 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            chatViewModel.handleChatOnBackPress()
             if (currentlyPlayedVoiceMessage != null) {
                 stopMediaPlayer(currentlyPlayedVoiceMessage!!)
             }
@@ -2690,7 +2691,7 @@ class ChatActivity :
             withUrl = urlForChatting,
             withCredentials = credentials!!,
             withMessageLimit = MESSAGE_PULL_LIMIT,
-            roomToken = currentConversation!!.token!!
+            roomToken = currentConversation!!.token
         )
     }
 

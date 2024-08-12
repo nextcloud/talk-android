@@ -632,6 +632,10 @@ class ChatViewModel @Inject constructor(
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
+    fun handleChatOnBackPress() {
+        chatRepository.handleChatOnBackPress()
+    }
+
     suspend fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
         flow {
             val bundle = Bundle()
@@ -640,7 +644,7 @@ class ChatViewModel @Inject constructor(
                 BundleKeys.KEY_CREDENTIALS,
                 userProvider.currentUser.blockingGet().getCredentials()
             )
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token!!)
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
 
             val message = chatRepository.getMessage(messageId, bundle)
             emit(message.first())

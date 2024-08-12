@@ -31,6 +31,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -186,8 +187,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val networkParams = Bundle()
 
-            while (!itIsPaused) {
-                if (!monitor.isOnline.first()) Thread.sleep(500)
+            while (true) {
+                if (!monitor.isOnline.first() || itIsPaused) Thread.sleep(HALF_SECOND)
 
                 // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
                 networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
@@ -449,9 +450,11 @@ class OfflineFirstChatRepository @Inject constructor(
                     // the parent message is always the newest state, no matter how old the system message is.
                     // that's why we can just take the parent, update it in DB and update the UI
                     messageJson.parentMessage?.let { parentMessageJson ->
-                        val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
-                        chatDao.upsertChatMessage(parentMessageEntity)
-                        _updateMessageFlow.emit(parentMessageEntity.asModel())
+                        parentMessageJson.message?.let {
+                            val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
+                            chatDao.upsertChatMessage(parentMessageEntity)
+                            _updateMessageFlow.emit(parentMessageEntity.asModel())
+                        }
                     }
                 }
 
@@ -612,6 +615,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun handleOnStop() {
         // unused atm
+    }
+
+    override fun handleChatOnBackPress() {
+        scope.cancel()
     }
 
     companion object {

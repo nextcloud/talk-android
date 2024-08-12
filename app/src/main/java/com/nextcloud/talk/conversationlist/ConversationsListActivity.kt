@@ -374,8 +374,8 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     // Update Conversations
+                    conversationItems.clear()
                     conversationItemsWithHeader.clear()
-                    conversationItems.clear() // fixme remove this
                     for (conversation in list) {
                         addToConversationItems(conversation)
                     }
