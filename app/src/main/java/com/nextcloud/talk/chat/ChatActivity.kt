@@ -323,6 +323,7 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
+            chatViewModel.handleChatOnBackPress()
             if (currentlyPlayedVoiceMessage != null) {
                 stopMediaPlayer(currentlyPlayedVoiceMessage!!)
             }
@@ -601,10 +602,12 @@ class ChatActivity :
 
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-                    chatViewModel.loadMessages(
-                        withCredentials = credentials!!,
-                        withUrl = urlForChatting
-                    )
+                    if (adapter?.isEmpty == true) {
+                        chatViewModel.loadMessages(
+                            withCredentials = credentials!!,
+                            withUrl = urlForChatting
+                        )
+                    }
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -2717,7 +2720,7 @@ class ChatActivity :
             withUrl = urlForChatting,
             withCredentials = credentials!!,
             withMessageLimit = MESSAGE_PULL_LIMIT,
-            roomToken = currentConversation!!.token!!
+            roomToken = currentConversation!!.token
         )
     }
 

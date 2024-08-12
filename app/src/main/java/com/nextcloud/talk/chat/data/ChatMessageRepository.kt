@@ -65,4 +65,9 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Gets a individual message.
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
+
+    /**
+     * Destroys unused resources.
+     */
+    fun handleChatOnBackPress()
 }
