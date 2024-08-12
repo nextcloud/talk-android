@@ -140,7 +140,7 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                    // bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)

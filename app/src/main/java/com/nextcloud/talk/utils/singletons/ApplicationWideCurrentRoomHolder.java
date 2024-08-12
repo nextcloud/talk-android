@@ -14,7 +14,7 @@ public class ApplicationWideCurrentRoomHolder {
 
     public static final String TAG = "ApplicationWideCurrentRoomHolder";
     private static final ApplicationWideCurrentRoomHolder holder = new ApplicationWideCurrentRoomHolder();
-    private String currentRoomId = "";
+//    private String currentRoomId = "";
     private String currentRoomToken = "";
     private User userInRoom = new User();
     private boolean inCall = false;
@@ -29,7 +29,7 @@ public class ApplicationWideCurrentRoomHolder {
 
     public void clear() {
         Log.d(TAG, "ApplicationWideCurrentRoomHolder was cleared");
-        currentRoomId = "";
+//        currentRoomId = "";
         userInRoom = new User();
         inCall = false;
         isDialing = false;
@@ -45,13 +45,13 @@ public class ApplicationWideCurrentRoomHolder {
         this.currentRoomToken = currentRoomToken;
     }
 
-    public String getCurrentRoomId() {
-        return currentRoomId;
-    }
-
-    public void setCurrentRoomId(String currentRoomId) {
-        this.currentRoomId = currentRoomId;
-    }
+//    public String getCurrentRoomId() {
+//        return currentRoomId;
+//    }
+//
+//    public void setCurrentRoomId(String currentRoomId) {
+//        this.currentRoomId = currentRoomId;
+//    }
 
     public User getUserInRoom() {
         return userInRoom;

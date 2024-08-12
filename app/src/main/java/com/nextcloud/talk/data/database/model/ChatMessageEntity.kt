@@ -47,7 +47,7 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType? = null,
     @ColumnInfo(name = "messageType") var messageType: String? = null,
     @ColumnInfo(name = "isReplyable") var replyable: Boolean = false,
-    // TODO: add "referenceId"
+    // missing/not needed: referenceId
     @ColumnInfo(name = "message") var message: String? = null,
     @ColumnInfo(name = "messageParameters") var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
     @ColumnInfo(name = "expirationTimestamp") var expirationTimestamp: Int = 0,
@@ -60,5 +60,5 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "lastEditActorDisplayName") var lastEditActorDisplayName: String? = null,
     @ColumnInfo(name = "lastEditTimestamp") var lastEditTimestamp: Long? = 0,
     @ColumnInfo(name = "deleted") var deleted: Boolean = false,
-    // TODO: add "silent"
+    // missing/not needed: silent
 )

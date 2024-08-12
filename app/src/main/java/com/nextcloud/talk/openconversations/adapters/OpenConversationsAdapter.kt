@@ -76,6 +76,6 @@ object ConversationsCallback : DiffUtil.ItemCallback<OpenConversation>() {
     }
 
     override fun areContentsTheSame(oldItem: OpenConversation, newItem: OpenConversation): Boolean {
-        return oldItem.roomId == newItem.roomId
+        return oldItem.roomToken == newItem.roomToken
     }
 }

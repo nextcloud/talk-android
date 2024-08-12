@@ -312,7 +312,7 @@ class ConversationsListBottomDialog(
 
     private fun markConversationAsRead() {
         val messageId = if (conversation.remoteServer.isNullOrEmpty()) {
-            conversation.lastMessageViaConversationList?.id
+            conversation.lastMessage?.id
         } else {
             null
         }

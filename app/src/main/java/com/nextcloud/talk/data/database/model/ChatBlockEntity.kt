@@ -11,6 +11,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
+// ChatBlockEntity.kt:26: internalConversationId column references a foreign key but it is not part of an index. This may trigger full table scans whenever parent table is modified so you are highly advised to create an index that covers this column.
+
 @Entity(
     tableName = "ChatBlocks",
     foreignKeys = [

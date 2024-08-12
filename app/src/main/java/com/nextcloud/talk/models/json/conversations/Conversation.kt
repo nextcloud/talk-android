@@ -28,8 +28,8 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 @JsonObject
 data class Conversation(
-    @JsonField(name = ["id"])
-    var roomId: String? = null,
+    // @JsonField(name = ["id"])
+    // var roomId: String? = null,
     @JsonField(name = ["token"])
     var token: String? = null,
     @JsonField(name = ["name"])
@@ -67,7 +67,6 @@ data class Conversation(
     @JsonField(name = ["unreadMention"])
     var unreadMention: Boolean = false,
 
-    // TODO get this from Json -> map to ChatMessage and fix error
     @JsonField(name = ["lastMessage"])
     var lastMessage: ChatMessageJson? = null,
 

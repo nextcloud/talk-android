@@ -775,7 +775,7 @@ class ConversationsListActivity :
 
     private fun addToConversationItems(conversation: ConversationModel) {
         if (intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) != null &&
-            intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) == conversation.roomId
+            intent.getStringExtra(KEY_FORWARD_HIDE_SOURCE_ROOM) == conversation.token
         ) {
             return
         }
@@ -1456,7 +1456,7 @@ class ConversationsListActivity :
 
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
-        bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
+        // bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (selectedMessageId != null) {
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)

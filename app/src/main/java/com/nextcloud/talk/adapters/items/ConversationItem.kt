@@ -54,7 +54,7 @@ class ConversationItem(
     ISectionable<ConversationItemViewHolder, GenericTextHeaderItem?>,
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
-    private val chatMessage = model.lastMessageViaConversationList?.asModel()
+    private val chatMessage = model.lastMessage?.asModel()
 
     constructor(
         conversation: ConversationModel,
