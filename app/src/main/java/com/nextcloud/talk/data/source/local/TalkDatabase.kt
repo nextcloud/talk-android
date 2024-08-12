@@ -49,9 +49,9 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 10,
+    version = 11,
     autoMigrations = [
-        AutoMigration(from = 9, to = 10)
+        AutoMigration(from = 9, to = 10),
     ],
     exportSchema = true
 )
@@ -108,8 +108,13 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
-                // .openHelperFactory(factory) // TODO: uncomment when offline support is production ready!!!!!!!
-                .addMigrations(Migrations.MIGRATION_6_8, Migrations.MIGRATION_7_8, Migrations.MIGRATION_8_9)
+                .openHelperFactory(factory)
+                .addMigrations(
+                    Migrations.MIGRATION_6_8,
+                    Migrations.MIGRATION_7_8,
+                    Migrations.MIGRATION_8_9,
+                    Migrations.MIGRATION_10_11
+                )
                 .allowMainThreadQueries()
                 .addCallback(
                     object : RoomDatabase.Callback() {
