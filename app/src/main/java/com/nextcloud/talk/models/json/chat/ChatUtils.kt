@@ -33,7 +33,7 @@ class ChatUtils {
                         resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
                     } else if (type == "geo-location") {
                         individualHashMap["name"]
-                    } else if (individualHashMap?.containsKey("link") == true) {
+                    } else if (individualHashMap.containsKey("link") == true) {
                         if (type == "file") {
                             resultMessage?.replace("{$key}", individualHashMap["name"].toString())
                         } else {

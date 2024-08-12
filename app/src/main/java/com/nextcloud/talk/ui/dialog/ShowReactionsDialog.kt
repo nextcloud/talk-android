@@ -25,10 +25,11 @@ import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -42,7 +43,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ShowReactionsDialog(
-    activity: Activity,
+    val activity: Activity,
     private val roomToken: String,
     private val chatMessage: ChatMessage,
     private val user: User?,
@@ -86,7 +87,7 @@ class ShowReactionsDialog(
         if (chatMessage.reactions != null && chatMessage.reactions!!.isNotEmpty()) {
             var reactionsTotal = 0
             for ((emoji, amount) in chatMessage.reactions!!) {
-                reactionsTotal = reactionsTotal.plus(amount as Int)
+                reactionsTotal = reactionsTotal.plus(amount)
                 val tab: TabLayout.Tab = binding.emojiReactionsTabs.newTab() // Create a new Tab names "First Tab"
 
                 val itemBinding = ItemReactionsTabBinding.inflate(layoutInflater)
@@ -163,7 +164,7 @@ class ShowReactionsDialog(
                             }
                         }
 
-                        Collections.sort(reactionVoters, ReactionComparator(user?.userId))
+                        Collections.sort(reactionVoters, ReactionComparator(user.userId))
 
                         adapter?.list?.addAll(reactionVoters)
                         adapter?.notifyDataSetChanged()
@@ -185,13 +186,13 @@ class ShowReactionsDialog(
     override fun onClick(reactionItem: ReactionItem) {
         if (hasChatPermission && reactionItem.reactionVoter.actorId?.equals(user?.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
+            adapter?.list?.remove(reactionItem)
             dismiss()
         }
     }
 
     private fun deleteReaction(message: ChatMessage, emoji: String) {
         val credentials = ApiUtils.getCredentials(user?.username, user?.token)
-
         ncApi.deleteReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
@@ -210,6 +211,7 @@ class ShowReactionsDialog(
 
                 override fun onNext(genericOverall: GenericOverall) {
                     Log.d(TAG, "deleted reaction: $emoji")
+                    (activity as ChatActivity).updateUiToDeleteReaction(message, emoji)
                 }
 
                 override fun onError(e: Throwable) {

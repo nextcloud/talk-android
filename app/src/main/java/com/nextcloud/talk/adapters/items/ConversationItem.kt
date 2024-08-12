@@ -22,21 +22,21 @@ import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.data.model.ChatMessage.MessageType
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationWithLastMessageBinding
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.models.json.chat.ChatMessage
-import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.Conversation.ConversationType
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.DisplayUtils
-
+import com.nextcloud.talk.utils.SpreedFeatures
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import eu.davidea.flexibleadapter.items.IFilterable
@@ -46,7 +46,7 @@ import eu.davidea.viewholders.FlexibleViewHolder
 import java.util.regex.Pattern
 
 class ConversationItem(
-    val model: Conversation,
+    val model: ConversationModel,
     private val user: User,
     private val context: Context,
     private val viewThemeUtils: ViewThemeUtils
@@ -54,9 +54,10 @@ class ConversationItem(
     ISectionable<ConversationItemViewHolder, GenericTextHeaderItem?>,
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
+    private val chatMessage = model.lastMessage?.asModel()
 
     constructor(
-        conversation: Conversation,
+        conversation: ConversationModel,
         user: User,
         activityContext: Context,
         genericTextHeaderItem: GenericTextHeaderItem?,
@@ -127,7 +128,7 @@ class ConversationItem(
         } else {
             holder.binding.favoriteConversationImageView.visibility = View.GONE
         }
-        if (ConversationType.ROOM_SYSTEM !== model.type) {
+        if (ConversationEnums.ConversationType.ROOM_SYSTEM !== model.type) {
             val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext)
             holder.binding.userStatusImage.visibility = View.VISIBLE
             holder.binding.userStatusImage.setImageDrawable(
@@ -149,13 +150,13 @@ class ConversationItem(
     private fun showAvatar(holder: ConversationItemViewHolder) {
         holder.binding.dialogAvatar.visibility = View.VISIBLE
         var shouldLoadAvatar = shouldLoadAvatar(holder)
-        if (ConversationType.ROOM_SYSTEM == model.type) {
+        if (ConversationEnums.ConversationType.ROOM_SYSTEM == model.type) {
             holder.binding.dialogAvatar.loadSystemAvatar()
             shouldLoadAvatar = false
         }
         if (shouldLoadAvatar) {
             when (model.type) {
-                ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
+                ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
                         holder.binding.dialogAvatar.loadUserAvatar(
                             user,
@@ -168,11 +169,12 @@ class ConversationItem(
                     }
                 }
 
-                ConversationType.ROOM_GROUP_CALL,
-                ConversationType.FORMER_ONE_TO_ONE,
-                ConversationType.ROOM_PUBLIC_CALL ->
+                ConversationEnums.ConversationType.ROOM_GROUP_CALL,
+                ConversationEnums.ConversationType.FORMER_ONE_TO_ONE,
+                ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
                     holder.binding.dialogAvatar.loadConversationAvatar(user, model, false, viewThemeUtils)
-                ConversationType.NOTE_TO_SELF ->
+
+                ConversationEnums.ConversationType.NOTE_TO_SELF ->
                     holder.binding.dialogAvatar.loadNoteToSelfAvatar()
 
                 else -> holder.binding.dialogAvatar.visibility = View.GONE
@@ -182,7 +184,7 @@ class ConversationItem(
 
     private fun shouldLoadAvatar(holder: ConversationItemViewHolder): Boolean {
         return when (model.objectType) {
-            Conversation.ObjectType.SHARE_PASSWORD -> {
+            ConversationEnums.ObjectType.SHARE_PASSWORD -> {
                 holder.binding.dialogAvatar.setImageDrawable(
                     ContextCompat.getDrawable(
                         context,
@@ -192,7 +194,7 @@ class ConversationItem(
                 false
             }
 
-            Conversation.ObjectType.FILE -> {
+            ConversationEnums.ObjectType.FILE -> {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     holder.binding.dialogAvatar.loadUserAvatar(
                         viewThemeUtils.talk.themePlaceholderAvatar(
@@ -213,7 +215,7 @@ class ConversationItem(
     }
 
     private fun setLastMessage(holder: ConversationItemViewHolder, appContext: Context) {
-        if (model.lastMessage != null) {
+        if (chatMessage != null) {
             holder.binding.dialogDate.visibility = View.VISIBLE
             holder.binding.dialogDate.text = DateUtils.getRelativeTimeSpanString(
                 model.lastActivity * MILLIES,
@@ -221,20 +223,20 @@ class ConversationItem(
                 0,
                 DateUtils.FORMAT_ABBREV_RELATIVE
             )
-            if (!TextUtils.isEmpty(model.lastMessage!!.systemMessage) ||
-                ConversationType.ROOM_SYSTEM === model.type
+            if (!TextUtils.isEmpty(chatMessage?.systemMessage) ||
+                ConversationEnums.ConversationType.ROOM_SYSTEM === model.type
             ) {
-                holder.binding.dialogLastMessage.text = model.lastMessage!!.text
+                holder.binding.dialogLastMessage.text = chatMessage?.text
             } else {
-                model.lastMessage!!.activeUser = user
+                chatMessage?.activeUser = user
 
                 val text =
                     if (
-                        model.lastMessage!!.getCalculateMessageType() === ChatMessage.MessageType.REGULAR_TEXT_MESSAGE
+                        chatMessage?.messageType === MessageType.REGULAR_TEXT_MESSAGE.toString()
                     ) {
                         calculateRegularLastMessageText(appContext)
                     } else {
-                        model.lastMessage!!.lastMessageDisplayText
+                        lastMessageDisplayText
                     }
                 holder.binding.dialogLastMessage.text = text
             }
@@ -245,16 +247,16 @@ class ConversationItem(
     }
 
     private fun calculateRegularLastMessageText(appContext: Context): String {
-        return if (model.lastMessage!!.actorId == user.userId) {
+        return if (chatMessage?.actorId == user.userId) {
             String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
-                model.lastMessage!!.lastMessageDisplayText
+                lastMessageDisplayText
             )
         } else {
             val authorDisplayName =
-                if (!TextUtils.isEmpty(model.lastMessage!!.actorDisplayName)) {
-                    model.lastMessage!!.actorDisplayName
-                } else if ("guests" == model.lastMessage!!.actorType) {
+                if (!TextUtils.isEmpty(chatMessage?.actorDisplayName)) {
+                    chatMessage?.actorDisplayName
+                } else if ("guests" == chatMessage?.actorType) {
                     appContext.getString(R.string.nc_guest)
                 } else {
                     ""
@@ -262,7 +264,7 @@ class ConversationItem(
             String.format(
                 appContext.getString(R.string.nc_formatted_message),
                 authorDisplayName,
-                model.lastMessage!!.lastMessageDisplayText
+                lastMessageDisplayText
             )
         }
     }
@@ -286,7 +288,7 @@ class ConversationItem(
             context,
             R.color.conversation_unread_bubble_text
         )
-        if (model.type === ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (model.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             viewThemeUtils.material.colorChipBackground(holder.binding.dialogUnreadBubble)
         } else if (model.unreadMention) {
             if (hasSpreedFeatureCapability(user.capabilities?.spreedCapability!!, SpreedFeatures.DIRECT_MENTION_FLAG)) {
@@ -322,6 +324,94 @@ class ConversationItem(
     override fun setHeader(header: GenericTextHeaderItem?) {
         this.header = header
     }
+
+    private val lastMessageDisplayText: String
+        get() {
+            if (chatMessage?.getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
+                chatMessage?.getCalculateMessageType() == MessageType.SYSTEM_MESSAGE ||
+                chatMessage?.getCalculateMessageType() == MessageType.SINGLE_LINK_MESSAGE
+            ) {
+                return chatMessage.text
+            } else {
+                if (MessageType.SINGLE_LINK_GIPHY_MESSAGE == chatMessage?.getCalculateMessageType() ||
+                    MessageType.SINGLE_LINK_TENOR_MESSAGE == chatMessage?.getCalculateMessageType() ||
+                    MessageType.SINGLE_LINK_GIF_MESSAGE == chatMessage?.getCalculateMessageType()
+                ) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_a_gif_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_a_gif),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_attachment_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_location_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_location),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.VOICE_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_voice_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_voice),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_audio_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_audio),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_VIDEO_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_a_video_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_a_video),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.SINGLE_LINK_IMAGE_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_an_image_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                } else if (MessageType.POLL_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_poll_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_poll),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
+                }
+            }
+            return ""
+        }
 
     class ConversationItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
         var binding: RvItemConversationWithLastMessageBinding

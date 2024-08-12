@@ -46,7 +46,7 @@ import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
@@ -288,10 +288,10 @@ class ContactsActivity :
 
                 // if there are more participants to add, ask for roomName and add them one after another
             } else {
-                val roomType: Conversation.ConversationType = if (isPublicCall) {
-                    Conversation.ConversationType.ROOM_PUBLIC_CALL
+                val roomType: ConversationEnums.ConversationType = if (isPublicCall) {
+                    ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
                 } else {
-                    Conversation.ConversationType.ROOM_GROUP_CALL
+                    ConversationEnums.ConversationType.ROOM_GROUP_CALL
                 }
                 val userIdsArray = ArrayList(selectedUserIds)
                 val groupIdsArray = ArrayList(selectedGroupIds)
@@ -338,7 +338,7 @@ class ContactsActivity :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                    // bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)
@@ -415,7 +415,7 @@ class ContactsActivity :
             searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions: Int = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
-                appPreferences?.isKeyboardIncognito == true
+                appPreferences.isKeyboardIncognito == true
             ) {
                 imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
@@ -804,7 +804,7 @@ class ContactsActivity :
                 override fun onNext(roomOverall: RoomOverall) {
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomOverall.ocs!!.data!!.token)
-                    bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
+                    // bundle.putString(BundleKeys.KEY_ROOM_ID, roomOverall.ocs!!.data!!.roomId)
 
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)

@@ -57,11 +57,9 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
-import com.nextcloud.talk.models.domain.LobbyState
-import com.nextcloud.talk.models.domain.NotificationLevel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.Participant
@@ -350,7 +348,7 @@ class ConversationInfoActivity :
             binding.webinarInfoView.webinarSettings.visibility = VISIBLE
 
             val isLobbyOpenToModeratorsOnly =
-                conversation!!.lobbyState == LobbyState.LOBBY_STATE_MODERATORS_ONLY
+                conversation!!.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY
             binding.webinarInfoView.lobbySwitch.isChecked = isLobbyOpenToModeratorsOnly
 
             reconfigureLobbyTimerView()
@@ -386,8 +384,8 @@ class ConversationInfoActivity :
     }
 
     private fun webinaryRoomType(conversation: ConversationModel): Boolean {
-        return conversation.type == ConversationType.ROOM_GROUP_CALL ||
-            conversation.type == ConversationType.ROOM_PUBLIC_CALL
+        return conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+            conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
     }
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
@@ -402,9 +400,9 @@ class ConversationInfoActivity :
         }
 
         conversation!!.lobbyState = if (isChecked) {
-            LobbyState.LOBBY_STATE_MODERATORS_ONLY
+            ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY
         } else {
-            LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
+            ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS
         }
 
         if (
@@ -760,13 +758,13 @@ class ConversationInfoActivity :
                 binding.deleteConversationAction.visibility = VISIBLE
             }
 
-            if (ConversationType.ROOM_SYSTEM == conversation!!.type) {
+            if (ConversationEnums.ConversationType.ROOM_SYSTEM == conversation!!.type) {
                 binding.notificationSettingsView.callNotificationsSwitch.visibility = GONE
             }
 
             binding.listBansButton.visibility =
                 if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities) &&
-                    ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation!!.type
+                    ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation!!.type
                 ) {
                     VISIBLE
                 } else {
@@ -922,7 +920,7 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.alpha = 1.0f
 
-                if (conversation!!.notificationLevel != NotificationLevel.DEFAULT) {
+                if (conversation!!.notificationLevel != ConversationEnums.NotificationLevel.DEFAULT) {
                     val stringValue: String =
                         when (
                             DomainEnumNotificationLevelConverter()
@@ -952,7 +950,7 @@ class ConversationInfoActivity :
     }
 
     private fun setProperNotificationValue(conversation: ConversationModel?) {
-        if (conversation!!.type == ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.setText(
                     resources.getString(R.string.nc_notify_me_always)
@@ -971,7 +969,10 @@ class ConversationInfoActivity :
 
     private fun loadConversationAvatar() {
         when (conversation!!.type) {
-            ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(conversation!!.name)) {
+            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> if (!TextUtils.isEmpty(
+                    conversation!!.name
+                )
+            ) {
                 conversation!!.name?.let {
                     binding.avatarImage.loadUserAvatar(
                         conversationUser,
@@ -982,7 +983,7 @@ class ConversationInfoActivity :
                 }
             }
 
-            ConversationType.ROOM_GROUP_CALL, ConversationType.ROOM_PUBLIC_CALL -> {
+            ConversationEnums.ConversationType.ROOM_GROUP_CALL, ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> {
                 binding.avatarImage.loadConversationAvatar(
                     conversationUser,
                     conversation!!,
@@ -991,11 +992,11 @@ class ConversationInfoActivity :
                 )
             }
 
-            ConversationType.ROOM_SYSTEM -> {
+            ConversationEnums.ConversationType.ROOM_SYSTEM -> {
                 binding.avatarImage.loadSystemAvatar()
             }
 
-            ConversationType.NOTE_TO_SELF -> {
+            ConversationEnums.ConversationType.NOTE_TO_SELF -> {
                 binding.avatarImage.loadNoteToSelfAvatar()
             }
 

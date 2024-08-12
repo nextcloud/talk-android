@@ -12,7 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.chat.data.ChatRepository
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ConversationInfoViewModel @Inject constructor(
-    private val chatRepository: ChatRepository
+    private val chatNetworkDataSource: ChatNetworkDataSource
 ) : ViewModel() {
 
     object LifeCycleObserver : DefaultLifecycleObserver {
@@ -92,7 +92,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
-        chatRepository.getRoom(user, token)
+        chatNetworkDataSource.getRoom(user, token)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
@@ -104,7 +104,7 @@ class ConversationInfoViewModel @Inject constructor(
         if (conversationModel.remoteServer.isNullOrEmpty()) {
             _getCapabilitiesViewState.value = GetCapabilitiesSuccessState(user.capabilities!!.spreedCapability!!)
         } else {
-            chatRepository.getCapabilities(user, token)
+            chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
@@ -130,7 +130,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun listBans(user: User, token: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatRepository.listBans(user.getCredentials(), url)
+        chatNetworkDataSource.listBans(user.getCredentials(), url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<List<TalkBan>> {
@@ -154,7 +154,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatRepository.banActor(user.getCredentials(), url, actorType, actorId, internalNote)
+        chatNetworkDataSource.banActor(user.getCredentials(), url, actorType, actorId, internalNote)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<TalkBan> {
@@ -178,7 +178,7 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun unbanActor(user: User, token: String, banId: Int) {
         val url = ApiUtils.getUrlForUnban(user.baseUrl!!, token, banId)
-        chatRepository.unbanActor(user.getCredentials(), url)
+        chatNetworkDataSource.unbanActor(user.getCredentials(), url)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(object : Observer<GenericOverall> {

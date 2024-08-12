@@ -19,8 +19,8 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogPasswordBinding
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ConversationUtils
 import io.reactivex.Observer
@@ -47,7 +47,7 @@ class GuestAccessHelper(
             binding.guestAccessView.guestAccessSettings.visibility = View.GONE
         }
 
-        if (conversation.type == ConversationType.ROOM_PUBLIC_CALL) {
+        if (conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
             binding.guestAccessView.allowGuestsSwitch.isChecked = true
             showAllOptions()
             if (conversation.hasPassword) {

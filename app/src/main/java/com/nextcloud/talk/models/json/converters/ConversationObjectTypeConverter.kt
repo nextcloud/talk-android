@@ -7,27 +7,27 @@
 package com.nextcloud.talk.models.json.converters
 
 import com.bluelinelabs.logansquare.typeconverters.StringBasedTypeConverter
-import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 
-class ConversationObjectTypeConverter : StringBasedTypeConverter<Conversation.ObjectType>() {
-    override fun getFromString(string: String?): Conversation.ObjectType {
+class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnums.ObjectType>() {
+    override fun getFromString(string: String?): ConversationEnums.ObjectType {
         return when (string) {
-            "share:password" -> Conversation.ObjectType.SHARE_PASSWORD
-            "room" -> Conversation.ObjectType.ROOM
-            "file" -> Conversation.ObjectType.FILE
-            else -> Conversation.ObjectType.DEFAULT
+            "share:password" -> ConversationEnums.ObjectType.SHARE_PASSWORD
+            "room" -> ConversationEnums.ObjectType.ROOM
+            "file" -> ConversationEnums.ObjectType.FILE
+            else -> ConversationEnums.ObjectType.DEFAULT
         }
     }
 
-    override fun convertToString(`object`: Conversation.ObjectType?): String {
+    override fun convertToString(`object`: ConversationEnums.ObjectType?): String {
         if (`object` == null) {
             return ""
         }
 
         return when (`object`) {
-            Conversation.ObjectType.SHARE_PASSWORD -> "share:password"
-            Conversation.ObjectType.ROOM -> "room"
-            Conversation.ObjectType.FILE -> "file"
+            ConversationEnums.ObjectType.SHARE_PASSWORD -> "share:password"
+            ConversationEnums.ObjectType.ROOM -> "room"
+            ConversationEnums.ObjectType.FILE -> "file"
             else -> ""
         }
     }

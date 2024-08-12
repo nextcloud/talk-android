@@ -2,120 +2,88 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2021 Tim Krüger <t@timkrueger.me>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.models.json.chat
+package com.nextcloud.talk.chat.data.model
 
-import android.os.Parcelable
 import android.text.TextUtils
 import android.util.Log
-import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
-import com.bluelinelabs.logansquare.annotation.JsonObject
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
+import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.converters.EnumSystemMessageTypeConverter
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
-import kotlinx.parcelize.Parcelize
 import java.security.MessageDigest
 import java.util.Date
 
-@Parcelize
-@JsonObject
 data class ChatMessage(
-    @JsonIgnore
     var isGrouped: Boolean = false,
 
-    @JsonIgnore
     var isOneToOneConversation: Boolean = false,
 
-    @JsonIgnore
     var isFormerOneToOneConversation: Boolean = false,
 
-    @JsonIgnore
     var activeUser: User? = null,
 
-    @JsonIgnore
     var selectedIndividualHashMap: Map<String?, String?>? = null,
 
-    @JsonIgnore
     var isDeleted: Boolean = false,
 
-    @JsonField(name = ["id"])
     var jsonMessageId: Int = 0,
 
-    @JsonIgnore
     var previousMessageId: Int = -1,
 
-    @JsonField(name = ["token"])
     var token: String? = null,
 
     // guests or users
-    @JsonField(name = ["actorType"])
     var actorType: String? = null,
 
-    @JsonField(name = ["actorId"])
     var actorId: String? = null,
 
     // send when crafting a message
-    @JsonField(name = ["actorDisplayName"])
     var actorDisplayName: String? = null,
 
-    @JsonField(name = ["timestamp"])
     var timestamp: Long = 0,
 
     // send when crafting a message, max 1000 lines
-    @JsonField(name = ["message"])
     var message: String? = null,
 
-    @JsonField(name = ["messageParameters"])
     var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
 
-    @JsonField(name = ["systemMessage"], typeConverter = EnumSystemMessageTypeConverter::class)
     var systemMessageType: SystemMessageType? = null,
 
-    @JsonField(name = ["isReplyable"])
     var replyable: Boolean = false,
 
-    @JsonField(name = ["parent"])
-    var parentMessage: ChatMessage? = null,
+    var parentMessageId: Long? = null,
 
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
-    @JsonField(name = ["messageType"])
     var messageType: String? = null,
 
-    @JsonField(name = ["reactions"])
     var reactions: LinkedHashMap<String, Int>? = null,
 
-    @JsonField(name = ["reactionsSelf"])
     var reactionsSelf: ArrayList<String>? = null,
 
-    @JsonField(name = ["expirationTimestamp"])
     var expirationTimestamp: Int = 0,
 
-    @JsonField(name = ["markdown"])
     var renderMarkdown: Boolean? = null,
 
-    @JsonField(name = ["lastEditActorDisplayName"])
     var lastEditActorDisplayName: String? = null,
 
-    @JsonField(name = ["lastEditActorId"])
     var lastEditActorId: String? = null,
 
-    @JsonField(name = ["lastEditActorType"])
     var lastEditActorType: String? = null,
 
-    @JsonField(name = ["lastEditTimestamp"])
-    var lastEditTimestamp: Long = 0,
+    var lastEditTimestamp: Long? = 0,
 
     var isDownloadingVoiceMessage: Boolean = false,
 
@@ -145,7 +113,7 @@ data class ChatMessage(
 
     var openWhenDownloaded: Boolean = true
 
-) : Parcelable, MessageContentType, MessageContentType.Image {
+) : MessageContentType, MessageContentType.Image {
 
     var extractedUrlToPreview: String? = null
 
@@ -282,95 +250,7 @@ data class ChatMessage(
         }
     }
 
-    val lastMessageDisplayText: String
-        get() {
-            if (getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
-                getCalculateMessageType() == MessageType.SYSTEM_MESSAGE ||
-                getCalculateMessageType() == MessageType.SINGLE_LINK_MESSAGE
-            ) {
-                return text
-            } else {
-                if (MessageType.SINGLE_LINK_GIPHY_MESSAGE == getCalculateMessageType() ||
-                    MessageType.SINGLE_LINK_TENOR_MESSAGE == getCalculateMessageType() ||
-                    MessageType.SINGLE_LINK_GIF_MESSAGE == getCalculateMessageType()
-                ) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_a_gif_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_a_gif),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_an_attachment_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_location_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_location),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.VOICE_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_voice_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_voice),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_an_audio_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_audio),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.SINGLE_LINK_VIDEO_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_a_video_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_a_video),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.SINGLE_LINK_IMAGE_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_an_image_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_image),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                } else if (MessageType.POLL_MESSAGE == getCalculateMessageType()) {
-                    return if (actorId == activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_poll_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_poll),
-                            getNullsafeActorDisplayName()
-                        )
-                    }
-                }
-            }
-            return ""
-        }
-
-    private fun getNullsafeActorDisplayName() =
+    fun getNullsafeActorDisplayName() =
         if (!TextUtils.isEmpty(actorDisplayName)) {
             actorDisplayName
         } else {

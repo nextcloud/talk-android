@@ -7,7 +7,6 @@
 package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.chat.data.ChatRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -21,7 +20,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import retrofit2.Response
 
-class NetworkChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
+class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
     override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
@@ -29,7 +28,7 @@ class NetworkChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
         return ncApi.getRoom(
             credentials,
             ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
+        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
     override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> {
@@ -50,7 +49,7 @@ class NetworkChatRepositoryImpl(private val ncApi: NcApi) : ChatRepository {
             credentials,
             ApiUtils.getUrlForParticipantsActive(apiVersion, user.baseUrl!!, roomToken),
             roomPassword
-        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!) }
+        ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
     override fun setReminder(

@@ -27,6 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
+import android.view.animation.Animation.AnimationListener
 import android.view.animation.LinearInterpolator
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -40,6 +41,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -50,10 +52,11 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
-import com.nextcloud.talk.models.json.chat.ChatMessage
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
@@ -70,6 +73,9 @@ import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.util.Objects
 import javax.inject.Inject
 
@@ -100,6 +106,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     lateinit var binding: FragmentMessageInputBinding
     private var typedWhileTypingTimerIsRunning: Boolean = false
@@ -157,6 +166,79 @@ class MessageInputFragment : Fragment() {
                 is ChatViewModel.LeaveRoomSuccessState -> sendStopTypingMessage()
                 else -> {}
             }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            var wasOnline = true
+            networkMonitor.isOnline.onEach { isOnline ->
+                val connectionGained = (!wasOnline && isOnline)
+                wasOnline = !binding.fragmentMessageInputView.isShown
+                Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
+
+                // FIXME timeout exception - maybe something to do with the room?
+                // handleMessageQueue(isOnline)
+                handleUI(isOnline, connectionGained)
+            }.collect()
+        }
+    }
+
+    private fun handleUI(isOnline: Boolean, connectionGained: Boolean) {
+        if (isOnline) {
+            if (connectionGained) {
+                val animation: Animation = AlphaAnimation(1.0f, 0.0f)
+                animation.duration = 3000
+                animation.interpolator = LinearInterpolator()
+                binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityGreen))
+                binding.fragmentConnectionLost.text = getString(R.string.connection_gained)
+                binding.fragmentConnectionLost.startAnimation(animation)
+                binding.fragmentConnectionLost.animation.setAnimationListener(object : AnimationListener {
+                    override fun onAnimationStart(animation: Animation?) {
+                        // unused atm
+                    }
+
+                    override fun onAnimationEnd(animation: Animation?) {
+                        binding.fragmentConnectionLost.visibility = View.GONE
+                        binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
+                        binding.fragmentConnectionLost.text =
+                            getString(R.string.connection_lost_sent_messages_are_queued)
+                    }
+
+                    override fun onAnimationRepeat(animation: Animation?) {
+                        // unused atm
+                    }
+                })
+            }
+
+            binding.fragmentMessageInputView.attachmentButton.isEnabled = true
+            binding.fragmentMessageInputView.recordAudioButton.isEnabled = true
+            binding.fragmentMessageInputView.messageInput.isEnabled = true
+        } else {
+            binding.fragmentConnectionLost.clearAnimation()
+            binding.fragmentConnectionLost.visibility = View.GONE
+            binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
+            binding.fragmentConnectionLost.text =
+                getString(R.string.connection_lost_sent_messages_are_queued)
+            binding.fragmentConnectionLost.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.attachmentButton.isEnabled = false
+            binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
+            binding.fragmentMessageInputView.messageInput.isEnabled = false
+        }
+    }
+
+    private fun handleMessageQueue(isOnline: Boolean) {
+        if (isOnline) {
+            chatActivity.messageInputViewModel.switchToMessageQueue(false)
+            chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
+                chatActivity.roomToken,
+                chatActivity.conversationUser!!.getCredentials(),
+                ApiUtils.getUrlForChat(
+                    chatActivity.chatApiVersion,
+                    chatActivity.conversationUser!!.baseUrl!!,
+                    chatActivity.roomToken
+                )
+            )
+        } else {
+            chatActivity.messageInputViewModel.switchToMessageQueue(true)
         }
     }
 
@@ -694,6 +776,7 @@ class MessageInputFragment : Fragment() {
 
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
+            chatActivity.roomToken,
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,

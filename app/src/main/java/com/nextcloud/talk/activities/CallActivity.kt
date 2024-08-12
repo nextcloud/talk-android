@@ -1734,7 +1734,7 @@ class CallActivity : CallBaseActivity() {
     private fun setInitialApplicationWideCurrentRoomHolderValues(conversation: Conversation) {
         ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
         ApplicationWideCurrentRoomHolder.getInstance().session = conversation.sessionId
-        ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
+        // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = conversation.roomId
         ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = conversation.token
         ApplicationWideCurrentRoomHolder.getInstance().callStartTime = conversation.callStartTime
     }

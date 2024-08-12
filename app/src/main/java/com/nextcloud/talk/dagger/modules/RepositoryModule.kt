@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2022-2024 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro@alvarobrey.com>
  * SPDX-FileCopyrightText: 2022 Nextcloud GmbH
@@ -10,17 +10,25 @@
 package com.nextcloud.talk.dagger.modules
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.chat.data.ChatMessageRepository
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
+import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.api.NcApiCoroutines
-import com.nextcloud.talk.chat.data.ChatRepository
-import com.nextcloud.talk.chat.data.network.NetworkChatRepositoryImpl
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversation.repository.ConversationRepository
 import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepositoryImpl
-import com.nextcloud.talk.conversationlist.data.ConversationsListRepository
-import com.nextcloud.talk.conversationlist.data.ConversationsListRepositoryImpl
+import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.ConversationsNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
+import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNetwork
+import com.nextcloud.talk.data.database.dao.ChatBlocksDao
+import com.nextcloud.talk.data.database.dao.ChatMessagesDao
+import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepositoryImpl
@@ -51,6 +59,7 @@ import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -97,8 +106,12 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideReactionsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ReactionsRepository {
-        return ReactionsRepositoryImpl(ncApi, userProvider)
+    fun provideReactionsRepository(
+        ncApi: NcApi,
+        userProvider: CurrentUserProviderNew,
+        dao: ChatMessagesDao
+    ): ReactionsRepository {
+        return ReactionsRepositoryImpl(ncApi, userProvider, dao)
     }
 
     @Provides
@@ -128,13 +141,13 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideConversationsListRepository(ncApi: NcApi): ConversationsListRepository {
-        return ConversationsListRepositoryImpl(ncApi)
+    fun provideChatNetworkDataSource(ncApi: NcApi): ChatNetworkDataSource {
+        return RetrofitChatNetwork(ncApi)
     }
 
     @Provides
-    fun provideChatRepository(ncApi: NcApi): ChatRepository {
-        return NetworkChatRepositoryImpl(ncApi)
+    fun provideConversationsNetworkDataSource(ncApi: NcApi): ConversationsNetworkDataSource {
+        return RetrofitConversationsNetwork(ncApi)
     }
 
     @Provides
@@ -153,6 +166,35 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
         return InvitationsRepositoryImpl(ncApi)
+    }
+
+    @Provides
+    fun provideOfflineFirstChatRepository(
+        chatMessagesDao: ChatMessagesDao,
+        chatBlocksDao: ChatBlocksDao,
+        dataSource: ChatNetworkDataSource,
+        appPreferences: AppPreferences,
+        networkMonitor: NetworkMonitor,
+        userProvider: CurrentUserProviderNew
+    ): ChatMessageRepository {
+        return OfflineFirstChatRepository(
+            chatMessagesDao,
+            chatBlocksDao,
+            dataSource,
+            appPreferences,
+            networkMonitor,
+            userProvider
+        )
+    }
+
+    @Provides
+    fun provideOfflineFirstConversationsRepository(
+        dao: ConversationsDao,
+        dataSource: ConversationsNetworkDataSource,
+        networkMonitor: NetworkMonitor,
+        currentUserProviderNew: CurrentUserProviderNew
+    ): OfflineConversationsRepository {
+        return OfflineFirstConversationsRepository(dao, dataSource, networkMonitor, currentUserProviderNew)
     }
 
     @Provides

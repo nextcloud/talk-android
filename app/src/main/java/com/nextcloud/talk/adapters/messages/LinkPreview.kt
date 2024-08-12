@@ -14,7 +14,7 @@ import android.view.View
 import coil.load
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.databinding.ReferenceInsideMessageBinding
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer

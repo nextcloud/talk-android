@@ -16,6 +16,9 @@ import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
+import com.nextcloud.talk.data.database.dao.ChatBlocksDao;
+import com.nextcloud.talk.data.database.dao.ChatMessagesDao;
+import com.nextcloud.talk.data.database.dao.ConversationsDao;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.generic.GenericMeta;
 import com.nextcloud.talk.models.json.generic.GenericOverall;
@@ -46,17 +49,19 @@ import retrofit2.Retrofit;
 public class AccountRemovalWorker extends Worker {
     public static final String TAG = "AccountRemovalWorker";
 
-    @Inject
-    UserManager userManager;
+    @Inject UserManager userManager;
 
-    @Inject
-    ArbitraryStorageManager arbitraryStorageManager;
+    @Inject ArbitraryStorageManager arbitraryStorageManager;
 
-    @Inject
-    Retrofit retrofit;
+    @Inject Retrofit retrofit;
 
-    @Inject
-    OkHttpClient okHttpClient;
+    @Inject OkHttpClient okHttpClient;
+
+    @Inject ChatMessagesDao chatMessagesDao;
+
+    @Inject ConversationsDao conversationsDao;
+
+    @Inject ChatBlocksDao chatBlocksDao;
 
     NcApi ncApi;
 

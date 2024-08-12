@@ -40,7 +40,7 @@ class PowerManagerUtils {
 
     init {
         sharedApplication!!.componentApplication.inject(this)
-        val pm = context!!.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val pm = context!!.getSystemService(POWER_SERVICE) as PowerManager
         fullLock = pm.newWakeLock(
             PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
             "nctalk:fullwakelock"

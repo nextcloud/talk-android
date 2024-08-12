@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 10,
-    "identityHash": "1b2dab0ea495c45c9c9ee6e64ba74039",
+    "identityHash": "c07a2543aa583e08e7b3208f44fcc7ac",
     "entities": [
       {
         "tableName": "User",
@@ -135,12 +135,575 @@
         },
         "indices": [],
         "foreignKeys": []
+      },
+      {
+        "tableName": "Conversations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER NOT NULL, `token` TEXT, `name` TEXT, `displayName` TEXT, `description` TEXT, `type` TEXT, `lastPing` INTEGER NOT NULL, `participantType` TEXT, `hasPassword` INTEGER NOT NULL, `sessionId` TEXT, `actorId` TEXT, `actorType` TEXT, `isFavorite` INTEGER NOT NULL, `lastActivity` INTEGER NOT NULL, `unreadMessages` INTEGER NOT NULL, `unreadMention` INTEGER NOT NULL, `lastMessageJson` TEXT, `objectType` TEXT, `notificationLevel` TEXT, `readOnly` TEXT, `lobbyState` TEXT, `lobbyTimer` INTEGER, `lastReadMessage` INTEGER NOT NULL, `lastCommonReadMessage` INTEGER NOT NULL, `hasCall` INTEGER NOT NULL, `callFlag` INTEGER NOT NULL, `canStartCall` INTEGER NOT NULL, `canLeaveConversation` INTEGER, `canDeleteConversation` INTEGER, `unreadMentionDirect` INTEGER, `notificationCalls` INTEGER, `permissions` INTEGER NOT NULL, `messageExpiration` INTEGER NOT NULL, `status` TEXT, `statusIcon` TEXT, `statusMessage` TEXT, `statusClearAt` INTEGER, `callRecording` INTEGER NOT NULL, `avatarVersion` TEXT, `isCustomAvatar` INTEGER, `callStartTime` INTEGER, `recordingConsent` INTEGER NOT NULL, `remoteServer` TEXT, `remoteToken` TEXT, PRIMARY KEY(`internalId`), FOREIGN KEY(`accountId`) REFERENCES `User`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "internalId",
+            "columnName": "internalId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "type",
+            "columnName": "type",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastPing",
+            "columnName": "lastPing",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "participantType",
+            "columnName": "participantType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hasPassword",
+            "columnName": "hasPassword",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sessionId",
+            "columnName": "sessionId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorId",
+            "columnName": "actorId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorType",
+            "columnName": "actorType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "favorite",
+            "columnName": "isFavorite",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastActivity",
+            "columnName": "lastActivity",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unreadMessages",
+            "columnName": "unreadMessages",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "unreadMention",
+            "columnName": "unreadMention",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastMessageJson",
+            "columnName": "lastMessageJson",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "objectType",
+            "columnName": "objectType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "notificationLevel",
+            "columnName": "notificationLevel",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "conversationReadOnlyState",
+            "columnName": "readOnly",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lobbyState",
+            "columnName": "lobbyState",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lobbyTimer",
+            "columnName": "lobbyTimer",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastReadMessage",
+            "columnName": "lastReadMessage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "lastCommonReadMessage",
+            "columnName": "lastCommonReadMessage",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasCall",
+            "columnName": "hasCall",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "callFlag",
+            "columnName": "callFlag",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "canStartCall",
+            "columnName": "canStartCall",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "canLeaveConversation",
+            "columnName": "canLeaveConversation",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "canDeleteConversation",
+            "columnName": "canDeleteConversation",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "unreadMentionDirect",
+            "columnName": "unreadMentionDirect",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "notificationCalls",
+            "columnName": "notificationCalls",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "permissions",
+            "columnName": "permissions",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "messageExpiration",
+            "columnName": "messageExpiration",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "statusIcon",
+            "columnName": "statusIcon",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "statusMessage",
+            "columnName": "statusMessage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "statusClearAt",
+            "columnName": "statusClearAt",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "callRecording",
+            "columnName": "callRecording",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "avatarVersion",
+            "columnName": "avatarVersion",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "hasCustomAvatar",
+            "columnName": "isCustomAvatar",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "callStartTime",
+            "columnName": "callStartTime",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "recordingConsentRequired",
+            "columnName": "recordingConsent",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "remoteServer",
+            "columnName": "remoteServer",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "remoteToken",
+            "columnName": "remoteToken",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "internalId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_Conversations_accountId",
+            "unique": false,
+            "columnNames": [
+              "accountId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_Conversations_accountId` ON `${TABLE_NAME}` (`accountId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "User",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "accountId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ChatMessages",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER, `token` TEXT, `id` INTEGER NOT NULL, `internalConversationId` TEXT, `actorType` TEXT, `actorId` TEXT, `actorDisplayName` TEXT, `timestamp` INTEGER NOT NULL, `systemMessage` TEXT, `messageType` TEXT, `isReplyable` INTEGER NOT NULL, `message` TEXT, `messageParameters` TEXT, `expirationTimestamp` INTEGER NOT NULL, `parent` INTEGER, `reactions` TEXT, `reactionsSelf` TEXT, `markdown` INTEGER, `lastEditActorType` TEXT, `lastEditActorId` TEXT, `lastEditActorDisplayName` TEXT, `lastEditTimestamp` INTEGER, `deleted` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "internalId",
+            "columnName": "internalId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "internalConversationId",
+            "columnName": "internalConversationId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorType",
+            "columnName": "actorType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorId",
+            "columnName": "actorId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "actorDisplayName",
+            "columnName": "actorDisplayName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "timestamp",
+            "columnName": "timestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "systemMessageType",
+            "columnName": "systemMessage",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "messageType",
+            "columnName": "messageType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "replyable",
+            "columnName": "isReplyable",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "messageParameters",
+            "columnName": "messageParameters",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "expirationTimestamp",
+            "columnName": "expirationTimestamp",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "parentMessageId",
+            "columnName": "parent",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reactions",
+            "columnName": "reactions",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "reactionsSelf",
+            "columnName": "reactionsSelf",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "renderMarkdown",
+            "columnName": "markdown",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastEditActorType",
+            "columnName": "lastEditActorType",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastEditActorId",
+            "columnName": "lastEditActorId",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastEditActorDisplayName",
+            "columnName": "lastEditActorDisplayName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "lastEditTimestamp",
+            "columnName": "lastEditTimestamp",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "internalId"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_ChatMessages_internalId",
+            "unique": true,
+            "columnNames": [
+              "internalId"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ChatMessages_internalId` ON `${TABLE_NAME}` (`internalId`)"
+          },
+          {
+            "name": "index_ChatMessages_internalConversationId",
+            "unique": false,
+            "columnNames": [
+              "internalConversationId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_ChatMessages_internalConversationId` ON `${TABLE_NAME}` (`internalConversationId`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Conversations",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "internalConversationId"
+            ],
+            "referencedColumns": [
+              "internalId"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ChatBlocks",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internalConversationId` TEXT NOT NULL, `accountId` INTEGER, `token` TEXT, `oldestMessageId` INTEGER NOT NULL, `newestMessageId` INTEGER NOT NULL, `hasHistory` INTEGER NOT NULL, FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "internalConversationId",
+            "columnName": "internalConversationId",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "accountId",
+            "columnName": "accountId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "token",
+            "columnName": "token",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "oldestMessageId",
+            "columnName": "oldestMessageId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "newestMessageId",
+            "columnName": "newestMessageId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "hasHistory",
+            "columnName": "hasHistory",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": [
+          {
+            "table": "Conversations",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "internalConversationId"
+            ],
+            "referencedColumns": [
+              "internalId"
+            ]
+          }
+        ]
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1b2dab0ea495c45c9c9ee6e64ba74039')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c07a2543aa583e08e7b3208f44fcc7ac')"
     ]
   }
 }

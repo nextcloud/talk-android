@@ -8,22 +8,23 @@ package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
 import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationEnums;
 
-public class EnumLobbyStateConverter extends IntBasedTypeConverter<Conversation.LobbyState> {
+public class EnumLobbyStateConverter extends IntBasedTypeConverter<ConversationEnums.LobbyState> {
     @Override
-    public Conversation.LobbyState getFromInt(int i) {
+    public ConversationEnums.LobbyState getFromInt(int i) {
         switch (i) {
             case 0:
-                return Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS;
+                return ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS;
             case 1:
-                return Conversation.LobbyState.LOBBY_STATE_MODERATORS_ONLY;
+                return ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY;
             default:
-                return Conversation.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS;
+                return ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS;
         }
     }
 
     @Override
-    public int convertToInt(Conversation.LobbyState object) {
+    public int convertToInt(ConversationEnums.LobbyState object) {
         switch (object) {
             case LOBBY_STATE_ALL_PARTICIPANTS:
                 return 0;

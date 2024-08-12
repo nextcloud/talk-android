@@ -23,16 +23,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.ConversationReadOnlyState
-import com.nextcloud.talk.models.domain.ConversationType
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessage
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -89,7 +88,7 @@ class MessageActionsDialog(
 
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
 
-    private val isMessageEditable = CapabilitiesUtil.hasSpreedFeatureCapability(
+    private val isMessageEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
     ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
@@ -108,7 +107,7 @@ class MessageActionsDialog(
         initMenuItemCopy(!message.isDeleted)
         val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
         chatActivity.chatViewModel.checkForNoteToSelf(
-            ApiUtils.getCredentials(user!!.username, user.token)!!,
+            ApiUtils.getCredentials(user.username, user.token)!!,
             ApiUtils.getUrlForRooms(
                 apiVersion,
                 user.baseUrl
@@ -136,13 +135,13 @@ class MessageActionsDialog(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                 CapabilitiesUtil.isTranslationsSupported(spreedCapabilities)
         )
-        initMenuEditorDetails(message.lastEditTimestamp != 0L && !message.isDeleted)
+        initMenuEditorDetails(message.lastEditTimestamp!! != 0L && !message.isDeleted)
         initMenuReplyToMessage(message.replyable && hasChatPermission)
         initMenuReplyPrivately(
             message.replyable &&
                 hasUserId(user) &&
                 hasUserActorId(message) &&
-                currentConversation?.type != ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         )
         initMenuEditMessage(isMessageEditable)
         initMenuDeleteMessage(showMessageDeletionButton)
@@ -276,7 +275,7 @@ class MessageActionsDialog(
     }
 
     private fun isPermitted(hasChatPermission: Boolean): Boolean {
-        return hasChatPermission && ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+        return hasChatPermission && ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
     }
 
@@ -367,7 +366,7 @@ class MessageActionsDialog(
     private fun initMenuEditorDetails(showEditorDetails: Boolean) {
         if (showEditorDetails) {
             val editedTime = dateUtils.getLocalDateTimeStringFromTimestamp(
-                message.lastEditTimestamp *
+                message.lastEditTimestamp!! *
                     DateConstants.SECOND_DIVIDER
             )
             val lastEditorName = message.lastEditActorDisplayName ?: ""

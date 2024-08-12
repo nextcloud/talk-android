@@ -220,7 +220,7 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
             val conversation = (roomUiState as RoomUiState.Success).conversation
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
-            bundle.putString(BundleKeys.KEY_ROOM_ID, conversation?.roomId)
+            // bundle.putString(BundleKeys.KEY_ROOM_ID, conversation?.roomId)
             val chatIntent = Intent(context, ChatActivity::class.java)
             chatIntent.putExtras(bundle)
             chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

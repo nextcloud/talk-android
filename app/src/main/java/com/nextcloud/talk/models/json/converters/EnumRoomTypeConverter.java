@@ -7,31 +7,31 @@
 package com.nextcloud.talk.models.json.converters;
 
 import com.bluelinelabs.logansquare.typeconverters.IntBasedTypeConverter;
-import com.nextcloud.talk.models.json.conversations.Conversation;
+import com.nextcloud.talk.models.json.conversations.ConversationEnums;
 
-public class EnumRoomTypeConverter extends IntBasedTypeConverter<Conversation.ConversationType> {
+public class EnumRoomTypeConverter extends IntBasedTypeConverter<ConversationEnums.ConversationType> {
     @Override
-    public Conversation.ConversationType getFromInt(int i) {
+    public ConversationEnums.ConversationType getFromInt(int i) {
         switch (i) {
             case 1:
-                return Conversation.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL;
+                return ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL;
             case 2:
-                return Conversation.ConversationType.ROOM_GROUP_CALL;
+                return ConversationEnums.ConversationType.ROOM_GROUP_CALL;
             case 3:
-                return Conversation.ConversationType.ROOM_PUBLIC_CALL;
+                return ConversationEnums.ConversationType.ROOM_PUBLIC_CALL;
             case 4:
-                return Conversation.ConversationType.ROOM_SYSTEM;
+                return ConversationEnums.ConversationType.ROOM_SYSTEM;
             case 5:
-                return Conversation.ConversationType.FORMER_ONE_TO_ONE;
+                return ConversationEnums.ConversationType.FORMER_ONE_TO_ONE;
             case 6:
-                return Conversation.ConversationType.NOTE_TO_SELF;
+                return ConversationEnums.ConversationType.NOTE_TO_SELF;
             default:
-                return Conversation.ConversationType.DUMMY;
+                return ConversationEnums.ConversationType.DUMMY;
         }
     }
 
     @Override
-    public int convertToInt(Conversation.ConversationType object) {
+    public int convertToInt(ConversationEnums.ConversationType object) {
         switch (object) {
             case DUMMY:
                 return 0;

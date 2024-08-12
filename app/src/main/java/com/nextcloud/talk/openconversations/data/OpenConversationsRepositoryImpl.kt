@@ -32,7 +32,7 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
         return OpenConversationsModel(
             conversations.map { conversation ->
                 OpenConversation(
-                    conversation.roomId!!,
+                    // conversation.roomId!!,
                     conversation.token!!,
                     conversation.name!!,
                     conversation.description ?: ""

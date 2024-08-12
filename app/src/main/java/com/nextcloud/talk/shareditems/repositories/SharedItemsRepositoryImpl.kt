@@ -26,7 +26,6 @@ import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import io.reactivex.Observable
 import retrofit2.Response
-import java.util.HashMap
 import java.util.Locale
 import javax.inject.Inject
 
@@ -79,7 +78,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                     val previewAvailable =
                         "yes".equals(fileParameters["preview-available"]!!, ignoreCase = true)
 
-                    items[it.value.id] = SharedFileItem(
+                    items[it.value.id.toString()] = SharedFileItem(
                         fileParameters["id"]!!,
                         fileParameters["name"]!!,
                         actorParameters["id"]!!,
@@ -94,7 +93,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                     )
                 } else if (it.value.messageParameters?.containsKey("object") == true) {
                     val objectParameters = it.value.messageParameters!!["object"]!!
-                    items[it.value.id] = itemFromObject(objectParameters, actorParameters, dateTime)
+                    items[it.value.id.toString()] = itemFromObject(objectParameters, actorParameters, dateTime)
                 } else {
                     Log.w(TAG, "Item contains neither 'file' or 'object'.")
                 }
