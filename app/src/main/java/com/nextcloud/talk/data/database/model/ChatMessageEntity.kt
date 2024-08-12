@@ -31,6 +31,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
     ]
 )
 data class ChatMessageEntity(
+    // MOST IMPORTANT ATTRIBUTES
+
     @PrimaryKey
     // accountId@roomtoken@messageId
     @ColumnInfo(name = "internalId") var internalId: String,
@@ -40,25 +42,28 @@ data class ChatMessageEntity(
     // accountId@roomtoken
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
 
-    @ColumnInfo(name = "actorType") var actorType: String,
-    @ColumnInfo(name = "actorId") var actorId: String,
     @ColumnInfo(name = "actorDisplayName") var actorDisplayName: String,
-    @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
-    @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
-    @ColumnInfo(name = "messageType") var messageType: String,
-    @ColumnInfo(name = "isReplyable") var replyable: Boolean = false,
-    // missing/not needed: referenceId
     @ColumnInfo(name = "message") var message: String,
-    @ColumnInfo(name = "messageParameters") var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
+
+    // OTHER ATTRIBUTES IN ALPHABETICAL ORDER
+
+    @ColumnInfo(name = "actorId") var actorId: String,
+    @ColumnInfo(name = "actorType") var actorType: String,
+    @ColumnInfo(name = "deleted") var deleted: Boolean = false,
     @ColumnInfo(name = "expirationTimestamp") var expirationTimestamp: Int = 0,
+    @ColumnInfo(name = "isReplyable") var replyable: Boolean = false,
+    @ColumnInfo(name = "lastEditActorDisplayName") var lastEditActorDisplayName: String? = null,
+    @ColumnInfo(name = "lastEditActorId") var lastEditActorId: String? = null,
+    @ColumnInfo(name = "lastEditActorType") var lastEditActorType: String? = null,
+    @ColumnInfo(name = "lastEditTimestamp") var lastEditTimestamp: Long? = 0,
+    @ColumnInfo(name = "markdown") var renderMarkdown: Boolean? = false,
+    @ColumnInfo(name = "messageParameters") var messageParameters: HashMap<String?, HashMap<String?, String?>>? = null,
+    @ColumnInfo(name = "messageType") var messageType: String,
     @ColumnInfo(name = "parent") var parentMessageId: Long? = null,
     @ColumnInfo(name = "reactions") var reactions: LinkedHashMap<String, Int>? = null,
     @ColumnInfo(name = "reactionsSelf") var reactionsSelf: ArrayList<String>? = null,
-    @ColumnInfo(name = "markdown") var renderMarkdown: Boolean? = false,
-    @ColumnInfo(name = "lastEditActorType") var lastEditActorType: String? = null,
-    @ColumnInfo(name = "lastEditActorId") var lastEditActorId: String? = null,
-    @ColumnInfo(name = "lastEditActorDisplayName") var lastEditActorDisplayName: String? = null,
-    @ColumnInfo(name = "lastEditTimestamp") var lastEditTimestamp: Long? = 0,
-    @ColumnInfo(name = "deleted") var deleted: Boolean = false,
+    @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
+    @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
+    // missing/not needed: referenceId
     // missing/not needed: silent
 )
