@@ -20,7 +20,7 @@ interface ConversationsDao {
     fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>>
 
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
-    fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity>
+    fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
     @Upsert
     fun upsertConversations(conversationEntities: List<ConversationEntity>)
