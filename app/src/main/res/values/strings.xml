@@ -796,7 +796,7 @@ How to translate with transifex:
     <string name="show_banned_participants">Show banned participants</string>
     <string name="bans_list">Bans list</string>
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
-    <string name="connection_gained">Connection gained</string>
+    <string name="connection_established">Connection established</string>
     <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="unban">Unban</string>
     <string name="internal_note">Internal note</string>
