@@ -7,9 +7,9 @@
 
 package com.nextcloud.talk.data.database.mappers
 
-import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.chat.data.model.ChatMessage
 
 fun ChatMessageJson.asEntity(accountId: Long) =
     ChatMessageEntity(
