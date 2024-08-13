@@ -81,8 +81,7 @@ class ContactsActivityCompose : BaseActivity() {
                 listOf(
                     ShareType.Group.shareType,
                     ShareType.Email.shareType,
-                    ShareType
-                        .Circle.shareType
+                    ShareType.Circle.shareType
                 )
             )
             contactsViewModel.getContactsFromSearchParams()
@@ -212,10 +211,11 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
                     )
                 } else {
                     if (isSelected) {
-                        selectedContacts.remove(contact.id!!)
+                        selectedContacts.remove(contact)
                     } else {
-                        selectedContacts.add(contact.id!!)
+                        selectedContacts.add(contact)
                     }
+                    contactsViewModel.updateSelectedParticipants(selectedContacts)
                 }
             },
         verticalAlignment = Alignment.CenterVertically
@@ -271,7 +271,6 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
 
     TopAppBar(
         title = { Text(text = title) },
-
         navigationIcon = {
             IconButton(onClick = {
                 (context as? Activity)?.finish()
@@ -374,8 +373,6 @@ fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsVie
         }
     }
 }
-
-
 
 class CompanionClass {
     companion object {
