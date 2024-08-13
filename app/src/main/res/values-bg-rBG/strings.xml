@@ -43,6 +43,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Първо най-големият</string>
     <string name="menu_item_sort_by_size_smallest_first">Първо най-малкият</string>
+    <string name="message_deleted_by_you">Съобщение, изтрито от вас</string>
     <string name="message_poll_tap_to_open">Докосване, за отворяне на анкета</string>
     <string name="message_search_begin_empty">Няма резултати от търсенето</string>
     <string name="message_search_begin_typing">Започнете да пишете, за търсене …</string>

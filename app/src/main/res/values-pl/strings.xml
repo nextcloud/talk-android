@@ -63,6 +63,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
+    <string name="message_deleted_by_you">Wiadomość usunięta przez Ciebie</string>
     <string name="message_expiration_title">Wygaśnięcie wiadomości</string>
     <string name="message_last_edited_by">Edytowany przez %1$s</string>
     <string name="message_poll_tap_to_open">Dotknij, aby otworzyć sondę</string>

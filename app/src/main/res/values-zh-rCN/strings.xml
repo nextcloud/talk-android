@@ -54,6 +54,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">大文件在前</string>
     <string name="menu_item_sort_by_size_smallest_first">小文件在前</string>
+    <string name="message_deleted_by_you">消息被你删除了</string>
     <string name="message_expiration_title">消息过期</string>
     <string name="message_poll_tap_to_open">点击打开投票</string>
     <string name="message_search_begin_empty">无搜索结果</string>

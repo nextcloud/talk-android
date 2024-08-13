@@ -45,6 +45,7 @@
     <string name="menu_item_sort_by_name_z_a">po abecedi padajoče Ž–A</string>
     <string name="menu_item_sort_by_size_biggest_first">najprej največje</string>
     <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
+    <string name="message_deleted_by_you">Sporočilo ste izbrisali</string>
     <string name="message_expiration_title">Pretek sporočila</string>
     <string name="message_poll_tap_to_open">Pritisnite za prikaz ankete</string>
     <string name="message_search_begin_empty">Ni zadetkov iskanja</string>

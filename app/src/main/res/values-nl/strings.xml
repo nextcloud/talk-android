@@ -43,6 +43,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
+    <string name="message_deleted_by_you">Bericht verwijderd door jou</string>
     <string name="message_search_begin_empty">Geen zoekresultaten</string>
     <string name="messages">Berichten</string>
     <string name="nc_Server_account_imported">Het geselecteerde account is nu geïmporteerd en beschikbaar</string>

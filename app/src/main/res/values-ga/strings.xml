@@ -14,6 +14,8 @@
     <string name="away">Amach</string>
     <string name="back_button">Cnaipe ar ais</string>
     <string name="ban">Bac</string>
+    <string name="ban_participant">Cosc ar rannpháirtí</string>
+    <string name="bans_list">Liosta toirmisc</string>
     <string name="calendar">Féilire</string>
     <string name="call_more_actions_dialog_headline">Ardroghanna glaonna</string>
     <string name="call_running_since_one_hour">Tá an glao ar siúl ar feadh uair an chloig.</string>
@@ -42,6 +44,7 @@
     <string name="emoji_category_recent">le déanaí</string>
     <string name="encrypted">Criptithe</string>
     <string name="error_loading_chats">Tharla fadhb agus do chomhráite á lódáil</string>
+    <string name="error_unbanning">Tharla earráid agus rannpháirtí á bhaint de</string>
     <string name="failed_to_save">Theip ar shábháil %1$s</string>
     <string name="file_list_folder">fillteán</string>
     <string name="file_list_loading">Á lódáil…</string>
@@ -49,6 +52,7 @@
     <string name="fourHours">4 uair an chloig</string>
     <string name="get_invitations_error">Theip ar chuirí ar feitheamh a fháil</string>
     <string name="hint_edited_message">(in eagar)</string>
+    <string name="internal_note">Nóta inmheánach</string>
     <string name="invisible">Dofheicthe</string>
     <string name="join_open_conversations_icon">Glac páirt Icon Comhráite Oscailte</string>
     <string name="languages_error_message">Níorbh fhéidir teangacha a aisghabháil</string>
@@ -67,6 +71,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">An ceann is mó ar dtús</string>
     <string name="menu_item_sort_by_size_smallest_first">Is lú ar dtús</string>
+    <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
     <string name="message_expiration_title">Teachtaireacht in éag</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
@@ -579,6 +584,7 @@
     <string name="shared_items_recording">Taifeadadh glaonna</string>
     <string name="shared_items_voice">Guth</string>
     <string name="show_ban_reason">Taispeáin Cúis Toirmeasc</string>
+    <string name="show_banned_participants">Taispeáin rannpháirtithe toirmiscthe</string>
     <string name="starred">is fearr leat</string>
     <string name="startCallForbidden">Níl cead agat glao a thosú</string>
     <string name="started_a_call">thosaigh glao</string>

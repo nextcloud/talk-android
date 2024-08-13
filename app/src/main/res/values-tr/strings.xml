@@ -14,6 +14,8 @@
     <string name="away">Uzakta</string>
     <string name="back_button">Geri düğmesi</string>
     <string name="ban">Yasakla</string>
+    <string name="ban_participant">Katılımcıyı yasakla</string>
+    <string name="bans_list">Yasaklama listesi</string>
     <string name="calendar">Takvim</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
     <string name="call_running_since_one_hour">Çağrı bir saattir sürüyor.</string>
@@ -42,6 +44,7 @@
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
+    <string name="error_unbanning">Katılımcının yasaklaması kaldırılırken sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
     <string name="file_list_folder">klasör</string>
     <string name="file_list_loading">Yükleniyor…</string>
@@ -49,6 +52,7 @@
     <string name="fourHours">4 saat</string>
     <string name="get_invitations_error">Bekleyen davetler alınamadı</string>
     <string name="hint_edited_message">(düzenlendi)</string>
+    <string name="internal_note">İç not</string>
     <string name="invisible">Görünmez</string>
     <string name="join_open_conversations_icon">Açık görüşmelere katıl simgesi</string>
     <string name="languages_error_message">Diller alınamadı</string>
@@ -67,6 +71,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
     <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
+    <string name="message_deleted_by_you">İleti sizin tarafınızdan silindi</string>
     <string name="message_expiration_title">İleti süresi</string>
     <string name="message_last_edited_by">%1$s tarafından düzenlendi</string>
     <string name="message_poll_tap_to_open">Anketi açmak için dokunun</string>
@@ -579,6 +584,7 @@
     <string name="shared_items_recording">Çağrı kaydı</string>
     <string name="shared_items_voice">Ses</string>
     <string name="show_ban_reason">Yasaklama nedeni görüntülensin</string>
+    <string name="show_banned_participants">Yasaklanmış katılımcıları görüntüle</string>
     <string name="starred">Sık kullanılanlara ekle</string>
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="started_a_call">bir çağrı başlattı</string>

@@ -45,6 +45,7 @@
     <string name="menu_item_sort_by_name_z_a">Я--А</string>
     <string name="menu_item_sort_by_size_biggest_first">Найбільші за розміром спочатку</string>
     <string name="menu_item_sort_by_size_smallest_first">Найменші за розміром спочатку</string>
+    <string name="message_deleted_by_you">Ви вилучили повідомлення</string>
     <string name="message_expiration_title">Термін дії повідомлення</string>
     <string name="message_poll_tap_to_open">Натисніть, щоб відкрити опитування</string>
     <string name="message_search_begin_empty">Нічого не знайдено</string>
