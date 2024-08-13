@@ -24,6 +24,8 @@ class ContactsViewModel @Inject constructor(
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
     private val _roomViewState = MutableStateFlow<RoomUiState>(RoomUiState.None)
     val roomViewState: StateFlow<RoomUiState> = _roomViewState
+    private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
+    val addParticipantsUiState: StateFlow<AddParticipantsUiState> = addParticipantsViewState
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
     private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
@@ -32,6 +34,8 @@ class ContactsViewModel @Inject constructor(
     val searchState: StateFlow<Boolean> = _searchState
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
+    private val selectedParticipants = mutableListOf<AutocompleteUser>()
+    val selectedParticipantsList: List<AutocompleteUser> = selectedParticipants
 
     init {
         getContactsFromSearchParams()
@@ -41,6 +45,9 @@ class ContactsViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+    fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
+        selectedParticipants.addAll(participants)
+    }
     fun updateSearchState(searchState: Boolean) {
         _searchState.value = searchState
     }
@@ -89,6 +96,17 @@ class ContactsViewModel @Inject constructor(
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
     }
+    fun addParticipants(conversationToken: String, userId: String, sourceType: String) {
+        viewModelScope.launch {
+            try {
+                val participantsOverall = repository.addParticipants(conversationToken, userId, sourceType)
+                val participants = participantsOverall.ocs?.data
+                addParticipantsViewState.value = AddParticipantsUiState.Success(participants)
+            } catch (exception: Exception) {
+                addParticipantsViewState.value = AddParticipantsUiState.Error(exception.message ?: "")
+            }
+        }
+    }
 }
 
 sealed class ContactsUiState {
@@ -102,4 +120,10 @@ sealed class RoomUiState {
     data object None : RoomUiState()
     data class Success(val conversation: Conversation?) : RoomUiState()
     data class Error(val message: String) : RoomUiState()
+}
+
+sealed class AddParticipantsUiState() {
+    data object None : AddParticipantsUiState()
+    data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
+    data class Error(val message: String) : AddParticipantsUiState()
 }

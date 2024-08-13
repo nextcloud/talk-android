@@ -74,7 +74,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
             }
             ).toString()
     }
-    val selectedContacts = remember { mutableStateListOf<String>() }
+    val selectedContacts = remember { mutableStateListOf<AutocompleteUser>() }
     LazyColumn(
         modifier = Modifier
             .padding(8.dp)

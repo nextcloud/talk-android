@@ -10,6 +10,7 @@ package com.nextcloud.talk.api
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -65,4 +66,11 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("description") description: String?
     ): GenericOverall
+
+    @POST
+    fun addParticipant(
+        @Header("Authorization") authorization: String?,
+        @Url url: String?,
+        @QueryMap options: Map<String, String>?
+    ): AddParticipantOverall
 }
