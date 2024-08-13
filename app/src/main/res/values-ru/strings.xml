@@ -52,6 +52,7 @@
     <string name="menu_item_sort_by_name_z_a">Я - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
+    <string name="message_deleted_by_you">Сообщение удалено вами</string>
     <string name="message_expiration_title">Срок истечения сообщения</string>
     <string name="message_poll_tap_to_open">Нажмите для открытия опроса</string>
     <string name="message_search_begin_empty">Ничего не найдено</string>

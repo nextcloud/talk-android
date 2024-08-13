@@ -11,7 +11,7 @@
     <string name="audio_output_speaker">Högtalare</string>
     <string name="audio_output_wired_headset">Sladdansluten hörlur</string>
     <string name="avatar">Avatar</string>
-    <string name="away">Iväg</string>
+    <string name="away">Borta</string>
     <string name="back_button">Tillbakaknapp</string>
     <string name="ban">Blockera</string>
     <string name="ban_participant">Blockera deltagare</string>
@@ -29,6 +29,7 @@
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
     <string name="conversations">Konversationer</string>
     <string name="create_conversation">Skapa konversation</string>
+    <string name="create_issue">Skapa ärende</string>
     <string name="custom">Anpassad</string>
     <string name="danger_zone">Riskzon</string>
     <string name="delete_avatar">Ta bort avatar</string>
@@ -68,6 +69,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
+    <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
     <string name="message_expiration_title">Meddelande löper ut</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
     <string name="message_poll_tap_to_open">Tryck för att öppna omröstningen</string>

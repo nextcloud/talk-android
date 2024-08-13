@@ -71,6 +71,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Biggest first</string>
     <string name="menu_item_sort_by_size_smallest_first">Smallest first</string>
+    <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="message_expiration_title">Message expiration</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>

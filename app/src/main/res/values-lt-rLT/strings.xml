@@ -31,6 +31,7 @@
     <string name="menu_item_sort_by_name_z_a">Ž – A</string>
     <string name="menu_item_sort_by_size_biggest_first">Didžiausi pirma</string>
     <string name="menu_item_sort_by_size_smallest_first">Mažiausi pirma</string>
+    <string name="message_deleted_by_you">Jūs ištrynėte žinutę</string>
     <string name="message_search_begin_empty">Nėra paieškos rezultatų</string>
     <string name="message_search_begin_typing">Rašykite norėdami atlikti paiešką…</string>
     <string name="messages">Žinutės</string>

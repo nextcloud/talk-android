@@ -71,6 +71,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Größste zuerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste zuerst</string>
+    <string name="message_deleted_by_you">Nachricht von Ihnen gelöscht</string>
     <string name="message_expiration_title">Nachrichtenablauf</string>
     <string name="message_last_edited_by">Bearbeitet von %1$s</string>
     <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>

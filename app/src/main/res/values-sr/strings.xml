@@ -63,6 +63,7 @@
     <string name="menu_item_sort_by_name_z_a">Ш - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Прво највеће</string>
     <string name="menu_item_sort_by_size_smallest_first">Прво најмање</string>
+    <string name="message_deleted_by_you">Обрисали сте поруку</string>
     <string name="message_expiration_title">Рок трајања поруке</string>
     <string name="message_last_edited_by">Уредио је %1$s</string>
     <string name="message_poll_tap_to_open">Тапните да отворите гласање</string>

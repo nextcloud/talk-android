@@ -36,6 +36,7 @@
     <string name="menu_item_sort_by_name_z_a">Ω - Α</string>
     <string name="menu_item_sort_by_size_biggest_first">Μεγαλύτερο πρώτα</string>
     <string name="menu_item_sort_by_size_smallest_first">Μικρότερο πρώτα</string>
+    <string name="message_deleted_by_you">Το μήνυμα διαγράφηκε από εσάς</string>
     <string name="message_search_begin_empty">Κανένα αποτέλεσμα</string>
     <string name="messages">Μηνύματα</string>
     <string name="nc_Server_account_imported">Ο επιλεγμένος λογαριασμός έχει εισαχθεί και είναι τώρα διαθέσιμος</string>

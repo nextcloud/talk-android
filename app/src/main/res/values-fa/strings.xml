@@ -48,6 +48,7 @@
     <string name="menu_item_sort_by_name_z_a">ی تا الف</string>
     <string name="menu_item_sort_by_size_biggest_first">بزرگترین اول</string>
     <string name="menu_item_sort_by_size_smallest_first">کوچک‌ترین اول</string>
+    <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="message_expiration_title">Message expiration</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>
     <string name="message_search_begin_empty">جستجو نتیجه‌ای نداشت</string>

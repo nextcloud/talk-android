@@ -66,6 +66,7 @@
     <string name="menu_item_sort_by_name_z_a">Å - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Minste først</string>
+    <string name="message_deleted_by_you">Melding slettet av deg</string>
     <string name="message_expiration_title">Utløp av melding</string>
     <string name="message_last_edited_by">Redigert av %1$s</string>
     <string name="message_poll_tap_to_open">Trykk for å åpne avstemningen</string>

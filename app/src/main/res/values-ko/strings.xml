@@ -46,6 +46,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">큰 것 먼저</string>
     <string name="menu_item_sort_by_size_smallest_first">작은 것 먼저</string>
+    <string name="message_deleted_by_you">메시지를 삭제함</string>
     <string name="message_expiration_title">메시지 만료</string>
     <string name="message_poll_tap_to_open">투표를 열기 위하여 탭하세요.</string>
     <string name="message_search_begin_empty">결과를 찾을 수 없음</string>

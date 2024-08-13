@@ -46,6 +46,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Más grande primero</string>
     <string name="menu_item_sort_by_size_smallest_first">Más pequeño primero</string>
+    <string name="message_deleted_by_you">Mensaje eliminado por ti</string>
     <string name="message_expiration_title">Vencimiento del mensaje</string>
     <string name="message_poll_tap_to_open">Toca para abrir la encuesta</string>
     <string name="message_search_begin_empty">No hay resultados de búsqueda</string>
