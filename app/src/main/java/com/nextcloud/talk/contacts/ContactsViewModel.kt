@@ -96,7 +96,7 @@ class ContactsViewModel @Inject constructor(
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
     }
-    fun addParticipants(conversationToken: String, userId: String, sourceType: String) {
+    fun addParticipants(conversationToken: String?, userId: String, sourceType: String){
         viewModelScope.launch {
             try {
                 val participantsOverall = repository.addParticipants(conversationToken, userId, sourceType)

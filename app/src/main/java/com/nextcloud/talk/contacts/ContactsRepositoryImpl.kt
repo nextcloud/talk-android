@@ -77,7 +77,7 @@ class ContactsRepositoryImpl(
     }
 
     override suspend fun addParticipants(
-        conversationToken: String,
+        conversationToken: String?,
         userId: String,
         sourceType: String
     ): AddParticipantOverall {

@@ -15,5 +15,5 @@ interface ContactsRepository {
     suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall
     suspend fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?): RoomOverall
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String
-    suspend fun addParticipants(conversationToken: String, userId: String, sourceType: String): AddParticipantOverall
+    suspend fun addParticipants(conversationToken: String?, userId: String, sourceType: String): AddParticipantOverall
 }

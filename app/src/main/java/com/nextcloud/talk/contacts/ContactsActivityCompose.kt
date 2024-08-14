@@ -12,6 +12,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -268,6 +269,8 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
 fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
+    val addParticipantsUiState = contactsViewModel.addParticipantsUiState.collectAsState()
+    val conversationToken:String? = null
 
     TopAppBar(
         title = { Text(text = title) },
@@ -288,11 +291,38 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
                 Text(
                     text = stringResource(id = R.string.nc_contacts_done),
                     modifier = Modifier.clickable {
+                        for(contacts in contactsViewModel.selectedParticipantsList){
+                            contacts.let { contact ->
+                                contactsViewModel.addParticipants(
+                                    conversationToken,
+                                    contact.id!!,
+                                    contact.source!!
+                                )
+                            }
+                        }
                     }
                 )
             }
         }
     )
+    val state = addParticipantsUiState.value
+    when(state){
+        is AddParticipantsUiState.Error -> {
+            val errorMessage = state.message
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Error: $errorMessage", color = Color.Red)
+            }
+
+        }
+        is AddParticipantsUiState.None -> {
+
+
+        }
+        is AddParticipantsUiState.Success -> {
+            val conversation = state.participants
+            Log.d("ContactsActivityCompose", "$conversation")
+        }
+    }
     if (searchState.value) {
         Row {
             DisplaySearch(
@@ -303,13 +333,6 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
                 },
                 contactsViewModel = contactsViewModel
             )
-            if (contactsViewModel.isAddParticipantsView.value) {
-                Text(
-                    text = stringResource(id = R.string.nc_contacts_done),
-                    modifier = Modifier.clickable {
-                    }
-                )
-            }
         }
     }
 }
