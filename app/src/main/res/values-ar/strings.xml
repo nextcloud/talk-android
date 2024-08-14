@@ -26,6 +26,9 @@
     <string name="clear_status_message_after">إمسح رسالة الحالة فيما بعدٌ</string>
     <string name="close">إغلاق</string>
     <string name="close_icon">أيقونة الإغلاق</string>
+    <string name="connection_gained">تمّت استعادة الاتصال</string>
+    <string name="connection_lost">انقطع الاتصال</string>
+    <string name="connection_lost_sent_messages_are_queued">انقطع الاتصال - الرسالة المطلوب إرسالها تمّ تحضيرها للإرسال في قائمة بحسب الأولوية</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
     <string name="conversations">محادثات</string>
