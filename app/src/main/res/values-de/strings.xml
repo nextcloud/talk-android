@@ -26,6 +26,9 @@
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>
     <string name="close">Schließen</string>
     <string name="close_icon">Schließen-Symbol</string>
+    <string name="connection_gained">Verbindung hergestellt</string>
+    <string name="connection_lost">Verbindung verloren</string>
+    <string name="connection_lost_sent_messages_are_queued">Verbindung verloren - Gesendete Nachrichten der Warteschlange hinzugefügt</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
     <string name="conversation_is_read_only">Unterhaltung ist schreibgeschützt</string>
     <string name="conversations">Unterhaltungen</string>
