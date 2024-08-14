@@ -232,7 +232,7 @@ class ConversationItem(
 
                 val text =
                     if (
-                        chatMessage?.messageType === MessageType.REGULAR_TEXT_MESSAGE.toString()
+                        chatMessage?.getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE
                     ) {
                         calculateRegularLastMessageText(appContext)
                     } else {
@@ -252,6 +252,8 @@ class ConversationItem(
                 appContext.getString(R.string.nc_formatted_message_you),
                 lastMessageDisplayText
             )
+        } else if (model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            lastMessageDisplayText
         } else {
             val authorDisplayName =
                 if (!TextUtils.isEmpty(chatMessage?.actorDisplayName)) {
