@@ -17,6 +17,7 @@
     <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
     <string name="close">Затваряне</string>
+    <string name="connection_established">Осъществена е връзка</string>
     <string name="conversations">Разговори</string>
     <string name="create_conversation">Създаване на разговор</string>
     <string name="custom">Персонализиран</string>

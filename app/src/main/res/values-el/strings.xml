@@ -12,6 +12,7 @@
     <string name="clear_status_message">Εκκαθάριση μηνύματος κατάστασης</string>
     <string name="clear_status_message_after">Εκκαθάριση μηνύματος κατάστασης μετά από</string>
     <string name="close">Κλείσιμο</string>
+    <string name="connection_established">Εδραίωση σύνδεσης</string>
     <string name="conversations">Συνομιλίες</string>
     <string name="create_conversation">Δημιουργία συνομιλίας</string>
     <string name="custom">Προσαρμοσμένο</string>

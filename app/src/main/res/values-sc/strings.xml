@@ -11,6 +11,7 @@
     <string name="clear_status_message">Lìmpia su messàgiu de istadu</string>
     <string name="clear_status_message_after">Lìmpia su messàgiu de istadu a pustis</string>
     <string name="close">Serra</string>
+    <string name="connection_established">Connessione istabilida</string>
     <string name="conversations">Cunversatziones</string>
     <string name="create_conversation">Crea resonada</string>
     <string name="custom">Personaliza</string>

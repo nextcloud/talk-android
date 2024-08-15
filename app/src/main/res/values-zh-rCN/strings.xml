@@ -20,6 +20,7 @@
     <string name="clear_status_message">清除状态消息</string>
     <string name="clear_status_message_after">过多长时间清除状态消息</string>
     <string name="close">关闭</string>
+    <string name="connection_established">连接已建立</string>
     <string name="continuous_voice_message_recording">锁定录音以连续录制语音信息</string>
     <string name="conversations">对话</string>
     <string name="create_conversation">建立对话</string>

@@ -21,6 +21,7 @@
     <string name="clear_status_message">Обриши статусну поруку</string>
     <string name="clear_status_message_after">Обриши статусну поруку након</string>
     <string name="close">Затвори</string>
+    <string name="connection_established">Веза успостављена</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversation_is_read_only">Овај разговор је само-за-читање</string>
     <string name="conversations">Разговори</string>

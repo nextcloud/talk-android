@@ -25,8 +25,7 @@
     <string name="clear_status_message">Rensa statusmeddelande</string>
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
     <string name="close">Stäng</string>
-    <string name="connection_gained">Anslutning etablerad</string>
-    <string name="connection_lost">Anslutning förlorad</string>
+    <string name="connection_established">Anslutning etablerad</string>
     <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
     <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>

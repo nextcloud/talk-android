@@ -18,6 +18,7 @@
     <string name="clear_status_message">Počisti sporočilo stanja</string>
     <string name="clear_status_message_after">Počisti sporočilo stanja po</string>
     <string name="close">Zapri</string>
+    <string name="connection_established">Povezava je vzpostavljena</string>
     <string name="conversations">Pogovori</string>
     <string name="create_conversation">Ustvari pogovor</string>
     <string name="custom">Po meri</string>

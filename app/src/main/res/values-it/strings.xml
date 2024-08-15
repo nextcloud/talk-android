@@ -17,6 +17,7 @@
     <string name="clear_status_message">Cancella il messaggio di stato</string>
     <string name="clear_status_message_after">Cancella il messaggio di stato dopo</string>
     <string name="close">Chiudi</string>
+    <string name="connection_established">Connessione stabilita</string>
     <string name="conversations">Conversazioni</string>
     <string name="create_conversation">Crea conversazione</string>
     <string name="custom">Personalizzato</string>

@@ -17,6 +17,7 @@
     <string name="clear_status_message">Borrar mensaje de estado</string>
     <string name="clear_status_message_after">Borrar mensaje de estado después de</string>
     <string name="close">Cerrar</string>
+    <string name="connection_established">Conexión establecida</string>
     <string name="continuous_voice_message_recording">Bloquear grabación para grabación continua del mensaje de voz.</string>
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear conversación</string>

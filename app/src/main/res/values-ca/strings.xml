@@ -18,6 +18,7 @@
     <string name="clear_status_message">Esborrar el missatge d\'estat</string>
     <string name="clear_status_message_after">Esborra el missatge d\'estat després</string>
     <string name="close">Tanca</string>
+    <string name="connection_established">S\'ha establert la connexió</string>
     <string name="conversations">Converses</string>
     <string name="create_conversation">Crea una conversa</string>
     <string name="custom">Personalitzat</string>

@@ -9,6 +9,7 @@
     <string name="clear_status_message">Išvalyti būsenos žinutę</string>
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
     <string name="close">Užverti</string>
+    <string name="connection_established">Ryšys užmegztas</string>
     <string name="conversations">Pokalbiai</string>
     <string name="create_conversation">Sukurti pokalbį</string>
     <string name="custom">Tinkinti</string>

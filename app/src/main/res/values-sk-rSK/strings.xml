@@ -21,6 +21,7 @@
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
+    <string name="connection_established">Pripojenie vytvorené</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
     <string name="conversation_is_read_only">Konverzácia je len na čítanie</string>
     <string name="conversations">Konverzácie</string>
