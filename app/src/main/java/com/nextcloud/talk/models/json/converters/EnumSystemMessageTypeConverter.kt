@@ -31,6 +31,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.CONVERSA
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.DESCRIPTION_REMOVED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.DESCRIPTION_SET
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.DUMMY
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.FEDERATED_USER_ADDED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.FEDERATED_USER_REMOVED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.FILE_SHARED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.GROUP_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.GROUP_REMOVED
@@ -136,6 +138,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "breakout_rooms_stopped" -> BREAKOUT_ROOMS_STOPPED
             "avatar_set" -> AVATAR_SET
             "avatar_removed" -> AVATAR_REMOVED
+            "federated_user_added" -> FEDERATED_USER_ADDED
+            "federated_user_removed" -> FEDERATED_USER_REMOVED
             else -> DUMMY
         }
     }
@@ -203,6 +207,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             BREAKOUT_ROOMS_STOPPED -> "breakout_rooms_stopped"
             AVATAR_SET -> "avatar_set"
             AVATAR_REMOVED -> "avatar_removed"
+            FEDERATED_USER_ADDED -> "federated_user_added"
+            FEDERATED_USER_REMOVED -> "federated_user_removed"
             else -> ""
         }
     }
