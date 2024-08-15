@@ -803,5 +803,5 @@ How to translate with transifex:
     <string name="ban">Ban</string>
     <string name="show_ban_reason">Show ban reason</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>
-    <string name="connection_lost">Connection Lost</string>
+    <string name="connection_lost">Connection lost</string>
 </resources>
