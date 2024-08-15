@@ -14,6 +14,8 @@
     <string name="away">Absent(e)</string>
     <string name="back_button">Bouton précédent</string>
     <string name="ban">Bannir</string>
+    <string name="ban_participant">Bannir le participant</string>
+    <string name="bans_list">Liste des bannis</string>
     <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_running_since_one_hour">L\'appel est en cours depuis une heure.</string>
@@ -24,6 +26,9 @@
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
     <string name="close">Fermer</string>
     <string name="close_icon">Icône de fermeture</string>
+    <string name="connection_gained">Connexion établie</string>
+    <string name="connection_lost">Connexion perdue</string>
+    <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
     <string name="conversations">Discussions</string>
@@ -42,6 +47,7 @@
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
     <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
+    <string name="error_unbanning">Une erreur est survenue à la réintégration du participant</string>
     <string name="failed_to_save">Échec de la sauvegarde de %1$s</string>
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement…</string>
@@ -49,6 +55,7 @@
     <string name="fourHours">4 heures</string>
     <string name="get_invitations_error">Échec de la récupération des invitations en attente</string>
     <string name="hint_edited_message">(modifié)</string>
+    <string name="internal_note">Note interne</string>
     <string name="invisible">Invisible</string>
     <string name="join_open_conversations_icon">Icône pour rejoindre les conversations ouvertes</string>
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
@@ -166,6 +173,7 @@
     <string name="nc_description_send_message_button">Envoyer un message</string>
     <string name="nc_diagnose_account_category_title">Compte actuel</string>
     <string name="nc_diagnose_account_server">Serveur</string>
+    <string name="nc_diagnose_account_server_notification_app">Application de notification serveur installée ?</string>
     <string name="nc_diagnose_account_user_name">Utilisateur</string>
     <string name="nc_diagnose_account_user_status_enabled">Statut de l\'utilisateur activé ?</string>
     <string name="nc_diagnose_android_version_title">Version Android</string>
@@ -179,6 +187,7 @@
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
     <string name="nc_diagnose_dialog_open_diagnose">Ouvrir l\'écran de diagnostic</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Ouvrir dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_missing">Aucun jeton de poussée Firebase définit. Veuillez créer un rapport de bogue.</string>
     <string name="nc_diagnose_firebase_push_token_title">Jeton de poussé Firebase</string>
     <string name="nc_diagnose_gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
