@@ -20,6 +20,7 @@
     <string name="clear_status_message">Állapotüzenet törlése</string>
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="close">Bezárás</string>
+    <string name="connection_established">A kapcsolat létrejött</string>
     <string name="continuous_voice_message_recording">Felvétel zárolása a hangüzenet folyamatos rögzítéséhez</string>
     <string name="conversations">Beszélgetések</string>
     <string name="create_conversation">Beszélgetés létrehozása</string>

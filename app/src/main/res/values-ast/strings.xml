@@ -18,6 +18,7 @@
     <string name="clear_status_message">Borrar el mensaxe del estáu</string>
     <string name="clear_status_message_after">Borrar el mensaxe l\'estáu dempués de</string>
     <string name="close">Zarrar</string>
+    <string name="connection_established">Conexón afitada</string>
     <string name="conversation_is_read_only">La conversación ye de namás llectura</string>
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear una conversación</string>

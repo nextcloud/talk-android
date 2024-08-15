@@ -16,6 +16,7 @@
     <string name="clear_status_message">Tyhjennä tilaviesti</string>
     <string name="clear_status_message_after">Tyhjennä tilaviesti, kun on kulunut</string>
     <string name="close">Sulje</string>
+    <string name="connection_established">Yhteys muodostettu</string>
     <string name="conversations">Keskustelut</string>
     <string name="create_conversation">Luo keskustelu</string>
     <string name="custom">Omavalintainen</string>

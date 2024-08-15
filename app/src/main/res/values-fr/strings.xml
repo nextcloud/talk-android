@@ -26,8 +26,7 @@
     <string name="clear_status_message_after">Effacer le message d\'état après</string>
     <string name="close">Fermer</string>
     <string name="close_icon">Icône de fermeture</string>
-    <string name="connection_gained">Connexion établie</string>
-    <string name="connection_lost">Connexion perdue</string>
+    <string name="connection_established">Connexion établie</string>
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>

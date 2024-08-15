@@ -17,6 +17,7 @@
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>
     <string name="close">Sluit</string>
+    <string name="connection_established">Verbinding tot stand gebracht</string>
     <string name="conversations">Gesprekken</string>
     <string name="create_conversation">Maak gesprek</string>
     <string name="custom">Aangepast</string>

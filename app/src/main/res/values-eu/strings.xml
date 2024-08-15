@@ -20,6 +20,7 @@
     <string name="clear_status_message">Garbitu egoera-mezua</string>
     <string name="clear_status_message_after">Garbitu egoera mezua ondoren</string>
     <string name="close">Itxi</string>
+    <string name="connection_established">Konexioa ezarri da</string>
     <string name="continuous_voice_message_recording">Blokeatu grabazioa ahots-mezua etengabe grabatzeko</string>
     <string name="conversations">Elkarrizketak</string>
     <string name="create_conversation">Sortu elkarrizketa</string>

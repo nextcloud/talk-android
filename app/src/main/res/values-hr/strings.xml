@@ -11,6 +11,7 @@
     <string name="clear_status_message">Izbriši poruku statusa</string>
     <string name="clear_status_message_after">Izbriši poruku statusa nakon</string>
     <string name="close">Zatvori</string>
+    <string name="connection_established">Veza je uspostavljena</string>
     <string name="conversations">Razgovori</string>
     <string name="create_conversation">Stvori razgovor</string>
     <string name="custom">Prilagođeno</string>

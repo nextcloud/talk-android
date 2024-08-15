@@ -26,6 +26,7 @@
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>
     <string name="close">Kapat</string>
     <string name="close_icon">Kapatma simgesi</string>
+    <string name="connection_established">Bağlantı kuruldu</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
     <string name="conversations">Görüşmeler</string>

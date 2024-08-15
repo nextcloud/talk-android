@@ -20,6 +20,7 @@
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
     <string name="close">Zavřít</string>
+    <string name="connection_established">Spojení navázáno</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversations">Konverzace</string>
     <string name="create_conversation">Vytvořit konverzaci</string>
@@ -58,6 +59,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
+    <string name="message_deleted_by_you">Zprávu jste smazali</string>
     <string name="message_expiration_title">Skončení platnosti zprávy</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
     <string name="message_search_begin_empty">Nic nenalezeno</string>

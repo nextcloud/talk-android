@@ -19,6 +19,7 @@
     <string name="clear_status_message">Очистить сообщение о статусе</string>
     <string name="clear_status_message_after">Очищать статус после</string>
     <string name="close">Закрыть</string>
+    <string name="connection_established">Соединение установлено</string>
     <string name="conversations">Разговоры</string>
     <string name="create_conversation">Создать обсуждение</string>
     <string name="custom">Задать</string>

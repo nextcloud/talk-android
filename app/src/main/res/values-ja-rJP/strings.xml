@@ -21,6 +21,7 @@
     <string name="clear_status_message">ステータスメッセージを消去</string>
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>
     <string name="close">閉じる</string>
+    <string name="connection_established">接続が確立しました</string>
     <string name="continuous_voice_message_recording">音声メッセージを連続録音するための録音ロック</string>
     <string name="conversation_is_read_only">会話は読み取り専用です</string>
     <string name="conversations">会話</string>

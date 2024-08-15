@@ -21,6 +21,7 @@
     <string name="clear_status_message">Wyczyść komunikat statusu</string>
     <string name="clear_status_message_after">Wyczyść komunikat statusu po</string>
     <string name="close">Zamknij</string>
+    <string name="connection_established">Połączenie nawiązane</string>
     <string name="continuous_voice_message_recording">Zablokuj nagrywanie w celu ciągłego nagrywania wiadomości głosowej</string>
     <string name="conversation_is_read_only">Rozmowa jest tylko do odczytu</string>
     <string name="conversations">Rozmowy</string>

@@ -26,8 +26,7 @@
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
     <string name="close">Fechar</string>
     <string name="close_icon">Fechar ícone</string>
-    <string name="connection_gained">Conexão obtida</string>
-    <string name="connection_lost">Conexão Perdida</string>
+    <string name="connection_established">Conexão estabelecida</string>
     <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas estão na fila</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>

@@ -9,6 +9,7 @@
     <string name="clear_status_message">Ryd status notifikation</string>
     <string name="clear_status_message_after">Ryd status notifikationer efter</string>
     <string name="close">Luk</string>
+    <string name="connection_established">Forbindelse oprettet</string>
     <string name="conversations">Samtaler</string>
     <string name="create_conversation">Opret samtale</string>
     <string name="custom">Valgfrit</string>
