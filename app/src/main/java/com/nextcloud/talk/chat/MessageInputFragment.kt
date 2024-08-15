@@ -189,7 +189,7 @@ class MessageInputFragment : Fragment() {
                 animation.duration = 3000
                 animation.interpolator = LinearInterpolator()
                 binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityGreen))
-                binding.fragmentConnectionLost.text = getString(R.string.connection_gained)
+                binding.fragmentConnectionLost.text = getString(R.string.connection_established)
                 binding.fragmentConnectionLost.startAnimation(animation)
                 binding.fragmentConnectionLost.animation.setAnimationListener(object : AnimationListener {
                     override fun onAnimationStart(animation: Animation?) {
