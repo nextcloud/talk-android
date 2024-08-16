@@ -12,7 +12,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
+import android.os.Parcelable
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -127,12 +127,12 @@ fun ContactItemRow(
 ) {
     val isSelected = contact in selectedContacts
     val roomUiState by contactsViewModel.roomViewState.collectAsState()
-    val isAddParticipants = contactsViewModel.isAddParticipantsView.value
+    val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                if (!isAddParticipants) {
+                if (!isAddParticipants.value) {
                     contactsViewModel.createRoom(
                         CompanionClass.ROOM_TYPE_ONE_ONE,
                         contact.source!!,
@@ -159,7 +159,7 @@ fun ContactItemRow(
             modifier = Modifier.size(width = 45.dp, height = 45.dp)
         )
         Text(modifier = Modifier.padding(16.dp), text = contact.label!!)
-        if (isAddParticipants) {
+        if (isAddParticipants.value) {
             if (isSelected) {
                 Spacer(modifier = Modifier.weight(1f))
                 Icon(
@@ -176,7 +176,6 @@ fun ContactItemRow(
             val conversation = (roomUiState as RoomUiState.Success).conversation
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
-            // bundle.putString(BundleKeys.KEY_ROOM_ID, conversation?.roomId)
             val chatIntent = Intent(context, ChatActivity::class.java)
             chatIntent.putExtras(bundle)
             chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -198,8 +197,7 @@ fun ContactItemRow(
 fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
-    val addParticipantsUiState = contactsViewModel.addParticipantsUiState.collectAsState()
-    val conversationToken:String? = null
+    val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
 
     TopAppBar(
         title = { Text(text = title) },
@@ -216,42 +214,22 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
             }) {
                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
             }
-            if (contactsViewModel.isAddParticipantsView.value) {
+            if (isAddParticipants.value) {
                 Text(
                     text = stringResource(id = R.string.nc_contacts_done),
                     modifier = Modifier.clickable {
-                        for(contacts in contactsViewModel.selectedParticipantsList){
-                            contacts.let { contact ->
-                                contactsViewModel.addParticipants(
-                                    conversationToken,
-                                    contact.id!!,
-                                    contact.source!!
-                                )
-                            }
-                        }
+                        val selectedParticipants: List<AutocompleteUser> = contactsViewModel.selectedParticipantsList
+                        val intent = Intent(context, ConversationCreationActivity::class.java)
+                        intent.putParcelableArrayListExtra(
+                            "selectedParticipants",
+                            selectedParticipants as ArrayList<Parcelable>
+                        )
+                        context.startActivity(intent)
                     }
                 )
             }
         }
     )
-    val state = addParticipantsUiState.value
-    when(state){
-        is AddParticipantsUiState.Error -> {
-            val errorMessage = state.message
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = Color.Red)
-            }
-
-        }
-        is AddParticipantsUiState.None -> {
-
-
-        }
-        is AddParticipantsUiState.Success -> {
-            val conversation = state.participants
-            Log.d("ContactsActivityCompose", "$conversation")
-        }
-    }
     if (searchState.value) {
         Row {
             DisplaySearch(

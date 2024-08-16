@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationcreation
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
@@ -22,9 +23,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -37,9 +42,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -49,7 +56,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.contacts.ContactsActivityCompose
-import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -64,7 +71,13 @@ class ConversationCreationActivity : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         conversationCreationViewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationCreationViewModel::class.java]
-        val contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
+        val selectedParticipants: List<AutocompleteUser>? = when (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES
+                .TIRAMISU
+        ) {
+            true -> intent.getParcelableArrayListExtra("selectedParticipants")
+            else -> intent.extras?.getParcelableArrayList("selectedParticipants")
+        } ?: emptyList()
 
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
@@ -93,8 +106,9 @@ class ConversationCreationActivity : BaseActivity() {
                             DefaultUserAvatar()
                             UploadAvatar()
                             ConversationNameAndDescription(conversationCreationViewModel)
-                            AddParticipants(contactsViewModel, context)
+                            AddParticipants(selectedParticipants, context)
                             RoomCreationOptions(conversationCreationViewModel)
+                            CreateConversation()
                         }
                     }
                 )
@@ -192,12 +206,26 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
 }
 
 @Composable
-fun AddParticipants(contactsViewModel: ContactsViewModel, context: Context) {
-    Text(
-        text = stringResource(id = R.string.nc_participants).uppercase(),
-        fontSize = 14.sp,
-        modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-    )
+fun AddParticipants(selectedParticipants: List<AutocompleteUser>?, context: Context) {
+    Row {
+        Text(
+            text = stringResource(id = R.string.nc_participants).uppercase(),
+            fontSize = 14.sp,
+            modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+        )
+        if (selectedParticipants?.isNotEmpty() == true) {
+            Text(
+                text = stringResource(id = R.string.nc_edit),
+                fontSize = 12.sp,
+                modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
+                    .clickable {
+                        val intent = Intent(context, ContactsActivityCompose::class.java)
+                        context.startActivity(intent)
+                    },
+                textAlign = TextAlign.Right
+            )
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -210,13 +238,27 @@ fun AddParticipants(contactsViewModel: ContactsViewModel, context: Context) {
         verticalAlignment = Alignment
             .CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = R.drawable.ic_account_plus),
-            contentDescription = null,
-            modifier = Modifier.size(24.dp)
-        )
+        if (selectedParticipants?.isEmpty() == true) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_account_plus),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
 
-        Text(text = stringResource(id = R.string.nc_add_participants), modifier = Modifier.padding(start = 16.dp))
+            Text(text = stringResource(id = R.string.nc_add_participants), modifier = Modifier.padding(start = 16.dp))
+        } else {
+            LazyColumn {
+                items(selectedParticipants!!) { participant ->
+                    participant.label?.let {
+                        Text(
+                            text = it,
+                            modifier = Modifier.padding(all = 16.dp)
+                        )
+                    }
+                    HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+                }
+            }
+        }
     }
 }
 
@@ -307,3 +349,95 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
         switch?.invoke()
     }
 }
+
+@Composable
+fun CreateConversation() {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(all = 16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Button(
+            onClick = {
+            }
+        ) {
+            Text(text = stringResource(id = R.string.create_conversation))
+        }
+    }
+}
+
+//
+// @SuppressLint("UnrememberedMutableState")
+// @OptIn(ExperimentalMaterial3Api::class)
+// @Composable
+// fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
+//     val searchQuery by contactsViewModel.searchQuery.collectAsState()
+//     val searchState = contactsViewModel.searchState.collectAsState()
+//     val addParticipantsUiState = contactsViewModel.addParticipantsUiState.collectAsState()
+//     val conversationToken:String? = null
+//
+//     TopAppBar(
+//         title = { Text(text = title) },
+//         navigationIcon = {
+//             IconButton(onClick = {
+//                 (context as? Activity)?.finish()
+//             }) {
+//                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
+//             }
+//         },
+//         actions = {
+//             IconButton(onClick = {
+//                 contactsViewModel.updateSearchState(true)
+//             }) {
+//                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
+//             }
+//             if (contactsViewModel.isAddParticipantsView.value) {
+//                 Text(
+//                     text = stringResource(id = R.string.nc_contacts_done),
+//                     modifier = Modifier.clickable {
+//                         for(contacts in contactsViewModel.selectedParticipantsList){
+//                             contacts.let { contact ->
+//                                 contactsViewModel.addParticipants(
+//                                     conversationToken,
+//                                     contact.id!!,
+//                                     contact.source!!
+//                                 )
+//                             }
+//                         }
+//                     }
+//                 )
+//             }
+//         }
+//     )
+//     val state = addParticipantsUiState.value
+//     when(state){
+//         is AddParticipantsUiState.Error -> {
+//             val errorMessage = state.message
+//             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+//                 Text(text = "Error: $errorMessage", color = Color.Red)
+//             }
+//
+//         }
+//         is AddParticipantsUiState.None -> {
+//
+//
+//         }
+//         is AddParticipantsUiState.Success -> {
+//             val conversation = state.participants
+//             Log.d("ContactsActivityCompose", "$conversation")
+//         }
+//     }
+//     if (searchState.value) {
+//         Row {
+//             DisplaySearch(
+//                 text = searchQuery,
+//                 onTextChange = { searchQuery ->
+//                     contactsViewModel.updateSearchQuery(query = searchQuery)
+//                     contactsViewModel.getContactsFromSearchParams()
+//                 },
+//                 contactsViewModel = contactsViewModel
+//             )
+//         }
+//     }
+// }

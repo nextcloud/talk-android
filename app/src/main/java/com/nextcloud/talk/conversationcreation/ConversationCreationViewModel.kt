@@ -11,6 +11,7 @@ import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.contacts.AddParticipantsUiState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -27,6 +28,9 @@ class ConversationCreationViewModel @Inject constructor(
     var isGuestsAllowed = mutableStateOf(false)
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
     var openForGuestAppUsers = mutableStateOf(false)
+
+    private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
+    val addParticipantsUiState: StateFlow<AddParticipantsUiState> = addParticipantsViewState
 
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
@@ -51,6 +55,17 @@ class ConversationCreationViewModel @Inject constructor(
                 repository.setConversationDescription(roomToken, conversationDescription.value)
             } catch (e: Exception) {
                 Log.d("ConversationCreationViewModel", "${e.message}")
+            }
+        }
+    }
+    fun addParticipants(conversationToken: String?, userId: String, sourceType: String) {
+        viewModelScope.launch {
+            try {
+                val participantsOverall = repository.addParticipants(conversationToken, userId, sourceType)
+                val participants = participantsOverall.ocs?.data
+                addParticipantsViewState.value = AddParticipantsUiState.Success(participants)
+            } catch (exception: Exception) {
+                addParticipantsViewState.value = AddParticipantsUiState.Error(exception.message ?: "")
             }
         }
     }

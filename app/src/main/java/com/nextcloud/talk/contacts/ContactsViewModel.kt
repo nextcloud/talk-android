@@ -24,18 +24,16 @@ class ContactsViewModel @Inject constructor(
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
     private val _roomViewState = MutableStateFlow<RoomUiState>(RoomUiState.None)
     val roomViewState: StateFlow<RoomUiState> = _roomViewState
-    private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
-    val addParticipantsUiState: StateFlow<AddParticipantsUiState> = addParticipantsViewState
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
     private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
     val shareTypeList: List<String> = shareTypes
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
-    private val _isAddParticipantsView = MutableStateFlow(false)
-    val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
     private val selectedParticipants = mutableListOf<AutocompleteUser>()
     val selectedParticipantsList: List<AutocompleteUser> = selectedParticipants
+    private val _isAddParticipantsView = MutableStateFlow(false)
+    val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
     init {
         getContactsFromSearchParams()
@@ -75,7 +73,6 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
-
     fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
         viewModelScope.launch {
             try {
@@ -95,17 +92,6 @@ class ContactsViewModel @Inject constructor(
     }
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
-    }
-    fun addParticipants(conversationToken: String?, userId: String, sourceType: String){
-        viewModelScope.launch {
-            try {
-                val participantsOverall = repository.addParticipants(conversationToken, userId, sourceType)
-                val participants = participantsOverall.ocs?.data
-                addParticipantsViewState.value = AddParticipantsUiState.Success(participants)
-            } catch (exception: Exception) {
-                addParticipantsViewState.value = AddParticipantsUiState.Error(exception.message ?: "")
-            }
-        }
     }
 }
 
