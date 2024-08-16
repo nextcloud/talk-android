@@ -27,6 +27,7 @@
     <string name="close">關閉</string>
     <string name="close_icon">關閉按鈕</string>
     <string name="connection_established">連線已建立</string>
+    <string name="connection_lost">連線中斷</string>
     <string name="connection_lost_sent_messages_are_queued">連線中斷 -傳送的訊息已排入佇列</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
     <string name="conversation_is_read_only">對話為唯讀</string>
