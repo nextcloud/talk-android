@@ -27,6 +27,7 @@
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
     <string name="connection_established">Connection established</string>
+    <string name="connection_lost">Connection lost</string>
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversation_is_read_only">Conversation is read only</string>

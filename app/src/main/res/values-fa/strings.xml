@@ -161,6 +161,8 @@
     <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>
     <string name="nc_dialog_outdated_client_option_update">به‌روز رسانی</string>
     <string name="nc_dialog_reauth_or_delete">Do you want to reauthorize or delete this account?</string>
+    <string name="nc_dialog_save_to_storage_no">خیر</string>
+    <string name="nc_dialog_save_to_storage_yes">بله</string>
     <string name="nc_display_name_not_fetched">امکان دریافت نام وجود ندارد. درحال لغو</string>
     <string name="nc_display_name_not_stored">"امکان ذخیره نام وجود ندارد، درحال لغو "</string>
     <string name="nc_edit_message">ویرایش</string>
@@ -403,6 +405,7 @@
     <string name="nc_sort_by">مرتب‌سازی بر اساس</string>
     <string name="nc_start_time">زمان شروع</string>
     <string name="nc_switch_account">تعویض حساب</string>
+    <string name="nc_team">تیم</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
