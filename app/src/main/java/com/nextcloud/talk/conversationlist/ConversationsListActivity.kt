@@ -373,7 +373,8 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     // Update Conversations
-                    conversationItems.clear()
+                    conversationItemsWithHeader.clear()
+                    conversationItems.clear() // fixme remove this
                     for (conversation in list) {
                         addToConversationItems(conversation)
                     }
@@ -538,6 +539,12 @@ class ConversationsListActivity :
             if (searchManager != null) {
                 searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
             }
+            initSearchDisposable()
+        }
+    }
+
+    private fun initSearchDisposable() {
+        if (searchViewDisposable == null || searchViewDisposable?.isDisposed == true) {
             searchViewDisposable = observeSearchView(searchView!!)
                 .debounce { query: String? ->
                     if (TextUtils.isEmpty(query)) {
@@ -629,6 +636,7 @@ class ConversationsListActivity :
             }
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    initSearchDisposable()
                     adapter!!.setHeadersShown(true)
                     if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
