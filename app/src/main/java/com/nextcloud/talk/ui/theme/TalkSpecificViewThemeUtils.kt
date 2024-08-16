@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.ui.theme
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
@@ -36,10 +37,12 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.view.ViewCompat
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
+import com.google.android.material.chip.Chip
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.nextcloud.android.common.ui.theme.MaterialSchemes
 import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
+import com.nextcloud.android.common.ui.util.buildColorStateList
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.MicInputCloud
@@ -50,6 +53,7 @@ import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.vanniktech.emoji.EmojiTextView
 import com.wooplr.spotlight.SpotlightView
+import dynamiccolor.DynamicScheme
 import dynamiccolor.MaterialDynamicColors
 import eu.davidea.flexibleadapter.utils.FlexibleUtils
 import javax.inject.Inject
@@ -214,6 +218,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         return drawable
     }
 
+    @SuppressLint("RestrictedApi")
     fun themeSearchView(searchView: SearchView) {
         withScheme(searchView) { scheme ->
             // hacky as no default way is provided
@@ -373,6 +378,48 @@ class TalkSpecificViewThemeUtils @Inject constructor(
             } else {
                 dynamicColor.onSurfaceVariant().getArgb(scheme)
             }
+        }
+    }
+
+    private fun chipOutlineFilterColorList(scheme: DynamicScheme) =
+        buildColorStateList(
+            android.R.attr.state_checked to dynamicColor.secondaryContainer().getArgb(scheme),
+            -android.R.attr.state_checked to dynamicColor.outline().getArgb(scheme)
+        )
+
+    fun themeChipFilter(chip: Chip) {
+        withScheme(chip.context) { scheme ->
+            val backgroundColors =
+                buildColorStateList(
+                    android.R.attr.state_checked to dynamicColor.secondaryContainer().getArgb(scheme),
+                    -android.R.attr.state_checked to dynamicColor.surface().getArgb(scheme),
+                    android.R.attr.state_focused to dynamicColor.secondaryContainer().getArgb(scheme),
+                    android.R.attr.state_hovered to dynamicColor.secondaryContainer().getArgb(scheme),
+                    android.R.attr.state_pressed to dynamicColor.secondaryContainer().getArgb(scheme)
+                )
+
+            val iconColors =
+                buildColorStateList(
+                    android.R.attr.state_checked to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    -android.R.attr.state_checked to dynamicColor.surfaceVariant().getArgb(scheme),
+                    android.R.attr.state_focused to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    android.R.attr.state_hovered to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    android.R.attr.state_pressed to dynamicColor.onSecondaryContainer().getArgb(scheme)
+                )
+
+            val textColors =
+                buildColorStateList(
+                    android.R.attr.state_checked to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    -android.R.attr.state_checked to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    android.R.attr.state_hovered to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    android.R.attr.state_focused to dynamicColor.onSecondaryContainer().getArgb(scheme),
+                    android.R.attr.state_pressed to dynamicColor.onSecondaryContainer().getArgb(scheme)
+                )
+
+            chip.chipBackgroundColor = backgroundColors
+            chip.chipStrokeColor = chipOutlineFilterColorList(scheme)
+            chip.setTextColor(textColors)
+            chip.checkedIconTint = iconColors
         }
     }
 
