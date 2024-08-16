@@ -9,9 +9,13 @@ package com.nextcloud.talk.conversationcreation
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
+import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipantWithSource
 
 class ConversationCreationRepositoryImpl(
     private val ncApiCoroutines: NcApiCoroutines,
@@ -44,5 +48,29 @@ class ConversationCreationRepositoryImpl(
             ),
             description
         )
+    }
+
+    override suspend fun addParticipants(
+        conversationToken: String?,
+        userId: String,
+        sourceType: String
+    ): AddParticipantOverall {
+        val retrofitBucket: RetrofitBucket = if (sourceType == "users") {
+            getRetrofitBucketForAddParticipant(
+                apiVersion,
+                _currentUser.baseUrl,
+                conversationToken,
+                userId
+            )
+        } else {
+            getRetrofitBucketForAddParticipantWithSource(
+                apiVersion,
+                _currentUser.baseUrl,
+                conversationToken,
+                sourceType,
+                userId
+            )
+        }
+        return ncApiCoroutines.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
     }
 }
