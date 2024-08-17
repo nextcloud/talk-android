@@ -166,7 +166,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
                     Surface(Modifier.fillParentMaxWidth()) {
                         Header(initial)
                     }
-                    HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+                    HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
             items(contactsForInitial) { contact ->
