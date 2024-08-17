@@ -77,6 +77,8 @@ object DisplayUtils {
     private const val TWITTER_HANDLE_PREFIX = "@"
     private const val HTTP_PROTOCOL = "http://"
     private const val HTTPS_PROTOCOL = "https://"
+    private const val HTTP_MIN_LENGTH: Int = 7
+    private const val HTTPS_MIN_LENGTH: Int = 7
     private const val DATE_TIME_PARTS_SIZE = 2
     fun isDarkModeOn(context: Context): Boolean {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
@@ -394,10 +396,14 @@ object DisplayUtils {
         if (TextUtils.isEmpty(url)) {
             return ""
         }
-        if (url!!.length >= 7 && HTTP_PROTOCOL.equals(url.substring(0, 7), ignoreCase = true)) {
+        if (url!!.length >= HTTP_MIN_LENGTH &&
+            HTTP_PROTOCOL.equals(url.substring(0, HTTP_MIN_LENGTH), ignoreCase = true)
+        ) {
             return url.substring(HTTP_PROTOCOL.length).trim { it <= ' ' }
         }
-        return if (url.length >= 8 && HTTPS_PROTOCOL.equals(url.substring(0, 8), ignoreCase = true)) {
+        return if (url.length >= HTTPS_MIN_LENGTH &&
+            HTTPS_PROTOCOL.equals(url.substring(0, HTTPS_MIN_LENGTH), ignoreCase = true)
+        ) {
             url.substring(HTTPS_PROTOCOL.length).trim { it <= ' ' }
         } else {
             url.trim { it <= ' ' }

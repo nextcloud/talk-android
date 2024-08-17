@@ -92,7 +92,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "type") var type: ConversationEnums.ConversationType,
     @ColumnInfo(name = "unreadMention") var unreadMention: Boolean = false,
     @ColumnInfo(name = "unreadMentionDirect") var unreadMentionDirect: Boolean,
-    @ColumnInfo(name = "unreadMessages") var unreadMessages: Int = 0,
+    @ColumnInfo(name = "unreadMessages") var unreadMessages: Int = 0
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions

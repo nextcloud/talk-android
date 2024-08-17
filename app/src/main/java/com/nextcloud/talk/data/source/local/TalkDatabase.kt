@@ -51,7 +51,7 @@ import java.util.Locale
     ],
     version = 11,
     autoMigrations = [
-        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 9, to = 10)
     ],
     exportSchema = true
 )

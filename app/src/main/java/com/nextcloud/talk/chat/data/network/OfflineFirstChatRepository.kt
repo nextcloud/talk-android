@@ -90,11 +90,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
 
-    override fun setData(
-        conversationModel: ConversationModel,
-        credentials: String,
-        urlForChatting: String
-    ) {
+    override fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
         this.conversationModel = conversationModel
         this.credentials = credentials
         this.urlForChatting = urlForChatting
@@ -213,9 +209,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    private suspend fun hasToLoadPreviousMessagesFromServer(
-        beforeMessageId: Long
-    ): Boolean {
+    private suspend fun hasToLoadPreviousMessagesFromServer(beforeMessageId: Long): Boolean {
         val loadFromServer: Boolean
 
         val blockForMessage = getBlockOfMessage(beforeMessageId.toInt())
@@ -239,7 +233,8 @@ class OfflineFirstChatRepository @Inject constructor(
             loadFromServer = amountBetween < 100
 
             Log.d(
-                TAG, "Amount between messageId " + beforeMessageId + " and " + blockForMessage.oldestMessageId +
+                TAG,
+                "Amount between messageId " + beforeMessageId + " and " + blockForMessage.oldestMessageId +
                     " is: " + amountBetween + " so 'loadFromServer' is " + loadFromServer
             )
         }
@@ -272,9 +267,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return fieldMap
     }
 
-    override suspend fun getMessage(messageId: Long, bundle: Bundle):
-        Flow<ChatMessage> {
-
+    override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
         Log.d(TAG, "Get message with id $messageId")
         val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId)
 
@@ -511,12 +504,12 @@ class OfflineFirstChatRepository @Inject constructor(
                 chatBlock.newestMessageId
             ).first()
 
-        if (connectedChatBlocks.size == 1) {
+        return if (connectedChatBlocks.size == 1) {
             Log.d(TAG, "This chatBlock is not connected to others")
             val chatBlockFromDb = connectedChatBlocks[0]
             Log.d(TAG, "chatBlockFromDb.oldestMessageId: " + chatBlockFromDb.oldestMessageId)
             Log.d(TAG, "chatBlockFromDb.newestMessageId: " + chatBlockFromDb.newestMessageId)
-            return chatBlockFromDb
+            chatBlockFromDb
         } else if (connectedChatBlocks.size > 1) {
             Log.d(TAG, "Found " + connectedChatBlocks.size + " chat blocks that are connected")
             val oldestIdFromDbChatBlocks =
@@ -543,10 +536,10 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "A new chat block was created that covers all the range of the found chatblocks")
             Log.d(TAG, "new chatBlock - oldest MessageId: $oldestIdFromDbChatBlocks")
             Log.d(TAG, "new chatBlock - newest MessageId: $newestIdFromDbChatBlocks")
-            return newChatBlock
+            newChatBlock
         } else {
             Log.d(TAG, "No chat block found ....")
-            return null
+            null
         }
     }
 

@@ -82,7 +82,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        binding = FragmentDialogBanListBinding.inflate(LayoutInflater.from(context))
+        binding = FragmentDialogBanListBinding.inflate(layoutInflater)
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
         conversationUser = currentUserProvider.currentUser.blockingGet()
