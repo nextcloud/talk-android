@@ -185,7 +185,7 @@ fun Header(header: String) {
             .fillMaxSize()
             .background(Color.Transparent)
             .padding(start = 60.dp),
-        color = Color.Blue,
+        color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold
     )
 }
