@@ -52,7 +52,6 @@ class ChatBlocksDaoTest {
     @Test
     fun testGetConnectedChatBlocks() =
         runTest {
-
             usersDao.saveUser(createUserEntity("account1", "Account 1"))
             val account1 = usersDao.getUserWithUserId("account1").blockingGet()
 
@@ -67,7 +66,7 @@ class ChatBlocksDaoTest {
                         accountId = account1.id,
                         "def",
                         roomName = "Conversation Two"
-                    ),
+                    )
                 )
             )
 

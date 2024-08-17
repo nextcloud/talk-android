@@ -32,24 +32,34 @@ data class Conversation(
     // var roomId: String? = null,
     @JsonField(name = ["token"])
     var token: String? = null,
+
     @JsonField(name = ["name"])
     var name: String? = null,
+
     @JsonField(name = ["displayName"])
     var displayName: String? = null,
+
     @JsonField(name = ["description"])
     var description: String? = null,
+
     @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
     var type: ConversationEnums.ConversationType? = null,
+
     @JsonField(name = ["lastPing"])
     var lastPing: Long = 0,
+
     @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
     var participantType: ParticipantType? = null,
+
     @JsonField(name = ["hasPassword"])
     var hasPassword: Boolean = false,
+
     @JsonField(name = ["sessionId"])
     var sessionId: String? = null,
+
     @JsonField(name = ["actorId"])
     var actorId: String? = null,
+
     @JsonField(name = ["actorType"])
     var actorType: String? = null,
 
@@ -152,8 +162,7 @@ data class Conversation(
     var remoteServer: String? = null,
 
     @JsonField(name = ["remoteToken"])
-    var remoteToken: String? = null,
-
+    var remoteToken: String? = null
 ) : Parcelable {
     @Deprecated("Use ConversationUtil")
     val isPublic: Boolean

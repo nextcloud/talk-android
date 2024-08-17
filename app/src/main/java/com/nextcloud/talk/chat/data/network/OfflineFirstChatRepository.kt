@@ -90,11 +90,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
 
-    override fun setData(
-        conversationModel: ConversationModel,
-        credentials: String,
-        urlForChatting: String
-    ) {
+    override fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
         this.conversationModel = conversationModel
         this.credentials = credentials
         this.urlForChatting = urlForChatting
@@ -213,9 +209,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    private suspend fun hasToLoadPreviousMessagesFromServer(
-        beforeMessageId: Long
-    ): Boolean {
+    private suspend fun hasToLoadPreviousMessagesFromServer(beforeMessageId: Long): Boolean {
         val loadFromServer: Boolean
 
         val blockForMessage = getBlockOfMessage(beforeMessageId.toInt())
@@ -239,7 +233,8 @@ class OfflineFirstChatRepository @Inject constructor(
             loadFromServer = amountBetween < 100
 
             Log.d(
-                TAG, "Amount between messageId " + beforeMessageId + " and " + blockForMessage.oldestMessageId +
+                TAG,
+                "Amount between messageId " + beforeMessageId + " and " + blockForMessage.oldestMessageId +
                     " is: " + amountBetween + " so 'loadFromServer' is " + loadFromServer
             )
         }
@@ -272,9 +267,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return fieldMap
     }
 
-    override suspend fun getMessage(messageId: Long, bundle: Bundle):
-        Flow<ChatMessage> {
-
+    override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
         Log.d(TAG, "Get message with id $messageId")
         val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId)
 

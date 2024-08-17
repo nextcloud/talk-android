@@ -217,16 +217,8 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun setData(
-        conversationModel: ConversationModel,
-        credentials: String,
-        urlForChatting: String
-    ) {
-        chatRepository.setData(
-            conversationModel,
-            credentials,
-            urlForChatting
-        )
+    fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
+        chatRepository.setData(conversationModel, credentials, urlForChatting)
     }
 
     fun getRoom(user: User, token: String) {
