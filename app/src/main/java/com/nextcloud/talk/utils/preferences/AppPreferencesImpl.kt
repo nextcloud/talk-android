@@ -503,10 +503,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         for (msgStr in queueStr.split("]")) {
             try {
                 val msgArray = msgStr.replace("[", "").split(",")
-                val message = msgArray[0]
-                val replyTo = msgArray[1].toInt()
-                val displayName = msgArray[2]
-                val silent = msgArray[3].toBoolean()
+                val message = msgArray[MESSAGE_INDEX]
+                val replyTo = msgArray[REPLY_TO_INDEX].toInt()
+                val displayName = msgArray[DISPLY_NAME_INDEX]
+                val silent = msgArray[SILENT_INDEX].toBoolean()
 
                 val qMsg = MessageInputViewModel.QueuedMessage(message, displayName, replyTo, silent)
                 queue.add(qMsg)
@@ -570,6 +570,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         @Suppress("UnusedPrivateProperty")
         private val TAG = AppPreferencesImpl::class.simpleName
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+        private const val MESSAGE_INDEX: Int = 0
+        private const val REPLY_TO_INDEX: Int = 1
+        private const val DISPLY_NAME_INDEX: Int = 2
+        private const val SILENT_INDEX: Int = 3
         const val PROXY_TYPE = "proxy_type"
         const val PROXY_SERVER = "proxy_server"
         const val PROXY_HOST = "proxy_host"

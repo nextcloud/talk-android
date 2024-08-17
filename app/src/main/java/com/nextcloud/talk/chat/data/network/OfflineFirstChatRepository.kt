@@ -504,12 +504,12 @@ class OfflineFirstChatRepository @Inject constructor(
                 chatBlock.newestMessageId
             ).first()
 
-        if (connectedChatBlocks.size == 1) {
+        return if (connectedChatBlocks.size == 1) {
             Log.d(TAG, "This chatBlock is not connected to others")
             val chatBlockFromDb = connectedChatBlocks[0]
             Log.d(TAG, "chatBlockFromDb.oldestMessageId: " + chatBlockFromDb.oldestMessageId)
             Log.d(TAG, "chatBlockFromDb.newestMessageId: " + chatBlockFromDb.newestMessageId)
-            return chatBlockFromDb
+            chatBlockFromDb
         } else if (connectedChatBlocks.size > 1) {
             Log.d(TAG, "Found " + connectedChatBlocks.size + " chat blocks that are connected")
             val oldestIdFromDbChatBlocks =
@@ -536,10 +536,10 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "A new chat block was created that covers all the range of the found chatblocks")
             Log.d(TAG, "new chatBlock - oldest MessageId: $oldestIdFromDbChatBlocks")
             Log.d(TAG, "new chatBlock - newest MessageId: $newestIdFromDbChatBlocks")
-            return newChatBlock
+            newChatBlock
         } else {
             Log.d(TAG, "No chat block found ....")
-            return null
+            null
         }
     }
 
