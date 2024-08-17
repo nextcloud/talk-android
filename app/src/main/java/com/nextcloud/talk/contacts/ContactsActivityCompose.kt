@@ -109,6 +109,7 @@ class ContactsActivityCompose : BaseActivity() {
                 )
             }
         }
+        setupSystemColors()
     }
 }
 
