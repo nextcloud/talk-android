@@ -109,6 +109,7 @@ class ContactsActivityCompose : BaseActivity() {
                 )
             }
         }
+        setupSystemColors()
     }
 }
 
@@ -132,7 +133,7 @@ fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsVi
         is ContactsUiState.Error -> {
             val errorMessage = contactsUiState.message
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = Color.Red)
+                Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
             }
         }
     }
@@ -165,7 +166,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
                     Surface(Modifier.fillParentMaxWidth()) {
                         Header(initial)
                     }
-                    HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+                    HorizontalDivider(thickness = 1.dp, color = MaterialTheme.colorScheme.outlineVariant)
                 }
             }
             items(contactsForInitial) { contact ->
@@ -184,7 +185,7 @@ fun Header(header: String) {
             .fillMaxSize()
             .background(Color.Transparent)
             .padding(start = 60.dp),
-        color = Color.Blue,
+        color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold
     )
 }
@@ -229,7 +230,7 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
         is RoomUiState.Error -> {
             val errorMessage = (roomUiState as RoomUiState.Error).message
             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = Color.Red)
+                Text(text = "Error: $errorMessage", color = MaterialTheme.colorScheme.error)
             }
         }
         is RoomUiState.None -> {}
