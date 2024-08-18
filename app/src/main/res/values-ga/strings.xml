@@ -27,6 +27,7 @@
     <string name="close">Dún</string>
     <string name="close_icon">Dún Deilbhín</string>
     <string name="connection_established">Ceangal bunaithe</string>
+    <string name="connection_lost">Ceangal caillte</string>
     <string name="connection_lost_sent_messages_are_queued">Ceangal caillte - Tá na teachtaireachtaí seolta i scuaine</string>
     <string name="continuous_voice_message_recording">Taifeadadh glas chun an teachtaireacht gutha a thaifeadadh go leanúnach</string>
     <string name="conversation_is_read_only">Tá an comhrá léite amháin</string>
