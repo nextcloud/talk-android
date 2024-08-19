@@ -7,24 +7,29 @@
 
 package com.nextcloud.talk.conversationcreation
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
+import androidx.activity.compose.ManagedActivityResultLauncher
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -56,6 +61,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import javax.inject.Inject
 
@@ -63,58 +69,74 @@ import javax.inject.Inject
 class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private lateinit var conversationCreationViewModel: ConversationCreationViewModel
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        conversationCreationViewModel =
-            ViewModelProvider(this, viewModelFactory)[ConversationCreationViewModel::class.java]
-        val selectedParticipants: List<AutocompleteUser>? = when (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES
-                .TIRAMISU
-        ) {
-            true -> intent.getParcelableArrayListExtra("selectedParticipants")
-            else -> intent.extras?.getParcelableArrayList("selectedParticipants")
-        } ?: emptyList()
 
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val conversationCreationViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[ConversationCreationViewModel::class.java]
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                val context = LocalContext.current
-                Scaffold(
-                    topBar = {
-                        TopAppBar(
-                            title = { Text(text = stringResource(id = R.string.nc_new_conversation)) },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    (context as? Activity)?.finish()
-                                }) {
-                                    Icon(
-                                        Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = stringResource(R.string.back_button)
-                                    )
-                                }
-                            }
-                        )
-                    },
-                    content = {
-                        Column(Modifier.padding(it)) {
-                            DefaultUserAvatar()
-                            UploadAvatar()
-                            ConversationNameAndDescription(conversationCreationViewModel)
-                            AddParticipants(selectedParticipants, context)
-                            RoomCreationOptions(conversationCreationViewModel)
-                            CreateConversation()
-                        }
-                    }
-                )
+                ConversationCreationScreen(conversationCreationViewModel)
             }
         }
     }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreationViewModel) {
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data = result.data
+                val selectedParticipants = data?.getParcelableArrayListExtra<AutocompleteUser>("selectedParticipants")
+                    ?: emptyList()
+                conversationCreationViewModel.updateSelectedParticipants(selectedParticipants)
+            }
+        }
+    )
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = stringResource(id = R.string.nc_new_conversation)) },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        (context as? Activity)?.finish()
+                    }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back_button)
+                        )
+                    }
+                }
+            )
+        },
+        content = { paddingValues ->
+            Column(
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                DefaultUserAvatar()
+                UploadAvatar()
+                ConversationNameAndDescription(conversationCreationViewModel)
+                AddParticipants(launcher, context, conversationCreationViewModel)
+                RoomCreationOptions(conversationCreationViewModel)
+                CreateConversation()
+            }
+        }
+    )
 }
 
 @Composable
@@ -196,7 +218,7 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     OutlinedTextField(
         value = conversationDescription.value,
         onValueChange = {
-            conversationCreationViewModel.updateRoomName(it)
+            conversationCreationViewModel.updateConversationDescription(it)
         },
         label = { Text(text = stringResource(id = R.string.nc_conversation_description)) },
         modifier = Modifier
@@ -205,58 +227,87 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     )
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
-fun AddParticipants(selectedParticipants: List<AutocompleteUser>?, context: Context) {
-    Row {
-        Text(
-            text = stringResource(id = R.string.nc_participants).uppercase(),
-            fontSize = 14.sp,
-            modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-        )
-        if (selectedParticipants?.isNotEmpty() == true) {
-            Text(
-                text = stringResource(id = R.string.nc_edit),
-                fontSize = 12.sp,
-                modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp, bottom = 16.dp)
-                    .clickable {
-                        val intent = Intent(context, ContactsActivityCompose::class.java)
-                        context.startActivity(intent)
-                    },
-                textAlign = TextAlign.Right
-            )
-        }
-    }
+fun AddParticipants(
+    launcher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    context: Context,
+    conversationCreationViewModel: ConversationCreationViewModel
+) {
+    val participants = conversationCreationViewModel.selectedParticipants.collectAsState()
 
-    Row(
-        modifier = Modifier
-            .padding(start = 16.dp, end = 16.dp)
-            .clickable {
-                val intent = Intent(context, ContactsActivityCompose::class.java)
-                intent.putExtra("isAddParticipants", true)
-                context.startActivity(intent)
-            },
-        verticalAlignment = Alignment
-            .CenterVertically
+    Column(
+        modifier = Modifier.fillMaxHeight()
+            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
     ) {
-        if (selectedParticipants?.isEmpty() == true) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_account_plus),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
+        Row {
+            Text(
+                text = stringResource(id = R.string.nc_participants).uppercase(),
+                fontSize = 14.sp,
+                modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
             )
+            Spacer(modifier = Modifier.weight(1f))
+            if (participants.value.isNotEmpty()) {
+                Text(
+                    text = stringResource(id = R.string.nc_edit),
+                    fontSize = 12.sp,
+                    modifier = Modifier
+                        .padding(start = 16.dp, bottom = 16.dp)
+                        .clickable {
+                            val intent = Intent(context, ContactsActivityCompose::class.java)
+                            intent.putParcelableArrayListExtra(
+                                "selected participants",
+                                participants.value as ArrayList<AutocompleteUser>
+                            )
+                            intent.putExtra("isAddParticipantsEdit", true)
+                            launcher.launch(intent)
+                        },
+                    textAlign = TextAlign.Right
+                )
+            }
+        }
 
-            Text(text = stringResource(id = R.string.nc_add_participants), modifier = Modifier.padding(start = 16.dp))
-        } else {
-            LazyColumn {
-                items(selectedParticipants!!) { participant ->
-                    participant.label?.let {
-                        Text(
-                            text = it,
-                            modifier = Modifier.padding(all = 16.dp)
-                        )
-                    }
-                    HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+        participants.value.forEach { participant ->
+            Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                val imageUri = participant.id?.let { conversationCreationViewModel.getImageUri(it, true) }
+                val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+                val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
+                AsyncImage(
+                    model = loadedImage,
+                    contentDescription = stringResource(id = R.string.user_avatar),
+                    modifier = Modifier.size(width = 32.dp, height = 32.dp)
+                )
+                participant.label?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier.padding(all = 16.dp),
+                        fontSize = 15.sp
+                    )
                 }
+            }
+            HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+        }
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    val intent = Intent(context, ContactsActivityCompose::class.java)
+                    intent.putExtra("isAddParticipants", true)
+                    launcher.launch(intent)
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (participants.value.isEmpty()) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_account_plus),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    text = stringResource(id = R.string.nc_add_participants),
+                    modifier = Modifier.padding(start = 16.dp)
+                )
             }
         }
     }
@@ -366,78 +417,3 @@ fun CreateConversation() {
         }
     }
 }
-
-//
-// @SuppressLint("UnrememberedMutableState")
-// @OptIn(ExperimentalMaterial3Api::class)
-// @Composable
-// fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
-//     val searchQuery by contactsViewModel.searchQuery.collectAsState()
-//     val searchState = contactsViewModel.searchState.collectAsState()
-//     val addParticipantsUiState = contactsViewModel.addParticipantsUiState.collectAsState()
-//     val conversationToken:String? = null
-//
-//     TopAppBar(
-//         title = { Text(text = title) },
-//         navigationIcon = {
-//             IconButton(onClick = {
-//                 (context as? Activity)?.finish()
-//             }) {
-//                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_button))
-//             }
-//         },
-//         actions = {
-//             IconButton(onClick = {
-//                 contactsViewModel.updateSearchState(true)
-//             }) {
-//                 Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
-//             }
-//             if (contactsViewModel.isAddParticipantsView.value) {
-//                 Text(
-//                     text = stringResource(id = R.string.nc_contacts_done),
-//                     modifier = Modifier.clickable {
-//                         for(contacts in contactsViewModel.selectedParticipantsList){
-//                             contacts.let { contact ->
-//                                 contactsViewModel.addParticipants(
-//                                     conversationToken,
-//                                     contact.id!!,
-//                                     contact.source!!
-//                                 )
-//                             }
-//                         }
-//                     }
-//                 )
-//             }
-//         }
-//     )
-//     val state = addParticipantsUiState.value
-//     when(state){
-//         is AddParticipantsUiState.Error -> {
-//             val errorMessage = state.message
-//             Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//                 Text(text = "Error: $errorMessage", color = Color.Red)
-//             }
-//
-//         }
-//         is AddParticipantsUiState.None -> {
-//
-//
-//         }
-//         is AddParticipantsUiState.Success -> {
-//             val conversation = state.participants
-//             Log.d("ContactsActivityCompose", "$conversation")
-//         }
-//     }
-//     if (searchState.value) {
-//         Row {
-//             DisplaySearch(
-//                 text = searchQuery,
-//                 onTextChange = { searchQuery ->
-//                     contactsViewModel.updateSearchQuery(query = searchQuery)
-//                     contactsViewModel.getContactsFromSearchParams()
-//                 },
-//                 contactsViewModel = contactsViewModel
-//             )
-//         }
-//     }
-// }

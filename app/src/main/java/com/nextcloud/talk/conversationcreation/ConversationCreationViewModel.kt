@@ -12,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.contacts.AddParticipantsUiState
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -20,6 +21,12 @@ import javax.inject.Inject
 class ConversationCreationViewModel @Inject constructor(
     private val repository: ConversationCreationRepository
 ) : ViewModel() {
+    private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+    val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
+
+    fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
+        _selectedParticipants.value = participants
+    }
 
     private val _roomName = MutableStateFlow("")
     val roomName: StateFlow<String> = _roomName
@@ -68,5 +75,9 @@ class ConversationCreationViewModel @Inject constructor(
                 addParticipantsViewState.value = AddParticipantsUiState.Error(exception.message ?: "")
             }
         }
+    }
+
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
+        return repository.getImageUri(avatarId, requestBigSize)
     }
 }
