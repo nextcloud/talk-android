@@ -12,11 +12,15 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Parcelable
+import android.util.Log
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,15 +30,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -48,6 +57,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModelProvider
@@ -75,21 +85,28 @@ class ContactsActivityCompose : BaseActivity() {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
-        val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
-        contactsViewModel.updateIsAddParticipants(isAddParticipants)
-        if (isAddParticipants) {
-            contactsViewModel.updateShareTypes(
-                listOf(
-                    ShareType.Group.shareType,
-                    ShareType.Email.shareType,
-                    ShareType.Circle.shareType
-                )
-            )
-            contactsViewModel.getContactsFromSearchParams()
-        }
         setContent {
+            val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
+            val isAddParticipantsEdit = intent.getBooleanExtra("isAddParticipantsEdit", false)
+            contactsViewModel.updateIsAddParticipants(isAddParticipants)
+            if (isAddParticipants) {
+                contactsViewModel.updateShareTypes(
+                    listOf(
+                        ShareType.Group.shareType,
+                        ShareType.Email.shareType,
+                        ShareType.Circle.shareType
+                    )
+                )
+                contactsViewModel.getContactsFromSearchParams()
+            }
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsState()
+            val selectedParticipants: List<AutocompleteUser> = if (isAddParticipantsEdit) {
+                intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
+            } else {
+                emptyList()
+            }
+            contactsViewModel.updateSelectedParticipants(selectedParticipants)
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
@@ -108,7 +125,8 @@ class ContactsActivityCompose : BaseActivity() {
                             ContactsList(
                                 contactsUiState = uiState.value,
                                 contactsViewModel = contactsViewModel,
-                                context = context
+                                context = context,
+                                selectedParticipants = selectedParticipants.toMutableList()
                             )
                         }
                     }
@@ -218,13 +236,17 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
                 Text(
                     text = stringResource(id = R.string.nc_contacts_done),
                     modifier = Modifier.clickable {
-                        val selectedParticipants: List<AutocompleteUser> = contactsViewModel.selectedParticipantsList
-                        val intent = Intent(context, ConversationCreationActivity::class.java)
-                        intent.putParcelableArrayListExtra(
-                            "selectedParticipants",
-                            selectedParticipants as ArrayList<Parcelable>
-                        )
-                        context.startActivity(intent)
+                        val activity = context as? Activity
+                        val resultIntent = Intent().apply {
+                            putParcelableArrayListExtra(
+                                "selectedParticipants",
+                                contactsViewModel
+                                    .selectedParticipantsList as
+                                    ArrayList<AutocompleteUser>
+                            )
+                        }
+                        activity?.setResult(Activity.RESULT_OK, resultIntent)
+                        activity?.finish()
                     }
                 )
             }
@@ -302,6 +324,98 @@ fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsVie
             }
         }
     }
+}
+
+@Composable
+fun ContactsList(
+    contactsUiState: ContactsUiState,
+    contactsViewModel: ContactsViewModel,
+    context: Context,
+    selectedParticipants: MutableList<AutocompleteUser>
+) {
+    when (contactsUiState) {
+        is ContactsUiState.None -> {
+        }
+        is ContactsUiState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
+            }
+        }
+        is ContactsUiState.Success -> {
+            val contacts = contactsUiState.contacts
+            Log.d(CompanionClass.TAG, "Contacts:$contacts")
+            if (contacts != null) {
+                ContactsItem(contacts, contactsViewModel, context, selectedParticipants)
+            }
+        }
+        is ContactsUiState.Error -> {
+            val errorMessage = contactsUiState.message
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Error: $errorMessage", color = Color.Red)
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun ContactsItem(
+    contacts: List<AutocompleteUser>,
+    contactsViewModel: ContactsViewModel,
+    context: Context,
+    selectedParticipants: MutableList<AutocompleteUser>
+) {
+    val groupedContacts: Map<String, List<AutocompleteUser>> = contacts.groupBy { contact ->
+        (
+            if (contact.source == "users") {
+                contact.label?.first()?.uppercase()
+            } else {
+                contact.source?.replaceFirstChar { actorType ->
+                    actorType.uppercase()
+                }
+            }
+            ).toString()
+    }
+    LazyColumn(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth(),
+        contentPadding = PaddingValues(all = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        groupedContacts.forEach { (initial, contactsForInitial) ->
+            stickyHeader {
+                Column {
+                    Surface(Modifier.fillParentMaxWidth()) {
+                        Header(initial)
+                    }
+                    HorizontalDivider(thickness = 0.1.dp, color = Color.Black)
+                }
+            }
+            items(contactsForInitial) { contact ->
+                ContactItemRow(
+                    contact = contact,
+                    contactsViewModel = contactsViewModel,
+                    context = context,
+                    selectedContacts = selectedParticipants
+                )
+                Log.d(CompanionClass.TAG, "Contacts:$contact")
+            }
+        }
+    }
+}
+
+@Composable
+fun Header(header: String) {
+    Text(
+        text = header,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Transparent)
+            .padding(start = 60.dp),
+        color = Color.Blue,
+        fontWeight = FontWeight.Bold
+    )
 }
 
 class CompanionClass {

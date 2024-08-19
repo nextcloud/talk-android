@@ -31,7 +31,7 @@ class ContactsViewModel @Inject constructor(
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
     private val selectedParticipants = mutableListOf<AutocompleteUser>()
-    val selectedParticipantsList: List<AutocompleteUser> = selectedParticipants
+    val selectedParticipantsList: MutableList<AutocompleteUser> = selectedParticipants
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 

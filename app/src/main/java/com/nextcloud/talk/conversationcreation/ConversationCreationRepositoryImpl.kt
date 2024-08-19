@@ -73,4 +73,12 @@ class ConversationCreationRepositoryImpl(
         }
         return ncApiCoroutines.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
     }
+
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
+        return ApiUtils.getUrlForAvatar(
+            _currentUser.baseUrl,
+            avatarId,
+            requestBigSize
+        )
+    }
 }

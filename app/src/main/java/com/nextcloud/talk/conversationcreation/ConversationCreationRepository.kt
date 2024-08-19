@@ -14,4 +14,5 @@ interface ConversationCreationRepository {
     suspend fun renameConversation(roomToken: String, roomNameNew: String?): GenericOverall
     suspend fun setConversationDescription(roomToken: String, description: String?): GenericOverall
     suspend fun addParticipants(conversationToken: String?, userId: String, sourceType: String): AddParticipantOverall
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String
 }
