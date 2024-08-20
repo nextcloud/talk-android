@@ -93,11 +93,11 @@ android {
         buildConfigField "String", "PERMISSION_LOCAL_BROADCAST", "\"${localBroadcastPermission}\""
     }
 
-    // testOptions {
-    //     unitTests.all {
-    //         useJUnitPlatform()
-    //     }
-    // }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 
     buildTypes {
         release {
