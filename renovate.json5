@@ -11,7 +11,7 @@
   ],
   "packageRules": [
     {
-      "matchPackageNames": ["com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion"],
+      "matchPackageNames": ["com.fasterxml.jackson.core:jackson-core", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2", "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido", "fidoVersion"],
       "automerge": false,
 	  "enabled": false
     }
