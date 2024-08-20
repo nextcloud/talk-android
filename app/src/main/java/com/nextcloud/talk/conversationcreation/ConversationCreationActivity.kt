@@ -24,6 +24,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -45,6 +46,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,9 +62,12 @@ import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -80,10 +85,11 @@ class ConversationCreationActivity : BaseActivity() {
         )[ConversationCreationViewModel::class.java]
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
+            val context = LocalContext.current
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                ConversationCreationScreen(conversationCreationViewModel)
+                ConversationCreationScreen(conversationCreationViewModel, context)
             }
         }
     }
@@ -91,7 +97,7 @@ class ConversationCreationActivity : BaseActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreationViewModel) {
+fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
@@ -101,7 +107,8 @@ fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreati
                 val data = result.data
                 val selectedParticipants = data?.getParcelableArrayListExtra<AutocompleteUser>("selectedParticipants")
                     ?: emptyList()
-                conversationCreationViewModel.updateSelectedParticipants(selectedParticipants)
+                val participants = selectedParticipants.toMutableList()
+                conversationCreationViewModel.updateSelectedParticipants(participants)
             }
         }
     )
@@ -133,7 +140,7 @@ fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreati
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
-                CreateConversation()
+                CreateConversation(conversationCreationViewModel, context)
             }
         }
     )
@@ -234,10 +241,11 @@ fun AddParticipants(
     context: Context,
     conversationCreationViewModel: ConversationCreationViewModel
 ) {
-    val participants = conversationCreationViewModel.selectedParticipants.collectAsState()
+    val participants = conversationCreationViewModel.selectedParticipants.collectAsState().value
 
     Column(
-        modifier = Modifier.fillMaxHeight()
+        modifier = Modifier
+            .fillMaxHeight()
             .padding(start = 16.dp, end = 16.dp, top = 16.dp)
     ) {
         Row {
@@ -247,7 +255,7 @@ fun AddParticipants(
                 modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
-            if (participants.value.isNotEmpty()) {
+            if (participants.isNotEmpty()) {
                 Text(
                     text = stringResource(id = R.string.nc_edit),
                     fontSize = 12.sp,
@@ -257,8 +265,9 @@ fun AddParticipants(
                             val intent = Intent(context, ContactsActivityCompose::class.java)
                             intent.putParcelableArrayListExtra(
                                 "selected participants",
-                                participants.value as ArrayList<AutocompleteUser>
+                                participants as ArrayList<AutocompleteUser>
                             )
+                            intent.putExtra("isAddParticipants", true)
                             intent.putExtra("isAddParticipantsEdit", true)
                             launcher.launch(intent)
                         },
@@ -267,7 +276,9 @@ fun AddParticipants(
             }
         }
 
-        participants.value.forEach { participant ->
+        val participant = participants.toSet()
+
+        participant.forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 val imageUri = participant.id?.let { conversationCreationViewModel.getImageUri(it, true) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
@@ -298,7 +309,7 @@ fun AddParticipants(
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (participants.value.isEmpty()) {
+            if (participant.isEmpty()) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account_plus),
                     contentDescription = null,
@@ -402,18 +413,52 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
 }
 
 @Composable
-fun CreateConversation() {
+fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
+    val roomUiState by conversationCreationViewModel.roomViewState.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 16.dp),
+            .padding(all = 16.dp)
+            .clickable {
+            },
         contentAlignment = Alignment.Center
     ) {
         Button(
             onClick = {
+                val roomType = if (conversationCreationViewModel.isGuestsAllowed.value) {
+                    "ROOM_TYPE_PUBLIC"
+                } else {
+                    "ROOM_TYPE_PRIVATE"
+                }
+                conversationCreationViewModel.createRoom(
+                    roomType,
+                    conversationCreationViewModel.roomName.value
+                )
             }
         ) {
             Text(text = stringResource(id = R.string.create_conversation))
         }
+    }
+    when (roomUiState) {
+        is RoomUiState.Success -> {
+            val conversation = (roomUiState as RoomUiState.Success).conversation
+            val token = conversation?.token
+            if (token != null) {
+                conversationCreationViewModel.allowGuests(token, conversationCreationViewModel.isGuestsAllowed.value)
+            }
+            val bundle = Bundle()
+            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, token)
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(bundle)
+            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.startActivity(chatIntent)
+        }
+        is RoomUiState.Error -> {
+            val errorMessage = (roomUiState as RoomUiState.Error).message
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text(text = "Error: $errorMessage", color = Color.Red)
+            }
+        }
+        is RoomUiState.None -> {}
     }
 }
