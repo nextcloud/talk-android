@@ -11,6 +11,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -73,4 +74,10 @@ interface NcApiCoroutines {
         @Url url: String?,
         @QueryMap options: Map<String, String>?
     ): AddParticipantOverall
+
+    @POST
+    fun makeRoomPublic(@Header("Authorization") authorization: String?, @Url url: String?): GenericOverall
+
+    @DELETE
+    fun makeRoomPrivate(@Header("Authorization") authorization: String?, @Url url: String?): GenericOverall
 }

@@ -12,7 +12,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.contacts.AddParticipantsUiState
+import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.conversations.Conversation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -23,6 +25,8 @@ class ConversationCreationViewModel @Inject constructor(
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
+    private val _roomViewState = MutableStateFlow<RoomUiState>(RoomUiState.None)
+    val roomViewState: StateFlow<RoomUiState> = _roomViewState
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
@@ -79,5 +83,25 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
+    }
+
+    fun createRoom(roomType: String, conversationName: String?) {
+        viewModelScope.launch {
+            try {
+                val room = repository.createRoom(
+                    roomType,
+                    conversationName
+                )
+
+                val conversation: Conversation? = room.ocs?.data
+                _roomViewState.value = RoomUiState.Success(conversation)
+            } catch (exception: Exception) {
+                _roomViewState.value = RoomUiState.Error(exception.message ?: "")
+            }
+        }
+    }
+
+    fun allowGuests(token: String, allow: Boolean): ConversationCreationRepositoryImpl.AllowGuestsResult {
+        return repository.allowGuests(token, allow)
     }
 }

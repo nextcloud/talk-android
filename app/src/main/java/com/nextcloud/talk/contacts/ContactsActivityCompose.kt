@@ -49,6 +49,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -101,12 +102,15 @@ class ContactsActivityCompose : BaseActivity() {
             }
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsState()
-            val selectedParticipants: List<AutocompleteUser> = if (isAddParticipantsEdit) {
-                intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
-            } else {
-                emptyList()
+            val selectedParticipants: List<AutocompleteUser> = remember {
+                if (isAddParticipants) {
+                    intent.getParcelableArrayListExtra("selected participants") ?: emptyList()
+                } else {
+                    emptyList()
+                }
             }
-            contactsViewModel.updateSelectedParticipants(selectedParticipants)
+            val participants = selectedParticipants.toSet().toMutableList()
+            contactsViewModel.updateSelectedParticipants(participants)
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
@@ -248,16 +252,14 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
             modifier = Modifier.size(width = 45.dp, height = 45.dp)
         )
         Text(modifier = Modifier.padding(16.dp), text = contact.label!!)
-        if (isAddParticipants.value) {
-            if (isSelected) {
-                Spacer(modifier = Modifier.weight(1f))
-                Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
-                    contentDescription = "Selected",
-                    tint = Color.Blue,
-                    modifier = Modifier.padding(end = 8.dp)
-                )
-            }
+        if (isAddParticipants.value && isSelected) {
+            Spacer(modifier = Modifier.weight(1f))
+            Icon(
+                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
+                contentDescription = "Selected",
+                tint = Color.Blue,
+                modifier = Modifier.padding(end = 8.dp)
+            )
         }
     }
     when (roomUiState) {
