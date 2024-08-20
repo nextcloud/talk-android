@@ -44,7 +44,10 @@
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="4.1.0"/>
             <trusting group="org.mockito.kotlin" name="mockito-kotlin" version="5.4.0"/>
          </trusted-key>
-         <trusted-key id="1597AB231B7ADD7E14B1D9C43F00DB67AE236E2E" group="org.conscrypt" name="conscrypt-android" version="2.5.2"/>
+         <trusted-key id="1597AB231B7ADD7E14B1D9C43F00DB67AE236E2E">
+            <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.2"/>
+            <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.3"/>
+         </trusted-key>
          <trusted-key id="190D5A957FF22273E601F7A7C92C5FEC70161C62" group="org.apache" name="apache" version="18"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638" group="org.checkerframework"/>
          <trusted-key id="1D0A8B5E77C678A7C724445ABF984B4145EA13F7" group="com.squareup" name="javapoet" version="1.13.0"/>
