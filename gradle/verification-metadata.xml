@@ -76,7 +76,10 @@
          <trusted-key id="33FD4BFD33554634053D73C0C2148900BCD3C2AF" group="org.jetbrains" name="annotations" version="23.0.0"/>
          <trusted-key id="34441E504A937F43EB0DAEF96A65176A0FB1CD0B" group="org.codehaus.groovy"/>
          <trusted-key id="38FD31D9C6FD39D58EF1AB0DE96EF7AE7D967845" group="com.vanniktech"/>
-         <trusted-key id="3A1AAFA9B89A1D1DDD5F3A4B98AD2E19BFF4106D" group="org.osmdroid" name="osmdroid-android" version="6.1.18"/>
+         <trusted-key id="3A1AAFA9B89A1D1DDD5F3A4B98AD2E19BFF4106D">
+            <trusting group="org.osmdroid" name="osmdroid-android" version="6.1.18"/>
+            <trusting group="org.osmdroid" name="osmdroid-android" version="6.1.20"/>
+         </trusted-key>
          <trusted-key id="3D9CDB50E2EAB3AA068D74A188518C11ADAEFC68" group="pl.droidsonroids.gif" name="android-gif-drawable" version="1.2.28"/>
          <trusted-key id="4021EEEAFF5DE8404DCD0A270AA3E5C3D232E79B" group="jakarta.inject" name="jakarta.inject-api" version="2.0.1"/>
          <trusted-key id="44FBDBBC1A00FE414F1C1873586654072EAD6677" group="org.sonatype.oss" name="oss-parent" version="9"/>
