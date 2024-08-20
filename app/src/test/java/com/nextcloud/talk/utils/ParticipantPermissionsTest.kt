@@ -7,6 +7,8 @@
  */
 package com.nextcloud.talk.utils
 
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.Conversation
 import junit.framework.TestCase
@@ -22,10 +24,13 @@ class ParticipantPermissionsTest : TestCase() {
             ParticipantPermissions.JOIN_CALL or
             ParticipantPermissions.DEFAULT
 
+        val user = User()
+        user.id = 1
+
         val attendeePermissions =
             ParticipantPermissions(
                 spreedCapability,
-                conversation
+                ConversationModel.mapToConversationModel(conversation, user)
             )
 
         assert(attendeePermissions.canPublishScreen)
