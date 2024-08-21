@@ -625,15 +625,18 @@ class ConversationsListActivity :
                 showSearchView(searchView, searchItem)
                 viewThemeUtils.platform.themeStatusBar(this)
             }
-            searchView!!.setOnCloseListener {
+            searchView!!.findViewById<View>(R.id.search_close_btn).setOnClickListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     viewThemeUtils.platform.resetStatusBar(this)
                 } else {
-                    searchView!!.post { searchView!!.setQuery(TAG, true) }
+                    resetSearchResults()
+                    searchView!!.setQuery("", false)
                 }
-                true
             }
+
+
+
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
