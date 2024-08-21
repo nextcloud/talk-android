@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationcreation
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -87,13 +88,16 @@ class ConversationCreationRepositoryImpl(
         )
     }
 
-    override suspend fun createRoom(roomType: String, conversationName: String?): RoomOverall {
+    override suspend fun createRoom(
+        roomType: ConversationEnums.ConversationType?,
+        conversationName: String?
+    ): RoomOverall {
         val retrofitBucket: RetrofitBucket =
-            if (roomType == "ROOM_TYPE_PUBLIC") {
+            if (roomType == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
                 ApiUtils.getRetrofitBucketForCreateRoom(
                     apiVersion,
                     currentUser.baseUrl!!,
-                    "ROOM_TYPE_PUBLIC",
+                    ROOM_TYPE_PUBLIC,
                     null,
                     null,
                     conversationName
@@ -102,7 +106,7 @@ class ConversationCreationRepositoryImpl(
                 ApiUtils.getRetrofitBucketForCreateRoom(
                     apiVersion,
                     currentUser.baseUrl!!,
-                    "ROOM_TYPE_GROUP",
+                    ROOM_TYPE_GROUP,
                     null,
                     null,
                     conversationName
@@ -136,5 +140,10 @@ class ConversationCreationRepositoryImpl(
         }
 
         return AllowGuestsResult(result.ocs!!.meta!!.statusCode == STATUS_CODE_OK && allow)
+    }
+
+    companion object {
+        private const val ROOM_TYPE_PUBLIC = "3"
+        private const val ROOM_TYPE_GROUP = "2"
     }
 }
