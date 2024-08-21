@@ -289,6 +289,7 @@ class ChatActivity :
     var newMessagesCount = 0
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
+
     // lateinit var roomId: String
     var voiceOnly: Boolean = true
     private lateinit var path: String
@@ -598,7 +599,7 @@ class ChatActivity :
 
                     chatViewModel.loadMessages(
                         withCredentials = credentials!!,
-                        withUrl = urlForChatting,
+                        withUrl = urlForChatting
                     )
                 }
 
@@ -983,7 +984,8 @@ class ChatActivity :
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0 &&
-                        !binding.unreadMessagesPopup.isShown) {
+                        !binding.unreadMessagesPopup.isShown
+                    ) {
                         binding.scrollDownButton.visibility = View.VISIBLE
                     } else {
                         binding.scrollDownButton.visibility = View.GONE
@@ -2502,7 +2504,6 @@ class ChatActivity :
             unreadChatMessage.message = context.getString(R.string.nc_new_messages)
             adapter?.addToStart(unreadChatMessage, false)
 
-
             if (scrollToEndOnUpdate) {
                 binding.scrollDownButton.visibility = View.GONE
                 newMessagesCount = 0
@@ -2516,7 +2517,6 @@ class ChatActivity :
                 }
             }
         }
-
 
         for (chatMessage in chatMessageList) {
             chatMessage.activeUser = conversationUser
@@ -2628,7 +2628,6 @@ class ChatActivity :
             // see getImageUrl() source code
             setUpWaveform(currentlyPlayedVoiceMessage!!, voiceMessageToRestoreWasPlaying)
             Log.d(RESUME_AUDIO_TAG, "resume audio procedure completed")
-
         } else {
             Log.d(RESUME_AUDIO_TAG, "No voice message to restore")
         }
@@ -2637,7 +2636,7 @@ class ChatActivity :
         voiceMessageToRestoreWasPlaying = false
     }
 
-    private fun getItemFromAdapter(messageId: String): Pair<ChatMessage,Int>? {
+    private fun getItemFromAdapter(messageId: String): Pair<ChatMessage, Int>? {
         if (adapter != null) {
             val messagePosition = adapter!!.items!!.indexOfFirst {
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
@@ -2650,9 +2649,7 @@ class ChatActivity :
                     Log.d(TAG, "currentItem retrieved was not chatmessage or its id was not correct")
                 }
             } else {
-                Log.d(
-                    TAG, "messagePosition is -1, adapter # of items: " + adapter!!.itemCount
-                )
+                Log.d(TAG, "messagePosition is -1, adapter # of items: " + adapter!!.itemCount)
             }
         } else {
             Log.d(TAG, "TalkMessagesListAdapter is null")
@@ -2828,7 +2825,6 @@ class ChatActivity :
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
-
 
             if (isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
@@ -3174,7 +3170,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {

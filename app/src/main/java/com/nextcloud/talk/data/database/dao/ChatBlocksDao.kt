@@ -57,7 +57,6 @@ interface ChatBlocksDao {
     )
     fun getChatBlocksContainingMessageId(internalConversationId: String, messageId: Long): Flow<List<ChatBlockEntity?>>
 
-
     @Query(
         """
         SELECT *

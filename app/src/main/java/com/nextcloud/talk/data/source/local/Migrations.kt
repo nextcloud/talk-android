@@ -210,11 +210,13 @@ object Migrations {
         )
 
         db.execSQL(
-            "CREATE UNIQUE INDEX IF NOT EXISTS `index_ChatMessages_internalId` ON `ChatMessages` (`internalId`)"
+            "CREATE UNIQUE INDEX IF NOT EXISTS `index_ChatMessages_internalId` " +
+                "ON `ChatMessages` (`internalId`)"
         )
 
         db.execSQL(
-            "CREATE INDEX IF NOT EXISTS `index_ChatMessages_internalConversationId` ON `ChatMessages` (`internalConversationId`)"
+            "CREATE INDEX IF NOT EXISTS `index_ChatMessages_internalConversationId` " +
+                "ON `ChatMessages` (`internalConversationId`)"
         )
 
         db.execSQL(
@@ -231,7 +233,8 @@ object Migrations {
         )
 
         db.execSQL(
-            "CREATE INDEX IF NOT EXISTS `index_ChatBlocks_internalConversationId` ON `ChatBlocks` (`internalConversationId`)"
+            "CREATE INDEX IF NOT EXISTS `index_ChatBlocks_internalConversationId` " +
+                "ON `ChatBlocks` (`internalConversationId`)"
         )
     }
 }

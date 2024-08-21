@@ -162,26 +162,26 @@ class PushUtils {
             var keyGen: KeyPairGenerator? = null
             try {
                 keyGen = KeyPairGenerator.getInstance("RSA")
-                keyGen.initialize(2048)
+                keyGen.initialize(RSA_KEY_SIZE)
                 val pair = keyGen.generateKeyPair()
                 val statusPrivate = saveKeyToFile(pair.private, privateKeyFile.absolutePath)
                 val statusPublic = saveKeyToFile(pair.public, publicKeyFile.absolutePath)
                 return if (statusPrivate == 0 && statusPublic == 0) {
                     // all went well
-                    0
+                    RETURN_CODE_KEY_GENERATION_SUCCESSFUL
                 } else {
-                    -2
+                    RETURN_CODE_KEY_GENERATION_FAILED
                 }
             } catch (e: NoSuchAlgorithmException) {
                 Log.d(TAG, "RSA algorithm not supported")
             }
         } else {
             // We already have the key
-            return -1
+            return RETURN_CODE_KEY_ALREADY_EXISTS
         }
 
         // we failed to generate the key
-        return -2
+        return RETURN_CODE_KEY_GENERATION_FAILED
     }
 
     fun pushRegistrationToServer(ncApi: NcApi) {
@@ -399,6 +399,10 @@ class PushUtils {
 
     companion object {
         private const val TAG = "PushUtils"
+        private const val RSA_KEY_SIZE: Int = 2048
+        private const val RETURN_CODE_KEY_GENERATION_SUCCESSFUL: Int = 0
+        private const val RETURN_CODE_KEY_ALREADY_EXISTS: Int = -1
+        private const val RETURN_CODE_KEY_GENERATION_FAILED: Int = -2
         const val LATEST_PUSH_REGISTRATION_AT_SERVER: String = "LATEST_PUSH_REGISTRATION_AT_SERVER"
         const val LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY: String = "LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY"
     }

@@ -13,6 +13,9 @@
     <string name="avatar">Avatar</string>
     <string name="away">Borte</string>
     <string name="back_button">Tilbake-knapp</string>
+    <string name="ban">Utesteng</string>
+    <string name="ban_participant">Utesteng deltaker</string>
+    <string name="bans_list">Liste over utestengelser</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avanserte samtalealternativer</string>
     <string name="call_running_since_one_hour">Samtalen har pågått i én time.</string>
@@ -24,6 +27,8 @@
     <string name="close">Lukk</string>
     <string name="close_icon">Lukk ikon</string>
     <string name="connection_established">Tilkobling opprettet</string>
+    <string name="connection_lost">Tilkobling brutt</string>
+    <string name="connection_lost_sent_messages_are_queued">Tilkobling brutt – sendte meldinger legges i kø</string>
     <string name="continuous_voice_message_recording">Lås opptak for kontinuerlig opptak av talemeldingen</string>
     <string name="conversation_is_read_only">Samtalen kan kun leses</string>
     <string name="conversations">Samtaler</string>
@@ -42,6 +47,7 @@
     <string name="emoji_category_recent">Nylig</string>
     <string name="encrypted">Kryptert</string>
     <string name="error_loading_chats">Det oppstod et problem med å laste inn chattene dine</string>
+    <string name="error_unbanning">Det oppstod feil ved oppheving av utestengelse av deltaker</string>
     <string name="failed_to_save">Kunne ikke lagre %1$s</string>
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Laster ...</string>
@@ -49,6 +55,7 @@
     <string name="fourHours">4 timer</string>
     <string name="get_invitations_error">Henting av ventende invitasjoner feilet</string>
     <string name="hint_edited_message">(redigert)</string>
+    <string name="internal_note">Intern merknad</string>
     <string name="invisible">Usynlig</string>
     <string name="join_open_conversations_icon">Bli med i åpne samtaler-ikon</string>
     <string name="languages_error_message">Språk kunne ikke hentes</string>
@@ -579,6 +586,8 @@
     <string name="shared_items_poll">Avstemning</string>
     <string name="shared_items_recording">Samtaleopptak</string>
     <string name="shared_items_voice">Svarer</string>
+    <string name="show_ban_reason">Vis utestengelsesårsak</string>
+    <string name="show_banned_participants">Vis utestengte deltakere</string>
     <string name="starred">Favoritt</string>
     <string name="startCallForbidden">Du har ikke lov til å starte et anrop</string>
     <string name="started_a_call">startet et anrop</string>

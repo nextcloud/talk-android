@@ -27,6 +27,8 @@
     <string name="close">Kapat</string>
     <string name="close_icon">Kapatma simgesi</string>
     <string name="connection_established">Bağlantı kuruldu</string>
+    <string name="connection_lost">Bağlantı kesildi</string>
+    <string name="connection_lost_sent_messages_are_queued">Bağlantı kesildi. Gönderilen iletiler kuyruğa alındı</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
     <string name="conversations">Görüşmeler</string>
