@@ -67,6 +67,7 @@ import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -415,6 +416,7 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val roomUiState by conversationCreationViewModel.roomViewState.collectAsState()
+    val participants = conversationCreationViewModel.selectedParticipants.collectAsState().value.toSet()
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -426,9 +428,9 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         Button(
             onClick = {
                 val roomType = if (conversationCreationViewModel.isGuestsAllowed.value) {
-                    "ROOM_TYPE_PUBLIC"
+                    ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
                 } else {
-                    "ROOM_TYPE_PRIVATE"
+                    ConversationEnums.ConversationType.ROOM_GROUP_CALL
                 }
                 conversationCreationViewModel.createRoom(
                     roomType,
@@ -445,6 +447,9 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
             val token = conversation?.token
             if (token != null) {
                 conversationCreationViewModel.allowGuests(token, conversationCreationViewModel.isGuestsAllowed.value)
+            }
+            for (participant in participants) {
+                participant.id?.let { conversationCreationViewModel.addParticipants(token, it, participant.source!!) }
             }
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_ROOM_TOKEN, token)

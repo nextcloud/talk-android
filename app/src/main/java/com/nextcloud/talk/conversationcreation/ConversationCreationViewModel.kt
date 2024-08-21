@@ -15,6 +15,7 @@ import com.nextcloud.talk.contacts.AddParticipantsUiState
 import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -85,7 +86,7 @@ class ConversationCreationViewModel @Inject constructor(
         return repository.getImageUri(avatarId, requestBigSize)
     }
 
-    fun createRoom(roomType: String, conversationName: String?) {
+    fun createRoom(roomType: ConversationEnums.ConversationType?, conversationName: String?) {
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(
