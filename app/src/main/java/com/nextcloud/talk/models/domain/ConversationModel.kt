@@ -62,7 +62,7 @@ class ConversationModel(
     var remoteToken: String? = null,
 
     // attributes that don't come from API. This should be changed?!
-    var password: String? = null,
+    var password: String? = null
 ) {
 
     companion object {

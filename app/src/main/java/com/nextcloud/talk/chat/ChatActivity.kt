@@ -162,7 +162,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
@@ -187,7 +186,6 @@ import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
-import retrofit2.Response
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -291,6 +289,7 @@ class ChatActivity :
     var newMessagesCount = 0
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
+
     // lateinit var roomId: String
     var voiceOnly: Boolean = true
     private lateinit var path: String
@@ -600,7 +599,7 @@ class ChatActivity :
 
                     chatViewModel.loadMessages(
                         withCredentials = credentials!!,
-                        withUrl = urlForChatting,
+                        withUrl = urlForChatting
                     )
                 }
 
@@ -985,7 +984,8 @@ class ChatActivity :
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
                     if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0 &&
-                        !binding.unreadMessagesPopup.isShown) {
+                        !binding.unreadMessagesPopup.isShown
+                    ) {
                         binding.scrollDownButton.visibility = View.VISIBLE
                     } else {
                         binding.scrollDownButton.visibility = View.GONE
@@ -2504,7 +2504,6 @@ class ChatActivity :
             unreadChatMessage.message = context.getString(R.string.nc_new_messages)
             adapter?.addToStart(unreadChatMessage, false)
 
-
             if (scrollToEndOnUpdate) {
                 binding.scrollDownButton.visibility = View.GONE
                 newMessagesCount = 0
@@ -2518,7 +2517,6 @@ class ChatActivity :
                 }
             }
         }
-
 
         for (chatMessage in chatMessageList) {
             chatMessage.activeUser = conversationUser
@@ -2630,7 +2628,6 @@ class ChatActivity :
             // see getImageUrl() source code
             setUpWaveform(currentlyPlayedVoiceMessage!!, voiceMessageToRestoreWasPlaying)
             Log.d(RESUME_AUDIO_TAG, "resume audio procedure completed")
-
         } else {
             Log.d(RESUME_AUDIO_TAG, "No voice message to restore")
         }
@@ -2639,7 +2636,7 @@ class ChatActivity :
         voiceMessageToRestoreWasPlaying = false
     }
 
-    private fun getItemFromAdapter(messageId: String): Pair<ChatMessage,Int>? {
+    private fun getItemFromAdapter(messageId: String): Pair<ChatMessage, Int>? {
         if (adapter != null) {
             val messagePosition = adapter!!.items!!.indexOfFirst {
                 it.item is ChatMessage && (it.item as ChatMessage).id == messageId
@@ -2652,9 +2649,7 @@ class ChatActivity :
                     Log.d(TAG, "currentItem retrieved was not chatmessage or its id was not correct")
                 }
             } else {
-                Log.d(
-                    TAG, "messagePosition is -1, adapter # of items: " + adapter!!.itemCount
-                )
+                Log.d(TAG, "messagePosition is -1, adapter # of items: " + adapter!!.itemCount)
             }
         } else {
             Log.d(TAG, "TalkMessagesListAdapter is null")
@@ -2830,7 +2825,6 @@ class ChatActivity :
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
-
 
             if (isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
@@ -3176,7 +3170,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {
