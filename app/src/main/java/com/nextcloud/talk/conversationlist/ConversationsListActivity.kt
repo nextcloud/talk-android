@@ -635,7 +635,17 @@ class ConversationsListActivity :
                 }
             }
 
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    initSearchDisposable()
+                    return true
+                }
 
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    this@ConversationsListActivity.onQueryTextChange(p0)
+                    return true
+                }
+            })
 
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
