@@ -331,6 +331,8 @@ class ChatActivity :
         }
     }
 
+    private lateinit var messageInputFragment: MessageInputFragment
+
     val typingParticipants = HashMap<String, TypingParticipant>()
 
     var callStarted = false
@@ -396,6 +398,8 @@ class ChatActivity :
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
+
+        messageInputFragment = MessageInputFragment()
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
@@ -578,7 +582,7 @@ class ChatActivity :
 
                     supportFragmentManager.commit {
                         setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, MessageInputFragment())
+                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
                     }
 
                     joinRoomWithPassword()

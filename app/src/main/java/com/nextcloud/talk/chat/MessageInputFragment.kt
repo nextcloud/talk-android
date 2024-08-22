@@ -136,9 +136,13 @@ class MessageInputFragment : Fragment() {
         return binding.root
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveState()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        saveState()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
