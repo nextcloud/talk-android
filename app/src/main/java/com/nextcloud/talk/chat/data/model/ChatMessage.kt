@@ -407,7 +407,9 @@ data class ChatMessage(
         BREAKOUT_ROOMS_STARTED,
         BREAKOUT_ROOMS_STOPPED,
         AVATAR_SET,
-        AVATAR_REMOVED
+        AVATAR_REMOVED,
+        FEDERATED_USER_ADDED,
+        FEDERATED_USER_REMOVED
     }
 
     companion object {
