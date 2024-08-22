@@ -71,7 +71,7 @@ class FilterConversationFragment : DialogFragment() {
                 unreadFilterChip,
                 mentionedFilterChip
             )
-        }.forEach(viewThemeUtils.material::themeChipFilter)
+        }.forEach(viewThemeUtils.talk::themeChipFilter)
 
         setUpChips()
     }
