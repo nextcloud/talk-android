@@ -207,7 +207,7 @@
     <string name="nc_diagnose_notification_messages_channel_permission">İleti bildirimi kanalı etkin mi?</string>
     <string name="nc_diagnose_notification_permission">Bildirim izinleri</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
-    <string name="nc_diagnose_server_talk_version">Sunucunun Talk sürümü</string>
+    <string name="nc_diagnose_server_talk_version">Sunucunun Konuş sürümü</string>
     <string name="nc_diagnose_server_version">Sunucu sürümü</string>
     <string name="nc_diagnose_signaling_mode_extern">Dış</string>
     <string name="nc_diagnose_signaling_mode_intern">İç</string>
@@ -406,7 +406,7 @@
     <string name="nc_server_maintenance">Lütfen %1$s kopyanızı bakım kipinden çıkarın</string>
     <string name="nc_server_not_installed">Lütfen %1$s kurulumunuzu tamamlayın</string>
     <string name="nc_server_testing_connection">Bağlantı sınanıyor</string>
-    <string name="nc_server_unsupported">Sunucuda desteklenen bir Talk uygulaması kurulu değil</string>
+    <string name="nc_server_unsupported">Sunucuda desteklenen bir Konuş uygulaması kurulu değil</string>
     <string name="nc_server_url">Sunucu adresi https://…</string>
     <string name="nc_server_version">%1$s yalnızca %2$s 13 ve üzerinde çalışır</string>
     <string name="nc_settings">Ayarlar</string>
@@ -419,14 +419,14 @@
     <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
-    <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Talk uygulaması kurulu değil</string>
+    <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Konuş uygulaması kurulu değil</string>
     <string name="nc_settings_notification_sounds"> Bildirim sesleri</string>
     <string name="nc_settings_notification_sounds_post_oreo">Bildirimler</string>
     <string name="nc_settings_notifications_declined">Bildirimler reddediliyor</string>
     <string name="nc_settings_notifications_declined_hint">Bildirimler reddediliyor. Lütfen Android ayarlarından bildirimlere izin verin</string>
     <string name="nc_settings_notifications_granted">Bildirimlere izin veriliyor</string>
     <string name="nc_settings_other_notifications_ringtone">İletiler</string>
-    <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Talk kısa yolunu görüntüler</string>
+    <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Konuş kısa yolunu görüntüler</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Hata 429 çok fazla sayıda istek yapıldı</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Telefon numaranızı ayarlayarak diğer kullanıcıların sizi bulmasını sağlayabilirsiniz</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Telefon numarasını yazın</string>
@@ -501,7 +501,7 @@
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
-    <string name="nc_voice_message_filename">%1$s Talk kaydı (%2$s)</string>
+    <string name="nc_voice_message_filename">%1$s Konuş kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
@@ -557,7 +557,7 @@
     <string name="scope_federated_title">Birleşik</string>
     <string name="scope_local_description">Yalnızca bu kopyadaki kişiler ve konuklar görebilir</string>
     <string name="scope_local_title">Yerel</string>
-    <string name="scope_private_description">Yalnızca mobil aygıt üzerinde Talk telefon numarası bütünleştirmesi ile eşleşen kişiler görebilir</string>
+    <string name="scope_private_description">Yalnızca mobil aygıt üzerinde Konuş telefon numarası bütünleştirmesi ile eşleşen kişiler görebilir</string>
     <string name="scope_private_title">Kişisel</string>
     <string name="scope_published_description">Genel ve herkese açık adres defteri ile ve güvenilen sunucularla eşitlensin</string>
     <string name="scope_published_title">Yayınlanmış</string>
