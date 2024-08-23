@@ -54,7 +54,7 @@ interface NcApiCoroutines {
      */
     @FormUrlEncoded
     @PUT
-    fun renameRoom(
+    suspend fun renameRoom(
         @Header("Authorization") authorization: String?,
         @Url url: String,
         @Field("roomName") roomName: String?
@@ -62,22 +62,22 @@ interface NcApiCoroutines {
 
     @FormUrlEncoded
     @PUT
-    fun setConversationDescription(
+    suspend fun setConversationDescription(
         @Header("Authorization") authorization: String?,
         @Url url: String,
         @Field("description") description: String?
     ): GenericOverall
 
     @POST
-    fun addParticipant(
+    suspend fun addParticipant(
         @Header("Authorization") authorization: String?,
         @Url url: String?,
         @QueryMap options: Map<String, String>?
     ): AddParticipantOverall
 
     @POST
-    fun makeRoomPublic(@Header("Authorization") authorization: String?, @Url url: String?): GenericOverall
+    suspend fun makeRoomPublic(@Header("Authorization") authorization: String?, @Url url: String): GenericOverall
 
     @DELETE
-    fun makeRoomPrivate(@Header("Authorization") authorization: String?, @Url url: String?): GenericOverall
+    suspend fun makeRoomPrivate(@Header("Authorization") authorization: String?, @Url url: String): GenericOverall
 }

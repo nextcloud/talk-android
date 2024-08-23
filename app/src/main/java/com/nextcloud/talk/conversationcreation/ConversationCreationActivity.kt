@@ -24,7 +24,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -64,7 +63,6 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
-import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -415,55 +413,37 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
 
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
-    val roomUiState by conversationCreationViewModel.roomViewState.collectAsState()
-    val participants = conversationCreationViewModel.selectedParticipants.collectAsState().value.toSet()
+    val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
+    val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(all = 16.dp)
-            .clickable {
-            },
+            .padding(all = 16.dp),
         contentAlignment = Alignment.Center
     ) {
         Button(
             onClick = {
-                val roomType = if (conversationCreationViewModel.isGuestsAllowed.value) {
+                val roomType = if (isGuestsAllowed) {
                     ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
                 } else {
                     ConversationEnums.ConversationType.ROOM_GROUP_CALL
                 }
-                conversationCreationViewModel.createRoom(
-                    roomType,
-                    conversationCreationViewModel.roomName.value
-                )
+                conversationCreationViewModel.createRoomAndAddParticipants(
+                    roomType = roomType,
+                    conversationName = conversationCreationViewModel.roomName.value,
+                    participants = selectedParticipants.toSet()
+                ) {
+                        roomToken ->
+                    val bundle = Bundle()
+                    bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                    val chatIntent = Intent(context, ChatActivity::class.java)
+                    chatIntent.putExtras(bundle)
+                    context.startActivity(chatIntent)
+                }
             }
         ) {
             Text(text = stringResource(id = R.string.create_conversation))
         }
-    }
-    when (roomUiState) {
-        is RoomUiState.Success -> {
-            val conversation = (roomUiState as RoomUiState.Success).conversation
-            val token = conversation?.token
-            if (token != null) {
-                conversationCreationViewModel.allowGuests(token, conversationCreationViewModel.isGuestsAllowed.value)
-            }
-            for (participant in participants) {
-                participant.id?.let { conversationCreationViewModel.addParticipants(token, it, participant.source!!) }
-            }
-            val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, token)
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(bundle)
-            chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            context.startActivity(chatIntent)
-        }
-        is RoomUiState.Error -> {
-            val errorMessage = (roomUiState as RoomUiState.Error).message
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Error: $errorMessage", color = Color.Red)
-            }
-        }
-        is RoomUiState.None -> {}
     }
 }
