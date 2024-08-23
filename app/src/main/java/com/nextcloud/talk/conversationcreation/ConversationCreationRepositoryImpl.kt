@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
@@ -28,9 +27,6 @@ class ConversationCreationRepositoryImpl(
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-    data class AllowGuestsResult(
-        val allow: Boolean
-    )
 
     override suspend fun renameConversation(roomToken: String, roomNameNew: String?): GenericOverall {
         return ncApiCoroutines.renameRoom(
@@ -77,7 +73,8 @@ class ConversationCreationRepositoryImpl(
                 userId
             )
         }
-        return ncApiCoroutines.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
+        val participants = ncApiCoroutines.addParticipant(credentials, retrofitBucket.url, retrofitBucket.queryMap)
+        return participants
     }
 
     override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
@@ -120,14 +117,14 @@ class ConversationCreationRepositoryImpl(
         return response
     }
 
-    override fun allowGuests(token: String, allow: Boolean): AllowGuestsResult {
+    override suspend fun allowGuests(token: String, allow: Boolean): GenericOverall {
         val url = ApiUtils.getUrlForRoomPublic(
             apiVersion,
             _currentUser.baseUrl!!,
             token
         )
 
-        val result = if (allow) {
+        val result: GenericOverall = if (allow) {
             ncApiCoroutines.makeRoomPublic(
                 credentials,
                 url
@@ -139,7 +136,7 @@ class ConversationCreationRepositoryImpl(
             )
         }
 
-        return AllowGuestsResult(result.ocs!!.meta!!.statusCode == STATUS_CODE_OK && allow)
+        return result
     }
 
     companion object {
