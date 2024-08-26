@@ -373,7 +373,8 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     // Update Conversations
-                    conversationItems.clear()
+                    conversationItemsWithHeader.clear()
+                    conversationItems.clear() // fixme remove this
                     for (conversation in list) {
                         addToConversationItems(conversation)
                     }
@@ -538,6 +539,12 @@ class ConversationsListActivity :
             if (searchManager != null) {
                 searchView!!.setSearchableInfo(searchManager.getSearchableInfo(componentName))
             }
+            initSearchDisposable()
+        }
+    }
+
+    private fun initSearchDisposable() {
+        if (searchViewDisposable == null || searchViewDisposable?.isDisposed == true) {
             searchViewDisposable = observeSearchView(searchView!!)
                 .debounce { query: String? ->
                     if (TextUtils.isEmpty(query)) {
@@ -618,17 +625,31 @@ class ConversationsListActivity :
                 showSearchView(searchView, searchItem)
                 viewThemeUtils.platform.themeStatusBar(this)
             }
-            searchView!!.setOnCloseListener {
+            searchView!!.findViewById<View>(R.id.search_close_btn).setOnClickListener {
                 if (TextUtils.isEmpty(searchView!!.query.toString())) {
                     searchView!!.onActionViewCollapsed()
                     viewThemeUtils.platform.resetStatusBar(this)
                 } else {
-                    searchView!!.post { searchView!!.setQuery(TAG, true) }
+                    resetSearchResults()
+                    searchView!!.setQuery("", false)
                 }
-                true
             }
+
+            searchView!!.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(p0: String?): Boolean {
+                    initSearchDisposable()
+                    return true
+                }
+
+                override fun onQueryTextChange(p0: String?): Boolean {
+                    this@ConversationsListActivity.onQueryTextChange(p0)
+                    return true
+                }
+            })
+
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
+                    initSearchDisposable()
                     adapter!!.setHeadersShown(true)
                     if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
