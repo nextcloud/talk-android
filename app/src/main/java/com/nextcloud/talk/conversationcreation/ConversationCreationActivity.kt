@@ -65,7 +65,6 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -407,15 +406,15 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
             text = stringResource(id = text),
             modifier = Modifier.weight(1f)
         )
-        switch?.invoke()
+        if (switch != null) {
+            switch()
+        }
     }
 }
 
 @Composable
 fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
-    val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
-
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -424,26 +423,27 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
     ) {
         Button(
             onClick = {
-                val roomType = if (isGuestsAllowed) {
-                    ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
-                } else {
-                    ConversationEnums.ConversationType.ROOM_GROUP_CALL
-                }
                 conversationCreationViewModel.createRoomAndAddParticipants(
-                    roomType = roomType,
+                    roomType = CompanionClass.ROOM_TYPE_GROUP,
                     conversationName = conversationCreationViewModel.roomName.value,
                     participants = selectedParticipants.toSet()
-                ) {
-                        roomToken ->
+                ) { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
                     val chatIntent = Intent(context, ChatActivity::class.java)
                     chatIntent.putExtras(bundle)
+                    chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                     context.startActivity(chatIntent)
                 }
             }
         ) {
             Text(text = stringResource(id = R.string.create_conversation))
         }
+    }
+}
+class CompanionClass {
+    companion object {
+        internal val TAG = ConversationCreationActivity::class.simpleName
+        internal const val ROOM_TYPE_GROUP = "2"
     }
 }

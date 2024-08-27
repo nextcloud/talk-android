@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -101,7 +100,7 @@ class ConversationCreationViewModel @Inject constructor(
     }
 
     fun createRoomAndAddParticipants(
-        roomType: ConversationEnums.ConversationType,
+        roomType: String,
         conversationName: String,
         participants: Set<AutocompleteUser>,
         onRoomCreated: (String) -> Unit
@@ -131,9 +130,9 @@ class ConversationCreationViewModel @Inject constructor(
                                         addParticipantsViewState.value =
                                             AddParticipantsUiState.Success(participantOverall)
                                     }
-                                    onRoomCreated(token)
                                 }
                             }
+                            onRoomCreated(token)
                         } catch (exception: Exception) {
                             _allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
                         }
@@ -153,7 +152,7 @@ class ConversationCreationViewModel @Inject constructor(
         return repository.getImageUri(avatarId, requestBigSize)
     }
 
-    fun createRoom(roomType: ConversationEnums.ConversationType?, conversationName: String?) {
+    fun createRoom(roomType: String, conversationName: String?) {
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(

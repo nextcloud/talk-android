@@ -10,7 +10,6 @@ package com.nextcloud.talk.conversationcreation
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -77,6 +76,23 @@ class ConversationCreationRepositoryImpl(
         return participants
     }
 
+    override suspend fun createRoom(roomType: String, conversationName: String?): RoomOverall {
+        val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            apiVersion,
+            _currentUser.baseUrl,
+            roomType,
+            null,
+            null,
+            conversationName
+        )
+        val response = ncApiCoroutines.createRoom(
+            credentials,
+            retrofitBucket.url,
+            retrofitBucket.queryMap
+        )
+        return response
+    }
+
     override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return ApiUtils.getUrlForAvatar(
             _currentUser.baseUrl,
@@ -85,36 +101,17 @@ class ConversationCreationRepositoryImpl(
         )
     }
 
-    override suspend fun createRoom(
-        roomType: ConversationEnums.ConversationType?,
-        conversationName: String?
-    ): RoomOverall {
-        val retrofitBucket: RetrofitBucket =
-            if (roomType == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL) {
-                ApiUtils.getRetrofitBucketForCreateRoom(
-                    apiVersion,
-                    currentUser.baseUrl!!,
-                    ROOM_TYPE_PUBLIC,
-                    null,
-                    null,
-                    conversationName
-                )
-            } else {
-                ApiUtils.getRetrofitBucketForCreateRoom(
-                    apiVersion,
-                    currentUser.baseUrl!!,
-                    ROOM_TYPE_GROUP,
-                    null,
-                    null,
-                    conversationName
-                )
-            }
-        val response = ncApiCoroutines.createRoom(
+    override suspend fun setPassword(roomToken: String, password: String): GenericOverall {
+        val result = ncApiCoroutines.setPassword(
             credentials,
-            retrofitBucket.url,
-            retrofitBucket.queryMap
+            ApiUtils.getUrlForRoomPassword(
+                apiVersion,
+                _currentUser.baseUrl!!,
+                roomToken
+            ),
+            password
         )
-        return response
+        return result
     }
 
     override suspend fun allowGuests(token: String, allow: Boolean): GenericOverall {
@@ -137,10 +134,5 @@ class ConversationCreationRepositoryImpl(
         }
 
         return result
-    }
-
-    companion object {
-        private const val ROOM_TYPE_PUBLIC = "3"
-        private const val ROOM_TYPE_GROUP = "2"
     }
 }

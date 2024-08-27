@@ -80,4 +80,12 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun makeRoomPrivate(@Header("Authorization") authorization: String?, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setPassword(
+        @Header("Authorization") authorization: String?,
+        @Url url: String?,
+        @Field("password") password: String?
+    ): GenericOverall
 }
