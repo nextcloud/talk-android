@@ -14,6 +14,7 @@ import android.text.TextUtils;
 
 import com.nextcloud.talk.call.CallParticipantModel;
 import com.nextcloud.talk.call.RaisedHand;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
 
 import org.webrtc.EglBase;
@@ -38,6 +39,8 @@ public class ParticipantDisplayItem {
 
     private final CallParticipantModel callParticipantModel;
 
+    private Participant.ActorType actorType;
+    private String actorId;
     private String userId;
     private PeerConnection.IceConnectionState iceConnectionState;
     private String nick;
@@ -82,6 +85,8 @@ public class ParticipantDisplayItem {
     }
 
     private void updateFromModel() {
+        actorType = callParticipantModel.getActorType();
+        actorId = callParticipantModel.getActorId();
         userId = callParticipantModel.getUserId();
         nick = callParticipantModel.getNick();
 
@@ -166,6 +171,8 @@ public class ParticipantDisplayItem {
     public String toString() {
         return "ParticipantSession{" +
                 "userId='" + userId + '\'' +
+                ", actorType='" + actorType + '\'' +
+                ", actorId='" + actorId + '\'' +
                 ", session='" + session + '\'' +
                 ", nick='" + nick + '\'' +
                 ", urlForAvatar='" + urlForAvatar + '\'' +

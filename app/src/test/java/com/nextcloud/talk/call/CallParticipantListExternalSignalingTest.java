@@ -71,6 +71,8 @@ public class CallParticipantListExternalSignalingTest {
             participant.setSessionId(sessionId);
             participant.setType(type);
             participant.setUserId(userId);
+            participant.setActorType(Participant.ActorType.USERS);
+            participant.setActorId(userId);
 
             return participant;
         }
@@ -81,6 +83,8 @@ public class CallParticipantListExternalSignalingTest {
             participant.setLastPing(lastPing);
             participant.setSessionId(sessionId);
             participant.setType(type);
+            participant.setActorType(Participant.ActorType.GUESTS);
+            participant.setActorId("sha1-" + sessionId);
 
             return participant;
         }

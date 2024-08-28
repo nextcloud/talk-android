@@ -2160,6 +2160,10 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "   newSession joined: $sessionId")
             addCallParticipant(sessionId)
 
+            if (participant.actorType != null && participant.actorId != null) {
+                callParticipants[sessionId]!!.setActor(participant.actorType, participant.actorId)
+            }
+
             val userId = participant.userId
             if (userId != null) {
                 callParticipants[sessionId]!!.setUserId(userId)
