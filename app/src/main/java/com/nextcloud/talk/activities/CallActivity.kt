@@ -1453,7 +1453,7 @@ class CallActivity : CallBaseActivity() {
     private fun fetchSignalingSettings() {
         Log.d(TAG, "fetchSignalingSettings")
         val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.API_V3, 2, 1))
-        ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
+        ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl, roomToken!!))
             .subscribeOn(Schedulers.io())
             .retry(API_RETRIES)
             .observeOn(AndroidSchedulers.mainThread())
