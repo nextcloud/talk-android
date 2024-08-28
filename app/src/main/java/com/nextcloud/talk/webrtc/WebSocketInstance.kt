@@ -20,6 +20,7 @@ import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.models.json.signaling.settings.FederationSettings
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage
@@ -75,6 +76,7 @@ class WebSocketInstance internal constructor(
     private val connectionUrl: String
     private var currentRoomToken: String? = null
     private var currentNormalBackendSession: String? = null
+    private var currentFederation: FederationSettings? = null
     private var reconnecting = false
     private val usersHashMap: HashMap<String?, Participant>
     private var messagesQueue: MutableList<String> = ArrayList()
@@ -367,24 +369,28 @@ class WebSocketInstance internal constructor(
         return hasMCU
     }
 
-    fun joinRoomWithRoomTokenAndSession(roomToken: String, normalBackendSession: String?) {
+    fun joinRoomWithRoomTokenAndSession(roomToken: String, normalBackendSession: String?,
+            federation: FederationSettings? = null) {
         Log.d(TAG, "joinRoomWithRoomTokenAndSession")
         Log.d(TAG, "   roomToken: $roomToken")
         Log.d(TAG, "   session: $normalBackendSession")
         try {
             val message = LoganSquare.serialize(
-                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession)
+                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
             )
             if (roomToken == "") {
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
+                currentFederation = null
                 sendMessage(message)
-            } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession) {
+            } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession &&
+                federation == currentFederation) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 sendRoomJoinedEvent()
             } else {
                 Log.d(TAG, "Sending join room message via websocket")
                 currentNormalBackendSession = normalBackendSession
+                currentFederation = federation
                 sendMessage(message)
             }
         } catch (e: IOException) {

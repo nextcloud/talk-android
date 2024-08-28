@@ -12,6 +12,7 @@ import android.util.Log;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
+import com.nextcloud.talk.models.json.signaling.settings.FederationSettings;
 import com.nextcloud.talk.models.json.websocket.ActorWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthParametersWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.AuthWebSocketMessage;
@@ -19,6 +20,7 @@ import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.HelloWebSocketMessage;
+import com.nextcloud.talk.models.json.websocket.RoomFederationWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomOverallWebSocketMessage;
 import com.nextcloud.talk.models.json.websocket.RoomWebSocketMessage;
 import com.nextcloud.talk.utils.ApiUtils;
@@ -128,12 +130,21 @@ public class WebSocketConnectionHelper {
         return helloOverallWebSocketMessage;
     }
 
-    RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId) {
+    RoomOverallWebSocketMessage getAssembledJoinOrLeaveRoomModel(String roomId, String sessionId,
+                                                                 FederationSettings federation) {
         RoomOverallWebSocketMessage roomOverallWebSocketMessage = new RoomOverallWebSocketMessage();
         roomOverallWebSocketMessage.setType("room");
         RoomWebSocketMessage roomWebSocketMessage = new RoomWebSocketMessage();
         roomWebSocketMessage.setRoomId(roomId);
         roomWebSocketMessage.setSessionId(sessionId);
+        if (federation != null) {
+            RoomFederationWebSocketMessage roomFederationWebSocketMessage = new RoomFederationWebSocketMessage();
+            roomFederationWebSocketMessage.setSignaling(federation.getServer());
+            roomFederationWebSocketMessage.setUrl(federation.getNextcloudServer() + "/ocs/v2.php/apps/spreed/api/v3/signaling/backend");
+            roomFederationWebSocketMessage.setRoomid(federation.getRoomId());
+            roomFederationWebSocketMessage.setToken(federation.getHelloAuthParams().getToken());
+            roomWebSocketMessage.setRoomFederationWebSocketMessage(roomFederationWebSocketMessage);
+        }
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
         return roomOverallWebSocketMessage;
     }
