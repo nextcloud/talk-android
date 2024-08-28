@@ -283,6 +283,10 @@ object ApiUtils {
         return getUrlForSignaling(version, baseUrl) + "/settings"
     }
 
+    fun getUrlForSignalingSettings(version: Int, baseUrl: String?, token: String): String {
+        return getUrlForSignaling(version, baseUrl) + "/settings?token=" + token
+    }
+
     fun getUrlForSignaling(version: Int, baseUrl: String?, token: String): String {
         return getUrlForSignaling(version, baseUrl) + "/" + token
     }
