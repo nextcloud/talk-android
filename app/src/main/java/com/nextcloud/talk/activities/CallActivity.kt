@@ -1475,6 +1475,8 @@ class CallActivity : CallBaseActivity() {
                                 signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer
                             externalSignalingServer!!.externalSignalingTicket =
                                 signalingSettingsOverall.ocs!!.settings!!.externalSignalingTicket
+                            externalSignalingServer!!.federation =
+                                signalingSettingsOverall.ocs!!.settings!!.federation
                             hasExternalSignalingServer = true
                         } else {
                             hasExternalSignalingServer = false
