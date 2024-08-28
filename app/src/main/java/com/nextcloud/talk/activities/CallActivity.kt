@@ -2517,10 +2517,12 @@ class CallActivity : CallBaseActivity() {
         }
         val defaultGuestNick = resources.getString(R.string.nc_nick_guest)
         val participantDisplayItem = ParticipantDisplayItem(
+            context,
             baseUrl,
             defaultGuestNick,
             rootEglBase,
             videoStreamType,
+            roomToken,
             callParticipantModel
         )
         val sessionId = callParticipantModel.sessionId
