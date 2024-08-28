@@ -34,6 +34,8 @@ class ConversationCreationViewModel @Inject constructor(
 
     private val _roomName = MutableStateFlow("")
     val roomName: StateFlow<String> = _roomName
+    private val _password = MutableStateFlow("")
+    val password: StateFlow<String> = _password
     private val _conversationDescription = MutableStateFlow("")
     val conversationDescription: StateFlow<String> = _conversationDescription
     var isGuestsAllowed = mutableStateOf(false)
@@ -48,6 +50,10 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
+    }
+
+    fun updatePassword(password: String) {
+        _password.value = password
     }
 
     fun updateConversationDescription(conversationDescription: String) {
