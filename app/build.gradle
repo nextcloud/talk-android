@@ -257,7 +257,7 @@ dependencies {
     implementation "org.parceler:parceler-api:$parcelerVersion"
     implementation 'com.github.ddB0515.FlexibleAdapter:flexible-adapter:5.1.1'
     implementation 'com.github.ddB0515.FlexibleAdapter:flexible-adapter-ui:5.1.1'
-    implementation 'org.apache.commons:commons-lang3:3.16.0'
+    implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'com.github.wooplr:Spotlight:1.3'
     implementation 'com.google.code.findbugs:jsr305:3.0.2'
     implementation 'com.github.nextcloud-deps:ChatKit:0.4.2'
