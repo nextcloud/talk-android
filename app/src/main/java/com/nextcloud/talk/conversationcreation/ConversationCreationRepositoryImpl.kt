@@ -51,6 +51,18 @@ class ConversationCreationRepositoryImpl(
         )
     }
 
+    override suspend fun openConversation(roomToken: String, scope: Int): GenericOverall {
+        return ncApiCoroutines.openConversation(
+            credentials,
+            ApiUtils.getUrlForOpeningConversations(
+                apiVersion,
+                _currentUser.baseUrl,
+                roomToken
+            ),
+            scope
+        )
+    }
+
     override suspend fun addParticipants(
         conversationToken: String?,
         userId: String,

@@ -62,6 +62,14 @@ interface NcApiCoroutines {
 
     @FormUrlEncoded
     @PUT
+    suspend fun openConversation(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Field("scope") scope: Int
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
     suspend fun setConversationDescription(
         @Header("Authorization") authorization: String?,
         @Url url: String,

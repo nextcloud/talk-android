@@ -539,6 +539,10 @@ object ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/description"
     }
 
+    fun getUrlForOpeningConversations(version: Int, baseUrl: String?, token: String): String {
+        return getUrlForRoom(version, baseUrl, token) + "/listable"
+    }
+
     fun getUrlForTranslation(baseUrl: String): String {
         return "$baseUrl$OCS_API_VERSION/translation/translate"
     }
