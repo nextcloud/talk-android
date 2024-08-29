@@ -8,6 +8,7 @@
 package com.nextcloud.talk.conversationcreation
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -41,6 +42,7 @@ class ConversationCreationViewModel @Inject constructor(
     var isGuestsAllowed = mutableStateOf(false)
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
     var openForGuestAppUsers = mutableStateOf(false)
+    private val scope: MutableState<Int?> = mutableStateOf(null)
 
     private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
     val addParticipantsUiState: StateFlow<AddParticipantsUiState> = addParticipantsViewState
@@ -111,6 +113,11 @@ class ConversationCreationViewModel @Inject constructor(
         participants: Set<AutocompleteUser>,
         onRoomCreated: (String) -> Unit
     ) {
+        val scope = when {
+            isConversationAvailableForRegisteredUsers.value && !openForGuestAppUsers.value -> 1
+            isConversationAvailableForRegisteredUsers.value && openForGuestAppUsers.value -> 2
+            else -> 0
+        }
         viewModelScope.launch {
             _roomViewState.value = RoomUIState.None
             try {
@@ -121,6 +128,10 @@ class ConversationCreationViewModel @Inject constructor(
                     val token = conversation.token
                     if (token != null) {
                         try {
+                            val conversationDescription = repository.setConversationDescription(
+                                token,
+                                _conversationDescription.value
+                            )
                             val allowGuestsResult = repository.allowGuests(token, isGuestsAllowed.value)
                             val statusCode: GenericMeta? = allowGuestsResult.ocs?.meta
                             val result = (statusCode?.statusCode == STATUS_CODE_OK)
@@ -138,6 +149,8 @@ class ConversationCreationViewModel @Inject constructor(
                                     }
                                 }
                             }
+                            val passwordResult = repository.setPassword(token, _password.value)
+                            repository.openConversation(token, scope)
                             onRoomCreated(token)
                         } catch (exception: Exception) {
                             _allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")

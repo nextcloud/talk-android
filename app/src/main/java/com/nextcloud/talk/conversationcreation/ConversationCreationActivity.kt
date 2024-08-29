@@ -351,14 +351,16 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 }
             )
         },
-        showDialog = false
+        showDialog = false,
+        conversationCreationViewModel = conversationCreationViewModel
     )
 
     if (isGuestsAllowed) {
         ConversationOptions(
             icon = R.drawable.ic_lock_grey600_24px,
             text = R.string.nc_set_password,
-            showDialog = true
+            showDialog = true,
+            conversationCreationViewModel = conversationCreationViewModel
         )
     }
 
@@ -373,7 +375,8 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 }
             )
         },
-        showDialog = false
+        showDialog = false,
+        conversationCreationViewModel = conversationCreationViewModel
     )
 
     if (isConversationAvailableForRegisteredUsers) {
@@ -387,13 +390,21 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                     }
                 )
             },
-            showDialog = false
+            showDialog = false,
+            conversationCreationViewModel = conversationCreationViewModel
         )
     }
 }
 
 @Composable
-fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() -> Unit)? = null, showDialog: Boolean)  {
+fun ConversationOptions(
+    icon: Int? = null,
+    text: Int,
+    switch: @Composable (() -> Unit)? = null,
+    showDialog: Boolean,
+    conversationCreationViewModel: ConversationCreationViewModel
+) {
+    var showPasswordDialog by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -401,6 +412,7 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
             .then(
                 if (showDialog) {
                     Modifier.clickable {
+                        showPasswordDialog = true
                     }
                 } else {
                     Modifier
@@ -426,29 +438,41 @@ fun ConversationOptions(icon: Int? = null, text: Int, switch: @Composable (() ->
         if (switch != null) {
             switch()
         }
+        if (showPasswordDialog) {
+            ShowPasswordDialog(
+                onDismiss = { showPasswordDialog = false },
+                conversationCreationViewModel = conversationCreationViewModel
+            )
+        }
     }
 }
 
 @Composable
-fun ShowPasswordDialog() {
+fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var password by remember { mutableStateOf("") }
 
     AlertDialog(
-        onDismissRequest = { /*TODO*/ },
+        onDismissRequest = onDismiss,
         confirmButton = {
             Button(onClick = {
+                conversationCreationViewModel.updatePassword(password)
+                onDismiss()
             }) {
-                Text(text = stringResource(id = R.string.nc_cancel))
+                Text(text = "Save")
             }
         },
         title = { Text(text = "Set Password") },
         text = {
-            TextField(value = password, onValueChange = {
-                password = it
-            })
+            TextField(
+                value = password,
+                onValueChange = {
+                    password = it
+                },
+                label = { Text(text = "Enter a password") }
+            )
         },
         dismissButton = {
-            Button(onClick = { /* Handle cancel */ }) {
+            Button(onClick = { onDismiss() }) {
                 Text(text = stringResource(id = R.string.nc_cancel))
             }
         }
