@@ -277,7 +277,7 @@
     <string name="nc_lobby">Salle d\'attente</string>
     <string name="nc_lobby_start_date">La réunion est planifiée pour %1$s</string>
     <string name="nc_lobby_start_soon">La réunion va bientôt commencer</string>
-    <string name="nc_lobby_waiting">Vous attendez actuellement dans la salle d\'attente.</string>
+    <string name="nc_lobby_waiting">Vous patientez actuellement dans la salle d\'attente</string>
     <string name="nc_location_current_position_description">Votre position actuelle</string>
     <string name="nc_location_permission_required">La permission d\'accès à votre position est requise</string>
     <string name="nc_location_unknown">Position inconnue</string>
