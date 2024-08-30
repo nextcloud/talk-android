@@ -347,6 +347,7 @@ class MessageInputFragment : Fragment() {
 
         if (chatActivity.sharedText.isNotEmpty()) {
             binding.fragmentMessageInputView.inputEditText?.setText(chatActivity.sharedText)
+            submitMessage(false)
         }
 
         binding.fragmentMessageInputView.setAttachmentsListener {
