@@ -11,6 +11,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -49,7 +50,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -88,7 +91,6 @@ class ContactsActivityCompose : BaseActivity() {
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
         setContent {
             val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
-            val isAddParticipantsEdit = intent.getBooleanExtra("isAddParticipantsEdit", false)
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
             if (isAddParticipants) {
                 contactsViewModel.updateShareTypes(
@@ -102,11 +104,12 @@ class ContactsActivityCompose : BaseActivity() {
             }
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsState()
-            val selectedParticipants: List<AutocompleteUser> = remember {
-                if (isAddParticipants) {
-                    intent.getParcelableArrayListExtra("selected participants") ?: emptyList()
+            val selectedParticipants = remember {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    intent.getParcelableArrayListExtra("selectedParticipants", AutocompleteUser::class.java) ?: emptyList()
                 } else {
-                    emptyList()
+                    @Suppress("DEPRECATION")
+                    intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
                 }
             }
             val participants = selectedParticipants.toSet().toMutableList()
@@ -147,29 +150,34 @@ fun ContactItemRow(
     context: Context,
     selectedContacts: MutableList<AutocompleteUser>
 ) {
-    val isSelected = selectedContacts.contains(contact)
+    var isSelected by remember { mutableStateOf(selectedContacts.contains(contact)) }
     val roomUiState by contactsViewModel.roomViewState.collectAsState()
     val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                if (!isAddParticipants.value) {
-                    contactsViewModel.createRoom(
-                        CompanionClass.ROOM_TYPE_ONE_ONE,
-                        contact.source!!,
-                        contact.id!!,
-                        null
-                    )
-                } else {
-                    if (isSelected) {
-                        selectedContacts.remove(contact)
+            .clickable(
+                onClick = {
+                    if (!isAddParticipants.value) {
+                        contactsViewModel.createRoom(
+                            CompanionClass.ROOM_TYPE_ONE_ONE,
+                            contact.source!!,
+                            contact.id!!,
+                            null
+                        )
                     } else {
-                        selectedContacts.add(contact)
+                        isSelected = !isSelected
+                        selectedContacts.apply {
+                            if (isSelected) {
+                                add(contact)
+                            } else {
+                                remove(contact)
+                            }
+                        }
+                        contactsViewModel.updateSelectedParticipants(selectedContacts)
                     }
-                    contactsViewModel.updateSelectedParticipants(selectedContacts)
                 }
-            },
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
         val imageUri = contact.id?.let { contactsViewModel.getImageUri(it, true) }
@@ -181,14 +189,16 @@ fun ContactItemRow(
             modifier = Modifier.size(width = 45.dp, height = 45.dp)
         )
         Text(modifier = Modifier.padding(16.dp), text = contact.label!!)
-        if (isAddParticipants.value && isSelected) {
-            Spacer(modifier = Modifier.weight(1f))
-            Icon(
-                imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
-                contentDescription = "Selected",
-                tint = Color.Blue,
-                modifier = Modifier.padding(end = 8.dp)
-            )
+        if (isAddParticipants.value) {
+            if (isSelected) {
+                Spacer(modifier = Modifier.weight(1f))
+                Icon(
+                    imageVector = ImageVector.vectorResource(id = R.drawable.ic_check_circle),
+                    contentDescription = "Selected",
+                    tint = Color.Blue,
+                    modifier = Modifier.padding(end = 8.dp)
+                )
+            }
         }
     }
     when (roomUiState) {
@@ -238,17 +248,17 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
                 Text(
                     text = stringResource(id = R.string.nc_contacts_done),
                     modifier = Modifier.clickable {
-                        val activity = context as? Activity
                         val resultIntent = Intent().apply {
                             putParcelableArrayListExtra(
                                 "selectedParticipants",
-                                contactsViewModel
-                                    .selectedParticipantsList as
-                                    ArrayList<AutocompleteUser>
+                                ArrayList(
+                                    contactsViewModel
+                                        .selectedParticipantsList.value
+                                )
                             )
                         }
-                        activity?.setResult(Activity.RESULT_OK, resultIntent)
-                        activity?.finish()
+                        (context as? Activity)?.setResult(Activity.RESULT_OK, resultIntent)
+                        (context as? Activity)?.finish()
                     }
                 )
             }

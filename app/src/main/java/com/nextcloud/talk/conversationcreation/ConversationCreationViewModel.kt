@@ -8,7 +8,6 @@
 package com.nextcloud.talk.conversationcreation
 
 import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -42,14 +41,8 @@ class ConversationCreationViewModel @Inject constructor(
     var isGuestsAllowed = mutableStateOf(false)
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
     var openForGuestAppUsers = mutableStateOf(false)
-    private val scope: MutableState<Int?> = mutableStateOf(null)
-
     private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
-    val addParticipantsUiState: StateFlow<AddParticipantsUiState> = addParticipantsViewState
-
     private val _allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
-    val allowGuestsResult: StateFlow<AllowGuestsUiState> = _allowGuestsResult
-
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
     }

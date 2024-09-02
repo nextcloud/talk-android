@@ -5,6 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.nextcloud.talk.conversationcreation
 
 import android.annotation.SuppressLint
@@ -267,7 +269,7 @@ fun AddParticipants(
                         .clickable {
                             val intent = Intent(context, ContactsActivityCompose::class.java)
                             intent.putParcelableArrayListExtra(
-                                "selected participants",
+                                "selectedParticipants",
                                 participants as ArrayList<AutocompleteUser>
                             )
                             intent.putExtra("isAddParticipants", true)
@@ -278,10 +280,7 @@ fun AddParticipants(
                 )
             }
         }
-
-        val participant = participants.toSet()
-
-        participant.forEach { participant ->
+        participants.toSet().forEach { participant ->
             Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                 val imageUri = participant.id?.let { conversationCreationViewModel.getImageUri(it, true) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
@@ -312,7 +311,7 @@ fun AddParticipants(
                 },
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (participant.isEmpty()) {
+            if (participants.isEmpty()) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_account_plus),
                     contentDescription = null,
@@ -329,17 +328,16 @@ fun AddParticipants(
 
 @Composable
 fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewModel) {
-    var isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
-    var isConversationAvailableForRegisteredUsers = conversationCreationViewModel
+    val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
+    val isConversationAvailableForRegisteredUsers = conversationCreationViewModel
         .isConversationAvailableForRegisteredUsers.value
-    var isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
+    val isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
 
     Text(
         text = stringResource(id = R.string.nc_visible).uppercase(),
         fontSize = 14.sp,
         modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
     )
-
     ConversationOptions(
         icon = R.drawable.ic_avatar_link,
         text = R.string.nc_guest_access_allow_title,
@@ -458,17 +456,17 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 conversationCreationViewModel.updatePassword(password)
                 onDismiss()
             }) {
-                Text(text = "Save")
+                Text(text = stringResource(id = R.string.save))
             }
         },
-        title = { Text(text = "Set Password") },
+        title = { Text(text = stringResource(id = R.string.nc_set_password)) },
         text = {
             TextField(
                 value = password,
                 onValueChange = {
                     password = it
                 },
-                label = { Text(text = "Enter a password") }
+                label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
             )
         },
         dismissButton = {

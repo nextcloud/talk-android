@@ -30,8 +30,8 @@ class ContactsViewModel @Inject constructor(
     val shareTypeList: List<String> = shareTypes
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
-    private val selectedParticipants = mutableListOf<AutocompleteUser>()
-    val selectedParticipantsList: List<AutocompleteUser> = selectedParticipants
+    private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
@@ -44,7 +44,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
-        selectedParticipants.addAll(participants)
+        _selectedParticipants.value = participants
     }
     fun updateSearchState(searchState: Boolean) {
         _searchState.value = searchState
