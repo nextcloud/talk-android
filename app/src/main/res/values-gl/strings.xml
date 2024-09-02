@@ -620,9 +620,9 @@
     <string name="translation_from">Dende:</string>
     <string name="translation_to">Para</string>
     <string name="typing_1_other">e 1 máis está a escribir…</string>
-    <string name="typing_are_typing">están a escribir…</string>
+    <string name="typing_are_typing">están a escribiren…</string>
     <string name="typing_is_typing">está a escribir…</string>
-    <string name="typing_x_others">e %1$s máis están a escribir…</string>
+    <string name="typing_x_others">e %1$s máis están a escribiren…</string>
     <string name="unban">Retirar a expulsión</string>
     <string name="unread">Sen ler</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar dende o dispositivo</string>
