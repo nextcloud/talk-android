@@ -103,8 +103,6 @@ class DateTimePickerFragment : DialogFragment() {
                 hour = HOUR_EIGHT_AM,
                 minute = 0,
                 daysToAdd = 1,
-                weekInYear =
-                currentWeekInYear + 1
             )
 
             binding.dateTimePickerWeekend.visibility = View.GONE // because today is the weekend
@@ -117,7 +115,7 @@ class DateTimePickerFragment : DialogFragment() {
 
         nextWeekTimeStamp = getTimeFromCalendar(
             hour = HOUR_EIGHT_AM,
-            day = Calendar.MONDAY,
+            weekDay = Calendar.MONDAY,
             minute = 0,
             weekInYear =
             currentWeekInYear + 1
@@ -255,18 +253,18 @@ class DateTimePickerFragment : DialogFragment() {
     private fun getTimeFromCalendar(
         year: Int = Calendar.getInstance().get(Calendar.YEAR),
         month: Int = Calendar.getInstance().get(Calendar.MONTH),
-        day: Int = Calendar.getInstance().get(Calendar.DAY_OF_WEEK),
+        day: Int = Calendar.getInstance().get(Calendar.DAY_OF_YEAR),
         hour: Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
         minute: Int = Calendar.getInstance().get(Calendar.MINUTE),
         daysToAdd: Int = 0,
-        weekInYear: Int = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR)
+        weekInYear: Int = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR),
+        weekDay: Int = -1
     ): Long {
         val calendar: Calendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
-            set(Calendar.DAY_OF_WEEK, day)
-            add(Calendar.DAY_OF_WEEK, daysToAdd)
-            set(Calendar.WEEK_OF_YEAR, weekInYear)
+            if (weekDay > -1) set(Calendar.DAY_OF_WEEK, weekDay) else set(Calendar.DAY_OF_YEAR, day)
+            if (daysToAdd > 0) add(Calendar.DAY_OF_YEAR, daysToAdd) else set(Calendar.WEEK_OF_YEAR, weekInYear)
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
