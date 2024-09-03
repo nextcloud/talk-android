@@ -831,6 +831,14 @@ class ChatActivity :
                 .collect()
         }
 
+        this.lifecycleScope.launch {
+            chatViewModel.getLastReadMessageFlow
+                .onEach { lastRead ->
+                    scrollToAndCenterMessageWithId(lastRead.toString())
+                }
+                .collect()
+        }
+
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.ReactionDeletedSuccessState -> {
@@ -2057,6 +2065,18 @@ class ChatActivity :
         }
     }
 
+    private fun scrollToAndCenterMessageWithId(messageId: String) {
+        adapter?.let {
+            val position = it.getMessagePositionByIdInReverse(messageId)
+            if (position != -1) {
+                layoutManager?.scrollToPositionWithOffset(
+                    position,
+                    binding.messagesListView.height / 2
+                )
+            }
+        }
+    }
+
     private fun writeContactToVcfFile(cursor: Cursor, file: File) {
         val lookupKey = cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.Contacts.LOOKUP_KEY))
         val uri = Uri.withAppendedPath(ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey)
@@ -2490,13 +2510,8 @@ class ChatActivity :
 
     private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
         val newMessagesAvailable = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-        val insertNewMessagesNotice = if (newMessagesAvailable) {
-            chatMessageList.any { it.actorId != conversationUser!!.userId }
-        } else {
-            false
-        }
-
-        val scrollToEndOnUpdate = layoutManager?.findFirstVisibleItemPosition() == 0
+        val insertNewMessagesNotice = shouldInsertNewMessagesNotice(newMessagesAvailable, chatMessageList)
+        val scrollToEndOnUpdate = isScrolledToBottom()
 
         if (insertNewMessagesNotice) {
             val unreadChatMessage = ChatMessage()
@@ -2544,6 +2559,42 @@ class ChatActivity :
         }
     }
 
+    private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
+
+    private fun shouldInsertNewMessagesNotice(
+        newMessagesAvailable: Boolean,
+        chatMessageList: List<ChatMessage>
+    ) = if (newMessagesAvailable) {
+        chatMessageList.any { it.actorId != conversationUser!!.userId }
+    } else {
+        false
+    }
+
+    private fun updateUnreadMessageInfos(
+        chatMessageList: List<ChatMessage>,
+        scrollToEndOnUpdate: Boolean
+    ) {
+        val unreadChatMessage = ChatMessage()
+        unreadChatMessage.jsonMessageId = -1
+        unreadChatMessage.actorId = "-1"
+        unreadChatMessage.timestamp = chatMessageList[0].timestamp
+        unreadChatMessage.message = context.getString(R.string.nc_new_messages)
+        adapter?.addToStart(unreadChatMessage, false)
+
+        if (scrollToEndOnUpdate) {
+            binding.scrollDownButton.visibility = View.GONE
+            newMessagesCount = 0
+        } else {
+            if (binding.unreadMessagesPopup.isShown) {
+                newMessagesCount++
+            } else {
+                newMessagesCount = 1
+                binding.scrollDownButton.visibility = View.GONE
+                binding.unreadMessagesPopup.show()
+            }
+        }
+    }
+
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
         var countGroupedMessages = 0
 
@@ -2579,10 +2630,7 @@ class ChatActivity :
 
     private fun scrollToFirstUnreadMessage() {
         adapter?.let {
-            layoutManager?.scrollToPositionWithOffset(
-                it.getMessagePositionByIdInReverse("-1"),
-                binding.messagesListView.height / 2
-            )
+            scrollToAndCenterMessageWithId("-1")
         }
     }
 
