@@ -225,10 +225,7 @@ fun ContactItemRow(
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(
-    title: String,
-    context: Context,
-    contactsViewModel: ContactsViewModel) {
+fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
     val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
@@ -283,9 +280,7 @@ fun AppBar(
 }
 
 @Composable
-fun ConversationCreationOptions(
-    context: Context,
-    contactsViewModel: ContactsViewModel) {
+fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsViewModel) {
     val isAddParticipants by contactsViewModel.isAddParticipantsView.collectAsState()
     if (!isAddParticipants) {
         Column {

@@ -102,9 +102,7 @@ class ConversationCreationActivity : BaseActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationCreationScreen(
-    conversationCreationViewModel: ConversationCreationViewModel,
-    context: Context) {
+fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
 
@@ -215,9 +213,7 @@ fun UploadAvatar() {
 }
 
 @Composable
-fun ConversationNameAndDescription(
-    conversationCreationViewModel: ConversationCreationViewModel
-) {
+fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCreationViewModel) {
     val conversationRoomName = conversationCreationViewModel.roomName.collectAsState()
     val conversationDescription = conversationCreationViewModel.conversationDescription.collectAsState()
     OutlinedTextField(
@@ -330,9 +326,7 @@ fun AddParticipants(
 }
 
 @Composable
-fun RoomCreationOptions(
-    conversationCreationViewModel: ConversationCreationViewModel
-) {
+fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewModel) {
     val isGuestsAllowed = conversationCreationViewModel.isGuestsAllowed.value
     val isConversationAvailableForRegisteredUsers = conversationCreationViewModel
         .isConversationAvailableForRegisteredUsers.value
@@ -451,10 +445,7 @@ fun ConversationOptions(
 }
 
 @Composable
-fun ShowPasswordDialog(
-    onDismiss: () -> Unit,
-    conversationCreationViewModel: ConversationCreationViewModel
-) {
+fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var password by remember { mutableStateOf("") }
 
     AlertDialog(
@@ -486,10 +477,7 @@ fun ShowPasswordDialog(
 }
 
 @Composable
-fun CreateConversation(
-    conversationCreationViewModel: ConversationCreationViewModel,
-    context: Context
-) {
+fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
         modifier = Modifier
