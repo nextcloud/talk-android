@@ -30,8 +30,8 @@ class ContactsViewModel @Inject constructor(
     val shareTypeList: List<String> = shareTypes
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
-    private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
-    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = _selectedParticipants
+    private val selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = selectedParticipants
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
@@ -44,7 +44,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
-        _selectedParticipants.value = participants
+        selectedParticipants.value = participants
     }
     fun updateSearchState(searchState: Boolean) {
         _searchState.value = searchState
@@ -106,10 +106,4 @@ sealed class RoomUiState {
     data object None : RoomUiState()
     data class Success(val conversation: Conversation?) : RoomUiState()
     data class Error(val message: String) : RoomUiState()
-}
-
-sealed class AddParticipantsUiState() {
-    data object None : AddParticipantsUiState()
-    data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
-    data class Error(val message: String) : AddParticipantsUiState()
 }

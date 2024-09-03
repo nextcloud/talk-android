@@ -25,8 +25,7 @@ class ConversationCreationViewModel @Inject constructor(
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
-    private val _roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
-    val roomViewState: StateFlow<RoomUIState> = _roomViewState
+    private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
@@ -42,7 +41,7 @@ class ConversationCreationViewModel @Inject constructor(
     var isConversationAvailableForRegisteredUsers = mutableStateOf(false)
     var openForGuestAppUsers = mutableStateOf(false)
     private val addParticipantsViewState = MutableStateFlow<AddParticipantsUiState>(AddParticipantsUiState.None)
-    private val _allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
+    private val allowGuestsResult = MutableStateFlow<AllowGuestsUiState>(AllowGuestsUiState.None)
     fun updateRoomName(roomName: String) {
         _roomName.value = roomName
     }
@@ -53,51 +52,6 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationDescription(conversationDescription: String) {
         _conversationDescription.value = conversationDescription
-    }
-
-    fun renameConversation(roomToken: String) {
-        viewModelScope.launch {
-            try {
-                repository.renameConversation(roomToken, roomName.value)
-            } catch (e: Exception) {
-                Log.d("ConversationCreationViewModel", "${e.message}")
-            }
-        }
-    }
-
-    fun setConversationDescription(roomToken: String) {
-        viewModelScope.launch {
-            try {
-                repository.setConversationDescription(roomToken, conversationDescription.value)
-            } catch (e: Exception) {
-                Log.d("ConversationCreationViewModel", "${e.message}")
-            }
-        }
-    }
-
-    fun addParticipants(conversationToken: String?, userId: String, sourceType: String) {
-        viewModelScope.launch {
-            try {
-                val participantsOverall = repository.addParticipants(conversationToken, userId, sourceType)
-                val participants: List<Conversation>? = participantsOverall.ocs?.data
-                addParticipantsViewState.value = AddParticipantsUiState.Success(participants)
-            } catch (exception: Exception) {
-                addParticipantsViewState.value = AddParticipantsUiState.Error(exception.message ?: "")
-            }
-        }
-    }
-
-    fun allowGuests(token: String, allow: Boolean) {
-        viewModelScope.launch {
-            try {
-                val response = repository.allowGuests(token, allow)
-                val statusCode: Int = response.ocs?.meta?.statusCode!!
-                val result = (statusCode == STATUS_CODE_OK)
-                _allowGuestsResult.value = AllowGuestsUiState.Success(result)
-            } catch (exception: Exception) {
-                _allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
-            }
-        }
     }
 
     fun createRoomAndAddParticipants(
@@ -112,7 +66,7 @@ class ConversationCreationViewModel @Inject constructor(
             else -> 0
         }
         viewModelScope.launch {
-            _roomViewState.value = RoomUIState.None
+            roomViewState.value = RoomUIState.None
             try {
                 val roomResult = repository.createRoom(roomType, conversationName)
                 val conversation = roomResult.ocs?.data
@@ -121,15 +75,15 @@ class ConversationCreationViewModel @Inject constructor(
                     val token = conversation.token
                     if (token != null) {
                         try {
-                            val conversationDescription = repository.setConversationDescription(
+                            repository.setConversationDescription(
                                 token,
                                 _conversationDescription.value
                             )
-                            val allowGuestsResult = repository.allowGuests(token, isGuestsAllowed.value)
-                            val statusCode: GenericMeta? = allowGuestsResult.ocs?.meta
+                            val allowGuestResultOverall = repository.allowGuests(token, isGuestsAllowed.value)
+                            val statusCode: GenericMeta? = allowGuestResultOverall.ocs?.meta
                             val result = (statusCode?.statusCode == STATUS_CODE_OK)
                             if (result) {
-                                _allowGuestsResult.value = AllowGuestsUiState.Success(result)
+                                allowGuestsResult.value = AllowGuestsUiState.Success(result)
                                 for (participant in participants) {
                                     if (participant.id != null) {
                                         val participantOverall = repository.addParticipants(
@@ -142,19 +96,19 @@ class ConversationCreationViewModel @Inject constructor(
                                     }
                                 }
                             }
-                            val passwordResult = repository.setPassword(token, _password.value)
+                            repository.setPassword(token, _password.value)
                             repository.openConversation(token, scope)
                             onRoomCreated(token)
                         } catch (exception: Exception) {
-                            _allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
+                            allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")
                         }
                     }
-                    _roomViewState.value = RoomUIState.Success(conversation)
+                    roomViewState.value = RoomUIState.Success(conversation)
                 } else {
-                    _roomViewState.value = RoomUIState.Error("Conversation is null")
+                    roomViewState.value = RoomUIState.Error("Conversation is null")
                 }
             } catch (e: Exception) {
-                _roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
+                roomViewState.value = RoomUIState.Error(e.message ?: "Unknown error")
                 Log.e("ConversationCreationViewModel", "Error - ${e.message}")
             }
         }
@@ -173,9 +127,9 @@ class ConversationCreationViewModel @Inject constructor(
                 )
 
                 val conversation: Conversation? = room.ocs?.data
-                _roomViewState.value = RoomUIState.Success(conversation)
+                roomViewState.value = RoomUIState.Success(conversation)
             } catch (exception: Exception) {
-                _roomViewState.value = RoomUIState.Error(exception.message ?: "")
+                roomViewState.value = RoomUIState.Error(exception.message ?: "")
             }
         }
     }
@@ -192,7 +146,7 @@ sealed class RoomUIState {
     data class Error(val message: String) : RoomUIState()
 }
 
-sealed class AddParticipantsUiState() {
+sealed class AddParticipantsUiState {
     data object None : AddParticipantsUiState()
     data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
