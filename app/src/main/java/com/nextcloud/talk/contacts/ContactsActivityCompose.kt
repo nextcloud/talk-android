@@ -106,7 +106,8 @@ class ContactsActivityCompose : BaseActivity() {
             val uiState = contactsViewModel.contactsViewState.collectAsState()
             val selectedParticipants = remember {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent.getParcelableArrayListExtra("selectedParticipants", AutocompleteUser::class.java) ?: emptyList()
+                    intent.getParcelableArrayListExtra("selectedParticipants", AutocompleteUser::class.java)
+                        ?: emptyList()
                 } else {
                     @Suppress("DEPRECATION")
                     intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
@@ -295,7 +296,10 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel) {
+fun AppBar(
+    title: String,
+    context: Context,
+    contactsViewModel: ContactsViewModel) {
     val searchQuery by contactsViewModel.searchQuery.collectAsState()
     val searchState = contactsViewModel.searchState.collectAsState()
     val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
@@ -350,7 +354,9 @@ fun AppBar(title: String, context: Context, contactsViewModel: ContactsViewModel
 }
 
 @Composable
-fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsViewModel) {
+fun ConversationCreationOptions(
+    context: Context,
+    contactsViewModel: ContactsViewModel) {
     val isAddParticipants by contactsViewModel.isAddParticipantsView.collectAsState()
     if (!isAddParticipants) {
         Column {
