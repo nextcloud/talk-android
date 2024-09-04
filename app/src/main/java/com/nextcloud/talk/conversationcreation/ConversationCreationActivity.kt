@@ -355,7 +355,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
 
     Text(
-        text = stringResource(id = R.string.nc_visible).uppercase(),
+        text = stringResource(id = R.string.nc_new_conversation_visibility).uppercase(),
         fontSize = 14.sp,
         modifier = Modifier.padding(top = 24.dp, start = 16.dp, end = 16.dp)
     )
