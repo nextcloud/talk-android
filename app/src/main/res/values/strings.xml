@@ -244,6 +244,7 @@ How to translate with transifex:
     <string name="nc_join_open_conversations">Join open conversations</string>
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
+    <string name="nc_new_conversation_visibility">Visibility</string>
 
     <string name="added_to_favorites">Added conversation %1$s to favorites</string>
     <string name="removed_from_favorites">Removed conversation %1$s from favorites</string>
