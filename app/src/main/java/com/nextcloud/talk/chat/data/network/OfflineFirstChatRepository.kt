@@ -81,6 +81,13 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _lastCommonReadFlow:
         MutableSharedFlow<Int> = MutableSharedFlow()
 
+    override val lastReadMessageFlow:
+        Flow<Int>
+        get() = _lastReadMessageFlow
+
+    private val _lastReadMessageFlow:
+        MutableSharedFlow<Int> = MutableSharedFlow()
+
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -118,25 +125,33 @@ class OfflineFirstChatRepository @Inject constructor(
 
             sync(withNetworkParams)
 
-            Log.d(TAG, "newestMessageId after sync: " + chatDao.getNewestMessageId(internalConversationId))
+            val newestMessageId = chatDao.getNewestMessageId(internalConversationId)
+            Log.d(TAG, "newestMessageId after sync: $newestMessageId")
 
             showLast100MessagesBeforeAndEqual(
                 internalConversationId,
                 chatDao.getNewestMessageId(internalConversationId)
             )
-            updateUiForLastCommonRead(200)
+
+            // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
+            // with them (otherwise there is a race condition).
+            delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
+
+            updateUiForLastCommonRead()
+            updateUiForLastReadMessage(newestMessageId)
 
             initMessagePolling()
         }
 
-    private fun updateUiForLastCommonRead(delay: Long) {
+    private suspend fun updateUiForLastReadMessage(newestMessageId: Long) {
+        val scrollToLastRead = conversationModel.lastReadMessage.toLong() < newestMessageId
+        if (scrollToLastRead) {
+            _lastReadMessageFlow.emit(conversationModel.lastReadMessage)
+        }
+    }
+
+    private fun updateUiForLastCommonRead() {
         scope.launch {
-            // delay is a dirty workaround to make sure messages are added to adapter on initial load before setting
-            // their read status(otherwise there is a race condition between adding messages and setting their read
-            // status).
-            if (delay > 0) {
-                delay(delay)
-            }
             newXChatLastCommonRead?.let {
                 _lastCommonReadFlow.emit(it)
             }
@@ -167,7 +182,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
 
             showLast100MessagesBefore(internalConversationId, beforeMessageId)
-            updateUiForLastCommonRead(0)
+            updateUiForLastCommonRead()
         }
 
     override fun initMessagePolling(): Job =
@@ -199,7 +214,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     _messageFlow.emit(pair)
                 }
 
-                updateUiForLastCommonRead(0)
+                updateUiForLastCommonRead()
 
                 val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
 
@@ -619,5 +634,6 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val HTTP_CODE_OK: Int = 200
         private const val HTTP_CODE_NOT_MODIFIED = 304
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
+        private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
     }
 }
