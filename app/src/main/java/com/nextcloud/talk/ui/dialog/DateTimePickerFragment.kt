@@ -102,13 +102,13 @@ class DateTimePickerFragment : DialogFragment() {
             tomorrowTimeStamp = getTimeFromCalendar(
                 hour = HOUR_EIGHT_AM,
                 minute = 0,
-                daysToAdd = 1,
+                daysToAdd = 1
             )
 
             binding.dateTimePickerWeekend.visibility = View.GONE // because today is the weekend
         } else {
             tomorrowTimeStamp = getTimeFromCalendar(hour = HOUR_EIGHT_AM, minute = 0, daysToAdd = 1)
-            weekendTimeStamp = getTimeFromCalendar(hour = HOUR_EIGHT_AM, day = Calendar.SATURDAY, minute = 0)
+            weekendTimeStamp = getTimeFromCalendar(hour = HOUR_EIGHT_AM, weekDay = Calendar.SATURDAY, minute = 0)
         }
         binding.dateTimePickerTomorrowTextview.text = getTimeFromTimeStamp(tomorrowTimeStamp)
         binding.dateTimePickerWeekendTextview.text = getTimeFromTimeStamp(weekendTimeStamp)
@@ -249,6 +249,9 @@ class DateTimePickerFragment : DialogFragment() {
         timePicker.show(this.parentFragmentManager, TAG)
     }
 
+    /**
+     * You can use `weekDay` or `daysToAdd` or neither but don't use both b/c it messes up the calendar
+     */
     @Suppress("LongParameterList")
     private fun getTimeFromCalendar(
         year: Int = Calendar.getInstance().get(Calendar.YEAR),
