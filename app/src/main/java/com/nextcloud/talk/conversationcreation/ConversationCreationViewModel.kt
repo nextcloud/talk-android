@@ -96,7 +96,9 @@ class ConversationCreationViewModel @Inject constructor(
                                     }
                                 }
                             }
-                            repository.setPassword(token, _password.value)
+                            if (_password.value.isNotEmpty()) {
+                                repository.setPassword(token, _password.value)
+                            }
                             repository.openConversation(token, scope)
                             onRoomCreated(token)
                         } catch (exception: Exception) {
@@ -134,6 +136,7 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 }
+
 sealed class AllowGuestsUiState {
     data object None : AllowGuestsUiState()
     data class Success(val result: Boolean) : AllowGuestsUiState()
