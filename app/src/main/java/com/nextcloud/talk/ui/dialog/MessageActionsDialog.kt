@@ -87,11 +87,17 @@ class MessageActionsDialog(
         .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
     private val isUserAllowedToEdit = chatActivity.userAllowedByPrivilages(message)
-
-    private val isMessageEditable = hasSpreedFeatureCapability(
+    private var isNoTimeLimitOnNoteToSelf = hasSpreedFeatureCapability(
+        spreedCapabilities,
+        SpreedFeatures
+            .EDIT_MESSAGES_NOTE_TO_SELF
+    ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+    private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
     ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
+
+    private val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
