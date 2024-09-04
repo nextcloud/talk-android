@@ -256,7 +256,7 @@ fun AddParticipants(
             Text(
                 text = stringResource(id = R.string.nc_participants).uppercase(),
                 fontSize = 14.sp,
-                modifier = Modifier.padding(start = 16.dp, bottom = 16.dp)
+                modifier = Modifier.padding(start = 0.dp, bottom = 16.dp)
             )
             Spacer(modifier = Modifier.weight(1f))
             if (participants.isNotEmpty()) {
