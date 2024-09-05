@@ -9,6 +9,7 @@
 package com.nextcloud.talk.conversationlist.data.network
 
 import android.util.Log
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
@@ -19,7 +20,9 @@ import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,11 +32,13 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
+    private val chatNetworkDataSource: ChatNetworkDataSource,
     private val monitor: NetworkMonitor,
     private val currentUserProviderNew: CurrentUserProviderNew
 ) : OfflineConversationsRepository {
@@ -64,7 +69,34 @@ class OfflineFirstConversationsRepository @Inject constructor(
         scope.launch {
             val id = user.id!!
             val model = getConversation(id, roomToken)
-            model.let { _conversationFlow.emit(model) }
+            if (model != null) {
+                _conversationFlow.emit(model)
+            } else {
+                chatNetworkDataSource.getRoom(user, roomToken)
+                    .subscribeOn(Schedulers.io())
+                    ?.observeOn(AndroidSchedulers.mainThread())
+                    ?.subscribe(object : Observer<ConversationModel> {
+                        override fun onSubscribe(p0: Disposable) {
+                            // unused atm
+                        }
+
+                        override fun onError(e: Throwable) {
+                            // unused atm
+                        }
+
+                        override fun onComplete() {
+                            // unused atm
+                        }
+
+                        override fun onNext(model: ConversationModel) {
+                            runBlocking {
+                                _conversationFlow.emit(model)
+                                val entityList = listOf(model.asEntity())
+                                dao.upsertConversations(entityList)
+                            }
+                        }
+                    })
+            }
         }
 
     private suspend fun sync(): List<ConversationEntity>? {
@@ -107,9 +139,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
             it.map(ConversationEntity::asModel)
         }.first()
 
-    private suspend fun getConversation(accountId: Long, token: String): ConversationModel {
+    private suspend fun getConversation(accountId: Long, token: String): ConversationModel? {
         val entity = dao.getConversationForUser(accountId, token).first()
-        return entity.asModel()
+        return entity?.asModel()
     }
 
     companion object {
