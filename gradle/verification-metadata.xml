@@ -185,9 +185,11 @@
             <trusting group="androidx.annotation"/>
             <trusting group="androidx.appcompat"/>
             <trusting group="androidx.camera"/>
+            <trusting group="androidx.collection"/>
             <trusting group="androidx.core"/>
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
+            <trusting group="androidx.emoji2"/>
             <trusting group="androidx.graphics" name="graphics-path" version="1.0.1"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.test"/>
