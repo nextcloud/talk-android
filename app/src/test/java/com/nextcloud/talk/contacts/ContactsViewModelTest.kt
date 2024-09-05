@@ -81,7 +81,7 @@ class ContactsViewModelTest {
 
     @Test
     fun `update shareTypes`() {
-        viewModel.updateShareTypes(ShareType.Group.shareType)
+        viewModel.updateShareTypes(listOf(ShareType.Group.shareType))
         assert(viewModel.shareTypeList.contains(ShareType.Group.shareType))
     }
 

@@ -19,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -30,6 +31,7 @@ import com.nextcloud.talk.R
 
 @Composable
 fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewModel: ContactsViewModel) {
+    val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
         modifier = Modifier
@@ -42,7 +44,6 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
                 text = stringResource(R.string.nc_search)
             )
         },
-
         textStyle = TextStyle(
             fontSize = 16.sp
         ),

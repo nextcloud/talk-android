@@ -30,6 +30,10 @@ class ContactsViewModel @Inject constructor(
     val shareTypeList: List<String> = shareTypes
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
+    private val selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = selectedParticipants
+    private val _isAddParticipantsView = MutableStateFlow(false)
+    val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
     init {
         getContactsFromSearchParams()
@@ -39,12 +43,19 @@ class ContactsViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+    fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
+        selectedParticipants.value = participants
+    }
     fun updateSearchState(searchState: Boolean) {
         _searchState.value = searchState
     }
 
-    fun updateShareTypes(value: String) {
-        shareTypes.add(value)
+    fun updateShareTypes(value: List<String>) {
+        shareTypes.addAll(value)
+    }
+
+    fun updateIsAddParticipants(value: Boolean) {
+        _isAddParticipantsView.value = value
     }
 
     fun getContactsFromSearchParams() {
@@ -62,7 +73,6 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
-
     fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
         viewModelScope.launch {
             try {

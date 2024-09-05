@@ -242,6 +242,9 @@ How to translate with transifex:
     <string name="nc_remove_from_favorites">Remove from favorites</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
+    <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
+    <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
+    <string name="nc_new_conversation_visibility">Visibility</string>
 
     <string name="added_to_favorites">Added conversation %1$s to favorites</string>
     <string name="removed_from_favorites">Removed conversation %1$s from favorites</string>
@@ -386,6 +389,7 @@ How to translate with transifex:
     <string name="close_icon">Close Icon</string>
     <string name="nc_refresh">Refresh</string>
     <string name="nc_check_your_internet">Please check your internet connection</string>
+    <string name="nc_visible">Visible</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message …</string>
@@ -429,6 +433,7 @@ How to translate with transifex:
     <string name="nc_guest_access_allow_title">Allow guests</string>
     <string name="nc_guest_access_allow_summary">Allow guests to share a public link to join this conversation.</string>
     <string name="nc_guest_access_allow_failed">Cannot enable/disable guest access.</string>
+    <string name="nc_set_password">Set Password</string>
     <string name="nc_guest_access_password_title">Password protection</string>
     <string name="nc_guest_access_password_summary">Set a password to restrict who can use the public link.</string>
     <string name="nc_guest_access_password_dialog_title">Guest access password</string>
@@ -563,6 +568,7 @@ How to translate with transifex:
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
+    <string name= "nc_edit">Edit</string>
 
     <!--  save feature -->
     <string name="nc_save_message">Save</string>
