@@ -33,6 +33,6 @@ class ArrayListConverter {
             return null
         }
 
-        return LoganSquare.parseList(value, List::class.java) as ArrayList<String>?
+        return LoganSquare.parseList(value, String::class.java) as ArrayList<String>?
     }
 }
