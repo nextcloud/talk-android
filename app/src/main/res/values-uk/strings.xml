@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Редагувати</string>
     <string name="account_icon">Зображення облікового запису</string>
     <string name="appbar_search_in">Пошук у %s</string>
     <string name="audio_call">Голосовий виклик</string>
@@ -219,6 +220,7 @@
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Ніколи не приєднувався</string>
     <string name="nc_new_conversation">Нова розмова</string>
+    <string name="nc_new_conversation_visibility">Видимість</string>
     <string name="nc_new_mention">Непрочитані згадки</string>
     <string name="nc_new_messages">Непрочитані повідомлення</string>
     <string name="nc_nextcloud_talk_app_not_installed">Застосунок %1$s недоступний (не встановлений, або використання додатка обмежене адміністратором)</string>
@@ -389,6 +391,7 @@
     <string name="nc_upload_video_from_cam">Зняти відео</string>
     <string name="nc_user">Користувач</string>
     <string name="nc_video_filename">Запис відео з %1$s</string>
+    <string name="nc_visible">Видимий</string>
     <string name="nc_voice_message_filename">Запис розмови з %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Утримуйте для запису, відпустіть для надсилання.</string>
     <string name="nc_voice_message_missing_audio_permission">Потрібен дозвіл на аудіозапис</string>

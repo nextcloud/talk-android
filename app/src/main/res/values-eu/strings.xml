@@ -278,6 +278,8 @@
     <string name="nc_notify_me_never">Ez jakinarazi inoiz</string>
     <string name="nc_offline">Lineaz kanpo zaude momentu honetan, mesedez egiaztatu zure konexioa</string>
     <string name="nc_ok">Ados</string>
+    <string name="nc_open_conversation_to_registered_users">Ireki elkarrizketa erregistratutako erabiltzaileei</string>
+    <string name="nc_open_to_guest_app_users">Ireki baita ere aplikazio gonbidatuentzat</string>
     <string name="nc_owner">Jabea</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>
@@ -440,6 +442,7 @@
     <string name="nc_upload_video_from_cam">Atera bideoa</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_video_filename">%1$s(r)en bideo grabazioa</string>
+    <string name="nc_visible">Ikusgai</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>

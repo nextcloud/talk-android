@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Editar</string>
     <string name="account_icon">Icona da conta</string>
     <string name="add_to_notes">Engadir a Notas</string>
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Non conectou nunca</string>
     <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_new_conversation_visibility">Visibilidade</string>
     <string name="nc_new_mention">Mencións sen ler</string>
     <string name="nc_new_messages">Mensaxes sen ler</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non está dispoñíbel (nin instalado nin restrinxido pola administración da instancia.)</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">Non notificar nunca</string>
     <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
     <string name="nc_ok">Aceptar</string>
+    <string name="nc_open_conversation_to_registered_users">Abrir a conversa a usuarios rexistrados</string>
+    <string name="nc_open_to_guest_app_users">Aberta tamén aos usuarios da aplicación convidados</string>
     <string name="nc_owner">Propietario</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Engadir participantes</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">Gravar un vídeo</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Gravación de vídeo de %1$s</string>
+    <string name="nc_visible">Visíbel</string>
     <string name="nc_voice_message_filename">Gravación da conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteña premido para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Precísase de permiso para gravar son</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Upraviť</string>
     <string name="account_icon">Ikona účtu</string>
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
@@ -297,6 +298,7 @@
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Nikdy nepridaný</string>
     <string name="nc_new_conversation">Nová konverzácia</string>
+    <string name="nc_new_conversation_visibility">Viditeľnosť</string>
     <string name="nc_new_mention">Neprečítané upozornenia</string>
     <string name="nc_new_messages">Neprečítané správy</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nie je dostupné (nie je nainštalované alebo je obmedzené administrátorom)</string>
@@ -322,6 +324,8 @@
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_offline">Práve ste odpojený. Prosím, skontrolujte vaše pripojenie.</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Otvoriť konverzáciu pre registrovaných užívateľov</string>
+    <string name="nc_open_to_guest_app_users">Povoliť i pre užívateľov aplikácií pre hostí</string>
     <string name="nc_owner">Vlastník</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Pridať účastníkov</string>
@@ -490,6 +494,7 @@
     <string name="nc_upload_video_from_cam">Natočiť video</string>
     <string name="nc_user">Používateľ</string>
     <string name="nc_video_filename">Nahrávanie vidia od %1$s</string>
+    <string name="nc_visible">Viditeľné</string>
     <string name="nc_voice_message_filename">Nahrávanie hovoru od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržte pre nahrávanie, uvoľnite pre poslanie.</string>
     <string name="nc_voice_message_missing_audio_permission">Je potrebné oprávnenie pre nahrávanie zvuku.</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Измени</string>
     <string name="account_icon">Икона налога</string>
     <string name="add_to_notes">Додај у Белешке</string>
     <string name="added_to_favorites">Разговор %1$s је додат у омиљене</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никад придружен</string>
     <string name="nc_new_conversation">Нови разговор</string>
+    <string name="nc_new_conversation_visibility">Видљивост</string>
     <string name="nc_new_mention">Непрочитана помињања</string>
     <string name="nc_new_messages">Непрочитане поруке</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s није доступно (није инсталирано или је ограничио админ)</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">Никад не обавештавај</string>
     <string name="nc_offline">Тренутно ван мреже, проверите да ли имате интернет</string>
     <string name="nc_ok">У реду</string>
+    <string name="nc_open_conversation_to_registered_users">Отвори разговор свим регистрованим корисницима</string>
+    <string name="nc_open_to_guest_app_users">Такође отвори и за кориснике апликације гост</string>
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учесници</string>
     <string name="nc_participants_add">Додај учеснике</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">Направи видео снимак</string>
     <string name="nc_user">Корисник</string>
     <string name="nc_video_filename">Видео снимак од %1$s</string>
+    <string name="nc_visible">Видљив</string>
     <string name="nc_voice_message_filename">Говорни снимак од %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Задржите за снимање, отпустите да пошаљете.</string>
     <string name="nc_voice_message_missing_audio_permission">Потребна је дозвола за аудио снимање</string>

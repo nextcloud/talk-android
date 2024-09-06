@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Modifier</string>
     <string name="account_icon">Icône du compte</string>
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
@@ -321,6 +322,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_offline">Actuellement hors-ligne, veuillez vérifier votre connexion</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Ouvrir la conversation aux utilisateurs enregistrés</string>
+    <string name="nc_open_to_guest_app_users">Également ouvert aux utilisateurs invités de l\'application</string>
     <string name="nc_owner">Propriétaire</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Ajouter des participants</string>
@@ -488,6 +491,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_upload_video_from_cam">Enregistrer une vidéo</string>
     <string name="nc_user">Utilisateur</string>
     <string name="nc_video_filename">Enregistrement vidéo de %1$s</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Enregistrement de conversation de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Maintenir pour enregistrer, relâcher pour envoyer.</string>
     <string name="nc_voice_message_missing_audio_permission">La permission d\'enregistrer l\'audio est requise</string>

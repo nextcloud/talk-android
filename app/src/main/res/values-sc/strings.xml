@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Modìfica</string>
     <string name="account_icon">Icona de su contu</string>
     <string name="appbar_search_in">Chirca in %s</string>
     <string name="audio_output_phone">Telèfonu</string>
@@ -191,6 +192,8 @@
     <string name="nc_notify_me_never">Non notificare mai</string>
     <string name="nc_offline">Foras de lìnia, controlla sa connessione tua</string>
     <string name="nc_ok">AB</string>
+    <string name="nc_open_conversation_to_registered_users">Aberre sa resonada a is utèntzias registradas</string>
+    <string name="nc_open_to_guest_app_users">Aberre puru a is utèntzias invitadas de s\'aplicatzione</string>
     <string name="nc_owner">Mere</string>
     <string name="nc_participants">Partetzipantes</string>
     <string name="nc_participants_add">Aguinghe partetzipantes</string>
@@ -325,6 +328,7 @@
     <string name="nc_upload_from_cloud">Cumpartzidu dae %1$s</string>
     <string name="nc_upload_in_progess">Carrigamentu</string>
     <string name="nc_user">Utente</string>
+    <string name="nc_visible">Visìbile</string>
     <string name="nc_voice_message_filename">Registratzione Talk dae %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podera pro registrare, lassa pro imbiare.</string>
     <string name="nc_voice_message_missing_audio_permission">Permissu pro registratziones àudio rechertu</string>

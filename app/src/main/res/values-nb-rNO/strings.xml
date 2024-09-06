@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Rediger</string>
     <string name="account_icon">Kontoikon</string>
     <string name="add_to_notes">Legg til notater</string>
     <string name="added_to_favorites">La til samtale %1$s i favoritter</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Har aldri deltatt</string>
     <string name="nc_new_conversation">Ny samtale</string>
+    <string name="nc_new_conversation_visibility">Synlighet</string>
     <string name="nc_new_mention">Uleste nevner</string>
     <string name="nc_new_messages">Uleste meldinger</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgjengelig (ikke installert eller begrenset av admin)</string>
@@ -333,6 +335,7 @@
     <string name="nc_notify_me_never">Aldri varsle</string>
     <string name="nc_offline">Offline, vennligst sjekk din nett forbindelse</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_to_guest_app_users">Også åpen for brukere av guest-appen</string>
     <string name="nc_owner">Eier</string>
     <string name="nc_participants">Deltakere</string>
     <string name="nc_participants_add">Legg til deltager</string>
@@ -501,6 +504,7 @@
     <string name="nc_upload_video_from_cam">Ta opp video</string>
     <string name="nc_user">Bruker</string>
     <string name="nc_video_filename">Videoopptak fra %1$s</string>
+    <string name="nc_visible">Synlig</string>
     <string name="nc_voice_message_filename">Taleopptak fra %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold for å spille inn, slipp for å sende.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillatelse til lydopptak kreves</string>

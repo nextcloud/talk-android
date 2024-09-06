@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Editar</string>
     <string name="account_icon">Ícone da conta</string>
     <string name="add_to_notes">Adicionar às Notas</string>
     <string name="added_to_favorites">Conversa adicionada %1$s para favoritos</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca juntado</string>
     <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_new_conversation_visibility">Visibilidade</string>
     <string name="nc_new_mention">Menções não lidas</string>
     <string name="nc_new_messages">Mensagens não lidas</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s não está disponível (Não está instalado ou está restrito ao administrador)</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Conversa aberta a usuários registrados</string>
+    <string name="nc_open_to_guest_app_users">Também abrir a usuários convidados do aplicativo</string>
     <string name="nc_owner">Proprietário</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">Gravar vídeo</string>
     <string name="nc_user">Usuário</string>
     <string name="nc_video_filename">Gravação de vídeo de %1$s</string>
+    <string name="nc_visible">Visível</string>
     <string name="nc_voice_message_filename">Gravação de conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Segure para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">A permissão para gravação de áudio é necessária</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Modifica</string>
     <string name="account_icon">Icona dell\'account</string>
     <string name="appbar_search_in">Cerca in %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -203,6 +204,7 @@
     <string name="nc_moderator">Moderatore</string>
     <string name="nc_never">Mai partecipato</string>
     <string name="nc_new_conversation">Nuova conversazione</string>
+    <string name="nc_new_conversation_visibility">Visibilità</string>
     <string name="nc_new_mention">Menzioni non lette</string>
     <string name="nc_new_messages">Messaggi non letti</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponibile (non installato o limitato dall\'amministratore)</string>
@@ -221,6 +223,8 @@
     <string name="nc_notify_me_never">Non notificare mai</string>
     <string name="nc_offline">Attualmente non in linea, controlla la tua connettività</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Apri la conversazione agli utenti registrati</string>
+    <string name="nc_open_to_guest_app_users">Apri anche agli utenti dell\'applicazione ospite</string>
     <string name="nc_owner">Proprietario</string>
     <string name="nc_participants">Partecipanti</string>
     <string name="nc_participants_add">Aggiungi partecipanti</string>
@@ -366,6 +370,7 @@
     <string name="nc_upload_in_progess">Caricamento</string>
     <string name="nc_upload_picture_from_cam">Scatta foto</string>
     <string name="nc_user">Utente</string>
+    <string name="nc_visible">Visibile</string>
     <string name="nc_voice_message_filename">Registrazione Talk da %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tieni premuto per registrare, rilascia per inviare.</string>
     <string name="nc_voice_message_missing_audio_permission">Autorizzazione di registrazione audio richiesta</string>

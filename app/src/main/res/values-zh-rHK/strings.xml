@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">編輯</string>
     <string name="account_icon">帳戶圖示</string>
     <string name="add_to_notes">添加到筆記</string>
     <string name="added_to_favorites">添加了對話 %1$s 至最愛</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">從未加入</string>
     <string name="nc_new_conversation">新對話</string>
+    <string name="nc_new_conversation_visibility">可見性</string>
     <string name="nc_new_mention">未讀的提及</string>
     <string name="nc_new_messages">未讀郵件</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s 不可用（管理員未安裝或限制）</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_offline">當前離線，請檢查您的連接</string>
     <string name="nc_ok">確定</string>
+    <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
+    <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">添加參與者</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">拍攝視像</string>
     <string name="nc_user">用戶</string>
     <string name="nc_video_filename">視像錄影來自 %1$s</string>
+    <string name="nc_visible">可見</string>
     <string name="nc_voice_message_filename">談話錄音來自 %1$s（%2$s）</string>
     <string name="nc_voice_message_hold_to_record_info">按住錄音，鬆開傳送。</string>
     <string name="nc_voice_message_missing_audio_permission">需要錄音許可</string>
