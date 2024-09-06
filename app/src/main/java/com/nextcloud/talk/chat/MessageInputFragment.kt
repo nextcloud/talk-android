@@ -247,11 +247,13 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-        requireContext().getSharedPreferences(chatActivity.localClassName, AppCompatActivity.MODE_PRIVATE).apply {
-            val text = getString(chatActivity.roomToken, "")
-            val cursor = getInt(chatActivity.roomToken + CURSOR_KEY, 0)
-            binding.fragmentMessageInputView.messageInput.setText(text)
-            binding.fragmentMessageInputView.messageInput.setSelection(cursor)
+        if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {
+            requireContext().getSharedPreferences(chatActivity.localClassName, AppCompatActivity.MODE_PRIVATE).apply {
+                val text = getString(chatActivity.roomToken, "")
+                val cursor = getInt(chatActivity.roomToken + CURSOR_KEY, 0)
+                binding.fragmentMessageInputView.messageInput.setText(text)
+                binding.fragmentMessageInputView.messageInput.setSelection(cursor)
+            }
         }
     }
 
