@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Uredi</string>
     <string name="account_icon">Ikona korisničkog računa</string>
     <string name="appbar_search_in">Traži u %s</string>
     <string name="audio_output_phone">Telefon</string>
@@ -200,6 +201,8 @@
     <string name="nc_notify_me_never">Nikad ne šalji obavijesti</string>
     <string name="nc_offline">Trenutno izvan mreže, provjerite vezu</string>
     <string name="nc_ok">U redu</string>
+    <string name="nc_open_conversation_to_registered_users">Otvori razgovor registriranim korisnicima</string>
+    <string name="nc_open_to_guest_app_users">Otvori i gostujućim korisnicima aplikacije</string>
     <string name="nc_owner">Vlasnik</string>
     <string name="nc_participants">Sudionici</string>
     <string name="nc_participants_add">Dodaj sudionike</string>
@@ -338,6 +341,7 @@
     <string name="nc_upload_in_progess">Otpremanje</string>
     <string name="nc_upload_picture_from_cam">Snimi fotografiju</string>
     <string name="nc_user">Korisnik</string>
+    <string name="nc_visible">Vidljivo</string>
     <string name="nc_voice_message_filename">Snimka iz aplikacije Talk od %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Držite za snimanje, pustite za slanje.</string>
     <string name="nc_voice_message_missing_audio_permission">Potrebno je dopuštenje za snimanje zvuka</string>

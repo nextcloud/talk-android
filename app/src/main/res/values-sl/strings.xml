@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Uredi</string>
     <string name="account_icon">Ikona računa</string>
     <string name="appbar_search_in">Poišči v %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -226,6 +227,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nikoli pridružen</string>
     <string name="nc_new_conversation">Nov pogovor</string>
+    <string name="nc_new_conversation_visibility">Vidnost</string>
     <string name="nc_new_mention">Neprebrane omembe</string>
     <string name="nc_new_messages">Neprebrana sporočila</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ni na voljo (ni nameščen ali pa je dostop skrbniško omejen)</string>
@@ -247,6 +249,8 @@
     <string name="nc_notify_me_never">Nikoli ne obvesti</string>
     <string name="nc_offline">Ni omrežne povezave; preverite povezave!</string>
     <string name="nc_ok">V redu</string>
+    <string name="nc_open_conversation_to_registered_users">Odpri pogovor vpisanim uporabnikom</string>
+    <string name="nc_open_to_guest_app_users">Odpri tudi za gostujoče uporabnike</string>
     <string name="nc_owner">Lastnik</string>
     <string name="nc_participants">Udeleženci</string>
     <string name="nc_participants_add">Dodaj udeležence</string>
@@ -401,6 +405,7 @@
     <string name="nc_upload_picture_from_cam">Zajemi sliko</string>
     <string name="nc_upload_video_from_cam">Zajemi video</string>
     <string name="nc_user">Uporabnik</string>
+    <string name="nc_visible">Vidno</string>
     <string name="nc_voice_message_filename">Posnetek %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Zadržite za snemanje in sprostite za pošiljanje.</string>
     <string name="nc_voice_message_missing_audio_permission">Zahtevano je dovoljenje za zvočno snemanje.</string>

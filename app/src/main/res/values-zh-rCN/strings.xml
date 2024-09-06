@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">编辑</string>
     <string name="account_icon">账户图标</string>
     <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
@@ -246,6 +247,7 @@
     <string name="nc_moderator">主持人</string>
     <string name="nc_never">从未加入</string>
     <string name="nc_new_conversation">新的对话</string>
+    <string name="nc_new_conversation_visibility">可见性</string>
     <string name="nc_new_mention">未读的提及</string>
     <string name="nc_new_messages">未读消息</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s不可用（尚未安装或被管理员限制使用）</string>
@@ -269,6 +271,8 @@
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_offline">当前离线，请检查您的连接</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">向注册用户开放对话 </string>
+    <string name="nc_open_to_guest_app_users">同样对访客用户开放</string>
     <string name="nc_owner">拥有者</string>
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>
@@ -430,6 +434,7 @@
     <string name="nc_upload_video_from_cam">拍摄视频</string>
     <string name="nc_user">用户</string>
     <string name="nc_video_filename">来自 %1$s的视频录制</string>
+    <string name="nc_visible">可见的</string>
     <string name="nc_voice_message_filename">来自%1$s的通话录制（%2$s）</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
     <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>

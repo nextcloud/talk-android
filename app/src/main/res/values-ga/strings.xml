@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Cuir in eagar</string>
     <string name="account_icon">Deilbhín cuntais</string>
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Modhnóir</string>
     <string name="nc_never">Níor chuaigh isteach riamh</string>
     <string name="nc_new_conversation">Comhrá nua</string>
+    <string name="nc_new_conversation_visibility">Infheictheacht</string>
     <string name="nc_new_mention">Luaite gan léamh</string>
     <string name="nc_new_messages">Teachtaireachtaí gan léamh</string>
     <string name="nc_nextcloud_talk_app_not_installed">Níl %1$s ar fáil (gan suiteáil nó srianta ag an riarthóir)</string>
@@ -333,6 +335,7 @@
     <string name="nc_notify_me_never">Ná cuir in iúl riamh</string>
     <string name="nc_offline">Faoi láthair, seiceáil do nascacht le do thoil</string>
     <string name="nc_ok">Ceart go leor</string>
+    <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>
     <string name="nc_participants">Rannpháirtithe</string>
     <string name="nc_participants_add">Cuir rannpháirtithe leis</string>
@@ -501,6 +504,7 @@
     <string name="nc_upload_video_from_cam">Tóg físeán</string>
     <string name="nc_user">Úsáideoir</string>
     <string name="nc_video_filename">Taifeadadh físe ó %1$s</string>
+    <string name="nc_visible">Infheicthe</string>
     <string name="nc_voice_message_filename">Taifeadadh cainte ó %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Coinnigh a thaifeadadh, scaoileadh a sheoladh.</string>
     <string name="nc_voice_message_missing_audio_permission">Tá cead taifeadta fuaime ag teastáil</string>

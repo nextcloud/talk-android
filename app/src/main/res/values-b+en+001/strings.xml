@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Edit</string>
     <string name="account_icon">Account icon</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Never joined</string>
     <string name="nc_new_conversation">New conversation</string>
+    <string name="nc_new_conversation_visibility">Visibility</string>
     <string name="nc_new_mention">Unread mentions</string>
     <string name="nc_new_messages">Unread messages</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
@@ -501,6 +503,7 @@
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">User</string>
     <string name="nc_video_filename">Video recording from %1$s</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>

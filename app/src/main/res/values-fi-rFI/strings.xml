@@ -205,6 +205,7 @@
     <string name="nc_notify_me_never">Älä ilmoita koskaan</string>
     <string name="nc_offline">Ei yhteyttä tällä hetkellä, tarkista verkkoyhteydet</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Avaa keskustelu rekisteröityneille käyttäjille</string>
     <string name="nc_owner">Omistaja</string>
     <string name="nc_participants">Osallistujat</string>
     <string name="nc_participants_add">Lisää osallistujat</string>
@@ -337,6 +338,7 @@
     <string name="nc_upload_in_progess">Lähetys</string>
     <string name="nc_upload_picture_from_cam">Ota kuva</string>
     <string name="nc_user">Käyttäjä</string>
+    <string name="nc_visible">Näkyvissä</string>
     <string name="nc_voice_message_missing_audio_permission">Oikeus äänen tallentamiseen vaaditaan</string>
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>

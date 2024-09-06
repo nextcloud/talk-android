@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Редактирование</string>
     <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
     <string name="audio_call">Аудиозвонок</string>
@@ -239,6 +240,7 @@
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никогда не использовался</string>
     <string name="nc_new_conversation">Новая беседа</string>
+    <string name="nc_new_conversation_visibility">Видимость</string>
     <string name="nc_new_mention">Непрочитанные упоминания</string>
     <string name="nc_new_messages">Непрочитанные сообщения</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s недоступно (не установлено, либо использование приложения ограничено администратором)</string>
@@ -260,6 +262,8 @@
     <string name="nc_notify_me_never">Не уведомлять</string>
     <string name="nc_offline">Нет подключения к сети, пожалуйста, проверьте ваше соединение</string>
     <string name="nc_ok">ОК</string>
+    <string name="nc_open_conversation_to_registered_users">Открыть обсуждение для зарегистрированных пользователей</string>
+    <string name="nc_open_to_guest_app_users">Открыть для гостей</string>
     <string name="nc_owner">Владелец</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
@@ -416,6 +420,7 @@
     <string name="nc_upload_video_from_cam">Снять видео</string>
     <string name="nc_user">Пользователь</string>
     <string name="nc_video_filename">Запись видео с %1$s</string>
+    <string name="nc_visible">Видимый</string>
     <string name="nc_voice_message_filename">Запись разговора с %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Удерживайте для записи, отпустите для отправки.</string>
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>

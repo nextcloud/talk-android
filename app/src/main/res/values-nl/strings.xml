@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Bewerken</string>
     <string name="account_icon">Accountpictogram</string>
     <string name="appbar_search_in">Zoeken in %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -204,6 +205,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nooit deelgenomen</string>
     <string name="nc_new_conversation">Nieuw gesprek</string>
+    <string name="nc_new_conversation_visibility">Zichtbaarheid</string>
     <string name="nc_new_mention">Ongelezen vermeldingen</string>
     <string name="nc_new_messages">Ongelezen berichten</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s niet beschikbaar (niet geïnstalleerd of beperkt door beheerder)</string>
@@ -222,6 +224,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Open gesprek voor geregistreerde gebruikers</string>
+    <string name="nc_open_to_guest_app_users">Ook open voor gastgebruikers van de app</string>
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_participants">Deelnemers</string>
     <string name="nc_participants_add">Deelnemers toevoegen</string>
@@ -367,6 +371,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_upload_notification_text">%1$s naar%2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Neem foto</string>
     <string name="nc_user">Gebruiker</string>
+    <string name="nc_visible">Zichtbaar</string>
     <string name="nc_voice_message_filename">Talk neemt op vanaf%1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Ingedrukt houden om op te nemen, loslaten om te versturen.</string>
     <string name="nc_voice_message_missing_audio_permission">Toestemming voor audio-opname is vereist</string>

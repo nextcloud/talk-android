@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Redigér</string>
     <string name="account_icon">Konto ikon</string>
     <string name="appbar_search_in">Søg i %s</string>
     <string name="audio_output_phone">Telefon</string>
@@ -140,6 +141,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Aldrig ansluttet</string>
     <string name="nc_new_conversation">Ny samtale</string>
+    <string name="nc_new_conversation_visibility">Synlighed</string>
     <string name="nc_new_messages">Ulæste beskedder</string>
     <string name="nc_nick_guest">Gæst</string>
     <string name="nc_no">Nej</string>
@@ -154,6 +156,7 @@
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Begynd en samtale til registrerede brugere</string>
     <string name="nc_owner">Ejer</string>
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
@@ -261,6 +264,7 @@
     <string name="nc_upload_in_progess">Uploader</string>
     <string name="nc_upload_picture_from_cam">Tag et billede</string>
     <string name="nc_user">ruger</string>
+    <string name="nc_visible">Synlig</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Næste uge</string>

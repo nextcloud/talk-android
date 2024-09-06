@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Επεξεργασία</string>
     <string name="account_icon">Εικονίδιο λογαριασμού</string>
     <string name="appbar_search_in">Αναζήτηση στο %s</string>
     <string name="audio_output_dialog_headline">Έξοδος ήχου</string>
@@ -200,6 +201,8 @@
     <string name="nc_notify_me_never">Χωρίς ειδοποίηση</string>
     <string name="nc_offline">Σε αποσύνδεση, παρακαλώ ελέγξτε την σύνδεσή σας</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Άνοιγμα συνομιλίας στους εγγεγραμμένους χρήστες</string>
+    <string name="nc_open_to_guest_app_users">Ανοιχτό επίσης για επισκέπτες της εφαρμογής</string>
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_participants">Συμμετέχοντες</string>
     <string name="nc_participants_add">Προσθήκη συμμετεχόντων</string>
@@ -337,6 +340,7 @@
     <string name="nc_upload_in_progess">Γίνεται μεταφόρτωση</string>
     <string name="nc_upload_picture_from_cam">Βγάλε φωτογραφία</string>
     <string name="nc_user">Χρήστης</string>
+    <string name="nc_visible">Ορατός</string>
     <string name="nc_voice_message_hold_to_record_info">Κρατήστε για εγγραφή, αφήστε για αποστολή.</string>
     <string name="nc_voice_message_missing_audio_permission">Απαιτούνται δικαιώματα για ηχογράφηση</string>
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>

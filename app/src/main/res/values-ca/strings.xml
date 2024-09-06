@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Edició</string>
     <string name="account_icon">Icona del compte</string>
     <string name="appbar_search_in">Cerca a %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -221,6 +222,7 @@
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Mai no us hi heu unit</string>
     <string name="nc_new_conversation">Nova conversa</string>
+    <string name="nc_new_conversation_visibility">Visibilitat</string>
     <string name="nc_new_mention">Mencions no llegides</string>
     <string name="nc_new_messages">Missatges sense llegir</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no està disponible (no instal·lat o restringit per l\'administrador)</string>
@@ -242,6 +244,8 @@
     <string name="nc_notify_me_never">No notifiquis mai</string>
     <string name="nc_offline">Actualment fora de línia, si us plau comproveu la vostra connectivitat</string>
     <string name="nc_ok">D\'acord</string>
+    <string name="nc_open_conversation_to_registered_users">Conversa oberta als usuaris registrats</string>
+    <string name="nc_open_to_guest_app_users">També obert als usuaris d\'aplicacions convidats</string>
     <string name="nc_owner">Propietari</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Afegeix participants</string>
@@ -396,6 +400,7 @@
     <string name="nc_upload_video_from_cam">Fes un vídeo</string>
     <string name="nc_user">Usuari</string>
     <string name="nc_video_filename">S\'està enregistrant un vídeo des de %1$s</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Trucada enregistrada des de %1$s(%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteniu premut per gravar, deixeu anar per enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Es necessita permís per gravar àudio</string>

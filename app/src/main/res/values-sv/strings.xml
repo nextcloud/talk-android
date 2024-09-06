@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Redigera</string>
     <string name="account_icon">Kontoikon</string>
     <string name="add_to_notes">Lägg till i anteckningar</string>
     <string name="added_to_favorites">Lade till konversationen %1$s till favoriter</string>
@@ -304,6 +305,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>
+    <string name="nc_new_conversation_visibility">Synlighet</string>
     <string name="nc_new_mention">Olästa omnämnanden</string>
     <string name="nc_new_messages">Olästa meddelanden</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$sinte tillgänglig (inte installerad eller begränsad av admin)</string>
@@ -329,6 +331,8 @@
     <string name="nc_notify_me_never">Meddela aldrig</string>
     <string name="nc_offline">För närvarande frånkopplad, kontrollera din anslutning</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Öppna konversation för registrerade användare</string>
+    <string name="nc_open_to_guest_app_users">Även öppen för gästappanvändare</string>
     <string name="nc_owner">Ägare</string>
     <string name="nc_participants">Deltagare</string>
     <string name="nc_participants_add">Lägg till deltagare</string>
@@ -495,6 +499,7 @@
     <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
     <string name="nc_video_filename">Videoinspelning från %1$s</string>
+    <string name="nc_visible">Synlig</string>
     <string name="nc_voice_message_filename">Talk-inspelning från %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Håll ned för att spela in, släpp för att skicka.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>

@@ -211,6 +211,7 @@
     <string name="nc_notify_me_never">هرگزاعلان نشود</string>
     <string name="nc_offline">در حال حاضر آفلاین است ، لطفا اتصال خود را بررسی کنید</string>
     <string name="nc_ok">تایید</string>
+    <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">مالک</string>
     <string name="nc_participants">شركت كنندگان</string>
     <string name="nc_participants_add">افزودن شرکت‌کننده</string>
@@ -341,6 +342,7 @@
     <string name="nc_upload_picture_from_cam">عکس گرفتن</string>
     <string name="nc_upload_video_from_cam">ضبط ویدئو</string>
     <string name="nc_user">کاربر</string>
+    <string name="nc_visible">قابل رویت</string>
     <string name="nc_voice_message_hold_to_record_info">برای ضبط نگه‌داشته و برای فرستادن، رها کنید.</string>
     <string name="nc_voice_message_missing_audio_permission">جواز دسترسی به ضبط صدا مورد نیاز است</string>
     <string name="nc_webinar">وبینار</string>

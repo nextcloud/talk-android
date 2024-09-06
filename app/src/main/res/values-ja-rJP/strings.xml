@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">編集</string>
     <string name="account_icon">アカウントアイコン</string>
     <string name="add_to_notes">メモに追加する</string>
     <string name="added_to_favorites">%1$s会話をお気に入りに追加した</string>
@@ -297,6 +298,7 @@
     <string name="nc_moderator">モデレータ</string>
     <string name="nc_never">決して参加しなかった</string>
     <string name="nc_new_conversation">新しい会話</string>
+    <string name="nc_new_conversation_visibility">可視性</string>
     <string name="nc_new_mention">未読の返信</string>
     <string name="nc_new_messages">未読のメッセージ</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s利用できません（インストールされていないか、管理者によって制限されています）</string>
@@ -320,6 +322,8 @@
     <string name="nc_notify_me_never">決して通知しない</string>
     <string name="nc_offline">現在オフラインです。接続を確認してください。</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">登録ユーザーに会話を公開</string>
+    <string name="nc_open_to_guest_app_users">ゲストアプリユーザーにも開放</string>
     <string name="nc_owner">オーナー</string>
     <string name="nc_participants">参加者</string>
     <string name="nc_participants_add">参加を追加</string>
@@ -488,6 +492,7 @@
     <string name="nc_upload_video_from_cam">ビデオを撮る</string>
     <string name="nc_user">ユーザー</string>
     <string name="nc_video_filename">%1$sからビデオレコーディング</string>
+    <string name="nc_visible">表示する</string>
     <string name="nc_voice_message_filename">%1$s(%2$s)からの会話録音</string>
     <string name="nc_voice_message_hold_to_record_info">長押しして録音、離して送信</string>
     <string name="nc_voice_message_missing_audio_permission">音声の録音を許可する権限が必要です</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Editar</string>
     <string name="account_icon">Icono de la cuenta</string>
     <string name="add_to_notes">Añadir a Notas</string>
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
@@ -298,6 +299,7 @@
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca unido</string>
     <string name="nc_new_conversation">Nueva conversación</string>
+    <string name="nc_new_conversation_visibility">Visibilidad</string>
     <string name="nc_new_mention">Menciones sin leer</string>
     <string name="nc_new_messages">Mensajes no leídos</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no está disponible (no se encuentra instalado o está restringido por el administrador)</string>
@@ -323,6 +325,8 @@
     <string name="nc_notify_me_never">No notificar nunca</string>
     <string name="nc_offline">Actualmente fuera de línea, por favor, compruebe los detalles de su conexión</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Abrir conversación a usuarios registrados</string>
+    <string name="nc_open_to_guest_app_users">Abrir también para usuarios invitados de la aplicación</string>
     <string name="nc_owner">Propietario</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Añadir participantes</string>
@@ -492,6 +496,7 @@
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Grabación de video de %1$s</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Grabación Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantenga presionado para grabar, suelte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>

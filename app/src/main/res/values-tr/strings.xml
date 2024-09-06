@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Düzenle</string>
     <string name="account_icon">Hesap simgesi</string>
     <string name="add_to_notes">Notlar uygulamasına ekle</string>
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Sorumlu</string>
     <string name="nc_never">Hiç katılmadı</string>
     <string name="nc_new_conversation">Yeni görüşme</string>
+    <string name="nc_new_conversation_visibility">Görünürlük</string>
     <string name="nc_new_mention">Okunmamış anmalar</string>
     <string name="nc_new_messages">Okunmamış iletiler</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s kullanılamıyor (kurulmamış ya da yönetici tarafından engellenmiş)</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">Asla bildirilmesin</string>
     <string name="nc_offline">Şu anda çevrim dışı, lütfen bağlantınızı denetleyin</string>
     <string name="nc_ok">Tamam</string>
+    <string name="nc_open_conversation_to_registered_users">Görüşmeyi kayıtlı kullanıcılara aç</string>
+    <string name="nc_open_to_guest_app_users">Ayrıca konuk uygulama kullanıcılarına da açılsın</string>
     <string name="nc_owner">Sahip</string>
     <string name="nc_participants">Katılımcılar</string>
     <string name="nc_participants_add">Katılımcı ekle</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
+    <string name="nc_visible">Görünür</string>
     <string name="nc_voice_message_filename">%1$s Konuş kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Szerkesztés</string>
     <string name="account_icon">Fiókikon</string>
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
@@ -242,6 +243,7 @@
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
+    <string name="nc_new_conversation_visibility">Láthatóság</string>
     <string name="nc_new_mention">Olvasatlan említések</string>
     <string name="nc_new_messages">Olvasatlan üzenetek</string>
     <string name="nc_nextcloud_talk_app_not_installed">A(z) %1$s nem érhető el (nincs telepítve vagy egy rendszergazda korlátozta) </string>
@@ -264,6 +266,8 @@
     <string name="nc_notify_me_never">Sose értesítsen</string>
     <string name="nc_offline">Jelenleg offline, ellenőrizze a kapcsolatát</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Beszélgetés megnyitása a regisztrált felhasználók számára</string>
+    <string name="nc_open_to_guest_app_users">Megnyitás a vendégfelhasználók számára is</string>
     <string name="nc_owner">Tulajdonos</string>
     <string name="nc_participants">Résztvevők</string>
     <string name="nc_participants_add">Résztvevők hozzáadása</string>
@@ -425,6 +429,7 @@
     <string name="nc_upload_video_from_cam">Videó készítése</string>
     <string name="nc_user">Felhasználó</string>
     <string name="nc_video_filename">Videófelvétel innen: %1$s</string>
+    <string name="nc_visible">Látható</string>
     <string name="nc_voice_message_filename">Beszédfelvétel innen: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tartsa a felvételhez, engedje el a küldéshez.</string>
     <string name="nc_voice_message_missing_audio_permission">Hangfelvételi engedély szükséges</string>

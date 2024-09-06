@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Редактиране</string>
     <string name="account_icon">Икона на профил</string>
     <string name="appbar_search_in">Търсене в %s</string>
     <string name="audio_output_bluetooth">Bluetooth /Блутут/</string>
@@ -240,6 +241,8 @@
     <string name="nc_notify_me_never">Никога не уведомявайте</string>
     <string name="nc_offline">В момента офлайн, моля, проверете връзката си</string>
     <string name="nc_ok">ОК</string>
+    <string name="nc_open_conversation_to_registered_users">Отваряне на разговор за регистрирани потребители</string>
+    <string name="nc_open_to_guest_app_users">Отворен е и за потребители на приложение за гости</string>
     <string name="nc_owner">Създател</string>
     <string name="nc_participants">Участници</string>
     <string name="nc_participants_add">Добавяне на участници</string>
@@ -391,6 +394,7 @@
     <string name="nc_upload_video_from_cam">Заснемане на видео</string>
     <string name="nc_user">Потребител</string>
     <string name="nc_video_filename">Видеозапис от %1$s</string>
+    <string name="nc_visible">Видимо</string>
     <string name="nc_voice_message_filename">Запис на разговор от %1$s(%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Задържане за запис, отпускане за изпращане.</string>
     <string name="nc_voice_message_missing_audio_permission">Нужно е право за аудио запис </string>

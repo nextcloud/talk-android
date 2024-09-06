@@ -251,6 +251,7 @@
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_offline">Actualmente sin conexión, por favor verifica tu conectividad</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_to_guest_app_users">También abierta a usuarios de aplicaciones invitadas</string>
     <string name="nc_owner">Dueño</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Agregar participantes</string>
@@ -404,6 +405,7 @@
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Grabación de video desde %1$s</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Grabación de Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantén presionado para grabar, suelta para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>

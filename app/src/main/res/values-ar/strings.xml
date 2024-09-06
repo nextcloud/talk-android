@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">تحرير</string>
     <string name="account_icon">أيقونة الحساب </string>
     <string name="add_to_notes">أضِف إلى الملاحظات</string>
     <string name="added_to_favorites">أضِف المحادثة %1$sإلى المُفضّلة</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_never">عدم الانضمام</string>
     <string name="nc_new_conversation">محادثة جديدة</string>
+    <string name="nc_new_conversation_visibility">الرؤية Visibility</string>
     <string name="nc_new_mention">إشاراتٌ غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مُنصّب أو مُقيّد من قبل المُشرف)</string>
@@ -333,6 +335,8 @@
     <string name="nc_notify_me_never">لا تخبرني مطلقًا</string>
     <string name="nc_offline">غير متصل حاليًا، من فضلك التأكد من الاتصال بالانترنت</string>
     <string name="nc_ok">موافق</string>
+    <string name="nc_open_conversation_to_registered_users">فتح المحادثة للمستخدمين المسجلين </string>
+    <string name="nc_open_to_guest_app_users">مفتوح أيضًا لضيوف التطبيق </string>
     <string name="nc_owner">المالك</string>
     <string name="nc_participants">المشارِكون</string>
     <string name="nc_participants_add">إضِف مشاركين</string>
@@ -501,6 +505,7 @@
     <string name="nc_upload_video_from_cam">خُذ فيديو</string>
     <string name="nc_user">مستخدم</string>
     <string name="nc_video_filename">تسجيل فيديو من %1$s</string>
+    <string name="nc_visible">مرئيّ</string>
     <string name="nc_voice_message_filename">تسجيل محادثة Talk من %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">أُنقُر مُطوّلاً للتسجيل، ثم أفلِت للإرسال.</string>
     <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت لازمٌ</string>
