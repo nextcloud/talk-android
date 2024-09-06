@@ -237,7 +237,7 @@ open class BaseActivity : AppCompatActivity() {
         val user = currentUserProvider.currentUser.blockingGet()
         if (intent.data != null && TextUtils.equals(intent.action, Intent.ACTION_VIEW)) {
             val uri = intent.data.toString()
-            if (uri.startsWith(user.baseUrl!!)) {
+            if (user?.baseUrl != null && uri.startsWith(user.baseUrl!!)) {
                 if (UriUtils.isInstanceInternalFileShareUrl(user.baseUrl!!, uri)) {
                     // https://cloud.nextcloud.com/f/41
                     val fileViewerUtils = FileViewerUtils(applicationContext, user)
