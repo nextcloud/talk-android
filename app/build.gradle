@@ -93,11 +93,11 @@ android {
         buildConfigField "String", "PERMISSION_LOCAL_BROADCAST", "\"${localBroadcastPermission}\""
     }
 
-    // testOptions {
-    //     unitTests.all {
-    //         useJUnitPlatform()
-    //     }
-    // }
+    testOptions {
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
 
     buildTypes {
         release {
@@ -359,12 +359,12 @@ dependencies {
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-    testImplementation("junit:junit:4.13.2")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.09.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.0'
 }
 
 tasks.register('installGitHooks', Copy) {
