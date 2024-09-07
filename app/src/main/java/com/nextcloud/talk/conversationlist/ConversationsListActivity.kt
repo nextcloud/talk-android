@@ -280,7 +280,7 @@ class ConversationsListActivity :
         // handle notification permission on API level >= 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
-            ClosedInterfaceImpl().isGooglePlayServicesAvailable
+            ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
         ) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -1724,7 +1724,7 @@ class ConversationsListActivity :
                     Log.d(TAG, "Notification permission was granted")
 
                     if (!PowerManagerUtils().isIgnoringBatteryOptimizations() &&
-                        ClosedInterfaceImpl().isGooglePlayServicesAvailable
+                        ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
                     ) {
                         val dialogText = String.format(
                             context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
@@ -1819,7 +1819,7 @@ class ConversationsListActivity :
 
         return settingsOfUserAreWrong &&
             shouldShowNotificationWarningByUserChoice() &&
-            ClosedInterfaceImpl().isGooglePlayServicesAvailable
+            ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
     }
 
     private fun openConversation(textToPaste: String? = "") {
