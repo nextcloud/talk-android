@@ -243,7 +243,7 @@ class DiagnoseActivity : BaseActivity() {
         )
 
         if (isPushMessagingServiceAvailable) {
-            setupAppValuesForGooglePlayServices()
+            setupAppValuesForPushMessaging()
         }
 
         addDiagnosisEntry(
@@ -253,7 +253,7 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     @Suppress("Detekt.LongMethod")
-    private fun setupAppValuesForGooglePlayServices() {
+    private fun setupAppValuesForPushMessaging() {
         addDiagnosisEntry(
             key = context.resources.getString(R.string.nc_diagnose_battery_optimization_title),
             value = if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
