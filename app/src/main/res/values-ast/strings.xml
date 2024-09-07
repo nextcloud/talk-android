@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Editar</string>
     <string name="account_icon">Iconu de la cuenta</string>
     <string name="add_to_notes">Amestar a Notes</string>
     <string name="added_to_favorites">La conversación «%1$s» metióse en Favoritos</string>
@@ -174,6 +175,7 @@
     <string name="nc_microphone_permission_hint">P\'activar la comunicación per voz, concede\'l permisu «Micrófonu».</string>
     <string name="nc_moderator">Llendador</string>
     <string name="nc_new_conversation">Conversación nueva</string>
+    <string name="nc_new_conversation_visibility">Visibilidá</string>
     <string name="nc_new_mention">Menciones ensin lleer</string>
     <string name="nc_new_messages">Mensaxes ensin lleer</string>
     <string name="nc_nick_guest">Convidáu</string>
@@ -268,6 +270,7 @@
     <string name="nc_upload_picture_from_cam">Facer una semeya</string>
     <string name="nc_upload_video_from_cam">Grabar un videu</string>
     <string name="nc_user">Usuariu</string>
+    <string name="nc_visible">Visible</string>
     <string name="nc_webinar">Webinariu</string>
     <string name="nc_yes">Sí</string>
     <string name="next_week">La selmana que vien</string>

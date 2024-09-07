@@ -407,6 +407,7 @@
     <string name="nc_server_unsupported">Servern har inte korrekt Talk-app installerad</string>
     <string name="nc_server_url">Serveradress https://…</string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
+    <string name="nc_set_password">Ange lösenord</string>
     <string name="nc_settings">Inställningar</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>
     <string name="nc_settings_advanced_title">Avancerat</string>

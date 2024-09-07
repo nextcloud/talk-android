@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Upravit</string>
     <string name="account_icon">Ikona účtu</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
@@ -262,6 +263,7 @@
     <string name="nc_moderator">Moderátor</string>
     <string name="nc_never">Nikdy nepřipojeno</string>
     <string name="nc_new_conversation">Nová konverzace</string>
+    <string name="nc_new_conversation_visibility">Viditelnost</string>
     <string name="nc_new_mention">Nepřečtená zmínění</string>
     <string name="nc_new_messages">Nepřečtené zprávy</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s není k dispozici (nenainstalováno nebo administrativně omezen přístup k)</string>
@@ -285,6 +287,8 @@
     <string name="nc_notify_me_never">Nikdy neupozorňovat</string>
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Otevřít konverzaci registrovaným uživatelům</string>
+    <string name="nc_open_to_guest_app_users">Otevřít také pro neregistrované hosty</string>
     <string name="nc_owner">Vlastník</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Přidat účastníky</string>
@@ -445,6 +449,7 @@
     <string name="nc_upload_video_from_cam">Natočit video</string>
     <string name="nc_user">Uživatel</string>
     <string name="nc_video_filename">Videozáznam z %1$s</string>
+    <string name="nc_visible">Viditelný</string>
     <string name="nc_voice_message_filename">Nahrávka z Talk z %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podržením nahrajte, uvolněním odešlete.</string>
     <string name="nc_voice_message_missing_audio_permission">Je zapotřebí oprávnění pro zaznamenávání zvuku</string>

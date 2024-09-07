@@ -413,6 +413,7 @@
     <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Talk</string>
     <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
+    <string name="nc_set_password">Definir o contrasinal</string>
     <string name="nc_settings">Axustes</string>
     <string name="nc_settings_account_updated">Actualizouse a súa conta xa existente no canto de crear unha nova</string>
     <string name="nc_settings_advanced_title">Avanzado</string>
