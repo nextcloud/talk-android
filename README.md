@@ -13,7 +13,8 @@
       alt="Get it on F-Droid"
       height="80">](https://f-droid.org/packages/com.nextcloud.talk2/)
 
-Please note that Notifications won't work with the F-Droid version due to missing Google Play Services.
+Please note that the F-Droid version uses UnifiedPush notifications and the Play Store version uses Google Play 
+Services notifications.
 
 |||||||
 |---|---|---|---|---|---|
@@ -63,7 +64,8 @@ Easy starting points are also reviewing [pull requests](https://github.com/nextc
 So you would like to contribute by testing? Awesome, we appreciate that very much. 
 
 To report a bug for the alpha or beta version, just create an issue on github like you would for the stable version and
- provide the version number. Please remember that Google Services are necessary to receive push notifications. 
+ provide the version number. Please remember that Google Services are necessary to receive push notifications in the 
+Play Store version whereas the F-Droid version uses UnifiedPush notifications. 
  
 #### Beta versions (Release Candidates) :package:
 
