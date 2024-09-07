@@ -160,6 +160,7 @@ class SettingsActivity :
         )
 
         setupDiagnose()
+        setupResetPushPreference()
         setupPrivacyUrl()
         setupSourceCodeUrl()
         binding.settingsVersionSummary.text = String.format("v" + BuildConfig.VERSION_NAME)
@@ -291,8 +292,8 @@ class SettingsActivity :
     @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-            binding.settingsGplayOnlyWrapper.visibility = View.VISIBLE
+        if (ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)) {
+            binding.settingsPushNotificationsOnlyWrapper.visibility = View.VISIBLE
 
             setTroubleshootingClickListenersIfNecessary()
 
@@ -374,8 +375,20 @@ class SettingsActivity :
                 binding.settingsNotificationsPermissionWrapper.visibility = View.GONE
             }
         } else {
-            binding.settingsGplayOnlyWrapper.visibility = View.GONE
-            binding.settingsGplayNotAvailable.visibility = View.VISIBLE
+            binding.settingsPushNotificationsOnlyWrapper.visibility = View.GONE
+
+            val pushMessagingProvider = ClosedInterfaceImpl().pushMessagingProvider()
+            if (pushMessagingProvider == "gplay") {
+                binding.settingsPushNotificationsNotAvailableText.append("\n".plus(
+                    resources!!.getString(R.string.nc_diagnose_push_notifications_gplay).plus("\n").plus(resources!!
+                        .getString(R.string.nc_diagnose_push_notifications_gplay_rectify))))
+            } else if (pushMessagingProvider == "unifiedpush") {
+                binding.settingsPushNotificationsNotAvailableText.append("\n".plus(
+                    resources!!.getString(R.string.nc_diagnose_push_notifications_unified_push).plus("\n").plus
+                        (resources!!.getString(R.string.nc_diagnose_push_notifications_unified_push_rectify))))
+            }
+
+            binding.settingsPushNotificationsNotAvailable.visibility = View.VISIBLE
         }
     }
 
@@ -530,6 +543,21 @@ class SettingsActivity :
             }
         } else {
             binding.settingsPrivacy.visibility = View.GONE
+        }
+    }
+
+    private fun setupResetPushPreference() {
+        binding.resetPushNotificationsWrapper.setOnClickListener {
+            for (user in userManager.users.blockingGet()) {
+                ClosedInterfaceImpl().unregisterWithServer(binding.root.context, user.username)
+            }
+
+            Snackbar.make(
+                binding.root,
+                resources!!.getString(R.string.prefs_reset_push_done),
+                Snackbar.LENGTH_LONG
+            ).show()
+            true
         }
     }
 
