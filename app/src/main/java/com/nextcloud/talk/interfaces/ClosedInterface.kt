@@ -7,9 +7,14 @@
  */
 package com.nextcloud.talk.interfaces
 
+import android.content.Context
+
+
 interface ClosedInterface {
 
-    val isGooglePlayServicesAvailable: Boolean
+    fun isPushMessagingServiceAvailable(context: Context): Boolean
+    fun pushMessagingProvider(): String
     fun providerInstallerInstallIfNeededAsync()
-    fun setUpPushTokenRegistration()
+    fun registerWithServer(context: Context, username: String?): Boolean
+    fun unregisterWithServer(context: Context, username: String?)
 }
