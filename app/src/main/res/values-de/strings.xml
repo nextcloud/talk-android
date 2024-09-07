@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Bearbeiten</string>
     <string name="account_icon">Konto-Icon</string>
     <string name="add_to_notes">Zu Notizen hinzufügen</string>
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
@@ -308,6 +309,7 @@
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>
     <string name="nc_new_conversation">Neue Unterhaltung</string>
+    <string name="nc_new_conversation_visibility">Sichtbarkeit</string>
     <string name="nc_new_mention">Ungelesene Erwähnungen</string>
     <string name="nc_new_messages">Ungelesene Nachrichten</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s nicht verfügbar (nicht installiert oder von der Administration eingeschränkt)</string>
@@ -333,6 +335,7 @@
     <string name="nc_notify_me_never">Nie benachrichtigen</string>
     <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
     <string name="nc_participants">Teilnehmer</string>
@@ -410,6 +413,7 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_set_password">Passwort festlegen</string>
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>
     <string name="nc_settings_advanced_title">Erweitert</string>

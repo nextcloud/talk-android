@@ -413,6 +413,7 @@
     <string name="nc_server_unsupported">伺服器未安裝受支持的 Talk 應用程式</string>
     <string name="nc_server_url">伺服器網址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
+    <string name="nc_set_password">設置密碼</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">已經更新了您現有的帳戶，而不是添加新的帳戶</string>
     <string name="nc_settings_advanced_title">進階</string>
