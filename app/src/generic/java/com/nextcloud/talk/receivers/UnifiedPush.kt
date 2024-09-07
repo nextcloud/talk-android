@@ -129,7 +129,7 @@ class UnifiedPush : MessagingReceiver() {
     override fun onMessage(context: Context, message: ByteArray, instance: String) {
         // get a wake lock to 'help' background job run more promptly since it can take minutes to run if phone is
         // sleeping/dozing - 60 secs should be well long enough to get the notification and/or call displayed
-        PowerManagerUtils()!!.acquireTimedPartialLock(60 * 1000)
+        PowerManagerUtils().acquireTimedPartialLock(60 * 1000)
 
         Log.d(TAG, "UP onMessage")
 
