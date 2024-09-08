@@ -335,6 +335,8 @@
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
+    <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">Owner</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
@@ -411,6 +413,7 @@
     <string name="nc_server_unsupported">Server does not have supported Talk app installed</string>
     <string name="nc_server_url">Server address https://…</string>
     <string name="nc_server_version">%1$s only works with %2$s 13 and up</string>
+    <string name="nc_set_password">Set Password</string>
     <string name="nc_settings">Settings</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_settings_advanced_title">Advanced</string>
