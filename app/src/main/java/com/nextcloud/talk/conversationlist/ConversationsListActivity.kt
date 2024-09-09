@@ -1011,8 +1011,10 @@ class ConversationsListActivity :
 
         binding.newMentionPopupBubble.hide()
         binding.newMentionPopupBubble.setPopupBubbleListener {
-            binding.recyclerView.smoothScrollToPosition(
-                nextUnreadConversationScrollPosition
+            val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
+            layoutManager?.scrollToPositionWithOffset(
+                nextUnreadConversationScrollPosition,
+                binding.recyclerView.height / 3
             )
         }
         binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
