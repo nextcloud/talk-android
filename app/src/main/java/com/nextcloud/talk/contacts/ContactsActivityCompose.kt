@@ -52,7 +52,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -166,7 +168,7 @@ class ContactsActivityCompose : BaseActivity() {
 
 @Composable
 fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewModel, context: Context) {
-    var isSelected = remember(contact) { contactsViewModel.selectedParticipantsList.value.contains(contact) }
+    var isSelected by remember { mutableStateOf(contactsViewModel.selectedParticipantsList.value.contains(contact)) }
     val roomUiState by contactsViewModel.roomViewState.collectAsState()
     val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
     Row(
