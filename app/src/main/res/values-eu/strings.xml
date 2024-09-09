@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
+    <string name= "nc_edit">Aldatu</string>
     <string name="account_icon">Kontuaren ikonoa</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
@@ -11,6 +12,8 @@
     <string name="audio_output_wired_headset">Kabledun entzungailua</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
+    <string name="ban">Debekatu</string>
+    <string name="ban_participant">Debekatu parte-hartzailea</string>
     <string name="calendar">Egutegia</string>
     <string name="call_more_actions_dialog_headline">Dei-ezarpen aurreratuak</string>
     <string name="call_running_since_one_hour">Deia ordubetez egon da martxan.</string>
@@ -41,6 +44,7 @@
     <string name="filename_progress">%1$s(%2$d)</string>
     <string name="fourHours">4 ordu</string>
     <string name="hint_edited_message">(editatuta)</string>
+    <string name="internal_note">Barneko oharra</string>
     <string name="invisible">Ikusezina</string>
     <string name="languages_error_message">Ezin izan dira hizkuntzak berreskuratu</string>
     <string name="languages_error_title">Ezin izan da berreskuratu</string>
@@ -255,6 +259,7 @@
     <string name="nc_moderator">Moderatzailea</string>
     <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
+    <string name="nc_new_conversation_visibility">Ikusgarritasuna</string>
     <string name="nc_new_mention">Irakurri gabeko aipamenak</string>
     <string name="nc_new_messages">Irakurri gabeko mezuak</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ez dago erabilgarri (administratzaileak instalatu edo mugatu gabe)</string>
@@ -360,6 +365,7 @@
     <string name="nc_settings_advanced_title">Aurreratua</string>
     <string name="nc_settings_appearance">Itxura</string>
     <string name="nc_settings_call_ringtone">Deiak</string>
+    <string name="nc_settings_diagnose_title">Diagnostikoa</string>
     <string name="nc_settings_incognito_keyboard_desc">Teklatuaren ikasketa pertsonalizatua desgaitzen du (bermerik gabe)</string>
     <string name="nc_settings_incognito_keyboard_title">Teklatu ezkutua</string>
     <string name="nc_settings_no_ringtone">Soinurik ez</string>
@@ -560,6 +566,7 @@
     <string name="typing_are_typing">idazten ari dira ...</string>
     <string name="typing_is_typing">idazten ari da ...</string>
     <string name="typing_x_others">eta beste %1$s idazten ari dira ...</string>
+    <string name="unban">Debekua kendu</string>
     <string name="unread">Irakurri gabe</string>
     <string name="upload_new_avatar_from_device">Igo avatar berria gailutik</string>
     <string name="user_avatar">Erabltzaile-avatarra</string>

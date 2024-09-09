@@ -335,6 +335,7 @@
     <string name="nc_notify_me_never">Ná cuir in iúl riamh</string>
     <string name="nc_offline">Faoi láthair, seiceáil do nascacht le do thoil</string>
     <string name="nc_ok">Ceart go leor</string>
+    <string name="nc_open_conversation_to_registered_users">Oscail an comhrá d\'úsáideoirí cláraithe</string>
     <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>
     <string name="nc_participants">Rannpháirtithe</string>
@@ -412,6 +413,7 @@
     <string name="nc_server_unsupported">Níl an aip Talk tacaithe ag an bhfreastalaí suiteáilte</string>
     <string name="nc_server_url">Seoladh an fhreastalaí https://…</string>
     <string name="nc_server_version">Ní oibríonn %1$s ach le %2$s 13 agus níos sine</string>
+    <string name="nc_set_password">Socraigh Pasfhocal</string>
     <string name="nc_settings">Socruithe</string>
     <string name="nc_settings_account_updated">Nuashonraíodh do chuntas a bhí ann cheana féin, in ionad ceann nua a chur leis</string>
     <string name="nc_settings_advanced_title">Casta</string>
