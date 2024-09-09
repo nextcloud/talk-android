@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -31,7 +32,7 @@ class ContactsViewModel @Inject constructor(
     private val _searchState = MutableStateFlow(false)
     val searchState: StateFlow<Boolean> = _searchState
     private val selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
-    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = selectedParticipants
+    val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = selectedParticipants.asStateFlow()
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
@@ -41,6 +42,16 @@ class ContactsViewModel @Inject constructor(
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    fun selectContact(contact: AutocompleteUser) {
+        val updatedParticipants = selectedParticipants.value + contact
+        selectedParticipants.value = updatedParticipants
+    }
+
+    fun deselectContact(contact: AutocompleteUser) {
+        val updatedParticipants = selectedParticipants.value - contact
+        selectedParticipants.value = updatedParticipants
     }
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
