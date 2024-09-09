@@ -1009,13 +1009,13 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
-        binding.newMentionPopupBubble?.hide()
-        binding.newMentionPopupBubble?.setPopupBubbleListener {
-            binding.recyclerView?.smoothScrollToPosition(
+        binding.newMentionPopupBubble.hide()
+        binding.newMentionPopupBubble.setPopupBubbleListener {
+            binding.recyclerView.smoothScrollToPosition(
                 nextUnreadConversationScrollPosition
             )
         }
-        binding.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
+        binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
     private fun hideLogoForBrandedClients() {
@@ -1039,14 +1039,14 @@ class ConversationsListActivity :
                         val position = adapter!!.getGlobalPositionOf(flexItem)
                         if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
-                            if (!binding.newMentionPopupBubble?.isShown!!) {
-                                binding.newMentionPopupBubble?.show()
+                            if (!binding.newMentionPopupBubble.isShown) {
+                                binding.newMentionPopupBubble.show()
                             }
                             return@subscribe
                         }
-                        nextUnreadConversationScrollPosition = 0
-                        binding.newMentionPopupBubble?.hide()
                     }
+                    nextUnreadConversationScrollPosition = 0
+                    binding.newMentionPopupBubble.hide()
                 } catch (e: NullPointerException) {
                     Log.d(
                         TAG,
