@@ -667,9 +667,9 @@ class ConversationsListActivity :
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
-                        binding.swipeRefreshLayoutView?.isRefreshing = false
-                        searchBehaviorSubject.onNext(false)
                     }
+                    binding.swipeRefreshLayoutView?.isRefreshing = false
+                    searchBehaviorSubject.onNext(false)
                     binding.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
