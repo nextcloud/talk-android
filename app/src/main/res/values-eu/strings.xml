@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Aldatu</string>
-    <string name="account_icon">Kontuaren ikonoa</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
     <string name="audio_call">Audio deia</string>
@@ -63,7 +62,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Handienak lehenengo</string>
     <string name="menu_item_sort_by_size_smallest_first">Txikienak lehenengo</string>
     <string name="message_deleted_by_you">Mezua ezabatu duzu</string>
-    <string name="message_expiration_title">Mezuen iraungitzea</string>
     <string name="message_poll_tap_to_open">Sakatu galdeketa irekitzeko</string>
     <string name="message_search_begin_empty">Ez dago bilaketaren emaitzarik</string>
     <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
@@ -81,7 +79,6 @@
     <string name="nc_add_participants">Gehitu parte-hartzaileak</string>
     <string name="nc_add_to_favorites">Gehitu gogokoetara</string>
     <string name="nc_all_ok_operation">Ados, dena eginda!</string>
-    <string name="nc_allow_guests">Gonbidatuak baimendu</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth bozgorailuak gaitzeko, eman \"Inguruko gailuak\" baimena.</string>
@@ -120,7 +117,6 @@
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
     <string name="nc_client_cert_change">Aldatu bezeroaren ziurtagiria</string>
     <string name="nc_client_cert_setup">Konfiguratu bezeroaren ziurtagiria</string>
-    <string name="nc_close_app">Itxi aplikazioa</string>
     <string name="nc_common_and">eta</string>
     <string name="nc_common_copy">Kopiatu</string>
     <string name="nc_common_copy_success">Kopiatu arbelera</string>
@@ -229,8 +225,6 @@
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_invitations">Gonbidapenak</string>
     <string name="nc_join_open_conversations">Sartu elkarrizketa irekietara</string>
-    <string name="nc_last_moderator">Moderatzaile berri bat hautatu behar duzu %1$s utzi baino lehen.</string>
-    <string name="nc_last_moderator_title">Ezin izan da elkarrizketatik irten</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
     <string name="nc_leave">Atera elkarrizketatik</string>
     <string name="nc_leaving_call">Deia uzten …</string>
@@ -418,9 +412,6 @@
     <string name="nc_share_current_location">Partekatu uneko kokapena</string>
     <string name="nc_share_link">Partekatu esteka</string>
     <string name="nc_share_location">Partekatu kokapena</string>
-    <string name="nc_share_subject">Gonbidapen %1$s</string>
-    <string name="nc_share_text">Elkartu elkarrizketara hemen %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nPasahitza: %1$s</string>
     <string name="nc_share_this_location">Partekatu kokapen hau</string>
     <string name="nc_share_to_choose_account">Aukeratu kontua</string>
     <string name="nc_shared_items">Partekatutako elementuak</string>
@@ -550,7 +541,6 @@
     <string name="thisWeek">Aste honetan</string>
     <string name="this_is_a_test_message">Hau probako mezu bat da</string>
     <string name="this_weekend">Asteburu hau</string>
-    <string name="title_attachments">Eranskinak</string>
     <string name="today">Gaur</string>
     <string name="tomorrow">Bihar</string>
     <string name="translate">Itzuli</string>

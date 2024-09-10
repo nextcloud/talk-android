@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upraviť</string>
-    <string name="account_icon">Ikona účtu</string>
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
@@ -66,7 +65,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
     <string name="message_deleted_by_you">Správu ste odstránili</string>
-    <string name="message_expiration_title">Vypršanie platnosti správy</string>
     <string name="message_last_edited_by">Upravil%1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
     <string name="message_search_begin_empty">Žiadne výsledky vyhľadávania</string>
@@ -85,7 +83,6 @@
     <string name="nc_add_participants">Pridať účastníkov</string>
     <string name="nc_add_to_favorites">Pridať do obľúbených</string>
     <string name="nc_all_ok_operation">OK, všetko hotovo!</string>
-    <string name="nc_allow_guests">Povoliť hostí</string>
     <string name="nc_attendee_pin">Špendlík: %1$s</string>
     <string name="nc_biometric_unlock">Odomknúť %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ak chcete povoliť reproduktory bluetooth, udeľte povolenie „Zariadenia v blízkosti“.</string>
@@ -126,7 +123,6 @@
     <string name="nc_clear_history_warning">Naozaj chcete vymazať všetky správy v tejto konverzácii?</string>
     <string name="nc_client_cert_change">Zmeniť klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastaviť klientský certifikát</string>
-    <string name="nc_close_app">Zavrieť aplikáciu</string>
     <string name="nc_common_and">a</string>
     <string name="nc_common_copy">Kopírovať</string>
     <string name="nc_common_copy_success">Skopírované do schránky</string>
@@ -268,8 +264,6 @@
     <string name="nc_important_conversation_desc">Oznámenia v tejto konverzácii sa prepíšu nastavením Nerušiť</string>
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
-    <string name="nc_last_moderator">Skôr než budete môcť opustiť %1$s , je potrebné niekomu odovzdať rolu moderátora.</string>
-    <string name="nc_last_moderator_title">Nie je možné opustiť konverzáciu</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Opustiť konverzáciu</string>
     <string name="nc_leaving_call">Opúšťam hovor …</string>
@@ -464,9 +458,6 @@
     <string name="nc_share_current_location">Zdieľať súčasnú polohu</string>
     <string name="nc_share_link">Zdieľať odkaz</string>
     <string name="nc_share_location">Zdieľať polohu</string>
-    <string name="nc_share_subject">%1$sPozvánka</string>
-    <string name="nc_share_text">Pripojte sa ku konverzácii na %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Zdieľať túto polohu</string>
     <string name="nc_share_to_choose_account">Zvoliť účet</string>
     <string name="nc_shared_items">Zdieľané položky</string>
@@ -596,7 +587,6 @@
     <string name="thisWeek">Tento týždeň</string>
     <string name="this_is_a_test_message">Toto je skúšobná správa</string>
     <string name="this_weekend">Tento víkend</string>
-    <string name="title_attachments">Prílohy</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zajtra</string>
     <string name="translate">Preložiť</string>

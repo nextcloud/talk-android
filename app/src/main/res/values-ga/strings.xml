@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Cuir in eagar</string>
-    <string name="account_icon">Deilbhín cuntais</string>
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">An ceann is mó ar dtús</string>
     <string name="menu_item_sort_by_size_smallest_first">Is lú ar dtús</string>
     <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
-    <string name="message_expiration_title">Teachtaireacht in éag</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
     <string name="message_search_begin_empty">Gan torthaí cuardaigh</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Cuir rannpháirtithe leis</string>
     <string name="nc_add_to_favorites">Cuir le ceanáin</string>
     <string name="nc_all_ok_operation">Ceart go leor, déanta go léir!</string>
-    <string name="nc_allow_guests">Ceadaigh aíonna</string>
     <string name="nc_attendee_pin">Bioráin: %1$s</string>
     <string name="nc_biometric_unlock">Díghlasáil %1$s</string>
     <string name="nc_bluetooth_permission_hint">Chun cainteoirí Bluetooth a chumasú, deonaigh cead \"Gléasanna in aice láimhe\" le do thoil.</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">An bhfuil tú cinnte gur mhaith leat gach teachtaireacht sa chomhrá seo a scriosadh?</string>
     <string name="nc_client_cert_change">Athraigh teastas an chliaint</string>
     <string name="nc_client_cert_setup">Socraigh teastas cliant</string>
-    <string name="nc_close_app">Dún an aip</string>
     <string name="nc_common_and">agus</string>
     <string name="nc_common_copy">Cóipeáil</string>
     <string name="nc_common_copy_success">Cóipeáladh chuig an ngearrthaisce</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">Sáróidh fógraí sa chomhrá seo na socruithe Ná Cuir Isteach</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
-    <string name="nc_last_moderator">Ní mór duit modhnóir nua a chur chun cinn sular féidir leat %1$s a fhágáil.</string>
-    <string name="nc_last_moderator_title">Níorbh fhéidir an comhrá a fhágáil</string>
     <string name="nc_last_modified">%1$s | Athraithe is déanaí: %2$s</string>
     <string name="nc_leave">Fág an comhrá</string>
     <string name="nc_leaving_call">Ag fágáil an ghlao…</string>
@@ -476,9 +470,6 @@
     <string name="nc_share_current_location">Roinn an suíomh reatha</string>
     <string name="nc_share_link">Comhroinn nasc</string>
     <string name="nc_share_location">Comhroinn suíomh</string>
-    <string name="nc_share_subject">Cuireadh %1$s</string>
-    <string name="nc_share_text">Glac páirt sa chomhrá ag %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nFocal Faire: %1$s</string>
     <string name="nc_share_this_location">Roinn an suíomh seo</string>
     <string name="nc_share_to_choose_account">Roghnaigh cuntas</string>
     <string name="nc_shared_items">Míreanna roinnte</string>
@@ -613,7 +604,6 @@
     <string name="thisWeek">An tseachtain seo</string>
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>
     <string name="this_weekend">An deireadh seachtaine seo</string>
-    <string name="title_attachments">Ceangaltáin</string>
     <string name="today">Inniu</string>
     <string name="tomorrow">Amárach</string>
     <string name="translate">Aistrigh</string>

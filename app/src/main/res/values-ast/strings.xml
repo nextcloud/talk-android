@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Editar</string>
-    <string name="account_icon">Iconu de la cuenta</string>
     <string name="add_to_notes">Amestar a Notes</string>
     <string name="added_to_favorites">La conversación «%1$s» metióse en Favoritos</string>
     <string name="appbar_search_in">Buscar en: %s</string>
@@ -53,7 +52,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Primero lo grande</string>
     <string name="menu_item_sort_by_size_smallest_first">Primero lo pequeño</string>
     <string name="message_deleted_by_you">Desaniciesti\'l mensaxe</string>
-    <string name="message_expiration_title">Caducidá de los mensaxes</string>
     <string name="message_poll_tap_to_open">Toca p\'abrir la encuesta</string>
     <string name="message_search_begin_empty">Nun hai nengún resultáu de la busca</string>
     <string name="message_search_hint">Buscar…</string>
@@ -83,7 +81,6 @@
     <string name="nc_clear_history_warning">¿De xuru que quies desaniciar tolos mensaxes d\'esta conversación?</string>
     <string name="nc_client_cert_change">Camudar el certificáu del veceru</string>
     <string name="nc_client_cert_setup">Configurar el certificáu del veceru</string>
-    <string name="nc_close_app">Zarrar l\'aplicación</string>
     <string name="nc_common_and">y</string>
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copióse nel cartafueyu</string>
@@ -161,7 +158,6 @@
     <string name="nc_guest_access_share_link">Compartir l\'enllaz de la converación</string>
     <string name="nc_important_conversation">Converación importante</string>
     <string name="nc_invitations">Invitaciones</string>
-    <string name="nc_last_moderator_title">Nun se pudo colar de la conversación</string>
     <string name="nc_leave">Colar de la conversación</string>
     <string name="nc_leaving_call">Colando de la llamada…</string>
     <string name="nc_license_title">Llicencia</string>
@@ -254,7 +250,6 @@
     <string name="nc_settings_theme_title">Estilu</string>
     <string name="nc_settings_warning">Alvertencia</string>
     <string name="nc_share_link">Compartir l\'enllaz</string>
-    <string name="nc_share_text_pass">\nContraseña: %1$s</string>
     <string name="nc_shared_items">Elementos compartíos</string>
     <string name="nc_shared_items_empty">Nun hai nengún elementu compartíu</string>
     <string name="nc_shared_items_location">Llocalización</string>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upravit</string>
-    <string name="account_icon">Ikona účtu</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
     <string name="audio_call">Hlasový hovor</string>
@@ -61,7 +60,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
     <string name="message_deleted_by_you">Zprávu jste smazali</string>
-    <string name="message_expiration_title">Skončení platnosti zprávy</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
     <string name="message_search_begin_empty">Nic nenalezeno</string>
     <string name="message_search_begin_typing">Hledejte psaním…</string>
@@ -79,7 +77,6 @@
     <string name="nc_add_participants">Přidat účastníky</string>
     <string name="nc_add_to_favorites">Přidat do oblíbených</string>
     <string name="nc_all_ok_operation">OK, vše hotovo!</string>
-    <string name="nc_allow_guests">Povolit hosty</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Odemknout %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pro použití bluetooth reproduktorů je třeba udělit oprávnění „Zařízení poblíž“.</string>
@@ -118,7 +115,6 @@
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
     <string name="nc_client_cert_change">Změnit klientský certifikát</string>
     <string name="nc_client_cert_setup">Nastavit klientský certifikát</string>
-    <string name="nc_close_app">Zavřít aplikaci</string>
     <string name="nc_common_and">a</string>
     <string name="nc_common_copy">Zkopírovat</string>
     <string name="nc_common_copy_success">Zkopírováno do schránky</string>
@@ -233,8 +229,6 @@
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
     <string name="nc_invitations">Pozvání</string>
     <string name="nc_join_open_conversations">Přidat se do všem přístupných konverzací</string>
-    <string name="nc_last_moderator">Než budete moci opustit %1$s, je třeba předat někomu roli moderátora.</string>
-    <string name="nc_last_moderator_title">Konverzaci zatím nemůžete opustit</string>
     <string name="nc_last_modified">%1$s | Naposledy upraveno: %2$s</string>
     <string name="nc_leave">Opustit konverzaci</string>
     <string name="nc_leaving_call">Opouštění hovoru…</string>
@@ -421,9 +415,6 @@
     <string name="nc_share_current_location">Sdílet stávající umístění</string>
     <string name="nc_share_link">Nasdílet odkaz</string>
     <string name="nc_share_location">Sdílet umístění</string>
-    <string name="nc_share_subject">%1$s pozvání</string>
-    <string name="nc_share_text">Připojte se ke konverzaci na %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nHeslo: %1$s</string>
     <string name="nc_share_this_location">Sdílet toto umístění</string>
     <string name="nc_share_to_choose_account">Zvolte účet</string>
     <string name="nc_shared_items">Sdílené položky</string>
@@ -551,7 +542,6 @@
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
     <string name="this_weekend">Tento víkend</string>
-    <string name="title_attachments">Přílohy</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zítra</string>
     <string name="translate">Překládání</string>

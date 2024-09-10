@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Редактирование</string>
-    <string name="account_icon">Значок учётной записи</string>
     <string name="appbar_search_in">Искать в %s</string>
     <string name="audio_call">Аудиозвонок</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -55,7 +54,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
     <string name="message_deleted_by_you">Сообщение удалено вами</string>
-    <string name="message_expiration_title">Срок истечения сообщения</string>
     <string name="message_poll_tap_to_open">Нажмите для открытия опроса</string>
     <string name="message_search_begin_empty">Ничего не найдено</string>
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
@@ -73,7 +71,6 @@
     <string name="nc_add_participants">Добавить участников</string>
     <string name="nc_add_to_favorites">Добавить в избранное</string>
     <string name="nc_all_ok_operation">Всё готово!</string>
-    <string name="nc_allow_guests">Разрешить гостей</string>
     <string name="nc_attendee_pin">Пин: %1$s</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
     <string name="nc_call_button_content_description_advanced">Дополнительные настройки звонка</string>
@@ -110,7 +107,6 @@
     <string name="nc_clear_history_warning">Вы действительно хотите удалить все сообщения в этой беседе?</string>
     <string name="nc_client_cert_change">Изменение клиентского сертификата</string>
     <string name="nc_client_cert_setup">Установка клиентского сертификата</string>
-    <string name="nc_close_app">Закрыть приложение</string>
     <string name="nc_common_and">и</string>
     <string name="nc_common_copy">Копировать</string>
     <string name="nc_common_copy_success">Скопировано в буфер обмена</string>
@@ -211,8 +207,6 @@
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_invitations">Приглашения</string>
     <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
-    <string name="nc_last_moderator">Перед выходом из обсуждения %1$s необходимо назначить нового модератора.</string>
-    <string name="nc_last_moderator_title">Не удалось выйти из обсуждения</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть беседу</string>
     <string name="nc_leaving_call">Завершение вызова …</string>
@@ -391,9 +385,6 @@
     <string name="nc_share_current_location">Поделиться текущим местоположением</string>
     <string name="nc_share_link">Поделиться ссылкой</string>
     <string name="nc_share_location">Поделиться местоположением</string>
-    <string name="nc_share_subject">%1$s приглашение</string>
-    <string name="nc_share_text">Присоединиться к беседе в %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поделиться этим местом</string>
     <string name="nc_share_to_choose_account">Выбрать учётную запись</string>
     <string name="nc_shared_items">Общие элементы</string>
@@ -405,6 +396,7 @@
     <string name="nc_sort_by">Сортировать по</string>
     <string name="nc_start_time">Время начала</string>
     <string name="nc_switch_account">Сменить аккаунт</string>
+    <string name="nc_team">Команда</string>
     <string name="nc_teams">Команды</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
@@ -427,6 +419,7 @@
     <string name="nc_voice_message_slide_to_cancel">« Сдвинуть для отмены</string>
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_yes">Да</string>
+    <string name="new_conversation_creation_icon">Значок создания новой беседы</string>
     <string name="next_week">Следующая неделя</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
     <string name="oneHour">1 час</string>
@@ -517,7 +510,6 @@
     <string name="thirtyMinutes">30 минут</string>
     <string name="thisWeek">Эта неделя</string>
     <string name="this_weekend">Эта неделя</string>
-    <string name="title_attachments">Вложения</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>

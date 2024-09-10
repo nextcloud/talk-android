@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">編集</string>
-    <string name="account_icon">アカウントアイコン</string>
     <string name="add_to_notes">メモに追加する</string>
     <string name="added_to_favorites">%1$s会話をお気に入りに追加した</string>
     <string name="appbar_search_in">%sを検索</string>
@@ -66,7 +65,6 @@
     <string name="menu_item_sort_by_size_biggest_first">サイズ（降順）</string>
     <string name="menu_item_sort_by_size_smallest_first">サイズ（昇順）</string>
     <string name="message_deleted_by_you">あなたが削除したメッセージ</string>
-    <string name="message_expiration_title">メッセージの有効期限</string>
     <string name="message_last_edited_by">%1$sに編集されました</string>
     <string name="message_poll_tap_to_open">タップして投票を開く</string>
     <string name="message_search_begin_empty">検索結果なし</string>
@@ -85,7 +83,6 @@
     <string name="nc_add_participants">参加を追加</string>
     <string name="nc_add_to_favorites">お気に入りに追加</string>
     <string name="nc_all_ok_operation">OK、すべて完了！</string>
-    <string name="nc_allow_guests">ゲストを許可する</string>
     <string name="nc_attendee_pin">ピン: %1$s</string>
     <string name="nc_biometric_unlock">%1$sを解除</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth スピーカーを有効にするには、「近くのデバイス」の権限を付与してください。</string>
@@ -127,7 +124,6 @@
     <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
     <string name="nc_client_cert_change">クライアント証明書を変更する</string>
     <string name="nc_client_cert_setup">クライアント証明書を設定する</string>
-    <string name="nc_close_app">アプリを閉じる</string>
     <string name="nc_common_and">かつ</string>
     <string name="nc_common_copy">コピー</string>
     <string name="nc_common_copy_success">クリップボードにコピーされました</string>
@@ -268,8 +264,6 @@
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_invitations">招待</string>
     <string name="nc_join_open_conversations">オープンな会話に参加する</string>
-    <string name="nc_last_moderator">%1$sを退出する前に、新しいモデレータを昇格させる必要があります。</string>
-    <string name="nc_last_moderator_title">会話を退出できませんでした</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
     <string name="nc_leaving_call">通話を終了 …</string>
@@ -462,9 +456,6 @@
     <string name="nc_share_current_location">現在の位置を共有</string>
     <string name="nc_share_link">共有リンク</string>
     <string name="nc_share_location">位置を共有</string>
-    <string name="nc_share_subject">%1$s を招待</string>
-    <string name="nc_share_text">%1$s/index.php/call/%2$s での会話に参加する</string>
-    <string name="nc_share_text_pass">\nパスワード：%1$s</string>
     <string name="nc_share_this_location">この位置を共有</string>
     <string name="nc_share_to_choose_account">アカウントを選択</string>
     <string name="nc_shared_items">共有済みアイテム</string>
@@ -594,7 +585,6 @@
     <string name="thisWeek">今週</string>
     <string name="this_is_a_test_message">これはテストメッセージです</string>
     <string name="this_weekend">この週末</string>
-    <string name="title_attachments">添付ファイル</string>
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>

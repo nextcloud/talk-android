@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Bewerken</string>
-    <string name="account_icon">Accountpictogram</string>
     <string name="appbar_search_in">Zoeken in %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
@@ -60,7 +59,6 @@
     <string name="nc_add_participants">Toevoegen deelnemers </string>
     <string name="nc_add_to_favorites">Toevoegen aan favorieten</string>
     <string name="nc_all_ok_operation">OK, alles in orde!</string>
-    <string name="nc_allow_guests">Laat gasten toe</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Ontgrendel %1$s</string>
     <string name="nc_call_button_content_description_advanced">Geavanceerde oproepopties</string>
@@ -177,8 +175,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_invitations">Uitnodigingen</string>
-    <string name="nc_last_moderator">Je moet eerst een nieuwe moderator kiezen voordat je het gesprek kan verlaten %1$s.</string>
-    <string name="nc_last_moderator_title">Kon het gesprek niet verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
     <string name="nc_leave">Verlaat gesprek</string>
     <string name="nc_leaving_call">Verlaten gesprek …</string>
@@ -347,9 +343,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_share_current_location">Deel huidige locatie</string>
     <string name="nc_share_link">Deel link</string>
     <string name="nc_share_location">Deel locatie</string>
-    <string name="nc_share_subject">%1$s uitnodiging</string>
-    <string name="nc_share_text">Neem deel aan het gesprek %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nWachtwoord: %1$s</string>
     <string name="nc_share_this_location">Deel deze locatie</string>
     <string name="nc_share_to_choose_account">Kies account</string>
     <string name="nc_shared_items">Gedeelde objecten</string>
@@ -447,7 +440,6 @@ Kies er eentje van een provider.</string>
     <string name="take_photo_toggle_torch">Schakel zaklamp</string>
     <string name="thirtyMinutes">30 minuten</string>
     <string name="thisWeek">Deze week</string>
-    <string name="title_attachments">Bijlagen</string>
     <string name="today">Vandaag</string>
     <string name="tomorrow">Morgen</string>
     <string name="translate">Vertaal</string>

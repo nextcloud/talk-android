@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Modifica</string>
-    <string name="account_icon">Icona dell\'account</string>
     <string name="appbar_search_in">Cerca in %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Uscita audio</string>
@@ -62,7 +61,6 @@
     <string name="nc_add_participants">Aggiungi partecipanti</string>
     <string name="nc_add_to_favorites">Aggiungi ai preferiti</string>
     <string name="nc_all_ok_operation">OK, tutto fatto!</string>
-    <string name="nc_allow_guests">Consenti ospiti</string>
     <string name="nc_attendee_pin">Appunta: %1$s</string>
     <string name="nc_biometric_unlock">Sblocca %1$s</string>
     <string name="nc_call_button_content_description_advanced">Opzioni avanzate per le chiamate</string>
@@ -177,8 +175,6 @@
     <string name="nc_important_conversation">Conversazione importante</string>
     <string name="nc_important_conversation_desc">Le notifiche in questa conversazione ignoreranno l\'impostazione Non disturbare</string>
     <string name="nc_invitations">Inviti</string>
-    <string name="nc_last_moderator">Devi promuovere un nuovo moderatore prima di poter abbandonare %1$s. </string>
-    <string name="nc_last_moderator_title">Impossibile lasciare la conversazione</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
     <string name="nc_leave">Lascia la conversazione</string>
     <string name="nc_leaving_call">Chiusura della chiamata in corso …</string>
@@ -346,9 +342,6 @@
     <string name="nc_share_current_location">Condividi la posizione attuale</string>
     <string name="nc_share_link">Collegamento di condivisione</string>
     <string name="nc_share_location">Condividi posizione</string>
-    <string name="nc_share_subject">%1$s invito</string>
-    <string name="nc_share_text">Partecipa alla conversazione su %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nPassword: %1$s</string>
     <string name="nc_share_this_location">Condividi questa posizione</string>
     <string name="nc_share_to_choose_account">Scegli account</string>
     <string name="nc_shared_items">Oggetti condivisi</string>
@@ -437,7 +430,6 @@
     <string name="take_photo_toggle_torch">Accendi/spegni la torcia</string>
     <string name="thirtyMinutes">30 minuti</string>
     <string name="thisWeek">Questa settimana</string>
-    <string name="title_attachments">Allegati</string>
     <string name="today">Oggi</string>
     <string name="tomorrow">Domani</string>
     <string name="translate">Traduci</string>

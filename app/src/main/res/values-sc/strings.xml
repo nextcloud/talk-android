@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Modìfica</string>
-    <string name="account_icon">Icona de su contu</string>
     <string name="appbar_search_in">Chirca in %s</string>
     <string name="audio_output_phone">Telèfonu</string>
     <string name="audio_output_speaker">Altoparlante</string>
@@ -51,7 +50,6 @@
     <string name="nc_add_participants">Aguinghe partetzipantes</string>
     <string name="nc_add_to_favorites">Agiunghe a preferidos</string>
     <string name="nc_all_ok_operation">AB, fatu!</string>
-    <string name="nc_allow_guests">Autoriza persones invitadas</string>
     <string name="nc_attendee_pin">Apunta: %1$s</string>
     <string name="nc_biometric_unlock">Isbloca %1$s</string>
     <string name="nc_call_button_content_description_hangup">Serra</string>
@@ -155,8 +153,6 @@
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare sa cunfiguratzione No istorbare</string>
-    <string name="nc_last_moderator">Depes promòvere un\'àtera persona chi moderet antis de lassare %1$s</string>
-    <string name="nc_last_moderator_title">No at fatu a lassare sa resonada</string>
     <string name="nc_last_modified">%1$s | Ùrtima modìfica: %2$s</string>
     <string name="nc_leave">Lassa resonada</string>
     <string name="nc_license_summary">GNU General Public License, Versione 3</string>
@@ -310,9 +306,6 @@
     <string name="nc_share_current_location">Cumpartzi sa positzione atuale</string>
     <string name="nc_share_link">Cumpartzi ligòngiu</string>
     <string name="nc_share_location">Cumpartzi positzione</string>
-    <string name="nc_share_subject">%1$s invitu</string>
-    <string name="nc_share_text">Intra in sa tzarrada in %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nCrae: %1$s</string>
     <string name="nc_share_this_location">Cumpartzi custa positzione</string>
     <string name="nc_share_to_choose_account">Sèbera contu</string>
     <string name="nc_shared_items_deck_card">Ischeda in Deck</string>
@@ -384,7 +377,6 @@
     <string name="take_photo_toggle_torch">Ativa sa tortza</string>
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Custa chida</string>
-    <string name="title_attachments">Alligongiados</string>
     <string name="today">Oe</string>
     <string name="tomorrow">Cras</string>
     <string name="translate">Borta</string>

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Edició</string>
-    <string name="account_icon">Icona del compte</string>
     <string name="appbar_search_in">Cerca a %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
@@ -47,7 +46,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Més gran primer</string>
     <string name="menu_item_sort_by_size_smallest_first">Més petit primer</string>
     <string name="message_deleted_by_you">Missatge suprimit per tu</string>
-    <string name="message_expiration_title">Caducitat del missatge</string>
     <string name="message_poll_tap_to_open">Toqueu per obrir l\'enquesta</string>
     <string name="message_search_begin_empty">No s\'han trobat resultats</string>
     <string name="message_search_begin_typing">Comença a escriure per cercar …</string>
@@ -65,7 +63,6 @@
     <string name="nc_add_participants">Afegeix participants</string>
     <string name="nc_add_to_favorites">Afegeix a preferits</string>
     <string name="nc_all_ok_operation">D\'acord, tot fet!</string>
-    <string name="nc_allow_guests">Permet visitants</string>
     <string name="nc_attendee_pin">Ancora: %1$s</string>
     <string name="nc_biometric_unlock">Desbloca %1$s</string>
     <string name="nc_call_button_content_description_advanced">Opcions avançades de trucada</string>
@@ -194,8 +191,6 @@
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
     <string name="nc_join_open_conversations">Uneix-te a converses obertes</string>
-    <string name="nc_last_moderator">Heu de designar un nou moderador abans de deixar %1$s.</string>
-    <string name="nc_last_moderator_title">No s\'ha pogut abandonar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
     <string name="nc_leave">Surt de la conversa</string>
     <string name="nc_leaving_call">S\'està abandonant la trucada…</string>
@@ -370,9 +365,6 @@
     <string name="nc_share_current_location">Comparteix la ubicació actual</string>
     <string name="nc_share_link">Comparteix un enllaç</string>
     <string name="nc_share_location">Comparteix la ubicació</string>
-    <string name="nc_share_subject">%1$s invitació</string>
-    <string name="nc_share_text">Afegiu-vos a la conversa a %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nContrasenya: %1$s</string>
     <string name="nc_share_this_location">Comparteix aquesta localització</string>
     <string name="nc_share_to_choose_account">Trieu un compte</string>
     <string name="nc_shared_items">Elements compartits</string>
@@ -490,7 +482,6 @@
     <string name="take_photo_toggle_torch">Commuta la llanterna</string>
     <string name="thirtyMinutes">30 minuts</string>
     <string name="thisWeek">Aquesta setmana</string>
-    <string name="title_attachments">Adjunts</string>
     <string name="today">Avui</string>
     <string name="tomorrow">Demà</string>
     <string name="translate">Traducció</string>

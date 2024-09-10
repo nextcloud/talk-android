@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Edit</string>
-    <string name="account_icon">Account icon</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Biggest first</string>
     <string name="menu_item_sort_by_size_smallest_first">Smallest first</string>
     <string name="message_deleted_by_you">Message deleted by you</string>
-    <string name="message_expiration_title">Message expiration</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="message_poll_tap_to_open">Tap to open poll</string>
     <string name="message_search_begin_empty">No search results</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Add participants</string>
     <string name="nc_add_to_favorites">Add to favourites</string>
     <string name="nc_all_ok_operation">OK, all done!</string>
-    <string name="nc_allow_guests">Allow guests</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_client_cert_change">Change client certificate</string>
     <string name="nc_client_cert_setup">Set up client certificate</string>
-    <string name="nc_close_app">Close app</string>
     <string name="nc_common_and">and</string>
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
-    <string name="nc_last_moderator">You need to promote a new moderator before you can leave %1$s.</string>
-    <string name="nc_last_moderator_title">Could not leave conversation</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_leaving_call">Leaving call …</string>
@@ -476,9 +470,6 @@
     <string name="nc_share_current_location">Share current location</string>
     <string name="nc_share_link">Share link</string>
     <string name="nc_share_location">Share location</string>
-    <string name="nc_share_subject">%1$s invitation</string>
-    <string name="nc_share_text">Join the conversation at %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nPassword: %1$s</string>
     <string name="nc_share_this_location">Share this location</string>
     <string name="nc_share_to_choose_account">Choose account</string>
     <string name="nc_shared_items">Shared items</string>
@@ -613,7 +604,6 @@
     <string name="thisWeek">This week</string>
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
-    <string name="title_attachments">Attachments</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="translate">Translate</string>

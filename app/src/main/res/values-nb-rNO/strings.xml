@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Rediger</string>
-    <string name="account_icon">Kontoikon</string>
     <string name="add_to_notes">Legg til notater</string>
     <string name="added_to_favorites">La til samtale %1$s i favoritter</string>
     <string name="appbar_search_in">Søk i %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Minste først</string>
     <string name="message_deleted_by_you">Melding slettet av deg</string>
-    <string name="message_expiration_title">Utløp av melding</string>
     <string name="message_last_edited_by">Redigert av %1$s</string>
     <string name="message_poll_tap_to_open">Trykk for å åpne avstemningen</string>
     <string name="message_search_begin_empty">Ingen søkeresultater</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Legg til deltager</string>
     <string name="nc_add_to_favorites">Legg til favoritter</string>
     <string name="nc_all_ok_operation">OK, ferdig!</string>
-    <string name="nc_allow_guests">Tillat gjester</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">Lås opp %1$s</string>
     <string name="nc_bluetooth_permission_hint">For å aktivere Bluetooth-høyttalere, vennligst gi \"Enheter i nærheten\" tillatelse.</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">Ønsker du virkelig å slette alle meldinger i denne samtalen?</string>
     <string name="nc_client_cert_change">Endre klient sertifikat</string>
     <string name="nc_client_cert_setup">Sett opp klient sertifikat</string>
-    <string name="nc_close_app">Lukk app</string>
     <string name="nc_common_and">og</string>
     <string name="nc_common_copy">Kopi</string>
     <string name="nc_common_copy_success">Kopiert til utklippstavlen</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
     <string name="nc_invitations">Invitasjoner</string>
     <string name="nc_join_open_conversations">Bli med i åpne samtaler</string>
-    <string name="nc_last_moderator">Du må utnevne en ny moderator før du kan forlate %1$s.</string>
-    <string name="nc_last_moderator_title">Kunne ikke forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
     <string name="nc_leave">Forlat samtale</string>
     <string name="nc_leaving_call">Forlater samtalen...</string>
@@ -474,9 +468,6 @@
     <string name="nc_share_current_location">Del gjeldende plassering</string>
     <string name="nc_share_link">Del lenke</string>
     <string name="nc_share_location">Del plassering</string>
-    <string name="nc_share_subject">%1$s invitasjon</string>
-    <string name="nc_share_text">Delta i samtalen via %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nPassord: %1$s</string>
     <string name="nc_share_this_location">Del denne plasseringen</string>
     <string name="nc_share_to_choose_account">Velg konto</string>
     <string name="nc_shared_items">Delte elementer</string>
@@ -611,7 +602,6 @@
     <string name="thisWeek">Denne uken</string>
     <string name="this_is_a_test_message">Dette er en testmelding</string>
     <string name="this_weekend">Denne helgen</string>
-    <string name="title_attachments">Vedlegg</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="translate">Oversette</string>

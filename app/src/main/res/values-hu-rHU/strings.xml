@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Szerkesztés</string>
-    <string name="account_icon">Fiókikon</string>
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="audio_call">Audio hívás</string>
@@ -74,7 +73,6 @@
     <string name="nc_add_participants">Résztvevők hozzáadása</string>
     <string name="nc_add_to_favorites">Hozzáadás a kedvencekhez</string>
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
-    <string name="nc_allow_guests">Vendégek engedélyezése</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
     <string name="nc_call_button_content_description_advanced">Speciális hívásbeállítások</string>
@@ -111,7 +109,6 @@
     <string name="nc_clear_history_warning">Biztos, hogy törli a beszélgetés összes üzenetét?</string>
     <string name="nc_client_cert_change">Klienstanúsítvány módosítása</string>
     <string name="nc_client_cert_setup">Klienstanúsítvány beállítása</string>
-    <string name="nc_close_app">Alkalmazás bezárása</string>
     <string name="nc_common_and">és</string>
     <string name="nc_common_copy">Másolás</string>
     <string name="nc_common_copy_success">Vágólapra másolva</string>
@@ -213,8 +210,6 @@
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
     <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_open_conversations">Csatlakozás a nyílt beszélgetésekhez</string>
-    <string name="nc_last_moderator">Új moderátort kell kineveznie, mielőtt elhagyhatja ezt: %1$s.</string>
-    <string name="nc_last_moderator_title">Nem sikerült elhagyni a beszélgetést</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
     <string name="nc_leave">Beszélgetés elhagyása</string>
     <string name="nc_leaving_call">Hívás elhagyása…</string>
@@ -399,9 +394,6 @@
     <string name="nc_share_current_location">Jelenlegi hely megosztása</string>
     <string name="nc_share_link">Megosztási hivatkozás</string>
     <string name="nc_share_location">Hely megosztása</string>
-    <string name="nc_share_subject">%1$s meghívás</string>
-    <string name="nc_share_text">Csatlakozzon a beszélgetéshez itt: %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nJelszó: %1$s</string>
     <string name="nc_share_this_location">Ezen hely megosztása</string>
     <string name="nc_share_to_choose_account">Válasszon fiókot</string>
     <string name="nc_shared_items">Megosztott elemek</string>
@@ -528,7 +520,6 @@
     <string name="thisWeek">Ez a hét</string>
     <string name="this_is_a_test_message">Ez egy teszt üzenet</string>
     <string name="this_weekend">Ezen a hétvégén</string>
-    <string name="title_attachments">Mellékletek</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
     <string name="translate">Lefordítás</string>

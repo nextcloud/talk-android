@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="account_icon">Ícono de la cuenta</string>
+    <string name= "nc_edit">Editar</string>
     <string name="appbar_search_in">Compartir en %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
@@ -48,7 +48,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Más grande primero</string>
     <string name="menu_item_sort_by_size_smallest_first">Más pequeño primero</string>
     <string name="message_deleted_by_you">Mensaje eliminado por ti</string>
-    <string name="message_expiration_title">Vencimiento del mensaje</string>
     <string name="message_poll_tap_to_open">Toca para abrir la encuesta</string>
     <string name="message_search_begin_empty">No hay resultados de búsqueda</string>
     <string name="message_search_begin_typing">Comienza a escribir para buscar...</string>
@@ -66,7 +65,6 @@
     <string name="nc_add_participants">Agregar participantes</string>
     <string name="nc_add_to_favorites">Agregar a tus favoritos</string>
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
-    <string name="nc_allow_guests">Permitir invitados</string>
     <string name="nc_attendee_pin">Fijar: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_call_button_content_description_advanced">Opciones avanzadas de llamada</string>
@@ -102,7 +100,6 @@
     <string name="nc_clear_history_warning">¿Realmente quieres borrar todos los mensajes de esta conversación?</string>
     <string name="nc_client_cert_change">Cambia el certificado del cliente</string>
     <string name="nc_client_cert_setup">Configura un certificado de cliente</string>
-    <string name="nc_close_app">Cerrar aplicación</string>
     <string name="nc_common_and">y</string>
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado al portapapeles</string>
@@ -199,8 +196,6 @@
     <string name="nc_hint_enter_a_message">Escribe un mensaje...</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones en esta conversación anularán la configuración de No molestar</string>
-    <string name="nc_last_moderator">Necesitas promover a un nuevo moderador antes de poder abandonar %1$s.</string>
-    <string name="nc_last_moderator_title">No se pudo abandonar la conversación</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
     <string name="nc_leave">Dejar la conversación</string>
     <string name="nc_leaving_call">Saliendo de la llamada...</string>
@@ -228,6 +223,7 @@
     <string name="nc_moderator">Moderador</string>
     <string name="nc_never">Nunca se unió</string>
     <string name="nc_new_conversation">Nueva conversación</string>
+    <string name="nc_new_conversation_visibility">Visibilidad</string>
     <string name="nc_new_mention">Menciones no leídas</string>
     <string name="nc_new_messages">Mensajes no leídos</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s no disponible (no instalado o restringido por el administrador)</string>
@@ -377,9 +373,6 @@
     <string name="nc_share_current_location">Compartir ubicación actual</string>
     <string name="nc_share_link">Compartir liga</string>
     <string name="nc_share_location">Compartir ubicación</string>
-    <string name="nc_share_subject">%1$s invitación</string>
-    <string name="nc_share_text">Unirse a la conversación en %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nContraseña:%1$s</string>
     <string name="nc_share_this_location">Compartir esta ubicación</string>
     <string name="nc_share_to_choose_account">Elige la cuenta</string>
     <string name="nc_shared_items">Elementos compartidos</string>
@@ -497,7 +490,6 @@
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Este es un mensaje de prueba</string>
-    <string name="title_attachments">Adjuntos</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
     <string name="translate">Traducir</string>
