@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="account_icon">Tilikuvake</string>
+    <string name= "nc_edit">Muokkaa</string>
     <string name="appbar_search_in">Etsi kohteesta %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Äänen ulostulo</string>
@@ -41,7 +41,6 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Suurin ensin</string>
     <string name="menu_item_sort_by_size_smallest_first">Pienin ensin</string>
-    <string name="message_expiration_title">Viestin vanheneminen</string>
     <string name="message_search_begin_empty">Ei hakutuloksia</string>
     <string name="message_search_begin_typing">Aloita kirjoittaminen hakeaksesi…</string>
     <string name="message_search_hint">Hae…</string>
@@ -58,7 +57,6 @@
     <string name="nc_add_participants">Lisää osallistujat</string>
     <string name="nc_add_to_favorites">Lisää suosikkeihin</string>
     <string name="nc_all_ok_operation">OK, kaikki valmista!</string>
-    <string name="nc_allow_guests">Salli vieraat</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Avaa lukitus %1$s</string>
     <string name="nc_call_button_content_description_hangup">Lopeta</string>
@@ -163,7 +161,6 @@
     <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>
     <string name="nc_invitations">Kutsut</string>
     <string name="nc_join_open_conversations">Liity avoimiin keskusteluihin</string>
-    <string name="nc_last_moderator_title">Ei voitu poistua keskustelusta</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>
     <string name="nc_leave">Poistu keskustelusta</string>
     <string name="nc_leaving_call">Poistutaan puhelusta…</string>
@@ -189,6 +186,7 @@
     <string name="nc_moderator">Moderaattori</string>
     <string name="nc_never">Ei koskaan liitytty</string>
     <string name="nc_new_conversation">Uusi keskustelu</string>
+    <string name="nc_new_conversation_visibility">Näkyvyys</string>
     <string name="nc_new_mention">Lukemattomat maininnat</string>
     <string name="nc_new_messages">Lukemattomat viestit</string>
     <string name="nc_nick_guest">Vieras</string>
@@ -316,9 +314,6 @@
     <string name="nc_share_current_location">Jaa nykyinen sijainti</string>
     <string name="nc_share_link">Jaa linkki</string>
     <string name="nc_share_location">Jaa sijainti</string>
-    <string name="nc_share_subject">%1$s kutsu</string>
-    <string name="nc_share_text">Liity keskusteluun osoitteessa %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nSalasana: %1$s</string>
     <string name="nc_share_this_location">Jaa tämä sijainti</string>
     <string name="nc_share_to_choose_account">Valitse tili</string>
     <string name="nc_shared_items">Jaetut tietueet</string>
@@ -403,7 +398,6 @@
     <string name="thirtyMinutes">30 minuuttia</string>
     <string name="thisWeek">Tämä viikko</string>
     <string name="this_weekend">Tämä viikonloppu</string>
-    <string name="title_attachments">Liitteet</string>
     <string name="today">Tänään</string>
     <string name="tomorrow">Huomenna</string>
     <string name="translate">Käännä</string>

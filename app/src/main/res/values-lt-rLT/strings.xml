@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Taisyti</string>
-    <string name="account_icon">Paskyros piktograma</string>
     <string name="appbar_search_in">Ieškoti %s</string>
     <string name="audio_output_phone">Telefonas</string>
     <string name="avatar">Avataras</string>
@@ -48,7 +47,6 @@
     <string name="nc_add_participants">Pridėti dalyvius</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
-    <string name="nc_allow_guests">Leisti svečius</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
@@ -128,8 +126,6 @@
     <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
-    <string name="nc_last_moderator">Prieš išeidami iš %1$s, turite paaukštinti naują moderatorių.</string>
-    <string name="nc_last_moderator_title">Nepavyko išeiti iš pokalbio</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
     <string name="nc_leave">Išeiti iš pokalbio</string>
     <string name="nc_license_summary">GNU Bendroji Viešoji Licencija, Versija 3</string>
@@ -249,9 +245,6 @@
     <string name="nc_settings_warning">Įspėjimas</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
     <string name="nc_share_link">Bendrinimo nuoroda</string>
-    <string name="nc_share_subject">%1$s pakvietimas</string>
-    <string name="nc_share_text">Prisijunkite prie pokalbio, adresu %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nSlaptažodis: %1$s</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
     <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
@@ -318,7 +311,6 @@
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
     <string name="this_weekend">Šį savaitgalį</string>
-    <string name="title_attachments">Priedai</string>
     <string name="today">Šiandiena</string>
     <string name="tomorrow">Rytoj</string>
     <string name="translate">Verskite</string>

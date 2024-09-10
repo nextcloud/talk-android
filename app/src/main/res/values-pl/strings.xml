@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Edycja</string>
-    <string name="account_icon">Ikona konta</string>
     <string name="add_to_notes">Dodaj do Notatek</string>
     <string name="added_to_favorites">Dodano rozmowę %1$s do ulubionych</string>
     <string name="appbar_search_in">Szukaj w %s</string>
@@ -66,7 +65,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
     <string name="message_deleted_by_you">Wiadomość usunięta przez Ciebie</string>
-    <string name="message_expiration_title">Wygaśnięcie wiadomości</string>
     <string name="message_last_edited_by">Edytowany przez %1$s</string>
     <string name="message_poll_tap_to_open">Dotknij, aby otworzyć sondę</string>
     <string name="message_search_begin_empty">Brak wyników wyszukiwania</string>
@@ -85,7 +83,6 @@
     <string name="nc_add_participants">Dodaj uczestników</string>
     <string name="nc_add_to_favorites">Dodaj do ulubionych</string>
     <string name="nc_all_ok_operation">OK, wszystko gotowe!</string>
-    <string name="nc_allow_guests">Zezwól gościom</string>
     <string name="nc_attendee_pin">Przypnij: %1$s</string>
     <string name="nc_biometric_unlock">Odblokuj %1$s</string>
     <string name="nc_bluetooth_permission_hint">Aby włączyć głośniki Bluetooth, należy udzielić dostępu dla \"Urządzenia w pobliżu\".</string>
@@ -127,7 +124,6 @@
     <string name="nc_clear_history_warning">Czy na pewno chcesz usunąć wszystkie wiadomości z tej rozmowy?</string>
     <string name="nc_client_cert_change">Zmień certyfikat klienta</string>
     <string name="nc_client_cert_setup">Skonfiguruj certyfikat klienta</string>
-    <string name="nc_close_app">Zamknij aplikację</string>
     <string name="nc_common_and">i</string>
     <string name="nc_common_copy">Skopiuj</string>
     <string name="nc_common_copy_success">Kopiuj do schowka</string>
@@ -269,8 +265,6 @@
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
     <string name="nc_invitations">Zaproszenia</string>
     <string name="nc_join_open_conversations">Dołącz do otwartych rozmów</string>
-    <string name="nc_last_moderator">Musisz promować nowego moderatora, zanim opuścisz %1$s.</string>
-    <string name="nc_last_moderator_title">Nie udało się opuścić rozmowy</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
     <string name="nc_leave">Opuść rozmowę</string>
     <string name="nc_leaving_call">Opuszczanie połączenia…</string>
@@ -465,9 +459,6 @@
     <string name="nc_share_current_location">Udostępnij obecną lokalizację</string>
     <string name="nc_share_link">Udostępnij link</string>
     <string name="nc_share_location">Udostępnij lokalizację</string>
-    <string name="nc_share_subject">zaproszenie %1$s</string>
-    <string name="nc_share_text">Dołącz do rozmowy %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nHasło: %1$s</string>
     <string name="nc_share_this_location">Udostępnij tę lokalizację</string>
     <string name="nc_share_to_choose_account">Wybierz konto</string>
     <string name="nc_shared_items">Udostępnione elementy</string>
@@ -598,7 +589,6 @@
     <string name="thisWeek">W tym tygodniu</string>
     <string name="this_is_a_test_message">To jest wiadomość testowa</string>
     <string name="this_weekend">W ten weekend</string>
-    <string name="title_attachments">Załączniki</string>
     <string name="today">Dzisiaj</string>
     <string name="tomorrow">Jutro</string>
     <string name="translate">Tłumaczenie</string>

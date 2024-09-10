@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Redigera</string>
-    <string name="account_icon">Kontoikon</string>
     <string name="add_to_notes">Lägg till i anteckningar</string>
     <string name="added_to_favorites">Lade till konversationen %1$s till favoriter</string>
     <string name="appbar_search_in">Sök i %s</string>
@@ -74,7 +73,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
     <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
-    <string name="message_expiration_title">Meddelande löper ut</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
     <string name="message_poll_tap_to_open">Tryck för att öppna omröstningen</string>
     <string name="message_search_begin_empty">Inga sökresultat</string>
@@ -93,7 +91,6 @@
     <string name="nc_add_participants">Lägg till deltagare</string>
     <string name="nc_add_to_favorites">Lägg till som favorit</string>
     <string name="nc_all_ok_operation">Ok, allt klart!</string>
-    <string name="nc_allow_guests">Tillåt gäster</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
@@ -134,7 +131,6 @@
     <string name="nc_clear_history_warning">Vill du verkligen ta bort alla meddelanden i den här konversationen?</string>
     <string name="nc_client_cert_change">Ändra klientcertifikat</string>
     <string name="nc_client_cert_setup">Konfigurera klientcertifikat</string>
-    <string name="nc_close_app">Stäng appen</string>
     <string name="nc_common_and">och</string>
     <string name="nc_common_copy">Kopiera</string>
     <string name="nc_common_copy_success">Kopierat till urklipp</string>
@@ -275,8 +271,6 @@
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
     <string name="nc_invitations">Inbjudningar</string>
     <string name="nc_join_open_conversations">Gå med i öppna konversationer</string>
-    <string name="nc_last_moderator">Du måste tilldela en ny moderator innan du kan lämna %1$s.</string>
-    <string name="nc_last_moderator_title">Kunde inte lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
     <string name="nc_leave">Lämna konversationen</string>
     <string name="nc_leaving_call">Lägger på …</string>
@@ -470,9 +464,6 @@
     <string name="nc_share_current_location">Dela aktuell plats</string>
     <string name="nc_share_link">Delningslänk</string>
     <string name="nc_share_location">Dela plats</string>
-    <string name="nc_share_subject">%1$s inbjudan</string>
-    <string name="nc_share_text">Gå med i konversationen på %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nLösenord: %1$s</string>
     <string name="nc_share_this_location">Dela den här platsen</string>
     <string name="nc_share_to_choose_account">Välj konto</string>
     <string name="nc_shared_items">Delade objekt</string>
@@ -604,7 +595,6 @@
     <string name="thisWeek">Denna vecka</string>
     <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
-    <string name="title_attachments">Bilagor</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>

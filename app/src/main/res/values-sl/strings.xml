@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Uredi</string>
-    <string name="account_icon">Ikona računa</string>
     <string name="appbar_search_in">Poišči v %s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Odvod zvoka</string>
@@ -48,7 +47,6 @@
     <string name="menu_item_sort_by_size_biggest_first">najprej največje</string>
     <string name="menu_item_sort_by_size_smallest_first">najprej najmanjše</string>
     <string name="message_deleted_by_you">Sporočilo ste izbrisali</string>
-    <string name="message_expiration_title">Pretek sporočila</string>
     <string name="message_poll_tap_to_open">Pritisnite za prikaz ankete</string>
     <string name="message_search_begin_empty">Ni zadetkov iskanja</string>
     <string name="message_search_begin_typing">Vpišite niz za iskanje …</string>
@@ -66,7 +64,6 @@
     <string name="nc_add_participants">Dodaj udeležence</string>
     <string name="nc_add_to_favorites">Dodaj med priljubljene</string>
     <string name="nc_all_ok_operation">Opravilo je uspešno končano!</string>
-    <string name="nc_allow_guests">Dovoli povezave z gosti</string>
     <string name="nc_attendee_pin">Koda PIN: %1$s</string>
     <string name="nc_biometric_unlock">Odkleni %1$s</string>
     <string name="nc_call_button_content_description_advanced">Napredne možnosti klica</string>
@@ -199,8 +196,6 @@
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
     <string name="nc_invitations">Povabila</string>
     <string name="nc_join_open_conversations">Pridruži se odprtemu pogovoru</string>
-    <string name="nc_last_moderator">Pred odhodom iz %1$s morate nekoga določiti za moderatorja.</string>
-    <string name="nc_last_moderator_title">Pogovora ni mogoče zapustiti</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
     <string name="nc_leaving_call">Poteka prekinjanje klica …</string>
@@ -376,9 +371,6 @@
     <string name="nc_share_current_location">Objavi trenutno mesto</string>
     <string name="nc_share_link">Povezava za souporabo</string>
     <string name="nc_share_location">Objavi trenutno mesto</string>
-    <string name="nc_share_subject"> povabilo %1$s</string>
-    <string name="nc_share_text">Pridružite se pogovoru na %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nGeslo: %1$s</string>
     <string name="nc_share_this_location">Objavi trenutno mesto</string>
     <string name="nc_share_to_choose_account">Izbor računa</string>
     <string name="nc_shared_items">Predmeti v souporabi</string>
@@ -496,7 +488,6 @@
     <string name="take_photo_toggle_torch">Preklopi bliskavico</string>
     <string name="thirtyMinutes">30 minut</string>
     <string name="thisWeek">Ta teden</string>
-    <string name="title_attachments">Priloge</string>
     <string name="today">Danes</string>
     <string name="tomorrow">Jutri</string>
     <string name="translate">Prevodi</string>

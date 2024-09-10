@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">編輯</string>
-    <string name="account_icon">帳號圖示</string>
     <string name="add_to_notes">新增至筆記</string>
     <string name="added_to_favorites">已新增對話 %1$s 至最愛</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">最大優先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小優先</string>
     <string name="message_deleted_by_you">訊息已被您刪除</string>
-    <string name="message_expiration_title">訊息過期</string>
     <string name="message_last_edited_by">由 %1$s 編輯</string>
     <string name="message_poll_tap_to_open">點按開啟投票</string>
     <string name="message_search_begin_empty">無搜尋結果</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">新增成員</string>
     <string name="nc_add_to_favorites">加到我的最愛</string>
     <string name="nc_all_ok_operation">完成</string>
-    <string name="nc_allow_guests">允許訪客</string>
     <string name="nc_attendee_pin">密碼：%1$s</string>
     <string name="nc_biometric_unlock">解鎖 %1$s</string>
     <string name="nc_bluetooth_permission_hint">要啟用藍牙喇叭，請授予「鄰近裝置」權限。</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
     <string name="nc_client_cert_change">變更客戶端憑證</string>
     <string name="nc_client_cert_setup">設定客戶端憑證</string>
-    <string name="nc_close_app">關閉應用程式</string>
     <string name="nc_common_and">與</string>
     <string name="nc_common_copy">複製</string>
     <string name="nc_common_copy_success">已複製至剪貼簿</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">在這個交談的通知將會覆蓋不要打擾的設定</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入開放對話</string>
-    <string name="nc_last_moderator">在您離開 %1$s 之前您需要推舉一位新的主持人。</string>
-    <string name="nc_last_moderator_title">無法離開對話</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
     <string name="nc_leaving_call">正在離開通話 …</string>
@@ -476,9 +470,6 @@
     <string name="nc_share_current_location">分享目前位置</string>
     <string name="nc_share_link">分享連結</string>
     <string name="nc_share_location">分享位置</string>
-    <string name="nc_share_subject">%1$s 邀請</string>
-    <string name="nc_share_text">加入位於 %1$s/index.php/call/%2$s 的對話</string>
-    <string name="nc_share_text_pass">\n密碼：%1$s</string>
     <string name="nc_share_this_location">分享地點</string>
     <string name="nc_share_to_choose_account">選擇帳號</string>
     <string name="nc_shared_items">已分享項目</string>
@@ -613,7 +604,6 @@
     <string name="thisWeek">這個禮拜</string>
     <string name="this_is_a_test_message">這是測試訊息</string>
     <string name="this_weekend">本週末</string>
-    <string name="title_attachments">附件</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="translate">翻譯</string>

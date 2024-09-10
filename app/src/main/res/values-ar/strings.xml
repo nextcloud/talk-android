@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">تحرير</string>
-    <string name="account_icon">أيقونة الحساب </string>
     <string name="add_to_notes">أضِف إلى الملاحظات</string>
     <string name="added_to_favorites">أضِف المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">الأعلى حجماً أولاً</string>
     <string name="menu_item_sort_by_size_smallest_first">الأقل حجماً أولاً</string>
     <string name="message_deleted_by_you">مُسحت الرسالة بواسطتك</string>
-    <string name="message_expiration_title">نهاية صلاحية الرسالة</string>
     <string name="message_last_edited_by">تمّ التعديل من قِبَل %1$s</string>
     <string name="message_poll_tap_to_open">أنقُر لفتح الاستبيان</string>
     <string name="message_search_begin_empty">لا توجد نتائج</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">إضِف مُشاركين</string>
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_all_ok_operation">تم!</string>
-    <string name="nc_allow_guests">السماح للضيوف</string>
     <string name="nc_attendee_pin">الرمز: %1$s</string>
     <string name="nc_biometric_unlock">فتح قفل %1$s</string>
     <string name="nc_bluetooth_permission_hint">لتمكين مكبرات صوت البلوتوث، يرجى منح إذن \"الأجهزة المجاورة\".</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">هل تريد مسح جميع الرسائل في هذه المحادثة؟</string>
     <string name="nc_client_cert_change">تغيير شهادة العميل</string>
     <string name="nc_client_cert_setup">تعيين شهادة العميل</string>
-    <string name="nc_close_app">أغلِق التطبيق</string>
     <string name="nc_common_and">و</string>
     <string name="nc_common_copy">إنسَخ</string>
     <string name="nc_common_copy_success">تمّ النسخ إلى الحافظة</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
     <string name="nc_join_open_conversations">إنضَمَّ إلى محادثات جارية</string>
-    <string name="nc_last_moderator">يجب عليك ترقية مشرف لاحد المشاركين قبل مغادرة %1$s.</string>
-    <string name="nc_last_moderator_title">تعذر مغادرة المحادثة </string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>
     <string name="nc_leaving_call">مُغادرة المكالمة …</string>
@@ -476,9 +470,6 @@
     <string name="nc_share_current_location">شارك الموقع الحالي</string>
     <string name="nc_share_link">رابط المشاركة</string>
     <string name="nc_share_location">مشاركة الموقع</string>
-    <string name="nc_share_subject">%1$s دعوة</string>
-    <string name="nc_share_text">انضم للمحادثة في %1$s /index.php/call/ %2$s</string>
-    <string name="nc_share_text_pass"> /كلمة المرور: %1$s</string>
     <string name="nc_share_this_location">شارِك هذا الموقع</string>
     <string name="nc_share_to_choose_account">إختر حسابًا</string>
     <string name="nc_shared_items">عناصر مُشارَكة</string>
@@ -613,7 +604,6 @@
     <string name="thisWeek">هذا الأسبوع</string>
     <string name="this_is_a_test_message">هذه رسالة اختبار</string>
     <string name="this_weekend">نهاية هذا الأسبوع</string>
-    <string name="title_attachments">المُرفَقات</string>
     <string name="today">اليوم</string>
     <string name="tomorrow">غدا</string>
     <string name="translate">ترجِم</string>

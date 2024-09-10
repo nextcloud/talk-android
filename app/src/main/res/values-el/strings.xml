@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Επεξεργασία</string>
-    <string name="account_icon">Εικονίδιο λογαριασμού</string>
     <string name="appbar_search_in">Αναζήτηση στο %s</string>
     <string name="audio_output_dialog_headline">Έξοδος ήχου</string>
     <string name="audio_output_phone">Τηλέφωνο</string>
@@ -53,7 +52,6 @@
     <string name="nc_add_participants">Προσθήκη συμμετεχόντων</string>
     <string name="nc_add_to_favorites">Προσθήκη στα αγαπημένα</string>
     <string name="nc_all_ok_operation">Εντάξει, ολοκληρώθηκαν όλα!</string>
-    <string name="nc_allow_guests">Επιτρέπονται οι επισκέπτες</string>
     <string name="nc_biometric_unlock">Ξεκλείδωμα %1$s</string>
     <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
@@ -161,8 +159,6 @@
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
     <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
     <string name="nc_invitations">Προσκλήσεις</string>
-    <string name="nc_last_moderator">Πρέπει να προάγεται νέο συντονιστή πρίν αποχωρήσετε %1$s.</string>
-    <string name="nc_last_moderator_title">Δεν μπόρεσε να αποχωρήση από την συνομιλία</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>
     <string name="nc_leave">Εγκατάλειψη συνομιλίας</string>
     <string name="nc_leaving_call">Αποχώρηση από την κλήση ...</string>
@@ -320,9 +316,6 @@
     <string name="nc_share_current_location">Διαμοιρασμός τρέχουσας τοποθεσίας</string>
     <string name="nc_share_link">Διαμοιρασμός συνδέσμου</string>
     <string name="nc_share_location">Διαμοιρασμός τοποθεσίας</string>
-    <string name="nc_share_subject">%1$s πρόσκληση</string>
-    <string name="nc_share_text">Συμμετοχή στην συνομιλία από %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nΣυνθηματικό: %1$s</string>
     <string name="nc_share_this_location">Διαμοιρασμός αυτής της τοποθεσίας</string>
     <string name="nc_share_to_choose_account">Επιλογή λογαριασμού</string>
     <string name="nc_shared_items_deck_card">Κάρτα του Deck</string>
@@ -399,7 +392,6 @@
     <string name="thirtyMinutes">30 λεπτά</string>
     <string name="thisWeek">Αυτή την εβδομάδα</string>
     <string name="this_weekend">Αυτό το Σαββατοκύριακο</string>
-    <string name="title_attachments">Συνημμένα</string>
     <string name="today">Σήμερα</string>
     <string name="tomorrow">Αύριο</string>
     <string name="translate">Μετάφραση</string>

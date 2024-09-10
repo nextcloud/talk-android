@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Editar</string>
-    <string name="account_icon">Icona da conta</string>
     <string name="add_to_notes">Engadir a Notas</string>
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Primeiro o máis grande</string>
     <string name="menu_item_sort_by_size_smallest_first">Primeiro o máis pequeno</string>
     <string name="message_deleted_by_you">Mensaxe eliminada por Vde.</string>
-    <string name="message_expiration_title">Caducidade da mensaxe</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquisa</string>
     <string name="message_search_begin_empty">Sen resultados de busca</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Engadir participantes</string>
     <string name="nc_add_to_favorites">Engadir a favoritos</string>
     <string name="nc_all_ok_operation">Conforme, todo feito!</string>
-    <string name="nc_allow_guests">Permitir convidados</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para activar os altofalantes Bluetooth, conceda os permiso para «Dispositivos próximos».</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">Confirma que quere eliminar todas as mensaxes desta conversa?</string>
     <string name="nc_client_cert_change">Cambiar o certificado do cliente</string>
     <string name="nc_client_cert_setup">Configurar o certificado do cliente</string>
-    <string name="nc_close_app">Pechar a aplicación</string>
     <string name="nc_common_and">e</string>
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado no portapapeis</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">As notificacións nesta conversa anularán os axustes de «Non molestar»</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
-    <string name="nc_last_moderator">Debe promover un novo moderador antes de poder abandonar %1$s.</string>
-    <string name="nc_last_moderator_title">Non foi posíbel dixar a conversa</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
     <string name="nc_leave">Deixar a conversa</string>
     <string name="nc_leaving_call">Abandonando a chamada…</string>
@@ -476,9 +470,6 @@
     <string name="nc_share_current_location">Compartir a localización actual</string>
     <string name="nc_share_link">Ligazón para compartir</string>
     <string name="nc_share_location">Compartir a localización</string>
-    <string name="nc_share_subject">%1$s convite</string>
-    <string name="nc_share_text">Únase á conversa en %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nContrasinal: %1$s</string>
     <string name="nc_share_this_location">Compartir esta localización</string>
     <string name="nc_share_to_choose_account">Escoller unha conta</string>
     <string name="nc_shared_items">Elementos compartidos</string>
@@ -613,7 +604,6 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é unha mensaxe de proba</string>
     <string name="this_weekend">Este fin de semana</string>
-    <string name="title_attachments">Anexos</string>
     <string name="today">Hoxe</string>
     <string name="tomorrow">Mañá</string>
     <string name="translate">Traducir</string>

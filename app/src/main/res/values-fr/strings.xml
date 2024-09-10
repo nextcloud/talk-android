@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Modifier</string>
-    <string name="account_icon">Icône du compte</string>
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
@@ -75,7 +74,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
     <string name="message_deleted_by_you">Message supprimé par vous</string>
-    <string name="message_expiration_title">Expiration du message</string>
     <string name="message_last_edited_by">Modifié par %1$s</string>
     <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
     <string name="message_search_begin_empty">Aucun résultat de recherche</string>
@@ -94,7 +92,6 @@
     <string name="nc_add_participants">Ajouter des participants</string>
     <string name="nc_add_to_favorites">Ajouter aux favoris</string>
     <string name="nc_all_ok_operation">OK, tout est fini !</string>
-    <string name="nc_allow_guests">Autoriser les invités</string>
     <string name="nc_attendee_pin">Épingler : %1$s</string>
     <string name="nc_biometric_unlock">Déverrouiller %1$s</string>
     <string name="nc_bluetooth_permission_hint">Pour activer les écouteurs Bluetooth, merci de donner la permission « Appareils à proximité ».</string>
@@ -134,7 +131,6 @@
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
     <string name="nc_client_cert_change">Modifier le certificat du client</string>
     <string name="nc_client_cert_setup">Configurer le certificat du client</string>
-    <string name="nc_close_app">Fermer l\'application</string>
     <string name="nc_common_and">et</string>
     <string name="nc_common_copy">Copier</string>
     <string name="nc_common_copy_success">Copié dans le presse-papier</string>
@@ -266,8 +262,6 @@
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
-    <string name="nc_last_moderator">Vous devez désigner un nouveau modérateur avant de quitter %1$s.</string>
-    <string name="nc_last_moderator_title">Impossible de quitter la conversation</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
     <string name="nc_leaving_call">Fin d\'appel …</string>
@@ -296,6 +290,7 @@
     <string name="nc_moderator">Modérateur</string>
     <string name="nc_never">Jamais contacté</string>
     <string name="nc_new_conversation">Nouvelle conversation</string>
+    <string name="nc_new_conversation_visibility">Visibilité</string>
     <string name="nc_new_mention">Mentions non lues</string>
     <string name="nc_new_messages">Messages non lus</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s non disponible (non installé ou restreint par l\'administrateur) </string>
@@ -461,9 +456,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_share_current_location">Partager la position actuelle</string>
     <string name="nc_share_link">Lien de partage</string>
     <string name="nc_share_location">Partager la position</string>
-    <string name="nc_share_subject">%1$s invitation</string>
-    <string name="nc_share_text">Rejoins la conversation à %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nMot de passe : %1$s</string>
     <string name="nc_share_this_location">Partager cette position</string>
     <string name="nc_share_to_choose_account">Sélectionnez un compte</string>
     <string name="nc_shared_items">Éléments partagés</string>
@@ -597,7 +589,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="this_weekend">Ce week-end</string>
-    <string name="title_attachments">Pièces jointes</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
     <string name="translate">Traduire</string>

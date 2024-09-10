@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Измени</string>
-    <string name="account_icon">Икона налога</string>
     <string name="add_to_notes">Додај у Белешке</string>
     <string name="added_to_favorites">Разговор %1$s је додат у омиљене</string>
     <string name="appbar_search_in">Тражи у %s</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Прво највеће</string>
     <string name="menu_item_sort_by_size_smallest_first">Прво најмање</string>
     <string name="message_deleted_by_you">Обрисали сте поруку</string>
-    <string name="message_expiration_title">Рок трајања поруке</string>
     <string name="message_last_edited_by">Уредио је %1$s</string>
     <string name="message_poll_tap_to_open">Тапните да отворите гласање</string>
     <string name="message_search_begin_empty">Нема резултата претраге</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Додај учеснике</string>
     <string name="nc_add_to_favorites">Додај у омиљене</string>
     <string name="nc_all_ok_operation">У реду, све готово!</string>
-    <string name="nc_allow_guests">Дозволи госте</string>
     <string name="nc_attendee_pin">Прикачено: %1$s</string>
     <string name="nc_biometric_unlock">Откључај %1$s</string>
     <string name="nc_bluetooth_permission_hint">Ако желите да укључите bluetooth звучнике, молимо вас да дате дозволу „Оближњи уређаји”</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">Да ли заиста желите да обришете све поруке у овом разговору?</string>
     <string name="nc_client_cert_change">Измени клијентски сертификат</string>
     <string name="nc_client_cert_setup">Подесите клијентски сертификат</string>
-    <string name="nc_close_app">Затвори апликацију</string>
     <string name="nc_common_and">и</string>
     <string name="nc_common_copy">Копирај</string>
     <string name="nc_common_copy_success">Копирано у клипборд</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>
     <string name="nc_invitations">Позивнице</string>
     <string name="nc_join_open_conversations">Придружи се отвореном разговору</string>
-    <string name="nc_last_moderator">Морате одредити новог модератора пре него што напустите %1$s.</string>
-    <string name="nc_last_moderator_title">Не можете напустити разговор</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
     <string name="nc_leave">Напусти разговор</string>
     <string name="nc_leaving_call">Напуштање позива ...</string>
@@ -475,9 +469,6 @@
     <string name="nc_share_current_location">Дели тренутну локацију</string>
     <string name="nc_share_link">Подели везу</string>
     <string name="nc_share_location">Дели локацију</string>
-    <string name="nc_share_subject">%1$s позивница</string>
-    <string name="nc_share_text">Придружи се разговору на%1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nЛозинка: %1$s</string>
     <string name="nc_share_this_location">Подели ову локацију</string>
     <string name="nc_share_to_choose_account">Одаберите налог</string>
     <string name="nc_shared_items">Дељене ставке</string>
@@ -612,7 +603,6 @@
     <string name="thisWeek">Ове недеље</string>
     <string name="this_is_a_test_message">Ово је тест порука</string>
     <string name="this_weekend">Овог викенда</string>
-    <string name="title_attachments">Прилози</string>
     <string name="today">Данас</string>
     <string name="tomorrow">Сутра</string>
     <string name="translate">Превођење</string>

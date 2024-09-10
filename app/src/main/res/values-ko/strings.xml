@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">편집</string>
-    <string name="account_icon">계정 아이콘</string>
     <string name="appbar_search_in">%s 검색</string>
     <string name="audio_call">음성 통화</string>
     <string name="audio_output_bluetooth">블루투스</string>
@@ -49,7 +48,6 @@
     <string name="menu_item_sort_by_size_biggest_first">큰 것 먼저</string>
     <string name="menu_item_sort_by_size_smallest_first">작은 것 먼저</string>
     <string name="message_deleted_by_you">메시지를 삭제함</string>
-    <string name="message_expiration_title">메시지 만료</string>
     <string name="message_poll_tap_to_open">투표를 열기 위하여 탭하세요.</string>
     <string name="message_search_begin_empty">결과를 찾을 수 없음</string>
     <string name="message_search_begin_typing">...를 검색하기 위하여 입력을 시작합니다</string>
@@ -67,7 +65,6 @@
     <string name="nc_add_participants">참가자 추가</string>
     <string name="nc_add_to_favorites">즐겨찾기에 추가</string>
     <string name="nc_all_ok_operation">모두 완료되었습니다!</string>
-    <string name="nc_allow_guests">손님 초대</string>
     <string name="nc_attendee_pin">핀: %1$s</string>
     <string name="nc_biometric_unlock">%1$s 잠금 해제</string>
     <string name="nc_call_button_content_description_answer_video_call">영상 통화로 응답합니다.</string>
@@ -187,8 +184,6 @@
     <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
     <string name="nc_join_open_conversations">공개 대화에 참가</string>
-    <string name="nc_last_moderator">%1$s(을)를 떠나기 전에 새로운 중재자를 임명해야 합니다.</string>
-    <string name="nc_last_moderator_title">대화를 떠날 수 없습니다.</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
     <string name="nc_leave">대화 나가기</string>
     <string name="nc_leaving_call">통화 종료 중 ...</string>
@@ -360,9 +355,6 @@
     <string name="nc_share_contact_permission">주소록을 읽기 위하여 권한이 필요합니다.</string>
     <string name="nc_share_current_location">현재 위치 공유</string>
     <string name="nc_share_location">위치 공유</string>
-    <string name="nc_share_subject">%1$s 초대</string>
-    <string name="nc_share_text">%1$s/index.php/call/%2$s 대화에 참가</string>
-    <string name="nc_share_text_pass">\n패스워드: %1$s</string>
     <string name="nc_share_this_location">이 위치를 공유</string>
     <string name="nc_share_to_choose_account">계정 선택</string>
     <string name="nc_shared_items">공유된 항목들</string>
@@ -479,7 +471,6 @@
     <string name="thirtyMinutes">30분</string>
     <string name="thisWeek">이번 주</string>
     <string name="this_weekend">이번 주말</string>
-    <string name="title_attachments">첨부파일</string>
     <string name="today">오늘</string>
     <string name="tomorrow">내일</string>
     <string name="translate">번역:</string>

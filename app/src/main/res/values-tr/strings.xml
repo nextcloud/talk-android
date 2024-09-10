@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Düzenle</string>
-    <string name="account_icon">Hesap simgesi</string>
     <string name="add_to_notes">Notlar uygulamasına ekle</string>
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde arama</string>
@@ -76,7 +75,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
     <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
     <string name="message_deleted_by_you">İleti sizin tarafınızdan silindi</string>
-    <string name="message_expiration_title">İleti süresi</string>
     <string name="message_last_edited_by">%1$s tarafından düzenlendi</string>
     <string name="message_poll_tap_to_open">Anketi açmak için dokunun</string>
     <string name="message_search_begin_empty">Aramadan bir sonuç alınamadı</string>
@@ -95,7 +93,6 @@
     <string name="nc_add_participants">Katılımcı ekle</string>
     <string name="nc_add_to_favorites">Sık kullanılanlara ekle</string>
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
-    <string name="nc_allow_guests">Konuklar katılabilsin</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth hoparlörleri etkinleştirmek için lütfen \"Yakındaki aygıtlar\" izni verin.</string>
@@ -137,7 +134,6 @@
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
     <string name="nc_client_cert_change">İstemci sertifikasını değiştir</string>
     <string name="nc_client_cert_setup">İstemci sertifikası kurulumu</string>
-    <string name="nc_close_app">Uygulamayı kapat</string>
     <string name="nc_common_and">ve</string>
     <string name="nc_common_copy">Kopyala</string>
     <string name="nc_common_copy_success">Panoya kopyalandı</string>
@@ -279,8 +275,6 @@
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_invitations">Davetler</string>
     <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
-    <string name="nc_last_moderator">%1$s görüşmesinden ayrılabilmek için başka bir kullanıcıyı sorumluluğa yükseltmelisiniz.</string>
-    <string name="nc_last_moderator_title">Görüşmeden ayrılınamadı</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>
     <string name="nc_leaving_call">Çağrıdan çıkılıyor…</string>
@@ -475,9 +469,6 @@
     <string name="nc_share_current_location">Geçerli konumu paylaş</string>
     <string name="nc_share_link">Bağlantıyı paylaş</string>
     <string name="nc_share_location">Konumu paylaş</string>
-    <string name="nc_share_subject">%1$s davet</string>
-    <string name="nc_share_text">Çağrıya şuradan katılın %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nParola: %1$s</string>
     <string name="nc_share_this_location">Bu konumu paylaş</string>
     <string name="nc_share_to_choose_account">Hesap seçin</string>
     <string name="nc_shared_items">Paylaşılmış ögeler</string>
@@ -612,7 +603,6 @@
     <string name="thisWeek">Bu hafta</string>
     <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
     <string name="this_weekend">Bu hafta sonu</string>
-    <string name="title_attachments">Ek dosyalar</string>
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>
     <string name="translate">Çevir</string>

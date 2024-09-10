@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Редактиране</string>
-    <string name="account_icon">Икона на профил</string>
     <string name="appbar_search_in">Търсене в %s</string>
     <string name="audio_output_bluetooth">Bluetooth /Блутут/</string>
     <string name="audio_output_dialog_headline">Аудио изход</string>
@@ -63,7 +62,6 @@
     <string name="nc_add_participants">Добавяне на участници</string>
     <string name="nc_add_to_favorites">Добави към любимите</string>
     <string name="nc_all_ok_operation">Добре, всичко е готово!</string>
-    <string name="nc_allow_guests">Позволи гости</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Отключване %1$s</string>
     <string name="nc_call_button_content_description_advanced">Разширени опции за повикване</string>
@@ -192,8 +190,6 @@
     <string name="nc_hint_enter_a_message">Въвеждане на съобщение …</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>
-    <string name="nc_last_moderator">Трябва да предложите нов модератор, преди да можете да напуснете%1$s.</string>
-    <string name="nc_last_moderator_title">Не можете да напуснете разговора</string>
     <string name="nc_last_modified">%1$s Последна промяна: %2$s</string>
     <string name="nc_leave">Напускане на разговор</string>
     <string name="nc_leaving_call">Напускане на обаждането …</string>
@@ -366,9 +362,6 @@
     <string name="nc_share_current_location">Споделяне на текущо местоположение</string>
     <string name="nc_share_link">Връзка за споделяне</string>
     <string name="nc_share_location">Споделяне на местоположение</string>
-    <string name="nc_share_subject">%1$s покана</string>
-    <string name="nc_share_text">Присъединяване  към разговора на %1$s/index.php/разговор/%2$s</string>
-    <string name="nc_share_text_pass">\nПарола: %1$s</string>
     <string name="nc_share_this_location">Споделяне на това местоположение</string>
     <string name="nc_share_to_choose_account">Избор на профил</string>
     <string name="nc_shared_items">Споделени елементи</string>
@@ -485,7 +478,6 @@
     <string name="take_photo_toggle_torch">Превключване на фенерче</string>
     <string name="thirtyMinutes">30 минути</string>
     <string name="thisWeek">Тази седмица</string>
-    <string name="title_attachments">Прикачени файлове</string>
     <string name="today">Днес</string>
     <string name="tomorrow">Утре</string>
     <string name="translate">Превод</string>

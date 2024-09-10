@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Uredi</string>
-    <string name="account_icon">Ikona korisničkog računa</string>
     <string name="appbar_search_in">Traži u %s</string>
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Zvučnik</string>
@@ -54,7 +53,6 @@
     <string name="nc_add_participants">Dodaj sudionike</string>
     <string name="nc_add_to_favorites">Dodaj u favorite</string>
     <string name="nc_all_ok_operation">U redu, završeno!</string>
-    <string name="nc_allow_guests">Dopusti pristup gostima</string>
     <string name="nc_attendee_pin">Prikvači: %1$s</string>
     <string name="nc_biometric_unlock">Otključaj %1$s</string>
     <string name="nc_call_button_content_description_hangup">Poklopi</string>
@@ -159,8 +157,6 @@
     <string name="nc_important_conversation">Važan razgovor</string>
     <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
     <string name="nc_invitations">Pozivnice</string>
-    <string name="nc_last_moderator">Morate odabrati novog moderatora prije nego što napustite %1$s.</string>
-    <string name="nc_last_moderator_title">Nije moguće napustiti razgovor</string>
     <string name="nc_last_modified">%1$s | Posljednja izmjena: %2$s</string>
     <string name="nc_leave">Napusti razgovor</string>
     <string name="nc_leaving_call">Napuštanje poziva …</string>
@@ -322,9 +318,6 @@
     <string name="nc_share_current_location">Dijeli trenutačnu lokaciju</string>
     <string name="nc_share_link">Dijeli poveznicu</string>
     <string name="nc_share_location">Dijeli lokaciju</string>
-    <string name="nc_share_subject">%1$s pozivnica</string>
-    <string name="nc_share_text">Pridruži se razgovoru na adresi %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nZaporka: %1$s</string>
     <string name="nc_share_this_location">Dijeli ovu lokaciju</string>
     <string name="nc_share_to_choose_account">Odaberi račun</string>
     <string name="nc_shared_items_deck_card">Deck kartica</string>
@@ -398,7 +391,6 @@
     <string name="take_photo_toggle_torch">Uključi/isključi svjetlo</string>
     <string name="thirtyMinutes">30 minuta</string>
     <string name="thisWeek">Ovaj tjedan</string>
-    <string name="title_attachments">Privici</string>
     <string name="today">Danas</string>
     <string name="tomorrow">Sutra</string>
     <string name="translate">Prevedi</string>

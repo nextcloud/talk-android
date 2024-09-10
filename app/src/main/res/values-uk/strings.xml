@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Редагувати</string>
-    <string name="account_icon">Зображення облікового запису</string>
     <string name="appbar_search_in">Пошук у %s</string>
     <string name="audio_call">Голосовий виклик</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -48,7 +47,6 @@
     <string name="menu_item_sort_by_size_biggest_first">Найбільші за розміром спочатку</string>
     <string name="menu_item_sort_by_size_smallest_first">Найменші за розміром спочатку</string>
     <string name="message_deleted_by_you">Ви вилучили повідомлення</string>
-    <string name="message_expiration_title">Термін дії повідомлення</string>
     <string name="message_poll_tap_to_open">Натисніть, щоб відкрити опитування</string>
     <string name="message_search_begin_empty">Нічого не знайдено</string>
     <string name="message_search_begin_typing">Що шукаємо?</string>
@@ -66,7 +64,6 @@
     <string name="nc_add_participants">Додати учасників</string>
     <string name="nc_add_to_favorites">Додати зірочку</string>
     <string name="nc_all_ok_operation">ОК, все готово!</string>
-    <string name="nc_allow_guests">Дозволити гостей</string>
     <string name="nc_attendee_pin">ПІН: %1$s</string>
     <string name="nc_biometric_unlock">Розблокувати %1$s</string>
     <string name="nc_call_button_content_description_advanced">Розширені опції дзвінка</string>
@@ -192,8 +189,6 @@
     <string name="nc_hint_enter_a_message">Введіть повідомлення ...</string>
     <string name="nc_important_conversation">Важлива розмова</string>
     <string name="nc_important_conversation_desc">Сповіщення в цій розмові ігнорують опцію \"Не турбувати\"</string>
-    <string name="nc_last_moderator">Ви повинні призначити нового модератора перш ніж покинути %1$s.</string>
-    <string name="nc_last_moderator_title">Неможливо покинути розмову</string>
     <string name="nc_last_modified">%1$s | Остання зміна: %2$s</string>
     <string name="nc_leave">Вийти з групи</string>
     <string name="nc_leaving_call">Завершення виклику ...</string>
@@ -365,9 +360,6 @@
     <string name="nc_share_current_location">Поділіться поточним місцем розташування</string>
     <string name="nc_share_link">Доступ за посиланням</string>
     <string name="nc_share_location">Поділіться місцем розташування</string>
-    <string name="nc_share_subject">%1$s запрошення</string>
-    <string name="nc_share_text">Приєднатися до бесіди в %1$s/index.php/call/%2$s</string>
-    <string name="nc_share_text_pass">\nПароль: %1$s</string>
     <string name="nc_share_this_location">Поділіться цим розташуванням</string>
     <string name="nc_share_to_choose_account">Оберіть обліковий запис</string>
     <string name="nc_shared_items">Спільні елементи</string>
@@ -457,7 +449,6 @@
     <string name="thirtyMinutes">30 хвилин</string>
     <string name="thisWeek">Цього тижня</string>
     <string name="this_weekend">Цими вихідними</string>
-    <string name="title_attachments">Вкладення</string>
     <string name="today">Сьогодні</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Перекласти</string>

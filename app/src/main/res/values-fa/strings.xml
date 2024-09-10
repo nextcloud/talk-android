@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name="account_icon">آیکون حساب</string>
+    <string name= "nc_edit">ویرایش</string>
     <string name="add_to_notes">افزودن به یادداشت‌ها</string>
     <string name="added_to_favorites">گفتگوی %1$sبه علاقه‌مندی‌ها افزوده شد</string>
     <string name="appbar_search_in">جستجو در %s</string>
@@ -62,7 +62,6 @@
     <string name="nc_add_participants">افزودن عضو</string>
     <string name="nc_add_to_favorites">افزودن‌ به مورد علاقه‌ها</string>
     <string name="nc_all_ok_operation">خوب ، همه انجام شد!</string>
-    <string name="nc_allow_guests">اجازه میهمانان</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">باز کردن %1$s</string>
     <string name="nc_call_button_content_description_advanced">گزینه‌های پیشرفتهٔ تماس</string>
@@ -169,8 +168,6 @@
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_invitations">دعوت‌ها</string>
     <string name="nc_join_open_conversations">پیوستن به گفتگوهای باز</string>
-    <string name="nc_last_moderator">قبل از ترک %1$s، باید یک مدیر جدید را تعیین کنید.</string>
-    <string name="nc_last_moderator_title">نمی‌توان مکالمه را ترک کرد</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
     <string name="nc_leave">ترک گفتگو</string>
     <string name="nc_leaving_call">در حال ترک تماس ...</string>
@@ -194,6 +191,7 @@
     <string name="nc_moderator">مدیر</string>
     <string name="nc_never">تاکنون ملحق نشده‌اید</string>
     <string name="nc_new_conversation">گفتگوی جدید</string>
+    <string name="nc_new_conversation_visibility">Visibility</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
     <string name="nc_nick_guest">مهمان</string>
     <string name="nc_no">نه</string>
@@ -319,9 +317,6 @@
     <string name="nc_share_current_location">هم‌رسانی مکان فعلی</string>
     <string name="nc_share_link">هم‌رسانی پیوند</string>
     <string name="nc_share_location">هم‌رسانی مکان</string>
-    <string name="nc_share_subject">%1$s دعوت</string>
-    <string name="nc_share_text">به مکالمهٔ ‪%1$s/index.php/call/%2$s‬ ملحق شوید</string>
-    <string name="nc_share_text_pass">\nرمز عبور: %1$s</string>
     <string name="nc_share_this_location">هم‌رسانی این مکان</string>
     <string name="nc_share_to_choose_account">حساب کاربری را انتخاب کنید</string>
     <string name="nc_shared_items">موارد هم‌رسانی‌شده</string>
@@ -396,7 +391,6 @@
     <string name="thirtyMinutes">۳۰ دقیقه</string>
     <string name="thisWeek">این هفته</string>
     <string name="this_weekend">این آخر هفته</string>
-    <string name="title_attachments">پیوست ها</string>
     <string name="today">امروز</string>
     <string name="tomorrow">فردا</string>
     <string name="translate">ترجمه</string>
