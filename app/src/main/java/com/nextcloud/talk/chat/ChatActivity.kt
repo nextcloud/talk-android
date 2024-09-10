@@ -2733,18 +2733,6 @@ class ChatActivity :
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_conversation, menu)
 
-        context.let {
-            viewThemeUtils.platform.colorToolbarMenuIcon(
-                it,
-                menu.findItem(R.id.conversation_voice_call)
-            )
-
-            viewThemeUtils.platform.colorToolbarMenuIcon(
-                it,
-                menu.findItem(R.id.conversation_video_call)
-            )
-        }
-
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {
