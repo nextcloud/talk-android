@@ -14,6 +14,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
@@ -26,6 +27,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 class MessageInputViewModel @Inject constructor(
@@ -51,7 +54,7 @@ class MessageInputViewModel @Inject constructor(
     )
 
     private var isQueueing: Boolean = false
-    private val messageQueue: MutableList<QueuedMessage> = mutableListOf()
+    private var messageQueue: MutableList<QueuedMessage> = mutableListOf()
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -119,6 +122,10 @@ class MessageInputViewModel @Inject constructor(
     val isVoicePreviewPlaying: LiveData<Boolean>
         get() = _isVoicePreviewPlaying
 
+    private val _messageQueueSizeFlow = MutableStateFlow(messageQueue.size)
+    val messageQueueSizeFlow: LiveData<Int>
+        get() = _messageQueueSizeFlow.asLiveData()
+
     @Suppress("LongParameterList")
     fun sendChatMessage(
         roomToken: String,
@@ -132,6 +139,7 @@ class MessageInputViewModel @Inject constructor(
         if (isQueueing) {
             messageQueue.add(QueuedMessage(message, displayName, replyTo, sendWithoutNotification))
             dataStore.saveMessageQueue(roomToken, messageQueue)
+            _messageQueueSizeFlow.update { messageQueue.size }
             return
         }
 
@@ -258,5 +266,10 @@ class MessageInputViewModel @Inject constructor(
 
     fun switchToMessageQueue(shouldQueue: Boolean) {
         isQueueing = shouldQueue
+    }
+
+    fun restoreMessageQueue(roomToken: String) {
+        messageQueue = dataStore.getMessageQueue(roomToken)
+        _messageQueueSizeFlow.tryEmit(messageQueue.size)
     }
 }

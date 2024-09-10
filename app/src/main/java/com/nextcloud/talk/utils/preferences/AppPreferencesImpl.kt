@@ -484,7 +484,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
                 var queueStr = ""
                 queue?.let {
                     for (msg in queue) {
-                        val msgStr = "[${msg.message},${msg.replyTo},${msg.displayName},${msg.sendWithoutNotification}]"
+                        val msgStr = "${msg.message},${msg.replyTo},${msg.displayName},${msg.sendWithoutNotification}^"
                         queueStr += msgStr
                     }
                 }
@@ -500,18 +500,20 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         val queue: MutableList<MessageInputViewModel.QueuedMessage> = mutableListOf()
         if (queueStr.isEmpty()) return queue
 
-        for (msgStr in queueStr.split("]")) {
+        for (msgStr in queueStr.split("^")) {
             try {
-                val msgArray = msgStr.replace("[", "").split(",")
-                val message = msgArray[MESSAGE_INDEX]
-                val replyTo = msgArray[REPLY_TO_INDEX].toInt()
-                val displayName = msgArray[DISPLY_NAME_INDEX]
-                val silent = msgArray[SILENT_INDEX].toBoolean()
+                if (msgStr.isNotEmpty()) {
+                    val msgArray = msgStr.split(",")
+                    val message = msgArray[MESSAGE_INDEX]
+                    val replyTo = msgArray[REPLY_TO_INDEX].toInt()
+                    val displayName = msgArray[DISPLY_NAME_INDEX]
+                    val silent = msgArray[SILENT_INDEX].toBoolean()
 
-                val qMsg = MessageInputViewModel.QueuedMessage(message, displayName, replyTo, silent)
-                queue.add(qMsg)
+                    val qMsg = MessageInputViewModel.QueuedMessage(message, displayName, replyTo, silent)
+                    queue.add(qMsg)
+                }
             } catch (e: IndexOutOfBoundsException) {
-                Log.e(TAG, "Message string: $msgStr\n $e")
+                Log.e(TAG, "Message string: $msgStr\n Queue String: $queueStr \n$e")
             }
         }
 
