@@ -29,8 +29,4 @@ class FakeRepositorySuccess : ContactsRepository {
     override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return "https://mydomain.com/index.php/avatar/$avatarId/512"
     }
-
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        TODO("Not yet implemented")
-    }
 }
