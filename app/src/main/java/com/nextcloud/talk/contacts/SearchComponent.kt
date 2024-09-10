@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.contacts
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
@@ -21,6 +22,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
@@ -34,7 +36,8 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
     TextField(
         modifier = Modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(60.dp)
+            .background(color = colorResource(id = R.color.grey_600)),
         value = text,
         onValueChange = { onTextChange(it) },
         placeholder = {
