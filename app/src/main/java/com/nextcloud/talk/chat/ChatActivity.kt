@@ -2546,19 +2546,14 @@ class ChatActivity :
 
     private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
 
-    private fun shouldInsertNewMessagesNotice(
-        newMessagesAvailable: Boolean,
-        chatMessageList: List<ChatMessage>
-    ) = if (newMessagesAvailable) {
-        chatMessageList.any { it.actorId != conversationUser!!.userId }
-    } else {
-        false
-    }
+    private fun shouldInsertNewMessagesNotice(newMessagesAvailable: Boolean, chatMessageList: List<ChatMessage>) =
+        if (newMessagesAvailable) {
+            chatMessageList.any { it.actorId != conversationUser!!.userId }
+        } else {
+            false
+        }
 
-    private fun updateUnreadMessageInfos(
-        chatMessageList: List<ChatMessage>,
-        scrollToEndOnUpdate: Boolean
-    ) {
+    private fun updateUnreadMessageInfos(chatMessageList: List<ChatMessage>, scrollToEndOnUpdate: Boolean) {
         val unreadChatMessage = ChatMessage()
         unreadChatMessage.jsonMessageId = -1
         unreadChatMessage.actorId = "-1"

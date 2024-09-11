@@ -116,9 +116,9 @@ class ContactsActivityCompose : BaseActivity() {
                     @Suppress("DEPRECATION")
                     intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
                 }
-            }
-            val participants = selectedParticipants.toSet().toMutableList()
-            contactsViewModel.updateSelectedParticipants(participants)
+            }.toSet().toMutableList()
+            contactsViewModel.updateSelectedParticipants(selectedParticipants)
+
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
@@ -137,8 +137,7 @@ class ContactsActivityCompose : BaseActivity() {
                             ContactsList(
                                 contactsUiState = uiState.value,
                                 contactsViewModel = contactsViewModel,
-                                context = context,
-                                selectedParticipants = selectedParticipants.toMutableList()
+                                context = context
                             )
                         }
                     }
@@ -168,13 +167,8 @@ class ContactsActivityCompose : BaseActivity() {
 }
 
 @Composable
-fun ContactItemRow(
-    contact: AutocompleteUser,
-    contactsViewModel: ContactsViewModel,
-    context: Context,
-    selectedContacts: MutableList<AutocompleteUser>
-) {
-    var isSelected by remember { mutableStateOf(selectedContacts.contains(contact)) }
+fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewModel, context: Context) {
+    var isSelected by remember { mutableStateOf(contactsViewModel.selectedParticipantsList.value.contains(contact)) }
     val roomUiState by contactsViewModel.roomViewState.collectAsState()
     val isAddParticipants = contactsViewModel.isAddParticipantsView.collectAsState()
     Row(
@@ -191,14 +185,11 @@ fun ContactItemRow(
                         )
                     } else {
                         isSelected = !isSelected
-                        selectedContacts.apply {
-                            if (isSelected) {
-                                add(contact)
-                            } else {
-                                remove(contact)
-                            }
+                        if (isSelected) {
+                            contactsViewModel.selectContact(contact)
+                        } else {
+                            contactsViewModel.deselectContact(contact)
                         }
-                        contactsViewModel.updateSelectedParticipants(selectedContacts)
                     }
                 }
             ),
@@ -363,12 +354,7 @@ fun ConversationCreationOptions(context: Context, contactsViewModel: ContactsVie
 }
 
 @Composable
-fun ContactsList(
-    contactsUiState: ContactsUiState,
-    contactsViewModel: ContactsViewModel,
-    context: Context,
-    selectedParticipants: MutableList<AutocompleteUser>
-) {
+fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsViewModel, context: Context) {
     when (contactsUiState) {
         is ContactsUiState.None -> {
         }
@@ -381,7 +367,7 @@ fun ContactsList(
             val contacts = contactsUiState.contacts
             Log.d(CompanionClass.TAG, "Contacts:$contacts")
             if (contacts != null) {
-                ContactsItem(contacts, contactsViewModel, context, selectedParticipants)
+                ContactsItem(contacts, contactsViewModel, context)
             }
         }
         is ContactsUiState.Error -> {
@@ -395,12 +381,7 @@ fun ContactsList(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ContactsItem(
-    contacts: List<AutocompleteUser>,
-    contactsViewModel: ContactsViewModel,
-    context: Context,
-    selectedParticipants: MutableList<AutocompleteUser>
-) {
+fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsViewModel, context: Context) {
     val groupedContacts: Map<String, List<AutocompleteUser>> = contacts.groupBy { contact ->
         (
             if (contact.source == "users") {
@@ -432,8 +413,7 @@ fun ContactsItem(
                 ContactItemRow(
                     contact = contact,
                     contactsViewModel = contactsViewModel,
-                    context = context,
-                    selectedContacts = selectedParticipants
+                    context = context
                 )
                 Log.d(CompanionClass.TAG, "Contacts:$contact")
             }
