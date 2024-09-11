@@ -37,7 +37,7 @@ fun DisplaySearch(text: String, onTextChange: (String) -> Unit, contactsViewMode
         modifier = Modifier
             .fillMaxWidth()
             .height(60.dp)
-            .background(color = colorResource(id = R.color.grey_600)),
+            .background(color = colorResource(id = R.color.appbar)),
         value = text,
         onValueChange = { onTextChange(it) },
         placeholder = {
