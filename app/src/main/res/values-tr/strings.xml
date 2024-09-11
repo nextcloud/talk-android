@@ -407,6 +407,7 @@
     <string name="nc_server_unsupported">Sunucuda desteklenen bir Konuş uygulaması kurulu değil</string>
     <string name="nc_server_url">Sunucu adresi https://…</string>
     <string name="nc_server_version">%1$s yalnızca %2$s 13 ve üzerinde çalışır</string>
+    <string name="nc_set_password">Parola ayarla</string>
     <string name="nc_settings">Ayarlar</string>
     <string name="nc_settings_account_updated">Zaten bir hesabınız bulunduğundan yeni hesap eklenmesi yerine geçerli hesap güncellendi</string>
     <string name="nc_settings_advanced_title">Gelişmiş</string>
