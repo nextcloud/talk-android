@@ -667,9 +667,9 @@ class ConversationsListActivity :
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
-                        binding.swipeRefreshLayoutView?.isRefreshing = false
-                        searchBehaviorSubject.onNext(false)
                     }
+                    binding.swipeRefreshLayoutView?.isRefreshing = false
+                    searchBehaviorSubject.onNext(false)
                     binding.swipeRefreshLayoutView?.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
@@ -1009,13 +1009,15 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
-        binding.newMentionPopupBubble?.hide()
-        binding.newMentionPopupBubble?.setPopupBubbleListener {
-            binding.recyclerView?.smoothScrollToPosition(
-                nextUnreadConversationScrollPosition
+        binding.newMentionPopupBubble.hide()
+        binding.newMentionPopupBubble.setPopupBubbleListener {
+            val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
+            layoutManager?.scrollToPositionWithOffset(
+                nextUnreadConversationScrollPosition,
+                binding.recyclerView.height / 3
             )
         }
-        binding.newMentionPopupBubble?.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
+        binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
 
     private fun hideLogoForBrandedClients() {
@@ -1039,14 +1041,14 @@ class ConversationsListActivity :
                         val position = adapter!!.getGlobalPositionOf(flexItem)
                         if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
-                            if (!binding.newMentionPopupBubble?.isShown!!) {
-                                binding.newMentionPopupBubble?.show()
+                            if (!binding.newMentionPopupBubble.isShown) {
+                                binding.newMentionPopupBubble.show()
                             }
                             return@subscribe
                         }
-                        nextUnreadConversationScrollPosition = 0
-                        binding.newMentionPopupBubble?.hide()
                     }
+                    nextUnreadConversationScrollPosition = 0
+                    binding.newMentionPopupBubble.hide()
                 } catch (e: NullPointerException) {
                     Log.d(
                         TAG,
