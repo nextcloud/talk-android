@@ -199,29 +199,31 @@ class OfflineFirstChatRepository @Inject constructor(
             val networkParams = Bundle()
 
             while (true) {
-                if (!monitor.isOnline.first() || itIsPaused) Thread.sleep(HALF_SECOND)
+                if (!monitor.isOnline.first() || itIsPaused) {
+                    Thread.sleep(HALF_SECOND)
+                } else {
+                    // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
+                    networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
-                // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
-                networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                    val resultsFromSync = sync(networkParams)
+                    if (!resultsFromSync.isNullOrEmpty()) {
+                        val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
+                        val pair = Pair(true, chatMessages)
+                        _messageFlow.emit(pair)
+                    }
 
-                val resultsFromSync = sync(networkParams)
-                if (!resultsFromSync.isNullOrEmpty()) {
-                    val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
-                    val pair = Pair(true, chatMessages)
-                    _messageFlow.emit(pair)
+                    updateUiForLastCommonRead()
+
+                    val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
+
+                    // update field map vars for next cycle
+                    fieldMap = getFieldMap(
+                        lookIntoFuture = true,
+                        includeLastKnown = false,
+                        setReadMarker = true,
+                        lastKnown = newestMessage
+                    )
                 }
-
-                updateUiForLastCommonRead()
-
-                val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
-
-                // update field map vars for next cycle
-                fieldMap = getFieldMap(
-                    lookIntoFuture = true,
-                    includeLastKnown = false,
-                    setReadMarker = true,
-                    lastKnown = newestMessage
-                )
             }
         }
 
