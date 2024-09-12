@@ -7,25 +7,33 @@
 
 package com.nextcloud.talk.conversationcreation
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.core.net.toFile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
+import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationCreationViewModel @Inject constructor(
-    private val repository: ConversationCreationRepository
+    private val repository: ConversationCreationRepository,
+    private val userManager: UserManager
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
+
+    private val _currentUser = userManager.currentUser.blockingGet()
+    val currentUser: User = _currentUser
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
@@ -58,6 +66,7 @@ class ConversationCreationViewModel @Inject constructor(
         roomType: String,
         conversationName: String,
         participants: Set<AutocompleteUser>,
+        selectedImageUri: Uri?,
         onRoomCreated: (String) -> Unit
     ) {
         val scope = when {
@@ -100,6 +109,9 @@ class ConversationCreationViewModel @Inject constructor(
                                 repository.setPassword(token, _password.value)
                             }
                             repository.openConversation(token, scope)
+                            if (selectedImageUri != null) {
+                                repository.uploadConversationAvatar(selectedImageUri.toFile(), token)
+                            }
                             onRoomCreated(token)
                         } catch (exception: Exception) {
                             allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")

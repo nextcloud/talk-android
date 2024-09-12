@@ -13,6 +13,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.compose.ManagedActivityResultLauncher
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -32,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -57,7 +59,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
@@ -77,6 +81,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -84,7 +89,7 @@ import javax.inject.Inject
 class ConversationCreationActivity : BaseActivity() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
+    private lateinit var pickImage: PickImage
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -93,13 +98,16 @@ class ConversationCreationActivity : BaseActivity() {
             this,
             viewModelFactory
         )[ConversationCreationViewModel::class.java]
+        val conversationUser = conversationCreationViewModel.currentUser
+        pickImage = PickImage(this, conversationUser)
+
         setContent {
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val context = LocalContext.current
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
-                ConversationCreationScreen(conversationCreationViewModel, context)
+                ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
             }
             SetStatusBarColor()
         }
@@ -125,15 +133,47 @@ private fun SetStatusBarColor() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
+fun ConversationCreationScreen(
+    conversationCreationViewModel: ConversationCreationViewModel,
+    context: Context,
+    pickImage: PickImage
+) {
+    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            pickImage.onImagePickerResult(result.data) { uri ->
+                selectedImageUri = uri
+            }
+        }
+    }
+
+    val remoteFilePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            pickImage.onSelectRemoteFilesResult(imagePickerLauncher, result.data)
+        }
+    }
+
+    val cameraLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            pickImage.onTakePictureResult(imagePickerLauncher, result.data)
+        }
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult(),
-
         onResult = { result ->
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
-                val selectedParticipants = data?.getParcelableArrayListExtra<AutocompleteUser>("selectedParticipants")
-                    ?: emptyList()
+                val selectedParticipants =
+                    data?.getParcelableArrayListExtra<AutocompleteUser>("selectedParticipants")
+                        ?: emptyList()
                 val participants = selectedParticipants.toMutableList()
                 conversationCreationViewModel.updateSelectedParticipants(participants)
             }
@@ -162,43 +202,75 @@ fun ConversationCreationScreen(conversationCreationViewModel: ConversationCreati
                     .padding(paddingValues)
                     .verticalScroll(rememberScrollState())
             ) {
-                DefaultUserAvatar()
-                UploadAvatar()
+                DefaultUserAvatar(selectedImageUri)
+                UploadAvatar(
+                    pickImage = pickImage,
+                    onImageSelected = { uri -> selectedImageUri = uri },
+                    imagePickerLauncher = imagePickerLauncher,
+                    remoteFilePickerLauncher = remoteFilePickerLauncher,
+                    cameraLauncher = cameraLauncher,
+                    onDeleteImage = { selectedImageUri = null }
+                )
+
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
-                CreateConversation(conversationCreationViewModel, context)
+                CreateConversation(conversationCreationViewModel, context, selectedImageUri)
             }
         }
     )
 }
 
 @Composable
-fun DefaultUserAvatar() {
+fun DefaultUserAvatar(selectedImageUri: Uri?) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
-        AsyncImage(
-            model = R.drawable.ic_circular_group,
-            contentDescription = stringResource(id = R.string.user_avatar),
-            modifier = Modifier
-                .size(width = 84.dp, height = 84.dp)
-                .padding(top = 8.dp)
-        )
+        if (selectedImageUri != null) {
+            AsyncImage(
+                model = selectedImageUri,
+                contentDescription = stringResource(id = R.string.user_avatar),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(84.dp)
+                    .padding(top = 8.dp)
+                    .clip(CircleShape)
+            )
+        } else {
+            AsyncImage(
+                model = R.drawable.ic_circular_group,
+                contentDescription = stringResource(id = R.string.user_avatar),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(84.dp)
+                    .padding(top = 8.dp)
+                    .clip(CircleShape)
+            )
+        }
     }
 }
 
 @Composable
-fun UploadAvatar() {
+fun UploadAvatar(
+    pickImage: PickImage,
+    onImageSelected: (Uri) -> Unit,
+    imagePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    remoteFilePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    cameraLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
+    onDeleteImage: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         horizontalArrangement = Arrangement.Center
     ) {
-        IconButton(onClick = {
-        }) {
+        IconButton(
+            onClick = {
+                pickImage.takePicture(cameraLauncher)
+            }
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_baseline_photo_camera_24),
                 contentDescription = null,
@@ -207,24 +279,28 @@ fun UploadAvatar() {
         }
 
         IconButton(onClick = {
+            pickImage.selectLocal(imagePickerLauncher)
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_folder_multiple_image),
+                painter = painterResource(id = R.drawable.upload),
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
+            )
+        }
+        IconButton(
+            onClick = {
+                pickImage.selectRemote(remoteFilePickerLauncher)
+            }
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_mimetype_folder),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
         }
 
         IconButton(onClick = {
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_tag_faces_24),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-
-        IconButton(onClick = {
+            onDeleteImage()
         }) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_delete_grey600_24dp),
@@ -502,7 +578,11 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 }
 
 @Composable
-fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
+fun CreateConversation(
+    conversationCreationViewModel: ConversationCreationViewModel,
+    context: Context,
+    selectedImageUri: Uri?
+) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
         modifier = Modifier
@@ -515,7 +595,8 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
                 conversationCreationViewModel.createRoomAndAddParticipants(
                     roomType = CompanionClass.ROOM_TYPE_GROUP,
                     conversationName = conversationCreationViewModel.roomName.value,
-                    participants = selectedParticipants.toSet()
+                    participants = selectedParticipants.toSet(),
+                    selectedImageUri = selectedImageUri
                 ) { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
@@ -530,6 +611,7 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
         }
     }
 }
+
 class CompanionClass {
     companion object {
         internal val TAG = ConversationCreationActivity::class.simpleName
