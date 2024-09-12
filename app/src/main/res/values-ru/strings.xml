@@ -173,6 +173,7 @@
     <string name="nc_diagnose_device_name_title">Устройство</string>
     <string name="nc_diagnose_dialog_open_checklist">Открыть контрольный список устранения неполадок</string>
     <string name="nc_diagnose_dialog_open_diagnose">Открыть экран диагностики</string>
+    <string name="nc_diagnose_notification_permission">Разрешения на уведомления</string>
     <string name="nc_diagnose_phone_category_title">Телефон</string>
     <string name="nc_diagnose_signaling_mode_extern">Внешний</string>
     <string name="nc_diagnose_signaling_mode_intern">Внутренние</string>
@@ -299,6 +300,7 @@
     <string name="nc_permissions_ask">Установить разрешения</string>
     <string name="nc_permissions_denied">В некоторых разрешениях было отказано.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
+    <string name="nc_permissions_settings_hint">Пожалуйста, предоставьте разрешения в разделе «Настройки» > «Разрешения».</string>
     <string name="nc_phone_book_integration_account_not_found">Учётная запись не найдена</string>
     <string name="nc_phone_book_integration_chat_via">Чат через %s</string>
     <string name="nc_pip_microphone_mute">Выключить микрофон</string>
@@ -384,6 +386,7 @@
     <string name="nc_settings_notifications_granted">Уведомления отклонены. Разрешите уведомления в настройках Android</string>
     <string name="nc_settings_other_notifications_ringtone">Сообщения</string>
     <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в приложение системных контактов</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Ошибка 429 Слишком много запросов</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Вы можете указать свой номер телефона, чтобы другие пользователи могли вас найти</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Введите номер телефона</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Неправильный номер телефона</string>
