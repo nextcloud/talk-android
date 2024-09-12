@@ -7,9 +7,11 @@
 
 package com.nextcloud.talk.conversationcreation
 
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import java.io.File
 
 interface ConversationCreationRepository {
 
@@ -21,4 +23,6 @@ interface ConversationCreationRepository {
     suspend fun createRoom(roomType: String, conversationName: String?): RoomOverall
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String
     suspend fun setPassword(roomToken: String, password: String): GenericOverall
+    suspend fun uploadConversationAvatar(file: File, roomToken: String): ConversationModel
+    suspend fun deleteConversationAvatar(roomToken: String): ConversationModel
 }
