@@ -33,6 +33,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -58,7 +59,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
@@ -212,7 +215,7 @@ fun ConversationCreationScreen(
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
-                CreateConversation(conversationCreationViewModel, context,selectedImageUri)
+                CreateConversation(conversationCreationViewModel, context, selectedImageUri)
             }
         }
     )
@@ -228,17 +231,21 @@ fun DefaultUserAvatar(selectedImageUri: Uri?) {
             AsyncImage(
                 model = selectedImageUri,
                 contentDescription = stringResource(id = R.string.user_avatar),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(84.dp)
                     .padding(top = 8.dp)
+                    .clip(CircleShape)
             )
         } else {
             AsyncImage(
                 model = R.drawable.ic_circular_group,
                 contentDescription = stringResource(id = R.string.user_avatar),
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(84.dp)
                     .padding(top = 8.dp)
+                    .clip(CircleShape)
             )
         }
     }
@@ -571,7 +578,11 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 }
 
 @Composable
-fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context,selectedImageUri: Uri?) {
+fun CreateConversation(
+    conversationCreationViewModel: ConversationCreationViewModel,
+    context: Context,
+    selectedImageUri: Uri?
+) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
         modifier = Modifier

@@ -109,7 +109,7 @@ class ConversationCreationViewModel @Inject constructor(
                                 repository.setPassword(token, _password.value)
                             }
                             repository.openConversation(token, scope)
-                            if(selectedImageUri!= null){
+                            if (selectedImageUri != null) {
                                 repository.uploadConversationAvatar(selectedImageUri.toFile(), token)
                             }
                             onRoomCreated(token)
@@ -166,4 +166,3 @@ sealed class AddParticipantsUiState {
     data class Success(val participants: List<Conversation>?) : AddParticipantsUiState()
     data class Error(val message: String) : AddParticipantsUiState()
 }
-
