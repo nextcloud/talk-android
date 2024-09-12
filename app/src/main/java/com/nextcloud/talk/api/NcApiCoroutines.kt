@@ -105,7 +105,7 @@ interface NcApiCoroutines {
     suspend fun uploadConversationAvatar(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Part("attachment") attachment: MultipartBody.Part
+        @Part attachment: MultipartBody.Part
     ): RoomOverall
 
     @DELETE
