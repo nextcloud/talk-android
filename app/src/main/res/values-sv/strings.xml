@@ -102,6 +102,7 @@
     <string name="nc_call_button_content_description_hangup">Lägg på</string>
     <string name="nc_call_button_content_description_microphone">Växla mikrofon</string>
     <string name="nc_call_button_content_description_pip">Öppna bild i bild-läge</string>
+    <string name="nc_call_button_content_description_switch_to_self_vide">Växla till egen video</string>
     <string name="nc_call_incoming">INKOMMANDE</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_notifications">Samtalsaviseringar</string>
@@ -350,6 +351,7 @@
     <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
     <string name="nc_refresh">Uppdatera</string>
     <string name="nc_remind">Påminn mig senare</string>
+    <string name="nc_remote_audio_off">Fjärrljud av</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_group_and_members">Ta bort grupp och medlemmar</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
@@ -371,6 +373,7 @@
     <string name="nc_search">Sök</string>
     <string name="nc_select_an_account">Välj ett konto</string>
     <string name="nc_select_participants">Välj deltagare</string>
+    <string name="nc_send_edit_message">Skicka redigerat meddelande</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
     <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>
@@ -551,6 +554,7 @@
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkronisera med betrodda servrar och den globala och offentliga adressboken</string>
     <string name="scope_published_title">Publicerad</string>
+    <string name="scope_toggle">Växla omfång</string>
     <string name="scope_toggle_description">Ändra hemlighetsnivå för %1$s</string>
     <string name="scroll_to_bottom">Bläddra till botten</string>
     <string name="secondsAgo">sekunder sedan</string>
