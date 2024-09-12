@@ -212,7 +212,7 @@ fun ConversationCreationScreen(
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
-                CreateConversation(conversationCreationViewModel, context)
+                CreateConversation(conversationCreationViewModel, context,selectedImageUri)
             }
         }
     )
@@ -275,7 +275,7 @@ fun UploadAvatar(
             pickImage.selectLocal(imagePickerLauncher)
         }) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_folder_multiple_image),
+                painter = painterResource(id = R.drawable.upload),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -286,7 +286,7 @@ fun UploadAvatar(
             }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.baseline_tag_faces_24),
+                painter = painterResource(id = R.drawable.ic_mimetype_folder),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -571,7 +571,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 }
 
 @Composable
-fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
+fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context,selectedImageUri: Uri?) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
         modifier = Modifier
@@ -584,7 +584,8 @@ fun CreateConversation(conversationCreationViewModel: ConversationCreationViewMo
                 conversationCreationViewModel.createRoomAndAddParticipants(
                     roomType = CompanionClass.ROOM_TYPE_GROUP,
                     conversationName = conversationCreationViewModel.roomName.value,
-                    participants = selectedParticipants.toSet()
+                    participants = selectedParticipants.toSet(),
+                    selectedImageUri = selectedImageUri
                 ) { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
