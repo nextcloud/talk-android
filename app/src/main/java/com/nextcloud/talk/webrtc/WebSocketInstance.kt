@@ -41,6 +41,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
+import java.lang.Thread.sleep
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -127,6 +128,7 @@ class WebSocketInstance internal constructor(
             isConnected = false
             messagesQueue = ArrayList()
         }
+        sleep(ONE_SECOND)
         restartWebSocket()
     }
 
@@ -485,5 +487,6 @@ class WebSocketInstance internal constructor(
     companion object {
         private const val TAG = "WebSocketInstance"
         private const val NORMAL_CLOSURE = 1000
+        private const val ONE_SECOND: Long = 1000
     }
 }
