@@ -28,6 +28,7 @@
     <string name="close_icon">Schließen-Symbol</string>
     <string name="connection_established">Verbindung hergestellt</string>
     <string name="connection_lost">Verbindung verloren</string>
+    <string name="connection_lost_queued">Verbindung verloren - %1$d Nachrichten in der Warteschlange</string>
     <string name="connection_lost_sent_messages_are_queued">Verbindung verloren - Gesendete Nachrichten der Warteschlange hinzugefügt</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
     <string name="conversation_is_read_only">Unterhaltung ist schreibgeschützt</string>
