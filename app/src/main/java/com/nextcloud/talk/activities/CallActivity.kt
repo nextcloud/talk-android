@@ -1632,8 +1632,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun callOrJoinRoomViaWebSocket() {
         if (hasExternalSignalingServer) {
-            webSocketClient!!.joinRoomWithRoomTokenAndSession(roomToken!!, callSession,
-                externalSignalingServer!!.federation)
+            webSocketClient!!.joinRoomWithRoomTokenAndSession(
+		roomToken!!, callSession, externalSignalingServer!!.federation
+	    )
         } else {
             performCall()
         }
