@@ -2437,8 +2437,10 @@ class ChatActivity :
 
         if (currentConversation!!.remoteServer != null) {
             val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
-            ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl,
-                roomToken!!)).blockingSubscribe(object : Observer<SignalingSettingsOverall> {
+            ncApi!!.getSignalingSettings(
+                credentials,
+                ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl, roomToken!!)
+            ).blockingSubscribe(object : Observer<SignalingSettingsOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
@@ -3239,7 +3241,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         when (type) {
