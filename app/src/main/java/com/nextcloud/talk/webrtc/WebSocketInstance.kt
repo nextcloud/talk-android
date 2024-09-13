@@ -369,8 +369,11 @@ class WebSocketInstance internal constructor(
         return hasMCU
     }
 
-    fun joinRoomWithRoomTokenAndSession(roomToken: String, normalBackendSession: String?,
-            federation: FederationSettings? = null) {
+    fun joinRoomWithRoomTokenAndSession(
+        roomToken: String,
+        normalBackendSession: String?,
+        federation: FederationSettings? = null
+    ) {
         Log.d(TAG, "joinRoomWithRoomTokenAndSession")
         Log.d(TAG, "   roomToken: $roomToken")
         Log.d(TAG, "   session: $normalBackendSession")
@@ -384,7 +387,8 @@ class WebSocketInstance internal constructor(
                 currentFederation = null
                 sendMessage(message)
             } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession &&
-                federation == currentFederation) {
+                federation?.roomId == currentFederation?.roomId && federation?.nextcloudServer == federation?.nextcloudServer
+            ) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 sendRoomJoinedEvent()
             } else {
