@@ -29,6 +29,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import java.lang.Thread.sleep
 import javax.inject.Inject
 
 class MessageInputViewModel @Inject constructor(
@@ -79,9 +80,6 @@ class MessageInputViewModel @Inject constructor(
         mediaPlayerManager.handleOnStop()
     }
 
-    companion object {
-        private val TAG = MessageInputViewModel::class.java.simpleName
-    }
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
 
@@ -252,6 +250,7 @@ class MessageInputViewModel @Inject constructor(
         dataStore.saveMessageQueue(roomToken, null) // empties the queue
         while (queue.size > 0) {
             val msg = queue.removeFirst()
+            sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
             sendChatMessage(
                 roomToken,
                 credentials,
@@ -271,5 +270,10 @@ class MessageInputViewModel @Inject constructor(
     fun restoreMessageQueue(roomToken: String) {
         messageQueue = dataStore.getMessageQueue(roomToken)
         _messageQueueSizeFlow.tryEmit(messageQueue.size)
+    }
+
+    companion object {
+        private val TAG = MessageInputViewModel::class.java.simpleName
+        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 100
     }
 }
