@@ -138,11 +138,15 @@ public class WebSocketConnectionHelper {
         roomWebSocketMessage.setRoomId(roomId);
         roomWebSocketMessage.setSessionId(sessionId);
         if (federation != null) {
+            String federationAuthToken = null;
+            if (federation.getHelloAuthParams() != null) {
+                federationAuthToken = federation.getHelloAuthParams().getToken();
+            }
             RoomFederationWebSocketMessage roomFederationWebSocketMessage = new RoomFederationWebSocketMessage();
             roomFederationWebSocketMessage.setSignaling(federation.getServer());
             roomFederationWebSocketMessage.setUrl(federation.getNextcloudServer() + "/ocs/v2.php/apps/spreed/api/v3/signaling/backend");
             roomFederationWebSocketMessage.setRoomid(federation.getRoomId());
-            roomFederationWebSocketMessage.setToken(federation.getHelloAuthParams().getToken());
+            roomFederationWebSocketMessage.setToken(federationAuthToken);
             roomWebSocketMessage.setRoomFederationWebSocketMessage(roomFederationWebSocketMessage);
         }
         roomOverallWebSocketMessage.setRoomWebSocketMessage(roomWebSocketMessage);
