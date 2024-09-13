@@ -470,7 +470,7 @@
     <string name="nc_share_this_location">Dela den här platsen</string>
     <string name="nc_share_to_choose_account">Välj konto</string>
     <string name="nc_shared_items">Delade objekt</string>
-    <string name="nc_shared_items_deck_card">Kortlek-kort</string>
+    <string name="nc_shared_items_deck_card">Deck-kort</string>
     <string name="nc_shared_items_description">Bilder, filer, röstmeddelanden ...</string>
     <string name="nc_shared_items_empty">Inga delade objekt</string>
     <string name="nc_shared_items_location">Plats</string>
