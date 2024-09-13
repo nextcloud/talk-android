@@ -120,10 +120,12 @@ import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
+import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
@@ -177,6 +179,8 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -302,6 +306,7 @@ class ChatActivity :
 
     var webSocketInstance: WebSocketInstance? = null
     var signalingMessageSender: SignalingMessageSender? = null
+    var externalSignalingServer: ExternalSignalingServer? = null
 
     var getRoomInfoTimerHandler: Handler? = null
 
@@ -631,10 +636,12 @@ class ChatActivity :
 
                     logConversationInfos("joinRoomWithPassword#onNext")
 
+                    setupWebsocket()
                     if (webSocketInstance != null) {
                         webSocketInstance?.joinRoomWithRoomTokenAndSession(
                             roomToken,
-                            sessionIdAfterRoomJoined
+                            sessionIdAfterRoomJoined,
+                            externalSignalingServer?.federation
                         )
                     }
                     if (startCallFromNotification != null && startCallFromNotification) {
@@ -952,7 +959,6 @@ class ChatActivity :
 
         pullChatMessagesPending = false
 
-        setupWebsocket()
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
 
@@ -2391,10 +2397,12 @@ class ChatActivity :
         } else {
             Log.d(TAG, "sessionID was valid -> skip joinRoom")
 
+            setupWebsocket()
             if (webSocketInstance != null) {
                 webSocketInstance?.joinRoomWithRoomTokenAndSession(
                     roomToken,
-                    sessionIdAfterRoomJoined
+                    sessionIdAfterRoomJoined,
+                    externalSignalingServer?.federation
                 )
             }
         }
@@ -2423,16 +2431,57 @@ class ChatActivity :
     }
 
     private fun setupWebsocket() {
-        if (conversationUser == null) {
+        if (currentConversation == null || conversationUser == null) {
             return
         }
-        webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser!!)
+
+        if (currentConversation!!.remoteServer != null) {
+            val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
+            ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl,
+                roomToken!!)).blockingSubscribe(object : Observer<SignalingSettingsOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    // unused atm
+                }
+
+                override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
+                    if (signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer == null) {
+                        return
+                    }
+
+                    externalSignalingServer = ExternalSignalingServer()
+                    externalSignalingServer!!.externalSignalingServer = signalingSettingsOverall.ocs!!.settings!!
+                        .externalSignalingServer
+                    externalSignalingServer!!.externalSignalingTicket = signalingSettingsOverall.ocs!!.settings!!
+                        .externalSignalingTicket
+                    externalSignalingServer!!.federation = signalingSettingsOverall.ocs!!.settings!!.federation
+
+                    webSocketInstance = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                        externalSignalingServer!!.externalSignalingServer,
+                        conversationUser,
+                        externalSignalingServer!!.externalSignalingTicket,
+                        TextUtils.isEmpty(credentials)
+                    )
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(CallActivity.TAG, e.message, e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+        } else {
+            webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser!!)
+        }
 
         if (webSocketInstance == null) {
             Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
         }
 
         signalingMessageSender = webSocketInstance?.signalingMessageSender
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+        webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
     }
 
     private fun processCallStartedMessages(chatMessageList: List<ChatMessage>) {
