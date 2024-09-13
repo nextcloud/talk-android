@@ -58,10 +58,12 @@ public class SignalingMessageReceiverParticipantListTest {
         user1.put("roomId", 108);
         user1.put("sessionId", "theSessionId1");
         user1.put("userId", "theUserId");
-        // If "participantPermissions" is set in any of the participants all the other participants in the message
-        // would have it too. But for test simplicity, and as it is not relevant for the processing, in this test it
-        // is included only in one of the participants.
+        // If any of the following properties is set in any of the participants all the other participants in the
+        // message would have it too. But for test simplicity, and as it is not relevant for the processing, in this
+        // test they are included only in one of the participants.
         user1.put("participantPermissions", 42);
+        user1.put("actorType", "federated_users");
+        user1.put("actorId", "theActorId");
         users.add(user1);
         Map<String, Object> user2 = new HashMap<>();
         user2.put("inCall", 0);
@@ -78,6 +80,8 @@ public class SignalingMessageReceiverParticipantListTest {
         expectedParticipant1.setLastPing(4815);
         expectedParticipant1.setSessionId("theSessionId1");
         expectedParticipant1.setUserId("theUserId");
+        expectedParticipant1.setActorType(Participant.ActorType.FEDERATED);
+        expectedParticipant1.setActorId("theActorId");
         expectedParticipantList.add(expectedParticipant1);
 
         Participant expectedParticipant2 = new Participant();
@@ -266,11 +270,13 @@ public class SignalingMessageReceiverParticipantListTest {
         user1.put("sessionId", "theSessionId1");
         user1.put("participantType", 3);
         user1.put("userId", "theUserId");
-        // If "nextcloudSessionId" or "participantPermissions" is set in any of the participants all the other
-        // participants in the message would have them too. But for test simplicity, and as it is not relevant for
-        // the processing, in this test they are included only in one of the participants.
+        // If any of the following properties is set in any of the participants all the other participants in the
+        // message would have it too. But for test simplicity, and as it is not relevant for the processing, in this
+        // test they are included only in one of the participants.
         user1.put("nextcloudSessionId", "theNextcloudSessionId");
         user1.put("participantPermissions", 42);
+        user1.put("actorType", "federated_users");
+        user1.put("actorId", "theActorId");
         users.add(user1);
         Map<String, Object> user2 = new HashMap<>();
         user2.put("inCall", 0);
@@ -289,6 +295,8 @@ public class SignalingMessageReceiverParticipantListTest {
         expectedParticipant1.setSessionId("theSessionId1");
         expectedParticipant1.setType(Participant.ParticipantType.USER);
         expectedParticipant1.setUserId("theUserId");
+        expectedParticipant1.setActorType(Participant.ActorType.FEDERATED);
+        expectedParticipant1.setActorId("theActorId");
         expectedParticipantList.add(expectedParticipant1);
 
         Participant expectedParticipant2 = new Participant();

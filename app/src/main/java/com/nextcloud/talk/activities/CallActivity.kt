@@ -1453,7 +1453,7 @@ class CallActivity : CallBaseActivity() {
     private fun fetchSignalingSettings() {
         Log.d(TAG, "fetchSignalingSettings")
         val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser, intArrayOf(ApiUtils.API_V3, 2, 1))
-        ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl))
+        ncApi!!.getSignalingSettings(credentials, ApiUtils.getUrlForSignalingSettings(apiVersion, baseUrl, roomToken!!))
             .subscribeOn(Schedulers.io())
             .retry(API_RETRIES)
             .observeOn(AndroidSchedulers.mainThread())
@@ -1475,6 +1475,8 @@ class CallActivity : CallBaseActivity() {
                                 signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer
                             externalSignalingServer!!.externalSignalingTicket =
                                 signalingSettingsOverall.ocs!!.settings!!.externalSignalingTicket
+                            externalSignalingServer!!.federation =
+                                signalingSettingsOverall.ocs!!.settings!!.federation
                             hasExternalSignalingServer = true
                         } else {
                             hasExternalSignalingServer = false
@@ -1630,7 +1632,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun callOrJoinRoomViaWebSocket() {
         if (hasExternalSignalingServer) {
-            webSocketClient!!.joinRoomWithRoomTokenAndSession(roomToken!!, callSession)
+            webSocketClient!!.joinRoomWithRoomTokenAndSession(
+                roomToken!!, callSession, externalSignalingServer!!.federation
+            )
         } else {
             performCall()
         }
@@ -2157,6 +2161,10 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "   newSession joined: $sessionId")
             addCallParticipant(sessionId)
 
+            if (participant.actorType != null && participant.actorId != null) {
+                callParticipants[sessionId]!!.setActor(participant.actorType, participant.actorId)
+            }
+
             val userId = participant.userId
             if (userId != null) {
                 callParticipants[sessionId]!!.setUserId(userId)
@@ -2510,10 +2518,12 @@ class CallActivity : CallBaseActivity() {
         }
         val defaultGuestNick = resources.getString(R.string.nc_nick_guest)
         val participantDisplayItem = ParticipantDisplayItem(
+            context,
             baseUrl,
             defaultGuestNick,
             rootEglBase,
             videoStreamType,
+            roomToken,
             callParticipantModel
         )
         val sessionId = callParticipantModel.sessionId

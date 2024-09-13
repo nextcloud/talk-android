@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.signaling.SignalingMessageReceiver;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
@@ -130,6 +131,10 @@ public class CallParticipant {
 
     public CallParticipantModel getCallParticipantModel() {
         return callParticipantModel;
+    }
+
+    public void setActor(Participant.ActorType actorType, String actorId) {
+        callParticipantModel.setActor(actorType, actorId);
     }
 
     public void setUserId(String userId) {

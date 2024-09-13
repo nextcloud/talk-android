@@ -6,6 +6,8 @@
  */
 package com.nextcloud.talk.call;
 
+import com.nextcloud.talk.models.json.participants.Participant;
+
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 
@@ -18,6 +20,11 @@ public class MutableCallParticipantModel extends CallParticipantModel {
 
     public MutableCallParticipantModel(String sessionId) {
         super(sessionId);
+    }
+
+    public void setActor(Participant.ActorType actorType, String actorId) {
+        this.actorType.setValue(actorType);
+        this.actorId.setValue(actorId);
     }
 
     public void setUserId(String userId) {
