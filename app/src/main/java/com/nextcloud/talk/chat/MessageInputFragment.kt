@@ -233,6 +233,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.clearAnimation()
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
+            binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
             binding.fragmentConnectionLost.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.isEnabled = false
             binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
