@@ -369,6 +369,7 @@ class WebSocketInstance internal constructor(
         return hasMCU
     }
 
+    @Suppress("Detekt.ComplexMethod")
     fun joinRoomWithRoomTokenAndSession(
         roomToken: String,
         normalBackendSession: String?,
@@ -386,8 +387,11 @@ class WebSocketInstance internal constructor(
                 currentNormalBackendSession = ""
                 currentFederation = null
                 sendMessage(message)
-            } else if (roomToken == currentRoomToken && normalBackendSession == currentNormalBackendSession &&
-                federation?.roomId == currentFederation?.roomId && federation?.nextcloudServer == federation?.nextcloudServer
+            } else if (
+                roomToken == currentRoomToken &&
+                normalBackendSession == currentNormalBackendSession &&
+                federation?.roomId == currentFederation?.roomId &&
+                federation?.nextcloudServer == federation?.nextcloudServer
             ) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 sendRoomJoinedEvent()
