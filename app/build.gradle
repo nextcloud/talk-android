@@ -325,7 +325,7 @@ dependencies {
 
     androidTestImplementation "androidx.test:core:1.6.1"
 
-    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0"
     androidTestImplementation 'androidx.test:core-ktx:1.6.1'
     androidTestImplementation 'org.mockito:mockito-android:5.13.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
