@@ -1,8 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
+ * SPDX-FileCopyrightText: 2024 Daniel Calviño Sánchez <danxuliu@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.models.json.signaling.settings
@@ -16,17 +15,15 @@ import kotlinx.serialization.Serializable
 @Parcelize
 @JsonObject
 @Serializable
-data class SignalingSettings(
-    @JsonField(name = ["stunservers"])
-    var stunServers: List<IceServer>? = null,
-    @JsonField(name = ["turnservers"])
-    var turnServers: List<IceServer>? = null,
+data class FederationSettings(
     @JsonField(name = ["server"])
-    var externalSignalingServer: String? = null,
-    @JsonField(name = ["ticket"])
-    var externalSignalingTicket: String? = null,
-    @JsonField(name = ["federation"])
-    var federation: FederationSettings? = null
+    var server: String? = null,
+    @JsonField(name = ["nextcloudServer"])
+    var nextcloudServer: String? = null,
+    @JsonField(name = ["helloAuthParams"])
+    var helloAuthParams: FederationHelloAuthParams? = null,
+    @JsonField(name = ["roomId"])
+    var roomId: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null, null)

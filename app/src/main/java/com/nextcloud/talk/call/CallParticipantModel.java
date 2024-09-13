@@ -8,6 +8,8 @@ package com.nextcloud.talk.call;
 
 import android.os.Handler;
 
+import com.nextcloud.talk.models.json.participants.Participant;
+
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 
@@ -25,6 +27,8 @@ import java.util.Objects;
  *
  * Audio and video in screen shares, on the other hand, are always seen as available.
  *
+ * Actor type and actor id will be set only in Talk >= 20.
+ *
  * Clients of the model can observe it with CallParticipantModel.Observer to be notified when any value changes.
  * Getters called after receiving a notification are guaranteed to provide at least the value that triggered the
  * notification, but it may return even a more up to date one (so getting the value again on the following
@@ -39,6 +43,8 @@ public class CallParticipantModel {
 
     protected final String sessionId;
 
+    protected Data<Participant.ActorType> actorType;
+    protected Data<String> actorId;
     protected Data<String> userId;
     protected Data<String> nick;
 
@@ -81,6 +87,8 @@ public class CallParticipantModel {
     public CallParticipantModel(String sessionId) {
         this.sessionId = sessionId;
 
+        this.actorType = new Data<>();
+        this.actorId = new Data<>();
         this.userId = new Data<>();
         this.nick = new Data<>();
 
@@ -99,6 +107,14 @@ public class CallParticipantModel {
 
     public String getSessionId() {
         return sessionId;
+    }
+
+    public Participant.ActorType getActorType() {
+        return actorType.getValue();
+    }
+
+    public String getActorId() {
+        return actorId.getValue();
     }
 
     public String getUserId() {

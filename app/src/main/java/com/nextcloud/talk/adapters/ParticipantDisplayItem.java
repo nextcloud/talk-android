@@ -8,13 +8,16 @@
  */
 package com.nextcloud.talk.adapters;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
 
 import com.nextcloud.talk.call.CallParticipantModel;
 import com.nextcloud.talk.call.RaisedHand;
+import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.DisplayUtils;
 
 import org.webrtc.EglBase;
 import org.webrtc.MediaStream;
@@ -29,6 +32,8 @@ public class ParticipantDisplayItem {
 
     private final ParticipantDisplayItemNotifier participantDisplayItemNotifier = new ParticipantDisplayItemNotifier();
 
+    private final Context context;
+
     private final String baseUrl;
     private final String defaultGuestNick;
     private final EglBase rootEglBase;
@@ -36,8 +41,12 @@ public class ParticipantDisplayItem {
     private final String session;
     private final String streamType;
 
+    private final String roomToken;
+
     private final CallParticipantModel callParticipantModel;
 
+    private Participant.ActorType actorType;
+    private String actorId;
     private String userId;
     private PeerConnection.IceConnectionState iceConnectionState;
     private String nick;
@@ -62,14 +71,18 @@ public class ParticipantDisplayItem {
         }
     };
 
-    public ParticipantDisplayItem(String baseUrl, String defaultGuestNick, EglBase rootEglBase, String streamType,
-                                  CallParticipantModel callParticipantModel) {
+    public ParticipantDisplayItem(Context context, String baseUrl, String defaultGuestNick, EglBase rootEglBase,
+                                  String streamType, String roomToken, CallParticipantModel callParticipantModel) {
+        this.context = context;
+
         this.baseUrl = baseUrl;
         this.defaultGuestNick = defaultGuestNick;
         this.rootEglBase = rootEglBase;
 
         this.session = callParticipantModel.getSessionId();
         this.streamType = streamType;
+
+        this.roomToken = roomToken;
 
         this.callParticipantModel = callParticipantModel;
         this.callParticipantModel.addObserver(callParticipantModelObserver, handler);
@@ -82,6 +95,8 @@ public class ParticipantDisplayItem {
     }
 
     private void updateFromModel() {
+        actorType = callParticipantModel.getActorType();
+        actorId = callParticipantModel.getActorId();
         userId = callParticipantModel.getUserId();
         nick = callParticipantModel.getNick();
 
@@ -107,7 +122,10 @@ public class ParticipantDisplayItem {
     }
 
     private void updateUrlForAvatar() {
-        if (!TextUtils.isEmpty(userId)) {
+        if (actorType == Participant.ActorType.FEDERATED) {
+            int darkTheme = DisplayUtils.INSTANCE.isDarkModeOn(context) ? 1 : 0;
+            urlForAvatar = ApiUtils.getUrlForFederatedAvatar(baseUrl, roomToken, actorId, darkTheme, true);
+        } else if (!TextUtils.isEmpty(userId)) {
             urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl, userId, true);
         } else {
             urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl, getNick(), true);
@@ -166,6 +184,8 @@ public class ParticipantDisplayItem {
     public String toString() {
         return "ParticipantSession{" +
                 "userId='" + userId + '\'' +
+                ", actorType='" + actorType + '\'' +
+                ", actorId='" + actorId + '\'' +
                 ", session='" + session + '\'' +
                 ", nick='" + nick + '\'' +
                 ", urlForAvatar='" + urlForAvatar + '\'' +

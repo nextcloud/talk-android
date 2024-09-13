@@ -122,6 +122,8 @@ public class CallParticipantList {
 
         private Participant copyParticipant(Participant participant) {
             Participant copiedParticipant = new Participant();
+            copiedParticipant.setActorId(participant.getActorId());
+            copiedParticipant.setActorType(participant.getActorType());
             copiedParticipant.setInCall(participant.getInCall());
             copiedParticipant.setInternal(participant.getInternal());
             copiedParticipant.setLastPing(participant.getLastPing());

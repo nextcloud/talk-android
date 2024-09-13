@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.signaling;
 
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
@@ -37,6 +38,8 @@ import java.util.Map;
  * the appropriate protected methods to process the messages and notify the listeners.
  */
 public abstract class SignalingMessageReceiver {
+
+    private final EnumActorTypeConverter enumActorTypeConverter = new EnumActorTypeConverter();
 
     private final ParticipantListMessageNotifier participantListMessageNotifier = new ParticipantListMessageNotifier();
 
@@ -398,6 +401,8 @@ public abstract class SignalingMessageReceiver {
         //                     "nextcloudSessionId": #STRING#, // Optional
         //                     "internal": #BOOLEAN#, // Optional
         //                     "participantPermissions": #INTEGER#, // Talk >= 13
+        //                     "actorType": #STRING#, // Talk >= 20
+        //                     "actorId": #STRING#, // Talk >= 20
         //                 },
         //                 ...
         //             ],
@@ -447,6 +452,8 @@ public abstract class SignalingMessageReceiver {
         //             "sessionId": #STRING#,
         //             "userId": #STRING#, // Always included, although it can be empty
         //             "participantPermissions": #INTEGER#, // Talk >= 13
+        //             "actorType": #STRING#, // Talk >= 20
+        //             "actorId": #STRING#, // Talk >= 20
         //         },
         //         ...
         //     ],
@@ -490,6 +497,14 @@ public abstract class SignalingMessageReceiver {
 
         if (participantMap.get("internal") != null && Boolean.parseBoolean(participantMap.get("internal").toString())) {
             participant.setInternal(Boolean.TRUE);
+        }
+
+        if (participantMap.get("actorType") != null && !participantMap.get("actorType").toString().isEmpty()) {
+            participant.setActorType(enumActorTypeConverter.getFromString(participantMap.get("actorType").toString()));
+        }
+
+        if (participantMap.get("actorId") != null && !participantMap.get("actorId").toString().isEmpty()) {
+            participant.setActorId(participantMap.get("actorId").toString());
         }
 
         // Only in external signaling messages

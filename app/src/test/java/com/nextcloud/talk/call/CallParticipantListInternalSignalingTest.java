@@ -61,6 +61,8 @@ public class CallParticipantListInternalSignalingTest {
             participant.setLastPing(lastPing);
             participant.setSessionId(sessionId);
             participant.setUserId(userId);
+            participant.setActorType(Participant.ActorType.USERS);
+            participant.setActorId(userId);
 
             return participant;
         }
@@ -70,6 +72,8 @@ public class CallParticipantListInternalSignalingTest {
             participant.setInCall(inCall);
             participant.setLastPing(lastPing);
             participant.setSessionId(sessionId);
+            participant.setActorType(Participant.ActorType.GUESTS);
+            participant.setActorId("sha1-" + sessionId);
 
             return participant;
         }
