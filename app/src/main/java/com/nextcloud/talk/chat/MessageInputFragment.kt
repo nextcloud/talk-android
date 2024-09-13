@@ -73,6 +73,7 @@ import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -141,6 +142,11 @@ class MessageInputFragment : Fragment() {
         saveState()
     }
 
+    override fun onResume() {
+        super.onResume()
+        chatActivity.messageInputViewModel.restoreMessageQueue(chatActivity.roomToken)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -178,11 +184,18 @@ class MessageInputFragment : Fragment() {
                 val connectionGained = (!wasOnline && isOnline)
                 wasOnline = !binding.fragmentMessageInputView.isShown
                 Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-
-                // FIXME timeout exception - maybe something to do with the room?
-                // handleMessageQueue(isOnline)
+                delay(500)
+                handleMessageQueue(isOnline)
                 handleUI(isOnline, connectionGained)
             }.collect()
+        }
+
+        chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
+            if (size > 0) {
+                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
+            } else {
+                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
+            }
         }
     }
 
@@ -220,12 +233,9 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.clearAnimation()
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
-            binding.fragmentConnectionLost.text =
-                getString(R.string.connection_lost_sent_messages_are_queued)
             binding.fragmentConnectionLost.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.isEnabled = false
             binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
-            binding.fragmentMessageInputView.messageInput.isEnabled = false
         }
     }
 
