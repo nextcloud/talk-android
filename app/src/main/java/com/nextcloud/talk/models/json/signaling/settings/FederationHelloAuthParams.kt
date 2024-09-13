@@ -17,7 +17,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class FederationHelloAuthParams(
     @JsonField(name = ["token"])
-    var token: String? = null,
+    var token: String? = null
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null)
