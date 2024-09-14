@@ -9,6 +9,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [20.0.0] - 2024-09-14
+
+### Added
+- Offline support for conversations list and chat
+- Federated calls
+- Allow banning users and guests
+- Open internal links for files app from any screen
+- Show conversation description in chat and when listing open conversations
+
+### Changed
+- New workflow for conversation creation
+
+### Fixed
+- Connection fails with wired internet
+- Minor bugs
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/85?closed=1
+
 ## [19.0.1] - 2024-05-23
 
 ### Fixed
