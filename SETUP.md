@@ -12,7 +12,6 @@
 	    1. [Working with Android Studio](#working-with-android-studio)
         1. [Working in a terminal with gradle](#working-in-a-terminal-with-gradle)
 		1. [App flavours](#app-flavours)
-		1. [Update Android Studio ktlint formatter](#update-android-studio-ktlint-formatter)
 	1. [Troubleshooting](#troubleshooting)
 		1. [Compilation fails with "java.lang.OutOfMemoryError: Java heap space" error](#compilation-fails-with-javalangoutofmemoryerror-java-heap-space-error)
 
@@ -43,13 +42,13 @@ We recommend to use the last version available in the stable channel of Android 
 
 The Android SDK is necessary to build the app. Install it via Android Studio itself: 
 
-```Settings``` → ```Appearance & Behavior``` → ```System Settings``` → ```Android SDK```
+```Settings``` → ```Languages & Frameworks```→ ```Android SDK```
 
 After installing it, add the full path to the directories 'tools/' and 'platform-tools/' from your Android SDK installation into the PATH variable of your environment.
 
 Open the Android SDK Manager under Android Studio's settings
 
-```Settings``` → ```Appearance & Behavior``` → ```System Settings``` → ```Android SDK```
+```Settings``` → ```Languages & Frameworks```→ ```Android SDK```
 
 To build the Nextcloud for Android app you will need to install at least the next SDK packages:
 
@@ -113,13 +112,6 @@ The app is currently equipped to be built with three flavours:
 * **Generic** - the regular build, released as Nextcloud Android app on F-Droid
 * **Gplay** - with Google stuff (push notification), used for Google Play store
 * **Qa** - build per pr for testing
-
-### Update Android Studio ktlint formatter
-
-To update the formatter rules for kotlin files:
-1. Download [latest release][9] to project's root folder
-2. Run the following command: ```java -jar ktlint --android applyToIDEAProject -y```
-3. Diff the changed files and incorporate the updates/changes only. This needs to be done by hand since the Android Studio files contain formatting rules for java and xml as well which are overridden (as in removed) by the ktlint generator. 
 
 ## Troubleshooting
 
