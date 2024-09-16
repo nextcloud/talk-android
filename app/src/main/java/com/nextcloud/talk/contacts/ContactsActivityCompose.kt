@@ -78,6 +78,8 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationcreation.ConversationCreationActivity
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.openconversations.ListOpenConversationsActivity
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
@@ -95,15 +97,22 @@ class ContactsActivityCompose : BaseActivity() {
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
         setContent {
             val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
+            val conversationUser = contactsViewModel.currentUser
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
             if (isAddParticipants) {
-                contactsViewModel.updateShareTypes(
-                    listOf(
-                        ShareType.Group.shareType,
-                        ShareType.Email.shareType,
-                        ShareType.Circle.shareType
-                    )
-                )
+               if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                    conversationUser.capabilities?.spreedCapability!!,
+                    SpreedFeatures.INVITE_GROUPS_AND_MAILS
+                )){
+                   contactsViewModel.updateShareTypes(ShareType.Email.shareType)
+                   contactsViewModel.updateShareTypes(ShareType.Group.shareType)
+                }
+                if (CapabilitiesUtil.hasSpreedFeatureCapability(
+                        conversationUser.capabilities?.spreedCapability!!,
+                        SpreedFeatures.CIRCLES_SUPPORT
+                    )){
+                    contactsViewModel.updateShareTypes(ShareType.Circle.shareType)
+                }
                 contactsViewModel.getContactsFromSearchParams()
             }
             val colorScheme = viewThemeUtils.getColorScheme(this)
@@ -143,7 +152,6 @@ class ContactsActivityCompose : BaseActivity() {
                     }
                 )
             }
-
             SetStatusBarColor()
         }
     }
@@ -160,7 +168,6 @@ class ContactsActivityCompose : BaseActivity() {
             WindowCompat.getInsetsController(activity.window, activity.window.decorView).apply {
                 isAppearanceLightStatusBars = !isDarkMod
             }
-
             onDispose { }
         }
     }

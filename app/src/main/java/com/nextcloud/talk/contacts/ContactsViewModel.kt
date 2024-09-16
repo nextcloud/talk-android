@@ -9,8 +9,10 @@ package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,8 +20,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ContactsViewModel @Inject constructor(
-    private val repository: ContactsRepository
+    private val repository: ContactsRepository,
+    private val userManager: UserManager
 ) : ViewModel() {
+
+    private val _currentUser = userManager.currentUser.blockingGet()
+    val currentUser: User = _currentUser
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
@@ -61,8 +67,8 @@ class ContactsViewModel @Inject constructor(
         _searchState.value = searchState
     }
 
-    fun updateShareTypes(value: List<String>) {
-        shareTypes.addAll(value)
+    fun updateShareTypes(value: String) {
+        shareTypes.add(value)
     }
 
     fun updateIsAddParticipants(value: Boolean) {
