@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -107,8 +108,10 @@ class OfflineFirstConversationsRepository @Inject constructor(
             return null
         }
 
+        val includeStatus = isUserStatusAvailable(user)
+
         try {
-            val conversationsList = network.getRooms(user, user.baseUrl!!, false)
+            val conversationsList = network.getRooms(user, user.baseUrl!!, includeStatus)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .blockingSingle()
