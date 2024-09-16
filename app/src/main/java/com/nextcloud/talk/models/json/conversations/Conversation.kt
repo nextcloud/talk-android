@@ -144,16 +144,16 @@ data class Conversation(
     var callRecording: Int = 0,
 
     @JsonField(name = ["avatarVersion"])
-    var avatarVersion: String? = null,
+    var avatarVersion: String? = "",
 
     // Be aware that variables with "is" at the beginning will lead to the error:
     // "@JsonField annotation can only be used on private fields if both getter and setter are present."
     // Instead, name it with "has" at the beginning: isCustomAvatar -> hasCustomAvatar
     @JsonField(name = ["isCustomAvatar"])
-    var hasCustomAvatar: Boolean? = null,
+    var hasCustomAvatar: Boolean? = false,
 
     @JsonField(name = ["callStartTime"])
-    var callStartTime: Long? = null,
+    var callStartTime: Long? = 0L,
 
     @JsonField(name = ["recordingConsent"])
     var recordingConsentRequired: Int = 0,

@@ -1744,7 +1744,9 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun startCallTimeCounter(callStartTime: Long?) {
-        if (callStartTime != null && hasSpreedFeatureCapability(
+        if (callStartTime != null &&
+            callStartTime != 0L &&
+            hasSpreedFeatureCapability(
                 conversationUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.RECORDING_V1
             )
         ) {
