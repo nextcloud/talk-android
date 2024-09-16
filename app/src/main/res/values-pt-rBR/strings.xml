@@ -28,6 +28,7 @@
     <string name="close_icon">Fechar ícone</string>
     <string name="connection_established">Conexão estabelecida</string>
     <string name="connection_lost">Conexão perdida</string>
+    <string name="connection_lost_queued">Conexão perdida - %1$d estão na fila</string>
     <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas estão na fila</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>
@@ -407,6 +408,7 @@
     <string name="nc_server_unsupported">O servidor não tem o aplicativo Talk suportado instalado</string>
     <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
+    <string name="nc_set_password">Definir Senha</string>
     <string name="nc_settings">Configurações</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>
     <string name="nc_settings_advanced_title">Avançada</string>
