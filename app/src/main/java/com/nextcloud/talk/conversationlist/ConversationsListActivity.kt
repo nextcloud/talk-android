@@ -323,9 +323,7 @@ class ConversationsListActivity :
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
-                    if (isNetworkAvailable(context)) {
-                        Snackbar.make(binding.root, R.string.get_invitations_error, Snackbar.LENGTH_LONG).show()
-                    }
+                    // do nothing
                 }
 
                 else -> {}
