@@ -170,27 +170,21 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
                             @Override
                             public void onNext(InvitationsModel invitationsModel) {
-                                Participant participant;
-                                participant = new Participant();
-                                participant.setActorType(Participant.ActorType.USERS);
-                                participant.setActorId(userId);
-                                participant.setDisplayName(finalUserEntity.getDisplayName());
-                                userItems.add(
-                                    new AdvancedUserItem(
-                                        participant,
-                                        finalUserEntity,
-                                        null,
-                                        viewThemeUtils,
-                                        invitationsModel.getInvitations().size()
-                                    ));
-                                adapter.addListener(onSwitchItemClickListener);
-                                adapter.addListener(onSwitchItemLongClickListener);
-                                adapter.updateDataSet(userItems, false);
+                                addAccountToSwitcherList(
+                                    userId,
+                                    finalUserEntity,
+                                    invitationsModel.getInvitations().size()
+                                );
                             }
 
                             @Override
                             public void onError(@io.reactivex.annotations.NonNull Throwable e) {
                                 Log.e(TAG, "Failed to fetch invitations", e);
+                                addAccountToSwitcherList(
+                                    userId,
+                                    finalUserEntity,
+                                    0
+                                );
                             }
 
                             @Override
@@ -201,6 +195,29 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                 }
             }
         }
+    }
+
+    private void addAccountToSwitcherList(
+        String userId,
+        User finalUserEntity,
+        int actionsRequiredCount
+    ) {
+        Participant participant;
+        participant = new Participant();
+        participant.setActorType(Participant.ActorType.USERS);
+        participant.setActorId(userId);
+        participant.setDisplayName(finalUserEntity.getDisplayName());
+        userItems.add(
+            new AdvancedUserItem(
+                participant,
+                finalUserEntity,
+                null,
+                viewThemeUtils,
+                actionsRequiredCount
+            ));
+        adapter.addListener(onSwitchItemClickListener);
+        adapter.addListener(onSwitchItemLongClickListener);
+        adapter.updateDataSet(userItems, false);
     }
 
     private void setupListeners(User user) {
