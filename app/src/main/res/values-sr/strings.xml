@@ -28,6 +28,7 @@
     <string name="close_icon">Икона затвори</string>
     <string name="connection_established">Веза успостављена</string>
     <string name="connection_lost">Веза је прекинута</string>
+    <string name="connection_lost_queued">Веза је прекинута - %1$d су стављене у ред</string>
     <string name="connection_lost_sent_messages_are_queued">Веза је прекинута - Послате поруке су стављене у ред</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversation_is_read_only">Овај разговор је само-за-читање</string>
@@ -407,6 +408,7 @@
     <string name="nc_server_unsupported">Сервер нема инсталирану подржану Talk апликацију</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
+    <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_settings">Поставке</string>
     <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>
     <string name="nc_settings_advanced_title">Напредно</string>
