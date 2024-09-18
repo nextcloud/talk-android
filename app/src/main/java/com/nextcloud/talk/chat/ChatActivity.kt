@@ -2812,10 +2812,7 @@ class ChatActivity :
                 menu.removeItem(R.id.shared_items)
             }
 
-            if (currentConversation!!.remoteServer != null) {
-                menu.removeItem(R.id.conversation_video_call)
-                menu.removeItem(R.id.conversation_voice_call)
-            } else if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
+            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
