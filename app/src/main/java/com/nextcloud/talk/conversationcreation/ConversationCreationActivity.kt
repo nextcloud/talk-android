@@ -327,7 +327,8 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
         label = { Text(text = stringResource(id = R.string.nc_call_name)) },
         modifier = Modifier
             .padding(start = 16.dp, end = 16.dp)
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        singleLine = true
     )
     OutlinedTextField(
         value = conversationDescription.value,
