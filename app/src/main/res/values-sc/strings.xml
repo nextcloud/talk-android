@@ -73,7 +73,7 @@
     <string name="nc_clear_history_success">Cantzellados totu is messàgios</string>
     <string name="nc_clear_history_warning">A beru boles cantzellare totu is messàgios in custa resonada?</string>
     <string name="nc_client_cert_change">Càmbia tzertificadu cliente</string>
-    <string name="nc_client_cert_setup">Imposta tzertificadu cliente</string>
+    <string name="nc_client_cert_setup">Cunfigura su tzertificadu de cliente</string>
     <string name="nc_common_and">e</string>
     <string name="nc_common_copy">Còpia</string>
     <string name="nc_common_copy_success">Copiadu in punta de billete</string>
@@ -81,7 +81,7 @@
     <string name="nc_common_disabled">Disativadu</string>
     <string name="nc_common_dismiss">Iscarta</string>
     <string name="nc_common_error_sorry">Ddoe at àpidu un\'errore!</string>
-    <string name="nc_common_set">Imposta</string>
+    <string name="nc_common_set">Cunfigura</string>
     <string name="nc_common_skip">Brinca</string>
     <string name="nc_common_unknown">Disconnotu</string>
     <string name="nc_configure_cert_auth">Seletziona tzertificadu autenticatzione</string>
@@ -146,7 +146,7 @@
     <string name="nc_guest">Persone invitada</string>
     <string name="nc_guest_access_allow_title">Autoriza persones invitadas</string>
     <string name="nc_guest_access_password_dialog_hint">Dìgita una crae noa</string>
-    <string name="nc_guest_access_password_summary">Imposta una crae pro limitare is chi podent impreare su ligòngiu pùblicu.</string>
+    <string name="nc_guest_access_password_summary">Cunfigura una crae pro limitare is chi podent impreare su ligòngiu pùblicu.</string>
     <string name="nc_guest_access_password_title">Bardiadura de sa crae</string>
     <string name="nc_guest_access_password_weak_alert_title">Crae dèbile</string>
     <string name="nc_guest_access_resend_invitations">Torra a imbiare is invitos</string>
@@ -165,7 +165,7 @@
     <string name="nc_location_unknown">Positzione disconnota</string>
     <string name="nc_locked">Blocadu</string>
     <string name="nc_locked_tap_to_unlock">Toca pro isblocare</string>
-    <string name="nc_manual">No impostadu</string>
+    <string name="nc_manual">Non cunfiguradu</string>
     <string name="nc_mark_as_read">Marca comente lèghidu</string>
     <string name="nc_mark_as_unread">Marca comente non lèghidu</string>
     <string name="nc_message_quote_cancel_reply">Annulla risposta</string>
@@ -268,10 +268,10 @@
     <string name="nc_settings_notification_sounds_post_oreo">Notìficas</string>
     <string name="nc_settings_other_notifications_ringtone">Messàgios</string>
     <string name="nc_settings_phone_book_integration_desc">Verìfica is cuntatos subra sa base de su nùmeru de telèfonu pro integrare su curtziadòrgiu de Talk in sìaplicatzione de is cuntatos de sistema</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Podes impostare su nùmeru de telèfonu tuo aici is àteras utèntzias t\'ant a pòdere agatare</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Podes cunfigurare su nùmeru de telèfonu tuo, in manera chi àteras utèntzias t\'ant a pòdere agatare</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Inserta nùmeru de telèfonu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Nùmeru de telèfonu non bàlidu</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nùmeru de telèfonu impostadu</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Nùmeru de telèfonu cunfiguradu</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Nùmeru de telèfonu</string>
     <string name="nc_settings_phone_book_integration_title">Integratzione de su nùmeru de telèfonu</string>
     <string name="nc_settings_privacy">Riservadesa</string>
@@ -294,7 +294,7 @@
     <string name="nc_settings_server_almost_eol">Sa versione de su serbidore est betza meda e no at a èssere suportada in sa versione imbeniente!</string>
     <string name="nc_settings_server_eol">Sa versione de su serbidore est betza meda e non suportada dae custa versione de aplicatzione Android</string>
     <string name="nc_settings_server_eol_title">Serbidore non suportadu</string>
-    <string name="nc_settings_theme_battery_saver">Impostadu dae su sarva-bateria</string>
+    <string name="nc_settings_theme_battery_saver">Cunfiguradu dae su sarva-bateria</string>
     <string name="nc_settings_theme_dark">Iscuru</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -361,8 +361,9 @@
     <string name="send_email">Imbia messàgiu de posta eletrònica</string>
     <string name="send_to">Imbia a</string>
     <string name="send_to_three_dots">Imbia a …</string>
-    <string name="set_status">Imposta istadu</string>
-    <string name="set_status_message">Imposta messàgiu de istadu</string>
+    <string name="set">Cunfigura</string>
+    <string name="set_status">Cunfigura un\'istadu</string>
+    <string name="set_status_message">Cunfigura su messàgiu de istadu</string>
     <string name="share">Cumpartzi</string>
     <string name="shared_items_audio">Àudio</string>
     <string name="shared_items_file">Archìviu</string>
@@ -384,6 +385,7 @@
     <string name="translation_error_message">Impossìbile rilevare sa lìngua</string>
     <string name="translation_from">Dae</string>
     <string name="translation_to">A</string>
+    <string name="unread">De lèghere</string>
     <string name="upload_new_avatar_from_device">Càrriga un\'avatar nou dae dispositivu</string>
     <string name="user_avatar">Avatar de s\'utente</string>
     <string name="user_info_address">Indiritzu</string>
