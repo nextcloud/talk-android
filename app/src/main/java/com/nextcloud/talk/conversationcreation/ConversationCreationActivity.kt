@@ -209,7 +209,8 @@ fun ConversationCreationScreen(
                     imagePickerLauncher = imagePickerLauncher,
                     remoteFilePickerLauncher = remoteFilePickerLauncher,
                     cameraLauncher = cameraLauncher,
-                    onDeleteImage = { selectedImageUri = null }
+                    onDeleteImage = { selectedImageUri = null },
+                    selectedImageUri = selectedImageUri
                 )
 
                 ConversationNameAndDescription(conversationCreationViewModel)
@@ -258,7 +259,8 @@ fun UploadAvatar(
     imagePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     remoteFilePickerLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
     cameraLauncher: ManagedActivityResultLauncher<Intent, ActivityResult>,
-    onDeleteImage: () -> Unit
+    onDeleteImage: () -> Unit,
+    selectedImageUri: Uri?
 ) {
     Row(
         modifier = Modifier
@@ -299,14 +301,16 @@ fun UploadAvatar(
             )
         }
 
-        IconButton(onClick = {
-            onDeleteImage()
-        }) {
-            Icon(
-                painter = painterResource(id = R.drawable.ic_delete_grey600_24dp),
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
+        if (selectedImageUri != null) {
+            IconButton(onClick = {
+                onDeleteImage()
+            }) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_delete_grey600_24dp),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp)
+                )
+            }
         }
     }
 }
