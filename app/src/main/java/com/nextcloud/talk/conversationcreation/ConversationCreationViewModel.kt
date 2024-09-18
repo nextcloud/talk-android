@@ -32,11 +32,19 @@ class ConversationCreationViewModel @Inject constructor(
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
 
+    private val selectedImageUri = MutableStateFlow<Uri?>(null)
+    val selectedImageUriState:StateFlow<Uri?> = selectedImageUri
+
+
     private val _currentUser = userManager.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
+    }
+
+    fun updateSelectedImageUri(uri:Uri?){
+        selectedImageUri.value = uri
     }
 
     private val _roomName = MutableStateFlow("")
@@ -66,7 +74,6 @@ class ConversationCreationViewModel @Inject constructor(
         roomType: String,
         conversationName: String,
         participants: Set<AutocompleteUser>,
-        selectedImageUri: Uri?,
         onRoomCreated: (String) -> Unit
     ) {
         val scope = when {
@@ -109,9 +116,7 @@ class ConversationCreationViewModel @Inject constructor(
                                 repository.setPassword(token, _password.value)
                             }
                             repository.openConversation(token, scope)
-                            if (selectedImageUri != null) {
-                                repository.uploadConversationAvatar(selectedImageUri.toFile(), token)
-                            }
+                            selectedImageUri.value?.let { repository.uploadConversationAvatar(it.toFile(), token) }
                             onRoomCreated(token)
                         } catch (exception: Exception) {
                             allowGuestsResult.value = AllowGuestsUiState.Error(exception.message ?: "")

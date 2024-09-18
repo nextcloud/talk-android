@@ -138,14 +138,14 @@ fun ConversationCreationScreen(
     context: Context,
     pickImage: PickImage
 ) {
-    var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    val selectedImageUri  = conversationCreationViewModel.selectedImageUriState.collectAsState().value
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == Activity.RESULT_OK) {
             pickImage.onImagePickerResult(result.data) { uri ->
-                selectedImageUri = uri
+                conversationCreationViewModel.updateSelectedImageUri(uri)
             }
         }
     }
@@ -205,18 +205,18 @@ fun ConversationCreationScreen(
                 DefaultUserAvatar(selectedImageUri)
                 UploadAvatar(
                     pickImage = pickImage,
-                    onImageSelected = { uri -> selectedImageUri = uri },
+                    onImageSelected = { uri -> conversationCreationViewModel.updateSelectedImageUri(uri) },
                     imagePickerLauncher = imagePickerLauncher,
                     remoteFilePickerLauncher = remoteFilePickerLauncher,
                     cameraLauncher = cameraLauncher,
-                    onDeleteImage = { selectedImageUri = null },
+                    onDeleteImage = { conversationCreationViewModel.updateSelectedImageUri(null) },
                     selectedImageUri = selectedImageUri
                 )
 
                 ConversationNameAndDescription(conversationCreationViewModel)
                 AddParticipants(launcher, context, conversationCreationViewModel)
                 RoomCreationOptions(conversationCreationViewModel)
-                CreateConversation(conversationCreationViewModel, context, selectedImageUri)
+                CreateConversation(conversationCreationViewModel, context)
             }
         }
     )
@@ -550,11 +550,11 @@ fun ConversationOptions(
 
 @Composable
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
+
     var password by remember { mutableStateOf("") }
 
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
-
         onDismissRequest = onDismiss,
         confirmButton = {
             Button(onClick = {
@@ -585,8 +585,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 @Composable
 fun CreateConversation(
     conversationCreationViewModel: ConversationCreationViewModel,
-    context: Context,
-    selectedImageUri: Uri?
+    context: Context
 ) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
@@ -600,8 +599,7 @@ fun CreateConversation(
                 conversationCreationViewModel.createRoomAndAddParticipants(
                     roomType = CompanionClass.ROOM_TYPE_GROUP,
                     conversationName = conversationCreationViewModel.roomName.value,
-                    participants = selectedParticipants.toSet(),
-                    selectedImageUri = selectedImageUri
+                    participants = selectedParticipants.toSet()
                 ) { roomToken ->
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_ROOM_TOKEN, roomToken)
