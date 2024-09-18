@@ -180,7 +180,7 @@ dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.4'
 
-    implementation("androidx.compose.runtime:runtime:1.7.1")
+    implementation("androidx.compose.runtime:runtime:1.7.2")
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.1.1'
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
