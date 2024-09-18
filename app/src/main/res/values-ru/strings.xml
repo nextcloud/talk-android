@@ -518,6 +518,7 @@
     <string name="scope_toggle">Переключить область видимости</string>
     <string name="scope_toggle_description">Изменить уровень конфиденциальности %1$s</string>
     <string name="scroll_to_bottom">Прокрутить вниз</string>
+    <string name="search_icon">Поиск значка</string>
     <string name="secondsAgo">несколько секунд назад</string>
     <string name="see_similar_system_messages">Посмотреть %1$s похожие сообщения</string>
     <string name="selected_list_item">Выбрано</string>
