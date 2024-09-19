@@ -33,8 +33,7 @@ class ConversationCreationViewModel @Inject constructor(
     private val roomViewState = MutableStateFlow<RoomUIState>(RoomUIState.None)
 
     private val selectedImageUri = MutableStateFlow<Uri?>(null)
-    val selectedImageUriState:StateFlow<Uri?> = selectedImageUri
-
+    val selectedImageUriState: StateFlow<Uri?> = selectedImageUri
 
     private val _currentUser = userManager.currentUser.blockingGet()
     val currentUser: User = _currentUser
@@ -43,7 +42,7 @@ class ConversationCreationViewModel @Inject constructor(
         _selectedParticipants.value = participants
     }
 
-    fun updateSelectedImageUri(uri:Uri?){
+    fun updateSelectedImageUri(uri: Uri?) {
         selectedImageUri.value = uri
     }
 
