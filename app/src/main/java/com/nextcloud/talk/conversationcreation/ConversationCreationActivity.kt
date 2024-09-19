@@ -138,7 +138,7 @@ fun ConversationCreationScreen(
     context: Context,
     pickImage: PickImage
 ) {
-    val selectedImageUri  = conversationCreationViewModel.selectedImageUriState.collectAsState().value
+    val selectedImageUri = conversationCreationViewModel.selectedImageUriState.collectAsState().value
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -550,7 +550,6 @@ fun ConversationOptions(
 
 @Composable
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
-
     var password by remember { mutableStateOf("") }
 
     AlertDialog(
@@ -583,10 +582,7 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
 }
 
 @Composable
-fun CreateConversation(
-    conversationCreationViewModel: ConversationCreationViewModel,
-    context: Context
-) {
+fun CreateConversation(conversationCreationViewModel: ConversationCreationViewModel, context: Context) {
     val selectedParticipants by conversationCreationViewModel.selectedParticipants.collectAsState()
     Box(
         modifier = Modifier
