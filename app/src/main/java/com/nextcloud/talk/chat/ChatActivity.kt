@@ -577,7 +577,6 @@ class ChatActivity :
 
                     invalidateOptionsMenu()
                     checkShowCallButtons()
-                    checkShowMessageInputView()
                     checkLobbyState()
                     updateRoomTimerHandler()
                 }
@@ -603,6 +602,9 @@ class ChatActivity :
                     loadAvatarForStatusBar()
                     setupSwipeToReply()
                     setActionBarTitle()
+
+                    checkShowCallButtons()
+                    checkLobbyState()
                     updateRoomTimerHandler()
 
                     val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
@@ -1892,12 +1894,12 @@ class ChatActivity :
             } else {
                 binding.lobby.lobbyView.visibility = View.GONE
                 binding.messagesListView.visibility = View.VISIBLE
-                binding.fragmentContainerActivityChat.visibility = View.VISIBLE
+                checkShowMessageInputView()
             }
         } else {
             binding.lobby.lobbyView.visibility = View.GONE
             binding.messagesListView.visibility = View.VISIBLE
-            binding.fragmentContainerActivityChat.visibility = View.VISIBLE
+            checkShowMessageInputView()
         }
     }
 
