@@ -535,6 +535,16 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
+        messageInputViewModel.messageQueueFlow.observe(this) { message ->
+            // TODO shouldn't be able save state
+            val temporaryChatMessage = ChatMessage()
+            temporaryChatMessage.jsonMessageId = -3
+            temporaryChatMessage.actorId = "-3"
+            temporaryChatMessage.timestamp = (adapter?.items?.get(0)?.item as ChatMessage).timestamp
+            temporaryChatMessage.message = message
+            adapter?.addToStart(temporaryChatMessage, true)
+        }
+
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->
