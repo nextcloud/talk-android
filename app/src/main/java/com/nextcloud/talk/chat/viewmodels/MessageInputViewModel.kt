@@ -124,6 +124,10 @@ class MessageInputViewModel @Inject constructor(
     val messageQueueSizeFlow: LiveData<Int>
         get() = _messageQueueSizeFlow.asLiveData()
 
+    private val _messageQueueFlow: MutableLiveData<String> = MutableLiveData()
+    val messageQueueFlow: LiveData<String>
+        get() = _messageQueueFlow
+
     @Suppress("LongParameterList")
     fun sendChatMessage(
         roomToken: String,
@@ -138,6 +142,7 @@ class MessageInputViewModel @Inject constructor(
             messageQueue.add(QueuedMessage(message, displayName, replyTo, sendWithoutNotification))
             dataStore.saveMessageQueue(roomToken, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
+            _messageQueueFlow.postValue(message.toString())
             return
         }
 
@@ -274,6 +279,6 @@ class MessageInputViewModel @Inject constructor(
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 100
+        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 500
     }
 }
