@@ -101,6 +101,7 @@ import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.TemporaryMessageViewHolder
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -1167,6 +1168,17 @@ class ChatActivity :
             CallStartedViewHolder::class.java,
             payload,
             R.layout.call_started_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_TEMP,
+            TemporaryMessageViewHolder::class.java,
+            payload,
+            R.layout.item_temporary_message,
+            TemporaryMessageViewHolder::class.java,
+            payload,
+            R.layout.item_temporary_message,
             this
         )
 
@@ -3475,6 +3487,7 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
+            CONTENT_TYPE_TEMP -> message.id == "-3"
 
             else -> false
         }
@@ -3655,6 +3668,7 @@ class ChatActivity :
         private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 5
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
+        private const val CONTENT_TYPE_TEMP: Byte = 8
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
