@@ -138,7 +138,7 @@ fun ConversationCreationScreen(
     context: Context,
     pickImage: PickImage
 ) {
-    val selectedImageUri = conversationCreationViewModel.selectedImageUriState.collectAsState().value
+    val selectedImageUri = conversationCreationViewModel.selectedImageUri.collectAsState().value
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
