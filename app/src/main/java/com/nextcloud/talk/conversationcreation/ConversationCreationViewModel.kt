@@ -38,6 +38,12 @@ class ConversationCreationViewModel @Inject constructor(
     private val _currentUser = userManager.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
+    private val _isPasswordEnabled = mutableStateOf(false)
+    val isPasswordEnabled = _isPasswordEnabled
+
+    private val _isPasswordChanged = mutableStateOf(false)
+    val isPasswordChanged = _isPasswordChanged
+
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
     }
@@ -73,6 +79,7 @@ class ConversationCreationViewModel @Inject constructor(
         roomType: String,
         conversationName: String,
         participants: Set<AutocompleteUser>,
+        selectedImageUri: Uri?,
         onRoomCreated: (String) -> Unit
     ) {
         val scope = when {
