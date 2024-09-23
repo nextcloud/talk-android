@@ -46,7 +46,9 @@ class ConversationCreationViewModel @Inject constructor(
     }
 
     fun isPasswordEnabled(value: Boolean) {
-        isPasswordEnabled.value = value
+        _isPasswordEnabled.value = value
+    }
+
     fun updateSelectedImageUri(uri: Uri?) {
         _selectedImageUri.value = uri
     }
@@ -77,7 +79,6 @@ class ConversationCreationViewModel @Inject constructor(
         roomType: String,
         conversationName: String,
         participants: Set<AutocompleteUser>,
-        selectedImageUri: Uri?,
         onRoomCreated: (String) -> Unit
     ) {
         val scope = when {
