@@ -434,9 +434,10 @@ How to translate with transifex:
     <string name="nc_guest_access_allow_summary">Allow guests to share a public link to join this conversation.</string>
     <string name="nc_guest_access_allow_failed">Cannot enable/disable guest access.</string>
     <string name="nc_set_password">Set Password</string>
+    <string name="nc_password">Password</string>
     <string name="nc_change_password">Change Password</string>
     <string name="nc_remove_password">Remove Password</string>
-    <string name="nc_set_new_password">Set a new password</string>
+    <string name="nc_set_new_password">Set new password</string>
     <string name="nc_guest_access_password_title">Password protection</string>
     <string name="nc_guest_access_password_summary">Set a password to restrict who can use the public link.</string>
     <string name="nc_guest_access_password_dialog_title">Guest access password</string>

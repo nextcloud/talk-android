@@ -26,6 +26,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -37,13 +38,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
-import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -51,6 +50,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -74,6 +74,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -580,58 +581,69 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
     Dialog(onDismissRequest = {
         onDismiss()
     }) {
-        Card(
+        Surface(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(375.dp)
-                .padding(16.dp)
-                .background(color = colorResource(id = R.color.appbar)),
-            shape = RoundedCornerShape(16.dp)
+                .padding(32.dp)
+                .background(color = colorResource(id = R.color.appbar))
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp, horizontal = 16.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = stringResource(id = R.string.nc_change_password))
+                Text(text = stringResource(id = R.string.nc_set_new_password), fontWeight = FontWeight.SemiBold)
+                Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = changedPassword,
                     onValueChange = {
                         changedPassword = it
                     },
-                    label = { Text(text = stringResource(id = R.string.nc_set_new_password)) },
+                    label = { Text(text = stringResource(id = R.string.nc_password)) },
                     singleLine = true
                 )
-                if (changedPassword.isNotEmpty() && changedPassword.isNotBlank()) {
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     TextButton(
                         onClick = {
                             conversationCreationViewModel.updatePassword(changedPassword)
                             conversationCreationViewModel.isPasswordEnabled.value = true
                             onDismiss()
                         },
-                        modifier = Modifier.padding(8.dp)
+                        enabled = changedPassword.isNotEmpty() && changedPassword.isNotBlank(),
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(text = stringResource(id = R.string.nc_change_password))
                     }
-                }
-                TextButton(
-                    onClick = {
-                        conversationCreationViewModel.isPasswordEnabled.value = true
-                        onDismiss()
-                    },
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(text = stringResource(id = R.string.nc_remove_password))
-                }
-                TextButton(
-                    onClick = {
-                        conversationCreationViewModel.isPasswordEnabled.value = true
-                        onDismiss()
-                    },
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(text = stringResource(id = R.string.nc_cancel))
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TextButton(
+                        onClick = {
+                            conversationCreationViewModel.isPasswordEnabled.value = false
+                            onDismiss()
+                        },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.nc_remove_password),
+                            color = colorResource(id = R.color.nc_darkRed)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    TextButton(
+                        onClick = { onDismiss() },
+                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        Text(text = stringResource(id = R.string.nc_cancel))
+                    }
                 }
             }
         }
