@@ -61,7 +61,6 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -468,7 +467,7 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
 
     if (isGuestsAllowed && !isPasswordSet) {
         ConversationOptions(
-            icon = R.drawable.ic_lock_grey600_24px,
+            icon = R.drawable.baseline_lock_open_24,
             text = R.string.nc_set_password,
             conversationCreationViewModel = conversationCreationViewModel
         )
@@ -656,6 +655,16 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
         onDismissRequest = onDismiss,
+        title = { Text(text = stringResource(id = R.string.nc_set_password)) },
+        text = {
+            TextField(
+                value = password,
+                onValueChange = {
+                    password = it
+                },
+                label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
+            )
+        },
         confirmButton = {
             Button(
                 onClick = {
@@ -667,16 +676,6 @@ fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: Con
             ) {
                 Text(text = stringResource(id = R.string.save))
             }
-        },
-        title = { Text(text = stringResource(id = R.string.nc_set_password)) },
-        text = {
-            TextField(
-                value = password,
-                onValueChange = {
-                    password = it
-                },
-                label = { Text(text = stringResource(id = R.string.nc_guest_access_password_dialog_hint)) }
-            )
         },
         dismissButton = {
             Button(onClick = { onDismiss() }) {
