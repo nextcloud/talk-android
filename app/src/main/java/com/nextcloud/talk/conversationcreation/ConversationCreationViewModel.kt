@@ -41,17 +41,15 @@ class ConversationCreationViewModel @Inject constructor(
     private val _isPasswordEnabled = mutableStateOf(false)
     val isPasswordEnabled = _isPasswordEnabled
 
-    private val _isPasswordChanged = mutableStateOf(false)
-    val isPasswordChanged = _isPasswordChanged
-
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         _selectedParticipants.value = participants
     }
 
+    fun isPasswordEnabled(value: Boolean) {
+        isPasswordEnabled.value = value
     fun updateSelectedImageUri(uri: Uri?) {
         _selectedImageUri.value = uri
     }
-
     private val _roomName = MutableStateFlow("")
     val roomName: StateFlow<String> = _roomName
     private val _password = MutableStateFlow("")

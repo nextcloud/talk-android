@@ -445,7 +445,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
     val isOpenForGuestAppUsers = conversationCreationViewModel.openForGuestAppUsers.value
 
     val isPasswordSet = conversationCreationViewModel.isPasswordEnabled.value
-    val isPasswordChanged = conversationCreationViewModel.isPasswordChanged.value
 
     Text(
         text = stringResource(id = R.string.nc_new_conversation_visibility).uppercase(),
@@ -463,7 +462,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 }
             )
         },
-        showDialog = false,
         conversationCreationViewModel = conversationCreationViewModel
     )
 
@@ -471,7 +469,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         ConversationOptions(
             icon = R.drawable.ic_lock_grey600_24px,
             text = R.string.nc_set_password,
-            showDialog = true,
             conversationCreationViewModel = conversationCreationViewModel
         )
     }
@@ -480,7 +477,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
         ConversationOptions(
             icon = R.drawable.ic_lock_grey600_24px,
             text = R.string.nc_change_password,
-            showDialog = false,
             conversationCreationViewModel = conversationCreationViewModel
         )
     }
@@ -496,7 +492,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                 }
             )
         },
-        showDialog = false,
         conversationCreationViewModel = conversationCreationViewModel
     )
 
@@ -511,7 +506,6 @@ fun RoomCreationOptions(conversationCreationViewModel: ConversationCreationViewM
                     }
                 )
             },
-            showDialog = false,
             conversationCreationViewModel = conversationCreationViewModel
         )
     }
@@ -522,18 +516,22 @@ fun ConversationOptions(
     icon: Int? = null,
     text: Int,
     switch: @Composable (() -> Unit)? = null,
-    showDialog: Boolean,
     conversationCreationViewModel: ConversationCreationViewModel
 ) {
     var showPasswordDialog by rememberSaveable { mutableStateOf(false) }
+    var showPasswordChangeDialog by rememberSaveable { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 16.dp, end = 16.dp, bottom = 8.dp)
             .then(
-                if (showDialog) {
+                if (!conversationCreationViewModel.isPasswordEnabled.value) {
                     Modifier.clickable {
                         showPasswordDialog = true
+                    }
+                } else if (conversationCreationViewModel.isPasswordEnabled.value) {
+                    Modifier.clickable {
+                        showPasswordChangeDialog = true
                     }
                 } else {
                     Modifier
@@ -565,9 +563,10 @@ fun ConversationOptions(
                 conversationCreationViewModel = conversationCreationViewModel
             )
         }
-        if (conversationCreationViewModel.isPasswordChanged.value) {
+        if (showPasswordChangeDialog) {
             ShowChangePassword(
                 onDismiss = {
+                    showPasswordChangeDialog = false
                 },
                 conversationCreationViewModel = conversationCreationViewModel
             )
@@ -578,17 +577,15 @@ fun ConversationOptions(
 @Composable
 fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var changedPassword by rememberSaveable { mutableStateOf("") }
-    Dialog(onDismissRequest = { }) {
+    Dialog(onDismissRequest = {
+        onDismiss()
+    }) {
         Card(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(375.dp)
                 .padding(16.dp)
-                .background(color = colorResource(id = R.color.appbar))
-                .clickable {
-                    if (conversationCreationViewModel.isPasswordEnabled.value) {
-                    }
-                },
+                .background(color = colorResource(id = R.color.appbar)),
             shape = RoundedCornerShape(16.dp)
         ) {
             Column(
@@ -606,21 +603,32 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                     label = { Text(text = stringResource(id = R.string.nc_set_new_password)) },
                     singleLine = true
                 )
-
-                TextButton(
-                    onClick = { },
-                    modifier = Modifier.padding(8.dp)
-                ) {
-                    Text(text = stringResource(id = R.string.nc_change_password))
+                if (changedPassword.isNotEmpty() && changedPassword.isNotBlank()) {
+                    TextButton(
+                        onClick = {
+                            conversationCreationViewModel.updatePassword(changedPassword)
+                            conversationCreationViewModel.isPasswordEnabled.value = true
+                            onDismiss()
+                        },
+                        modifier = Modifier.padding(8.dp)
+                    ) {
+                        Text(text = stringResource(id = R.string.nc_change_password))
+                    }
                 }
                 TextButton(
-                    onClick = { },
+                    onClick = {
+                        conversationCreationViewModel.isPasswordEnabled.value = true
+                        onDismiss()
+                    },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text(text = stringResource(id = R.string.nc_remove_password))
                 }
                 TextButton(
-                    onClick = { },
+                    onClick = {
+                        conversationCreationViewModel.isPasswordEnabled.value = true
+                        onDismiss()
+                    },
                     modifier = Modifier.padding(8.dp)
                 ) {
                     Text(text = stringResource(id = R.string.nc_cancel))
@@ -633,18 +641,18 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
 @Composable
 fun ShowPasswordDialog(onDismiss: () -> Unit, conversationCreationViewModel: ConversationCreationViewModel) {
     var password by rememberSaveable { mutableStateOf("") }
-
     AlertDialog(
         containerColor = colorResource(id = R.color.dialog_background),
         onDismissRequest = onDismiss,
         confirmButton = {
-            Button(onClick = {
-                if (password.isNotEmpty()) {
-                    conversationCreationViewModel.updatePassword(password)
-                    conversationCreationViewModel.isPasswordEnabled(true)
+            Button(
+                onClick = {
+                    if (password.isNotEmpty() && password.isNotBlank()) {
+                        conversationCreationViewModel.updatePassword(password)
+                        conversationCreationViewModel.isPasswordEnabled(true)
+                    }
                 }
-                onDismiss()
-            }) {
+            ) {
                 Text(text = stringResource(id = R.string.save))
             }
         },
