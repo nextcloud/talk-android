@@ -2535,8 +2535,12 @@ class ChatActivity :
             }
         }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
-            deleteExpiredMessages()
+        if (this::spreedCapabilities.isInitialized) {
+            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
+                deleteExpiredMessages()
+            }
+        } else {
+            Log.w(TAG, "spreedCapabilities are not initialized in processExpiredMessages()")
         }
     }
 
