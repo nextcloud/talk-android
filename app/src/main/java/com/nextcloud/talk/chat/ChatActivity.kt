@@ -571,48 +571,63 @@ class ChatActivity :
         chatViewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
-                    spreedCapabilities = state.spreedCapabilities
-                    chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                    participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                    if (currentConversation != null) {
+                        spreedCapabilities = state.spreedCapabilities
+                        chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
-                    invalidateOptionsMenu()
-                    checkShowCallButtons()
-                    checkLobbyState()
-                    updateRoomTimerHandler()
+                        invalidateOptionsMenu()
+                        checkShowCallButtons()
+                        checkLobbyState()
+                        updateRoomTimerHandler()
+                    } else {
+                        Log.w(
+                            TAG,
+                            "currentConversation was null in observer ChatViewModel.GetCapabilitiesUpdateState"
+                        )
+                    }
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
-                    spreedCapabilities = state.spreedCapabilities
-                    chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                    participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                    if (currentConversation != null) {
+                        spreedCapabilities = state.spreedCapabilities
+                        chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
-                    supportFragmentManager.commit {
-                        setReorderingAllowed(true) // optimizes out redundant replace operations
-                        replace(R.id.fragment_container_activity_chat, messageInputFragment)
-                    }
+                        supportFragmentManager.commit {
+                            setReorderingAllowed(true) // optimizes out redundant replace operations
+                            replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        }
 
-                    joinRoomWithPassword()
+                        joinRoomWithPassword()
 
-                    if (conversationUser?.userId != "?" &&
-                        CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
-                    ) {
-                        binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
-                    }
+                        if (conversationUser?.userId != "?" &&
+                            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                        ) {
+                            binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
+                        }
 
-                    loadAvatarForStatusBar()
-                    setupSwipeToReply()
-                    setActionBarTitle()
+                        loadAvatarForStatusBar()
+                        setupSwipeToReply()
+                        setActionBarTitle()
 
-                    checkShowCallButtons()
-                    checkLobbyState()
-                    updateRoomTimerHandler()
+                        checkShowCallButtons()
+                        checkLobbyState()
+                        updateRoomTimerHandler()
 
-                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+                        val urlForChatting =
+                            ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-                    if (adapter?.isEmpty == true) {
-                        chatViewModel.loadMessages(
-                            withCredentials = credentials!!,
-                            withUrl = urlForChatting
+                        if (adapter?.isEmpty == true) {
+                            chatViewModel.loadMessages(
+                                withCredentials = credentials!!,
+                                withUrl = urlForChatting
+                            )
+                        }
+                    } else {
+                        Log.w(
+                            TAG,
+                            "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
                         )
                     }
                 }
