@@ -2448,7 +2448,9 @@ class ChatActivity :
                 }
 
                 override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
-                    if (signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer == null) {
+                    if (signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer == null ||
+                        signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer?.isEmpty() == true
+                    ) {
                         return
                     }
 
