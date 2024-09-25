@@ -535,14 +535,30 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
-        messageInputViewModel.messageQueueFlow.observe(this) { message ->
-            // TODO shouldn't be able save state
-            val temporaryChatMessage = ChatMessage()
-            temporaryChatMessage.jsonMessageId = -3
-            temporaryChatMessage.actorId = "-3"
-            temporaryChatMessage.timestamp = (adapter?.items?.get(0)?.item as ChatMessage).timestamp
-            temporaryChatMessage.message = message
-            adapter?.addToStart(temporaryChatMessage, true)
+        messageInputViewModel.messageQueueFlow.observe(this) { list ->
+            for (message in list) {
+                Log.d("Julius", "Message recieved: $message")
+                val temporaryChatMessage = ChatMessage()
+                temporaryChatMessage.jsonMessageId = -3
+                temporaryChatMessage.actorId = "-3"
+                temporaryChatMessage.timestamp = System.currentTimeMillis() / 1000
+                temporaryChatMessage.message = message
+                adapter?.addToStart(temporaryChatMessage, true)
+            }
+        }
+
+        messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
+            if (size == 0) {
+                var i = 0
+                var pos = adapter?.getMessagePositionById("-3")
+                while (pos != null && pos > -1) {
+                    adapter?.items?.removeAt(pos)
+                    i++
+                    pos = adapter?.getMessagePositionById("-3")
+                }
+                Log.d("Julius", "End i: $i")
+            }
+
         }
 
         this.lifecycleScope.launch {
@@ -647,6 +663,7 @@ class ChatActivity :
                             "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
                         )
                     }
+                    messageInputViewModel.getTempMessagesFromMessageQueue(roomToken)
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -2367,8 +2384,8 @@ class ChatActivity :
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
+                    Log.e(TAG, "setActionBarTitle failed $e")
                     currentConversation?.displayName
-                    error(e)
                 }
             } else {
                 ""

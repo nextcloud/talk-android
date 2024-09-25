@@ -124,8 +124,8 @@ class MessageInputViewModel @Inject constructor(
     val messageQueueSizeFlow: LiveData<Int>
         get() = _messageQueueSizeFlow.asLiveData()
 
-    private val _messageQueueFlow: MutableLiveData<String> = MutableLiveData()
-    val messageQueueFlow: LiveData<String>
+    private val _messageQueueFlow: MutableLiveData<List<String>> = MutableLiveData()
+    val messageQueueFlow: LiveData<List<String>>
         get() = _messageQueueFlow
 
     @Suppress("LongParameterList")
@@ -142,7 +142,7 @@ class MessageInputViewModel @Inject constructor(
             messageQueue.add(QueuedMessage(message, displayName, replyTo, sendWithoutNotification))
             dataStore.saveMessageQueue(roomToken, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
-            _messageQueueFlow.postValue(message.toString())
+            _messageQueueFlow.postValue(listOf(message.toString()))
             return
         }
 
@@ -266,6 +266,17 @@ class MessageInputViewModel @Inject constructor(
                 msg.sendWithoutNotification!!
             )
         }
+        _messageQueueSizeFlow.tryEmit(0)
+    }
+
+    fun getTempMessagesFromMessageQueue(roomToken: String) {
+        val queue = dataStore.getMessageQueue(roomToken)
+        val list = mutableListOf<String>()
+        for (msg in queue) {
+            Log.d("Julius", "Msg: ${msg.message}")
+            list.add(msg.message.toString())
+        }
+        _messageQueueFlow.postValue(list)
     }
 
     fun switchToMessageQueue(shouldQueue: Boolean) {
@@ -279,6 +290,6 @@ class MessageInputViewModel @Inject constructor(
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 500
+        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 100
     }
 }

@@ -73,7 +73,6 @@ import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
 import com.vanniktech.emoji.EmojiPopup
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -184,13 +183,15 @@ class MessageInputFragment : Fragment() {
                 val connectionGained = (!wasOnline && isOnline)
                 wasOnline = !binding.fragmentMessageInputView.isShown
                 Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                delay(500)
+                // delay(2000)
                 handleMessageQueue(isOnline)
                 handleUI(isOnline, connectionGained)
             }.collect()
         }
 
         chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
+            Log.d("Julius", "MessageQueueSizeFlow recieved: $size")
+
             if (size > 0) {
                 binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
             } else {
@@ -233,7 +234,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.clearAnimation()
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
-            binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
+            // binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
             binding.fragmentConnectionLost.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.isEnabled = false
             binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
