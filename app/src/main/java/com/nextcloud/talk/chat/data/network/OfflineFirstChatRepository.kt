@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import java.lang.Thread.sleep
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
@@ -390,29 +392,29 @@ class OfflineFirstChatRepository @Inject constructor(
                                     Integer.parseInt(it)
                                 }
 
-                                return@map Pair(
-                                    HTTP_CODE_OK,
-                                    (it.body() as ChatOverall).ocs!!.data!!
-                                )
-                            }
+                            return@map Pair(
+                                HTTP_CODE_OK,
+                                (it.body() as ChatOverall).ocs!!.data!!
+                            )
+                        }
 
-                            HTTP_CODE_NOT_MODIFIED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
+                        HTTP_CODE_NOT_MODIFIED -> {
+                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
 
-                                return@map Pair(
-                                    HTTP_CODE_NOT_MODIFIED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
+                            return@map Pair(
+                                HTTP_CODE_NOT_MODIFIED,
+                                listOf<ChatMessageJson>()
+                            )
+                        }
 
-                            HTTP_CODE_PRECONDITION_FAILED -> {
-                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
+                        HTTP_CODE_PRECONDITION_FAILED -> {
+                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
 
-                                return@map Pair(
-                                    HTTP_CODE_PRECONDITION_FAILED,
-                                    listOf<ChatMessageJson>()
-                                )
-                            }
+                            return@map Pair(
+                                HTTP_CODE_PRECONDITION_FAILED,
+                                listOf<ChatMessageJson>()
+                            )
+                        }
 
                             else -> {
                                 return@map Pair(
