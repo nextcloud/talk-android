@@ -356,8 +356,8 @@ class ConversationInfoActivity :
             binding.webinarInfoView.startTimeButton.setOnClickListener {
                 MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
-                    if (conversation!!.lobbyTimer != null && conversation!!.lobbyTimer != 0L) {
-                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
+                    if (conversation!!.lobbyTimer != 0L) {
+                        currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * DateConstants.SECOND_DIVIDER
                     }
 
                     dateTimePicker(
@@ -746,13 +746,13 @@ class ConversationInfoActivity :
 
             setupWebinaryView()
 
-            if (!ConversationUtils.canLeave(conversation!!)) {
+            if (!conversation!!.canLeaveConversation) {
                 binding.leaveConversationAction.visibility = GONE
             } else {
                 binding.leaveConversationAction.visibility = VISIBLE
             }
 
-            if (!ConversationUtils.canDelete(conversation!!, spreedCapabilities)) {
+            if (!conversation!!.canDeleteConversation) {
                 binding.deleteConversationAction.visibility = GONE
             } else {
                 binding.deleteConversationAction.visibility = VISIBLE
