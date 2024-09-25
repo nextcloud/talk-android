@@ -164,7 +164,12 @@
     <string name="nc_diagnose_device_name_title">Zařízení</string>
     <string name="nc_diagnose_dialog_open_diagnose">Otevřít diagnostickou obrazovku</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Otevřít dontkillmyapp.com</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">Ještě nezaregistrováno na serveru</string>
+    <string name="nc_diagnose_meta_category_title">Metainformace</string>
     <string name="nc_diagnose_meta_system_report_date">Vytváření výkazu o systému</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Kanál upozorňování na hovory zapnut?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Kanál upozorňování na zprávy zapnut?</string>
+    <string name="nc_diagnose_notification_permission">Oprávnění upozornění</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
     <string name="nc_diagnose_server_talk_version">Verze Talk na serveru</string>
     <string name="nc_diagnose_server_version">Verze serveru</string>
@@ -185,7 +190,10 @@
     <string name="nc_dialog_save_to_storage_yes">Ano</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
+    <string name="nc_edit_icon">Upravit ikonu</string>
     <string name="nc_edit_message">Upravit</string>
+    <string name="nc_edit_message_text">Upravit text zprávy</string>
+    <string name="nc_edited_by_admin">Upraveno správcem</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 hodin</string>
     <string name="nc_expire_message_four_weeks">4 týdny</string>
@@ -198,6 +206,9 @@
     <string name="nc_external_server_failed">Nepodařilo se získat nastavení signalizace</string>
     <string name="nc_federation_invitation_accept">Přijmout</string>
     <string name="nc_federation_invitation_reject">Zamítnout</string>
+    <string name="nc_federation_invited_to_room">od %1$s v %2$s</string>
+    <string name="nc_federation_no_invitations">Žádné nevyřízené pozvánky</string>
+    <string name="nc_federation_pending_invitation_hint">Máte nevyřízené pozvánky</string>
     <string name="nc_file_browser_back">Zpět</string>
     <string name="nc_file_storage_permission">Je zapotřebí oprávnění pro přístup k souborům</string>
     <string name="nc_filter">Filtrovat konverzace</string>
@@ -327,6 +338,7 @@
     <string name="nc_search">Hledat</string>
     <string name="nc_select_an_account">Vyberte účet</string>
     <string name="nc_select_participants">Vybrat účastníky</string>
+    <string name="nc_send_edit_message">Poslat upravovací zprávu</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>
     <string name="nc_sent_a_gif_you">Odeslali jste GIF animaci.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
@@ -357,11 +369,13 @@
     <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
     <string name="nc_server_url">Adresa serveru https://…</string>
     <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novějším</string>
+    <string name="nc_set_password">Nastavit heslo</string>
     <string name="nc_settings">Nastavení</string>
     <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>
     <string name="nc_settings_advanced_title">Pokročilé</string>
     <string name="nc_settings_appearance">Vzhled</string>
     <string name="nc_settings_call_ringtone">Volání</string>
+    <string name="nc_settings_diagnose_subtitle">Otevřít diagnostickou obrazovku pro kontrolu nastavení nebo vytvoření hlášení chyby</string>
     <string name="nc_settings_diagnose_title">Diagnostika</string>
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
@@ -447,6 +461,7 @@
     <string name="nc_voice_message_slide_to_cancel">« Zrušíte přejetím prstem</string>
     <string name="nc_webinar">Webinář</string>
     <string name="nc_yes">Ano</string>
+    <string name="new_conversation_creation_icon">Ikona vytváření nové konverzace</string>
     <string name="next_week">Příští týden</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="oneHour">1 hodina</string>
@@ -503,6 +518,7 @@
     <string name="scope_toggle">Přepnout pohled</string>
     <string name="scope_toggle_description">Změnit úroveň soukromí pro %1$s</string>
     <string name="scroll_to_bottom">Odrolovat na konec</string>
+    <string name="search_icon">Ikona vyhledávání</string>
     <string name="secondsAgo">sekund před</string>
     <string name="see_similar_system_messages">Viz %1$s podobných zpráv</string>
     <string name="selected_list_item">Vybráno</string>
@@ -516,6 +532,7 @@
     <string name="set_status">Nastavit stav</string>
     <string name="set_status_message">Nastavit stavovou zprávu</string>
     <string name="share">Sdílet</string>
+    <string name="share_link_to_conversation">Připojit se ke konverzaci %1$s na %2$s</string>
     <string name="shared_items_audio">Zvuk</string>
     <string name="shared_items_file">Soubor</string>
     <string name="shared_items_media">Média</string>
@@ -523,6 +540,8 @@
     <string name="shared_items_poll">Anketa</string>
     <string name="shared_items_recording">Nahrávka hovoru</string>
     <string name="shared_items_voice">Hlas</string>
+    <string name="show_ban_reason">Zobrazit důvod vyloučení</string>
+    <string name="show_banned_participants">Zobrazit vyloučené účasníky</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="started_a_call">zahájen hovor</string>
@@ -557,6 +576,7 @@
     <string name="typing_are_typing">píší…</string>
     <string name="typing_is_typing">píše…</string>
     <string name="typing_x_others">a %1$s ostatní píší…</string>
+    <string name="unban">Zrušit vyloučení</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
     <string name="user_avatar">Zástupný obrázek uživatele</string>
