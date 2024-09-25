@@ -200,10 +200,9 @@ class DateTimePickerFragment : DialogFragment() {
 
                 val year = calendar.get(Calendar.YEAR)
                 val month = calendar.get(Calendar.MONTH)
-                val day = calendar.get(Calendar.DAY_OF_WEEK)
-                val weekInYear = calendar.get(Calendar.WEEK_OF_YEAR)
+                val day = calendar.get(Calendar.DAY_OF_YEAR)
 
-                setUpTimePicker(year, month, day, weekInYear)
+                setUpTimePicker(year, month, day)
             }
             datePicker.show(this.parentFragmentManager, TAG)
         }
@@ -226,7 +225,7 @@ class DateTimePickerFragment : DialogFragment() {
         }
     }
 
-    private fun setUpTimePicker(year: Int, month: Int, day: Int, weekInYear: Int) {
+    private fun setUpTimePicker(year: Int, month: Int, day: Int) {
         val locale = if (DateFormat.is24HourFormat(requireContext())) TimeFormat.CLOCK_24H else TimeFormat.CLOCK_12H
         val timePicker = MaterialTimePicker.Builder()
             .setTitleText(R.string.nc_remind)
@@ -240,7 +239,6 @@ class DateTimePickerFragment : DialogFragment() {
                 day,
                 timePicker.hour,
                 timePicker.minute,
-                weekInYear = weekInYear
             )
             setTimeStamp(getTimeFromTimeStamp(timestamp))
             currentTimeStamp = timestamp / ONE_SEC
@@ -260,14 +258,16 @@ class DateTimePickerFragment : DialogFragment() {
         hour: Int = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
         minute: Int = Calendar.getInstance().get(Calendar.MINUTE),
         daysToAdd: Int = 0,
-        weekInYear: Int = Calendar.getInstance().get(Calendar.WEEK_OF_YEAR),
+        weekInYear: Int = -1,
         weekDay: Int = -1
     ): Long {
         val calendar: Calendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
-            if (weekDay > -1) set(Calendar.DAY_OF_WEEK, weekDay) else set(Calendar.DAY_OF_YEAR, day)
-            if (daysToAdd > 0) add(Calendar.DAY_OF_YEAR, daysToAdd) else set(Calendar.WEEK_OF_YEAR, weekInYear)
+            set(Calendar.DAY_OF_YEAR,day)
+            if (weekDay > -1) set(Calendar.DAY_OF_WEEK, weekDay)
+            if (daysToAdd > 0) add(Calendar.DAY_OF_YEAR, daysToAdd)
+            if (weekInYear != -1) set(Calendar.WEEK_OF_YEAR, weekInYear)
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
             set(Calendar.SECOND, 0)
