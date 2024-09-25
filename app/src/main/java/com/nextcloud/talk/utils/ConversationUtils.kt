@@ -55,25 +55,6 @@ object ConversationUtils {
             ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != conversation.type
     }
 
-    fun canLeave(conversation: ConversationModel): Boolean {
-        return if (conversation.canLeaveConversation != null) {
-            // Available since APIv2
-            conversation.canLeaveConversation!!
-        } else {
-            true
-        }
-    }
-
-    fun canDelete(conversation: ConversationModel, spreedCapability: SpreedCapability): Boolean {
-        return if (conversation.canDeleteConversation != null) {
-            // Available since APIv2
-            conversation.canDeleteConversation!!
-        } else {
-            canModerate(conversation, spreedCapability)
-            // Fallback for APIv1
-        }
-    }
-
     fun isNoteToSelfConversation(currentConversation: ConversationModel?): Boolean {
         return currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF

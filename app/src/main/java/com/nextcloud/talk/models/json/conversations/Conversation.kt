@@ -12,8 +12,6 @@ package com.nextcloud.talk.models.json.conversations
 import android.os.Parcelable
 import com.bluelinelabs.logansquare.annotation.JsonField
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.converters.ConversationObjectTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumLobbyStateConverter
@@ -22,48 +20,45 @@ import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumReadOnlyConversationConverter
 import com.nextcloud.talk.models.json.converters.EnumRoomTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant.ParticipantType
-import com.nextcloud.talk.utils.ConversationUtils
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 @JsonObject
 data class Conversation(
-    // @JsonField(name = ["id"])
-    // var roomId: String? = null,
     @JsonField(name = ["token"])
-    var token: String? = null,
+    var token: String = "",
 
     @JsonField(name = ["name"])
-    var name: String? = null,
+    var name: String = "",
 
     @JsonField(name = ["displayName"])
-    var displayName: String? = null,
+    var displayName: String = "",
 
     @JsonField(name = ["description"])
-    var description: String? = null,
+    var description: String = "",
 
     @JsonField(name = ["type"], typeConverter = EnumRoomTypeConverter::class)
-    var type: ConversationEnums.ConversationType? = null,
+    var type: ConversationEnums.ConversationType = ConversationEnums.ConversationType.DUMMY,
 
     @JsonField(name = ["lastPing"])
     var lastPing: Long = 0,
 
     @JsonField(name = ["participantType"], typeConverter = EnumParticipantTypeConverter::class)
-    var participantType: ParticipantType? = null,
+    var participantType: ParticipantType = ParticipantType.DUMMY,
 
     @JsonField(name = ["hasPassword"])
     var hasPassword: Boolean = false,
 
     @JsonField(name = ["sessionId"])
-    var sessionId: String? = null,
+    var sessionId: String = "0",
 
     @JsonField(name = ["actorId"])
-    var actorId: String? = null,
+    var actorId: String = "",
 
     @JsonField(name = ["actorType"])
-    var actorType: String? = null,
+    var actorType: String = "",
 
-    var password: String? = null,
+    var password: String? = null, //check if this can be removed.Does not belong to api response but is used internally?
 
     @JsonField(name = ["isFavorite"])
     var favorite: Boolean = false,
@@ -81,19 +76,20 @@ data class Conversation(
     var lastMessage: ChatMessageJson? = null,
 
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
-    var objectType: ConversationEnums.ObjectType? = null,
+    var objectType: ConversationEnums.ObjectType = ConversationEnums.ObjectType.DEFAULT,
 
     @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
-    var notificationLevel: ConversationEnums.NotificationLevel? = null,
+    var notificationLevel: ConversationEnums.NotificationLevel = ConversationEnums.NotificationLevel.DEFAULT,
 
     @JsonField(name = ["readOnly"], typeConverter = EnumReadOnlyConversationConverter::class)
-    var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState? = null,
+    var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState =
+        ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
 
     @JsonField(name = ["lobbyState"], typeConverter = EnumLobbyStateConverter::class)
-    var lobbyState: ConversationEnums.LobbyState? = null,
+    var lobbyState: ConversationEnums.LobbyState = ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS,
 
     @JsonField(name = ["lobbyTimer"])
-    var lobbyTimer: Long? = null,
+    var lobbyTimer: Long = 0,
 
     @JsonField(name = ["lastReadMessage"])
     var lastReadMessage: Int = 0,
@@ -111,16 +107,16 @@ data class Conversation(
     var canStartCall: Boolean = false,
 
     @JsonField(name = ["canLeaveConversation"])
-    var canLeaveConversation: Boolean? = null,
+    var canLeaveConversation: Boolean = true,
 
     @JsonField(name = ["canDeleteConversation"])
-    var canDeleteConversation: Boolean? = null,
+    var canDeleteConversation: Boolean = false,
 
     @JsonField(name = ["unreadMentionDirect"])
-    var unreadMentionDirect: Boolean? = null,
+    var unreadMentionDirect: Boolean = false,
 
     @JsonField(name = ["notificationCalls"])
-    var notificationCalls: Int? = null,
+    var notificationCalls: Int = 0,
 
     @JsonField(name = ["permissions"])
     var permissions: Int = 0,
@@ -129,107 +125,38 @@ data class Conversation(
     var messageExpiration: Int = 0,
 
     @JsonField(name = ["status"])
-    var status: String? = null,
+    var status: String? = "",
 
     @JsonField(name = ["statusIcon"])
-    var statusIcon: String? = null,
+    var statusIcon: String? = "",
 
     @JsonField(name = ["statusMessage"])
-    var statusMessage: String? = null,
+    var statusMessage: String? = "",
 
     @JsonField(name = ["statusClearAt"])
-    var statusClearAt: Long? = 0,
+    var statusClearAt: Long? = null,
 
     @JsonField(name = ["callRecording"])
     var callRecording: Int = 0,
 
     @JsonField(name = ["avatarVersion"])
-    var avatarVersion: String? = "",
+    var avatarVersion: String = "",
 
     // Be aware that variables with "is" at the beginning will lead to the error:
     // "@JsonField annotation can only be used on private fields if both getter and setter are present."
     // Instead, name it with "has" at the beginning: isCustomAvatar -> hasCustomAvatar
     @JsonField(name = ["isCustomAvatar"])
-    var hasCustomAvatar: Boolean? = false,
+    var hasCustomAvatar: Boolean = false,
 
     @JsonField(name = ["callStartTime"])
-    var callStartTime: Long? = 0L,
+    var callStartTime: Long = 0L,
 
     @JsonField(name = ["recordingConsent"])
     var recordingConsentRequired: Int = 0,
 
     @JsonField(name = ["remoteServer"])
-    var remoteServer: String? = null,
+    var remoteServer: String? = "",
 
     @JsonField(name = ["remoteToken"])
-    var remoteToken: String? = null
-) : Parcelable {
-    @Deprecated("Use ConversationUtil")
-    val isPublic: Boolean
-        get() = ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == type
-
-    @Deprecated("Use ConversationUtil")
-    val isGuest: Boolean
-        get() = ParticipantType.GUEST == participantType ||
-            ParticipantType.GUEST_MODERATOR == participantType ||
-            ParticipantType.USER_FOLLOWING_LINK == participantType
-
-    @Deprecated("Use ConversationUtil")
-    val isParticipantOwnerOrModerator: Boolean
-        get() = ParticipantType.OWNER == participantType ||
-            ParticipantType.GUEST_MODERATOR == participantType ||
-            ParticipantType.MODERATOR == participantType
-
-    @Deprecated("Use ConversationUtil")
-    fun canModerate(conversationUser: User): Boolean {
-        return isParticipantOwnerOrModerator &&
-            !ConversationUtils.isLockedOneToOne(
-                ConversationModel.mapToConversationModel(this, conversationUser),
-                conversationUser.capabilities?.spreedCapability!!
-            ) &&
-            type != ConversationEnums.ConversationType.FORMER_ONE_TO_ONE &&
-            !ConversationUtils.isNoteToSelfConversation(
-                ConversationModel.mapToConversationModel(this, conversationUser)
-            )
-    }
-
-    @Deprecated("Use ConversationUtil")
-    fun isLobbyViewApplicable(conversationUser: User): Boolean {
-        return !canModerate(conversationUser) &&
-            (
-                type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
-                    type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
-                )
-    }
-
-    @Deprecated("Use ConversationUtil")
-    fun isNameEditable(conversationUser: User): Boolean {
-        return canModerate(conversationUser) && ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL != type
-    }
-
-    @Deprecated("Use ConversationUtil")
-    fun canLeave(): Boolean {
-        return if (canLeaveConversation != null) {
-            // Available since APIv2
-            canLeaveConversation!!
-        } else {
-            true
-        }
-    }
-
-    @Deprecated("Use ConversationUtil")
-    fun canDelete(conversationUser: User): Boolean {
-        return if (canDeleteConversation != null) {
-            // Available since APIv2
-            canDeleteConversation!!
-        } else {
-            canModerate(conversationUser)
-            // Fallback for APIv1
-        }
-    }
-
-    @Deprecated("Use ConversationUtil")
-    fun isNoteToSelfConversation(): Boolean {
-        return type == ConversationEnums.ConversationType.NOTE_TO_SELF
-    }
-}
+    var remoteToken: String? = ""
+) : Parcelable

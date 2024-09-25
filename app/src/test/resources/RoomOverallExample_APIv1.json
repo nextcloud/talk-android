@@ -1,0 +1,66 @@
+{
+    "ocs": {
+        "meta": {
+            "status": "ok",
+            "statuscode": 200,
+            "message": "OK"
+        },
+        "data": {
+            "id": 6410,
+            "token": "juwd77g6",
+            "type": 1,
+            "name": "marcel",
+            "displayName": "Marcel",
+            "objectType": "",
+            "objectId": "",
+            "participantType": 1,
+            "participantInCall": false,
+            "participantFlags": 0,
+            "readOnly": 0,
+            "count": 0,
+            "hasPassword": false,
+            "hasCall": false,
+            "canStartCall": true,
+            "lastActivity": 1727098966,
+            "lastReadMessage": 92320,
+            "unreadMessages": 0,
+            "unreadMention": false,
+            "isFavorite": false,
+            "notificationLevel": 1,
+            "lobbyState": 0,
+            "lobbyTimer": 0,
+            "lastPing": 1727185155,
+            "sessionId": "0",
+            "participants": {
+                "marcel": {
+                    "name": "marcel",
+                    "type": 1,
+                    "call": 0,
+                    "sessionId": "tonIuryMpwk5mR2h6lFqPC6M8m6hxdT4YN9X9I1v4i2LOJb9r3FzANx\/7HT0j6r8fzBFPJqnOrT\/mdvHzFlfqQsr6Gxo0\/aLkDfIRL32XlGIzficfLaBNCsyctPxwgHv0fwmJUOS2i0ONdC+QWyTJ4bpYw1Ch9hiybxCgEtss3xy9fbjPwWj3gLvpMpcH0OuNkfEwHqByhpiAb3xuu60\/6j671uwYiGe2Ba7PzLFJ3LVuVRXXTbeaZlVwTAioOu"
+                },
+                "Testuser.Lastname": {
+                    "name": "Testuser",
+                    "type": 1,
+                    "call": 0,
+                    "sessionId": "0"
+                }
+            },
+            "numGuests": 0,
+            "guestList": "",
+            "lastMessage": {
+                "id": 175430,
+                "token": "juwd77g6",
+                "actorType": "users",
+                "actorId": "marcel",
+                "actorDisplayName": "Marcel",
+                "timestamp": 1727182442,
+                "message": "test",
+                "messageParameters": [],
+                "systemMessage": "",
+                "messageType": "comment",
+                "isReplyable": true,
+                "referenceId": ""
+            }
+        }
+    }
+}
