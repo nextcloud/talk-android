@@ -134,7 +134,7 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
-            ConversationUtils.canLeave(conversation) &&
+            conversation.canLeaveConversation &&
                 // leaving is by api not possible for the last user with moderator permissions.
                 // for now, hide this option for all moderators.
                 !ConversationUtils.canModerate(conversation, currentUser.capabilities!!.spreedCapability!!)

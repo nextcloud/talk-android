@@ -1745,9 +1745,8 @@ class CallActivity : CallBaseActivity() {
         ApplicationWideCurrentRoomHolder.getInstance().callStartTime = conversation.callStartTime
     }
 
-    private fun startCallTimeCounter(callStartTime: Long?) {
-        if (callStartTime != null &&
-            callStartTime != 0L &&
+    private fun startCallTimeCounter(callStartTime: Long) {
+        if (callStartTime != 0L &&
             hasSpreedFeatureCapability(
                 conversationUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.RECORDING_V1
             )
