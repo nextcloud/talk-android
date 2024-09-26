@@ -16,7 +16,6 @@ import com.nextcloud.talk.models.json.participants.Participant
 class ConversationModel(
     var internalId: String,
     var accountId: Long,
-    // var roomId: String? = null,
     var token: String,
     var name: String,
     var displayName: String,
@@ -70,46 +69,45 @@ class ConversationModel(
             return ConversationModel(
                 internalId = user.id!!.toString() + "@" + conversation.token,
                 accountId = user.id!!,
-                // roomId = conversation.roomId,
-                token = conversation.token!!,
-                name = conversation.name!!,
-                displayName = conversation.displayName!!,
-                description = conversation.description!!,
-                type = conversation.type.let { ConversationEnums.ConversationType.valueOf(it!!.name) },
+                token = conversation.token,
+                name = conversation.name,
+                displayName = conversation.displayName,
+                description = conversation.description,
+                type = conversation.type.let { ConversationEnums.ConversationType.valueOf(it.name) },
                 lastPing = conversation.lastPing,
-                participantType = conversation.participantType.let { Participant.ParticipantType.valueOf(it!!.name) },
+                participantType = conversation.participantType.let { Participant.ParticipantType.valueOf(it.name) },
                 hasPassword = conversation.hasPassword,
-                sessionId = conversation.sessionId!!,
-                actorId = conversation.actorId!!,
-                actorType = conversation.actorType!!,
+                sessionId = conversation.sessionId,
+                actorId = conversation.actorId,
+                actorType = conversation.actorType,
                 password = conversation.password,
                 favorite = conversation.favorite,
                 lastActivity = conversation.lastActivity,
                 unreadMessages = conversation.unreadMessages,
                 unreadMention = conversation.unreadMention,
                 lastMessage = conversation.lastMessage,
-                objectType = conversation.objectType.let { ConversationEnums.ObjectType.valueOf(it!!.name) },
+                objectType = conversation.objectType.let { ConversationEnums.ObjectType.valueOf(it.name) },
                 notificationLevel = conversation.notificationLevel.let {
                     ConversationEnums.NotificationLevel.valueOf(
-                        it!!.name
+                        it.name
                     )
                 },
                 conversationReadOnlyState = conversation.conversationReadOnlyState.let {
                     ConversationEnums.ConversationReadOnlyState.valueOf(
-                        it!!.name
+                        it.name
                     )
                 },
-                lobbyState = conversation.lobbyState.let { ConversationEnums.LobbyState.valueOf(it!!.name) },
-                lobbyTimer = conversation.lobbyTimer!!,
+                lobbyState = conversation.lobbyState.let { ConversationEnums.LobbyState.valueOf(it.name) },
+                lobbyTimer = conversation.lobbyTimer,
                 lastReadMessage = conversation.lastReadMessage,
                 lastCommonReadMessage = conversation.lastCommonReadMessage,
                 hasCall = conversation.hasCall,
                 callFlag = conversation.callFlag,
                 canStartCall = conversation.canStartCall,
-                canLeaveConversation = conversation.canLeaveConversation!!,
-                canDeleteConversation = conversation.canDeleteConversation!!,
-                unreadMentionDirect = conversation.unreadMentionDirect!!,
-                notificationCalls = conversation.notificationCalls!!,
+                canLeaveConversation = conversation.canLeaveConversation,
+                canDeleteConversation = conversation.canDeleteConversation,
+                unreadMentionDirect = conversation.unreadMentionDirect,
+                notificationCalls = conversation.notificationCalls,
                 permissions = conversation.permissions,
                 messageExpiration = conversation.messageExpiration,
                 status = conversation.status,
@@ -117,9 +115,9 @@ class ConversationModel(
                 statusMessage = conversation.statusMessage,
                 statusClearAt = conversation.statusClearAt,
                 callRecording = conversation.callRecording,
-                avatarVersion = conversation.avatarVersion!!,
-                hasCustomAvatar = conversation.hasCustomAvatar!!,
-                callStartTime = conversation.callStartTime!!,
+                avatarVersion = conversation.avatarVersion,
+                hasCustomAvatar = conversation.hasCustomAvatar,
+                callStartTime = conversation.callStartTime,
                 recordingConsentRequired = conversation.recordingConsentRequired,
                 remoteServer = conversation.remoteServer,
                 remoteToken = conversation.remoteToken
@@ -127,47 +125,3 @@ class ConversationModel(
         }
     }
 }
-
-// enum class ConversationType {
-//     DUMMY,
-//     ROOM_TYPE_ONE_TO_ONE_CALL,
-//     ROOM_GROUP_CALL,
-//     ROOM_PUBLIC_CALL,
-//     ROOM_SYSTEM,
-//     FORMER_ONE_TO_ONE,
-//     NOTE_TO_SELF
-// }
-//
-// enum class ParticipantType {
-//     DUMMY,
-//     OWNER,
-//     MODERATOR,
-//     USER,
-//     GUEST,
-//     USER_FOLLOWING_LINK,
-//     GUEST_MODERATOR
-// }
-//
-// enum class ObjectType {
-//     DEFAULT,
-//     SHARE_PASSWORD,
-//     FILE,
-//     ROOM
-// }
-//
-// enum class NotificationLevel {
-//     DEFAULT,
-//     ALWAYS,
-//     MENTION,
-//     NEVER
-// }
-//
-// enum class ConversationReadOnlyState {
-//     CONVERSATION_READ_WRITE,
-//     CONVERSATION_READ_ONLY
-// }
-//
-// enum class LobbyState {
-//     LOBBY_STATE_ALL_PARTICIPANTS,
-//     LOBBY_STATE_MODERATORS_ONLY
-// }

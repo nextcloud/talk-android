@@ -295,6 +295,6 @@ object CapabilitiesUtil {
     const val RECORDING_CONSENT_NOT_REQUIRED = 0
     const val RECORDING_CONSENT_REQUIRED = 1
     const val RECORDING_CONSENT_DEPEND_ON_CONVERSATION = 2
-    private const val SERVER_VERSION_MIN_SUPPORTED = 14
-    private const val SERVER_VERSION_SUPPORT_WARNING = 18
+    private const val SERVER_VERSION_MIN_SUPPORTED = 17
+    private const val SERVER_VERSION_SUPPORT_WARNING = 26
 }
