@@ -140,14 +140,19 @@ class MediaRecorderManager : LifecycleAwareManager {
     private fun setVoiceRecordFileName(context: Context, currentConversation: ConversationModel) {
         val simpleDateFormat = SimpleDateFormat(FILE_DATE_PATTERN)
         val date: String = simpleDateFormat.format(Date())
+        val regex = "[/\\\\:%]".toRegex()
+        val displayName = currentConversation.displayName.replace(regex, " ")
+        val validDisplayName = displayName.replace("\\s+".toRegex(), " ")
 
-        val fileNameWithoutSuffix = String.format(
+        var fileNameWithoutSuffix = String.format(
             context.resources.getString(R.string.nc_voice_message_filename),
             date,
-            currentConversation.displayName
+            validDisplayName
         )
+        if (fileNameWithoutSuffix.length > 146) {
+            fileNameWithoutSuffix = fileNameWithoutSuffix.substring(0, 146)
+        }
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
-
         currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
     }
 
