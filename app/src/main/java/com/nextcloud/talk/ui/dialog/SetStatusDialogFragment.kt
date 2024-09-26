@@ -176,7 +176,9 @@ class SetStatusDialogFragment :
 
         setupGeneralStatusOptions()
 
-        binding.emoji.setText(getString(R.string.default_emoji))
+        if (currentStatus?.icon == null) {
+            binding.emoji.setText(getString(R.string.default_emoji))
+        }
 
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
