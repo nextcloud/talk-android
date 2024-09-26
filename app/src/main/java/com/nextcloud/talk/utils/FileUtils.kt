@@ -27,6 +27,7 @@ object FileUtils {
     private val TAG = FileUtils::class.java.simpleName
     private const val RADIX: Int = 16
     private const val MD5_LENGTH: Int = 32
+    const val FILE_MAX_LENGTH = 146
 
     /**
      * Creates a new [File]
