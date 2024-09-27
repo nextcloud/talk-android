@@ -111,7 +111,11 @@ data class ChatMessage(
 
     var hiddenByCollapse: Boolean = false,
 
-    var openWhenDownloaded: Boolean = true
+    var openWhenDownloaded: Boolean = true,
+
+    var isTempMessage: Boolean = false,
+
+    var tempMessageId: Int = -1
 
 ) : MessageContentType, MessageContentType.Image {
 

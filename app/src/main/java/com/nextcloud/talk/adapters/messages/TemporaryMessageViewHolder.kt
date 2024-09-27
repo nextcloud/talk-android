@@ -11,6 +11,7 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -29,9 +30,22 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
-    override fun onBind(message: ChatMessage?) {
+    lateinit var temporaryMessageInterface: TemporaryMessageInterface
+
+    override fun onBind(message: ChatMessage) {
         super.onBind(message)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+
+        viewThemeUtils.platform.colorImageView(binding.tempMsgEdit, ColorRole.PRIMARY)
+        viewThemeUtils.platform.colorImageView(binding.tempMsgDelete, ColorRole.PRIMARY)
+
+        binding.tempMsgEdit.setOnClickListener {
+            // TODO
+        }
+
+        binding.tempMsgDelete.setOnClickListener {
+            temporaryMessageInterface.deleteTemporaryMessage(message.tempMessageId)
+        }
 
         val bgBubbleColor = bubble.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
         val layout = R.drawable.shape_outcoming_message
@@ -43,6 +57,10 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
 
+    }
+
+    fun assignTemporaryMessageInterface(temporaryMessageInterface: TemporaryMessageInterface) {
+        this.temporaryMessageInterface = temporaryMessageInterface
     }
 
     override fun viewDetached() {

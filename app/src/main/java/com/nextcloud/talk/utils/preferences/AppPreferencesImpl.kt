@@ -484,7 +484,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
                 var queueStr = ""
                 queue?.let {
                     for (msg in queue) {
-                        val msgStr = "${msg.message},${msg.replyTo},${msg.displayName},${msg.sendWithoutNotification}^"
+                        val msgStr = "${msg.id},${msg.message},${msg.replyTo},${msg.displayName},${
+                            msg
+                                .sendWithoutNotification
+                        }^"
                         queueStr += msgStr
                     }
                 }
@@ -504,12 +507,13 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             try {
                 if (msgStr.isNotEmpty()) {
                     val msgArray = msgStr.split(",")
+                    val id = msgArray[ID].toInt()
                     val message = msgArray[MESSAGE_INDEX]
                     val replyTo = msgArray[REPLY_TO_INDEX].toInt()
-                    val displayName = msgArray[DISPLY_NAME_INDEX]
+                    val displayName = msgArray[DISPLAY_NAME_INDEX]
                     val silent = msgArray[SILENT_INDEX].toBoolean()
 
-                    val qMsg = MessageInputViewModel.QueuedMessage(message, displayName, replyTo, silent)
+                    val qMsg = MessageInputViewModel.QueuedMessage(id, message, displayName, replyTo, silent)
                     queue.add(qMsg)
                 }
             } catch (e: IndexOutOfBoundsException) {
@@ -572,10 +576,11 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         @Suppress("UnusedPrivateProperty")
         private val TAG = AppPreferencesImpl::class.simpleName
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-        private const val MESSAGE_INDEX: Int = 0
-        private const val REPLY_TO_INDEX: Int = 1
-        private const val DISPLY_NAME_INDEX: Int = 2
-        private const val SILENT_INDEX: Int = 3
+        private const val ID: Int = 0
+        private const val MESSAGE_INDEX: Int = 1
+        private const val REPLY_TO_INDEX: Int = 2
+        private const val DISPLAY_NAME_INDEX: Int = 3
+        private const val SILENT_INDEX: Int = 4
         const val PROXY_TYPE = "proxy_type"
         const val PROXY_SERVER = "proxy_server"
         const val PROXY_HOST = "proxy_host"
