@@ -6,7 +6,7 @@ SPDX-PackageSupplier = "Nextcloud Android team <android@nextcloud.com>"
 SPDX-PackageDownloadLocation = "https://github.com/nextcloud/talk-android"
 
 [[annotations]]
-path = ["app/src/main/res/values-**/strings.xml", "**/.gitignore", ".idea/**", "app/src/test/resources/robolectric.properties", "app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker", "fastlane/metadata/**", "app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/**.json", "app/src/generic/fastlane/metadata/android/**/full_description.txt"]
+path = ["app/src/main/res/values-**/strings.xml", "**/.gitignore", ".idea/**", "app/src/test/resources/robolectric.properties", "app/src/test/resources/mockito-extensions/org.mockito.plugins.MockMaker", "app/src/test/resources/**.json", "fastlane/metadata/**", "app/schemas/com.nextcloud.talk.data.source.local.TalkDatabase/**.json", "app/src/generic/fastlane/metadata/android/**/full_description.txt"]
 precedence = "aggregate"
 SPDX-FileCopyrightText = "2017-2024 Nextcloud GmbH and Nextcloud contributors"
 SPDX-License-Identifier = "GPL-3.0-or-later"
