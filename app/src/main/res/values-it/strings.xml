@@ -86,6 +86,7 @@
     <string name="nc_certificate_dialog_title">Controlla il certificato</string>
     <string name="nc_certificate_error">La tua configurazione SSL ha impedito la connessione</string>
     <string name="nc_change_cert_auth">Cambia certificato di autenticazione</string>
+    <string name="nc_change_password">Cambia password</string>
     <string name="nc_clear_history">Elimina tutti i messaggi</string>
     <string name="nc_clear_history_success">Tutti i messaggi sono stati eliminati</string>
     <string name="nc_clear_history_warning">Vuoi davvero eliminare tutti i messaggi in questa conversazione?</string>
@@ -224,6 +225,7 @@
     <string name="nc_owner">Proprietario</string>
     <string name="nc_participants">Partecipanti</string>
     <string name="nc_participants_add">Aggiungi partecipanti</string>
+    <string name="nc_password">Password</string>
     <string name="nc_permissions_settings">Apri impostazioni</string>
     <string name="nc_phone_book_integration_account_not_found">Account non trovato</string>
     <string name="nc_phone_book_integration_chat_via">Chat tramite %s</string>
@@ -289,6 +291,7 @@
     <string name="nc_server_unsupported">Sul server non è installata un\'applicazione Talk supportata </string>
     <string name="nc_server_url">Indirizzo server https://…</string>
     <string name="nc_server_version">%1$s funziona solo con %2$s 13 e successivi</string>
+    <string name="nc_set_new_password">Imposta una nuova password</string>
     <string name="nc_settings">Impostazioni</string>
     <string name="nc_settings_account_updated">Il tuo account preesistente è stato aggiornato, invece di aggiungerne un nuovo</string>
     <string name="nc_settings_advanced_title">Avanzate</string>

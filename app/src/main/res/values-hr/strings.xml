@@ -73,6 +73,7 @@
     <string name="nc_certificate_dialog_title">Pogledaj vjerodajnicu</string>
     <string name="nc_certificate_error">Vezu je onemogućila vaša postavka SSL-a</string>
     <string name="nc_change_cert_auth">Promijeni vjerodajnicu za autentifikaciju</string>
+    <string name="nc_change_password">Promijeni zaporku</string>
     <string name="nc_clear_history">Izbriši sve poruke</string>
     <string name="nc_clear_history_success">Izbrisane su sve poruke</string>
     <string name="nc_clear_history_warning">Želite li zaista izbrisati sve poruke u ovom razgovoru?</string>
@@ -202,6 +203,7 @@
     <string name="nc_owner">Vlasnik</string>
     <string name="nc_participants">Sudionici</string>
     <string name="nc_participants_add">Dodaj sudionike</string>
+    <string name="nc_password">Zaporka</string>
     <string name="nc_permissions_settings">Otvori postavke</string>
     <string name="nc_phone_book_integration_account_not_found">Račun nije pronađen</string>
     <string name="nc_phone_book_integration_chat_via">Razmjenjujte poruke putem %s</string>

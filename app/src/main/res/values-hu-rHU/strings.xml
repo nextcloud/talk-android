@@ -104,6 +104,7 @@
     <string name="nc_certificate_dialog_title">Ellenőrizze a tanúsítványt</string>
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
+    <string name="nc_change_password">Jelszó módosítása</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
     <string name="nc_clear_history_warning">Biztos, hogy törli a beszélgetés összes üzenetét?</string>
@@ -266,6 +267,7 @@
     <string name="nc_owner">Tulajdonos</string>
     <string name="nc_participants">Résztvevők</string>
     <string name="nc_participants_add">Résztvevők hozzáadása</string>
+    <string name="nc_password">Jelszó</string>
     <string name="nc_permissions_ask">Jogosultságok beállításaa</string>
     <string name="nc_permissions_denied">Néhány jogosultság meg lett tagadva.</string>
     <string name="nc_permissions_rationale_dialog_title">Engedélyezzen jogosultságokat</string>
@@ -337,6 +339,7 @@
     <string name="nc_server_unsupported">A kiszolgálón nincs támogatott Beszélgetés alkalmazás telepítve</string>
     <string name="nc_server_url">Kiszolgálócím https://…</string>
     <string name="nc_server_version">A(z) %1$s csak %2$s 13 vagy újabb verzióval működik</string>
+    <string name="nc_set_new_password">Jelszó beállítása</string>
     <string name="nc_settings">Beállítások</string>
     <string name="nc_settings_account_updated">Új fiók hozzáadása helyett, a már létező fiókja lett frissítve</string>
     <string name="nc_settings_advanced_title">Speciális</string>

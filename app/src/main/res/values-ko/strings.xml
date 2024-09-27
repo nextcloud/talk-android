@@ -87,6 +87,7 @@
     <string name="nc_certificate_dialog_title">인증서 확인</string>
     <string name="nc_certificate_error">SSL 설정에서 연결을 거부함</string>
     <string name="nc_change_cert_auth">인증서 변경</string>
+    <string name="nc_change_password">암호 변경</string>
     <string name="nc_clear_history">모든 메시지 삭제</string>
     <string name="nc_clear_history_success">모든 메시지가 삭제되었습니다.</string>
     <string name="nc_clear_history_warning">이 대화에서 모든 메시지를 삭제하시겠습니까?</string>
@@ -237,6 +238,7 @@
     <string name="nc_owner">Owner</string>
     <string name="nc_participants">참가자</string>
     <string name="nc_participants_add">참가자 추가</string>
+    <string name="nc_password">암호</string>
     <string name="nc_permissions_settings">설정 열기</string>
     <string name="nc_phone_book_integration_account_not_found">계정을 찾을 수 없습니다.</string>
     <string name="nc_phone_book_integration_chat_via">%s을 통한 채팅</string>
@@ -303,6 +305,7 @@
     <string name="nc_server_unsupported">서버에 지원되는 토크 앱이 설치되어 있지 않습니다.</string>
     <string name="nc_server_url">서버 주소 https://…</string>
     <string name="nc_server_version">%1$s은(는) %2$s 13 이상에서만 작동합니다</string>
+    <string name="nc_set_new_password">새 암호 설정</string>
     <string name="nc_settings">설정</string>
     <string name="nc_settings_account_updated">새 계정을 추가하는 대신 기존 계정이 업데이트됨</string>
     <string name="nc_settings_advanced_title">고급</string>

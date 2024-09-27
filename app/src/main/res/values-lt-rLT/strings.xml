@@ -56,6 +56,7 @@
     <string name="nc_certificate_dialog_text">Ar pasitikite iki šiol nežinomu SSL liudijimu, kurį išdavė %1$s, kuris skirtas %2$s ir galioja nuo %3$s iki %4$s?</string>
     <string name="nc_certificate_error">Jūsų SSL sąranka neleido ryšio</string>
     <string name="nc_change_cert_auth">Keisti tapatybės nustatymo liudijimą</string>
+    <string name="nc_change_password">Pakeisti slaptažodį</string>
     <string name="nc_client_cert_change">Keisti kliento programėlės liudijimą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės liudijimą</string>
     <string name="nc_common_and">ir</string>
@@ -157,6 +158,7 @@
     <string name="nc_owner">Savininkas</string>
     <string name="nc_participants">Dalyviai</string>
     <string name="nc_participants_add">Pridėti dalyvius</string>
+    <string name="nc_password">Slaptažodis</string>
     <string name="nc_permissions_settings">Atverti nustatymus</string>
     <string name="nc_phone_book_integration_account_not_found">Paskyra nerasta</string>
     <string name="nc_pip_microphone_mute">Išjungti mikrofoną</string>

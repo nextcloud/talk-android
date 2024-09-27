@@ -397,6 +397,7 @@
     <string name="nc_server_unsupported">El servidor no tiene una app Talk soportada instalada</string>
     <string name="nc_server_url">Dirección del servidor https://…</string>
     <string name="nc_server_version">%1$s sólo trabaja con %2$s 13 y superior</string>
+    <string name="nc_set_new_password">Establecer contraseña nueva</string>
     <string name="nc_settings">Configuración</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_settings_advanced_title">Avanzado</string>

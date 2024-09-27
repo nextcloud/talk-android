@@ -115,6 +115,7 @@
     <string name="nc_certificate_dialog_title">Проверьте сертификат</string>
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
+    <string name="nc_change_password">Изменить пароль</string>
     <string name="nc_check_your_internet">Проверьте подключение к Интернету.</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
@@ -297,6 +298,7 @@
     <string name="nc_owner">Владелец</string>
     <string name="nc_participants">Участники</string>
     <string name="nc_participants_add">Добавить участников</string>
+    <string name="nc_password">Пароль</string>
     <string name="nc_permissions_ask">Установить разрешения</string>
     <string name="nc_permissions_denied">В некоторых разрешениях было отказано.</string>
     <string name="nc_permissions_settings">Открыть настройки</string>
@@ -368,6 +370,7 @@
     <string name="nc_server_unsupported">На сервере не установлено приложение «Конференции»</string>
     <string name="nc_server_url">Адрес сервера https://…</string>
     <string name="nc_server_version">Работа приложения %1$s возможна только с серверами %2$s версии 13 или старше</string>
+    <string name="nc_set_new_password">Установить новый пароль</string>
     <string name="nc_set_password">Установить пароль</string>
     <string name="nc_settings">Параметры</string>
     <string name="nc_settings_account_updated">Вместо создания новой учётной записи было выполнено обновление существующей</string>

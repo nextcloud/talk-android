@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">証明書をチェックアウトする</string>
     <string name="nc_certificate_error">SSL設定で接続が妨げられました</string>
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
+    <string name="nc_change_password">パスワードを変更</string>
     <string name="nc_check_your_internet">あなたのインターネット接続をチェックしてください</string>
     <string name="nc_clear_edit_button">編集ボタンを削除</string>
     <string name="nc_clear_edit_message">編集メッセージを削除</string>
@@ -321,6 +322,7 @@
     <string name="nc_owner">オーナー</string>
     <string name="nc_participants">参加者</string>
     <string name="nc_participants_add">参加を追加</string>
+    <string name="nc_password">パスワード</string>
     <string name="nc_permissions_ask">権限セット</string>
     <string name="nc_permissions_denied">一部の権限が拒否されました。</string>
     <string name="nc_permissions_rationale_dialog_title">権限を許可してください</string>
@@ -394,6 +396,7 @@
     <string name="nc_server_unsupported">サーバーにサポートされているトークアプリがインストールされていません</string>
     <string name="nc_server_url">サーバーのアドレス https://…</string>
     <string name="nc_server_version">%1$sは%2$s 13以降でのみ動作します</string>
+    <string name="nc_set_new_password">新しいパスワードの設定</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">新しいアカウントを追加する代わりに、既存のアカウントが更新されました</string>
     <string name="nc_settings_advanced_title">高度な</string>

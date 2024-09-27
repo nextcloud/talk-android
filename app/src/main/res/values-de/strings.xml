@@ -408,6 +408,7 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_set_new_password">Neues Passwort setzen</string>
     <string name="nc_set_password">Passwort festlegen</string>
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>

@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Confira o certificado</string>
     <string name="nc_certificate_error">Sua configuração SSL impediu a conexão</string>
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
+    <string name="nc_change_password">Alterar senha</string>
     <string name="nc_check_your_internet">Por favor, verifique sua conexão à internet</string>
     <string name="nc_clear_edit_button">Botão Limpar Editar</string>
     <string name="nc_clear_edit_message">Limpar Editar Mensagem</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Proprietário</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Adicionar participantes</string>
+    <string name="nc_password">Senha</string>
     <string name="nc_permissions_ask">Definir permissões</string>
     <string name="nc_permissions_denied">Algumas permissões foram negadas.</string>
     <string name="nc_permissions_rationale_dialog_title">Por favor, permita permissões</string>
@@ -408,6 +410,7 @@
     <string name="nc_server_unsupported">O servidor não tem o aplicativo Talk suportado instalado</string>
     <string name="nc_server_url">Endereço do servidor https://…</string>
     <string name="nc_server_version">%1$s somente funciona com%2$s 13 e posterior</string>
+    <string name="nc_set_new_password">Definir nova senha</string>
     <string name="nc_set_password">Definir Senha</string>
     <string name="nc_settings">Configurações</string>
     <string name="nc_settings_account_updated">Sua conta atual foi atualizada, em vez de adicionar uma nova</string>

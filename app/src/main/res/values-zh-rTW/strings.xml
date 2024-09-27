@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">請檢查憑證</string>
     <string name="nc_certificate_error">您的SSL設定阻擋這連線。</string>
     <string name="nc_change_cert_auth">變更驗證憑證</string>
+    <string name="nc_change_password">變更密碼</string>
     <string name="nc_check_your_internet">請檢查您的網際網路連線</string>
     <string name="nc_clear_edit_button">清除編輯按鈕</string>
     <string name="nc_clear_edit_message">清除編輯訊息</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">擁有者</string>
     <string name="nc_participants">參與者</string>
     <string name="nc_participants_add">新增成員</string>
+    <string name="nc_password">密碼</string>
     <string name="nc_permissions_ask">設定權限</string>
     <string name="nc_permissions_denied">部份權限被拒絕。</string>
     <string name="nc_permissions_rationale_dialog_title">請允許權限</string>
@@ -408,6 +410,7 @@
     <string name="nc_server_unsupported">伺服器未安裝受支援的 Talk 應用程式</string>
     <string name="nc_server_url">伺服器地址 https://…</string>
     <string name="nc_server_version">%1$s!只能在%2$s13版以上運作</string>
+    <string name="nc_set_new_password">設定新密碼</string>
     <string name="nc_set_password">設定密碼</string>
     <string name="nc_settings">設定</string>
     <string name="nc_settings_account_updated">已更新您現有的帳號，而非新增帳號</string>

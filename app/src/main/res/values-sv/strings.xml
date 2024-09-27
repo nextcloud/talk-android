@@ -125,6 +125,7 @@
     <string name="nc_certificate_dialog_title">Kontrollera certifikatet</string>
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
+    <string name="nc_change_password">Ändra lösenord</string>
     <string name="nc_check_your_internet">Kontrollerar din internetanslutning</string>
     <string name="nc_clear_edit_button">Rensa redigeringsknapp</string>
     <string name="nc_clear_edit_message">Rensa redigera meddelande</string>
@@ -332,6 +333,7 @@
     <string name="nc_owner">Ägare</string>
     <string name="nc_participants">Deltagare</string>
     <string name="nc_participants_add">Lägg till deltagare</string>
+    <string name="nc_password">Lösenord</string>
     <string name="nc_permissions_ask">Ange behörigheter</string>
     <string name="nc_permissions_denied">Vissa behörigheter nekades.</string>
     <string name="nc_permissions_rationale_dialog_title">Tillåt behörigheter</string>
@@ -405,6 +407,7 @@
     <string name="nc_server_unsupported">Servern har inte korrekt Talk-app installerad</string>
     <string name="nc_server_url">Serveradress https://…</string>
     <string name="nc_server_version">%1$s fungerar bara med %2$s 13 och uppåt</string>
+    <string name="nc_set_new_password">Ange nytt lösenord</string>
     <string name="nc_set_password">Ange lösenord</string>
     <string name="nc_settings">Inställningar</string>
     <string name="nc_settings_account_updated">Ditt redan befintliga konto uppdaterades, istället för att lägga till ett nytt</string>

@@ -116,6 +116,7 @@
     <string name="nc_certificate_dialog_title">Skontrolujte certifikát</string>
     <string name="nc_certificate_error">Vaša konfigurácia SSL zabránila pripojeniu</string>
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
+    <string name="nc_change_password">Zmeniť heslo</string>
     <string name="nc_clear_edit_button">Tlačidlo  Vymazať úpravy</string>
     <string name="nc_clear_edit_message">Správa vymazať úpravy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
@@ -323,6 +324,7 @@
     <string name="nc_owner">Vlastník</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Pridať účastníkov</string>
+    <string name="nc_password">Heslo</string>
     <string name="nc_permissions_ask">Nastaviť oprávnenia</string>
     <string name="nc_permissions_denied">Niektoré oprávnenia neboli udelené.</string>
     <string name="nc_permissions_rationale_dialog_title">Prosím, udeľte oprávnenia</string>
@@ -396,6 +398,7 @@
     <string name="nc_server_unsupported">Na serveri nie je nainštalovaná podporovaná apka Rozhovor</string>
     <string name="nc_server_url">Adresa servera https://…</string>
     <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
+    <string name="nc_set_new_password">Vytvoriť nové heslo</string>
     <string name="nc_settings">Nastavenia</string>
     <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
     <string name="nc_settings_advanced_title">Rozšírené</string>

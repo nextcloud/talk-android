@@ -126,6 +126,7 @@
     <string name="nc_certificate_dialog_title">Sjekk sertifikatet</string>
     <string name="nc_certificate_error">Ditt SSL-oppsett forhindret tilkobling</string>
     <string name="nc_change_cert_auth">Endre sertifikat for autentisering</string>
+    <string name="nc_change_password">Endre passord</string>
     <string name="nc_check_your_internet">Vennligst kontroller internettforbindelsen din</string>
     <string name="nc_clear_edit_button">Tøm redigeringsknapp</string>
     <string name="nc_clear_edit_message">Fjern redigeringsmelding</string>
@@ -333,6 +334,7 @@
     <string name="nc_owner">Eier</string>
     <string name="nc_participants">Deltakere</string>
     <string name="nc_participants_add">Legg til deltager</string>
+    <string name="nc_password">PassordP</string>
     <string name="nc_permissions_ask">Angi rettigheter</string>
     <string name="nc_permissions_denied">Noen rettigheter ble nektet.</string>
     <string name="nc_permissions_rationale_dialog_title">Vennligst tillat rettigheter</string>
@@ -406,6 +408,7 @@
     <string name="nc_server_unsupported">Serveren har ikke en støttet Talk app installert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s fungerer bare med %2$s 13 og høyere</string>
+    <string name="nc_set_new_password">Angi nytt passord</string>
     <string name="nc_settings">Instillinger</string>
     <string name="nc_settings_account_updated">Din allerede eksisterende konto ble oppdatert, istedenfor å legge til en ny</string>
     <string name="nc_settings_advanced_title">Avansert</string>
