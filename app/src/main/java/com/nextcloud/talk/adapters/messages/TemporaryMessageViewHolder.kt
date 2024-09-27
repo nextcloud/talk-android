@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.adapters.messages
 
+import android.content.Context
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
@@ -30,7 +31,11 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    @Inject
+    lateinit var context: Context
+
     lateinit var temporaryMessageInterface: TemporaryMessageInterface
+    var isEditing = false
 
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -40,7 +45,32 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
         viewThemeUtils.platform.colorImageView(binding.tempMsgDelete, ColorRole.PRIMARY)
 
         binding.tempMsgEdit.setOnClickListener {
-            // TODO
+            isEditing = !isEditing
+            if (isEditing) {
+                binding.tempMsgEdit.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.ic_check,
+                        null
+                    )
+                )
+                binding.messageEdit.visibility = View.VISIBLE
+                binding.messageEdit.setText(binding.messageText.text)
+                binding.messageText.visibility = View.GONE
+            } else {
+                binding.tempMsgEdit.setImageDrawable(
+                    ResourcesCompat.getDrawable(
+                        context.resources,
+                        R.drawable.ic_edit,
+                        null
+                    )
+                )
+                binding.messageEdit.visibility = View.GONE
+                binding.messageText.visibility = View.VISIBLE
+                val newMessage = binding.messageEdit.text.toString()
+                message.message = newMessage
+                temporaryMessageInterface.editTemporaryMessage(message.tempMessageId, newMessage)
+            }
         }
 
         binding.tempMsgDelete.setOnClickListener {
