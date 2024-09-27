@@ -320,14 +320,14 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.13.0'
+    testImplementation 'org.mockito:mockito-core:5.14.0'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
 
     androidTestImplementation "androidx.test:core:1.6.1"
 
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0"
     androidTestImplementation 'androidx.test:core-ktx:1.6.1'
-    androidTestImplementation 'org.mockito:mockito-android:5.13.0'
+    androidTestImplementation 'org.mockito:mockito-android:5.14.0'
     androidTestImplementation "androidx.work:work-testing:${workVersion}"
     // Espresso core
     androidTestImplementation ("androidx.test.espresso:espresso-core:$espressoVersion", {
