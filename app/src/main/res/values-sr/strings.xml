@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Провери сертификат</string>
     <string name="nc_certificate_error">Ваша ССЛ постава је онемогућила повезивање</string>
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
+    <string name="nc_change_password">Промени лозинку</string>
     <string name="nc_check_your_internet">Молимо вас да проверите везу са интернетом</string>
     <string name="nc_clear_edit_button">Обриши дугме за уређивање</string>
     <string name="nc_clear_edit_message">Обриши Уреди поруку</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учесници</string>
     <string name="nc_participants_add">Додај учеснике</string>
+    <string name="nc_password">Лозинка</string>
     <string name="nc_permissions_ask">Постави дозволе</string>
     <string name="nc_permissions_denied">Неке дозволе нису одобрене.</string>
     <string name="nc_permissions_rationale_dialog_title">Молимо вас да дате дозволе</string>
@@ -408,6 +410,7 @@
     <string name="nc_server_unsupported">Сервер нема инсталирану подржану Talk апликацију</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">%1$s ради само са%2$s верзије 13 и већом</string>
+    <string name="nc_set_new_password">Постави нову лозинку</string>
     <string name="nc_set_password">Постави лозинку</string>
     <string name="nc_settings">Поставке</string>
     <string name="nc_settings_account_updated">Ваш постојећи налог је ажуриран, уместо што је додат нови налог</string>

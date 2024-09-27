@@ -86,6 +86,7 @@
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
+    <string name="nc_change_password">Wijzig wachtwoord</string>
     <string name="nc_clear_history">Alle berichten verwijderen</string>
     <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
     <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
@@ -225,6 +226,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_owner">Eigenaar</string>
     <string name="nc_participants">Deelnemers</string>
     <string name="nc_participants_add">Deelnemers toevoegen</string>
+    <string name="nc_password">Wachtwoord</string>
     <string name="nc_permissions_settings">Openen instellingen</string>
     <string name="nc_phone_book_integration_account_not_found">Account niet gevonden</string>
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>

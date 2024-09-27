@@ -110,6 +110,7 @@
     <string name="nc_certificate_dialog_title">Zkontrolovat certifikát</string>
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
+    <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
     <string name="nc_clear_history_success">Všechny zprávy byly vymazány</string>
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
@@ -297,6 +298,7 @@
     <string name="nc_owner">Vlastník</string>
     <string name="nc_participants">Účastníci</string>
     <string name="nc_participants_add">Přidat účastníky</string>
+    <string name="nc_password">Heslo</string>
     <string name="nc_permissions_ask">Nastavit oprávnění</string>
     <string name="nc_permissions_denied">Některá oprávnění byla odepřena.</string>
     <string name="nc_permissions_rationale_dialog_title">Udělte oprávnění</string>
@@ -369,6 +371,7 @@
     <string name="nc_server_unsupported">Na serveru není nainstalovaná podporovaná verze aplikace Talk</string>
     <string name="nc_server_url">Adresa serveru https://…</string>
     <string name="nc_server_version">%1$s funguje pouze s %2$s 13 a novějším</string>
+    <string name="nc_set_new_password">Nastavit nové heslo</string>
     <string name="nc_set_password">Nastavit heslo</string>
     <string name="nc_settings">Nastavení</string>
     <string name="nc_settings_account_updated">Namísto přidání nového byl zaktualizován váš stávající účet</string>

@@ -125,6 +125,7 @@
     <string name="nc_certificate_dialog_title">Vérifier le certificat</string>
     <string name="nc_certificate_error">Votre configuration SSL a empêché la connexion</string>
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
+    <string name="nc_change_password">Changer son mot de passe</string>
     <string name="nc_check_your_internet">Veuillez vérifier votre connexion Internet</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
@@ -322,6 +323,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_owner">Propriétaire</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Ajouter des participants</string>
+    <string name="nc_password">Mot de passe</string>
     <string name="nc_permissions_ask">Définir les autorisations</string>
     <string name="nc_permissions_denied">Certaines autorisations n\'ont pas été accordées.</string>
     <string name="nc_permissions_rationale_dialog_title">Merci de donner les autorisations</string>
@@ -394,6 +396,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_server_unsupported">Le serveur n\'a pas d\'application Talk prise en charge installée.</string>
     <string name="nc_server_url">Adresse du serveur https://…</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
+    <string name="nc_set_new_password">Définir un nouveau mot de passe</string>
     <string name="nc_settings">Paramètres</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_settings_advanced_title">Avancé</string>

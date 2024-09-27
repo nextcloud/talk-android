@@ -105,6 +105,7 @@
     <string name="nc_certificate_dialog_title">检查证书</string>
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
+    <string name="nc_change_password">更改密码</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
@@ -270,6 +271,7 @@
     <string name="nc_owner">拥有者</string>
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>
+    <string name="nc_password">密码</string>
     <string name="nc_permissions_ask">设置权限</string>
     <string name="nc_permissions_denied">部分权限被拒绝</string>
     <string name="nc_permissions_rationale_dialog_title">请允许权限</string>
@@ -341,6 +343,7 @@
     <string name="nc_server_unsupported">服务器没有安装受支持的通话应用程序</string>
     <string name="nc_server_url">服务器地址 https://…</string>
     <string name="nc_server_version">%1$s 仅支持 %2$s 13 及更高版本</string>
+    <string name="nc_set_new_password">设置新密码</string>
     <string name="nc_settings">设置</string>
     <string name="nc_settings_account_updated">已经更新了您现有的账号，而不是添加新的账号</string>
     <string name="nc_settings_advanced_title">高级</string>

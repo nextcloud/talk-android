@@ -92,6 +92,7 @@
     <string name="nc_certificate_dialog_title">Провери сертификата</string>
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
+    <string name="nc_change_password">Промяна на парола</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
@@ -242,6 +243,7 @@
     <string name="nc_owner">Създател</string>
     <string name="nc_participants">Участници</string>
     <string name="nc_participants_add">Добавяне на участници</string>
+    <string name="nc_password">Парола</string>
     <string name="nc_permissions_settings">Отваряне на настройките</string>
     <string name="nc_phone_book_integration_account_not_found">Няма намерен профил</string>
     <string name="nc_phone_book_integration_chat_via">Чат чрез %s</string>

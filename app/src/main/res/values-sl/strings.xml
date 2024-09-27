@@ -94,6 +94,7 @@
     <string name="nc_certificate_dialog_title">Preveri potrdilo</string>
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
+    <string name="nc_change_password">Spremeni geslo</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
@@ -249,6 +250,7 @@
     <string name="nc_owner">Lastnik</string>
     <string name="nc_participants">Udeleženci</string>
     <string name="nc_participants_add">Dodaj udeležence</string>
+    <string name="nc_password">Geslo</string>
     <string name="nc_permissions_settings">Odpri nastavitve</string>
     <string name="nc_phone_book_integration_account_not_found">Računa ni mogoče najti</string>
     <string name="nc_phone_book_integration_chat_via">Klepet prek %s</string>
@@ -317,6 +319,7 @@
     <string name="nc_server_unsupported">Na strežniku ni nameščenega ustreznega programa Talk</string>
     <string name="nc_server_url">Naslov strežnika: https://</string>
     <string name="nc_server_version">Program %1$s je podprt le na različicah %2$s 13 in novejših.</string>
+    <string name="nc_set_new_password">Nastavi novo geslo</string>
     <string name="nc_settings">Nastavitve</string>
     <string name="nc_settings_account_updated">Že obstoječ račun je posodobljen, zato nov račun ni bil dodan</string>
     <string name="nc_settings_advanced_title">Napredno</string>

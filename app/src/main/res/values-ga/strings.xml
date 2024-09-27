@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Seiceáil an teastas</string>
     <string name="nc_certificate_error">Chuir do shocrú SSL cosc ​​ar cheangal</string>
     <string name="nc_change_cert_auth">Athraigh teastas fíordheimhnithe</string>
+    <string name="nc_change_password">Athraigh do phasfhocal</string>
     <string name="nc_check_your_internet">Seiceáil do nasc idirlín le do thoil</string>
     <string name="nc_clear_edit_button">Glan an Cnaipe Eagar</string>
     <string name="nc_clear_edit_message">Glan an Teachtaireacht in Eagar</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Úinéir</string>
     <string name="nc_participants">Rannpháirtithe</string>
     <string name="nc_participants_add">Cuir rannpháirtithe leis</string>
+    <string name="nc_password">Pasfhocal</string>
     <string name="nc_permissions_ask">Socraigh ceadanna</string>
     <string name="nc_permissions_denied">Diúltaíodh roinnt ceadanna.</string>
     <string name="nc_permissions_rationale_dialog_title">Ceadaigh ceadanna le do thoil</string>
@@ -408,6 +410,7 @@
     <string name="nc_server_unsupported">Níl an aip Talk tacaithe ag an bhfreastalaí suiteáilte</string>
     <string name="nc_server_url">Seoladh an fhreastalaí https://…</string>
     <string name="nc_server_version">Ní oibríonn %1$s ach le %2$s 13 agus níos sine</string>
+    <string name="nc_set_new_password">Socraigh pasfhocal nua</string>
     <string name="nc_set_password">Socraigh Pasfhocal</string>
     <string name="nc_settings">Socruithe</string>
     <string name="nc_settings_account_updated">Nuashonraíodh do chuntas a bhí ann cheana féin, in ionad ceann nua a chur leis</string>

@@ -93,6 +93,7 @@
     <string name="nc_certificate_dialog_title">Перевірка сертифікату</string>
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
+    <string name="nc_change_password">Змінити Пароль</string>
     <string name="nc_clear_history">Вилучити усі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>
     <string name="nc_clear_history_warning">Ви дійсно бажаєте вилучити усі повідомлення у цій розмові?</string>
@@ -240,6 +241,7 @@
     <string name="nc_owner">Власник</string>
     <string name="nc_participants">Учасники</string>
     <string name="nc_participants_add">Додати учасників</string>
+    <string name="nc_password">Пароль</string>
     <string name="nc_permissions_settings">Відкрити налаштування</string>
     <string name="nc_phone_book_integration_account_not_found">Акаунт не знайдено</string>
     <string name="nc_phone_book_integration_chat_via">Чат з %s</string>
@@ -307,6 +309,7 @@
     <string name="nc_server_unsupported">На сервері не встановлено застосунок \"Talk\", який може підтримуватися</string>
     <string name="nc_server_url">Адреса сервера https://…</string>
     <string name="nc_server_version">Застосунок %1$s сумісний з %2$s версії 13 або вище</string>
+    <string name="nc_set_new_password">Встановіть новий пароль</string>
     <string name="nc_settings">Налаштування</string>
     <string name="nc_settings_account_updated">Замість створення нового облікового запису було виконано оновлення існуючого</string>
     <string name="nc_settings_advanced_title">Додатково</string>

@@ -268,6 +268,7 @@
     <string name="nc_server_testing_connection">Testataan yhteyttä</string>
     <string name="nc_server_unsupported">Tuettua Talk-sovellusta ei ole asennettu palvelimelle</string>
     <string name="nc_server_url">Palvelimen osoite https://…</string>
+    <string name="nc_set_new_password">Aseta uusi salasana:</string>
     <string name="nc_settings">Asetukset</string>
     <string name="nc_settings_account_updated">Olemassa oleva tilisi päivitettiin sen sijaan, että olisi lisätty tili</string>
     <string name="nc_settings_advanced_title">Lisäasetukset</string>

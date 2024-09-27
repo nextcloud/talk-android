@@ -354,6 +354,7 @@
     <string name="nc_server_unsupported">Zerbitzariak ez du Talk aplikazio bateragarririk instalatuta</string>
     <string name="nc_server_url">Zerbitzariaren helbidea https://…</string>
     <string name="nc_server_version">%1$s (e)k %2$s 13rekin eta goragokoarekin bakarrik egiten du lan</string>
+    <string name="nc_set_new_password">Ezarri pasahitz berria</string>
     <string name="nc_settings">Ezarpenak</string>
     <string name="nc_settings_account_updated">Zure kontua eguneratu egin da, beste kontu bat gehitu beharrean</string>
     <string name="nc_settings_advanced_title">Aurreratua</string>

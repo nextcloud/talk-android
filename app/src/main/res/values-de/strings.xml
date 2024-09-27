@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
+    <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_check_your_internet">Bitte die Internetverbindung prüfen</string>
     <string name="nc_clear_edit_button">Bearbeitung des Nachrichtentextes abbrechen</string>
     <string name="nc_clear_edit_message">Bearbeitungsnachricht löschen</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Besitzer</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
+    <string name="nc_password">Passwort</string>
     <string name="nc_permissions_ask">Berechtigungen festlegen</string>
     <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
     <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>
@@ -408,6 +410,7 @@
     <string name="nc_server_unsupported">Auf dem Server ist keine unterstützte Talk-App installiert</string>
     <string name="nc_server_url">Serveradresse https://…</string>
     <string name="nc_server_version">%1$s funktioniert nur mit %2$s 13 und höher</string>
+    <string name="nc_set_new_password">Neues Passwort setzen</string>
     <string name="nc_set_password">Passwort festlegen</string>
     <string name="nc_settings">Einstellungen</string>
     <string name="nc_settings_account_updated">Statt ein neues Konto hinzuzufügen, wurde Ihr aktuelles Konto aktualisiert.</string>

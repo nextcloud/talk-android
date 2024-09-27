@@ -69,6 +69,7 @@
     <string name="nc_certificate_dialog_title">Controlla su tzertificadu</string>
     <string name="nc_certificate_error">Sa cunfiguratzione SSL at refudadu sa connessione</string>
     <string name="nc_change_cert_auth">Càmbia tzertificadu autenticatzione</string>
+    <string name="nc_change_password">Càmbia crae</string>
     <string name="nc_clear_history">Cantzella totu is messàgios</string>
     <string name="nc_clear_history_success">Cantzellados totu is messàgios</string>
     <string name="nc_clear_history_warning">A beru boles cantzellare totu is messàgios in custa resonada?</string>
@@ -193,6 +194,7 @@
     <string name="nc_owner">Mere</string>
     <string name="nc_participants">Partetzipantes</string>
     <string name="nc_participants_add">Aguinghe partetzipantes</string>
+    <string name="nc_password">Crae</string>
     <string name="nc_permissions_settings">Aberi sa cunfiguratzione</string>
     <string name="nc_phone_book_integration_account_not_found">Contu no agatadu</string>
     <string name="nc_phone_book_integration_chat_via">Tzarrada via %s</string>
