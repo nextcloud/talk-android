@@ -13,7 +13,6 @@ import android.media.MediaRecorder
 import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.utils.FileUtils
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -32,6 +31,7 @@ class MediaRecorderManager : LifecycleAwareManager {
         private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
+        private const val VOICE_MESSAGE_PREFIX_MAX_LENGTH = 146
     }
 
     var currentVoiceRecordFile: String = ""
@@ -150,8 +150,8 @@ class MediaRecorderManager : LifecycleAwareManager {
             date,
             validDisplayName
         )
-        if (fileNameWithoutSuffix.length > FileUtils.FILE_MAX_LENGTH) {
-            fileNameWithoutSuffix = fileNameWithoutSuffix.substring(0, FileUtils.FILE_MAX_LENGTH)
+        if (fileNameWithoutSuffix.length > VOICE_MESSAGE_PREFIX_MAX_LENGTH) {
+            fileNameWithoutSuffix = fileNameWithoutSuffix.substring(0, VOICE_MESSAGE_PREFIX_MAX_LENGTH)
         }
         val fileName = fileNameWithoutSuffix + VOICE_MESSAGE_FILE_SUFFIX
         currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
