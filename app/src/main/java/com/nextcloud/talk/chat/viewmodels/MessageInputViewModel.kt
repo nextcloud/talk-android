@@ -49,7 +49,7 @@ class MessageInputViewModel @Inject constructor(
 
     data class QueuedMessage(
         val id: Int,
-        val message: CharSequence? = null,
+        var message: CharSequence? = null,
         val displayName: String? = null,
         val replyTo: Int? = null,
         val sendWithoutNotification: Boolean? = null
@@ -301,6 +301,17 @@ class MessageInputViewModel @Inject constructor(
         }
         dataStore.saveMessageQueue(roomToken, queue)
         _messageQueueSizeFlow.tryEmit(queue.size)
+    }
+
+    fun editQueuedMessage(roomToken: String, id: Int, newMessage: String) {
+        val queue = dataStore.getMessageQueue(roomToken)
+        for (qMsg in queue) {
+            if (qMsg.id == id) {
+                qMsg.message = newMessage
+                break
+            }
+        }
+        dataStore.saveMessageQueue(roomToken, queue)
     }
 
     companion object {

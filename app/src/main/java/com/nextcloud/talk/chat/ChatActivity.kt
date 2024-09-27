@@ -3666,7 +3666,9 @@ class ChatActivity :
     }
 
     override fun editTemporaryMessage(id: Int, newMessage: String) {
-        // TODO update adapter item and call viewModel to persist data
+        messageInputViewModel.editQueuedMessage(roomToken, id, newMessage)
+        adapter?.notifyDataSetChanged() // TODO optimize this
+
     }
 
     override fun deleteTemporaryMessage(id: Int) {
