@@ -101,6 +101,7 @@ import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.TemporaryMessageInterface
 import com.nextcloud.talk.adapters.messages.TemporaryMessageViewHolder
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
@@ -214,7 +215,8 @@ class ChatActivity :
     CommonMessageInterface,
     PreviewMessageInterface,
     SystemMessageInterface,
-    CallStartedMessageInterface {
+    CallStartedMessageInterface,
+    TemporaryMessageInterface {
 
     var active = false
 
@@ -536,13 +538,15 @@ class ChatActivity :
         Log.d(TAG, "initObservers Called")
 
         messageInputViewModel.messageQueueFlow.observe(this) { list ->
-            for (message in list) {
-                Log.d("Julius", "Message recieved: $message")
+            list.forEachIndexed { _, qMsg ->
+                Log.d("Julius", "Message recieved: ${qMsg.message}")
                 val temporaryChatMessage = ChatMessage()
                 temporaryChatMessage.jsonMessageId = -3
                 temporaryChatMessage.actorId = "-3"
                 temporaryChatMessage.timestamp = System.currentTimeMillis() / 1000
-                temporaryChatMessage.message = message
+                temporaryChatMessage.message = qMsg.message.toString()
+                temporaryChatMessage.tempMessageId = qMsg.id
+                temporaryChatMessage.isTempMessage = true
                 adapter?.addToStart(temporaryChatMessage, true)
             }
         }
@@ -3111,7 +3115,10 @@ class ChatActivity :
 
     private fun openMessageActionsDialog(iMessage: IMessage?) {
         val message = iMessage as ChatMessage
-        if (hasVisibleItems(message) && !isSystemMessage(message)) {
+        if (hasVisibleItems(message) &&
+            !isSystemMessage(message) &&
+            message.id != "-3"
+        ) {
             MessageActionsDialog(
                 this,
                 message,
@@ -3664,6 +3671,29 @@ class ChatActivity :
 
     override fun joinVideoCall() {
         startACall(false, false)
+    }
+
+    override fun editTemporaryMessage(id: Int, newMessage: String) {
+        // TODO("Not yet implemented")
+    }
+
+    override fun deleteTemporaryMessage(id: Int) {
+        messageInputViewModel.removeFromQueue(roomToken, id)
+        var i = 0
+        val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
+        for (item in adapter?.items!!) { // add limit?
+            if (i >= max!!) break
+            if (item.item is ChatMessage &&
+                (item.item as ChatMessage).isTempMessage &&
+                (item.item as ChatMessage).tempMessageId == id
+            ) {
+                val index = adapter?.items!!.indexOf(item)
+                adapter?.items!!.removeAt(index)
+                adapter?.notifyItemRemoved(index)
+                break
+            }
+            i++
+        }
     }
 
     private fun logConversationInfos(methodName: String) {

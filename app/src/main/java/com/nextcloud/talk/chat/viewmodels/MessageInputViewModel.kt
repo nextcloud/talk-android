@@ -48,6 +48,7 @@ class MessageInputViewModel @Inject constructor(
     val disposableSet = mutableSetOf<Disposable>()
 
     data class QueuedMessage(
+        val id: Int,
         val message: CharSequence? = null,
         val displayName: String? = null,
         val replyTo: Int? = null,
@@ -124,8 +125,8 @@ class MessageInputViewModel @Inject constructor(
     val messageQueueSizeFlow: LiveData<Int>
         get() = _messageQueueSizeFlow.asLiveData()
 
-    private val _messageQueueFlow: MutableLiveData<List<String>> = MutableLiveData()
-    val messageQueueFlow: LiveData<List<String>>
+    private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
+    val messageQueueFlow: LiveData<List<QueuedMessage>>
         get() = _messageQueueFlow
 
     @Suppress("LongParameterList")
@@ -139,10 +140,12 @@ class MessageInputViewModel @Inject constructor(
         sendWithoutNotification: Boolean
     ) {
         if (isQueueing) {
-            messageQueue.add(QueuedMessage(message, displayName, replyTo, sendWithoutNotification))
+            val tempID = System.currentTimeMillis().toInt()
+            val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
+            messageQueue.add(qMsg)
             dataStore.saveMessageQueue(roomToken, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
-            _messageQueueFlow.postValue(listOf(message.toString()))
+            _messageQueueFlow.postValue(listOf(qMsg))
             return
         }
 
@@ -271,10 +274,10 @@ class MessageInputViewModel @Inject constructor(
 
     fun getTempMessagesFromMessageQueue(roomToken: String) {
         val queue = dataStore.getMessageQueue(roomToken)
-        val list = mutableListOf<String>()
+        val list = mutableListOf<QueuedMessage>()
         for (msg in queue) {
             Log.d("Julius", "Msg: ${msg.message}")
-            list.add(msg.message.toString())
+            list.add(msg)
         }
         _messageQueueFlow.postValue(list)
     }
@@ -286,6 +289,18 @@ class MessageInputViewModel @Inject constructor(
     fun restoreMessageQueue(roomToken: String) {
         messageQueue = dataStore.getMessageQueue(roomToken)
         _messageQueueSizeFlow.tryEmit(messageQueue.size)
+    }
+
+    fun removeFromQueue(roomToken: String, id: Int) {
+        val queue = dataStore.getMessageQueue(roomToken)
+        for (qMsg in queue) {
+            if (qMsg.id == id) {
+                queue.remove(qMsg)
+                break
+            }
+        }
+        dataStore.saveMessageQueue(roomToken, queue)
+        _messageQueueSizeFlow.tryEmit(queue.size)
     }
 
     companion object {
