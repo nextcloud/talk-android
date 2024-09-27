@@ -3666,7 +3666,7 @@ class ChatActivity :
     }
 
     override fun editTemporaryMessage(id: Int, newMessage: String) {
-        // TODO("Not yet implemented")
+        // TODO update adapter item and call viewModel to persist data
     }
 
     override fun deleteTemporaryMessage(id: Int) {

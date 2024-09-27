@@ -65,6 +65,12 @@
             android:textIsSelectable="false"
             tools:text="Talk to you later!" />
 
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/message_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
