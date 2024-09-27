@@ -51,7 +51,7 @@ class ConversationConversionTest(
         val conversationEntity = conversationJson.asEntity(1)
         assertNotNull(conversationEntity)
 
-        val apiVersion : Int = jsonFileName.substringAfterLast("APIv").first().digitToInt()
+        val apiVersion: Int = jsonFileName.substringAfterLast("APIv").first().digitToInt()
 
         checkConversationEntity(conversationEntity, apiVersion)
 
@@ -61,10 +61,7 @@ class ConversationConversionTest(
         checkConversationEntity(conversationEntityConvertedBack, apiVersion)
     }
 
-    private fun checkConversationEntity(
-        conversationEntity: ConversationEntity,
-        apiVersion: Int
-    ) {
+    private fun checkConversationEntity(conversationEntity: ConversationEntity, apiVersion: Int) {
         assertEquals("1@juwd77g6", conversationEntity.internalId)
         assertEquals(1, conversationEntity.accountId)
 

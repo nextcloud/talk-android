@@ -22,7 +22,6 @@ import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -177,6 +176,10 @@ class SetStatusDialogFragment :
 
         setupGeneralStatusOptions()
 
+        if (currentStatus?.icon == null) {
+            binding.emoji.setText(getString(R.string.default_emoji))
+        }
+
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
         binding.emoji.setOnClickListener { openEmojiPopup() }
@@ -214,10 +217,6 @@ class SetStatusDialogFragment :
         viewThemeUtils.material.colorMaterialButtonPrimaryTonal(binding.setStatus)
 
         viewThemeUtils.material.colorTextInputLayout(binding.customStatusInputContainer)
-
-        binding.customStatusInput.doAfterTextChanged { text ->
-            binding.setStatus.isEnabled = !text.isNullOrEmpty()
-        }
     }
 
     private fun setupCurrentStatus() {
@@ -225,7 +224,6 @@ class SetStatusDialogFragment :
             binding.emoji.setText(it.icon)
             binding.customStatusInput.text?.clear()
             binding.customStatusInput.setText(it.message?.trim())
-            binding.setStatus.isEnabled = it.message?.isEmpty() == false
             visualizeStatus(it.status)
 
             if (it.clearAt > 0) {

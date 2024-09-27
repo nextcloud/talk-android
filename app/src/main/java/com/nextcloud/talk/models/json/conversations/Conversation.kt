@@ -58,7 +58,7 @@ data class Conversation(
     @JsonField(name = ["actorType"])
     var actorType: String = "",
 
-    var password: String? = null, //check if this can be removed.Does not belong to api response but is used internally?
+    var password: String? = null, // check if this can be removed.Does not belong to api response but is used internally?
 
     @JsonField(name = ["isFavorite"])
     var favorite: Boolean = false,
