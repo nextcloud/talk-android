@@ -358,6 +358,7 @@
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_group_and_members">Ta bort grupp och medlemmar</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
+    <string name="nc_remove_password">Ta bort lösenordet</string>
     <string name="nc_remove_team_and_members">Ta bort team och medlemmar</string>
     <string name="nc_rename">Byt namn på konversation</string>
     <string name="nc_rename_confirm">Döp om</string>

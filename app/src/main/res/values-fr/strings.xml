@@ -151,7 +151,7 @@
     <string name="nc_conversation_menu_voice_call">Appel vocal</string>
     <string name="nc_conversation_not_found">Discussion non trouvée</string>
     <string name="nc_conversation_settings">Paramètres de la conversation</string>
-    <string name="nc_conversations_empty">Rejoignez une conversation ou démarrez-en une nouvelle</string>
+    <string name="nc_conversations_empty">Rejoignez une conversation ou lancez-en une nouvelle</string>
     <string name="nc_conversations_empty_details">Dites bonjour à vos amis et collègues !</string>
     <string name="nc_copy_message">Copier</string>
     <string name="nc_create_new_conversation">Créer une nouvelle conversation</string>
@@ -522,9 +522,9 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
     <string name="record_active_info">L\'appel est enregistré</string>
-    <string name="record_cancel_start">Annuler le démarrage de l\'enregistrement</string>
+    <string name="record_cancel_start">Annuler le lancement de l\'enregistrement</string>
     <string name="record_failed_info">L\'enregistrement a échoué. Veuillez contacter votre administrateur.</string>
-    <string name="record_start_description">Commencer l\'enregistrement</string>
+    <string name="record_start_description">Lancer l\'enregistrement</string>
     <string name="record_stop_confirm_message">Voulez-vous vraiment arrêter l\'enregistrement ?</string>
     <string name="record_stop_confirm_title">Arrêter l\'enregistrement de l\'appel</string>
     <string name="record_stop_description">Arrêter l\'enregistrement</string>
@@ -574,8 +574,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="shared_items_voice">Voix</string>
     <string name="show_ban_reason">Montrer la raison du bannissement</string>
     <string name="starred">Favori</string>
-    <string name="startCallForbidden">Vous n\'êtes pas autorisé à commencer un appel</string>
-    <string name="started_a_call">a démarré un appel</string>
+    <string name="startCallForbidden">Vous n\'êtes pas autorisé à lancer un appel</string>
+    <string name="started_a_call">a lancé un appel</string>
     <string name="status_message">Message d\'état</string>
     <string name="switch_to_breakout_room">Basculer vers la salle de sous-groupe</string>
     <string name="switch_to_main_room">Basculer vers la salle principale</string>

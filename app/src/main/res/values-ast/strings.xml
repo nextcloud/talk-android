@@ -76,6 +76,7 @@
     <string name="nc_call_state_in_call">%1$s na llamada</string>
     <string name="nc_camera_permission_hint">P\'activar la comunicación per videu, concede\'l permisu «Cámara».</string>
     <string name="nc_cancel">Encaboxar</string>
+    <string name="nc_change_password">Camudar la contraseña</string>
     <string name="nc_clear_history">Desaniciar tolos mensaxes</string>
     <string name="nc_clear_history_success">Desaniciáronse tolos mensaxes</string>
     <string name="nc_clear_history_warning">¿De xuru que quies desaniciar tolos mensaxes d\'esta conversación?</string>
@@ -187,6 +188,7 @@
     <string name="nc_owner">Propietariu</string>
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Amestar participantes</string>
+    <string name="nc_password">Contraseña</string>
     <string name="nc_permissions_settings">Abrir la configuración</string>
     <string name="nc_phone_book_integration_account_not_found">Nun s\'atopó la cuenta</string>
     <string name="nc_pip_microphone_unmute">Activar el micrófonu</string>
@@ -229,6 +231,7 @@
     <string name="nc_server_failed_to_import_account">Nun se pue importar la cuenta seleicionada</string>
     <string name="nc_server_not_installed">Fina la instalación de: %1$s</string>
     <string name="nc_server_testing_connection">Probando la conexón</string>
+    <string name="nc_set_new_password">Afitar una contraseña nueva</string>
     <string name="nc_settings">Configuración</string>
     <string name="nc_settings_appearance">Aspeutu</string>
     <string name="nc_settings_call_ringtone">Llamaes</string>

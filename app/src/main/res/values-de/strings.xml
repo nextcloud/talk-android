@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
     <string name="nc_certificate_error">Ihre SSL-Konfiguration hat die Verbindung verhindert</string>
     <string name="nc_change_cert_auth">Authentifizierungs-Zertifikat ändern</string>
+    <string name="nc_change_password">Passwort ändern</string>
     <string name="nc_check_your_internet">Bitte die Internetverbindung prüfen</string>
     <string name="nc_clear_edit_button">Bearbeitung des Nachrichtentextes abbrechen</string>
     <string name="nc_clear_edit_message">Bearbeitungsnachricht löschen</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Besitzer</string>
     <string name="nc_participants">Teilnehmer</string>
     <string name="nc_participants_add">Teilnehmer hinzufügen</string>
+    <string name="nc_password">Passwort</string>
     <string name="nc_permissions_ask">Berechtigungen festlegen</string>
     <string name="nc_permissions_denied">Einige Berechtigungen wurden abgelehnt.</string>
     <string name="nc_permissions_rationale_dialog_title">Bitte alle Berechtigungen erteilen.</string>
@@ -359,6 +361,7 @@
     <string name="nc_remove_from_favorites">Von Favoriten entfernen</string>
     <string name="nc_remove_group_and_members">Gruppe und Mitglieder entfernen</string>
     <string name="nc_remove_participant">Teilnehmer entfernen</string>
+    <string name="nc_remove_password">Passwort entfernen</string>
     <string name="nc_remove_team_and_members">Team und Mitglieder entfernen</string>
     <string name="nc_rename">Unterhaltung umbenennen</string>
     <string name="nc_rename_confirm">Umbenennen</string>

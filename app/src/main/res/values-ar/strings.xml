@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">تحقق من الشهادة</string>
     <string name="nc_certificate_error">إعدادات SSL الخاص بك تمنع الاتصال</string>
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
+    <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_check_your_internet">رجاءً، تحقَّق من اتصالك بالإنترنت</string>
     <string name="nc_clear_edit_button">محو زر التحرير</string>
     <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">المالك</string>
     <string name="nc_participants">المشارِكون</string>
     <string name="nc_participants_add">إضِف مشاركين</string>
+    <string name="nc_password">كلمة المرور</string>
     <string name="nc_permissions_ask">تعيين الأذونات</string>
     <string name="nc_permissions_denied">بعض الأذونات تمّ رفضها</string>
     <string name="nc_permissions_rationale_dialog_title">إسمَح بالأذونات رجاءً</string>
@@ -359,6 +361,7 @@
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
     <string name="nc_remove_group_and_members">حذف المجموعة group و الأعضاء</string>
     <string name="nc_remove_participant">حذف مشارك</string>
+    <string name="nc_remove_password">حذف كلمة المرور</string>
     <string name="nc_remove_team_and_members">إزالة الفريق و الأعضاء</string>
     <string name="nc_rename">إعادة تسمية المحادثة</string>
     <string name="nc_rename_confirm">تغيير تسمية</string>
@@ -408,6 +411,7 @@
     <string name="nc_server_unsupported">الخادوم ليس فيه تطبيق Talk مدعوم </string>
     <string name="nc_server_url">عنوان الخادوم https://…</string>
     <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
+    <string name="nc_set_new_password">عَيِّن كلمة مرور جديدة</string>
     <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
