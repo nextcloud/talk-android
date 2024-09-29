@@ -574,6 +574,7 @@
     <string name="typing_are_typing">печатают...</string>
     <string name="typing_is_typing">печатает...</string>
     <string name="typing_x_others">и ещё %1$s собеседника печатают...</string>
+    <string name="unban">Разбанить</string>
     <string name="unread">Непрочитанное</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
     <string name="user_avatar">Изображение профиля</string>

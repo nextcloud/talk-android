@@ -361,6 +361,7 @@
     <string name="nc_remove_from_favorites">Bain ó cheanáin</string>
     <string name="nc_remove_group_and_members">Bain grúpa agus baill</string>
     <string name="nc_remove_participant">Bain rannpháirtí</string>
+    <string name="nc_remove_password">Bain Pasfhocal</string>
     <string name="nc_remove_team_and_members">Bain foireann agus baill</string>
     <string name="nc_rename">Fuaim iargúlta múchta</string>
     <string name="nc_rename_confirm">Athainmnigh</string>
