@@ -547,6 +547,8 @@ class ChatActivity :
                 temporaryChatMessage.message = qMsg.message.toString()
                 temporaryChatMessage.tempMessageId = qMsg.id
                 temporaryChatMessage.isTempMessage = true
+                temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
+                val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
                 adapter?.addToStart(temporaryChatMessage, true)
             }
         }
@@ -3675,8 +3677,8 @@ class ChatActivity :
         messageInputViewModel.removeFromQueue(roomToken, id)
         var i = 0
         val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
-        for (item in adapter?.items!!) { // add limit?
-            if (i >= max!!) break
+        for (item in adapter?.items!!) { // TODO fix weird delay
+            if (i > max!!) break
             if (item.item is ChatMessage &&
                 (item.item as ChatMessage).isTempMessage &&
                 (item.item as ChatMessage).tempMessageId == id

@@ -8,18 +8,28 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
+import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ItemTemporaryMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessagesListAdapter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -33,6 +43,9 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
 
     @Inject
     lateinit var context: Context
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     lateinit var temporaryMessageInterface: TemporaryMessageInterface
     var isEditing = false
@@ -77,6 +90,14 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
             temporaryMessageInterface.deleteTemporaryMessage(message.tempMessageId)
         }
 
+        // parent message handling
+        if (!message.isDeleted && message.parentMessageId != null) {
+            processParentMessage(message)
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+        } else {
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        }
+
         val bgBubbleColor = bubble.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
         val layout = R.drawable.shape_outcoming_message
         val bubbleDrawable = DisplayUtils.getMessageSelector(
@@ -87,6 +108,62 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
 
+    }
+
+    private fun processParentMessage(message: ChatMessage) {
+        if (message.parentMessageId != null && !message.isDeleted) {
+            CoroutineScope(Dispatchers.Main).launch {
+                try {
+                    val chatActivity = temporaryMessageInterface as ChatActivity
+                    val urlForChatting = ApiUtils.getUrlForChat(
+                        chatActivity.chatApiVersion,
+                        chatActivity.conversationUser?.baseUrl,
+                        chatActivity.roomToken
+                    )
+
+                    val parentChatMessage = withContext(Dispatchers.IO) {
+                        chatActivity.chatViewModel.getMessageById(
+                            urlForChatting,
+                            chatActivity.currentConversation!!,
+                            message.parentMessageId!!
+                        ).first()
+                    }
+
+                    parentChatMessage!!.activeUser = message.activeUser
+                    parentChatMessage.imageUrl?.let {
+                        binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                        binding.messageQuote.quotedMessageImage.load(it) {
+                            addHeader(
+                                "Authorization",
+                                ApiUtils.getCredentials(message.activeUser!!.username, message.activeUser!!.token)!!
+                            )
+                        }
+                    } ?: run {
+                        binding.messageQuote.quotedMessageImage.visibility = View.GONE
+                    }
+                    binding.messageQuote.quotedMessageAuthor.text = parentChatMessage.actorDisplayName
+                        ?: context.getText(R.string.nc_nick_guest)
+                    binding.messageQuote.quotedMessage.text = messageUtils
+                        .enrichChatReplyMessageText(
+                            binding.messageQuote.quotedMessage.context,
+                            parentChatMessage,
+                            false,
+                            viewThemeUtils
+                        )
+
+                    viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
+                    viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
+                    viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
+
+                    binding.messageQuote.quotedChatMessageView.setOnClickListener {
+                        val chatActivity = temporaryMessageInterface as ChatActivity
+                        chatActivity.jumpToQuotedMessage(parentChatMessage)
+                    }
+                } catch (e: Exception) {
+                    Log.d(TAG, "Error when processing parent message in view holder", e)
+                }
+            }
+        }
     }
 
     fun assignTemporaryMessageInterface(temporaryMessageInterface: TemporaryMessageInterface) {
@@ -103,5 +180,9 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
 
     override fun viewRecycled() {
         // unused atm
+    }
+
+    companion object {
+        private val TAG = TemporaryMessageViewHolder::class.java.simpleName
     }
 }
