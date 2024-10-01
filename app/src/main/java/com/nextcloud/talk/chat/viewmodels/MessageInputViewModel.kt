@@ -258,7 +258,6 @@ class MessageInputViewModel @Inject constructor(
         dataStore.saveMessageQueue(roomToken, null) // empties the queue
         while (queue.size > 0) {
             val msg = queue.removeFirst()
-            sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
             sendChatMessage(
                 roomToken,
                 credentials,
@@ -268,6 +267,7 @@ class MessageInputViewModel @Inject constructor(
                 msg.replyTo!!,
                 msg.sendWithoutNotification!!
             )
+            sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
         }
         _messageQueueSizeFlow.tryEmit(0)
     }
@@ -316,6 +316,6 @@ class MessageInputViewModel @Inject constructor(
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 100
+        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 1000
     }
 }

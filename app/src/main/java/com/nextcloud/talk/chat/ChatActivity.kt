@@ -550,6 +550,7 @@ class ChatActivity :
                 temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
                 val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
                 adapter?.addToStart(temporaryChatMessage, true)
+                adapter?.notifyDataSetChanged()
             }
         }
 
@@ -562,6 +563,7 @@ class ChatActivity :
                     i++
                     pos = adapter?.getMessagePositionById("-3")
                 }
+                adapter?.notifyDataSetChanged()
                 Log.d("Julius", "End i: $i")
             }
 
@@ -668,8 +670,8 @@ class ChatActivity :
                             TAG,
                             "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
                         )
+                        messageInputViewModel.getTempMessagesFromMessageQueue(roomToken)
                     }
-                    messageInputViewModel.getTempMessagesFromMessageQueue(roomToken)
                 }
 
                 is ChatViewModel.GetCapabilitiesErrorState -> {
@@ -3677,8 +3679,8 @@ class ChatActivity :
         messageInputViewModel.removeFromQueue(roomToken, id)
         var i = 0
         val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
-        for (item in adapter?.items!!) { // TODO fix weird delay
-            if (i > max!!) break
+        for (item in adapter?.items!!) {
+            if (i > max!! && max < 1) break
             if (item.item is ChatMessage &&
                 (item.item as ChatMessage).isTempMessage &&
                 (item.item as ChatMessage).tempMessageId == id
