@@ -479,13 +479,11 @@ class SetStatusDialogFragment :
                     }
                 })
         } else {
-            val clearAt = clearAtToUnixTime(selectedPredefinedStatus!!.clearAt)
-
             ncApi.setPredefinedStatusMessage(
                 credentials,
                 ApiUtils.getUrlForSetPredefinedStatus(currentUser?.baseUrl!!),
                 selectedPredefinedStatus!!.id,
-                if (clearAt == -1L) null else clearAt
+                clearAt
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
