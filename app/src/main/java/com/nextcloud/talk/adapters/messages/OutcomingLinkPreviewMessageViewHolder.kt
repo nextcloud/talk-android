@@ -9,6 +9,11 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.UnderlineSpan
 import android.util.Log
 import android.view.View
 import androidx.appcompat.content.res.AppCompatResources
@@ -84,7 +89,15 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
             itemView
         )
 
-        binding.messageText.text = processedMessageText
+        val link = SpannableString(processedMessageText)
+        link.setSpan(UnderlineSpan(), 0, link.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        binding.messageText.text = link
+
+        binding.messageText.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(processedMessageText.toString()))
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(browserIntent)
+        }
 
         itemView.isSelected = false
 
