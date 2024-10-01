@@ -56,17 +56,19 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRooms(): Job =
         scope.launch {
-            val resultsFromSync = sync()
-            if (!resultsFromSync.isNullOrEmpty()) {
-                val conversations = resultsFromSync.map(ConversationEntity::asModel)
-                _roomListFlow.emit(conversations)
-            } else {
-                val conversationsFromDb = getListOfConversations(user.id!!)
-                _roomListFlow.emit(conversationsFromDb)
+            val initialConversationModels = getListOfConversations(user.id!!)
+            _roomListFlow.emit(initialConversationModels)
+
+            if (monitor.isOnline.first()) {
+                val conversationEntitiesFromSync = getRoomsFromServer()
+                if (!conversationEntitiesFromSync.isNullOrEmpty()) {
+                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
+                    _roomListFlow.emit(conversationModelsFromSync)
+                }
             }
         }
 
-    override fun getConversationSettings(roomToken: String): Job =
+    override fun getRoom(roomToken: String): Job =
         scope.launch {
             val id = user.id!!
             val model = getConversation(id, roomToken)
@@ -100,7 +102,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
-    private suspend fun sync(): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!monitor.isOnline.first()) {
