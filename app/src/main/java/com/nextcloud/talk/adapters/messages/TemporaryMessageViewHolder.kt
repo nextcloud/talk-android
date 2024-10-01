@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2024 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -91,7 +91,7 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
         }
 
         // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
+        if (message.parentMessageId != null && message.parentMessageId!! > 0) {
             processParentMessage(message)
             binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
         } else {
@@ -132,6 +132,8 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
                     parentChatMessage!!.activeUser = message.activeUser
                     parentChatMessage.imageUrl?.let {
                         binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
+                        val placeholder = context.resources.getDrawable(R.drawable.ic_mimetype_image)
+                        binding.messageQuote.quotedMessageImage.setImageDrawable(placeholder)
                         binding.messageQuote.quotedMessageImage.load(it) {
                             addHeader(
                                 "Authorization",
