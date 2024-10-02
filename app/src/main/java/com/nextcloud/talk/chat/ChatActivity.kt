@@ -183,6 +183,7 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -416,7 +417,12 @@ class ChatActivity :
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
 
-        binding.progressBar.visibility = View.VISIBLE
+        this.lifecycleScope.launch {
+            delay(DELAY_TO_SHOW_PROGRESS_BAR)
+            if (adapter?.isEmpty == true) {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+        }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -3691,5 +3697,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
+        private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
     }
 }
