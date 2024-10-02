@@ -2825,7 +2825,9 @@ class ChatActivity :
             }
 
             val searchItem = menu.findItem(R.id.conversation_search)
-            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities)
+
+            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
+                currentConversation!!.remoteServer.isNullOrEmpty()
 
             if (currentConversation!!.remoteServer != null ||
                 !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
