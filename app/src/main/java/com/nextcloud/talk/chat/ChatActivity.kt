@@ -2059,7 +2059,7 @@ class ChatActivity :
     private fun onMessageSearchResult(intent: Intent?) {
         val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
         messageId?.let { id ->
-            scrollToMessageWithId(id)
+            scrollToAndCenterMessageWithId(id)
         }
     }
 
