@@ -127,6 +127,7 @@
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
+    <string name="nc_change_password">Change Password</string>
     <string name="nc_check_your_internet">Please check your internet connection</string>
     <string name="nc_clear_edit_button">Clear Edit Button</string>
     <string name="nc_clear_edit_message">Clear Edit Message</string>
@@ -335,6 +336,7 @@
     <string name="nc_owner">Owner</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
+    <string name="nc_password">Password</string>
     <string name="nc_permissions_ask">Set permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
@@ -359,6 +361,7 @@
     <string name="nc_remove_from_favorites">Remove from favourites</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">Remove participant</string>
+    <string name="nc_remove_password">Remove Password</string>
     <string name="nc_remove_team_and_members">Remove team and members</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_rename_confirm">Rename</string>
