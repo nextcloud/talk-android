@@ -527,7 +527,7 @@
     <string name="polls_option_delete">إحذِف الخيار %1$s</string>
     <string name="polls_option_hint">الخيار %1$s</string>
     <string name="polls_options">الخيارات</string>
-    <string name="polls_private_poll">إستبيان خاصٌّ</string>
+    <string name="polls_private_poll">إستبيان خاص</string>
     <string name="polls_question">سؤال</string>
     <string name="polls_question_hint">سؤالك</string>
     <string name="polls_results_subtitle">النتائج </string>
@@ -560,7 +560,7 @@
     <string name="scope_local_description">يراه فقط المستخدِمون على هذا الخادوم و الضيوف</string>
     <string name="scope_local_title">محلي</string>
     <string name="scope_private_description">يراه فقط المستخدِمون الذين أمكن مطابقة أرقام هواتفهم عبر تطبيق المحادثة Talk على الهاتف النقّال</string>
-    <string name="scope_private_title">خاصُّ</string>
+    <string name="scope_private_title">خاص</string>
     <string name="scope_published_description">قم بالمزامنة مع الخوادم الموثوقة ودفتر العناوين العالمية والعامة</string>
     <string name="scope_published_title">منشورة</string>
     <string name="scope_toggle">تبديل النطاق Scope toggle</string>
