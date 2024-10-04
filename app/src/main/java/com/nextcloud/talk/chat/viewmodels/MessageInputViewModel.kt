@@ -142,6 +142,7 @@ class MessageInputViewModel @Inject constructor(
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
+            messageQueue = dataStore.getMessageQueue(roomToken)
             messageQueue.add(qMsg)
             dataStore.saveMessageQueue(roomToken, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
@@ -257,7 +258,7 @@ class MessageInputViewModel @Inject constructor(
         val queue = dataStore.getMessageQueue(roomToken)
         dataStore.saveMessageQueue(roomToken, null) // empties the queue
         while (queue.size > 0) {
-            val msg = queue.removeFirst()
+            val msg = queue.removeAt(0)
             sendChatMessage(
                 roomToken,
                 credentials,

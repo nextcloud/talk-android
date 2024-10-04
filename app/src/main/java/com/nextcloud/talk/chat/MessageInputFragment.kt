@@ -178,12 +178,12 @@ class MessageInputFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            var wasOnline = true
-            networkMonitor.isOnline.onEach { isOnline ->
+            var wasOnline: Boolean // TODO maye redo this logic, seems it might be misfiring
+            networkMonitor.isOnline
+                .onEach { isOnline ->
+                    wasOnline = !binding.fragmentConnectionLost.isShown
                 val connectionGained = (!wasOnline && isOnline)
-                wasOnline = !binding.fragmentMessageInputView.isShown
                 Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                // delay(2000)
                 handleMessageQueue(isOnline)
                 handleUI(isOnline, connectionGained)
             }.collect()
