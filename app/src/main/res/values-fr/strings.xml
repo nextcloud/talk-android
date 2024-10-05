@@ -27,6 +27,7 @@
     <string name="close">Fermer</string>
     <string name="close_icon">Icône de fermeture</string>
     <string name="connection_established">Connexion établie</string>
+    <string name="connection_lost">Connexion perdue</string>
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
@@ -348,6 +349,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_remove_from_favorites">Retirer des favoris</string>
     <string name="nc_remove_group_and_members">Supprimer un groupe et ses membres</string>
     <string name="nc_remove_participant">Retirer le participant</string>
+    <string name="nc_remove_password">Supprimer le Mot de passe</string>
     <string name="nc_remove_team_and_members">Supprimer l\'équipe et ses membres</string>
     <string name="nc_rename">Renommer la conversation</string>
     <string name="nc_rename_confirm">Renommer</string>
@@ -397,6 +399,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_server_url">Adresse du serveur https://…</string>
     <string name="nc_server_version">%1$s ne fonctionne qu\'avec %2$s 13 et supérieur</string>
     <string name="nc_set_new_password">Définir un nouveau mot de passe</string>
+    <string name="nc_set_password">Définir le Mot de passe</string>
     <string name="nc_settings">Paramètres</string>
     <string name="nc_settings_account_updated">Nous avons mis à jour votre compte existant au lieu d’en ajouter un nouveau</string>
     <string name="nc_settings_advanced_title">Avancé</string>
