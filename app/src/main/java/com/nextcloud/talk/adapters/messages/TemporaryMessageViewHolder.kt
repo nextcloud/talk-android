@@ -12,6 +12,7 @@ import android.util.Log
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -68,6 +69,8 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
                     )
                 )
                 binding.messageEdit.visibility = View.VISIBLE
+                binding.messageEdit.requestFocus()
+                ViewCompat.getWindowInsetsController(binding.root)?.show(WindowInsetsCompat.Type.ime())
                 binding.messageEdit.setText(binding.messageText.text)
                 binding.messageText.visibility = View.GONE
             } else {

@@ -524,6 +524,20 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return queue
     }
 
+    override fun deleteAllMessageQueuesFor(userId: String) {
+        runBlocking {
+            async {
+                val preferencesMap = context.dataStore.data.first().asMap()
+                for (preference in preferencesMap) {
+                    if (preference.key.name.contains("$userId@")) {
+                        Log.d("Julius", "found: ${preference.key} :\n ${preference.value}\n")
+                        // TODO remove it somehow
+                    }
+                }
+            }
+        }
+    }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =
