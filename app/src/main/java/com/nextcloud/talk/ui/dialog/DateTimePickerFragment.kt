@@ -238,7 +238,7 @@ class DateTimePickerFragment : DialogFragment() {
                 month,
                 day,
                 timePicker.hour,
-                timePicker.minute,
+                timePicker.minute
             )
             setTimeStamp(getTimeFromTimeStamp(timestamp))
             currentTimeStamp = timestamp / ONE_SEC
