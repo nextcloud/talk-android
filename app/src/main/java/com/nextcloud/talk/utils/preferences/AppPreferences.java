@@ -176,6 +176,8 @@ public interface AppPreferences {
 
     List<MessageInputViewModel.QueuedMessage> getMessageQueue(String internalConversationId);
 
+    void deleteAllMessageQueuesFor(String userId);
+
 
     void clear();
 }

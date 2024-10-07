@@ -143,7 +143,7 @@ class MessageInputFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        chatActivity.messageInputViewModel.restoreMessageQueue(chatActivity.roomToken)
+        chatActivity.messageInputViewModel.restoreMessageQueue(chatActivity.currentConversation!!.internalId)
     }
 
     override fun onDestroyView() {
@@ -245,7 +245,7 @@ class MessageInputFragment : Fragment() {
         if (isOnline) {
             chatActivity.messageInputViewModel.switchToMessageQueue(false)
             chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
-                chatActivity.roomToken,
+                chatActivity.currentConversation!!.internalId,
                 chatActivity.conversationUser!!.getCredentials(),
                 ApiUtils.getUrlForChat(
                     chatActivity.chatApiVersion,
@@ -794,7 +794,7 @@ class MessageInputFragment : Fragment() {
 
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
-            chatActivity.roomToken,
+            chatActivity.currentConversation!!.internalId,
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,

@@ -131,7 +131,7 @@ class MessageInputViewModel @Inject constructor(
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
-        roomToken: String,
+        internalId: String,
         credentials: String,
         url: String,
         message: CharSequence,
@@ -142,10 +142,12 @@ class MessageInputViewModel @Inject constructor(
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
-            messageQueue = dataStore.getMessageQueue(roomToken)
+            messageQueue = dataStore.getMessageQueue(internalId)
             messageQueue.add(qMsg)
-            dataStore.saveMessageQueue(roomToken, messageQueue)
+            dataStore.saveMessageQueue(internalId, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
+            val id = internalId.substringBefore('@')
+            dataStore.deleteAllMessageQueuesFor(id)
             _messageQueueFlow.postValue(listOf(qMsg))
             return
         }
@@ -251,16 +253,16 @@ class MessageInputViewModel @Inject constructor(
         _getRecordingTime.postValue(time)
     }
 
-    fun sendAndEmptyMessageQueue(roomToken: String, credentials: String, url: String) {
+    fun sendAndEmptyMessageQueue(internalId: String, credentials: String, url: String) {
         if (isQueueing) return
         messageQueue.clear()
 
-        val queue = dataStore.getMessageQueue(roomToken)
-        dataStore.saveMessageQueue(roomToken, null) // empties the queue
+        val queue = dataStore.getMessageQueue(internalId)
+        dataStore.saveMessageQueue(internalId, null) // empties the queue
         while (queue.size > 0) {
             val msg = queue.removeAt(0)
             sendChatMessage(
-                roomToken,
+                internalId,
                 credentials,
                 url,
                 msg.message!!,
@@ -273,8 +275,8 @@ class MessageInputViewModel @Inject constructor(
         _messageQueueSizeFlow.tryEmit(0)
     }
 
-    fun getTempMessagesFromMessageQueue(roomToken: String) {
-        val queue = dataStore.getMessageQueue(roomToken)
+    fun getTempMessagesFromMessageQueue(internalId: String) {
+        val queue = dataStore.getMessageQueue(internalId)
         val list = mutableListOf<QueuedMessage>()
         for (msg in queue) {
             Log.d("Julius", "Msg: ${msg.message}")
@@ -287,32 +289,32 @@ class MessageInputViewModel @Inject constructor(
         isQueueing = shouldQueue
     }
 
-    fun restoreMessageQueue(roomToken: String) {
-        messageQueue = dataStore.getMessageQueue(roomToken)
+    fun restoreMessageQueue(internalId: String) {
+        messageQueue = dataStore.getMessageQueue(internalId)
         _messageQueueSizeFlow.tryEmit(messageQueue.size)
     }
 
-    fun removeFromQueue(roomToken: String, id: Int) {
-        val queue = dataStore.getMessageQueue(roomToken)
+    fun removeFromQueue(internalId: String, id: Int) {
+        val queue = dataStore.getMessageQueue(internalId)
         for (qMsg in queue) {
             if (qMsg.id == id) {
                 queue.remove(qMsg)
                 break
             }
         }
-        dataStore.saveMessageQueue(roomToken, queue)
+        dataStore.saveMessageQueue(internalId, queue)
         _messageQueueSizeFlow.tryEmit(queue.size)
     }
 
-    fun editQueuedMessage(roomToken: String, id: Int, newMessage: String) {
-        val queue = dataStore.getMessageQueue(roomToken)
+    fun editQueuedMessage(internalId: String, id: Int, newMessage: String) {
+        val queue = dataStore.getMessageQueue(internalId)
         for (qMsg in queue) {
             if (qMsg.id == id) {
                 qMsg.message = newMessage
                 break
             }
         }
-        dataStore.saveMessageQueue(roomToken, queue)
+        dataStore.saveMessageQueue(internalId, queue)
     }
 
     companion object {

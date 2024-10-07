@@ -670,7 +670,7 @@ class ChatActivity :
                             TAG,
                             "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
                         )
-                        messageInputViewModel.getTempMessagesFromMessageQueue(roomToken)
+                        messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                     }
                 }
 
@@ -3670,13 +3670,15 @@ class ChatActivity :
     }
 
     override fun editTemporaryMessage(id: Int, newMessage: String) {
-        messageInputViewModel.editQueuedMessage(roomToken, id, newMessage)
+        messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
         adapter?.notifyDataSetChanged() // TODO optimize this
+        // TODO disable messageInput cursor and have cursor active in the message with keyboard out - from marcel
+
 
     }
 
     override fun deleteTemporaryMessage(id: Int) {
-        messageInputViewModel.removeFromQueue(roomToken, id)
+        messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
         var i = 0
         val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
         for (item in adapter?.items!!) {
