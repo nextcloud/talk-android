@@ -3683,8 +3683,6 @@ class ChatActivity :
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
-        private const val GROUPED_MESSAGES_THRESHOLD = 4
-        private const val GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD = 5
         private const val TOOLBAR_AVATAR_RATIO = 1.5
         private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_CODE_NOT_MODIFIED = 304
