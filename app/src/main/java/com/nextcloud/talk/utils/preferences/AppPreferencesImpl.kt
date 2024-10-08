@@ -527,11 +527,17 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
     override fun deleteAllMessageQueuesFor(userId: String) {
         runBlocking {
             async {
+                val keyList = mutableListOf<Preferences.Key<*>>()
                 val preferencesMap = context.dataStore.data.first().asMap()
                 for (preference in preferencesMap) {
                     if (preference.key.name.contains("$userId@")) {
-                        Log.d("Julius", "found: ${preference.key} :\n ${preference.value}\n")
-                        // TODO remove it somehow
+                        keyList.add(preference.key)
+                    }
+                }
+
+                for (key in keyList) {
+                    context.dataStore.edit {
+                        it.remove(key)
                     }
                 }
             }

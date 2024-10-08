@@ -147,7 +147,6 @@ class MessageInputViewModel @Inject constructor(
             dataStore.saveMessageQueue(internalId, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
             val id = internalId.substringBefore('@')
-            dataStore.deleteAllMessageQueuesFor(id)
             _messageQueueFlow.postValue(listOf(qMsg))
             return
         }
