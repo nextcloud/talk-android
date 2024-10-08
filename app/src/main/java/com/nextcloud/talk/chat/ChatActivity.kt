@@ -2600,8 +2600,7 @@ class ChatActivity :
             chatMessage.activeUser = conversationUser
 
             adapter?.let {
-                val lastItemIndex = adapter!!.itemCount - 1
-                val previousChatMessage = adapter!!.items[lastItemIndex].item as ChatMessage
+                val previousChatMessage = adapter!!.items[1].item as ChatMessage
                 chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
 
                 chatMessage.isOneToOneConversation =
