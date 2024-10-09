@@ -114,13 +114,28 @@ class OfflineFirstChatRepository @Inject constructor(
 
             Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-            var newestMessageId = chatDao.getNewestMessageId(internalConversationId)
-            Log.d(TAG, "newestMessageId: $newestMessageId")
-            if (newestMessageId.toInt() == 0) {
+            var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+            Log.d(TAG, "newestMessageId: $newestMessageIdFromDb")
+            if (newestMessageIdFromDb.toInt() == 0) {
                 Log.d(TAG, "newestMessageId from db was 0. Must only happen when chat is loaded for the first time")
             }
 
-            if (conversationModel.lastReadMessage.toLong() != newestMessageId) {
+            // infos from Ivan to
+            // "Why is it lastReadMessageId that is checked? Shouldn't it be lastMessage instead?
+            // https://github.com/nextcloud/talk-ios/blob/master/NextcloudTalk/NCChatController.m#L473 "
+            //
+            // answer:
+            // "I guess we do it with the lastReadMessageId in order to place the separator of "Unread messages" when you enter the chat"
+            //
+            // if it turns out lastMessage can be used instead lastReadMessage, use this:
+            // val doInitialLoadFromServer = conversationModel.lastMessage?.let {
+            //     newestMessageIdFromDb < it.id
+            // } ?: true
+            // Log.d(TAG, "doInitialLoadFromServer:$doInitialLoadFromServer")
+            //
+            // if (doInitialLoadFromServer) {
+
+            if (newestMessageIdFromDb < conversationModel.lastReadMessage.toLong()) {
                 Log.d(TAG, "An online request is made because chat is not up to date")
 
                 // set up field map to load the newest messages
@@ -139,17 +154,17 @@ class OfflineFirstChatRepository @Inject constructor(
                     Log.e(TAG, "initial loading of messages failed")
                 }
 
-                newestMessageId = chatDao.getNewestMessageId(internalConversationId)
-                Log.d(TAG, "newestMessageId after sync: $newestMessageId")
+                newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+                Log.d(TAG, "newestMessageId after sync: $newestMessageIdFromDb")
             } else {
                 Log.d(TAG, "Initial online request is skipped because offline messages are up to date")
             }
 
-            val chatBlock = getBlockOfMessage(newestMessageId.toInt())
+            val chatBlock = getBlockOfMessage(newestMessageIdFromDb.toInt())
 
             val amountBetween = chatDao.getCountBetweenMessageIds(
                 internalConversationId,
-                newestMessageId,
+                newestMessageIdFromDb,
                 chatBlock!!.oldestMessageId
             )
 
@@ -163,7 +178,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
             showMessagesBeforeAndEqual(
                 internalConversationId,
-                newestMessageId,
+                newestMessageIdFromDb,
                 limit
             )
 
@@ -172,7 +187,7 @@ class OfflineFirstChatRepository @Inject constructor(
             delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
 
             updateUiForLastCommonRead()
-            updateUiForLastReadMessage(newestMessageId)
+            updateUiForLastReadMessage(newestMessageIdFromDb)
 
             initMessagePolling()
         }
