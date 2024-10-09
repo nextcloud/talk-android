@@ -515,7 +515,7 @@ How to translate with transifex:
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_1_other">and 1 other is typing …</string>
     <string name="typing_x_others">and %1$s others are typing …</string>
-
+    <string name="deck_card_description">%1$s in 2$s</string>
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>
     <string name="nc_upload_picture_from_cam">Take photo</string>

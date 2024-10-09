@@ -9,6 +9,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id ="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
@@ -58,13 +59,13 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/referenceImage"
+                android:id="@+id/deckCardImage"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/baseline_assignment_24" />
 
             <androidx.emoji2.widget.EmojiTextView
-                android:id="@+id/referenceName"
+                android:id="@+id/cardName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
@@ -85,7 +86,7 @@
             android:orientation="vertical">
 
             <androidx.emoji2.widget.EmojiTextView
-                android:id="@+id/referenceDescription"
+                android:id="@+id/cardDescription"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
@@ -108,6 +109,10 @@
                 tools:text="12:38" />
 
         </LinearLayout>
+
+        <include
+            android:id="@+id/reactions"
+            layout="@layout/reactions_inside_message" />
 
     </com.google.android.flexbox.FlexboxLayout>
 </RelativeLayout>
