@@ -161,9 +161,6 @@ object CapabilitiesUtil {
     }
 
     fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.FEDERATION_V1)) {
-            return false
-        }
         return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
     }
 
