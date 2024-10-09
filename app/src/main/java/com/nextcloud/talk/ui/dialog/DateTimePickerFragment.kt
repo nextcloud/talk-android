@@ -238,7 +238,7 @@ class DateTimePickerFragment : DialogFragment() {
                 month,
                 day,
                 timePicker.hour,
-                timePicker.minute,
+                timePicker.minute
             )
             setTimeStamp(getTimeFromTimeStamp(timestamp))
             currentTimeStamp = timestamp / ONE_SEC
@@ -264,7 +264,7 @@ class DateTimePickerFragment : DialogFragment() {
         val calendar: Calendar = Calendar.getInstance().apply {
             set(Calendar.YEAR, year)
             set(Calendar.MONTH, month)
-            set(Calendar.DAY_OF_YEAR,day)
+            set(Calendar.DAY_OF_YEAR, day)
             if (weekDay > -1) set(Calendar.DAY_OF_WEEK, weekDay)
             if (daysToAdd > 0) add(Calendar.DAY_OF_YEAR, daysToAdd)
             if (weekInYear != -1) set(Calendar.WEEK_OF_YEAR, weekInYear)
