@@ -256,6 +256,7 @@
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
+    <string name="nc_teams">Komandos</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_user">Naudotojas</string>
@@ -293,6 +294,7 @@
     <string name="secondsAgo">prieš keletą sekundžių</string>
     <string name="selected_list_item">Pasirinkta</string>
     <string name="send_email">Siųsti elektroninį laišką</string>
+    <string name="send_without_notification">Siųsti be pranešimo</string>
     <string name="set">Nustatyti</string>
     <string name="set_status">Nustatyti būseną</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
