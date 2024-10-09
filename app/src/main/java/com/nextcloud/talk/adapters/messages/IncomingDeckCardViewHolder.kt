@@ -9,6 +9,8 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
@@ -22,7 +24,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.databinding.ItemCustomIncomingLinkPreviewMessageBinding
+import com.nextcloud.talk.databinding.ItemCustomIncomingDeckCardMessageBinding
 import com.nextcloud.talk.extensions.loadBotsAvatar
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
@@ -43,8 +45,8 @@ import javax.inject.Inject
 class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHolders
     .IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
-    private val binding: ItemCustomIncomingLinkPreviewMessageBinding =
-        ItemCustomIncomingLinkPreviewMessageBinding.bind(itemView)
+    private val binding: ItemCustomIncomingDeckCardMessageBinding =
+        ItemCustomIncomingDeckCardMessageBinding.bind(itemView)
 
     @Inject
     lateinit var context: Context
@@ -71,6 +73,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
     var stackName: String? = null
     var cardName: String? = null
     var boardName: String? = null
+    var cardLink: String? = null
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
@@ -90,9 +93,15 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
 
         showDeckCard(message)
 
-        binding.referenceInclude.referenceWrapper.setOnLongClickListener { l: View? ->
+        binding.cardView.setOnLongClickListener { l: View? ->
             commonMessageInterface.onOpenMessageActionsDialog(message)
             true
+        }
+
+        binding.cardView.setOnClickListener {
+            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(cardLink))
+            browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            context.startActivity(browserIntent)
         }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
@@ -116,8 +125,19 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
                     cardName = individualHashMap["name"]
                     stackName = individualHashMap["stackname"]
                     boardName = individualHashMap["boardname"]
+                    cardLink = individualHashMap["link"]
                 }
             }
+        }
+
+        if (cardName?.isNotEmpty() == true) {
+            val cardDescription = String.format(
+                context.resources.getString(R.string.deck_card_description),
+                stackName,
+                boardName
+            )
+            binding.cardName.text = cardName
+            binding.cardDescription.text = cardDescription
         }
     }
 
