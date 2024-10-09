@@ -64,7 +64,8 @@ class DiagnoseActivity : BaseActivity() {
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
 
-    private var isGooglePlayServicesAvailable: Boolean = false
+    private var isPushMessagingServiceAvailable: Boolean = false
+    private var pushMessagingProvider: String = ""
 
     private val markdownText = SpannableStringBuilder()
 
@@ -82,7 +83,8 @@ class DiagnoseActivity : BaseActivity() {
         super.onResume()
         supportActionBar?.show()
 
-        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
+        isPushMessagingServiceAvailable = ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
+        pushMessagingProvider = ClosedInterfaceImpl().pushMessagingProvider()
 
         markdownText.clear()
         setupMetaValues()
@@ -214,12 +216,14 @@ class DiagnoseActivity : BaseActivity() {
         addKey(context.resources.getString(R.string.nc_diagnose_android_version_title))
         addValue(Build.VERSION.SDK_INT.toString())
 
-        if (isGooglePlayServicesAvailable) {
-            addKey(context.resources.getString(R.string.nc_diagnose_gplay_available_title))
-            addValue(context.resources.getString(R.string.nc_diagnose_gplay_available_yes))
-        } else {
-            addKey(context.resources.getString(R.string.nc_diagnose_gplay_available_title))
-            addValue(context.resources.getString(R.string.nc_diagnose_gplay_available_no))
+        addKey(context.resources.getString(R.string.nc_diagnose_push_notifications_available_title))
+        if (pushMessagingProvider == "gplay") {
+            addValue(context.resources.getString(R.string.nc_diagnose_push_notifications_gplay))
+        } else if (pushMessagingProvider == "unifiedpush") {
+            addValue(context.resources.getString(R.string.nc_diagnose_push_notifications_unified_push))
+        }
+        if (isPushMessagingServiceAvailable == false) {
+            addValue(context.resources.getString(R.string.nc_diagnose_push_notifications_available_no))
         }
     }
 
@@ -237,7 +241,7 @@ class DiagnoseActivity : BaseActivity() {
         addKey(context.resources.getString(R.string.nc_diagnose_flavor))
         addValue(BuildConfig.FLAVOR)
 
-        if (isGooglePlayServicesAvailable) {
+        if (isPushMessagingServiceAvailable) {
             addKey(context.resources.getString(R.string.nc_diagnose_battery_optimization_title))
 
             if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
@@ -270,30 +274,32 @@ class DiagnoseActivity : BaseActivity() {
                 )
             )
 
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_title))
-            if (appPreferences.pushToken.isNullOrEmpty()) {
-                addValue(context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing))
-            } else {
-                addValue("${appPreferences.pushToken.substring(0, 5)}...")
-            }
+            if (pushMessagingProvider == "gplay") {
+                addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_title))
+                if (appPreferences.pushToken.isNullOrEmpty()) {
+                    addValue(context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing))
+                } else {
+                    addValue("${appPreferences.pushToken.substring(0, 5)}...")
+                }
 
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated))
-            if (appPreferences.pushTokenLatestGeneration != null && appPreferences.pushTokenLatestGeneration != 0L) {
-                addValue(
-                    DisplayUtils.unixTimeToHumanReadable(
-                        appPreferences
-                            .pushTokenLatestGeneration
+                addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated))
+                if (appPreferences.pushTokenLatestGeneration != null && appPreferences.pushTokenLatestGeneration != 0L) {
+                    addValue(
+                        DisplayUtils.unixTimeToHumanReadable(
+                            appPreferences
+                                .pushTokenLatestGeneration
+                        )
                     )
-                )
-            } else {
-                addValue(context.resources.getString(R.string.nc_common_unknown))
-            }
+                } else {
+                    addValue(context.resources.getString(R.string.nc_common_unknown))
+                }
 
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_fetch))
-            if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
-                addValue(DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch))
-            } else {
-                addValue(context.resources.getString(R.string.nc_common_unknown))
+                addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_fetch))
+                if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
+                    addValue(DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch))
+                } else {
+                    addValue(context.resources.getString(R.string.nc_common_unknown))
+                }
             }
         }
 
@@ -324,7 +330,7 @@ class DiagnoseActivity : BaseActivity() {
             )
         )
 
-        if (isGooglePlayServicesAvailable) {
+        if ((isPushMessagingServiceAvailable) && (pushMessagingProvider == "gplay")) {
             setupPushRegistrationDiagnose()
         }
 

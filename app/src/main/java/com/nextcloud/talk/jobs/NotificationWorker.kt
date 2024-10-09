@@ -148,7 +148,33 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         sharedApplication!!.componentApplication.inject(this)
         context = applicationContext
 
-        initDecryptedData(inputData)
+        when (inputData.getInt(BundleKeys.KEY_NOTIFICATION_BACKEND_TYPE, -1)) {
+            Companion.BackendType.FIREBASE_CLOUD_MESSAGING.value -> {
+                initDecryptedData(inputData)
+            }
+            Companion.BackendType.UNIFIED_PUSH.value -> {
+                pushMessage = LoganSquare.parse(inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT),
+                    DecryptedPushMessage::class.java)
+
+                val messageUser = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
+                val users = userManager!!.users.blockingGet()
+                if (users != null && users.size > 0) {
+                    for (user in users) {
+                        if (user.username == messageUser) {
+                            signatureVerification = SignatureVerification(true, user)
+                            break
+                        }
+                    }
+                }
+                if (signatureVerification === null)
+                    return Result.failure()
+            }
+            else -> {
+                // message not received from a valid backend
+                return Result.failure()
+            }
+        }
+
         initNcApiAndCredentials()
 
         notificationManager = NotificationManagerCompat.from(context!!)
@@ -1050,5 +1076,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val GET_ROOM_RETRY_COUNT: Long = 3
+        enum class BackendType(val value: Int) {
+            NONE(-1),
+            FIREBASE_CLOUD_MESSAGING(1),
+            UNIFIED_PUSH(2);
+            companion object {
+                fun fromInt(value: Int) = BackendType.values().first { it.value == value }
+            }
+        }
     }
 }
