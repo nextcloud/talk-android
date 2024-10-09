@@ -131,8 +131,20 @@ data class ChatMessage(
         MessageType.SINGLE_LINK_MESSAGE,
         MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
         MessageType.VOICE_MESSAGE,
-        MessageType.POLL_MESSAGE
+        MessageType.POLL_MESSAGE,
+        MessageType.DECK_CARD
     )
+
+    fun isDeckCard(): Boolean {
+        if (messageParameters != null && messageParameters!!.size > 0) {
+            for ((_, individualHashMap) in messageParameters!!) {
+                if (isHashMapEntryEqualTo(individualHashMap, "type", "deck-card")) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
 
     fun hasFileAttachment(): Boolean {
         if (messageParameters != null && messageParameters!!.size > 0) {
@@ -237,6 +249,8 @@ data class ChatMessage(
             MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
         } else if (isPoll()) {
             MessageType.POLL_MESSAGE
+        } else if (isDeckCard()) {
+            MessageType.DECK_CARD
         } else {
             MessageType.REGULAR_TEXT_MESSAGE
         }
@@ -345,7 +359,8 @@ data class ChatMessage(
         SINGLE_NC_ATTACHMENT_MESSAGE,
         SINGLE_NC_GEOLOCATION_MESSAGE,
         POLL_MESSAGE,
-        VOICE_MESSAGE
+        VOICE_MESSAGE,
+        DECK_CARD
     }
 
     /**

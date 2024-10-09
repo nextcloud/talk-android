@@ -3517,6 +3517,7 @@ class ChatActivity :
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
             CONTENT_TYPE_TEMP -> message.id == "-3"
+            CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false
         }
@@ -3721,7 +3722,8 @@ class ChatActivity :
         private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 5
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
-        private const val CONTENT_TYPE_TEMP: Byte = 8
+        private const val CONTENT_TYPE_DECK_CARD: Byte = 8
+        private const val CONTENT_TYPE_TEMP: Byte = 9
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
