@@ -1292,16 +1292,16 @@ class ChatActivity :
         runOnUiThread {
             binding.typingIndicator.text = typingString
 
-            if (participantNames.size > 0) {
-                binding.typingIndicatorWrapper.visibility = View.VISIBLE
-                binding.typingIndicatorWrapper.animate()
-                    .translationYBy(DisplayUtils.convertDpToPixel(-18f, context))
-                    .setInterpolator(AccelerateDecelerateInterpolator())
-                    .duration = TYPING_INDICATOR_ANIMATION_DURATION
+            val typingIndicatorPositionY = if (participantNames.size > 0) {
+                TYPING_INDICATOR_POSITION_VISIBLE
             } else {
-                binding.typingIndicatorWrapper.visibility = View.INVISIBLE
-                binding.typingIndicatorWrapper.y += DisplayUtils.convertDpToPixel(18f, context)
+                TYPING_INDICATOR_POSITION_HIDDEN
             }
+
+            binding.typingIndicatorWrapper.animate()
+                .translationY(DisplayUtils.convertDpToPixel(typingIndicatorPositionY, context))
+                .setInterpolator(AccelerateDecelerateInterpolator())
+                .duration = TYPING_INDICATOR_ANIMATION_DURATION
         }
     }
 
@@ -3677,6 +3677,8 @@ class ChatActivity :
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
         private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
+        private const val TYPING_INDICATOR_POSITION_VISIBLE = -18f
+        private const val TYPING_INDICATOR_POSITION_HIDDEN = -1f
         private const val TYPING_DURATION_TO_SEND_NEXT_TYPING_MESSAGE = 10000L
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
