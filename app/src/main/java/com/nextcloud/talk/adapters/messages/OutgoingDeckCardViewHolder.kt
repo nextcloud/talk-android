@@ -8,36 +8,37 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
-import android.view.View
-import autodagger.AutoInjector
-import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.databinding.ItemCustomOutcomingDeckCardMessageBinding
-import com.stfalcon.chatkit.messages.MessageHolders
-import javax.inject.Inject
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import android.view.View
+import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.databinding.ItemCustomOutcomingDeckCardMessageBinding
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutgoingDeckCardViewHolder(
@@ -84,6 +85,10 @@ class OutgoingDeckCardViewHolder(
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
+
+        binding.cardView.findViewById<ImageView>(R.id.deckCardImage)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.SECONDARY)
+        }
 
         itemView.isSelected = false
 
