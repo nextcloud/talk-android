@@ -65,22 +65,21 @@
 
             <ImageView
                 android:id="@+id/deckCardImage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:src="@drawable/baseline_assignment_24" />
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/cardName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="4dp"
                 android:ellipsize="end"
-                android:lineSpacingMultiplier="1.2"
+                android:maxLines="1"
                 android:textIsSelectable="false"
-                android:layout_marginBottom="12dp"
+                android:layout_marginBottom="4dp"
                 android:textStyle="bold"
                 android:visibility="gone"
-                app:layout_flexGrow="1"
                 tools:text="Card Name"
                 tools:visibility="visible" />
         </LinearLayout>
@@ -90,11 +89,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
-                android:lineSpacingMultiplier="1.2"
                 android:textAlignment="viewStart"
+                android:maxLines="1"
                 android:textIsSelectable="false"
                 android:visibility="gone"
-                app:layout_flexGrow="1"
+                android:layout_marginBottom="4dp"
                 tools:text="Card Description"
                 tools:visibility="visible" />
 
