@@ -87,6 +87,8 @@ class OutgoingDeckCardViewHolder(
 
         itemView.isSelected = false
 
+        showDeckCard(message)
+
         // parent message handling
         setParentMessageDataOnMessageItem(message)
 
@@ -110,8 +112,6 @@ class OutgoingDeckCardViewHolder(
         }
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
-
-        showDeckCard(message)
 
         binding.cardView.setOnClickListener {
             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(cardLink))
@@ -142,16 +142,16 @@ class OutgoingDeckCardViewHolder(
                 }
             }
         }
+        val cardDescription = String.format(
+            context.resources.getString(R.string.deck_card_description),
+            stackName,
+            boardName
+        )
 
-        if (cardName?.isNotEmpty() == true) {
-            val cardDescription = String.format(
-                context.resources.getString(R.string.deck_card_description),
-                stackName,
-                boardName
-            )
-            binding.cardName.text = cardName
-            binding.cardDescription.text = cardDescription
-        }
+        binding.cardName.visibility = View.VISIBLE
+        binding.cardDescription.visibility = View.VISIBLE
+        binding.cardName.text = cardName
+        binding.cardDescription.text = cardDescription
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
