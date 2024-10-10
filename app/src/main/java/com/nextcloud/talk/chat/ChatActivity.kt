@@ -83,6 +83,7 @@ import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
 import com.nextcloud.talk.adapters.messages.CallStartedViewHolder
 import com.nextcloud.talk.adapters.messages.CommonMessageInterface
+import com.nextcloud.talk.adapters.messages.IncomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingPollMessageViewHolder
@@ -96,6 +97,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
+import com.nextcloud.talk.adapters.messages.OutgoingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
@@ -1291,6 +1293,18 @@ class ChatActivity :
             R.layout.item_custom_outcoming_link_preview_message,
             this
         )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_DECK_CARD,
+            IncomingDeckCardViewHolder::class.java,
+            payload,
+            R.layout.item_custom_incoming_deck_card_message,
+            OutgoingDeckCardViewHolder::class.java,
+            payload,
+            R.layout.item_custom_outcoming_deck_card_message,
+            this
+        )
+
         return messageHolders
     }
 

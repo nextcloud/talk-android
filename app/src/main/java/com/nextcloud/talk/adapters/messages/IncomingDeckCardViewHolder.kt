@@ -83,6 +83,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         setAvatarAndAuthorOnMessageItem(message)
+        showDeckCard(message)
 
         colorizeMessageBubble(message)
 
@@ -90,8 +91,6 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
 
         // parent message handling
         setParentMessageDataOnMessageItem(message)
-
-        showDeckCard(message)
 
         binding.cardView.setOnLongClickListener { l: View? ->
             commonMessageInterface.onOpenMessageActionsDialog(message)
@@ -136,6 +135,8 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
                 stackName,
                 boardName
             )
+            binding.cardName.visibility = View.VISIBLE
+            binding.cardDescription.visibility = View.VISIBLE
             binding.cardName.text = cardName
             binding.cardDescription.text = cardDescription
         }
