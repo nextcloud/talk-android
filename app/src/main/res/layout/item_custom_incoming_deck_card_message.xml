@@ -56,6 +56,11 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <ImageView
@@ -71,19 +76,14 @@
                 android:layout_marginStart="10dp"
                 android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
-                android:maxLines="2"
-                android:textAlignment="viewStart"
                 android:textIsSelectable="false"
+                android:layout_marginBottom="12dp"
                 android:textStyle="bold"
                 android:visibility="gone"
-                tools:text="Name of Website"
+                app:layout_flexGrow="1"
+                tools:text="Card Name"
                 tools:visibility="visible" />
         </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/cardDescription"
@@ -91,11 +91,11 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
-                android:maxLines="2"
                 android:textAlignment="viewStart"
                 android:textIsSelectable="false"
                 android:visibility="gone"
-                tools:text="Description of Website"
+                app:layout_flexGrow="1"
+                tools:text="Card Description"
                 tools:visibility="visible" />
 
             <TextView
@@ -107,7 +107,6 @@
                 android:textColor="@color/no_emphasis_text"
                 android:textIsSelectable="false"
                 tools:text="12:38" />
-
         </LinearLayout>
 
         <include

@@ -1,14 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota<sowjanya.kch@gmail.com>
+  ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
-  -->
+-->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cardView"
+    android:id ="@+id/cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="16dp"
@@ -16,73 +17,52 @@
     android:layout_marginRight="16dp"
     android:layout_marginBottom="2dp">
 
-    <ImageView
-        android:id="@id/messageUserAvatar"
-        android:layout_width="24dp"
-        android:layout_height="24dp"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="8dp"
-        android:contentDescription="@string/avatar" />
-
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
-        android:layout_toEndOf="@id/messageUserAvatar"
-        android:orientation="vertical"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/message_outcoming_bubble_margin_left"
         app:alignContent="stretch"
         app:alignItems="stretch"
-        app:flexWrap="wrap">
+        app:flexWrap="wrap"
+        app:justifyContent="flex_end">
 
         <include
             android:id="@+id/message_quote"
             layout="@layout/item_message_quote"
             android:visibility="gone" />
 
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/messageAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:alpha="0.6"
-            android:textAlignment="viewStart"
-            android:textColor="@color/no_emphasis_text"
-            android:textIsSelectable="false"
-            android:textSize="12sp"
-            tools:text="Jane Doe" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/deckCardImage"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/baseline_assignment_24" />
-
-            <androidx.emoji2.widget.EmojiTextView
-                android:id="@+id/cardName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:ellipsize="end"
-                android:lineSpacingMultiplier="1.2"
-                android:maxLines="2"
-                android:textAlignment="viewStart"
-                android:textIsSelectable="false"
-                android:textStyle="bold"
-                android:visibility="gone"
-                tools:text="Name of Website"
-                tools:visibility="visible" />
-        </LinearLayout>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/deckCardImage"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/baseline_assignment_24" />
+
+                <androidx.emoji2.widget.EmojiTextView
+                    android:id="@+id/cardName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="1.2"
+                    app:layout_flexGrow="1"
+                    android:textIsSelectable="false"
+                    android:textStyle="bold"
+                    android:visibility="gone"
+                    tools:text="Card Name"
+                    tools:visibility="visible" />
+            </LinearLayout>
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/cardDescription"
@@ -90,19 +70,19 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:lineSpacingMultiplier="1.2"
-                android:maxLines="2"
+                app:layout_flexGrow="1"
                 android:textAlignment="viewStart"
                 android:textIsSelectable="false"
                 android:visibility="gone"
-                tools:text="Description of Website"
+                tools:text="Card Description"
                 tools:visibility="visible" />
 
             <TextView
                 android:id="@id/messageTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:alpha="0.6"
                 android:layout_gravity="end"
+                android:alpha="0.6"
                 android:textColor="@color/no_emphasis_text"
                 android:textIsSelectable="false"
                 tools:text="12:38" />
