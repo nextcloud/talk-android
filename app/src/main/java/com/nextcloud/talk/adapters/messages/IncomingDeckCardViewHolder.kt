@@ -14,6 +14,7 @@ import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import coil.load
@@ -86,6 +87,10 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
         showDeckCard(message)
 
         colorizeMessageBubble(message)
+
+        binding.cardView.findViewById<ImageView>(R.id.deckCardImage)?.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.SECONDARY)
+        }
 
         itemView.isSelected = false
 
