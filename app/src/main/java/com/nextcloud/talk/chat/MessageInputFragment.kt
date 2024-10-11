@@ -178,15 +178,15 @@ class MessageInputFragment : Fragment() {
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            var wasOnline: Boolean // TODO maye redo this logic, seems it might be misfiring
+            var wasOnline: Boolean
             networkMonitor.isOnline
                 .onEach { isOnline ->
                     wasOnline = !binding.fragmentConnectionLost.isShown
-                val connectionGained = (!wasOnline && isOnline)
-                Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                handleMessageQueue(isOnline)
-                handleUI(isOnline, connectionGained)
-            }.collect()
+                    val connectionGained = (!wasOnline && isOnline)
+                    Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
+                    handleMessageQueue(isOnline)
+                    handleUI(isOnline, connectionGained)
+                }.collect()
         }
 
         chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
