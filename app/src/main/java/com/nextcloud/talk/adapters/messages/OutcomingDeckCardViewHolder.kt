@@ -41,7 +41,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutgoingDeckCardViewHolder(
+class OutcomingDeckCardViewHolder(
     outcomingView: View
 ) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
 
@@ -238,6 +238,6 @@ class OutgoingDeckCardViewHolder(
     }
 
     companion object {
-        private val TAG = OutgoingDeckCardViewHolder::class.java.simpleName
+        private val TAG = OutcomingDeckCardViewHolder::class.java.simpleName
     }
 }
