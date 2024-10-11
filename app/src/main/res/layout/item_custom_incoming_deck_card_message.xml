@@ -22,6 +22,7 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_alignParentTop="true"
+        android:layout_marginTop ="2dp"
         android:layout_marginEnd="8dp"
         android:contentDescription="@string/avatar" />
 
@@ -61,14 +62,15 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/deckCardImage"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
                 android:contentDescription="@null"
-                android:src="@drawable/baseline_assignment_24" />
+                android:src="@drawable/deck_card_icon" />
 
             <androidx.emoji2.widget.EmojiTextView
                 android:id="@+id/cardName"
@@ -78,7 +80,6 @@
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:textIsSelectable="false"
-                android:layout_marginBottom="4dp"
                 android:textStyle="bold"
                 android:visibility="gone"
                 tools:text="Card Name"
