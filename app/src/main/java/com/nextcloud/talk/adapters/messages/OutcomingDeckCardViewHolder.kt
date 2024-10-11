@@ -124,6 +124,8 @@ class OutcomingDeckCardViewHolder(
             context.startActivity(browserIntent)
         }
 
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+
         Reaction().showReactions(
             message,
             ::clickOnReaction,
