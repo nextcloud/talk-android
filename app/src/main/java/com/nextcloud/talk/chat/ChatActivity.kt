@@ -97,7 +97,7 @@ import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
-import com.nextcloud.talk.adapters.messages.OutgoingDeckCardViewHolder
+import com.nextcloud.talk.adapters.messages.OutcomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
@@ -1238,7 +1238,7 @@ class ChatActivity :
             IncomingDeckCardViewHolder::class.java,
             payload,
             R.layout.item_custom_incoming_deck_card_message,
-            OutgoingDeckCardViewHolder::class.java,
+            OutcomingDeckCardViewHolder::class.java,
             payload,
             R.layout.item_custom_outcoming_deck_card_message,
             this
