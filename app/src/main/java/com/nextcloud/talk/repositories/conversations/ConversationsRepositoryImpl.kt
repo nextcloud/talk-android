@@ -11,6 +11,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.password.PasswordOverall
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.AllowGuestsResult
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.PasswordResult
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
@@ -87,6 +88,14 @@ class ConversationsRepositoryImpl(
         return apiObservable.map {
             ResendInvitationsResult(true)
         }
+    }
+
+    override fun archiveConversation(credentials: String, url: String): Observable<GenericOverall> {
+        return api.archiveConversation(credentials, url)
+    }
+
+    override fun unarchiveConversation(credentials: String, url: String): Observable<GenericOverall> {
+        return api.unarchiveConversation(credentials, url)
     }
 
     private fun apiVersion(): Int {

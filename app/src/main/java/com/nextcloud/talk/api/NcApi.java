@@ -727,4 +727,12 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> unbanActor(@Header("Authorization") String authorization,
                                           @Url String url);
+
+    @POST
+    Observable<GenericOverall> archiveConversation(@Header("Authorization") String authorization,
+                                                   @Url String url);
+
+    @DELETE
+    Observable<GenericOverall> unarchiveConversation(@Header("Authorization") String authorization,
+                                                     @Url String url);
 }

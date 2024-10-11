@@ -179,16 +179,35 @@ class ConversationInfoActivity :
             databaseStorageModule = DatabaseStorageModule(conversationUser, conversationToken)
         }
 
+        if (!spreedCapabilities.features!!.contains(ARCHIVED_CONVERSATIONS)) {
+            binding.archiveConversationBtn.visibility = GONE
+        }
+
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
         binding.listBansButton.setOnClickListener { listBans() }
+        binding.archiveConversationBtn.setOnClickListener {
+            if (conversation!!.isArchived) {
+                viewModel.unarchiveConversation(conversationUser, conversationToken)
+            } else {
+                viewModel.archiveConversation(conversationUser, conversationToken)
+            }
+        }
 
         viewModel.getRoom(conversationUser, conversationToken)
 
         themeTextViews()
         themeSwitchPreferences()
+
+        if (conversation!!.isArchived) {
+            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+            binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+        } else {
+            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+            binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+        }
 
         binding.addParticipantsAction.visibility = GONE
 
@@ -1445,6 +1464,7 @@ class ConversationInfoActivity :
         private const val DEMOTE_OR_PROMOTE = 1
         private const val REMOVE_FROM_CONVERSATION = 2
         private const val BAN_FROM_CONVERSATION = 3
+        private const val ARCHIVED_CONVERSATIONS = "archived-conversations"
     }
 
     /**
