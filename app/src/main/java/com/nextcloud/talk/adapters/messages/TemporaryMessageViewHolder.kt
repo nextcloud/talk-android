@@ -110,7 +110,6 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
             layout
         )
         ViewCompat.setBackground(bubble, bubbleDrawable)
-
     }
 
     private fun processParentMessage(message: ChatMessage) {
