@@ -318,6 +318,7 @@
     <string name="today">Šiandiena</string>
     <string name="tomorrow">Rytoj</string>
     <string name="translate">Verskite</string>
+    <string name="translation_detect_language">Aptikti kalbą</string>
     <string name="translation_device_settings">Įrenginio nustatymai</string>
     <string name="translation_error_message">Nepavyko aptikti kalbos</string>
     <string name="translation_from">Nuo</string>

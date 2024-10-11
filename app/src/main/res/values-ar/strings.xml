@@ -245,7 +245,7 @@
     <string name="nc_federation_no_invitations">لا توجد دعوات معلقة</string>
     <string name="nc_federation_pending_invitation_hint">لديك دعوات معلقة</string>
     <string name="nc_file_browser_back">العودة</string>
-    <string name="nc_file_storage_permission">إذن الوصول إلى الملف لازمٌ</string>
+    <string name="nc_file_storage_permission">إذن الوصول إلى الملف مطلوب</string>
     <string name="nc_filter">فرز المحادثات</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
@@ -289,7 +289,7 @@
     <string name="nc_lobby_start_soon">هذا الاجتماع سيبدأ قريباً</string>
     <string name="nc_lobby_waiting">أنت حاليا في انتظار الاستقبال</string>
     <string name="nc_location_current_position_description">موقعك الحالي</string>
-    <string name="nc_location_permission_required">إذن الموقع لازمٌ</string>
+    <string name="nc_location_permission_required">إذن الموقع مطلوب</string>
     <string name="nc_location_unknown">الموقع غير معلوم</string>
     <string name="nc_locked">مقفل</string>
     <string name="nc_locked_tap_to_unlock">أنقُر لفكّ القُفْل</string>
@@ -471,7 +471,7 @@
     <string name="nc_settings_warning">تحذير</string>
     <string name="nc_settings_wrong_account">يمكن إعادة تفويض الحساب الجاري فقط </string>
     <string name="nc_share_contact">شارك جهة اتصال</string>
-    <string name="nc_share_contact_permission">إذن قراءة جهات الاتصال لازمٌ</string>
+    <string name="nc_share_contact_permission">إذن قراءة جهات الاتصال مطلوب</string>
     <string name="nc_share_current_location">شارك الموقع الحالي</string>
     <string name="nc_share_link">رابط المشاركة</string>
     <string name="nc_share_location">مشاركة الموقع</string>
@@ -493,7 +493,7 @@
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_failed_notification_text">فشلت عملية رفع %1$s</string>
-    <string name="nc_upload_failed_notification_title">إخفاق</string>
+    <string name="nc_upload_failed_notification_title">فشل</string>
     <string name="nc_upload_from_cloud">مُشارَكةٌ مِن %1$s</string>
     <string name="nc_upload_from_device">إرفَع من الجهاز</string>
     <string name="nc_upload_in_progess">الرَّفْعُ جارٍ …</string>
@@ -505,7 +505,7 @@
     <string name="nc_visible">مرئيّ</string>
     <string name="nc_voice_message_filename">تسجيل محادثة Talk من %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">أُنقُر مُطوّلاً للتسجيل، ثم أفلِت للإرسال.</string>
-    <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت لازمٌ</string>
+    <string name="nc_voice_message_missing_audio_permission">الإذن لتسجيل الصوت مطلوب</string>
     <string name="nc_voice_message_slide_to_cancel">« إسحب للإلغاء</string>
     <string name="nc_webinar">ويبنار</string>
     <string name="nc_yes">نعم</string>
