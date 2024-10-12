@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upravit</string>
+    <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
     <string name="audio_call">Hlasový hovor</string>
@@ -11,6 +12,10 @@
     <string name="audio_output_wired_headset">Drátová náhlavní souprava</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
+    <string name="back_button">Tlačítko zpět</string>
+    <string name="ban">Vyloučit</string>
+    <string name="ban_participant">Vyloučit účastníka</string>
+    <string name="bans_list">Seznam vyloučení</string>
     <string name="calendar">Kalendář</string>
     <string name="call_more_actions_dialog_headline">Pokročilé předvolby pro hovor</string>
     <string name="call_running_since_one_hour">Hovor trvá už hodinu.</string>
@@ -20,7 +25,9 @@
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
     <string name="close">Zavřít</string>
+    <string name="close_icon">Ikona zavření</string>
     <string name="connection_established">Spojení navázáno</string>
+    <string name="connection_lost">Spojení ztraceno</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversations">Konverzace</string>
     <string name="create_conversation">Vytvořit konverzaci</string>
@@ -32,6 +39,7 @@
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
+    <string name="edit_message_icon_description">Upravit ikon zprávy</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
     <string name="encrypted">Šifrované</string>
@@ -42,6 +50,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
     <string name="hint_edited_message">(upraveno)</string>
+    <string name="internal_note">Interní poznámka</string>
     <string name="invisible">Není vidět</string>
     <string name="languages_error_message">Jazyky se nepodařilo získat</string>
     <string name="languages_error_title">Získání se nezdařil</string>
@@ -111,6 +120,8 @@
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
     <string name="nc_change_password">Změnit heslo</string>
+    <string name="nc_clear_edit_button">Vyčistit tlačítko úprav</string>
+    <string name="nc_clear_edit_message">Vyčistit zprávu úpravy</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
     <string name="nc_clear_history_success">Všechny zprávy byly vymazány</string>
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
@@ -156,6 +167,7 @@
     <string name="nc_diagnose_account_server">Server</string>
     <string name="nc_diagnose_account_server_notification_app">Je nainstalovaná aplikace upozorňování na serveru?</string>
     <string name="nc_diagnose_account_user_name">Uživatel</string>
+    <string name="nc_diagnose_account_user_status_enabled">Je zapnutý stav uživatele?</string>
     <string name="nc_diagnose_android_version_title">Verze systému Android</string>
     <string name="nc_diagnose_app_category_title">Aplikace</string>
     <string name="nc_diagnose_app_name_title">Název aplikace</string>
@@ -163,8 +175,15 @@
     <string name="nc_diagnose_app_version_title">Verze aplikace</string>
     <string name="nc_diagnose_battery_optimization_title">Nastavení správy napájení</string>
     <string name="nc_diagnose_device_name_title">Zařízení</string>
+    <string name="nc_diagnose_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>
     <string name="nc_diagnose_dialog_open_diagnose">Otevřít diagnostickou obrazovku</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Otevřít dontkillmyapp.com</string>
+    <string name="nc_diagnose_firebase_push_token_title">push token Firebase</string>
+    <string name="nc_diagnose_gplay_available_title">Služby Google Play</string>
+    <string name="nc_diagnose_gplay_available_yes">Služby Google Play jsou k dispozici</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Poslední push registrace na push proxy</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Zatím nezregistrováno u push proxy</string>
+    <string name="nc_diagnose_latest_push_registration_at_server">Poslední push registrace na serveru</string>
     <string name="nc_diagnose_latest_push_registration_at_server_fail">Ještě nezaregistrováno na serveru</string>
     <string name="nc_diagnose_meta_category_title">Metainformace</string>
     <string name="nc_diagnose_meta_system_report_date">Vytváření výkazu o systému</string>
@@ -237,6 +256,8 @@
     <string name="nc_guest_access_resend_invitations_successful">Pozvánky byly znovu odeslány.</string>
     <string name="nc_guest_access_share_link">Sdílet odkaz na konverzaci</string>
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Úspora energie z akumulátoru není ignorována. Pokud chcete, aby upozorňování na pozadí fungovalo správně, mělo by toto být změněno! Klikněte na OK a vyberte „Všechny aplikace“ -> %1$s -> neoptimalizovat</string>
+    <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
     <string name="nc_invitations">Pozvání</string>
@@ -288,6 +309,8 @@
     <string name="nc_notification_channel_uploads">Nahrané</string>
     <string name="nc_notification_channel_uploads_description">Upozorňovat ohledně postupu při nahrávání</string>
     <string name="nc_notification_settings">Nastavení upozorňování</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Oprávnění k upozorňování a nastavení ohledně spotřeby energie z akumulátoru jsou nastavené správně pro dostávání upozornění. Pokud i tak máte problémy s dostáváním notifikací, zkontrolujte zda jsou zapnuté kanály upozorňování na hovory a zprávy. Další pomoc je možné nalézt na DontKillMyApp.com nebo v kontrolním seznamu řešení problémů. Pokud toto nepomůže, přejděte na diagnostickou obrazovku a zašlete hlášení chyby.</string>
+    <string name="nc_notifications_troubleshooting_dialog_title">Řešení problémů s upozorňováním</string>
     <string name="nc_notify_me_always">Vždy upozorňovat</string>
     <string name="nc_notify_me_mention">Upozornit, když vás někdo zmíní</string>
     <string name="nc_notify_me_never">Nikdy neupozorňovat</string>
@@ -323,6 +346,8 @@
     <string name="nc_remove_from_favorites">Odebrat z oblíbených</string>
     <string name="nc_remove_group_and_members">Odebrat skupinu a její členy</string>
     <string name="nc_remove_participant">Odebrat účastníka</string>
+    <string name="nc_remove_password">Odebrat heslo</string>
+    <string name="nc_remove_team_and_members">Odebrat tým a uživatele</string>
     <string name="nc_rename">Přejmenovat konverzaci</string>
     <string name="nc_rename_confirm">Přejmenovat</string>
     <string name="nc_reply">Odpovědět</string>
@@ -386,6 +411,9 @@
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
     <string name="nc_settings_notification_sounds">Zvuky upozornění</string>
     <string name="nc_settings_notification_sounds_post_oreo">Upozornění</string>
+    <string name="nc_settings_notifications_declined">Upozorňování jsou odmítnuta</string>
+    <string name="nc_settings_notifications_declined_hint">Upozorňování jsou odmítána. Povolte je v nastavení systému Android</string>
+    <string name="nc_settings_notifications_granted">Upozorňování jsou udělena</string>
     <string name="nc_settings_other_notifications_ringtone">Zprávy</string>
     <string name="nc_settings_phone_book_integration_desc">Najít kontakty se stejným telefonním číslem a přidat zkratku Talk do systémové aplikace pro kontakty</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Chyba 429 – příliš mnoho požadavků</string>
@@ -443,6 +471,7 @@
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>
+    <string name="nc_team">Tým</string>
     <string name="nc_teams">Týmy</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>

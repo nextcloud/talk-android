@@ -232,7 +232,7 @@
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
     <string name="nc_expire_message_four_weeks">4 أسابيع</string>
-    <string name="nc_expire_message_off">موقوف</string>
+    <string name="nc_expire_message_off">معطل</string>
     <string name="nc_expire_message_one_day">1 يوم</string>
     <string name="nc_expire_message_one_hour">1 ساعة</string>
     <string name="nc_expire_message_one_week">1 أسبوع</string>
@@ -357,7 +357,7 @@
     <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
     <string name="nc_refresh">إنعاش</string>
     <string name="nc_remind">ذكرني لاحقا</string>
-    <string name="nc_remote_audio_off">الصَّوت القصِي remote موقوف</string>
+    <string name="nc_remote_audio_off">الصوت البعيد معطل</string>
     <string name="nc_remove_from_favorites">إزالتها مِن المفضلة</string>
     <string name="nc_remove_group_and_members">حذف المجموعة group و الأعضاء</string>
     <string name="nc_remove_participant">حذف مشارك</string>
