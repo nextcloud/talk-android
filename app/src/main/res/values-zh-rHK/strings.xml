@@ -361,6 +361,7 @@
     <string name="nc_remove_from_favorites">取消我的最愛</string>
     <string name="nc_remove_group_and_members">移除群組及組員</string>
     <string name="nc_remove_participant">移除參與者</string>
+    <string name="nc_remove_password">移除密碼</string>
     <string name="nc_remove_team_and_members">移除團隊和成員</string>
     <string name="nc_rename">重新命名對話</string>
     <string name="nc_rename_confirm">重新命名</string>
