@@ -55,7 +55,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ساعات</string>
     <string name="get_invitations_error">تعذّر جلب الدعوات المعلقة</string>
-    <string name="hint_edited_message">(مُعدّلة)</string>
+    <string name="hint_edited_message">(معدّلة)</string>
     <string name="internal_note">ملاحظة داخلية</string>
     <string name="invisible">غير مرئي</string>
     <string name="join_open_conversations_icon">أيقونة الانضمام لمحادثة مفتوحة</string>
@@ -139,7 +139,7 @@
     <string name="nc_common_and">و</string>
     <string name="nc_common_copy">إنسَخ</string>
     <string name="nc_common_copy_success">تمّ النسخ إلى الحافظة</string>
-    <string name="nc_common_create">أنشِيء</string>
+    <string name="nc_common_create">إنشاء </string>
     <string name="nc_common_disabled">مُعطّل</string>
     <string name="nc_common_dismiss">تجاهل</string>
     <string name="nc_common_error_sorry">حدث خطأ ما!</string>
@@ -158,7 +158,7 @@
     <string name="nc_conversations_empty">إنضم لمحادثةٍ او ابدأ محادثةً جديدةً</string>
     <string name="nc_conversations_empty_details">رحّب بالأصدقاء و الزملاء!</string>
     <string name="nc_copy_message">أنسخ</string>
-    <string name="nc_create_new_conversation">أنشِيءْ محادثة جديدة</string>
+    <string name="nc_create_new_conversation">إنشاء محادثة جديدة</string>
     <string name="nc_create_poll">صَوّت، رجاءً</string>
     <string name="nc_date_header_today">اليوم</string>
     <string name="nc_date_header_yesterday">أمس</string>
