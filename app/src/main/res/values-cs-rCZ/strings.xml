@@ -29,6 +29,7 @@
     <string name="connection_established">Spojení navázáno</string>
     <string name="connection_lost">Spojení ztraceno</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
+    <string name="conversation_is_read_only">Konverzace je pouze pro čtení</string>
     <string name="conversations">Konverzace</string>
     <string name="create_conversation">Vytvořit konverzaci</string>
     <string name="create_issue">Nahlásit problém</string>
@@ -44,14 +45,17 @@
     <string name="emoji_category_recent">Nedávné</string>
     <string name="encrypted">Šifrované</string>
     <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
+    <string name="error_unbanning">Došlo k chybě při rušení vyloučení účastníka</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
     <string name="file_list_folder">složka</string>
     <string name="file_list_loading">Načítání…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 hodiny</string>
+    <string name="get_invitations_error">Nepodařilo se získat čekající pozvání</string>
     <string name="hint_edited_message">(upraveno)</string>
     <string name="internal_note">Interní poznámka</string>
     <string name="invisible">Není vidět</string>
+    <string name="join_open_conversations_icon">Ikona přidání se do otevřené konverzace</string>
     <string name="languages_error_message">Jazyky se nepodařilo získat</string>
     <string name="languages_error_title">Získání se nezdařil</string>
     <string name="later_today">Později dnes</string>
@@ -69,6 +73,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
     <string name="message_deleted_by_you">Zprávu jste smazali</string>
+    <string name="message_last_edited_by">Upraveno %1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
     <string name="message_search_begin_empty">Nic nenalezeno</string>
     <string name="message_search_begin_typing">Hledejte psaním…</string>
@@ -120,6 +125,7 @@
     <string name="nc_certificate_error">Vaše nastavení SSL zabránilo připojení</string>
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
     <string name="nc_change_password">Změnit heslo</string>
+    <string name="nc_check_your_internet">Zkontrolujte své připojení k Internetu</string>
     <string name="nc_clear_edit_button">Vyčistit tlačítko úprav</string>
     <string name="nc_clear_edit_message">Vyčistit zprávu úpravy</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
@@ -178,6 +184,8 @@
     <string name="nc_diagnose_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>
     <string name="nc_diagnose_dialog_open_diagnose">Otevřít diagnostickou obrazovku</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Otevřít dontkillmyapp.com</string>
+    <string name="nc_diagnose_firebase_push_token_latest_fetch">Stažení nejnovějšího push tokenu firebase</string>
+    <string name="nc_diagnose_firebase_push_token_latest_generated">Vytvoření nejnovějšího push tokenu firebase</string>
     <string name="nc_diagnose_firebase_push_token_title">push token Firebase</string>
     <string name="nc_diagnose_gplay_available_title">Služby Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Služby Google Play jsou k dispozici</string>
