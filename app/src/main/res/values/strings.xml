@@ -817,4 +817,5 @@ How to translate with transifex:
     <string name="connection_lost">Connection lost</string>
     <string name="archive_conversation">Archive Conversation</string>
     <string name="unarchive_conversation">Unarchive Conversation</string>
+    <string name="archived">Archived</string>
 </resources>

@@ -588,4 +588,8 @@ object ApiUtils {
     fun getUrlForUnban(baseUrl: String, token: String, banId: Int): String {
         return "${getUrlForBans(baseUrl, token)}/$banId"
     }
+
+    fun getUrlForArchive(version: Int, baseUrl: String?, token: String?): String {
+        return "${getUrlForRoom(version, baseUrl, token)}/archive"
+    }
 }

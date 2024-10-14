@@ -69,7 +69,8 @@ class FilterConversationFragment : DialogFragment() {
         binding.run {
             listOf(
                 unreadFilterChip,
-                mentionedFilterChip
+                mentionedFilterChip,
+                archivedFilterChip
             )
         }.forEach(viewThemeUtils.talk::themeChipFilter)
 
@@ -89,6 +90,12 @@ class FilterConversationFragment : DialogFragment() {
             processSubmit()
         }
 
+        binding.archivedFilterChip.setOnCheckedChangeListener { _, isChecked ->
+            filterState[ARCHIVE] = isChecked
+            binding.archivedFilterChip.isChecked = isChecked
+            processSubmit()
+        }
+
         binding.buttonClose.setOnClickListener {
             dismiss()
         }
@@ -104,9 +111,11 @@ class FilterConversationFragment : DialogFragment() {
         val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
         val mentionValue = filterState[MENTION] == true
         val unreadValue = filterState[UNREAD] == true
+        val archivedValue = filterState[ARCHIVE] == true
 
         arbitraryStorageManager.storeStorageSetting(accountId, MENTION, mentionValue.toString(), "")
         arbitraryStorageManager.storeStorageSetting(accountId, UNREAD, unreadValue.toString(), "")
+        arbitraryStorageManager.storeStorageSetting(accountId, ARCHIVE, archivedValue.toString(), "")
 
         (requireActivity() as ConversationsListActivity).filterConversation()
     }
@@ -126,5 +135,6 @@ class FilterConversationFragment : DialogFragment() {
         val TAG: String = FilterConversationFragment::class.java.simpleName
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
+        const val ARCHIVE: String = "archive"
     }
 }

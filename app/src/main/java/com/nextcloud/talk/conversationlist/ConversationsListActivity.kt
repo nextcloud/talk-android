@@ -210,7 +210,8 @@ class ConversationsListActivity :
     private var filterState =
         mutableMapOf(
             FilterConversationFragment.MENTION to false,
-            FilterConversationFragment.UNREAD to false
+            FilterConversationFragment.UNREAD to false,
+            FilterConversationFragment.ARCHIVE to false
         )
     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
     private lateinit var accountIconBadge: BadgeDrawable
@@ -413,9 +414,18 @@ class ConversationsListActivity :
             ).blockingGet()?.value ?: ""
             ) == "true"
 
+        filterState[FilterConversationFragment.ARCHIVE] = (
+            arbitraryStorageManager.getStorageSetting(
+                accountId,
+                FilterConversationFragment.ARCHIVE,
+                ""
+            ).blockingGet()?.value ?: ""
+            ) == "true"
+
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
         if (filterState[FilterConversationFragment.UNREAD] == false &&
-            filterState[FilterConversationFragment.MENTION] == false
+            filterState[FilterConversationFragment.MENTION] == false &&
+            filterState[FilterConversationFragment.ARCHIVE] == false
         ) {
             adapter!!.updateDataSet(conversationItems, true)
         } else {
@@ -449,6 +459,8 @@ class ConversationsListActivity :
                             )
 
                     FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
+
+                    FilterConversationFragment.ARCHIVE -> result = result && conversation.hasArchived
                 }
             }
         }
