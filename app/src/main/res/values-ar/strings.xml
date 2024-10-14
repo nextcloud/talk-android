@@ -103,7 +103,7 @@
     <string name="nc_call_button_content_description_audio_output">تغيير مَخرِج الصوت</string>
     <string name="nc_call_button_content_description_camera">تبديل الكاميرا</string>
     <string name="nc_call_button_content_description_hangup">إنهاء المكالمة</string>
-    <string name="nc_call_button_content_description_microphone">تبديل لاقط الصوت microphone</string>
+    <string name="nc_call_button_content_description_microphone">تبديل لاقط الصوت</string>
     <string name="nc_call_button_content_description_pip">فتح وضعية \"صورة في صورة\" PIP</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">تبديل إلى الفيديو الذاتي</string>
     <string name="nc_call_incoming">واردة</string>
@@ -305,7 +305,7 @@
     <string name="nc_moderator">مشرِف</string>
     <string name="nc_never">عدم الانضمام</string>
     <string name="nc_new_conversation">محادثة جديدة</string>
-    <string name="nc_new_conversation_visibility">الرؤية Visibility</string>
+    <string name="nc_new_conversation_visibility">الرؤية</string>
     <string name="nc_new_mention">إشاراتٌ غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مُنصّب أو مُقيّد من قبل المُشرف)</string>
@@ -368,7 +368,7 @@
     <string name="nc_reply">رد</string>
     <string name="nc_reply_privately">ردّ على الخاص</string>
     <string name="nc_save_message">حفظ</string>
-    <string name="nc_save_success">تمّ الحفط بنجاحٍ</string>
+    <string name="nc_save_success">تمّ الحفط بنجاح</string>
     <string name="nc_screen_lock_timeout_30">30 ثانية</string>
     <string name="nc_screen_lock_timeout_300">5 دقائق</string>
     <string name="nc_screen_lock_timeout_60">1 دقيقة</string>
@@ -563,7 +563,7 @@
     <string name="scope_private_title">خاص</string>
     <string name="scope_published_description">قم بالمزامنة مع الخوادم الموثوقة ودفتر العناوين العالمية والعامة</string>
     <string name="scope_published_title">منشورة</string>
-    <string name="scope_toggle">تبديل النطاق Scope toggle</string>
+    <string name="scope_toggle">تبديل النطاق</string>
     <string name="scope_toggle_description">تغيير مستوى الخصوصية لـ%1$s</string>
     <string name="scroll_to_bottom">مرِّر للأسفل</string>
     <string name="search_icon">أيقونة البحث</string>
@@ -594,8 +594,8 @@
     <string name="startCallForbidden">لا يُمكنُك إجراءُ مكالمة</string>
     <string name="started_a_call">بدأت مكالمةً</string>
     <string name="status_message">رسالة الحالة</string>
-    <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية breakout room</string>
-    <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية main room</string>
+    <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية</string>
+    <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية</string>
     <string name="take_photo">خُذ صورة</string>
     <string name="take_photo_error_deleting_picture">خطأ في أخذ الصورة</string>
     <string name="take_photo_permission">لا يمكن أخذ صورة من دون تصريح</string>
