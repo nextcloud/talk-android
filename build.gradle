@@ -25,7 +25,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:8.7.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-serialization:${kotlinVersion}"
-        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.24'
+        classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.25'
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.7"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:12.1.1"
         classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
