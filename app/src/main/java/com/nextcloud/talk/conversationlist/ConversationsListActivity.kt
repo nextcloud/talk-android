@@ -211,7 +211,8 @@ class ConversationsListActivity :
         mutableMapOf(
             FilterConversationFragment.MENTION to false,
             FilterConversationFragment.UNREAD to false,
-            FilterConversationFragment.ARCHIVE to false
+            FilterConversationFragment.ARCHIVE to false,
+            FilterConversationFragment.DEFAULT to true
         )
     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
     private lateinit var accountIconBadge: BadgeDrawable
@@ -381,7 +382,7 @@ class ConversationsListActivity :
                     sortConversations(conversationItemsWithHeader)
 
                     // Filter Conversations
-                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItems
+                    if (!containsTrue()) filterableConversationItems = conversationItems
                     filterConversation()
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
@@ -394,6 +395,14 @@ class ConversationsListActivity :
                     fetchOpenConversations(apiVersion)
                 }.collect()
         }
+    }
+
+    private fun containsTrue(): Boolean {
+        for ((k, v) in filterState) {
+            if (k != FilterConversationFragment.DEFAULT && v) return true
+        }
+
+        return false
     }
 
     fun filterConversation() {
@@ -423,22 +432,15 @@ class ConversationsListActivity :
             ) == "true"
 
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-        if (filterState[FilterConversationFragment.UNREAD] == false &&
-            filterState[FilterConversationFragment.MENTION] == false &&
-            filterState[FilterConversationFragment.ARCHIVE] == false
-        ) {
-            adapter!!.updateDataSet(conversationItems, true)
-        } else {
-            val items = conversationItems
-            for (i in items) {
-                val conversation = (i as ConversationItem).model
-                if (filter(conversation)) {
-                    newItems.add(i)
-                }
+        val items = conversationItems
+        for (i in items) {
+            val conversation = (i as ConversationItem).model
+            if (filter(conversation)) {
+                newItems.add(i)
             }
-            adapter!!.updateDataSet(newItems, true)
-            setFilterableItems(newItems)
         }
+        adapter!!.updateDataSet(newItems, true)
+        setFilterableItems(newItems)
 
         updateFilterConversationButtonColor()
     }
@@ -460,11 +462,18 @@ class ConversationsListActivity :
 
                     FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
 
-                    FilterConversationFragment.ARCHIVE -> result = result && conversation.hasArchived
+                    FilterConversationFragment.DEFAULT -> {
+                        result = if (filterState[FilterConversationFragment.ARCHIVE] == true) {
+                            result && conversation.hasArchived
+                        } else {
+                            result && !conversation.hasArchived
+                        }
+                    }
                 }
             }
         }
 
+        Log.d("Julius", "Conversation: ${conversation.name} Result: $result")
         return result
     }
 
@@ -661,7 +670,7 @@ class ConversationsListActivity :
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
                     adapter!!.setHeadersShown(true)
-                    if (!filterState.containsValue(true)) filterableConversationItems = searchableConversationItems
+                    if (!containsTrue()) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
                     binding.swipeRefreshLayoutView?.isEnabled = false
@@ -671,7 +680,7 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(false)
-                    if (!filterState.containsValue(true)) filterableConversationItems = conversationItemsWithHeader
+                    if (!containsTrue()) filterableConversationItems = conversationItemsWithHeader
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
@@ -1838,7 +1847,7 @@ class ConversationsListActivity :
     }
 
     fun updateFilterConversationButtonColor() {
-        if (filterState.containsValue(true)) {
+        if (containsTrue()) {
             binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
         } else {
             binding.filterConversationsButton.let {

@@ -32,7 +32,7 @@
         android:layout_marginTop="@dimen/standard_half_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         android:layout_marginBottom="@dimen/standard_half_margin"
-        app:chipSpacingHorizontal="@dimen/standard_margin">
+        app:chipSpacingHorizontal="@dimen/standard_half_margin">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/unread_filter_chip"

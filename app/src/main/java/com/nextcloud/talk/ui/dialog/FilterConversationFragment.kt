@@ -104,6 +104,7 @@ class FilterConversationFragment : DialogFragment() {
     private fun setUpChips() {
         binding.unreadFilterChip.isChecked = filterState[UNREAD]!!
         binding.mentionedFilterChip.isChecked = filterState[MENTION]!!
+        binding.archivedFilterChip.isChecked = filterState[ARCHIVE]!!
     }
 
     private fun processSubmit() {
@@ -136,5 +137,6 @@ class FilterConversationFragment : DialogFragment() {
         const val MENTION: String = "mention"
         const val UNREAD: String = "unread"
         const val ARCHIVE: String = "archive"
+        const val DEFAULT: String = "default"
     }
 }

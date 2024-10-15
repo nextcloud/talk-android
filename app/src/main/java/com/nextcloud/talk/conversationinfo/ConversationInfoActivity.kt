@@ -748,8 +748,12 @@ class ConversationInfoActivity :
         binding.archiveConversationBtn.setOnClickListener {
             if (conversation!!.hasArchived) {
                 viewModel.unarchiveConversation(conversationUser, conversationToken)
+                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+                binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
             } else {
                 viewModel.archiveConversation(conversationUser, conversationToken)
+                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+                binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
             }
         }
 
