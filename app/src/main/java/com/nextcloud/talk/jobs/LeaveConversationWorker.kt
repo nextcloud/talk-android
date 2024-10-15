@@ -5,111 +5,90 @@
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.jobs;
+package com.nextcloud.talk.jobs
 
-import android.content.Context;
-import android.util.Log;
+import android.content.Context
+import android.util.Log
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import autodagger.AutoInjector
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
+import com.nextcloud.talk.utils.ApiUtils.getCredentials
+import com.nextcloud.talk.utils.ApiUtils.getUrlForParticipantsSelf
+import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
+import com.nextcloud.talk.utils.bundle.BundleKeys
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import okhttp3.JavaNetCookieJar
+import okhttp3.OkHttpClient
+import org.greenrobot.eventbus.EventBus
+import retrofit2.Retrofit
+import java.net.CookieManager
+import javax.inject.Inject
 
-import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.events.EventStatus;
-import com.nextcloud.talk.models.json.generic.GenericOverall;
-import com.nextcloud.talk.users.UserManager;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.UserIdUtils;
-import com.nextcloud.talk.utils.bundle.BundleKeys;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.net.CookieManager;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.work.Data;
-import androidx.work.Worker;
-import androidx.work.WorkerParameters;
-import autodagger.AutoInjector;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.JavaNetCookieJar;
-import okhttp3.OkHttpClient;
-import retrofit2.Retrofit;
-
-@AutoInjector(NextcloudTalkApplication.class)
-public class LeaveConversationWorker extends Worker {
-
-    private static final String TAG = "LeaveConversationWorker";
+@AutoInjector(NextcloudTalkApplication::class)
+class LeaveConversationWorker(val context: Context, workerParams: WorkerParameters) :
+    Worker(context, workerParams) {
 
     @Inject
-    Retrofit retrofit;
+    lateinit var ncApi: NcApi
 
     @Inject
-    OkHttpClient okHttpClient;
+    lateinit var userManager: UserManager
 
-    @Inject
-    UserManager userManager;
 
-    @Inject
-    EventBus eventBus;
+    override fun doWork(): Result {
+        sharedApplication!!.componentApplication.inject(this)
+        val data = inputData
+        val conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN)
+        val currentUser = userManager.currentUser.blockingGet()
 
-    NcApi ncApi;
+        if (currentUser != null) {
+            val credentials = getCredentials(currentUser.username, currentUser.token)
 
-    public LeaveConversationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
-        super(context, workerParams);
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-    }
+            val apiVersion = getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
-    @NonNull
-    @Override
-    public Result doWork() {
-        Data data = getInputData();
-        long operationUserId = data.getLong(BundleKeys.KEY_INTERNAL_USER_ID, -1);
-        String conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN);
-        User operationUser = userManager.getUserWithId(operationUserId).blockingGet();
+            ncApi.removeSelfFromRoom(
+                credentials, getUrlForParticipantsSelf(
+                    apiVersion,
+                    currentUser.baseUrl,
+                    conversationToken
+                )
+            )
+                .subscribeOn(Schedulers.io())
+                .subscribe(object : Observer<GenericOverall?> {
+                    var disposable: Disposable? = null
 
-        if (operationUser != null) {
-            String credentials = ApiUtils.getCredentials(operationUser.getUsername(), operationUser.getToken());
-            ncApi = retrofit.newBuilder().client(okHttpClient.newBuilder().cookieJar(new
-                    JavaNetCookieJar(new CookieManager())).build()).build().create(NcApi.class);
+                    override fun onSubscribe(d: Disposable) {
+                        disposable = d
+                    }
 
-            EventStatus eventStatus = new EventStatus(UserIdUtils.INSTANCE.getIdForUser(operationUser),
-                                                      EventStatus.EventType.CONVERSATION_UPDATE,
-                                                      true);
+                    override fun onNext(p0: GenericOverall) {
 
-            int apiVersion = ApiUtils.getConversationApiVersion(operationUser, new int[] {ApiUtils.API_V4, 1});
+                    }
 
-            ncApi.removeSelfFromRoom(credentials, ApiUtils.getUrlForParticipantsSelf(apiVersion,
-                                                                                     operationUser.getBaseUrl(),
-                                                                                     conversationToken))
-                    .subscribeOn(Schedulers.io())
-                    .blockingSubscribe(new Observer<GenericOverall>() {
-                        Disposable disposable;
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "failed to remove self from room", e)
+                    }
 
-                        @Override
-                        public void onSubscribe(Disposable d) {
-                            disposable = d;
-                        }
-
-                        @Override
-                        public void onNext(GenericOverall genericOverall) {
-                            eventBus.postSticky(eventStatus);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Log.e(TAG, "failed to remove self from room", e);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            disposable.dispose();
-                        }
-                    });
+                    override fun onComplete() {
+                        disposable!!.dispose()
+                    }
+                })
         }
 
-        return Result.success();
+        return Result.success()
+    }
+
+    companion object {
+        private const val TAG = "LeaveConversationWorker"
     }
 }
