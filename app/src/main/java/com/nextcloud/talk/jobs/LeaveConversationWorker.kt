@@ -15,23 +15,16 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.events.EventStatus
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils.getUrlForParticipantsSelf
-import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.JavaNetCookieJar
-import okhttp3.OkHttpClient
-import org.greenrobot.eventbus.EventBus
-import retrofit2.Retrofit
-import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
