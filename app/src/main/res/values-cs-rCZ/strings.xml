@@ -28,6 +28,8 @@
     <string name="close_icon">Ikona zavření</string>
     <string name="connection_established">Spojení navázáno</string>
     <string name="connection_lost">Spojení ztraceno</string>
+    <string name="connection_lost_queued">Spojení ztraceno – %1$d jsou zařazené do fronty</string>
+    <string name="connection_lost_sent_messages_are_queued">Spojení ztraceno – odeslané zprávy jsou zařazené do fronty</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversation_is_read_only">Konverzace je pouze pro čtení</string>
     <string name="conversations">Konverzace</string>
@@ -40,6 +42,7 @@
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
+    <string name="edit_error_24_hours_old_message">Není možné upravovat zprávy starší než 24 hodin</string>
     <string name="edit_message_icon_description">Upravit ikon zprávy</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
@@ -179,6 +182,8 @@
     <string name="nc_diagnose_app_name_title">Název aplikace</string>
     <string name="nc_diagnose_app_users_amount">Registrovaní uživatelé</string>
     <string name="nc_diagnose_app_version_title">Verze aplikace</string>
+    <string name="nc_diagnose_battery_optimization_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru je ignorována, všechno v pořádku</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru není ignorována. Toto by mělo být změněno!</string>
     <string name="nc_diagnose_battery_optimization_title">Nastavení správy napájení</string>
     <string name="nc_diagnose_device_name_title">Zařízení</string>
     <string name="nc_diagnose_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>
@@ -186,7 +191,9 @@
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Otevřít dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Stažení nejnovějšího push tokenu firebase</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">Vytvoření nejnovějšího push tokenu firebase</string>
+    <string name="nc_diagnose_firebase_push_token_missing">Nenastaven žádný push token firebase. Prosím vytvořte hlášení chyby.</string>
     <string name="nc_diagnose_firebase_push_token_title">push token Firebase</string>
+    <string name="nc_diagnose_gplay_available_no">Služby Google Play nejsou k dispozici. Upozorňování proto nejsou podporována</string>
     <string name="nc_diagnose_gplay_available_title">Služby Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Služby Google Play jsou k dispozici</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">Poslední push registrace na push proxy</string>
