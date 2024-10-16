@@ -250,7 +250,7 @@ class ConversationsListActivity :
         // handle notification permission on API level >= 33
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted() &&
-            ClosedInterfaceImpl().isGooglePlayServicesAvailable
+            ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
         ) {
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -1428,7 +1428,7 @@ class ConversationsListActivity :
                 // whenever user allowed notifications, also check to ignore battery optimization
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (!PowerManagerUtils().isIgnoringBatteryOptimizations() &&
-                        ClosedInterfaceImpl().isGooglePlayServicesAvailable
+                        ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
                     ) {
                         val dialogText = String.format(
                             context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),

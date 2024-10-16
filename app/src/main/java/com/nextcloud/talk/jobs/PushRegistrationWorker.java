@@ -40,15 +40,18 @@ public class PushRegistrationWorker extends Worker {
     @Inject
     OkHttpClient okHttpClient;
 
+    Context workerContext;
+
     public PushRegistrationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
+        workerContext = context;
     }
 
     @NonNull
     @Override
     public Result doWork() {
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
-        if (new ClosedInterfaceImpl().isGooglePlayServicesAvailable()) {
+        if (new ClosedInterfaceImpl().isPushMessagingServiceAvailable(workerContext)) {
             Data data = getInputData();
             String origin = data.getString("origin");
             Log.d(TAG, "PushRegistrationWorker called via " + origin);

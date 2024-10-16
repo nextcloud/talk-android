@@ -9,6 +9,7 @@
 package com.nextcloud.talk.account
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
@@ -235,6 +236,8 @@ class AccountVerificationActivity : BaseActivity() {
     }
 
     private fun storeProfile(displayName: String?, userId: String, capabilitiesOverall: CapabilitiesOverall) {
+        val activityContext: Context = this        // for capture by lambda used by subscribe() below
+
         userManager.storeProfile(
             username,
             UserManager.UserAttributes(
@@ -260,8 +263,8 @@ class AccountVerificationActivity : BaseActivity() {
                 @SuppressLint("SetTextI18n")
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
-                    if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
+                    if (ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)) {
+                        ClosedInterfaceImpl().registerWithServer(activityContext, user.username)
                     } else {
                         Log.w(TAG, "Skipping push registration.")
                         runOnUiThread {

@@ -46,10 +46,14 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.greenrobot.eventbus.ThreadMode
+import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
+    class ProceedToConversationsListMessageEvent { }
+
     lateinit var binding: ActivityMainBinding
 
     @Inject
@@ -76,9 +80,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         })
 
         // Set the default theme to replace the launch screen theme.
-        setTheme(R.style.AppTheme)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
@@ -136,6 +138,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     override fun onStop() {
         Log.d(TAG, "onStop: Activity: " + System.identityHashCode(this).toString())
         super.onStop()
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onMessageEvent(event: ProceedToConversationsListMessageEvent) {
+        openConversationList()
     }
 
     private fun openConversationList() {
@@ -257,6 +264,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 appPreferences.isDbRoomMigrated = true
             }
 
+            val activityContext: Context = this        // for capture by lambda used by subscribe() below
             userManager.users.subscribe(object : SingleObserver<List<User>> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
@@ -264,9 +272,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
                         runOnUiThread {
-                            openConversationList()
+                            var needUIFeedbackFromUser = ClosedInterfaceImpl().registerWithServer(activityContext,
+                                users.first().username)
+                            // if push registration does not need to show a dialog, open the conversation list now
+                            if (needUIFeedbackFromUser == false) {
+                                openConversationList()
+                            }
                         }
                     } else {
                         runOnUiThread {
