@@ -110,9 +110,9 @@ object FileUtils {
         val isOutsideCacheDir = aboveOrEqualAPI26Check || belowAPI26Check
 
         if (isOutsideCacheDir) {
-            Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.");
-            cachedFile.delete();
-            return null;
+            Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.")
+            cachedFile.delete()
+            return null
         }
 
         if (cachedFile.exists()) {
