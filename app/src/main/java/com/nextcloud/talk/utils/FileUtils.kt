@@ -13,6 +13,7 @@ import android.content.ContentResolver
 import android.content.Context
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.provider.OpenableColumns
 import android.util.Log
 import java.io.File
@@ -98,10 +99,20 @@ object FileUtils {
     fun copyFileToCache(context: Context, sourceFileUri: Uri, filename: String): File? {
         val cachedFile = File(context.cacheDir, filename)
 
-        if (!cachedFile.canonicalPath.startsWith(context.cacheDir.canonicalPath, true)) {
-            Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.")
-            cachedFile.delete()
-            return null
+        val aboveOrEqualAPI26Check =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
+                !cachedFile.toPath().normalize().startsWith(context.cacheDir.toPath())
+
+        val belowAPI26Check =
+            Build.VERSION.SDK_INT < Build.VERSION_CODES.O &&
+                !cachedFile.canonicalPath.startsWith(context.cacheDir.canonicalPath, true)
+
+        val isOutsideCacheDir = aboveOrEqualAPI26Check || belowAPI26Check
+
+        if (isOutsideCacheDir) {
+            Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.");
+            cachedFile.delete();
+            return null;
         }
 
         if (cachedFile.exists()) {
