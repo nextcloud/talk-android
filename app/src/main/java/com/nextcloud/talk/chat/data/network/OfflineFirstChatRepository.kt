@@ -158,6 +158,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 Log.d(TAG, "newestMessageId after sync: $newestMessageIdFromDb")
             } else {
                 Log.d(TAG, "Initial online request is skipped because offline messages are up to date")
+                // if conversationModel was not up to date and there are new messages, they will just get pulled with
+                // look into future.. Old messages will be displayed immediately beforehand.
             }
 
             val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
@@ -175,7 +177,7 @@ class OfflineFirstChatRepository @Inject constructor(
             updateUiForLastCommonRead()
             updateUiForLastReadMessage(newestMessageIdFromDb)
 
-            initMessagePolling()
+            initMessagePolling(newestMessageIdFromDb)
         }
 
     private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
@@ -240,18 +242,17 @@ class OfflineFirstChatRepository @Inject constructor(
             updateUiForLastCommonRead()
         }
 
-    override fun initMessagePolling(): Job =
+    override fun initMessagePolling(initialMessageId: Long): Job =
         scope.launch {
             Log.d(TAG, "---- initMessagePolling ------------")
 
-            val initialMessageId = chatDao.getNewestMessageId(internalConversationId).toInt()
             Log.d(TAG, "newestMessage: $initialMessageId")
 
             var fieldMap = getFieldMap(
                 lookIntoFuture = true,
                 includeLastKnown = false,
                 setReadMarker = true,
-                lastKnown = initialMessageId
+                lastKnown = initialMessageId.toInt()
             )
 
             val networkParams = Bundle()
