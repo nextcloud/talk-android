@@ -172,7 +172,9 @@
     <string name="nc_refresh">Įkelti iš naujo</string>
     <string name="nc_remind">Priminti vėliau</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
+    <string name="nc_remove_group_and_members">Šalinti grupę ir narius</string>
     <string name="nc_remove_participant">Šalinti dalyvį</string>
+    <string name="nc_remove_team_and_members">Šalinti komandą ir narius</string>
     <string name="nc_rename">Pervadinti pokalbį</string>
     <string name="nc_rename_confirm">Pervadinti</string>
     <string name="nc_reply">Atsakyti</string>
@@ -256,6 +258,7 @@
     <string name="nc_sort_by">Rikiuoti pagal</string>
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
+    <string name="nc_team">Komanda</string>
     <string name="nc_teams">Komandos</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
