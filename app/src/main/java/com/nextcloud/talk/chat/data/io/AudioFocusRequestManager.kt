@@ -14,7 +14,6 @@ import android.content.IntentFilter
 import android.media.AudioFocusRequest
 import android.media.AudioManager
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 
@@ -61,10 +60,13 @@ class AudioFocusRequestManager(private val context: Context) {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val focusRequest = AudioFocusRequest.Builder(duration)
-        .setOnAudioFocusChangeListener(audioFocusChangeListener)
-        .build()
+    private val focusRequest = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        AudioFocusRequest.Builder(duration)
+            .setOnAudioFocusChangeListener(audioFocusChangeListener)
+            .build()
+    } else {
+        null
+    }
 
     /**
      * Requests the OS for audio focus, before executing the callback on success
@@ -76,9 +78,9 @@ class AudioFocusRequestManager(private val context: Context) {
         }
 
         val isGranted: Int = if (shouldRequestFocus) {
-            audioManager.requestAudioFocus(focusRequest)
+            audioManager.requestAudioFocus(focusRequest!!)
         } else {
-            audioManager.abandonAudioFocusRequest(focusRequest)
+            audioManager.abandonAudioFocusRequest(focusRequest!!)
         }
 
         if (isGranted == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
