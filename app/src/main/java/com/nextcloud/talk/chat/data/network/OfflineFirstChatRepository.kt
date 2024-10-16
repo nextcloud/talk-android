@@ -160,21 +160,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 Log.d(TAG, "Initial online request is skipped because offline messages are up to date")
             }
 
-            val chatBlock = getBlockOfMessage(newestMessageIdFromDb.toInt())
-
-            val amountBetween = chatDao.getCountBetweenMessageIds(
-                internalConversationId,
-                newestMessageIdFromDb,
-                chatBlock!!.oldestMessageId
-            )
-
-            Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
-            val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
-                DEFAULT_MESSAGES_LIMIT
-            } else {
-                amountBetween
-            }
-            Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+            val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
 
             showMessagesBeforeAndEqual(
                 internalConversationId,
@@ -191,6 +177,25 @@ class OfflineFirstChatRepository @Inject constructor(
 
             initMessagePolling()
         }
+
+    private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
+        val chatBlock = getBlockOfMessage(messageId.toInt())
+
+        val amountBetween = chatDao.getCountBetweenMessageIds(
+            internalConversationId,
+            messageId,
+            chatBlock!!.oldestMessageId
+        )
+
+        Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
+        val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
+            DEFAULT_MESSAGES_LIMIT
+        } else {
+            amountBetween
+        }
+        Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+        return limit
+    }
 
     private suspend fun updateUiForLastReadMessage(newestMessageId: Long) {
         val scrollToLastRead = conversationModel.lastReadMessage.toLong() < newestMessageId
