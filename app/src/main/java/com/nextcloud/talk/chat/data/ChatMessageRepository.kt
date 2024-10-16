@@ -56,10 +56,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Long polls the server for any updates to the chat, if found, it synchronizes
      * the database with the server and emits the new messages to [messageFlow],
      * else it simply retries after timeout.
-     *
-     * [withNetworkParams] credentials and url.
      */
-    fun initMessagePolling(): Job
+    fun initMessagePolling(initialMessageId: Long): Job
 
     /**
      * Gets a individual message.
