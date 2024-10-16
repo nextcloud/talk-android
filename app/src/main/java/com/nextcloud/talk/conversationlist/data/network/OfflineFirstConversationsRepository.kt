@@ -131,10 +131,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     private suspend fun deleteLeftConversations(conversationsFromSync: List<ConversationEntity>) {
+        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
 
-        val conversationsToDelete = oldConversationsFromDb.filterNot { conversationsFromSync.contains(it) }
-        val conversationIdsToDelete = conversationsToDelete.map { it.internalId }
+        val conversationIdsToDelete = oldConversationsFromDb
+            .map { it.internalId }
+            .filterNot { it in conversationsFromSyncIds }
 
         dao.deleteConversations(conversationIdsToDelete)
     }
