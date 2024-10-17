@@ -419,7 +419,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
-            if (adapter?.isEmpty == true) {
+            if (adapter?.isEmpty == true && !shouldShowLobby()) {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
@@ -586,6 +586,19 @@ class ChatActivity :
                         checkShowCallButtons()
                         checkLobbyState()
                         updateRoomTimerHandler()
+
+                        val urlForChatting =
+                            ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+
+                        if (adapter?.isEmpty == true && !shouldShowLobby()) {
+                            chatViewModel.loadMessages(
+                                withCredentials = credentials!!,
+                                withUrl = urlForChatting
+                            )
+                        }
+                        if (shouldShowLobby()) {
+                            chatViewModel.cancelLongPolling()
+                        }
                     } else {
                         Log.w(
                             TAG,
@@ -624,11 +637,14 @@ class ChatActivity :
                         val urlForChatting =
                             ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-                        if (adapter?.isEmpty == true) {
+                        if (adapter?.isEmpty == true && !shouldShowLobby()) {
                             chatViewModel.loadMessages(
                                 withCredentials = credentials!!,
                                 withUrl = urlForChatting
                             )
+                        }
+                        if (shouldShowLobby()) {
+                            chatViewModel.cancelLongPolling()
                         }
                     } else {
                         Log.w(
@@ -1884,6 +1900,8 @@ class ChatActivity :
             ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities)
         ) {
             if (shouldShowLobby()) {
+                adapter!!.clear()
+
                 binding.lobby.lobbyView.visibility = View.VISIBLE
                 binding.messagesListView.visibility = View.GONE
                 binding.fragmentContainerActivityChat.visibility = View.GONE

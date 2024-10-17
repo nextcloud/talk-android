@@ -70,36 +70,36 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRoom(roomToken: String): Job =
         scope.launch {
-            val id = user.id!!
-            val model = getConversation(id, roomToken)
-            if (model != null) {
-                _conversationFlow.emit(model)
-            } else {
-                chatNetworkDataSource.getRoom(user, roomToken)
-                    .subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe(object : Observer<ConversationModel> {
-                        override fun onSubscribe(p0: Disposable) {
-                            // unused atm
-                        }
+            // val id = user.id!!
+            // val model = getConversation(id, roomToken)
+            // if (model != null) {
+            //     _conversationFlow.emit(model)
+            // } else {
+            chatNetworkDataSource.getRoom(user, roomToken)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<ConversationModel> {
+                    override fun onSubscribe(p0: Disposable) {
+                        // unused atm
+                    }
 
-                        override fun onError(e: Throwable) {
-                            // unused atm
-                        }
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
 
-                        override fun onComplete() {
-                            // unused atm
-                        }
+                    override fun onComplete() {
+                        // unused atm
+                    }
 
-                        override fun onNext(model: ConversationModel) {
-                            runBlocking {
-                                _conversationFlow.emit(model)
-                                val entityList = listOf(model.asEntity())
-                                dao.upsertConversations(entityList)
-                            }
+                    override fun onNext(model: ConversationModel) {
+                        runBlocking {
+                            _conversationFlow.emit(model)
+                            val entityList = listOf(model.asEntity())
+                            dao.upsertConversations(entityList)
                         }
-                    })
-            }
+                    }
+                })
+            // }
         }
 
     private suspend fun getRoomsFromServer(): List<ConversationEntity>? {

@@ -68,4 +68,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Destroys unused resources.
      */
     fun handleChatOnBackPress()
+
+    fun cancelLongPolling()
 }

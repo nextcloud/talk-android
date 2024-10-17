@@ -58,7 +58,8 @@ class ChatViewModel @Inject constructor(
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userProvider: CurrentUserProviderNew
-) : ViewModel(), DefaultLifecycleObserver {
+) : ViewModel(),
+    DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -221,6 +222,10 @@ class ChatViewModel @Inject constructor(
 
     fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
         chatRepository.setData(conversationModel, credentials, urlForChatting)
+    }
+
+    fun cancelLongPolling() {
+        chatRepository.cancelLongPolling()
     }
 
     fun getRoom(user: User, token: String) {
@@ -589,9 +594,7 @@ class ChatViewModel @Inject constructor(
         cachedFile.delete()
     }
 
-    fun getCurrentVoiceRecordFile(): String {
-        return mediaRecorderManager.currentVoiceRecordFile
-    }
+    fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
     fun uploadFile(fileUri: String, room: String, displayName: String, metaData: String) {
         try {

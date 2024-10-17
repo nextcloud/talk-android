@@ -97,12 +97,17 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var conversationModel: ConversationModel
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
+    private var longPollingCanceled: Boolean = false
 
     override fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
         this.conversationModel = conversationModel
         this.credentials = credentials
         this.urlForChatting = urlForChatting
         internalConversationId = conversationModel.internalId
+    }
+
+    override fun cancelLongPolling() {
+        this.longPollingCanceled = true
     }
 
     override fun loadInitialMessages(withNetworkParams: Bundle): Job =
@@ -180,20 +185,25 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
         val chatBlock = getBlockOfMessage(messageId.toInt())
 
-        val amountBetween = chatDao.getCountBetweenMessageIds(
-            internalConversationId,
-            messageId,
-            chatBlock!!.oldestMessageId
-        )
+        if (chatBlock != null) {
+            val amountBetween = chatDao.getCountBetweenMessageIds(
+                internalConversationId,
+                messageId,
+                chatBlock.oldestMessageId
+            )
 
-        Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
-        val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
-            DEFAULT_MESSAGES_LIMIT
+            Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
+            val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
+                DEFAULT_MESSAGES_LIMIT
+            } else {
+                amountBetween
+            }
+            Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+            return limit
         } else {
-            amountBetween
+            Log.e(TAG, "No chat block found. Returning 0 as limit.")
+            return 0
         }
-        Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
-        return limit
     }
 
     private suspend fun updateUiForLastReadMessage(newestMessageId: Long) {
@@ -254,7 +264,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val networkParams = Bundle()
 
-            while (true) {
+            longPollingCanceled = false
+
+            while (!longPollingCanceled) {
                 if (!monitor.isOnline.first() || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
