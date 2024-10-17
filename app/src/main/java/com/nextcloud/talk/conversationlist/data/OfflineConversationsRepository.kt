@@ -35,5 +35,5 @@ interface OfflineConversationsRepository {
      * Called once onStart to emit a conversation to [conversationFlow]
      * to be handled asynchronously.
      */
-    fun getConversationSettings(roomToken: String): Job
+    fun getRoom(roomToken: String): Job
 }

@@ -56,51 +56,53 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     override fun getRooms(): Job =
         scope.launch {
-            val resultsFromSync = sync()
-            if (!resultsFromSync.isNullOrEmpty()) {
-                val conversations = resultsFromSync.map(ConversationEntity::asModel)
-                _roomListFlow.emit(conversations)
-            } else {
-                val conversationsFromDb = getListOfConversations(user.id!!)
-                _roomListFlow.emit(conversationsFromDb)
+            val initialConversationModels = getListOfConversations(user.id!!)
+            _roomListFlow.emit(initialConversationModels)
+
+            if (monitor.isOnline.first()) {
+                val conversationEntitiesFromSync = getRoomsFromServer()
+                if (!conversationEntitiesFromSync.isNullOrEmpty()) {
+                    val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
+                    _roomListFlow.emit(conversationModelsFromSync)
+                }
             }
         }
 
-    override fun getConversationSettings(roomToken: String): Job =
+    override fun getRoom(roomToken: String): Job =
         scope.launch {
-            val id = user.id!!
-            val model = getConversation(id, roomToken)
-            if (model != null) {
-                _conversationFlow.emit(model)
-            } else {
-                chatNetworkDataSource.getRoom(user, roomToken)
-                    .subscribeOn(Schedulers.io())
-                    ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe(object : Observer<ConversationModel> {
-                        override fun onSubscribe(p0: Disposable) {
-                            // unused atm
-                        }
+            // val id = user.id!!
+            // val model = getConversation(id, roomToken)
+            // if (model != null) {
+            //     _conversationFlow.emit(model)
+            // } else {
+            chatNetworkDataSource.getRoom(user, roomToken)
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<ConversationModel> {
+                    override fun onSubscribe(p0: Disposable) {
+                        // unused atm
+                    }
 
-                        override fun onError(e: Throwable) {
-                            // unused atm
-                        }
+                    override fun onError(e: Throwable) {
+                        // unused atm
+                    }
 
-                        override fun onComplete() {
-                            // unused atm
-                        }
+                    override fun onComplete() {
+                        // unused atm
+                    }
 
-                        override fun onNext(model: ConversationModel) {
-                            runBlocking {
-                                _conversationFlow.emit(model)
-                                val entityList = listOf(model.asEntity())
-                                dao.upsertConversations(entityList)
-                            }
+                    override fun onNext(model: ConversationModel) {
+                        runBlocking {
+                            _conversationFlow.emit(model)
+                            val entityList = listOf(model.asEntity())
+                            dao.upsertConversations(entityList)
                         }
-                    })
-            }
+                    }
+                })
+            // }
         }
 
-    private suspend fun sync(): List<ConversationEntity>? {
+    private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!monitor.isOnline.first()) {
@@ -129,10 +131,12 @@ class OfflineFirstConversationsRepository @Inject constructor(
     }
 
     private suspend fun deleteLeftConversations(conversationsFromSync: List<ConversationEntity>) {
+        val conversationsFromSyncIds = conversationsFromSync.map { it.internalId }.toSet()
         val oldConversationsFromDb = dao.getConversationsForUser(user.id!!).first()
 
-        val conversationsToDelete = oldConversationsFromDb.filterNot { conversationsFromSync.contains(it) }
-        val conversationIdsToDelete = conversationsToDelete.map { it.internalId }
+        val conversationIdsToDelete = oldConversationsFromDb
+            .map { it.internalId }
+            .filterNot { it in conversationsFromSyncIds }
 
         dao.deleteConversations(conversationIdsToDelete)
     }
