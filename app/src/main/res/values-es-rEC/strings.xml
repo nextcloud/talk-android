@@ -95,6 +95,7 @@
     <string name="nc_certificate_dialog_title">Verifica el certificado</string>
     <string name="nc_certificate_error">Tu configuración de SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
+    <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Todos los mensajes se han eliminado</string>
     <string name="nc_clear_history_warning">¿Realmente quieres borrar todos los mensajes de esta conversación?</string>

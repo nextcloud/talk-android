@@ -112,6 +112,7 @@
     <string name="nc_certificate_dialog_title">Egiaztatu ziurtagiria</string>
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
+    <string name="nc_change_password">Aldatu pasahitza</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
@@ -282,6 +283,7 @@
     <string name="nc_owner">Jabea</string>
     <string name="nc_participants">Parte-hartzaileak</string>
     <string name="nc_participants_add">Gehitu parte-hartzaileak</string>
+    <string name="nc_password">Pasahitza</string>
     <string name="nc_permissions_ask">Ezarri baimenak</string>
     <string name="nc_permissions_denied">Baimen batzuk ukatu egin dira.</string>
     <string name="nc_permissions_rationale_dialog_title">Eman baimenak, mesedez</string>
