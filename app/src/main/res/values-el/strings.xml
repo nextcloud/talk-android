@@ -71,6 +71,7 @@
     <string name="nc_certificate_dialog_title">Ελέγξτε το πιστοποιητικό</string>
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
+    <string name="nc_change_password">Αλλαγή συνθηματικού</string>
     <string name="nc_clear_history">Διαγραφή όλων των μηνυμάτων</string>
     <string name="nc_clear_history_success">Όλα τα μηνύματα διαγράφηκαν</string>
     <string name="nc_clear_history_warning">Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα σε αυτήν τη συνομιλία;</string>
@@ -202,6 +203,7 @@
     <string name="nc_owner">Ιδιοκτήτης</string>
     <string name="nc_participants">Συμμετέχοντες</string>
     <string name="nc_participants_add">Προσθήκη συμμετεχόντων</string>
+    <string name="nc_password">Συνθηματικό</string>
     <string name="nc_permissions_settings">Άνοιγμα ρυθμίσεων</string>
     <string name="nc_phone_book_integration_account_not_found">Δεν βρέθηκε λογαριασμός</string>
     <string name="nc_phone_book_integration_chat_via">Συνομιλία μέσω %s</string>
