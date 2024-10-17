@@ -741,6 +741,30 @@ class ConversationInfoActivity :
             }
         }
 
+        if (!spreedCapabilities.features!!.contains(ARCHIVED_CONVERSATIONS)) {
+            binding.archiveConversationBtn.visibility = GONE
+        }
+
+        binding.archiveConversationBtn.setOnClickListener {
+            if (conversation!!.hasArchived) {
+                viewModel.unarchiveConversation(conversationUser, conversationToken)
+                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+                binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+            } else {
+                viewModel.archiveConversation(conversationUser, conversationToken)
+                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+                binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+            }
+        }
+
+        if (conversation!!.hasArchived) {
+            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+            binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+        } else {
+            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+            binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+        }
+
         if (!isDestroyed) {
             binding.dangerZoneOptions.visibility = VISIBLE
 
@@ -1445,6 +1469,7 @@ class ConversationInfoActivity :
         private const val DEMOTE_OR_PROMOTE = 1
         private const val REMOVE_FROM_CONVERSATION = 2
         private const val BAN_FROM_CONVERSATION = 3
+        private const val ARCHIVED_CONVERSATIONS = "archived-conversations"
     }
 
     /**
