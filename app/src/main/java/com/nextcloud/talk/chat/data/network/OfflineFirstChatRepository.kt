@@ -310,56 +310,60 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         Log.d(TAG, "An online request is made!!!!!!!!!!!!!!!!!!!!")
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
+        var attempts = 0
+        val max = 2
+        while (attempts < max) {
+            try {
+                val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
+                    .subscribeOn(Schedulers.io())
+                    // .retry(5)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map { it ->
+                        when (it.code()) {
+                            HTTP_CODE_OK -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
+                                newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
+                                    Integer.parseInt(it)
+                                }
 
-        try {
-            val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                // .timeout(3, TimeUnit.SECONDS)
-                .map { it ->
-                    when (it.code()) {
-                        HTTP_CODE_OK -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
-                            newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
-                                Integer.parseInt(it)
+                                return@map Pair(
+                                    HTTP_CODE_OK,
+                                    (it.body() as ChatOverall).ocs!!.data!!
+                                )
                             }
 
-                            return@map Pair(
-                                HTTP_CODE_OK,
-                                (it.body() as ChatOverall).ocs!!.data!!
-                            )
-                        }
+                            HTTP_CODE_NOT_MODIFIED -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
 
-                        HTTP_CODE_NOT_MODIFIED -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
+                                return@map Pair(
+                                    HTTP_CODE_NOT_MODIFIED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
 
-                            return@map Pair(
-                                HTTP_CODE_NOT_MODIFIED,
-                                listOf<ChatMessageJson>()
-                            )
-                        }
+                            HTTP_CODE_PRECONDITION_FAILED -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
 
-                        HTTP_CODE_PRECONDITION_FAILED -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
+                                return@map Pair(
+                                    HTTP_CODE_PRECONDITION_FAILED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
 
-                            return@map Pair(
-                                HTTP_CODE_PRECONDITION_FAILED,
-                                listOf<ChatMessageJson>()
-                            )
-                        }
-
-                        else -> {
-                            return@map Pair(
-                                HTTP_CODE_PRECONDITION_FAILED,
-                                listOf<ChatMessageJson>()
-                            )
+                            else -> {
+                                return@map Pair(
+                                    HTTP_CODE_PRECONDITION_FAILED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
                         }
                     }
-                }
-                .blockingSingle()
-            return result
-        } catch (e: Exception) {
-            Log.e(TAG, "Something went wrong when pulling chat messages", e)
+                    .blockingSingle()
+                return result
+            } catch (e: Exception) {
+                Log.e(TAG, "Attempt: $attempts Something went wrong when pulling chat messages", e)
+                attempts++
+            }
         }
         return null
     }

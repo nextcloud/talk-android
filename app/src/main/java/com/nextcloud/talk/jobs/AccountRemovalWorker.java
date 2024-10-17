@@ -25,6 +25,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall;
 import com.nextcloud.talk.models.json.push.PushConfigurationState;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
+import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper;
 
 import java.net.CookieManager;
@@ -52,6 +53,8 @@ public class AccountRemovalWorker extends Worker {
     @Inject UserManager userManager;
 
     @Inject ArbitraryStorageManager arbitraryStorageManager;
+
+    @Inject AppPreferences appPreferences;
 
     @Inject Retrofit retrofit;
 
@@ -193,6 +196,7 @@ public class AccountRemovalWorker extends Worker {
         if (user.getId() != null) {
             String username = user.getUsername();
             try {
+                appPreferences.deleteAllMessageQueuesFor(user.getUserId());
                 userManager.deleteUser(user.getId());
                 Log.d(TAG, "deleted user: " + username);
             } catch (Throwable e) {
