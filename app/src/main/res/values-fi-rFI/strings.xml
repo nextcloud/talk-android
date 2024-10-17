@@ -70,6 +70,7 @@
     <string name="nc_certificate_dialog_title">Tarkista varmenne</string>
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
     <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
+    <string name="nc_change_password">Vaihda salasana</string>
     <string name="nc_clear_history">Poista kaikki viestit</string>
     <string name="nc_clear_history_success">Kaikki viestit poistettiin</string>
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
@@ -207,6 +208,7 @@
     <string name="nc_owner">Omistaja</string>
     <string name="nc_participants">Osallistujat</string>
     <string name="nc_participants_add">Lisää osallistujat</string>
+    <string name="nc_password">Salasana</string>
     <string name="nc_permissions_settings">Avaa asetukset</string>
     <string name="nc_phone_book_integration_account_not_found">Tiliä ei löydy</string>
     <string name="nc_pip_microphone_mute">Mykistä mikrofoni</string>

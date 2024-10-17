@@ -85,6 +85,7 @@
     <string name="nc_certificate_dialog_title">گواهی را بررسی کنید</string>
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
+    <string name="nc_change_password">تغییر گذرواژه</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>
     <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
     <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
@@ -213,6 +214,7 @@
     <string name="nc_owner">مالک</string>
     <string name="nc_participants">شركت كنندگان</string>
     <string name="nc_participants_add">افزودن شرکت‌کننده</string>
+    <string name="nc_password">گذرواژه</string>
     <string name="nc_permissions_ask">تنظیم دسترسی‌ها</string>
     <string name="nc_permissions_settings">تنظیمات را باز کنید</string>
     <string name="nc_phone_book_integration_account_not_found">حساب یافت نشد</string>

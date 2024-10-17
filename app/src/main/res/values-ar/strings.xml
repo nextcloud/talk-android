@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">تحرير</string>
-    <string name="add_to_notes">أضِف إلى الملاحظات</string>
-    <string name="added_to_favorites">أضِف المحادثة %1$sإلى المُفضّلة</string>
+    <string name="add_to_notes">إضافة إلى الملاحظات</string>
+    <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
@@ -88,9 +88,9 @@
     <string name="nc_account_chooser_add_account">أضف حساباً</string>
     <string name="nc_account_scheduled_for_deletion">تمت جدولة الحساب للحذف ، ولا يمكن تغييره</string>
     <string name="nc_action_open_main_menu">افتح القائمة الرئيسية</string>
-    <string name="nc_add_attachment">أضِف مُرفَقاً attachment</string>
+    <string name="nc_add_attachment">إضافة مرفق</string>
     <string name="nc_add_emojis">إضِف إيموجي emoji</string>
-    <string name="nc_add_file">أضِف إلى المحادثة</string>
+    <string name="nc_add_file">إضافة إلى المحادثة</string>
     <string name="nc_add_participants">إضِف مُشاركين</string>
     <string name="nc_add_to_favorites">أضف إلى المفضلة</string>
     <string name="nc_all_ok_operation">تم!</string>
@@ -276,7 +276,7 @@
     <string name="nc_important_conversation">محادثة مهمة</string>
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
-    <string name="nc_join_open_conversations">إنضَمَّ إلى محادثات جارية</string>
+    <string name="nc_join_open_conversations">الانضمام إلى محادثات جارية</string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>
     <string name="nc_leaving_call">مُغادرة المكالمة …</string>
@@ -478,7 +478,7 @@
     <string name="nc_share_this_location">شارِك هذا الموقع</string>
     <string name="nc_share_to_choose_account">إختر حسابًا</string>
     <string name="nc_shared_items">عناصر مُشارَكة</string>
-    <string name="nc_shared_items_deck_card">بطاقة Deck card</string>
+    <string name="nc_shared_items_deck_card">بطاقة</string>
     <string name="nc_shared_items_description">صور، و ملفات، ورسائل صوتية ...</string>
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
@@ -620,7 +620,7 @@
     <string name="translation_error_title">فشل الترجمة</string>
     <string name="translation_from">مِن :</string>
     <string name="translation_to">إلى :</string>
-    <string name="typing_1_other">و واحدٌ آخر يكتب ... 1</string>
+    <string name="typing_1_other">و شخص آخر يكتب ... </string>
     <string name="typing_are_typing">يكتبون ...</string>
     <string name="typing_is_typing">يكتب...</string>
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
@@ -637,7 +637,7 @@
     <string name="user_status">الحاله</string>
     <string name="userinfo_error_text">فشل في استرداد المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين أي معلومات شخصية</string>
-    <string name="userinfo_no_info_text">أضِف الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
+    <string name="userinfo_no_info_text">إضافة الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
     <string name="video_call">مكالمة مرئية</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
     <plurals name="polls_amount_voters">
