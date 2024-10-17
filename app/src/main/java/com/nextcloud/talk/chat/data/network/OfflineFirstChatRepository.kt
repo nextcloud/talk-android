@@ -108,35 +108,36 @@ class OfflineFirstChatRepository @Inject constructor(
     override fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
-            Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
-
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
+            Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
             Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
             var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
-            Log.d(TAG, "newestMessageId: $newestMessageIdFromDb")
-            if (newestMessageIdFromDb.toInt() == 0) {
-                Log.d(TAG, "newestMessageId from db was 0. Must only happen when chat is loaded for the first time")
-            }
+            Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
-            // infos from Ivan to
-            // "Why is it lastReadMessageId that is checked? Shouldn't it be lastMessage instead?
-            // https://github.com/nextcloud/talk-ios/blob/master/NextcloudTalk/NCChatController.m#L473 "
-            //
-            // answer:
-            // "I guess we do it with the lastReadMessageId in order to place the separator of "Unread messages" when you enter the chat"
-            //
-            // if it turns out lastMessage can be used instead lastReadMessage, use this:
-            // val doInitialLoadFromServer = conversationModel.lastMessage?.let {
-            //     newestMessageIdFromDb < it.id
-            // } ?: true
-            // Log.d(TAG, "doInitialLoadFromServer:$doInitialLoadFromServer")
-            //
-            // if (doInitialLoadFromServer) {
+            val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
+            val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
+            Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
+            Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
 
-            if (newestMessageIdFromDb < conversationModel.lastReadMessage.toLong()) {
-                Log.d(TAG, "An online request is made because chat is not up to date")
+            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage) {
+                Log.d(
+                    TAG,
+                    "Initial online request is skipped because offline messages are up to date" +
+                        " until lastReadMessage"
+                )
+                Log.d(TAG, "For messages newer than lastRead, lookIntoFuture will load them.")
+            } else {
+                if (!weAlreadyHaveSomeOfflineMessages) {
+                    Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+                } else {
+                    Log.d(
+                        TAG,
+                        "An online request for newest 100 messages is made because we don't have the lastReadMessage " +
+                            "(gaps could be closed by scrolling up to merge the chatblocks)"
+                    )
+                }
 
                 // set up field map to load the newest messages
                 val fieldMap = getFieldMap(
@@ -155,11 +156,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
 
                 newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
-                Log.d(TAG, "newestMessageId after sync: $newestMessageIdFromDb")
-            } else {
-                Log.d(TAG, "Initial online request is skipped because offline messages are up to date")
-                // if conversationModel was not up to date and there are new messages, they will just get pulled with
-                // look into future.. Old messages will be displayed immediately beforehand.
+                Log.d(TAG, "newestMessageIdFromDb after sync: $newestMessageIdFromDb")
             }
 
             val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
@@ -367,7 +364,7 @@ class OfflineFirstChatRepository @Inject constructor(
             .map(ChatMessageEntity::asModel)
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "MagicNumber")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
 
