@@ -95,11 +95,14 @@ import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ReceiverFlag
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.VibrationUtils.vibrateShort
 import com.nextcloud.talk.utils.animations.PulseAnimation
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
@@ -117,9 +120,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
-import com.nextcloud.talk.utils.CapabilitiesUtil
-import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
-import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
@@ -129,9 +129,9 @@ import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingConfirmStop
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingErrorState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartedState
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel.RecordingStartingState
-import com.nextcloud.talk.webrtc.WebRTCUtils
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
+import com.nextcloud.talk.webrtc.WebRTCUtils
 import com.nextcloud.talk.webrtc.WebRtcAudioManager
 import com.nextcloud.talk.webrtc.WebRtcAudioManager.AudioDevice
 import com.nextcloud.talk.webrtc.WebSocketConnectionHelper
