@@ -20,20 +20,20 @@ import java.util.Map;
 
 /**
  * Hub to register listeners for signaling messages of different kinds.
- *
+ * <p>
  * In general, if a listener is added while an event is being handled the new listener will not receive that event.
  * An exception to that is adding a WebRtcMessageListener when handling an offer in an OfferMessageListener; in that
  * case the "onOffer()" method of the WebRtcMessageListener will be called for that same offer.
- *
+ * <p>
  * Similarly, if a listener is removed while an event is being handled the removed listener will still receive that
  * event. Again the exception is removing a WebRtcMessageListener when handling an offer in an OfferMessageListener; in
  * that case the "onOffer()" method of the WebRtcMessageListener will not be called for that offer.
- *
+ * <p>
  * Adding and removing listeners, as well as notifying them is internally synchronized. This should be kept in mind
  * if listeners are added or removed when handling an event to prevent deadlocks (nevertheless, just adding or
  * removing a listener in the same thread handling the event is fine, and in most cases it will be fine too if done
  * in a different thread, as long as the notifier thread is not forced to wait until the listener is added or removed).
- *
+ * <p>
  * SignalingMessageReceiver does not fetch the signaling messages itself; subclasses must fetch them and then call
  * the appropriate protected methods to process the messages and notify the listeners.
  */
@@ -55,7 +55,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Listener for participant list messages.
-     *
+     * <p>
      * The messages are implicitly bound to the room currently joined in the signaling server; listeners are expected
      * to know the current room.
      */
@@ -63,17 +63,17 @@ public abstract class SignalingMessageReceiver {
 
         /**
          * List of all the participants in the room.
-         *
+         * <p>
          * This message is received only when the internal signaling server is used.
-         *
+         * <p>
          * The message is received periodically, and the participants may not have been modified since the last message.
-         *
+         * <p>
          * Only the following participant properties are set:
          * - inCall
          * - lastPing
          * - sessionId
          * - userId (if the participant is not a guest)
-         *
+         * <p>
          * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
          * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
          * ignored.
@@ -84,25 +84,25 @@ public abstract class SignalingMessageReceiver {
 
         /**
          * List of all the participants in the call or the room (depending on what triggered the event).
-         *
+         * <p>
          * This message is received only when the external signaling server is used.
-         *
+         * <p>
          * The message is received when any participant changed, although what changed is not provided and should be
          * derived from the difference with previous messages. The list of participants may include only the
          * participants in the call (including those that just left it and thus triggered the event) or all the
          * participants currently in the room (participants in the room but not currently active, that is, without a
          * session, are not included).
-         *
+         * <p>
          * Only the following participant properties are set:
          * - inCall
          * - lastPing
          * - sessionId
          * - type
          * - userId (if the participant is not a guest)
-         *
+         * <p>
          * "nextcloudSessionId" is provided in the message (when the "inCall" property of any participant changed), but
          * not currently set in the participant.
-         *
+         * <p>
          * "participantPermissions" is provided in the message (since Talk 13), but not currently set in the
          * participant. "publishingPermissions" was provided instead in Talk 12, but it was not used anywhere, so it is
          * ignored.
@@ -113,7 +113,7 @@ public abstract class SignalingMessageReceiver {
 
         /**
          * Update of the properties of all the participants in the room.
-         *
+         * <p>
          * This message is received only when the external signaling server is used.
          *
          * @param inCall the new value of the inCall property
@@ -123,17 +123,17 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Listener for local participant messages.
-     *
+     * <p>
      * The messages are implicitly bound to the local participant (or, rather, its session); listeners are expected
      * to know the local participant.
-     *
+     * <p>
      * The messages are related to the conversation, so the local participant may or may not be in a call when they
      * are received.
      */
     public interface LocalParticipantMessageListener {
         /**
          * Request for the client to switch to the given conversation.
-         *
+         * <p>
          * This message is received only when the external signaling server is used.
          *
          * @param token the token of the conversation to switch to.
@@ -143,10 +143,10 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Listener for call participant messages.
-     *
+     * <p>
      * The messages are bound to a specific call participant (or, rather, session), so each listener is expected to
      * handle messages only for a single call participant.
-     *
+     * <p>
      * Although "unshareScreen" is technically bound to a specific peer connection it is instead treated as a general
      * message on the call participant.
      */
@@ -166,11 +166,11 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Listener for WebRTC offers.
-     *
+     * <p>
      * Unlike the WebRtcMessageListener, which is bound to a specific peer connection, an OfferMessageListener listens
      * to all offer messages, no matter which peer connection they are bound to. This can be used, for example, to
      * create a new peer connection when a remote offer for which there is no previous connection is received.
-     *
+     * <p>
      * When an offer is received all OfferMessageListeners are notified before any WebRtcMessageListener is notified.
      */
     public interface OfferMessageListener {
@@ -179,7 +179,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Listener for WebRTC messages.
-     *
+     * <p>
      * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
      * a single peer connection.
      */
@@ -192,7 +192,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Adds a listener for participant list messages.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
      *
      * @param listener the ParticipantListMessageListener
@@ -207,7 +207,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Adds a listener for local participant messages.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
      *
      * @param listener the LocalParticipantMessageListener
@@ -222,7 +222,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Adds a listener for call participant messages.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will no longer be notified
      * for the messages from the previous session ID.
      *
@@ -247,7 +247,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Adds a listener for all offer messages.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will be notified just once.
      *
      * @param listener the OfferMessageListener
@@ -262,7 +262,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Adds a listener for WebRTC messages from the given session ID and room type.
-     *
+     * <p>
      * A listener is expected to be added only once. If the same listener is added again it will no longer be notified
      * for the messages from the previous session ID or room type.
      *
@@ -475,7 +475,7 @@ public abstract class SignalingMessageReceiver {
 
     /**
      * Creates and initializes a Participant from the data in the given map.
-     *
+     * <p>
      * Maps from internal and external signaling server messages can be used. Nevertheless, besides the differences
      * between the messages and the optional properties, it is expected that the message is correct and the given data
      * is parseable. Broken messages (for example, a string instead of an integer for "inCall" or a missing

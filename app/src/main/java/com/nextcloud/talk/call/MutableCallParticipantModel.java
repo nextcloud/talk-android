@@ -13,7 +13,7 @@ import org.webrtc.PeerConnection;
 
 /**
  * Mutable data model for (remote) call participants.
- *
+ * <p>
  * There is no synchronization when setting the values; if needed, it should be handled by the clients of the model.
  */
 public class MutableCallParticipantModel extends CallParticipantModel {

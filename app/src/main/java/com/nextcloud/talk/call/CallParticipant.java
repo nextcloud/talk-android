@@ -15,7 +15,7 @@ import org.webrtc.PeerConnection;
 
 /**
  * Model for (remote) call participants.
- *
+ * <p>
  * This class keeps track of the state changes in a call participant and updates its data model as needed. View classes
  * are expected to directly use the read-only data model.
  */
