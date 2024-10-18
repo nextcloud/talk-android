@@ -191,7 +191,7 @@
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">فتح dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">آخر أَمَارَات إدخال push token في \"فاير بيس\" firebase تمّ جلبها</string>
     <string name="nc_diagnose_firebase_push_token_latest_generated">آخر أَمَارَات إدخال push token في \"فاير بيس\" firebase تمّ توليدها</string>
-    <string name="nc_diagnose_firebase_push_token_missing">لم يتم تعيين أيّ أَمَارَات إدخال push token. من فضلك، أنشيء تقريراً حول هذا الخطأ.</string>
+    <string name="nc_diagnose_firebase_push_token_missing">لم يتم تعيين أيّ رموز توكن push token. من فضلك، أنشيء تقريراً حول هذا الخطأ.</string>
     <string name="nc_diagnose_firebase_push_token_title">أَمَارَة إدخال push token في \"فاير بيس\" firebase  </string>
     <string name="nc_diagnose_gplay_available_no">خدمات متجر التطبيقات من قوقل Google Play غير متاحة. و الإشعارات غير مدعومة</string>
     <string name="nc_diagnose_gplay_available_title">خدمات متجر التطبيقات من قوقل Google play</string>
@@ -467,7 +467,7 @@
     <string name="nc_settings_typing_status_desc">مشاركة حالة كتابتي وإظهار حالة كتابة الآخرين</string>
     <string name="nc_settings_typing_status_hpb_description">لا تتوفر حالة الكتابة إلا عند استخدام خلفية سريعة الأداء (HPB)</string>
     <string name="nc_settings_typing_status_title">حالة الكتابة</string>
-    <string name="nc_settings_use_credentials_title">الوكيل بحاجة إلى حيثيّات الدخول credentials</string>
+    <string name="nc_settings_use_credentials_title">الوكيل بحاجة إلى بيانات تسجيل الدخول</string>
     <string name="nc_settings_warning">تحذير</string>
     <string name="nc_settings_wrong_account">يمكن إعادة تفويض الحساب الجاري فقط </string>
     <string name="nc_share_contact">شارك جهة اتصال</string>
