@@ -17,23 +17,23 @@ import java.util.Objects;
 
 /**
  * Read-only data model for (remote) call participants.
- *
+ * <p>
  * If the hand was never raised null is returned by "getRaisedHand()". Otherwise a RaisedHand object is returned with
  * the current state (raised or not) and the timestamp when the raised hand state last changed.
- *
+ * <p>
  * The received audio and video are available only if the participant is sending them and also has them enabled.
  * Before a connection is established it is not known whether audio and video are available or not, so null is returned
  * in that case (therefore it should not be autoboxed to a plain boolean without checking that).
- *
+ * <p>
  * Audio and video in screen shares, on the other hand, are always seen as available.
- *
+ * <p>
  * Actor type and actor id will be set only in Talk >= 20.
- *
+ * <p>
  * Clients of the model can observe it with CallParticipantModel.Observer to be notified when any value changes.
  * Getters called after receiving a notification are guaranteed to provide at least the value that triggered the
  * notification, but it may return even a more up to date one (so getting the value again on the following
  * notification may return the same value as before).
- *
+ * <p>
  * Besides onChange(), which notifies about changes in the model values, CallParticipantModel.Observer provides
  * additional methods to be notified about one-time events that are not reflected in the model values, like reactions.
  */
@@ -169,11 +169,11 @@ public class CallParticipantModel {
 
     /**
      * Adds an observer to be notified when any value changes.
-     *
+     * <p>
      * The observer will be notified on the thread associated to the given handler. If no handler is given the
      * observer will be immediately notified on the same thread that changed the value; the observer will be
      * immediately notified too if the thread of the handler is the same thread that changed the value.
-     *
+     * <p>
      * An observer is expected to be added only once. If the same observer is added again it will be notified just
      * once on the thread of the last handler.
      *
