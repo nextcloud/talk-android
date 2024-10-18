@@ -216,6 +216,7 @@
     <string name="nc_server_unsupported">Serveryje nėra įdiegta palaikoma Pokalbių programėlė</string>
     <string name="nc_server_url">Serverio adresas https://…</string>
     <string name="nc_server_version">%1$s veikia tik naudojant %2$s 13 ar naujesnę versiją</string>
+    <string name="nc_set_new_password">Nustatyti naują slaptažodį</string>
     <string name="nc_settings">Nustatymai</string>
     <string name="nc_settings_account_updated">Vietoj naujos paskyros pridėjimo, buvo atnaujinta jūsų esama paskyra</string>
     <string name="nc_settings_advanced_title">Išplėstiniai</string>
