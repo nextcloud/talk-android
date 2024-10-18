@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * Helper class to register and notify CallParticipantList.Observers.
- *
+ * <p>
  * This class is only meant for internal use by CallParticipantList; listeners must register themselves against
  * a CallParticipantList rather than against a CallParticipantListNotifier.
  */

@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * Helper class to register and notify PeerConnectionObserver.
- *
+ * <p>
  * This class is only meant for internal use by PeerConnectionWrapper; observers must register themselves against
  * a PeerConnectionWrapper rather than against a PeerConnectionNotifier.
  */
