@@ -26,6 +26,7 @@
     </array>
 
     <array name="screen_lock_timeout_descriptions">
+        <item>@string/nc_screen_lock_timeout_immediate</item>
         <item>@string/nc_screen_lock_timeout_30</item>
         <item>@string/nc_screen_lock_timeout_60</item>
         <item>@string/nc_screen_lock_timeout_300</item>
@@ -33,6 +34,7 @@
     </array>
 
     <array name="screen_lock_timeout_entry_values">
+        <item>@string/nc_screen_lock_timeout_immediate</item>
         <item>@string/nc_screen_lock_timeout_thirty</item>
         <item>@string/nc_screen_lock_timeout_sixty</item>
         <item>@string/nc_screen_lock_timeout_three_hundred</item>
@@ -40,6 +42,7 @@
     </array>
 
     <array name="screen_lock_timeout_entry_int_values">
+        <item>0</item>
         <item>30</item>
         <item>60</item>
         <item>300</item>
