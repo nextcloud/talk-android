@@ -384,6 +384,37 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/archive_conversation_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standard_margin"
+                android:paddingTop="@dimen/standard_half_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:paddingBottom="@dimen/standard_half_margin"
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
+
+
+                <ImageView
+                    android:id="@+id/archive_conversation_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="@dimen/standard_margin"
+                    android:contentDescription="@null"
+                    tools:src="@drawable/outline_archive_24"
+                    app:tint="@color/grey_600" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/archive_conversation_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    tools:text="@string/unarchive_conversation"
+                    android:textSize="@dimen/headline_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/danger_zone_options"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

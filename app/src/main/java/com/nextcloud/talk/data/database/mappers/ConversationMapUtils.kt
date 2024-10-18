@@ -59,7 +59,8 @@ fun ConversationModel.asEntity() =
         callStartTime = callStartTime,
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
-        remoteToken = remoteToken
+        remoteToken = remoteToken,
+        hasArchived = hasArchived
     )
 
 fun ConversationEntity.asModel() =
@@ -109,7 +110,8 @@ fun ConversationEntity.asModel() =
         callStartTime = callStartTime,
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
-        remoteToken = remoteToken
+        remoteToken = remoteToken,
+        hasArchived = hasArchived
     )
 
 fun Conversation.asEntity(accountId: Long) =
@@ -158,5 +160,6 @@ fun Conversation.asEntity(accountId: Long) =
         callStartTime = callStartTime,
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
-        remoteToken = remoteToken
+        remoteToken = remoteToken,
+        hasArchived = hasArchived
     )
