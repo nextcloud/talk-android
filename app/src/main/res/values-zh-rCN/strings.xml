@@ -64,7 +64,7 @@
     <string name="nc_Server_account_imported">所选帐户现已导入并可用</string>
     <string name="nc_about">关于</string>
     <string name="nc_account_chooser_active_user">活跃用户</string>
-    <string name="nc_account_chooser_add_account">添加账户</string>
+    <string name="nc_account_chooser_add_account">添加账号</string>
     <string name="nc_account_scheduled_for_deletion">此账号已计划删除，且无法更改</string>
     <string name="nc_action_open_main_menu">打开主菜单</string>
     <string name="nc_add_attachment">添加附件</string>
@@ -277,7 +277,7 @@
     <string name="nc_permissions_rationale_dialog_title">请允许权限</string>
     <string name="nc_permissions_settings">打开设置</string>
     <string name="nc_permissions_settings_hint">请在 “设置” > “权限” 中开启权限</string>
-    <string name="nc_phone_book_integration_account_not_found">未找到账户</string>
+    <string name="nc_phone_book_integration_account_not_found">未找到账号</string>
     <string name="nc_phone_book_integration_chat_via">通过 %s 聊天</string>
     <string name="nc_pip_microphone_mute">将麦克风静音</string>
     <string name="nc_pip_microphone_unmute">启用麦克风</string>
@@ -372,7 +372,7 @@
     <string name="nc_settings_proxy_username_title">代理用户名</string>
     <string name="nc_settings_read_privacy_desc">分享我的消息读取状态，并显示其他人的消息读取状态</string>
     <string name="nc_settings_read_privacy_title">消息读取状态</string>
-    <string name="nc_settings_reauthorize">重新授权账户</string>
+    <string name="nc_settings_reauthorize">重新授权账号</string>
     <string name="nc_settings_remove">移除</string>
     <string name="nc_settings_remove_account">移除账号</string>
     <string name="nc_settings_remove_confirmation">请确认您真要移除当前账号。</string>
@@ -402,7 +402,7 @@
     <string name="nc_share_link">共享链接</string>
     <string name="nc_share_location">分享位置</string>
     <string name="nc_share_this_location">分享这个位置</string>
-    <string name="nc_share_to_choose_account">选择一个账户</string>
+    <string name="nc_share_to_choose_account">选择账号</string>
     <string name="nc_shared_items">已分享项目</string>
     <string name="nc_shared_items_deck_card">看板卡片</string>
     <string name="nc_shared_items_description">图片、文件、语音消息</string>
@@ -411,7 +411,7 @@
     <string name="nc_shared_location">分享的位置</string>
     <string name="nc_sort_by">排序依据</string>
     <string name="nc_start_time">开始时间</string>
-    <string name="nc_switch_account">切换账户</string>
+    <string name="nc_switch_account">切换账号</string>
     <string name="nc_team">团队</string>
     <string name="nc_teams">团队</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
