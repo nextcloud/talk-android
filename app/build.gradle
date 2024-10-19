@@ -303,7 +303,7 @@ dependencies {
     })
 
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
     implementation 'com.github.nextcloud.android-common:ui:0.23.1'
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
 
@@ -348,7 +348,7 @@ dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.5'
 
-    implementation 'androidx.activity:activity-ktx:1.9.2'
+    implementation 'androidx.activity:activity-ktx:1.9.3'
 
     implementation 'com.github.nextcloud.android-common:ui:0.23.1'
 
