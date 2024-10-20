@@ -268,7 +268,7 @@
     <string name="nc_ok">OK</string>
     <string name="nc_open_conversation_to_registered_users">向注册用户开放对话 </string>
     <string name="nc_open_to_guest_app_users">同样对访客用户开放</string>
-    <string name="nc_owner">拥有者</string>
+    <string name="nc_owner">所有者</string>
     <string name="nc_participants">参与者</string>
     <string name="nc_participants_add">添加参与者 </string>
     <string name="nc_password">密码</string>
