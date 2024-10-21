@@ -2587,9 +2587,10 @@ class ChatActivity :
             chatMessage.activeUser = conversationUser
 
             adapter?.let {
-                val previousChatMessage = adapter!!.items[1].item as ChatMessage
-                chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
-
+                val previousChatMessage = adapter!!.items[1].item
+                if(previousChatMessage is ChatMessage){
+                    chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
+                }
                 chatMessage.isOneToOneConversation =
                     (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                 chatMessage.isFormerOneToOneConversation =
