@@ -58,7 +58,7 @@
     <string name="message_deleted_by_you">消息被你删除了</string>
     <string name="message_poll_tap_to_open">点击打开投票</string>
     <string name="message_search_begin_empty">无搜索结果</string>
-    <string name="message_search_begin_typing">开始输入以搜索</string>
+    <string name="message_search_begin_typing">开始输入以搜索…</string>
     <string name="message_search_hint">搜索...</string>
     <string name="messages">消息</string>
     <string name="nc_Server_account_imported">所选帐户现已导入并可用</string>
@@ -484,7 +484,7 @@
     <string name="scope_federated_title">联合云 </string>
     <string name="scope_local_description">仅对该实例用户和来宾可见 </string>
     <string name="scope_local_title">本地</string>
-    <string name="scope_private_description">只对通过手机上Talk应用的电话号码整合功能匹配的人可见 </string>
+    <string name="scope_private_description">只对通过手机上 Talk 应用的电话号码集成功能匹配的人可见</string>
     <string name="scope_private_title">私有</string>
     <string name="scope_published_description">同步到受信任的服务器、全局和公共地址簿</string>
     <string name="scope_published_title">已发布</string>
