@@ -415,7 +415,7 @@
     <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>
-    <string name="nc_settings_advanced_title">مُتقدّمة</string>
+    <string name="nc_settings_advanced_title">متقدمة</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
     <string name="nc_settings_diagnose_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
@@ -487,14 +487,14 @@
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
     <string name="nc_team">الفريق</string>
-    <string name="nc_teams">الفِرَق</string>
+    <string name="nc_teams">الفرق</string>
     <string name="nc_upload_choose_local_files">اختر الملفات</string>
     <string name="nc_upload_confirm_send_multiple">إرسال هذه الملفات إلى %1$s؟</string>
     <string name="nc_upload_confirm_send_single">إرسال هذا الملف إلى %1$s؟</string>
     <string name="nc_upload_failed">عذرًا، فشل الرفع</string>
     <string name="nc_upload_failed_notification_text">فشلت عملية رفع %1$s</string>
     <string name="nc_upload_failed_notification_title">فشل</string>
-    <string name="nc_upload_from_cloud">مُشارَكةٌ مِن %1$s</string>
+    <string name="nc_upload_from_cloud">مشاركة من %1$s</string>
     <string name="nc_upload_from_device">إرفَع من الجهاز</string>
     <string name="nc_upload_in_progess">الرَّفْعُ جارٍ …</string>
     <string name="nc_upload_notification_text">%1$s إلى %2$s - %3$s\%%</string>
