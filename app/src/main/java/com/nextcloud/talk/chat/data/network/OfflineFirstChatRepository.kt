@@ -159,20 +159,22 @@ class OfflineFirstChatRepository @Inject constructor(
                 Log.d(TAG, "newestMessageIdFromDb after sync: $newestMessageIdFromDb")
             }
 
-            val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
+            if (newestMessageIdFromDb.toInt() != 0) {
+                val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
 
-            showMessagesBeforeAndEqual(
-                internalConversationId,
-                newestMessageIdFromDb,
-                limit
-            )
+                showMessagesBeforeAndEqual(
+                    internalConversationId,
+                    newestMessageIdFromDb,
+                    limit
+                )
 
-            // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
-            // with them (otherwise there is a race condition).
-            delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
+                // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
+                // with them (otherwise there is a race condition).
+                delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
 
-            updateUiForLastCommonRead()
-            updateUiForLastReadMessage(newestMessageIdFromDb)
+                updateUiForLastCommonRead()
+                updateUiForLastReadMessage(newestMessageIdFromDb)
+            }
 
             initMessagePolling(newestMessageIdFromDb)
         }
@@ -180,20 +182,25 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
         val chatBlock = getBlockOfMessage(messageId.toInt())
 
-        val amountBetween = chatDao.getCountBetweenMessageIds(
-            internalConversationId,
-            messageId,
-            chatBlock!!.oldestMessageId
-        )
+        if (chatBlock != null) {
+            val amountBetween = chatDao.getCountBetweenMessageIds(
+                internalConversationId,
+                messageId,
+                chatBlock.oldestMessageId
+            )
 
-        Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
-        val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
-            DEFAULT_MESSAGES_LIMIT
+            Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
+            val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
+                DEFAULT_MESSAGES_LIMIT
+            } else {
+                amountBetween
+            }
+            Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+            return limit
         } else {
-            amountBetween
+            Log.e(TAG, "No chat block found. Returning 0 as limit.")
+            return 0
         }
-        Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
-        return limit
     }
 
     private suspend fun updateUiForLastReadMessage(newestMessageId: Long) {
