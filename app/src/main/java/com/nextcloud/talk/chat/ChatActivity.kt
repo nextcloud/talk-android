@@ -183,6 +183,7 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -416,7 +417,12 @@ class ChatActivity :
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
 
-        binding.progressBar.visibility = View.VISIBLE
+        this.lifecycleScope.launch {
+            delay(DELAY_TO_SHOW_PROGRESS_BAR)
+            if (adapter?.isEmpty == true) {
+                binding.progressBar.visibility = View.VISIBLE
+            }
+        }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
@@ -1244,9 +1250,7 @@ class ChatActivity :
 
     @Suppress("MagicNumber", "LongMethod")
     private fun updateTypingIndicator() {
-        fun ellipsize(text: String): String {
-            return DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
-        }
+        fun ellipsize(text: String): String = DisplayUtils.ellipsize(text, TYPING_INDICATOR_MAX_NAME_LENGTH)
 
         val participantNames = ArrayList<String>()
 
@@ -1320,10 +1324,9 @@ class ChatActivity :
         }
     }
 
-    private fun isTypingStatusEnabled(): Boolean {
-        return webSocketInstance != null &&
+    private fun isTypingStatusEnabled(): Boolean =
+        webSocketInstance != null &&
             !CapabilitiesUtil.isTypingStatusPrivate(conversationUser!!)
-    }
 
     private fun setupSwipeToReply() {
         if (this::participantPermissions.isInitialized &&
@@ -1422,15 +1425,18 @@ class ChatActivity :
     }
 
     fun isOneToOneConversation() =
-        currentConversation != null && currentConversation?.type != null &&
+        currentConversation != null &&
+            currentConversation?.type != null &&
             currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun isGroupConversation() =
-        currentConversation != null && currentConversation?.type != null &&
+        currentConversation != null &&
+            currentConversation?.type != null &&
             currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL
 
     private fun isPublicConversation() =
-        currentConversation != null && currentConversation?.type != null &&
+        currentConversation != null &&
+            currentConversation?.type != null &&
             currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
 
     private fun updateRoomTimerHandler() {
@@ -1668,11 +1674,10 @@ class ChatActivity :
         adapter?.notifyDataSetChanged()
     }
 
-    private fun isChildOfExpandableSystemMessage(chatMessage: ChatMessage): Boolean {
-        return isSystemMessage(chatMessage) &&
+    private fun isChildOfExpandableSystemMessage(chatMessage: ChatMessage): Boolean =
+        isSystemMessage(chatMessage) &&
             !chatMessage.expandableParent &&
             chatMessage.lastItemOfExpandableGroup != 0
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun expandSystemMessage(chatMessageToExpand: ChatMessage) {
@@ -1758,12 +1763,11 @@ class ChatActivity :
             }
     }
 
-    fun isRecordAudioPermissionGranted(): Boolean {
-        return PermissionChecker.checkSelfPermission(
+    fun isRecordAudioPermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.RECORD_AUDIO
         ) == PERMISSION_GRANTED
-    }
 
     fun requestRecordAudioPermissions() {
         requestPermissions(
@@ -1870,11 +1874,10 @@ class ChatActivity :
         }
     }
 
-    private fun isReadOnlyConversation(): Boolean {
-        return currentConversation?.conversationReadOnlyState != null &&
+    private fun isReadOnlyConversation(): Boolean =
+        currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
-    }
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
@@ -1890,7 +1893,8 @@ class ChatActivity :
                 sb.append(resources!!.getText(R.string.nc_lobby_waiting))
                     .append("\n\n")
 
-                if (currentConversation?.lobbyTimer != null && currentConversation?.lobbyTimer !=
+                if (currentConversation?.lobbyTimer != null &&
+                    currentConversation?.lobbyTimer !=
                     0L
                 ) {
                     val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
@@ -2089,7 +2093,7 @@ class ChatActivity :
         if (position != null && position >= 0) {
             binding.messagesListView.scrollToPosition(position)
         } else {
-            // TODO show error that we don't have that message?
+            Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
         }
     }
 
@@ -2100,6 +2104,12 @@ class ChatActivity :
                 layoutManager?.scrollToPositionWithOffset(
                     position,
                     binding.messagesListView.height / 2
+                )
+            } else {
+                Log.d(
+                    TAG,
+                    "message $messageId that should be scrolled to was not found " +
+                        "(scrollToAndCenterMessageWithId)"
                 )
             }
         }
@@ -2264,11 +2274,10 @@ class ChatActivity :
         startActivity(intent)
     }
 
-    private fun validSessionId(): Boolean {
-        return currentConversation != null &&
+    private fun validSessionId(): Boolean =
+        currentConversation != null &&
             sessionIdAfterRoomJoined?.isNotEmpty() == true &&
             sessionIdAfterRoomJoined != "0"
-    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun cancelNotificationsForCurrentConversation() {
@@ -2321,14 +2330,11 @@ class ChatActivity :
         }
     }
 
-    private fun isActivityNotChangingConfigurations(): Boolean {
-        return !isChangingConfigurations
-    }
+    private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
 
-    private fun isNotInCall(): Boolean {
-        return !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
+    private fun isNotInCall(): Boolean =
+        !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
             !ApplicationWideCurrentRoomHolder.getInstance().isDialing
-    }
 
     private fun setActionBarTitle() {
         val title = binding.chatToolbar.findViewById<TextView>(R.id.chat_toolbar_title)
@@ -2769,11 +2775,10 @@ class ChatActivity :
         }
     }
 
-    private fun isSameDayNonSystemMessages(messageLeft: ChatMessage, messageRight: ChatMessage): Boolean {
-        return TextUtils.isEmpty(messageLeft.systemMessage) &&
+    private fun isSameDayNonSystemMessages(messageLeft: ChatMessage, messageRight: ChatMessage): Boolean =
+        TextUtils.isEmpty(messageLeft.systemMessage) &&
             TextUtils.isEmpty(messageRight.systemMessage) &&
             DateFormatter.isSameDay(messageLeft.createdAt, messageRight.createdAt)
-    }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val id = (
@@ -2793,15 +2798,14 @@ class ChatActivity :
         )
     }
 
-    override fun format(date: Date): String {
-        return if (DateFormatter.isToday(date)) {
+    override fun format(date: Date): String =
+        if (DateFormatter.isToday(date)) {
             resources!!.getString(R.string.nc_date_header_today)
         } else if (DateFormatter.isYesterday(date)) {
             resources!!.getString(R.string.nc_date_header_yesterday)
         } else {
             DateFormatter.format(date, DateFormatter.Template.STRING_DAY_MONTH_YEAR)
         }
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
@@ -2863,8 +2867,8 @@ class ChatActivity :
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
             R.id.conversation_video_call -> {
                 startACall(false, false)
                 true
@@ -2892,7 +2896,6 @@ class ChatActivity :
 
             else -> super.onOptionsItemSelected(item)
         }
-    }
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
@@ -2954,25 +2957,23 @@ class ChatActivity :
         return chatMessageMap.values.toList()
     }
 
-    private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
-        return currentMessage.value.parentMessageId != null && currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
-    }
+    private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.parentMessageId != null &&
+            currentMessage.value.systemMessageType == ChatMessage
+                .SystemMessageType.MESSAGE_DELETED
 
-    private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
-        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
+    private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
-    }
 
-    private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
-        return currentMessage.value.parentMessageId != null && currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
-    }
+    private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.parentMessageId != null &&
+            currentMessage.value.systemMessageType == ChatMessage
+                .SystemMessageType.MESSAGE_EDITED
 
-    private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean {
-        return currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
-    }
+    private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
@@ -3076,9 +3077,8 @@ class ChatActivity :
         }
     }
 
-    private fun isSystemMessage(message: ChatMessage): Boolean {
-        return ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
-    }
+    private fun isSystemMessage(message: ChatMessage): Boolean =
+        ChatMessage.MessageType.SYSTEM_MESSAGE == message.getCalculateMessageType()
 
     fun deleteMessage(message: IMessage) {
         if (!participantPermissions.hasChatPermission()) {
@@ -3321,20 +3321,26 @@ class ChatActivity :
         fileViewerUtils.openFileInFilesApp(link!!, keyID!!)
     }
 
-    private fun hasVisibleItems(message: ChatMessage): Boolean {
-        return !message.isDeleted || // copy message
-            message.replyable || // reply to
-            message.replyable && // reply privately
-            conversationUser?.userId?.isNotEmpty() == true && conversationUser!!.userId != "?" &&
+    private fun hasVisibleItems(message: ChatMessage): Boolean =
+        !message.isDeleted ||
+            // copy message
+            message.replyable ||
+            // reply to
+            message.replyable &&
+            // reply privately
+            conversationUser?.userId?.isNotEmpty() == true &&
+            conversationUser!!.userId != "?" &&
             message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
             currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-            isShowMessageDeletionButton(message) || // delete
-            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() || // forward
-            message.previousMessageId > NO_PREVIOUS_MESSAGE_ID && // mark as unread
+            isShowMessageDeletionButton(message) ||
+            // delete
+            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() ||
+            // forward
+            message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
+            // mark as unread
             ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
             BuildConfig.DEBUG
-    }
 
     private fun setMessageAsDeleted(message: IMessage?) {
         val messageTemp = message as ChatMessage
@@ -3452,8 +3458,8 @@ class ChatActivity :
         return isUserAllowedByPrivileges
     }
 
-    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean {
-        return when (type) {
+    override fun hasContentFor(message: ChatMessage, type: Byte): Boolean =
+        when (type) {
             CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
             CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage
             CONTENT_TYPE_POLL -> message.isPoll()
@@ -3464,7 +3470,6 @@ class ChatActivity :
 
             else -> false
         }
-    }
 
     private fun processMostRecentMessage(recent: ChatMessage, chatMessageList: List<ChatMessage>) {
         when (recent.systemMessageType) {
@@ -3712,5 +3717,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
+        private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
     }
 }

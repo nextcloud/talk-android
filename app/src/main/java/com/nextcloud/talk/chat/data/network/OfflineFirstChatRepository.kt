@@ -108,37 +108,100 @@ class OfflineFirstChatRepository @Inject constructor(
     override fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
-
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
-            val fieldMap = getFieldMap(
-                lookIntoFuture = false,
-                includeLastKnown = true,
-                setReadMarker = true,
-                lastKnown = null
-            )
-            withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-            withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
+            Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
+            Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-            sync(withNetworkParams)
+            var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+            Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
-            val newestMessageId = chatDao.getNewestMessageId(internalConversationId)
-            Log.d(TAG, "newestMessageId after sync: $newestMessageId")
+            val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
+            val weHaveAtLeastTheLastReadMessage = newestMessageIdFromDb >= conversationModel.lastReadMessage.toLong()
+            Log.d(TAG, "weAlreadyHaveSomeOfflineMessages:$weAlreadyHaveSomeOfflineMessages")
+            Log.d(TAG, "weHaveAtLeastTheLastReadMessage:$weHaveAtLeastTheLastReadMessage")
 
-            showLast100MessagesBeforeAndEqual(
-                internalConversationId,
-                chatDao.getNewestMessageId(internalConversationId)
-            )
+            if (weAlreadyHaveSomeOfflineMessages && weHaveAtLeastTheLastReadMessage) {
+                Log.d(
+                    TAG,
+                    "Initial online request is skipped because offline messages are up to date" +
+                        " until lastReadMessage"
+                )
+                Log.d(TAG, "For messages newer than lastRead, lookIntoFuture will load them.")
+            } else {
+                if (!weAlreadyHaveSomeOfflineMessages) {
+                    Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+                } else {
+                    Log.d(
+                        TAG,
+                        "An online request for newest 100 messages is made because we don't have the lastReadMessage " +
+                            "(gaps could be closed by scrolling up to merge the chatblocks)"
+                    )
+                }
 
-            // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
-            // with them (otherwise there is a race condition).
-            delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
+                // set up field map to load the newest messages
+                val fieldMap = getFieldMap(
+                    lookIntoFuture = false,
+                    includeLastKnown = true,
+                    setReadMarker = true,
+                    lastKnown = null
+                )
+                withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+                withNetworkParams.putString(BundleKeys.KEY_ROOM_TOKEN, conversationModel.token)
 
-            updateUiForLastCommonRead()
-            updateUiForLastReadMessage(newestMessageId)
+                Log.d(TAG, "Starting online request for initial loading")
+                val chatMessageEntities = sync(withNetworkParams)
+                if (chatMessageEntities == null) {
+                    Log.e(TAG, "initial loading of messages failed")
+                }
 
-            initMessagePolling()
+                newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+                Log.d(TAG, "newestMessageIdFromDb after sync: $newestMessageIdFromDb")
+            }
+
+            if (newestMessageIdFromDb.toInt() != 0) {
+                val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
+
+                showMessagesBeforeAndEqual(
+                    internalConversationId,
+                    newestMessageIdFromDb,
+                    limit
+                )
+
+                // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
+                // with them (otherwise there is a race condition).
+                delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
+
+                updateUiForLastCommonRead()
+                updateUiForLastReadMessage(newestMessageIdFromDb)
+            }
+
+            initMessagePolling(newestMessageIdFromDb)
         }
+
+    private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
+        val chatBlock = getBlockOfMessage(messageId.toInt())
+
+        if (chatBlock != null) {
+            val amountBetween = chatDao.getCountBetweenMessageIds(
+                internalConversationId,
+                messageId,
+                chatBlock.oldestMessageId
+            )
+
+            Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
+            val limit = if (amountBetween > DEFAULT_MESSAGES_LIMIT) {
+                DEFAULT_MESSAGES_LIMIT
+            } else {
+                amountBetween
+            }
+            Log.d(TAG, "limit of messages to load for UI (max 100 to ensure performance is okay):$limit")
+            return limit
+        } else {
+            Log.e(TAG, "No chat block found. Returning 0 as limit.")
+            return 0
+        }
+    }
 
     private suspend fun updateUiForLastReadMessage(newestMessageId: Long) {
         val scrollToLastRead = conversationModel.lastReadMessage.toLong() < newestMessageId
@@ -175,25 +238,25 @@ class OfflineFirstChatRepository @Inject constructor(
             val loadFromServer = hasToLoadPreviousMessagesFromServer(beforeMessageId)
 
             if (loadFromServer) {
+                Log.d(TAG, "Starting online request for loadMoreMessages")
                 sync(withNetworkParams)
             }
 
-            showLast100MessagesBefore(internalConversationId, beforeMessageId)
+            showMessagesBefore(internalConversationId, beforeMessageId, DEFAULT_MESSAGES_LIMIT)
             updateUiForLastCommonRead()
         }
 
-    override fun initMessagePolling(): Job =
+    override fun initMessagePolling(initialMessageId: Long): Job =
         scope.launch {
             Log.d(TAG, "---- initMessagePolling ------------")
 
-            val initialMessageId = chatDao.getNewestMessageId(internalConversationId).toInt()
             Log.d(TAG, "newestMessage: $initialMessageId")
 
             var fieldMap = getFieldMap(
                 lookIntoFuture = true,
                 includeLastKnown = false,
                 setReadMarker = true,
-                lastKnown = initialMessageId
+                lastKnown = initialMessageId.toInt()
             )
 
             val networkParams = Bundle()
@@ -205,6 +268,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
                     networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
+                    Log.d(TAG, "Starting online request for long polling")
                     val resultsFromSync = sync(networkParams)
                     if (!resultsFromSync.isNullOrEmpty()) {
                         val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
@@ -240,15 +304,15 @@ class OfflineFirstChatRepository @Inject constructor(
             loadFromServer = false
         } else {
             // we know that beforeMessageId and blockForMessage.oldestMessageId are in the same block.
-            // As we want the last 100 entries before beforeMessageId, we calculate if these messages are 100
-            // entries apart from each other
+            // As we want the last DEFAULT_MESSAGES_LIMIT entries before beforeMessageId, we calculate if these
+            // messages are DEFAULT_MESSAGES_LIMIT entries apart from each other
 
             val amountBetween = chatDao.getCountBetweenMessageIds(
                 internalConversationId,
                 beforeMessageId,
                 blockForMessage.oldestMessageId
             )
-            loadFromServer = amountBetween < 100
+            loadFromServer = amountBetween < DEFAULT_MESSAGES_LIMIT
 
             Log.d(
                 TAG,
@@ -263,7 +327,8 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         includeLastKnown: Boolean,
         setReadMarker: Boolean,
-        lastKnown: Int?
+        lastKnown: Int?,
+        limit: Int = DEFAULT_MESSAGES_LIMIT
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
 
@@ -278,7 +343,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
-        fieldMap["limit"] = 100
+        fieldMap["limit"] = limit
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
 
@@ -294,73 +359,84 @@ class OfflineFirstChatRepository @Inject constructor(
                 lookIntoFuture = false,
                 includeLastKnown = true,
                 setReadMarker = false,
-                lastKnown = messageId.toInt()
+                lastKnown = messageId.toInt(),
+                limit = 1
             )
             bundle.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
-            // Although only the single message will be returned, a server request will load 100 messages.
-            // If this turns out to be confusion for debugging we could load set the limit to 1 for this request.
+            Log.d(TAG, "Starting online request for single message (e.g. a reply)")
             sync(bundle)
         }
         return chatDao.getChatMessageForConversation(internalConversationId, messageId)
             .map(ChatMessageEntity::asModel)
     }
 
-    @Suppress("UNCHECKED_CAST")
+    @Suppress("UNCHECKED_CAST", "MagicNumber")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
-        Log.d(TAG, "An online request is made!!!!!!!!!!!!!!!!!!!!")
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
 
-        try {
-            val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                // .timeout(3, TimeUnit.SECONDS)
-                .map { it ->
-                    when (it.code()) {
-                        HTTP_CODE_OK -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
-                            newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
-                                Integer.parseInt(it)
+        var attempts = 1
+        while (attempts < 5) {
+            Log.d(TAG, "message limit: " + fieldMap["limit"])
+            try {
+                val result = network.pullChatMessages(credentials, urlForChatting, fieldMap)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .map { it ->
+                        when (it.code()) {
+                            HTTP_CODE_OK -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_OK")
+                                newXChatLastCommonRead = it.headers()["X-Chat-Last-Common-Read"]?.let {
+                                    Integer.parseInt(it)
+                                }
+
+                                return@map Pair(
+                                    HTTP_CODE_OK,
+                                    (it.body() as ChatOverall).ocs!!.data!!
+                                )
                             }
 
-                            return@map Pair(
-                                HTTP_CODE_OK,
-                                (it.body() as ChatOverall).ocs!!.data!!
-                            )
-                        }
+                            HTTP_CODE_NOT_MODIFIED -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
 
-                        HTTP_CODE_NOT_MODIFIED -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_NOT_MODIFIED")
+                                return@map Pair(
+                                    HTTP_CODE_NOT_MODIFIED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
 
-                            return@map Pair(
-                                HTTP_CODE_NOT_MODIFIED,
-                                listOf<ChatMessageJson>()
-                            )
-                        }
+                            HTTP_CODE_PRECONDITION_FAILED -> {
+                                Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
 
-                        HTTP_CODE_PRECONDITION_FAILED -> {
-                            Log.d(TAG, "getMessagesFromServer HTTP_CODE_PRECONDITION_FAILED")
+                                return@map Pair(
+                                    HTTP_CODE_PRECONDITION_FAILED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
 
-                            return@map Pair(
-                                HTTP_CODE_PRECONDITION_FAILED,
-                                listOf<ChatMessageJson>()
-                            )
-                        }
-
-                        else -> {
-                            return@map Pair(
-                                HTTP_CODE_PRECONDITION_FAILED,
-                                listOf<ChatMessageJson>()
-                            )
+                            else -> {
+                                return@map Pair(
+                                    HTTP_CODE_PRECONDITION_FAILED,
+                                    listOf<ChatMessageJson>()
+                                )
+                            }
                         }
                     }
+                    .blockingSingle()
+                return result
+            } catch (e: Exception) {
+                Log.e(TAG, "Something went wrong when pulling chat messages (attempt: $attempts)", e)
+                attempts++
+
+                val newMessageLimit = when (attempts) {
+                    2 -> 50
+                    3 -> 10
+                    else -> 5
                 }
-                .blockingSingle()
-            return result
-        } catch (e: Exception) {
-            Log.e(TAG, "Something went wrong when pulling chat messages", e)
+                fieldMap["limit"] = newMessageLimit
+            }
         }
+        Log.e(TAG, "All attempts to get messages from server failed")
         return null
     }
 
@@ -370,7 +446,12 @@ class OfflineFirstChatRepository @Inject constructor(
             return null
         }
 
-        val result = getMessagesFromServer(bundle) ?: return listOf()
+        val result = getMessagesFromServer(bundle)
+        if (result == null) {
+            Log.d(TAG, "No result from server")
+            return null
+        }
+
         var chatMessagesFromSync: List<ChatMessageEntity>? = null
 
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
@@ -471,7 +552,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 ChatMessage.SystemMessageType.CLEARED_CHAT -> {
                     // for lookIntoFuture just deleting everything would be fine.
                     // But lets say we did not open the chat for a while and in between it was cleared.
-                    // We just load the last 100 messages but this don't contain the system message.
+                    // We just load the last messages but this don't contain the system message.
                     // We scroll up and load the system message. Deleting everything is not an option as we
                     // would loose the messages that we want to keep. We only want to
                     // delete the messages and chatBlocks older than the system message.
@@ -488,13 +569,12 @@ class OfflineFirstChatRepository @Inject constructor(
      *  304 is returned when oldest message of chat was queried or when long polling request returned with no
      *  modification. hasHistory is only set to false, when 304 was returned for the the oldest message
      */
-    private fun getHasHistory(statusCode: Int, lookIntoFuture: Boolean): Boolean {
-        return if (statusCode == HTTP_CODE_NOT_MODIFIED) {
+    private fun getHasHistory(statusCode: Int, lookIntoFuture: Boolean): Boolean =
+        if (statusCode == HTTP_CODE_NOT_MODIFIED) {
             lookIntoFuture
         } else {
             true
         }
-    }
 
     private suspend fun getBlockOfMessage(queriedMessageId: Int?): ChatBlockEntity? {
         var blockContainingQueriedMessage: ChatBlockEntity? = null
@@ -563,7 +643,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    private suspend fun showLast100MessagesBeforeAndEqual(internalConversationId: String, messageId: Long) {
+    private suspend fun showMessagesBeforeAndEqual(internalConversationId: String, messageId: Long, limit: Int) {
         suspend fun getMessagesBeforeAndEqual(
             messageId: Long,
             internalConversationId: String,
@@ -580,7 +660,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val list = getMessagesBeforeAndEqual(
             messageId,
             internalConversationId,
-            100
+            limit
         )
 
         if (list.isNotEmpty()) {
@@ -589,7 +669,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    private suspend fun showLast100MessagesBefore(internalConversationId: String, messageId: Long) {
+    private suspend fun showMessagesBefore(internalConversationId: String, messageId: Long, limit: Int) {
         suspend fun getMessagesBefore(
             messageId: Long,
             internalConversationId: String,
@@ -606,7 +686,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val list = getMessagesBefore(
             messageId,
             internalConversationId,
-            100
+            limit
         )
 
         if (list.isNotEmpty()) {
@@ -638,5 +718,6 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val HALF_SECOND = 500L
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
+        private const val DEFAULT_MESSAGES_LIMIT = 100
     }
 }
