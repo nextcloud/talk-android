@@ -15,7 +15,7 @@ import java.util.Set;
 
 /**
  * Helper class to register and notify ParticipantListMessageListeners.
- *
+ * <p>
  * This class is only meant for internal use by SignalingMessageReceiver; listeners must register themselves against
  * a SignalingMessageReceiver rather than against a ParticipantListMessageNotifier.
  */
