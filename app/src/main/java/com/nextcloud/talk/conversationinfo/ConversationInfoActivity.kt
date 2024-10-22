@@ -355,7 +355,6 @@ class ConversationInfoActivity :
             reconfigureLobbyTimerView()
 
             binding.webinarInfoView.startTimeButton.setOnClickListener {
-                // First, show the calendar dialog
                 MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
                     val currentTimeCalendar = Calendar.getInstance()
                     if (conversation!!.lobbyTimer != 0L) {
@@ -363,7 +362,6 @@ class ConversationInfoActivity :
                     }
 
                     datePicker { _, date ->
-                        // After selecting the date, now show the time picker
                         showTimePicker(date)
                     }
                 }
