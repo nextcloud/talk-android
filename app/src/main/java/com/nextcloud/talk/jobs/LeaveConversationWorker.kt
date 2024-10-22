@@ -14,7 +14,6 @@ import androidx.work.WorkerParameters
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -39,10 +38,10 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
 
 
     override fun doWork(): Result {
-        sharedApplication!!.componentApplication.inject(this)
         val data = inputData
         val conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN)
         val currentUser = userManager.currentUser.blockingGet()
+        lateinit var workResult:Result
 
         if (currentUser != null) {
             val credentials = getCredentials(currentUser.username, currentUser.token)
@@ -58,10 +57,9 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
             )
                 .subscribeOn(Schedulers.io())
                 .subscribe(object : Observer<GenericOverall?> {
-                    var disposable: Disposable? = null
 
                     override fun onSubscribe(d: Disposable) {
-                        disposable = d
+
                     }
 
                     override fun onNext(p0: GenericOverall) {
@@ -70,15 +68,19 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "failed to remove self from room", e)
+                        if(e.message?.contains("HTTP 400") == true){
+                            workResult = Result.failure()
+                        }
                     }
 
                     override fun onComplete() {
-                        disposable!!.dispose()
+                        workResult = Result.success()
+
                     }
                 })
         }
 
-        return Result.success()
+        return workResult
     }
 
     companion object {
