@@ -174,7 +174,7 @@
     <string name="nc_description_send_message_button">أرسل رسالة</string>
     <string name="nc_diagnose_account_category_title">الحساب الحالي</string>
     <string name="nc_diagnose_account_server">خادوم</string>
-    <string name="nc_diagnose_account_server_notification_app">هل تطبيق إشعارات الخادوم مُثبّت؟</string>
+    <string name="nc_diagnose_account_server_notification_app">هل تم تثبيت تطبيق إشعارات الخادم؟</string>
     <string name="nc_diagnose_account_user_name">مستخدم</string>
     <string name="nc_diagnose_account_user_status_enabled">هل حالة المُستخدِم مُمكّنة؟</string>
     <string name="nc_diagnose_android_version_title">إصدار أندرويد</string>
@@ -198,8 +198,8 @@
     <string name="nc_diagnose_gplay_available_yes">خدمات متجر التطبيقات من قوقل Google play متاحة</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">آخر تسجيل لعملية إدخال push في وكيل الإدخال push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">لم يتم التسجيل بعدُ في وكيل الإدخال push proxy</string>
-    <string name="nc_diagnose_latest_push_registration_at_server">آخر تسجيل لعملية إدخال push في الخادوم</string>
-    <string name="nc_diagnose_latest_push_registration_at_server_fail">لم يتم التسجيل بعدُ في الخادوم</string>
+    <string name="nc_diagnose_latest_push_registration_at_server">آخر تسجيل لعملية إدخال push في الخادم</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">لم يتم التسجيل بعدُ في الخادم</string>
     <string name="nc_diagnose_meta_category_title">معلومات وصفية</string>
     <string name="nc_diagnose_meta_system_report_date">توليد تقرير نظامي</string>
     <string name="nc_diagnose_notification_calls_channel_permission">هل قناة الإشعار بالمكالمات مُمكّنة؟</string>
@@ -207,13 +207,13 @@
     <string name="nc_diagnose_notification_permission">إذونات الإشعارات</string>
     <string name="nc_diagnose_phone_category_title">الهاتف</string>
     <string name="nc_diagnose_server_talk_version">رقم إصدار خادوم \"المحادثة\" Talk</string>
-    <string name="nc_diagnose_server_version">رقم إصدار الخادوم</string>
+    <string name="nc_diagnose_server_version">رقم إصدار الخادم</string>
     <string name="nc_diagnose_signaling_mode_extern">خارجي</string>
     <string name="nc_diagnose_signaling_mode_intern">داخلي</string>
     <string name="nc_diagnose_signaling_mode_title">وضعية إرسال الإشارات</string>
     <string name="nc_dialog_invalid_password">كلمة المرور غير صحيحة</string>
     <string name="nc_dialog_maintenance_mode">وضع الصيانة</string>
-    <string name="nc_dialog_maintenance_mode_description">الخادوم حالياً في وضع الصيانة</string>
+    <string name="nc_dialog_maintenance_mode_description">الخادم حالياً في وضع الصيانة</string>
     <string name="nc_dialog_outdated_client">التطبيق غير مُحدَّث</string>
     <string name="nc_dialog_outdated_client_description">التطبيق قديم جدًا ولم يعد مدعوماً من قبل هذا الخادوم. يُرجى التحديث.</string>
     <string name="nc_dialog_outdated_client_option_update">تحديث</string>
@@ -397,7 +397,7 @@
     <string name="nc_sent_poll_you">لقد قمت بإرسال تصويتٍ.</string>
     <string name="nc_sent_voice" formatted="true">%1$s أرسَلَ رسالةً صوتيةً.</string>
     <string name="nc_sent_voice_you">لقد قُمت بإرسال رسالةٍ صوتيةٍ.</string>
-    <string name="nc_server_connect">إفحَص الاتصال بالخادوم</string>
+    <string name="nc_server_connect">إفحَص الاتصال بالخادم</string>
     <string name="nc_server_db_upgrade_needed">الرجاء ترقية %1$s قاعدة البيانات الخاصة بك </string>
     <string name="nc_server_failed_to_import_account">فشل في استيراد حساب محدد</string>
     <string name="nc_server_helper_text">الرابط إلى %1$s واجهتك على الوب عند فتحها في المتصفح</string>
@@ -408,8 +408,8 @@
     <string name="nc_server_maintenance">الرجاء إخراج %1$sمن الصيانة</string>
     <string name="nc_server_not_installed">الرجاء إنهاء %1$s التثبيت الخاص بك</string>
     <string name="nc_server_testing_connection">إختبار الاتصال</string>
-    <string name="nc_server_unsupported">الخادوم ليس فيه تطبيق Talk مدعوم </string>
-    <string name="nc_server_url">عنوان الخادوم https://…</string>
+    <string name="nc_server_unsupported">الخادم ليس فيه تطبيق Talk مدعوم </string>
+    <string name="nc_server_url">عنوان الخادم https://…</string>
     <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
     <string name="nc_set_new_password">عَيِّن كلمة مرور جديدة</string>
     <string name="nc_set_password">تعيين كلمة المرور</string>
@@ -457,7 +457,7 @@
     <string name="nc_settings_screen_security_title">أمان الشاشة</string>
     <string name="nc_settings_server_almost_eol">نسخة الخادوم قديمةٌ جداً ولن يتم توفير الدعم لها في الإصدارت القادمة!</string>
     <string name="nc_settings_server_eol">نسخة الخادوم قديمةٌ جداً وغير مدعومة من هذه النسخة من تطبيق الأندرويد</string>
-    <string name="nc_settings_server_eol_title">خادوم غير مدعوم</string>
+    <string name="nc_settings_server_eol_title">خادم غير مدعوم</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
@@ -557,7 +557,7 @@
     <string name="save">حفظ</string>
     <string name="scope_federated_description">قم فقط بالمزامنة مع الخوادم الموثوقة</string>
     <string name="scope_federated_title">المتحدة</string>
-    <string name="scope_local_description">يراه فقط المستخدِمون على هذا الخادوم و الضيوف</string>
+    <string name="scope_local_description">يراه فقط المستخدِمون على هذا الخادم و الضيوف</string>
     <string name="scope_local_title">محلي</string>
     <string name="scope_private_description">يراه فقط المستخدِمون الذين أمكن مطابقة أرقام هواتفهم عبر تطبيق المحادثة Talk على الهاتف النقّال</string>
     <string name="scope_private_title">خاص</string>
