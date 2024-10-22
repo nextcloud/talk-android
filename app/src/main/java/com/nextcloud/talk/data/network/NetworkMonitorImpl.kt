@@ -20,6 +20,7 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.conflate
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -73,6 +74,7 @@ class NetworkMonitorImpl @Inject constructor(
             }
         }
     }
+        .distinctUntilChanged()
         .flowOn(Dispatchers.IO)
         .conflate()
 
