@@ -2059,7 +2059,7 @@ class ChatActivity :
     private fun onMessageSearchResult(intent: Intent?) {
         val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
         messageId?.let { id ->
-            scrollToMessageWithId(id)
+            scrollToAndCenterMessageWithId(id)
         }
     }
 
@@ -2810,7 +2810,9 @@ class ChatActivity :
             }
 
             val searchItem = menu.findItem(R.id.conversation_search)
-            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities)
+
+            searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
+                currentConversation!!.remoteServer.isNullOrEmpty()
 
             if (currentConversation!!.remoteServer != null ||
                 !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
