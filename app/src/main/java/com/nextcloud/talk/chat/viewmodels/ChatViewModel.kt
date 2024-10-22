@@ -225,7 +225,7 @@ class ChatViewModel @Inject constructor(
 
     fun getRoom(user: User, token: String) {
         _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getConversationSettings(token)
+        conversationRepository.getRoom(token)
 
         // chatNetworkDataSource.getRoom(user, token)
         //     .subscribeOn(Schedulers.io())
