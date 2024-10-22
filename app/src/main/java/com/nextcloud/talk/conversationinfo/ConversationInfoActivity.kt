@@ -380,6 +380,7 @@ class ConversationInfoActivity :
     }
 
     private fun showTimePicker(selectedDate: Calendar) {
+        val currentTime = Calendar.getInstance()
         MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
             cancelable(false)
             timePicker(
@@ -388,6 +389,10 @@ class ConversationInfoActivity :
                 timeCallback = { _, time ->
                     selectedDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY))
                     selectedDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE))
+                    if (selectedDate.timeInMillis < currentTime.timeInMillis) {
+                        selectedDate.set(Calendar.HOUR_OF_DAY,currentTime.get(Calendar.HOUR_OF_DAY))
+                        selectedDate.set(Calendar.MINUTE, currentTime.get(Calendar.MINUTE))
+                    }
                     reconfigureLobbyTimerView(selectedDate)
                     submitLobbyChanges()
                 }
