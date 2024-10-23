@@ -393,11 +393,9 @@ class CallActivity : CallBaseActivity() {
             baseUrl = conversationUser!!.baseUrl
         }
         powerManagerUtils = PowerManagerUtils()
-        if ("resume".equals(extras.getString("state", ""), ignoreCase = true)) {
-            setCallState(CallStatus.IN_CONVERSATION)
-        } else {
-            setCallState(CallStatus.CONNECTING)
-        }
+
+        setCallState(CallStatus.CONNECTING)
+
         raiseHandViewModel = ViewModelProvider(this, viewModelFactory).get(RaiseHandViewModel::class.java)
         raiseHandViewModel!!.setData(roomToken!!, isBreakoutRoom)
         raiseHandViewModel!!.viewState.observe(this) { viewState: RaiseHandViewModel.ViewState? ->
