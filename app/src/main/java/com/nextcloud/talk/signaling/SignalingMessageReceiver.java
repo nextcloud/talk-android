@@ -373,7 +373,7 @@ public abstract class SignalingMessageReceiver {
 
         long inCall;
         try {
-            inCall = Long.parseLong(updateMap.get("inCall").toString());
+            inCall = Long.parseLong(updateMap.get("incall").toString());
         } catch (RuntimeException e) {
             // Broken message, this should not happen.
             return;
