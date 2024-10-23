@@ -24,6 +24,7 @@ import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -85,6 +86,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.Calendar
@@ -746,16 +748,18 @@ class ConversationInfoActivity :
         }
 
         binding.archiveConversationBtn.setOnClickListener {
-            if (conversation!!.hasArchived) {
-                viewModel.unarchiveConversation(conversationUser, conversationToken)
-                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
-                binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
-                binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
-            } else {
-                viewModel.archiveConversation(conversationUser, conversationToken)
-                binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
-                binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
-                binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
+            this.lifecycleScope.launch {
+                if (conversation!!.hasArchived) {
+                    viewModel.unarchiveConversation(conversationUser, conversationToken)
+                    binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+                    binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+                    binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
+                } else {
+                    viewModel.archiveConversation(conversationUser, conversationToken)
+                    binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+                    binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+                    binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
+                }
             }
         }
 

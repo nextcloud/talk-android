@@ -202,54 +202,16 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
-    fun archiveConversation(user: User, token: String) {
+    suspend fun archiveConversation(user: User, token: String) {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
         conversationsRepository.archiveConversation(user.getCredentials(), url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error in archive $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(n: GenericOverall) {
-                    Log.d(TAG, "Archived successful")
-                }
-            })
     }
 
-    fun unarchiveConversation(user: User, token: String) {
+    suspend fun unarchiveConversation(user: User, token: String) {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.d(TAG, "Error in unarchive $e")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(n: GenericOverall) {
-                    Log.d(TAG, "unArchived successful")
-                }
-            })
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {

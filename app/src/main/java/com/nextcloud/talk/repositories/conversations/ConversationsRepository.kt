@@ -31,7 +31,7 @@ interface ConversationsRepository {
     )
     fun resendInvitations(token: String): Observable<ResendInvitationsResult>
 
-    fun archiveConversation(credentials: String, url: String): Observable<GenericOverall>
+    suspend fun archiveConversation(credentials: String, url: String): GenericOverall
 
-    fun unarchiveConversation(credentials: String, url: String): Observable<GenericOverall>
+    suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall
 }
