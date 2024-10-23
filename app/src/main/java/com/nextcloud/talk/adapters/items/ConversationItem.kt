@@ -410,6 +410,15 @@ class ConversationItem(
                             chatMessage?.getNullsafeActorDisplayName()
                         )
                     }
+                } else if (MessageType.DECK_CARD == chatMessage?.getCalculateMessageType()) {
+                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
+                        sharedApplication!!.getString(R.string.nc_sent_deck_card_you)
+                    } else {
+                        String.format(
+                            sharedApplication!!.resources.getString(R.string.nc_sent_deck_card),
+                            chatMessage?.getNullsafeActorDisplayName()
+                        )
+                    }
                 }
             }
             return ""
