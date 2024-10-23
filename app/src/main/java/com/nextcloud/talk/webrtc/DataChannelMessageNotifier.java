@@ -12,7 +12,7 @@ import java.util.Set;
 
 /**
  * Helper class to register and notify DataChannelMessageListeners.
- *
+ * <p>
  * This class is only meant for internal use by PeerConnectionWrapper; listeners must register themselves against
  * a PeerConnectionWrapper rather than against a DataChannelMessageNotifier.
  */

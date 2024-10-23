@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * Helper class to keep track of the participants in a call based on the signaling messages.
- *
+ * <p>
  * The CallParticipantList adds a listener for participant list messages as soon as it is created and starts tracking
  * the call participants until destroyed. Notifications about the changes can be received by adding an observer to the
  * CallParticipantList; note that no sorting is guaranteed on the participants.
