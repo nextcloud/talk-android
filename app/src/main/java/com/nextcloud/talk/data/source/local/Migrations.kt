@@ -9,6 +9,7 @@ package com.nextcloud.talk.data.source.local
 import android.util.Log
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.sql.SQLException
 
 @Suppress("MagicNumber")
 object Migrations {
@@ -251,7 +252,7 @@ object Migrations {
                 "ALTER TABLE Conversations " +
                     "ADD `hasArchived` INTEGER;"
             )
-        } catch (e: Exception) {
+        } catch (e: SQLException) {
             Log.i("Migrations", "hasArchived already exists")
         }
     }

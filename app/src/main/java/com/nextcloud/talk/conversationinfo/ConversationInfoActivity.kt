@@ -22,6 +22,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -752,12 +753,13 @@ class ConversationInfoActivity :
                 if (conversation!!.hasArchived) {
                     viewModel.unarchiveConversation(conversationUser, conversationToken)
                     binding.archiveConversationIcon
-                        .setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.outline_archive_24, null))
                     binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
                 } else {
                     viewModel.archiveConversation(conversationUser, conversationToken)
-                    binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+                    binding.archiveConversationIcon
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
                     binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
                 }
@@ -765,11 +767,13 @@ class ConversationInfoActivity :
         }
 
         if (conversation!!.hasArchived) {
-            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.ic_eye))
+            binding.archiveConversationIcon
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
             binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
         } else {
-            binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+            binding.archiveConversationIcon
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.outline_archive_24, null))
             binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
