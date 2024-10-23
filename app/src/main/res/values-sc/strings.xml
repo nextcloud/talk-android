@@ -96,6 +96,7 @@
     <string name="nc_conversations_empty">Intra in una resonada o cumintza•nde una noa</string>
     <string name="nc_conversations_empty_details">Saluda a sa gente!</string>
     <string name="nc_copy_message">Còpia</string>
+    <string name="nc_create_new_conversation">Crea una resonada noa</string>
     <string name="nc_date_header_today">Oe</string>
     <string name="nc_date_header_yesterday">Eris</string>
     <string name="nc_delete">Cantzella</string>
@@ -257,6 +258,7 @@
     <string name="nc_server_unsupported">Su serbidore no at suportadu s\'aplicatzione Talk installada</string>
     <string name="nc_server_url">Indiritzu de su serbidore https://…</string>
     <string name="nc_server_version">%1$s funtzionat isceti cun %2$s 13 e prus</string>
+    <string name="nc_set_new_password">Cunfigura una crae noa</string>
     <string name="nc_settings">Cunfiguratzione</string>
     <string name="nc_settings_account_updated">Su contu chi tenias giai est istadu agiornadu, imbetzes de nd\'agiùnghere unu nou</string>
     <string name="nc_settings_advanced_title">Avantzadu</string>
@@ -321,6 +323,7 @@
     <string name="nc_upload_confirm_send_single">Imbiare custu archìviu a %1$s?</string>
     <string name="nc_upload_failed">Carrigamentu faddidu</string>
     <string name="nc_upload_from_cloud">Cumpartzidu dae %1$s</string>
+    <string name="nc_upload_from_device">Càrriga dae su dispositivu</string>
     <string name="nc_upload_in_progess">Carrigamentu</string>
     <string name="nc_user">Utente</string>
     <string name="nc_visible">Visìbile</string>
@@ -330,6 +333,7 @@
     <string name="nc_voice_message_slide_to_cancel">« Iscurre pro annullare</string>
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_yes">Eja</string>
+    <string name="new_conversation_creation_icon">Icona de creatzione de resonada noa</string>
     <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
     <string name="oneHour">1 ora</string>
