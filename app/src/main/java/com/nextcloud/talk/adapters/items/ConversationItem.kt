@@ -412,16 +412,11 @@ class ConversationItem(
                     }
                 } else if (MessageType.DECK_CARD == chatMessage?.getCalculateMessageType()) {
                     return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        String.format(
-                            sharedApplication!!.getString(R.string.nc_sent_deck_card_you),
-                            chatMessage?.messageParameters?.get("object")?.get("name")
-                        )
+                            sharedApplication!!.getString(R.string.nc_sent_deck_card_you)
                     } else {
                         String.format(
                             sharedApplication!!.resources.getString(R.string.nc_sent_deck_card),
                             chatMessage?.getNullsafeActorDisplayName(),
-                            chatMessage?.messageParameters?.get("object")?.get("name")
-
                         )
                     }
                 }
