@@ -322,7 +322,7 @@ public class SignalingMessageReceiverParticipantListTest {
         Map<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 
@@ -343,7 +343,7 @@ public class SignalingMessageReceiverParticipantListTest {
         HashMap<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 
@@ -370,7 +370,7 @@ public class SignalingMessageReceiverParticipantListTest {
         HashMap<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 
@@ -393,7 +393,7 @@ public class SignalingMessageReceiverParticipantListTest {
         HashMap<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 
@@ -420,7 +420,7 @@ public class SignalingMessageReceiverParticipantListTest {
         HashMap<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 
@@ -449,7 +449,7 @@ public class SignalingMessageReceiverParticipantListTest {
         HashMap<String, Object> updateMap = new HashMap<>();
         updateMap.put("roomId", 108);
         updateMap.put("all", true);
-        updateMap.put("inCall", 0);
+        updateMap.put("incall", 0);
         eventMap.put("update", updateMap);
         signalingMessageReceiver.processEvent(eventMap);
 

@@ -370,10 +370,13 @@ public abstract class SignalingMessageReceiver {
         //         },
         //     },
         // }
+        //
+        // Note that "incall" in participants->update is all in lower case when the message applies to all participants,
+        // even if it is "inCall" when the message provides separate properties for each participant.
 
         long inCall;
         try {
-            inCall = Long.parseLong(updateMap.get("inCall").toString());
+            inCall = Long.parseLong(updateMap.get("incall").toString());
         } catch (RuntimeException e) {
             // Broken message, this should not happen.
             return;
