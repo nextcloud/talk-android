@@ -31,7 +31,8 @@ import autodagger.AutoInjector
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.datetime.dateTimePicker
+import com.afollestad.materialdialogs.datetime.datePicker
+import com.afollestad.materialdialogs.datetime.timePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -360,16 +361,9 @@ class ConversationInfoActivity :
                         currentTimeCalendar.timeInMillis = conversation!!.lobbyTimer * DateConstants.SECOND_DIVIDER
                     }
 
-                    dateTimePicker(
-                        minDateTime = Calendar.getInstance(),
-                        requireFutureDateTime = true,
-                        currentDateTime = currentTimeCalendar,
-                        show24HoursView = true,
-                        dateTimeCallback = { _, dateTime ->
-                            reconfigureLobbyTimerView(dateTime)
-                            submitLobbyChanges()
-                        }
-                    )
+                    datePicker { _, date ->
+                        showTimePicker(date)
+                    }
                 }
             }
 
@@ -380,6 +374,27 @@ class ConversationInfoActivity :
             }
         } else {
             binding.webinarInfoView.webinarSettings.visibility = GONE
+        }
+    }
+
+    private fun showTimePicker(selectedDate: Calendar) {
+        val currentTime = Calendar.getInstance()
+        MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
+            cancelable(false)
+            timePicker(
+                currentTime = Calendar.getInstance(),
+                show24HoursView = true,
+                timeCallback = { _, time ->
+                    selectedDate.set(Calendar.HOUR_OF_DAY, time.get(Calendar.HOUR_OF_DAY))
+                    selectedDate.set(Calendar.MINUTE, time.get(Calendar.MINUTE))
+                    if (selectedDate.timeInMillis < currentTime.timeInMillis) {
+                        selectedDate.set(Calendar.HOUR_OF_DAY, currentTime.get(Calendar.HOUR_OF_DAY))
+                        selectedDate.set(Calendar.MINUTE, currentTime.get(Calendar.MINUTE))
+                    }
+                    reconfigureLobbyTimerView(selectedDate)
+                    submitLobbyChanges()
+                }
+            )
         }
     }
 
