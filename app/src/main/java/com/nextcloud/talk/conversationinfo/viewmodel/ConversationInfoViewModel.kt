@@ -214,7 +214,7 @@ class ConversationInfoViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.d("Julius", "Error in archive $e")
+                    Log.d(TAG, "Error in archive $e")
                 }
 
                 override fun onComplete() {
@@ -222,7 +222,7 @@ class ConversationInfoViewModel @Inject constructor(
                 }
 
                 override fun onNext(n: GenericOverall) {
-                    Log.d("Julius", "Archived successful")
+                    Log.d(TAG, "Archived successful")
                 }
             })
     }
@@ -239,7 +239,7 @@ class ConversationInfoViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.d("Julius", "Error in unarchive $e")
+                    Log.d(TAG, "Error in unarchive $e")
                 }
 
                 override fun onComplete() {
@@ -247,7 +247,7 @@ class ConversationInfoViewModel @Inject constructor(
                 }
 
                 override fun onNext(n: GenericOverall) {
-                    Log.d("Julius", "unArchived successful")
+                    Log.d(TAG, "unArchived successful")
                 }
             })
     }

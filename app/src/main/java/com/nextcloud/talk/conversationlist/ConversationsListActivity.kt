@@ -382,7 +382,7 @@ class ConversationsListActivity :
                     sortConversations(conversationItemsWithHeader)
 
                     // Filter Conversations
-                    if (!containsTrue()) filterableConversationItems = conversationItems
+                    if (!hasFilterEnabled()) filterableConversationItems = conversationItems
                     filterConversation()
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
@@ -397,7 +397,7 @@ class ConversationsListActivity :
         }
     }
 
-    private fun containsTrue(): Boolean {
+    private fun hasFilterEnabled(): Boolean {
         for ((k, v) in filterState) {
             if (k != FilterConversationFragment.DEFAULT && v) return true
         }
@@ -473,7 +473,7 @@ class ConversationsListActivity :
             }
         }
 
-        Log.d("Julius", "Conversation: ${conversation.name} Result: $result")
+        Log.d(TAG, "Conversation: ${conversation.name} Result: $result")
         return result
     }
 
@@ -670,7 +670,7 @@ class ConversationsListActivity :
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
                     adapter!!.setHeadersShown(true)
-                    if (!containsTrue()) filterableConversationItems = searchableConversationItems
+                    if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
                     binding.swipeRefreshLayoutView?.isEnabled = false
@@ -680,7 +680,7 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter!!.setHeadersShown(false)
-                    if (!containsTrue()) filterableConversationItems = conversationItemsWithHeader
+                    if (!hasFilterEnabled()) filterableConversationItems = conversationItemsWithHeader
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.hideAllHeaders()
                     if (searchHelper != null) {
@@ -1847,7 +1847,7 @@ class ConversationsListActivity :
     }
 
     fun updateFilterConversationButtonColor() {
-        if (containsTrue()) {
+        if (hasFilterEnabled()) {
             binding.filterConversationsButton.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
         } else {
             binding.filterConversationsButton.let {

@@ -414,6 +414,13 @@
 
             </LinearLayout>
 
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/archive_conversation_text_hint"
+                android:layout_marginHorizontal="@dimen/standard_margin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/archive_hint" />
+
             <LinearLayout
                 android:id="@+id/danger_zone_options"
                 android:layout_width="match_parent"

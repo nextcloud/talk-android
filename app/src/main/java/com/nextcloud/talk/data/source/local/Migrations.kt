@@ -40,6 +40,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_11_12 = object : Migration(11, 12) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 11 to 12")
+            addArchiveConversations(db)
+        }
+    }
+
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +
@@ -236,5 +243,17 @@ object Migrations {
             "CREATE INDEX IF NOT EXISTS `index_ChatBlocks_internalConversationId` " +
                 "ON `ChatBlocks` (`internalConversationId`)"
         )
+    }
+
+    fun addArchiveConversations(db: SupportSQLiteDatabase) {
+
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD `hasArchived` INTEGER;"
+            )
+        } catch (e: Exception) {
+            Log.i("Migrations", "hasArchived already exists")
+        }
     }
 }
