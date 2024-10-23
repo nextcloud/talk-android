@@ -71,8 +71,9 @@ class RepositoryModule {
 
     @Provides
     fun provideConversationsRepository(
-        ncApi: NcApi, ncApiCoroutines: NcApiCoroutines, userProvider:
-        CurrentUserProviderNew
+        ncApi: NcApi,
+        ncApiCoroutines: NcApiCoroutines,
+        userProvider: CurrentUserProviderNew
     ): ConversationsRepository {
         return ConversationsRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
     }

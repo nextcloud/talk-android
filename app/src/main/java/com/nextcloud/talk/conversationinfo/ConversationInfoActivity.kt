@@ -751,7 +751,8 @@ class ConversationInfoActivity :
             this.lifecycleScope.launch {
                 if (conversation!!.hasArchived) {
                     viewModel.unarchiveConversation(conversationUser, conversationToken)
-                    binding.archiveConversationIcon.setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
+                    binding.archiveConversationIcon
+                        .setImageDrawable(resources.getDrawable(R.drawable.outline_archive_24))
                     binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
                 } else {

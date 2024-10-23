@@ -246,7 +246,6 @@ object Migrations {
     }
 
     fun addArchiveConversations(db: SupportSQLiteDatabase) {
-
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +
