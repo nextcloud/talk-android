@@ -2587,11 +2587,10 @@ class ChatActivity :
             chatMessage.activeUser = conversationUser
 
             adapter?.let {
-                chatMessage.isGrouped = (
-                    it.isPreviousSameAuthor(chatMessage.actorId, -1) &&
-                        it.getSameAuthorLastMessagesCount(chatMessage.actorId) %
-                        GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD > 0
-                    )
+                val previousChatMessage = adapter!!.items[1].item
+                if (previousChatMessage is ChatMessage) {
+                    chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
+                }
                 chatMessage.isOneToOneConversation =
                     (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                 chatMessage.isFormerOneToOneConversation =
@@ -2637,19 +2636,9 @@ class ChatActivity :
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
-        var countGroupedMessages = 0
-
         for (i in chatMessageList.indices) {
             if (chatMessageList.size > i + 1) {
-                if (isSameDayNonSystemMessages(chatMessageList[i], chatMessageList[i + 1]) &&
-                    chatMessageList[i + 1].actorId == chatMessageList[i].actorId &&
-                    countGroupedMessages < GROUPED_MESSAGES_THRESHOLD
-                ) {
-                    chatMessageList[i].isGrouped = true
-                    countGroupedMessages++
-                } else {
-                    countGroupedMessages = 0
-                }
+                chatMessageList[i].isGrouped = groupMessages(chatMessageList[i], chatMessageList[i + 1])
             }
 
             val chatMessage = chatMessageList[i]
@@ -2673,6 +2662,40 @@ class ChatActivity :
         adapter?.let {
             scrollToAndCenterMessageWithId("-1")
         }
+    }
+
+    private fun groupMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
+        val message1IsSystem = message1.systemMessage.isNotEmpty()
+        val message2IsSystem = message2.systemMessage.isNotEmpty()
+        if (message1IsSystem != message2IsSystem) {
+            return false
+        }
+
+        if (message1.actorType == "bots" && message1.actorId != "changelog") {
+            return false
+        }
+
+        if (!message1IsSystem && (
+                (message1.actorType != message2.actorType) ||
+                    (message2.actorId != message1.actorId)
+                )
+        ) {
+            return false
+        }
+
+        val timeDifference = dateUtils.getTimeDifferenceInSeconds(
+            message2.timestamp,
+            message1.timestamp
+        )
+        val isLessThan5Min = timeDifference > FIVE_MINUTES_IN_SECONDS
+        if (isSameDayMessages(message2, message1) &&
+            (message2.actorId == message1.actorId) &&
+            (!isLessThan5Min) &&
+            (message2.lastEditTimestamp == 0L || message1.lastEditTimestamp == 0L)
+        ) {
+            return true
+        }
+        return false
     }
 
     private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
@@ -2760,6 +2783,10 @@ class ChatActivity :
         TextUtils.isEmpty(messageLeft.systemMessage) &&
             TextUtils.isEmpty(messageRight.systemMessage) &&
             DateFormatter.isSameDay(messageLeft.createdAt, messageRight.createdAt)
+
+    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
+        return DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
+    }
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val id = (
@@ -3656,8 +3683,6 @@ class ChatActivity :
         private const val SEMI_TRANSPARENT_INT: Int = 99
         private const val VOICE_MESSAGE_SEEKBAR_BASE = 1000
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
-        private const val GROUPED_MESSAGES_THRESHOLD = 4
-        private const val GROUPED_MESSAGES_SAME_AUTHOR_THRESHOLD = 5
         private const val TOOLBAR_AVATAR_RATIO = 1.5
         private const val STATUS_SIZE_IN_DP = 9f
         private const val HTTP_CODE_NOT_MODIFIED = 304
@@ -3699,5 +3724,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
+        private const val FIVE_MINUTES_IN_SECONDS: Long = 300
     }
 }
