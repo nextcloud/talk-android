@@ -90,6 +90,7 @@ import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MessagePayload
+import com.nextcloud.talk.adapters.messages.OutcomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
