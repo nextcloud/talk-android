@@ -3834,6 +3834,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
-        private const val FIVE_MINUTES_IN_SECONDS:Long = 300
+        private const val FIVE_MINUTES_IN_SECONDS: Long = 300
     }
 }
