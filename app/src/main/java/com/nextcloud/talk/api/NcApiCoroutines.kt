@@ -110,4 +110,10 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun deleteConversationAvatar(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+
+    @POST
+    suspend fun archiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @DELETE
+    suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 }

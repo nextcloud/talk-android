@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 11,
-    "identityHash": "bc802cadfdef41d3eb94ffbb0729eb89",
+      "identityHash": "7edb537b6987d0de6586a6760c970958",
     "entities": [
       {
         "tableName": "User",
@@ -138,7 +138,7 @@
       },
       {
         "tableName": "Conversations",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER NOT NULL, `token` TEXT NOT NULL, `displayName` TEXT NOT NULL, `actorId` TEXT NOT NULL, `actorType` TEXT NOT NULL, `avatarVersion` TEXT NOT NULL, `callFlag` INTEGER NOT NULL, `callRecording` INTEGER NOT NULL, `callStartTime` INTEGER NOT NULL, `canDeleteConversation` INTEGER NOT NULL, `canLeaveConversation` INTEGER NOT NULL, `canStartCall` INTEGER NOT NULL, `description` TEXT NOT NULL, `hasCall` INTEGER NOT NULL, `hasPassword` INTEGER NOT NULL, `isCustomAvatar` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `lastActivity` INTEGER NOT NULL, `lastCommonReadMessage` INTEGER NOT NULL, `lastMessage` TEXT, `lastPing` INTEGER NOT NULL, `lastReadMessage` INTEGER NOT NULL, `lobbyState` TEXT NOT NULL, `lobbyTimer` INTEGER NOT NULL, `messageExpiration` INTEGER NOT NULL, `name` TEXT NOT NULL, `notificationCalls` INTEGER NOT NULL, `notificationLevel` TEXT NOT NULL, `objectType` TEXT NOT NULL, `participantType` TEXT NOT NULL, `permissions` INTEGER NOT NULL, `readOnly` TEXT NOT NULL, `recordingConsent` INTEGER NOT NULL, `remoteServer` TEXT, `remoteToken` TEXT, `sessionId` TEXT NOT NULL, `status` TEXT, `statusClearAt` INTEGER, `statusIcon` TEXT, `statusMessage` TEXT, `type` TEXT NOT NULL, `unreadMention` INTEGER NOT NULL, `unreadMentionDirect` INTEGER NOT NULL, `unreadMessages` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`accountId`) REFERENCES `User`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
+          "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER NOT NULL, `token` TEXT NOT NULL, `displayName` TEXT NOT NULL, `actorId` TEXT NOT NULL, `actorType` TEXT NOT NULL, `avatarVersion` TEXT NOT NULL, `callFlag` INTEGER NOT NULL, `callRecording` INTEGER NOT NULL, `callStartTime` INTEGER NOT NULL, `canDeleteConversation` INTEGER NOT NULL, `canLeaveConversation` INTEGER NOT NULL, `canStartCall` INTEGER NOT NULL, `description` TEXT NOT NULL, `hasCall` INTEGER NOT NULL, `hasPassword` INTEGER NOT NULL, `isCustomAvatar` INTEGER NOT NULL, `isFavorite` INTEGER NOT NULL, `lastActivity` INTEGER NOT NULL, `lastCommonReadMessage` INTEGER NOT NULL, `lastMessage` TEXT, `lastPing` INTEGER NOT NULL, `lastReadMessage` INTEGER NOT NULL, `lobbyState` TEXT NOT NULL, `lobbyTimer` INTEGER NOT NULL, `messageExpiration` INTEGER NOT NULL, `name` TEXT NOT NULL, `notificationCalls` INTEGER NOT NULL, `notificationLevel` TEXT NOT NULL, `objectType` TEXT NOT NULL, `participantType` TEXT NOT NULL, `permissions` INTEGER NOT NULL, `readOnly` TEXT NOT NULL, `recordingConsent` INTEGER NOT NULL, `remoteServer` TEXT, `remoteToken` TEXT, `sessionId` TEXT NOT NULL, `status` TEXT, `statusClearAt` INTEGER, `statusIcon` TEXT, `statusMessage` TEXT, `type` TEXT NOT NULL, `unreadMention` INTEGER NOT NULL, `unreadMentionDirect` INTEGER NOT NULL, `unreadMessages` INTEGER NOT NULL, `hasArchived` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`accountId`) REFERENCES `User`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "internalId",
@@ -409,6 +409,12 @@
             "columnName": "unreadMessages",
             "affinity": "INTEGER",
             "notNull": true
+          },
+            {
+                "fieldPath": "hasArchived",
+                "columnName": "hasArchived",
+                "affinity": "INTEGER",
+                "notNull": true
           }
         ],
         "primaryKey": {
@@ -713,7 +719,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bc802cadfdef41d3eb94ffbb0729eb89')"
+        "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '7edb537b6987d0de6586a6760c970958')"
     ]
   }
 }

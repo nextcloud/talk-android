@@ -9,8 +9,10 @@ package com.nextcloud.talk.repositories.conversations
 
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.password.PasswordOverall
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.AllowGuestsResult
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.PasswordResult
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
@@ -20,6 +22,7 @@ import io.reactivex.Observable
 
 class ConversationsRepositoryImpl(
     private val api: NcApi,
+    private val coroutineApi: NcApiCoroutines,
     private val userProvider: CurrentUserProviderNew
 ) :
     ConversationsRepository {
@@ -87,6 +90,14 @@ class ConversationsRepositoryImpl(
         return apiObservable.map {
             ResendInvitationsResult(true)
         }
+    }
+
+    override suspend fun archiveConversation(credentials: String, url: String): GenericOverall {
+        return coroutineApi.archiveConversation(credentials, url)
+    }
+
+    override suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall {
+        return coroutineApi.unarchiveConversation(credentials, url)
     }
 
     private fun apiVersion(): Int {

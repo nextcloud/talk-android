@@ -55,7 +55,8 @@ enum class SpreedFeatures(val value: String) {
     FEDERATION_V1("federation-v1"),
     DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited"),
     BAN_V1("ban-v1"),
-    EDIT_MESSAGES_NOTE_TO_SELF("edit-messages-note-to-self")
+    EDIT_MESSAGES_NOTE_TO_SELF("edit-messages-note-to-self"),
+    ARCHIVE_CONVERSATIONS("archived-conversations")
 }
 
 @Suppress("TooManyFunctions")
@@ -253,6 +254,10 @@ object CapabilitiesUtil {
             user.capabilities!!.spreedCapability!!.config?.containsKey("federation") == true &&
             user.capabilities!!.spreedCapability!!.config!!["federation"] != null &&
             user.capabilities!!.spreedCapability!!.config!!["federation"]!!.containsKey("enabled")
+    }
+
+    fun isArchiveConversationsAvailable(spreedCapabilities: SpreedCapability): Boolean {
+        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)
     }
 
     // endregion
