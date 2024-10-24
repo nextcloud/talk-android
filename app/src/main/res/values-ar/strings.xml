@@ -201,7 +201,7 @@
     <string name="nc_diagnose_latest_push_registration_at_server">آخر تسجيل لعملية إدخال push في الخادم</string>
     <string name="nc_diagnose_latest_push_registration_at_server_fail">لم يتم التسجيل بعدُ في الخادم</string>
     <string name="nc_diagnose_meta_category_title">معلومات وصفية</string>
-    <string name="nc_diagnose_meta_system_report_date">توليد تقرير نظامي</string>
+    <string name="nc_diagnose_meta_system_report_date">توليد تقرير النظام</string>
     <string name="nc_diagnose_notification_calls_channel_permission">هل قناة الإشعار بالمكالمات مُمكّنة؟</string>
     <string name="nc_diagnose_notification_messages_channel_permission">هل قناة الإشعار بالرسائل مُمكّنة؟</string>
     <string name="nc_diagnose_notification_permission">إذونات الإشعارات</string>
@@ -228,7 +228,7 @@
     <string name="nc_edit_icon">أيقونة التحرير</string>
     <string name="nc_edit_message">تحرير</string>
     <string name="nc_edit_message_text">نص تحرير الرسالة</string>
-    <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المُشرف</string>
+    <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المدير</string>
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
     <string name="nc_expire_message_four_weeks">4 أسابيع</string>
@@ -308,7 +308,7 @@
     <string name="nc_new_conversation_visibility">الرؤية</string>
     <string name="nc_new_mention">إشاراتٌ غير مقروءة</string>
     <string name="nc_new_messages">رسائل غير مقروءة</string>
-    <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مُنصّب أو مُقيّد من قبل المُشرف)</string>
+    <string name="nc_nextcloud_talk_app_not_installed">%1$sغير متاحٍ (غير مثبت أو مقيد من قبل المدير)</string>
     <string name="nc_nick_guest">ضيف</string>
     <string name="nc_no">لا</string>
     <string name="nc_no_open_conversations_headline">لا توجد محادثات مفتوحة</string>
@@ -321,7 +321,7 @@
     <string name="nc_notification_channel_calls_description">الإخطار بالمكالمات الواردة</string>
     <string name="nc_notification_channel_messages">رسائل</string>
     <string name="nc_notification_channel_messages_description">الإخطار بالرسائل الواردة</string>
-    <string name="nc_notification_channel_uploads">المرفوعات</string>
+    <string name="nc_notification_channel_uploads">الملفات المرفوعة</string>
     <string name="nc_notification_channel_uploads_description">الإخطار بنتيجة الرفع</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
     <string name="nc_notifications_troubleshooting_dialog_text">تم ضبط إذونات الإشعارات و إعدادات البطارية بالشكل الصحيح لتلقي الإشعارات. إذا كانت لديك مشاكل في تلقي الإشعارات بالرغم من ذلك، فيرجى التحقق من تمكين قنوات الإشعارات للمكالمات و الرسائل. يمكن العثور على مزيد من المساعدة على DontKillMyApp.com أو في قائمة التحقق لاستكشاف الأخطاء و إصلاحها. إذا لم يكن ذلك ناجعاً، يرجى الانتقال إلى شاشة فحص الأعطال و إرسال تقرير بالحالة.</string>
@@ -539,7 +539,7 @@
     <string name="read_storage_no_permission">لا يمكن مشاركة الملفات على وحدة التخزين بدون أذونات</string>
     <string name="record_active_info">المكالمة قيد التسجيل</string>
     <string name="record_cancel_start">إلغاء مباشرة التسجيل</string>
-    <string name="record_failed_info">فشل التسجيل. الرجاء الاتصال بمُشرِفِك.</string>
+    <string name="record_failed_info">فشل التسجيل. الرجاء الاتصال بمسؤول النظام.</string>
     <string name="record_start_description">بدء التسجيل</string>
     <string name="record_stop_confirm_message">هل ترغب حقّاً في إيقاف التسجيل؟</string>
     <string name="record_stop_confirm_title">إيقاف تسجيل المكالمة</string>
