@@ -277,7 +277,6 @@ class MessageInputViewModel @Inject constructor(
         val queue = dataStore.getMessageQueue(internalId)
         val list = mutableListOf<QueuedMessage>()
         for (msg in queue) {
-            Log.d("Julius", "Msg: ${msg.message}")
             list.add(msg)
         }
         _messageQueueFlow.postValue(list)

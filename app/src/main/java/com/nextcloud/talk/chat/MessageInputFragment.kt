@@ -190,8 +190,6 @@ class MessageInputFragment : Fragment() {
         }
 
         chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
-            Log.d("Julius", "MessageQueueSizeFlow recieved: $size")
-
             if (size > 0) {
                 binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
             } else {
