@@ -79,6 +79,7 @@
     <string name="nc_conversations_empty">Prisijunkite prie pokalbio arba pradėkite naują</string>
     <string name="nc_conversations_empty_details">Pasisveikinkite su savo draugais ir kolegomis!</string>
     <string name="nc_copy_message">Kopijuoti</string>
+    <string name="nc_create_new_conversation">Sukurti naują pokalbį</string>
     <string name="nc_create_poll">Sukurti apklausą</string>
     <string name="nc_date_header_today">Šiandien</string>
     <string name="nc_date_header_yesterday">Vakar</string>
@@ -127,6 +128,7 @@
     <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
+    <string name="nc_join_open_conversations">Prisijungti prie atvirų pokalbių</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
     <string name="nc_leave">Išeiti iš pokalbio</string>
     <string name="nc_license_summary">GNU Bendroji Viešoji Licencija, Versija 3</string>
