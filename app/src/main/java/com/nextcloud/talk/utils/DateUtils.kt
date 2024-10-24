@@ -15,6 +15,7 @@ import com.nextcloud.talk.R
 import java.text.DateFormat
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class DateUtils(val context: Context) {
@@ -48,6 +49,11 @@ class DateUtils(val context: Context) {
 
     fun getLocalTimeStringFromTimestamp(timestampSeconds: Long): String {
         return formatTime.format(Date(timestampSeconds * DateConstants.SECOND_DIVIDER))
+    }
+
+    fun getTimeDifferenceInSeconds(time2: Long, time1: Long): Long {
+        val difference = (time2 - time1)
+        return abs(difference)
     }
 
     fun relativeStartTimeForLobby(timestampMilliseconds: Long, resources: Resources): String {
