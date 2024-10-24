@@ -28,6 +28,7 @@
     <string name="close_icon">Icône de fermeture</string>
     <string name="connection_established">Connexion établie</string>
     <string name="connection_lost">Connexion perdue</string>
+    <string name="connection_lost_queued">Connexion perdue - %1$d sont en file d\'attente</string>
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
@@ -128,6 +129,8 @@
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
     <string name="nc_check_your_internet">Veuillez vérifier votre connexion Internet</string>
+    <string name="nc_clear_edit_button">Effacer le bouton Modifier</string>
+    <string name="nc_clear_edit_message">Effacer Modifier le message</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
@@ -186,12 +189,21 @@
     <string name="nc_diagnose_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
     <string name="nc_diagnose_dialog_open_diagnose">Ouvrir l\'écran de diagnostic</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Ouvrir dontkillmyapp.com</string>
+    <string name="nc_diagnose_firebase_push_token_latest_fetch">Récupération du dernier token push firebase</string>
+    <string name="nc_diagnose_firebase_push_token_latest_generated">Dernière génération de token push firebase</string>
     <string name="nc_diagnose_firebase_push_token_missing">Aucun jeton de poussée Firebase définit. Veuillez créer un rapport de bogue.</string>
     <string name="nc_diagnose_firebase_push_token_title">Jeton de poussé Firebase</string>
     <string name="nc_diagnose_gplay_available_no">Les services Google Play ne sont pas disponibles. Les notifications ne sont pas prises en charge</string>
     <string name="nc_diagnose_gplay_available_title">Services Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Les services Google Play sont disponibles</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Dernière inscription push sur proxy push</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Pas encore inscrit sur le proxy push</string>
+    <string name="nc_diagnose_latest_push_registration_at_server">Dernière inscription push sur le serveur</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">Pas encore inscrit sur le serveur</string>
     <string name="nc_diagnose_meta_category_title">Méta-informations</string>
+    <string name="nc_diagnose_meta_system_report_date">Génération du rapport système</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Canal de notification des appels activé?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Canal de notification des messages activé?</string>
     <string name="nc_diagnose_notification_permission">Permissions de notification</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
     <string name="nc_diagnose_server_talk_version">Version du serveur Talk</string>
@@ -215,6 +227,7 @@
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
     <string name="nc_edit_icon">Icône édition</string>
     <string name="nc_edit_message">Modifier</string>
+    <string name="nc_edit_message_text">Modifier le texte du message</string>
     <string name="nc_edited_by_admin">Modifié par un administrateur</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
@@ -368,6 +381,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_search">Recherche</string>
     <string name="nc_select_an_account">Choisissez un compte</string>
     <string name="nc_select_participants">Sélectionner des participants</string>
+    <string name="nc_send_edit_message">Envoyer le message modifier </string>
     <string name="nc_sent_a_gif" formatted="true">%1$s a envoyé un GIF.</string>
     <string name="nc_sent_a_gif_you">Vous avez envoyé un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s a envoyé une vidéo.</string>
@@ -576,6 +590,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="shared_items_recording">Enregistrement d\'appel</string>
     <string name="shared_items_voice">Voix</string>
     <string name="show_ban_reason">Montrer la raison du bannissement</string>
+    <string name="show_banned_participants">Afficher les participants bannis</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à lancer un appel</string>
     <string name="started_a_call">a lancé un appel</string>
