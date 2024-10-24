@@ -1618,6 +1618,9 @@ class CallActivity : CallBaseActivity() {
                         signalingMessageReceiver!!.addListener(localParticipantMessageListener)
                         signalingMessageReceiver!!.addListener(offerMessageListener)
                         signalingMessageSender = internalSignalingMessageSender
+
+                        hasMCU = false
+
                         joinRoomAndCall()
                     }
                 }
@@ -1903,6 +1906,11 @@ class CallActivity : CallBaseActivity() {
             signalingMessageReceiver!!.addListener(localParticipantMessageListener)
             signalingMessageReceiver!!.addListener(offerMessageListener)
             signalingMessageSender = webSocketClient!!.signalingMessageSender
+
+            // If the connection with the signaling server was not established yet the value will be false, but it will
+            // be overwritten with the right value once the response to the "hello" message is received.
+            hasMCU = webSocketClient!!.hasMCU()
+            Log.d(TAG, "hasMCU is $hasMCU")
         } else {
             if (webSocketClient!!.isConnected && currentCallStatus === CallStatus.PUBLISHER_FAILED) {
                 webSocketClient!!.restartWebSocket()
@@ -1928,6 +1936,10 @@ class CallActivity : CallBaseActivity() {
             when (webSocketCommunicationEvent.getType()) {
                 "hello" -> {
                     Log.d(TAG, "onMessageEvent 'hello'")
+
+                    hasMCU = webSocketClient!!.hasMCU()
+                    Log.d(TAG, "hasMCU is $hasMCU")
+
                     if (!webSocketCommunicationEvent.getHashMap()!!.containsKey("oldResumeId")) {
                         if (currentCallStatus === CallStatus.RECONNECTING) {
                             hangup(false, false)
@@ -2136,8 +2148,6 @@ class CallActivity : CallBaseActivity() {
         unchanged: Collection<Participant>
     ) {
         Log.d(TAG, "handleCallParticipantsChanged")
-        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient!!.hasMCU()
-        Log.d(TAG, "   hasMCU is $hasMCU")
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
         var currentSessionId = callSession
