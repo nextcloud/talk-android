@@ -2687,7 +2687,7 @@ class ChatActivity :
             message2.timestamp,
             message1.timestamp
         )
-        val isLessThan5Min = timeDifference > 300
+        val isLessThan5Min = timeDifference > FIVE_MINUTES_IN_SECONDS
         if (isSameDayMessages(message2, message1) &&
             (message2.actorId == message1.actorId) &&
             (!isLessThan5Min) &&
@@ -3724,5 +3724,6 @@ class ChatActivity :
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
+        private const val FIVE_MINUTES_IN_SECONDS:Long = 300
     }
 }
