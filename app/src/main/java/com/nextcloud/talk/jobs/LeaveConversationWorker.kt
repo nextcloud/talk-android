@@ -38,6 +38,7 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
 
 
     override fun doWork(): Result {
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val data = inputData
         val conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN)
         val currentUser = userManager.currentUser.blockingGet()
@@ -78,6 +79,9 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
 
                     }
                 })
+        }else{
+
+            workResult = Result.failure()
         }
 
         return workResult
