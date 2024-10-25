@@ -2028,7 +2028,7 @@ class CallActivity : CallBaseActivity() {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
         }
-        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!))
+        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), false)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
