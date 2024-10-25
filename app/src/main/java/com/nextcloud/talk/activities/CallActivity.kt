@@ -66,6 +66,7 @@ import com.nextcloud.talk.call.CallParticipantModel
 import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
+import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
@@ -246,6 +247,7 @@ class CallActivity : CallBaseActivity() {
     private val internalSignalingMessageSender = InternalSignalingMessageSender()
     private var signalingMessageSender: SignalingMessageSender? = null
     private var messageSender: MessageSender? = null
+    private val localCallParticipantModel: MutableLocalCallParticipantModel = MutableLocalCallParticipantModel()
     private val offerAnswerNickProviders: MutableMap<String?, OfferAnswerNickProvider?> = HashMap()
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
@@ -1123,6 +1125,7 @@ class CallActivity : CallBaseActivity() {
         localStream!!.addTrack(localVideoTrack)
         localVideoTrack!!.setEnabled(false)
         localVideoTrack!!.addSink(binding!!.selfVideoRenderer)
+        localCallParticipantModel.isVideoEnabled = false
     }
 
     private fun microphoneInitialization() {
@@ -1133,6 +1136,7 @@ class CallActivity : CallBaseActivity() {
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("NCa0", audioSource)
         localAudioTrack!!.setEnabled(false)
         localStream!!.addTrack(localAudioTrack)
+        localCallParticipantModel.isAudioEnabled = false
     }
 
     @SuppressLint("MissingPermission")
@@ -1157,9 +1161,11 @@ class CallActivity : CallBaseActivity() {
 
                         if (microphoneOn && isCurrentlySpeaking && !isSpeakingLongTerm) {
                             isSpeakingLongTerm = true
+                            localCallParticipantModel.isSpeaking = true
                             sendIsSpeakingMessage(true)
                         } else if (!isCurrentlySpeaking && isSpeakingLongTerm) {
                             isSpeakingLongTerm = false
+                            localCallParticipantModel.isSpeaking = false
                             sendIsSpeakingMessage(false)
                         }
                         Thread.sleep(MICROPHONE_VALUE_SLEEP)
@@ -1342,6 +1348,7 @@ class CallActivity : CallBaseActivity() {
             }
             if (localStream != null && localStream!!.videoTracks.size > 0) {
                 localStream!!.videoTracks[0].setEnabled(enable)
+                localCallParticipantModel.isVideoEnabled = enable
             }
             if (enable) {
                 binding!!.selfVideoRenderer.visibility = View.VISIBLE
@@ -1358,6 +1365,7 @@ class CallActivity : CallBaseActivity() {
             }
             if (localStream != null && localStream!!.audioTracks.size > 0) {
                 localStream!!.audioTracks[0].setEnabled(enable)
+                localCallParticipantModel.isAudioEnabled = enable
             }
         }
         if (isConnectionEstablished) {
