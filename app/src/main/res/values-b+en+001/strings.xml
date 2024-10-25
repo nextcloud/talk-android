@@ -37,6 +37,7 @@
     <string name="create_issue">Create issue</string>
     <string name="custom">Custom</string>
     <string name="danger_zone">Danger Zone</string>
+    <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>
     <string name="dnd">Do not disturb</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
+    <string name="nc_sent_deck_card_you">You sent a deck card</string>
     <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
     <string name="nc_sent_location_you">You sent a location.</string>
     <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>

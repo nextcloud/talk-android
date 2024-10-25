@@ -37,6 +37,7 @@
     <string name="create_issue">Signaler un problème</string>
     <string name="custom">Personnalisé</string>
     <string name="danger_zone">Zone de danger</string>
+    <string name="deck_card_description">%1$s dans %2$s</string>
     <string name="delete_avatar">Supprimer l\'avatar</string>
     <string name="deleted_conversation">La conversation %1$s a été supprimée</string>
     <string name="dnd">Ne pas déranger</string>
@@ -392,6 +393,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_sent_an_audio_you">Vous avez envoyé un fichier audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s a envoyé une image.</string>
     <string name="nc_sent_an_image_you">Vous avez envoyé une image.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s a envoyé un deck de carte</string>
+    <string name="nc_sent_deck_card_you">Vous avez envoyé un deck de carte</string>
     <string name="nc_sent_location" formatted="true">%1$s a envoyé une position.</string>
     <string name="nc_sent_location_you">Vous avez envoyé une position.</string>
     <string name="nc_sent_poll" formatted="true">%1$s a envoyé un sondage.</string>

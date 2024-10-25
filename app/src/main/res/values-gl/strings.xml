@@ -37,6 +37,7 @@
     <string name="create_issue">Crear unha incidencia</string>
     <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de perigo</string>
+    <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Eliminar avatar</string>
     <string name="deleted_conversation">A conversa %1$s foi eliminada</string>
     <string name="dnd">Non molestar</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">Vde. enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_an_image_you">Vde. enviou unha imaxe.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviou unha tarxeta da Gabeta</string>
+    <string name="nc_sent_deck_card_you">Vde. enviou unha tarxeta da Gabeta</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou unha localización.</string>
     <string name="nc_sent_location_you">Vde. enviou unha localización.</string>
     <string name="nc_sent_poll" formatted="true">%1$s enviou unha enquisa.</string>
