@@ -143,6 +143,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.observables.GroupedObservable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import org.apache.commons.lang3.StringEscapeUtils
@@ -477,7 +478,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
-        initClickListeners(isModerator, isOneToOneConversation)
+        initClickListeners(isModerator, isOneToOneConversation, isGroupConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
         pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
             .setDuration(310)
@@ -621,7 +622,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initClickListeners(isModerator:Boolean, isOneToOneConversation:Boolean) {
+    private fun initClickListeners(isModerator:Boolean, isOneToOneConversation:Boolean, isGroupConversation:Boolean) {
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
 
         binding!!.audioOutputButton.setOnClickListener {
@@ -672,11 +673,13 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-       binding!!.hangupButton.setOnClickListener {
-           hangup(true, null)
-       }
+        if(isGroupConversation){
+            binding!!.hangupButton.setOnClickListener {
+                hangup(true, null)
+            }
+        }
 
-        if (isModerator) {
+        if (isModerator && isGroupConversation) {
            binding!!. hangupButton.setOnLongClickListener {
                 showPopupMenu()
                 true
@@ -708,6 +711,7 @@ class CallActivity : CallBaseActivity() {
             hangup(true, true)
             binding!!.popupMenu.visibility = View.GONE
         }
+
         binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
         binding!!.gridview.onItemClickListener =
             AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
