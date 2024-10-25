@@ -24,6 +24,10 @@ object ConversationUtils {
             Participant.ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
     }
 
+    fun isOneToOne(conversation:ConversationModel):Boolean{
+        return ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL == conversation.type
+    }
+
     fun isParticipantOwnerOrModerator(conversation: ConversationModel): Boolean {
         return Participant.ParticipantType.OWNER == conversation.participantType ||
             Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
@@ -59,4 +63,5 @@ object ConversationUtils {
         return currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
     }
+
 }
