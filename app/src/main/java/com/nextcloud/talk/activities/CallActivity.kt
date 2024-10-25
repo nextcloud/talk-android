@@ -143,7 +143,6 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.observables.GroupedObservable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.Cache
 import org.apache.commons.lang3.StringEscapeUtils
@@ -679,8 +678,21 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
+        if(isOneToOneConversation && isModerator){
+            binding!!.hangupButton.setOnClickListener {
+                showPopupMenu()
+            }
+        }
+
+        if(isOneToOneConversation){
+            binding!!.hangupButton.setOnLongClickListener {
+                hangup(true, null)
+                true
+            }
+        }
+
         if (isModerator && isGroupConversation) {
-           binding!!. hangupButton.setOnLongClickListener {
+           binding!!.hangupButton.setOnLongClickListener {
                 showPopupMenu()
                 true
             }
