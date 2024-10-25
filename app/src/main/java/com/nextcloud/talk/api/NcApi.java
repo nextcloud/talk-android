@@ -247,7 +247,7 @@ public interface NcApi {
     */
     @DELETE
     Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url,
-                                         @Query("all") Boolean all);
+                                         @Nullable @Query("all") Boolean all);
 
     @GET
     Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,

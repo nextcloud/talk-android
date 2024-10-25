@@ -263,7 +263,7 @@ class CallActivity : CallBaseActivity() {
 
         override fun onCallEndedForAll() {
             Log.d(TAG, "A moderator ended the call for all.")
-            hangup(true, false)
+            hangup(true, null)
         }
     }
     private var callParticipantList: CallParticipantList? = null
@@ -271,7 +271,7 @@ class CallActivity : CallBaseActivity() {
     private var isBreakoutRoom = false
     private val localParticipantMessageListener = LocalParticipantMessageListener { token ->
         switchToRoomToken = token
-        hangup(true,false)
+        hangup(true,null)
     }
     private val offerMessageListener = OfferMessageListener { sessionId, roomType, sdp, nick ->
         getOrCreatePeerConnectionWrapperForSessionIdAndType(
@@ -498,7 +498,7 @@ class CallActivity : CallBaseActivity() {
                 }
                 .setNegativeButton(R.string.nc_no) { _, _ ->
                     recordingConsentGiven = false
-                    hangup(true,false)
+                    hangup(true,null)
                 }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, materialAlertDialogBuilder)
@@ -666,7 +666,7 @@ class CallActivity : CallBaseActivity() {
         }
 
        binding!!.hangupButton.setOnClickListener {
-           hangup(true, false)
+           hangup(true, null)
        }
 
         if (isModerator) {
@@ -674,6 +674,27 @@ class CallActivity : CallBaseActivity() {
                 showPopupMenu()
                 true
             }
+        }
+
+        binding!!.callLayout.setOnTouchListener { _, event ->
+            if (event.action == MotionEvent.ACTION_DOWN) {
+                if (binding!!.popupMenu.visibility == View.VISIBLE) {
+                    val location = IntArray(2)
+                    binding!!.popupMenu.getLocationOnScreen(location)
+
+                    val popupMenuWidth = binding!!.popupMenu.width
+                    val popupMenuHeight = binding!!.popupMenu.height
+
+                    val x = event.rawX
+                    val y = event.rawY
+
+                    if (x < location[0] || x > location[0] + popupMenuWidth ||
+                        y < location[1] || y > location[1] + popupMenuHeight) {
+                        binding!!.popupMenu.visibility = View.GONE
+                    }
+                }
+            }
+            true
         }
 
         binding!!.popupMenu.setOnClickListener {
@@ -691,7 +712,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.callStates.callStateRelativeLayout.setOnClickListener {
             if (currentCallStatus === CallStatus.CALLING_TIMEOUT) {
                 setCallState(CallStatus.RECONNECTING)
-                hangupNetworkCalls(false, false)
+                hangupNetworkCalls(false, null)
             }
         }
         binding!!.callRecordingIndicator.setOnClickListener {
@@ -1463,7 +1484,7 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "localStream is null")
         }
         if (currentCallStatus !== CallStatus.LEAVING) {
-            hangup(true, false)
+            hangup(true, null)
         }
         powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
         super.onDestroy()
@@ -1747,7 +1768,7 @@ class CallActivity : CallBaseActivity() {
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Failed to join call", e)
                     Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    hangup(true, false)
+                    hangup(true, null)
                 }
 
                 override fun onComplete() {
@@ -1898,7 +1919,7 @@ class CallActivity : CallBaseActivity() {
                     Log.d(TAG, "onMessageEvent 'hello'")
                     if (!webSocketCommunicationEvent.getHashMap()!!.containsKey("oldResumeId")) {
                         if (currentCallStatus === CallStatus.RECONNECTING) {
-                            hangup(false, false)
+                            hangup(false, null)
                         } else {
                             setCallState(CallStatus.RECONNECTING)
                             runOnUiThread { initiateCall() }
@@ -1974,7 +1995,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun hangup(shutDownView: Boolean, endCallForAll:Boolean) {
+    private fun hangup(shutDownView: Boolean, endCallForAll:Boolean?) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView")
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2042,7 +2063,7 @@ class CallActivity : CallBaseActivity() {
         hangupNetworkCalls(shutDownView,endCallForAll)
     }
 
-    private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
+    private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean?) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         if (callParticipantList != null) {
@@ -2144,7 +2165,7 @@ class CallActivity : CallBaseActivity() {
             ApplicationWideCurrentRoomHolder.getInstance().isInCall
         ) {
             Log.d(TAG, "Most probably a moderator ended the call for all.")
-            hangup(true, false)
+            hangup(true, null)
             return
         }
 
@@ -2271,7 +2292,7 @@ class CallActivity : CallBaseActivity() {
                     context.resources.getString(R.string.nc_common_error_sorry),
                     Snackbar.LENGTH_LONG
                 ).show()
-                hangup(true,false)
+                hangup(true,null)
                 return null
             }
             peerConnectionWrapper = if (hasMCU && publisher) {
@@ -2587,7 +2608,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 CallStatus.CALLING_TIMEOUT -> handler!!.post {
-                    hangup(false, false)
+                    hangup(false, null)
                     binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
                     binding!!.callModeTextView.text = descriptionForCallType
                     if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
@@ -2857,7 +2878,7 @@ class CallActivity : CallBaseActivity() {
                 if (iceConnectionState == IceConnectionState.FAILED) {
                     setCallState(CallStatus.PUBLISHER_FAILED)
                     webSocketClient!!.clearResumeId()
-                    hangup(false, false)
+                    hangup(false, null)
                 }
             }
         }
