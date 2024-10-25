@@ -11,12 +11,15 @@ import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.never
 
 class MessageSenderNoMcuTest {
 
     private var peerConnectionWrappers: MutableList<PeerConnectionWrapper?>? = null
     private var peerConnectionWrapper1: PeerConnectionWrapper? = null
     private var peerConnectionWrapper2: PeerConnectionWrapper? = null
+    private var peerConnectionWrapper2Screen: PeerConnectionWrapper? = null
+    private var peerConnectionWrapper4Screen: PeerConnectionWrapper? = null
 
     private var messageSender: MessageSenderNoMcu? = null
 
@@ -34,6 +37,16 @@ class MessageSenderNoMcuTest {
         Mockito.`when`(peerConnectionWrapper2!!.videoStreamType).thenReturn("video")
         peerConnectionWrappers!!.add(peerConnectionWrapper2)
 
+        peerConnectionWrapper2Screen = Mockito.mock(PeerConnectionWrapper::class.java)
+        Mockito.`when`(peerConnectionWrapper2Screen!!.sessionId).thenReturn("theSessionId2")
+        Mockito.`when`(peerConnectionWrapper2Screen!!.videoStreamType).thenReturn("screen")
+        peerConnectionWrappers!!.add(peerConnectionWrapper2Screen)
+
+        peerConnectionWrapper4Screen = Mockito.mock(PeerConnectionWrapper::class.java)
+        Mockito.`when`(peerConnectionWrapper4Screen!!.sessionId).thenReturn("theSessionId4")
+        Mockito.`when`(peerConnectionWrapper4Screen!!.videoStreamType).thenReturn("screen")
+        peerConnectionWrappers!!.add(peerConnectionWrapper4Screen)
+
         messageSender = MessageSenderNoMcu(peerConnectionWrappers)
     }
 
@@ -44,5 +57,7 @@ class MessageSenderNoMcuTest {
 
         Mockito.verify(peerConnectionWrapper1!!).send(message)
         Mockito.verify(peerConnectionWrapper2!!).send(message)
+        Mockito.verify(peerConnectionWrapper2Screen!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper4Screen!!, never()).send(message)
     }
 }
