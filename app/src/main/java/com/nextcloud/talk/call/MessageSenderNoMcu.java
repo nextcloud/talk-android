@@ -22,7 +22,9 @@ public class MessageSenderNoMcu extends MessageSender {
 
     public void sendToAll(DataChannelMessage dataChannelMessage) {
         for (PeerConnectionWrapper peerConnectionWrapper: peerConnectionWrappers) {
-            peerConnectionWrapper.send(dataChannelMessage);
+            if ("video".equals(peerConnectionWrapper.getVideoStreamType())){
+                peerConnectionWrapper.send(dataChannelMessage);
+            }
         }
     }
 }
