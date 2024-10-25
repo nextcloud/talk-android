@@ -63,6 +63,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.call.CallParticipant
 import com.nextcloud.talk.call.CallParticipantList
 import com.nextcloud.talk.call.CallParticipantModel
+import com.nextcloud.talk.call.MessageSender
+import com.nextcloud.talk.call.MessageSenderMcu
+import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
@@ -242,6 +245,7 @@ class CallActivity : CallBaseActivity() {
     private var signalingMessageReceiver: SignalingMessageReceiver? = null
     private val internalSignalingMessageSender = InternalSignalingMessageSender()
     private var signalingMessageSender: SignalingMessageSender? = null
+    private var messageSender: MessageSender? = null
     private val offerAnswerNickProviders: MutableMap<String?, OfferAnswerNickProvider?> = HashMap()
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
@@ -1172,18 +1176,7 @@ class CallActivity : CallBaseActivity() {
             if (isSpeaking) SIGNALING_MESSAGE_SPEAKING_STARTED else SIGNALING_MESSAGE_SPEAKING_STOPPED
 
         if (isConnectionEstablished && othersInCall) {
-            if (!hasMCU) {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
-                }
-            } else {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
-                        break
-                    }
-                }
-            }
+            messageSender!!.sendToAll(DataChannelMessage(isSpeakingMessage))
         }
     }
 
@@ -1368,18 +1361,7 @@ class CallActivity : CallBaseActivity() {
             }
         }
         if (isConnectionEstablished) {
-            if (!hasMCU) {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.send(DataChannelMessage(message))
-                }
-            } else {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.send(DataChannelMessage(message))
-                        break
-                    }
-                }
-            }
+            messageSender!!.sendToAll(DataChannelMessage(message))
         }
     }
 
@@ -1620,6 +1602,10 @@ class CallActivity : CallBaseActivity() {
                         signalingMessageSender = internalSignalingMessageSender
 
                         hasMCU = false
+
+                        messageSender = MessageSenderNoMcu(
+                            peerConnectionWrapperList
+                        )
 
                         joinRoomAndCall()
                     }
@@ -1911,6 +1897,17 @@ class CallActivity : CallBaseActivity() {
             // be overwritten with the right value once the response to the "hello" message is received.
             hasMCU = webSocketClient!!.hasMCU()
             Log.d(TAG, "hasMCU is $hasMCU")
+
+            if (hasMCU) {
+                messageSender = MessageSenderMcu(
+                    peerConnectionWrapperList,
+                    webSocketClient!!.sessionId
+                )
+            } else {
+                messageSender = MessageSenderNoMcu(
+                    peerConnectionWrapperList
+                )
+            }
         } else {
             if (webSocketClient!!.isConnected && currentCallStatus === CallStatus.PUBLISHER_FAILED) {
                 webSocketClient!!.restartWebSocket()
@@ -1939,6 +1936,17 @@ class CallActivity : CallBaseActivity() {
 
                     hasMCU = webSocketClient!!.hasMCU()
                     Log.d(TAG, "hasMCU is $hasMCU")
+
+                    if (hasMCU) {
+                        messageSender = MessageSenderMcu(
+                            peerConnectionWrapperList,
+                            webSocketClient!!.sessionId
+                        )
+                    } else {
+                        messageSender = MessageSenderNoMcu(
+                            peerConnectionWrapperList
+                        )
+                    }
 
                     if (!webSocketCommunicationEvent.getHashMap()!!.containsKey("oldResumeId")) {
                         if (currentCallStatus === CallStatus.RECONNECTING) {
