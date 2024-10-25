@@ -36,6 +36,7 @@
     <string name="create_issue">Skapa ärende</string>
     <string name="custom">Anpassad</string>
     <string name="danger_zone">Riskzon</string>
+    <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Ta bort avatar</string>
     <string name="deleted_conversation">Raderade konversationen %1$s</string>
     <string name="dnd">Stör ej</string>
@@ -388,6 +389,8 @@
     <string name="nc_sent_an_audio_you">Du skickade en ljudfil.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s skickade en bild.</string>
     <string name="nc_sent_an_image_you">Du skickade en bild.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s skickade ett Deck-kort</string>
+    <string name="nc_sent_deck_card_you">Du skickade ett Deck-kort</string>
     <string name="nc_sent_location" formatted="true">%1$s skickade en plats.</string>
     <string name="nc_sent_location_you">Du skickade en plats.</string>
     <string name="nc_sent_poll" formatted="true">%1$s skickade en omröstning.</string>

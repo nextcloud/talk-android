@@ -37,6 +37,7 @@
     <string name="create_issue">Fehler melden</string>
     <string name="custom">Benutzerdefiniert</string>
     <string name="danger_zone">Gefahrenzone</string>
+    <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Avatar löschen</string>
     <string name="deleted_conversation">Unterhaltung %1$s gelöscht</string>
     <string name="dnd">Nicht stören</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">Sie haben eine Audio-Datei gesendet.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s hat ein Bild gesendet.</string>
     <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s hat eine Deck-Karte gesendet</string>
+    <string name="nc_sent_deck_card_you">Sie haben deine Deck-Karte gesendet</string>
     <string name="nc_sent_location" formatted="true">%1$s hat einen Ort gesendet.</string>
     <string name="nc_sent_location_you">Sie haben einen Ort gesendet.</string>
     <string name="nc_sent_poll" formatted="true">%1$s hat eine Umfrage gesendet.</string>

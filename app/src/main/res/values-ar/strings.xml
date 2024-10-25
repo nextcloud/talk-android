@@ -37,6 +37,7 @@
     <string name="create_issue">تكوين إشكالية </string>
     <string name="custom">مُخصّص</string>
     <string name="danger_zone">منطقة خطر</string>
+    <string name="deck_card_description">%1$s في %2$s</string>
     <string name="delete_avatar">إمسح الرمز التجسيدي avatar</string>
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">لقد قمت بإرسال مقطع صوتي.</string>
     <string name="nc_sent_an_image" formatted="true">%1$sارسل صوره.</string>
     <string name="nc_sent_an_image_you">لقد قمت بإرسال صورة.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s أرسل بطاقة مهام</string>
+    <string name="nc_sent_deck_card_you">أنت قمت بإرسال بطاقة مهام</string>
     <string name="nc_sent_location" formatted="true">%1$s أرسَلَ موقعاً.</string>
     <string name="nc_sent_location_you">لقد قُمت بإرسال موقعٍ.</string>
     <string name="nc_sent_poll" formatted="true">%1$s أرسَلَ تصويتاً.</string>
@@ -478,7 +481,7 @@
     <string name="nc_share_this_location">شارِك هذا الموقع</string>
     <string name="nc_share_to_choose_account">إختر حسابًا</string>
     <string name="nc_shared_items">عناصر مُشارَكة</string>
-    <string name="nc_shared_items_deck_card">بطاقة</string>
+    <string name="nc_shared_items_deck_card">بطاقة مهام</string>
     <string name="nc_shared_items_description">صور، و ملفات، ورسائل صوتية ...</string>
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>

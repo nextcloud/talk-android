@@ -37,6 +37,7 @@
     <string name="create_issue">創建問題</string>
     <string name="custom">自訂</string>
     <string name="danger_zone">危險地帶</string>
+    <string name="deck_card_description">%2$s 中的 %1$s</string>
     <string name="delete_avatar">刪除虛擬化身大頭照</string>
     <string name="deleted_conversation">已刪除對話 %1$s</string>
     <string name="dnd">請勿打擾</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">您傳送了一個聲音檔</string>
     <string name="nc_sent_an_image" formatted="true">%1$s 傳送一個圖片</string>
     <string name="nc_sent_an_image_you">你傳送了一張圖片</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s 傳送了一張卡片</string>
+    <string name="nc_sent_deck_card_you">您傳送了一張卡片</string>
     <string name="nc_sent_location" formatted="true">%1$s 傳送一個位置。</string>
     <string name="nc_sent_location_you">您傳送了一個位置。</string>
     <string name="nc_sent_poll" formatted="true">%1$s 已傳送一個民意調查。</string>
