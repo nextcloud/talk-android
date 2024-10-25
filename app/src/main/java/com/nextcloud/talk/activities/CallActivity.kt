@@ -112,6 +112,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ROOM_GROUP
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
@@ -350,6 +352,8 @@ class CallActivity : CallBaseActivity() {
     private var isModerator = false
     private var reactionAnimator: ReactionAnimator? = null
     private var othersInCall = false
+    private var isOneToOneConversation = false
+    private var isGroupConversation = false
 
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
@@ -381,6 +385,9 @@ class CallActivity : CallBaseActivity() {
         canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
         canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
         isModerator = extras.getBoolean(KEY_IS_MODERATOR, false)
+        isOneToOneConversation = extras.getBoolean(KEY_IS_ROOM_ONE_TO_ONE, false)
+        isGroupConversation = extras.getBoolean(KEY_IS_ROOM_GROUP, false)
+
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
         }
@@ -470,7 +477,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
-        initClickListeners(isModerator)
+        initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
         pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
             .setDuration(310)
@@ -614,7 +621,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initClickListeners(isModerator:Boolean) {
+    private fun initClickListeners(isModerator:Boolean, isOneToOneConversation:Boolean) {
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
 
         binding!!.audioOutputButton.setOnClickListener {
