@@ -698,26 +698,6 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        binding!!.callLayout.setOnTouchListener { _, event ->
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                if (binding!!.popupMenu.visibility == View.VISIBLE) {
-                    val location = IntArray(2)
-                    binding!!.popupMenu.getLocationOnScreen(location)
-
-                    val popupMenuWidth = binding!!.popupMenu.width
-                    val popupMenuHeight = binding!!.popupMenu.height
-
-                    val x = event.rawX
-                    val y = event.rawY
-
-                    if (x < location[0] || x > location[0] + popupMenuWidth ||
-                        y < location[1] || y > location[1] + popupMenuHeight) {
-                        binding!!.popupMenu.visibility = View.GONE
-                    }
-                }
-            }
-            true
-        }
 
         binding!!.popupMenu.setOnClickListener {
             hangup(true, true)
@@ -1395,6 +1375,34 @@ class CallActivity : CallBaseActivity() {
             }
         }
     }
+
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+
+        if (binding!!.popupMenu.visibility == View.VISIBLE) {
+
+            if (event.action == MotionEvent.ACTION_DOWN) {
+
+                val buttonLocation = IntArray(2)
+                binding!!.popupMenu.getLocationOnScreen(buttonLocation)
+
+                val popupMenuWidth = binding!!.popupMenu.width
+                val popupMenuHeight = binding!!.popupMenu.height
+
+                val buttonLeft = buttonLocation[0]
+                val buttonTop = buttonLocation[1]
+                val buttonRight = buttonLeft + popupMenuWidth
+                val buttonBottom = buttonTop + popupMenuHeight
+
+                val x = event.rawX
+                val y = event.rawY
+                if (x < buttonLeft || x > buttonRight || y < buttonTop || y > buttonBottom) {
+                    binding!!.popupMenu.visibility = View.GONE
+                }
+            }
+        }
+        return super.dispatchTouchEvent(event)
+    }
+
 
     fun clickRaiseOrLowerHandButton() {
         raiseHandViewModel!!.clickHandButton()
