@@ -310,6 +310,7 @@ How to translate with transifex:
     <string name="lower_hand">Lower hand</string>
     <string name="restrict_join_other_room_while_call">It\'s not possible to join other rooms while being in a call</string>
     <string name="call_running_since_one_hour">The call has been running for one hour.</string>
+    <string name="end_call_for_everyone">End Call for Everyone</string>
 
     <!-- Picture in Picture -->
     <string name="nc_pip_microphone_mute">Mute microphone</string>
