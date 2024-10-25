@@ -273,7 +273,7 @@ class CallActivity : CallBaseActivity() {
     private var isBreakoutRoom = false
     private val localParticipantMessageListener = LocalParticipantMessageListener { token ->
         switchToRoomToken = token
-        hangup(true,null)
+        hangup(true, null)
     }
     private val offerMessageListener = OfferMessageListener { sessionId, roomType, sdp, nick ->
         getOrCreatePeerConnectionWrapperForSessionIdAndType(
@@ -505,7 +505,7 @@ class CallActivity : CallBaseActivity() {
                 }
                 .setNegativeButton(R.string.nc_no) { _, _ ->
                     recordingConsentGiven = false
-                    hangup(true,null)
+                    hangup(true, null)
                 }
 
             viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, materialAlertDialogBuilder)
@@ -621,7 +621,11 @@ class CallActivity : CallBaseActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initClickListeners(isModerator:Boolean, isOneToOneConversation:Boolean, isGroupConversation:Boolean) {
+    private fun initClickListeners(
+        isModerator: Boolean,
+        isOneToOneConversation: Boolean,
+        isGroupConversation: Boolean
+    ) {
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
 
         binding!!.audioOutputButton.setOnClickListener {
@@ -672,19 +676,19 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        if(isGroupConversation){
+        if (isGroupConversation) {
             binding!!.hangupButton.setOnClickListener {
                 hangup(true, null)
             }
         }
 
-        if(isOneToOneConversation && isModerator){
+        if (isOneToOneConversation && isModerator) {
             binding!!.hangupButton.setOnClickListener {
                 showPopupMenu()
             }
         }
 
-        if(isOneToOneConversation){
+        if (isOneToOneConversation) {
             binding!!.hangupButton.setOnLongClickListener {
                 hangup(true, null)
                 true
@@ -692,12 +696,11 @@ class CallActivity : CallBaseActivity() {
         }
 
         if (isModerator && isGroupConversation) {
-           binding!!.hangupButton.setOnLongClickListener {
+            binding!!.hangupButton.setOnLongClickListener {
                 showPopupMenu()
                 true
             }
         }
-
 
         binding!!.popupMenu.setOnClickListener {
             hangup(true, true)
@@ -741,7 +744,6 @@ class CallActivity : CallBaseActivity() {
 
     private fun showPopupMenu() {
         binding!!.popupMenu.visibility = View.VISIBLE
-
     }
 
     private fun createCameraEnumerator() {
@@ -1377,11 +1379,8 @@ class CallActivity : CallBaseActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-
         if (binding!!.popupMenu.visibility == View.VISIBLE) {
-
             if (event.action == MotionEvent.ACTION_DOWN) {
-
                 val buttonLocation = IntArray(2)
                 binding!!.popupMenu.getLocationOnScreen(buttonLocation)
 
@@ -1402,7 +1401,6 @@ class CallActivity : CallBaseActivity() {
         }
         return super.dispatchTouchEvent(event)
     }
-
 
     fun clickRaiseOrLowerHandButton() {
         raiseHandViewModel!!.clickHandButton()
@@ -2026,7 +2024,7 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun hangup(shutDownView: Boolean, endCallForAll:Boolean?) {
+    private fun hangup(shutDownView: Boolean, endCallForAll: Boolean?) {
         Log.d(TAG, "hangup! shutDownView=$shutDownView")
         if (shutDownView) {
             setCallState(CallStatus.LEAVING)
@@ -2091,7 +2089,7 @@ class CallActivity : CallBaseActivity() {
 
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
-        hangupNetworkCalls(shutDownView,endCallForAll)
+        hangupNetworkCalls(shutDownView, endCallForAll)
     }
 
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean?) {
@@ -2102,7 +2100,7 @@ class CallActivity : CallBaseActivity() {
             callParticipantList!!.destroy()
         }
 
-        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!),endCallForAll)
+        ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCallForAll)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -2323,7 +2321,7 @@ class CallActivity : CallBaseActivity() {
                     context.resources.getString(R.string.nc_common_error_sorry),
                     Snackbar.LENGTH_LONG
                 ).show()
-                hangup(true,null)
+                hangup(true, null)
                 return null
             }
             peerConnectionWrapper = if (hasMCU && publisher) {

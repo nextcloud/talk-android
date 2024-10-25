@@ -24,11 +24,11 @@ object ConversationUtils {
             Participant.ParticipantType.USER_FOLLOWING_LINK == conversation.participantType
     }
 
-    fun isOneToOneConversation(conversation:ConversationModel):Boolean{
+    fun isOneToOneConversation(conversation: ConversationModel): Boolean  {
         return ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL == conversation.type
     }
 
-    fun isGroupConversation(conversation:ConversationModel):Boolean{
+    fun isGroupConversation(conversation: ConversationModel): Boolean  {
         return ConversationEnums.ConversationType.ROOM_GROUP_CALL == conversation.type
     }
 
@@ -67,5 +67,4 @@ object ConversationUtils {
         return currentConversation != null &&
             currentConversation.type == ConversationEnums.ConversationType.NOTE_TO_SELF
     }
-
 }
