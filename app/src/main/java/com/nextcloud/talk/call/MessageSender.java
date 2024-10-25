@@ -18,7 +18,9 @@ import java.util.List;
  * <p>
  * Note that, unlike signaling messages, data channel messages require a peer connection. Therefore data channel
  * messages may not be received by a participant if there is no peer connection with that participant (for example, if
- * neither the local and remote participants have publishing rights).
+ * neither the local and remote participants have publishing rights). Moreover, data channel messages are expected to
+ * be received only on peer connections with type "video", so data channel messages will not be sent on other peer
+ * connections.
  */
 public abstract class MessageSender {
 
@@ -37,7 +39,8 @@ public abstract class MessageSender {
 
     protected PeerConnectionWrapper getPeerConnectionWrapper(String sessionId) {
         for (PeerConnectionWrapper peerConnectionWrapper: peerConnectionWrappers) {
-            if (peerConnectionWrapper.getSessionId().equals(sessionId)) {
+            if (peerConnectionWrapper.getSessionId().equals(sessionId)
+                    && "video".equals(peerConnectionWrapper.getVideoStreamType())) {
                 return peerConnectionWrapper;
             }
         }
