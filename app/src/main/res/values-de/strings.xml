@@ -393,7 +393,7 @@
     <string name="nc_sent_an_image" formatted="true">%1$s hat ein Bild gesendet.</string>
     <string name="nc_sent_an_image_you">Sie haben ein Bild gesendet.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s hat eine Deck-Karte gesendet</string>
-    <string name="nc_sent_deck_card_you">Sie haben deine Deck-Karte gesendet</string>
+    <string name="nc_sent_deck_card_you">Sie haben eine Deck-Karte gesendet</string>
     <string name="nc_sent_location" formatted="true">%1$s hat einen Ort gesendet.</string>
     <string name="nc_sent_location_you">Sie haben einen Ort gesendet.</string>
     <string name="nc_sent_poll" formatted="true">%1$s hat eine Umfrage gesendet.</string>

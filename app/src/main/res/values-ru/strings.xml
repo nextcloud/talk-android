@@ -25,8 +25,8 @@
     <string name="connection_lost_sent_messages_are_queued">Соединение потеряно - отправленные сообщения ставятся в очередь</string>
     <string name="continuous_voice_message_recording">Блокировка записи для непрерывной записи голосового сообщения</string>
     <string name="conversation_is_read_only">Разговор доступен только для чтения</string>
-    <string name="conversations">Разговоры</string>
-    <string name="create_conversation">Создать обсуждение</string>
+    <string name="conversations">Беседы</string>
+    <string name="create_conversation">Создать беседу</string>
     <string name="custom">Задать</string>
     <string name="danger_zone">Опасная зона</string>
     <string name="delete_avatar">Удалить аватар</string>
@@ -64,7 +64,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Самый большой первый</string>
     <string name="menu_item_sort_by_size_smallest_first">Самый маленький первый</string>
     <string name="message_deleted_by_you">Сообщение удалено вами</string>
-    <string name="message_last_edited_by">Отредактировано %1$s</string>
+    <string name="message_last_edited_by">Изменено %1$s</string>
     <string name="message_poll_tap_to_open">Нажмите для открытия опроса</string>
     <string name="message_search_begin_empty">Ничего не найдено</string>
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
@@ -183,7 +183,7 @@
     <string name="nc_dialog_maintenance_mode">Режим обслуживания</string>
     <string name="nc_dialog_maintenance_mode_description">В настоящее время сервер находится в режиме технического обслуживания.</string>
     <string name="nc_dialog_outdated_client">Приложение устарело</string>
-    <string name="nc_dialog_outdated_client_description">Версия приложения слишком старая и больше не поддерживается этим сервером. Пожалуйста обносите приложение.</string>
+    <string name="nc_dialog_outdated_client_description">Версия клиента слишком старая и больше не поддерживается этим сервером. Пожалуйста обновите его.</string>
     <string name="nc_dialog_outdated_client_option_update">Обновить</string>
     <string name="nc_dialog_reauth_or_delete">Вы хотите повторно авторизоваться или удалить эту учётную запись?</string>
     <string name="nc_dialog_save_to_storage_content">Сохранение этого медиафайла в хранилище позволит всем другим приложениям на вашем устройстве получить к нему доступ.</string>
@@ -194,6 +194,7 @@
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
     <string name="nc_edit_message">Редактирование</string>
+    <string name="nc_edited_by_admin">Изменено администратором</string>
     <string name="nc_email">Эл. почта</string>
     <string name="nc_expire_message_eight_hours">8 часов</string>
     <string name="nc_expire_message_four_weeks">4 недели</string>
@@ -267,14 +268,14 @@
     <string name="nc_missed_call">Вы пропустили звонок от %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_never">Никогда не использовался</string>
-    <string name="nc_new_conversation">Новая беседа</string>
+    <string name="nc_new_conversation">Новый чат</string>
     <string name="nc_new_conversation_visibility">Видимость</string>
     <string name="nc_new_mention">Непрочитанные упоминания</string>
     <string name="nc_new_messages">Непрочитанные сообщения</string>
     <string name="nc_nextcloud_talk_app_not_installed">Приложение %1$s недоступно (не установлено, либо использование приложения ограничено администратором)</string>
     <string name="nc_nick_guest">Гость</string>
     <string name="nc_no">Нет</string>
-    <string name="nc_no_open_conversations_headline">Нет открытых разговоров</string>
+    <string name="nc_no_open_conversations_headline">Нет открытых чатов</string>
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
     <string name="nc_not_allowed_to_activate_audio">Вам запрещено активировать аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Вам запрещено активировать видео!</string>
@@ -558,7 +559,7 @@
     <string name="take_photo_toggle_torch">Переключатель фонарика</string>
     <string name="thirtyMinutes">30 минут</string>
     <string name="thisWeek">Эта неделя</string>
-    <string name="this_weekend">Эта неделя</string>
+    <string name="this_weekend">Эти выходные</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>

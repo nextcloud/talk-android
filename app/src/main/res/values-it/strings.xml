@@ -35,6 +35,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 ore</string>
     <string name="invisible">Invisibile</string>
+    <string name="later_today">Più tardi oggi</string>
     <string name="load_more_results">Mostra altri risultati</string>
     <string name="lock_symbol">Simbolo lucchetto</string>
     <string name="lower_hand">Abbassa la mano</string>
@@ -126,6 +127,7 @@
     <string name="nc_description_send_message_button">Invia messaggio</string>
     <string name="nc_diagnose_account_category_title">Account attuale</string>
     <string name="nc_diagnose_account_server">Server</string>
+    <string name="nc_diagnose_account_user_name">Utente</string>
     <string name="nc_diagnose_android_version_title">Versione Android</string>
     <string name="nc_diagnose_app_category_title">Applicazione</string>
     <string name="nc_diagnose_app_name_title">Nome applicazione</string>
@@ -433,6 +435,7 @@
     <string name="take_photo_toggle_torch">Accendi/spegni la torcia</string>
     <string name="thirtyMinutes">30 minuti</string>
     <string name="thisWeek">Questa settimana</string>
+    <string name="this_weekend">Questo fine settimana</string>
     <string name="today">Oggi</string>
     <string name="tomorrow">Domani</string>
     <string name="translate">Traduci</string>
