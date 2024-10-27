@@ -10,7 +10,7 @@
     <string name="audio_output_phone">الهاتف</string>
     <string name="audio_output_speaker">مكبر الصوت</string>
     <string name="audio_output_wired_headset">سماعة رأس سلكية</string>
-    <string name="avatar">رمز تجسيدي avatar</string>
+    <string name="avatar">صورة الملف الشخصي الرمزية</string>
     <string name="away">بالخارج</string>
     <string name="back_button">زر للخلف</string>
     <string name="ban">حظر</string>
@@ -21,7 +21,7 @@
     <string name="call_running_since_one_hour">المكالمة ما زالت مستمرة منذ حوالي الساعة.</string>
     <string name="call_without_notification">اتصال بدون إشعار</string>
     <string name="camera_permission_granted">تمّ منح إذن الكاميرا. رجاءً، إختر الكامير مجدّداً.</string>
-    <string name="choose_avatar_from_cloud">اختر رمزاً تجسيدياً avatar من السحابة</string>
+    <string name="choose_avatar_from_cloud">اختر صورة الملف الشخصي الرمزية من السحابة</string>
     <string name="clear_status_message">إمسح رسالة الحالة</string>
     <string name="clear_status_message_after">إمسح رسالة الحالة فيما بعدٌ</string>
     <string name="close">إغلاق</string>
@@ -38,7 +38,7 @@
     <string name="custom">مُخصّص</string>
     <string name="danger_zone">منطقة خطر</string>
     <string name="deck_card_description">%1$s في %2$s</string>
-    <string name="delete_avatar">إمسح الرمز التجسيدي avatar</string>
+    <string name="delete_avatar">إمسح صورة الملف الشخصي الرمزية</string>
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
@@ -579,7 +579,7 @@
     <string name="send_to_three_dots">إرسالُ إلى…</string>
     <string name="send_without_notification">أرسِل بدون إشعار</string>
     <string name="set">تعيين</string>
-    <string name="set_avatar_from_camera">عيّن الرمز التجسيدي avatar من الكاميرا</string>
+    <string name="set_avatar_from_camera">التقاط صورة الملف الشخصي الرمزية من الكاميرا</string>
     <string name="set_status">تعيين الحالة</string>
     <string name="set_status_message">تعيين رسالة الحالة</string>
     <string name="share">شارِك</string>
@@ -629,8 +629,8 @@
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
     <string name="unban">رفع الحظر</string>
     <string name="unread">غير مقروء</string>
-    <string name="upload_new_avatar_from_device">رفع رمز تجسيدي avatar جديد من الجهاز</string>
-    <string name="user_avatar">صورة المستخدم الشخصية </string>
+    <string name="upload_new_avatar_from_device">رفع صورة رمزية جديدة للملف الشخصي من الجهاز</string>
+    <string name="user_avatar">صورة الملف الشخصي الرمزية للمستخدم</string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>
     <string name="user_info_email">البريد الإلكتروني</string>

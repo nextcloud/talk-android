@@ -174,8 +174,10 @@
     <string name="nc_diagnose_device_name_title">Устройство</string>
     <string name="nc_diagnose_dialog_open_checklist">Открыть контрольный список устранения неполадок</string>
     <string name="nc_diagnose_dialog_open_diagnose">Открыть экран диагностики</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Открыть dontkillmyapp.com</string>
     <string name="nc_diagnose_notification_permission">Разрешения на уведомления</string>
     <string name="nc_diagnose_phone_category_title">Телефон</string>
+    <string name="nc_diagnose_server_version">Версия сервера</string>
     <string name="nc_diagnose_signaling_mode_extern">Внешний</string>
     <string name="nc_diagnose_signaling_mode_intern">Внутренние</string>
     <string name="nc_diagnose_signaling_mode_title">Режим сигнализации</string>
@@ -592,8 +594,8 @@
     <string name="whats_your_status">Какой у вас статус?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d голос</item>
-        <item quantity="few">%d голосов</item>
+        <item quantity="few">%d голоса</item>
         <item quantity="many">%d голосов</item>
-        <item quantity="other">%dголоса</item>
+        <item quantity="other">%d голоса</item>
     </plurals>
 </resources>
