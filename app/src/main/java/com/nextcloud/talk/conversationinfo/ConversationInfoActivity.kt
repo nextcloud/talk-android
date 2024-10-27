@@ -640,7 +640,6 @@ class ConversationInfoActivity :
                 .setInputData(data)
                 .build()
 
-
             WorkManager.getInstance(context)
                 .enqueueUniqueWork(
                     "leave_conversation_work",
@@ -648,13 +647,11 @@ class ConversationInfoActivity :
                     workRequest
                 )
 
-
             WorkManager.getInstance(context).getWorkInfoByIdLiveData(workRequest.id)
                 .observe(this, { workInfo: WorkInfo? ->
                     if (workInfo != null) {
                         when (workInfo.state) {
                             WorkInfo.State.SUCCEEDED -> {
-
                                 val intent = Intent(context, MainActivity::class.java)
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 startActivity(intent)

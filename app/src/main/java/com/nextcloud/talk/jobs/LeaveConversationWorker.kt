@@ -7,11 +7,14 @@
  */
 package com.nextcloud.talk.jobs
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.work.Worker
+import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
+import androidx.work.impl.utils.futures.SettableFuture
 import autodagger.AutoInjector
+import com.google.common.util.concurrent.ListenableFuture
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -22,13 +25,15 @@ import com.nextcloud.talk.utils.ApiUtils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils.getUrlForParticipantsSelf
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
+@SuppressLint("RestrictedApi")
 @AutoInjector(NextcloudTalkApplication::class)
-class LeaveConversationWorker(val context: Context, workerParams: WorkerParameters) :
-    Worker(context, workerParams) {
+class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) :
+    ListenableWorker(context, workerParams) {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -36,55 +41,46 @@ class LeaveConversationWorker(val context: Context, workerParams: WorkerParamete
     @Inject
     lateinit var userManager: UserManager
 
+    private val result = SettableFuture.create<Result>()
 
-    override fun doWork(): Result {
+    override fun startWork(): ListenableFuture<Result> {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val data = inputData
-        val conversationToken = data.getString(BundleKeys.KEY_ROOM_TOKEN)
+        val conversationToken = inputData.getString(BundleKeys.KEY_ROOM_TOKEN)
         val currentUser = userManager.currentUser.blockingGet()
-        lateinit var workResult:Result
 
-        if (currentUser != null) {
+        if (currentUser != null && conversationToken != null) {
             val credentials = getCredentials(currentUser.username, currentUser.token)
-
             val apiVersion = getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
             ncApi.removeSelfFromRoom(
-                credentials, getUrlForParticipantsSelf(
-                    apiVersion,
-                    currentUser.baseUrl,
-                    conversationToken
-                )
+                credentials, getUrlForParticipantsSelf(apiVersion, currentUser.baseUrl, conversationToken)
             )
                 .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GenericOverall?> {
-
                     override fun onSubscribe(d: Disposable) {
 
                     }
 
                     override fun onNext(p0: GenericOverall) {
-
                     }
 
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "failed to remove self from room", e)
-                        if(e.message?.contains("HTTP 400") == true){
-                            workResult = Result.failure()
+                        Log.e(TAG, "Failed to remove self from room", e)
+                        if (e.message?.contains("HTTP 400") == true) {
+                            result.set(Result.failure())
                         }
                     }
 
                     override fun onComplete() {
-                        workResult = Result.success()
-
+                        result.set(Result.success())
                     }
                 })
-        }else{
-
-            workResult = Result.failure()
+        } else {
+            result.set(Result.failure())
         }
 
-        return workResult
+        return result
     }
 
     companion object {
