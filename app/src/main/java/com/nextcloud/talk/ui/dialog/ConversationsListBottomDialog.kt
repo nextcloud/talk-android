@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.ui.dialog
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
@@ -18,6 +19,7 @@ import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
@@ -393,6 +395,8 @@ class ConversationsListBottomDialog(
                                     conversation.displayName
                                 )
                             )
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
                         }
 
                         WorkInfo.State.FAILED -> {
