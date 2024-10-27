@@ -53,13 +53,13 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
             val apiVersion = getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, 1))
 
             ncApi.removeSelfFromRoom(
-                credentials, getUrlForParticipantsSelf(apiVersion, currentUser.baseUrl, conversationToken)
+                credentials,
+                getUrlForParticipantsSelf(apiVersion, currentUser.baseUrl, conversationToken)
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GenericOverall?> {
                     override fun onSubscribe(d: Disposable) {
-
                     }
 
                     override fun onNext(p0: GenericOverall) {

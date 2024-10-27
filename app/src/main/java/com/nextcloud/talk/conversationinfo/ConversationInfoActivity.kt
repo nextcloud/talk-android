@@ -660,11 +660,13 @@ class ConversationInfoActivity :
                                 startActivity(intent)
                             }
                             WorkInfo.State.FAILED -> {
-
-                                Toast.makeText(context, R.string.nc_last_moderator_leaving_room_warning, Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    context,
+                                    R.string.nc_last_moderator_leaving_room_warning,
+                                    Toast.LENGTH_LONG
+                                ).show()
                             }
                             else -> {
-
                             }
                         }
                     }
