@@ -37,6 +37,7 @@
     <string name="create_issue">Cruthaigh saincheist</string>
     <string name="custom">Saincheaptha</string>
     <string name="danger_zone">Crios Contúirte</string>
+    <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Scrios an avatar</string>
     <string name="deleted_conversation">Scriosadh comhrá %1$s</string>
     <string name="dnd">Ná cur as</string>
@@ -391,6 +392,8 @@
     <string name="nc_sent_an_audio_you">Sheol tú fuaim.</string>
     <string name="nc_sent_an_image" formatted="true">Sheol %1$s íomhá.</string>
     <string name="nc_sent_an_image_you">Sheol tú íomhá.</string>
+    <string name="nc_sent_deck_card" formatted="true">Sheol %1$s cárta deic</string>
+    <string name="nc_sent_deck_card_you">Sheol tú cárta deic</string>
     <string name="nc_sent_location" formatted="true">Sheol %1$s suíomh.</string>
     <string name="nc_sent_location_you">Sheol tú suíomh.</string>
     <string name="nc_sent_poll" formatted="true">Sheol %1$s vótaíocht.</string>
