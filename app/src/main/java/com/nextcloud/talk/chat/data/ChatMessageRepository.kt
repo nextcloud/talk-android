@@ -35,6 +35,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val lastReadMessageFlow: Flow<Int>
 
+    /**
+     * Used for informing the user of the underlying processing behind offline support, [String] is the key
+     * which is handled in a switch statement in ChatActivity.
+     */
+    val generalUIFlow: Flow<String>
+
     fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String)
 
     fun loadInitialMessages(withNetworkParams: Bundle): Job

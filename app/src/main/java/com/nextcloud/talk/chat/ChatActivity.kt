@@ -194,6 +194,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -444,7 +445,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
-            if (adapter?.isEmpty == true) {
+            if (adapter?.isEmpty == true && networkMonitor.isOnline.first()) {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
@@ -937,6 +938,20 @@ class ChatActivity :
                     scrollToAndCenterMessageWithId(lastRead.toString())
                 }
                 .collect()
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getGeneralUIFlow.onEach { key ->
+                when (key) {
+                    NO_OFFLINE_MESSAGES_FOUND -> {
+                        if (networkMonitor.isOnline.first().not()) {
+                            binding.offline.root.visibility = View.VISIBLE
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.collect()
         }
 
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
@@ -2810,14 +2825,10 @@ class ChatActivity :
             message1.timestamp
         )
         val isLessThan5Min = timeDifference > FIVE_MINUTES_IN_SECONDS
-        if (isSameDayMessages(message2, message1) &&
+        return isSameDayMessages(message2, message1) &&
             (message2.actorId == message1.actorId) &&
             (!isLessThan5Min) &&
             (message2.lastEditTimestamp == 0L || message1.lastEditTimestamp == 0L)
-        ) {
-            return true
-        }
-        return false
     }
 
     private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
@@ -3848,5 +3859,6 @@ class ChatActivity :
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
+        const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
     }
 }
