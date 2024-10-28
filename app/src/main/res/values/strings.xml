@@ -381,6 +381,7 @@ How to translate with transifex:
     <string name="fourHours">4 hours</string>
     <string name="thisWeek">This week</string>
     <string name="secondsAgo">seconds ago</string>
+    <string name="reset_status">Reset status</string>
 
     <!-- Conversations List-->
     <string name="nc_new_mention">Unread mentions</string>

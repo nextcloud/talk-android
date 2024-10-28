@@ -22,7 +22,7 @@
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
         android:paddingStart="8dp"
@@ -47,5 +47,18 @@
             android:textColor="?android:attr/textColorSecondary"
             tools:text="an hour" />
     </LinearLayout>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/reset_status_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp"
+        android:minHeight="48dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@android:color/darker_gray"
+        android:textColor="@android:color/holo_red_light"
+        android:text= "@string/reset_status"
+        android:textSize="14sp"
+        android:padding="8dp"/>
 
 </LinearLayout>
