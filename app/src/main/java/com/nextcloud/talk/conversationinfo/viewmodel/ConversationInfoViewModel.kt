@@ -18,6 +18,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -26,7 +27,8 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class ConversationInfoViewModel @Inject constructor(
-    private val chatNetworkDataSource: ChatNetworkDataSource
+    private val chatNetworkDataSource: ChatNetworkDataSource,
+    private val conversationsRepository: ConversationsRepository
 ) : ViewModel() {
 
     object LifeCycleObserver : DefaultLifecycleObserver {
@@ -198,6 +200,18 @@ class ConversationInfoViewModel @Inject constructor(
                     _getUnBanActorState.value = UnBanActorSuccessState
                 }
             })
+    }
+
+    suspend fun archiveConversation(user: User, token: String) {
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
+        conversationsRepository.archiveConversation(user.getCredentials(), url)
+    }
+
+    suspend fun unarchiveConversation(user: User, token: String) {
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
+        conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {

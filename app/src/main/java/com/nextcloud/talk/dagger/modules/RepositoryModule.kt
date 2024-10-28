@@ -70,8 +70,12 @@ import okhttp3.OkHttpClient
 class RepositoryModule {
 
     @Provides
-    fun provideConversationsRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationsRepository {
-        return ConversationsRepositoryImpl(ncApi, userProvider)
+    fun provideConversationsRepository(
+        ncApi: NcApi,
+        ncApiCoroutines: NcApiCoroutines,
+        userProvider: CurrentUserProviderNew
+    ): ConversationsRepository {
+        return ConversationsRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
     }
 
     @Provides

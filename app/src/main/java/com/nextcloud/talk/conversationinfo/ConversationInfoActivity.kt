@@ -22,8 +22,10 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
@@ -86,6 +88,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.Calendar
@@ -754,6 +757,40 @@ class ConversationInfoActivity :
             } else {
                 binding.clearConversationHistory.visibility = GONE
             }
+        }
+
+        if (!CapabilitiesUtil.isArchiveConversationsAvailable(spreedCapabilities)) {
+            binding.archiveConversationBtn.visibility = GONE
+        }
+
+        binding.archiveConversationBtn.setOnClickListener {
+            this.lifecycleScope.launch {
+                if (conversation!!.hasArchived) {
+                    viewModel.unarchiveConversation(conversationUser, conversationToken)
+                    binding.archiveConversationIcon
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.outline_archive_24, null))
+                    binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+                    binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
+                } else {
+                    viewModel.archiveConversation(conversationUser, conversationToken)
+                    binding.archiveConversationIcon
+                        .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+                    binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+                    binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
+                }
+            }
+        }
+
+        if (conversation!!.hasArchived) {
+            binding.archiveConversationIcon
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
+            binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
+            binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
+        } else {
+            binding.archiveConversationIcon
+                .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.outline_archive_24, null))
+            binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
+            binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
 
         if (!isDestroyed) {

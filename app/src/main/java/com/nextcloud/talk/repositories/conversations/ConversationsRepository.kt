@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.repositories.conversations
 
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import io.reactivex.Observable
 
 interface ConversationsRepository {
@@ -29,4 +30,8 @@ interface ConversationsRepository {
         val successful: Boolean
     )
     fun resendInvitations(token: String): Observable<ResendInvitationsResult>
+
+    suspend fun archiveConversation(credentials: String, url: String): GenericOverall
+
+    suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall
 }

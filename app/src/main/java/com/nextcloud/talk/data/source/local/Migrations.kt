@@ -9,6 +9,7 @@ package com.nextcloud.talk.data.source.local
 import android.util.Log
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.sql.SQLException
 
 @Suppress("MagicNumber")
 object Migrations {
@@ -37,6 +38,13 @@ object Migrations {
         override fun migrate(db: SupportSQLiteDatabase) {
             Log.i("Migrations", "Migrating 10 to 11")
             migrateToOfflineSupport(db)
+        }
+    }
+
+    val MIGRATION_11_12 = object : Migration(11, 12) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 11 to 12")
+            addArchiveConversations(db)
         }
     }
 
@@ -236,5 +244,16 @@ object Migrations {
             "CREATE INDEX IF NOT EXISTS `index_ChatBlocks_internalConversationId` " +
                 "ON `ChatBlocks` (`internalConversationId`)"
         )
+    }
+
+    fun addArchiveConversations(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD `hasArchived` INTEGER;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "hasArchived already exists")
+        }
     }
 }

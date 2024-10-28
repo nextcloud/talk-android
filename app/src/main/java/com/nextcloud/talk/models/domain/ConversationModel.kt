@@ -59,6 +59,7 @@ class ConversationModel(
     var recordingConsentRequired: Int = 0,
     var remoteServer: String? = null,
     var remoteToken: String? = null,
+    var hasArchived: Boolean = false,
 
     // attributes that don't come from API. This should be changed?!
     var password: String? = null
@@ -120,7 +121,8 @@ class ConversationModel(
                 callStartTime = conversation.callStartTime,
                 recordingConsentRequired = conversation.recordingConsentRequired,
                 remoteServer = conversation.remoteServer,
-                remoteToken = conversation.remoteToken
+                remoteToken = conversation.remoteToken,
+                hasArchived = conversation.hasArchived
             )
         }
     }
