@@ -22,7 +22,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     val messageFlow:
         Flow<
-            Pair<
+            Triple<
+                Boolean,
                 Boolean,
                 List<ChatMessage>
                 >

@@ -756,6 +756,8 @@ class ChatActivity :
                 is MessageInputViewModel.SendChatMessageSuccessState -> {
                     myFirstMessage = state.message
 
+                    removeUnreadMessagesMarker()
+
                     if (binding.unreadMessagesPopup.isShown == true) {
                         binding.unreadMessagesPopup.hide()
                     }
@@ -853,9 +855,10 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             chatViewModel.getMessageFlow
-                .onEach { pair ->
-                    val lookIntoFuture = pair.first
-                    var chatMessageList = pair.second
+                .onEach { triple ->
+                    val lookIntoFuture = triple.first
+                    val setUnreadMessagesMarker = triple.second
+                    var chatMessageList = triple.third
 
                     chatMessageList = handleSystemMessages(chatMessageList)
 
@@ -871,7 +874,8 @@ class ChatActivity :
                     }
 
                     if (lookIntoFuture) {
-                        processMessagesFromTheFuture(chatMessageList)
+                        Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
+                        processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
                     } else {
                         processMessagesNotFromTheFuture(chatMessageList)
                         collapseSystemMessages()
@@ -1008,6 +1012,13 @@ class ChatActivity :
 
         chatViewModel.recordTouchObserver.observe(this) { y ->
             binding.voiceRecordingLock.y -= y
+        }
+    }
+
+    private fun removeUnreadMessagesMarker() {
+        val index = adapter?.getMessagePositionById("-1")
+        if (index != null && index != -1) {
+            adapter?.items?.removeAt(index)
         }
     }
 
@@ -2653,13 +2664,22 @@ class ChatActivity :
         }
     }
 
-    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        val newMessagesAvailable = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-        val insertNewMessagesNotice = shouldInsertNewMessagesNotice(newMessagesAvailable, chatMessageList)
-        val scrollToEndOnUpdate = isScrolledToBottom()
+    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>, setUnreadMessagesMarker: Boolean) {
+        binding.scrollDownButton.visibility = View.GONE
 
-        if (insertNewMessagesNotice) {
-            updateUnreadMessageInfos(chatMessageList, scrollToEndOnUpdate)
+        val scrollToBottom: Boolean
+
+        if (setUnreadMessagesMarker) {
+            scrollToBottom = false
+            setUnreadMessageMarker(chatMessageList)
+        } else {
+            if (isScrolledToBottom()) {
+                scrollToBottom = true
+            } else {
+                scrollToBottom = false
+                binding.unreadMessagesPopup.show()
+                // here we have the problem that the chat jumps for every update
+            }
         }
 
         for (chatMessage in chatMessageList) {
@@ -2674,44 +2694,21 @@ class ChatActivity :
                     (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                 chatMessage.isFormerOneToOneConversation =
                     (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
-                it.addToStart(chatMessage, scrollToEndOnUpdate)
+                Log.d(TAG, "chatMessage to add:" + chatMessage.message)
+                it.addToStart(chatMessage, scrollToBottom)
             }
-        }
-
-        if (insertNewMessagesNotice && scrollToEndOnUpdate && adapter != null) {
-            scrollToFirstUnreadMessage()
         }
     }
 
     private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
 
-    private fun shouldInsertNewMessagesNotice(newMessagesAvailable: Boolean, chatMessageList: List<ChatMessage>) =
-        if (newMessagesAvailable) {
-            chatMessageList.any { it.actorId != conversationUser!!.userId }
-        } else {
-            false
-        }
-
-    private fun updateUnreadMessageInfos(chatMessageList: List<ChatMessage>, scrollToEndOnUpdate: Boolean) {
+    private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
         val unreadChatMessage = ChatMessage()
         unreadChatMessage.jsonMessageId = -1
         unreadChatMessage.actorId = "-1"
         unreadChatMessage.timestamp = chatMessageList[0].timestamp
         unreadChatMessage.message = context.getString(R.string.nc_new_messages)
         adapter?.addToStart(unreadChatMessage, false)
-
-        if (scrollToEndOnUpdate) {
-            binding.scrollDownButton.visibility = View.GONE
-            newMessagesCount = 0
-        } else {
-            if (binding.unreadMessagesPopup.isShown) {
-                newMessagesCount++
-            } else {
-                newMessagesCount = 1
-                binding.scrollDownButton.visibility = View.GONE
-                binding.unreadMessagesPopup.show()
-            }
-        }
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
@@ -2754,7 +2751,8 @@ class ChatActivity :
             return false
         }
 
-        if (!message1IsSystem && (
+        if (!message1IsSystem &&
+            (
                 (message1.actorType != message2.actorType) ||
                     (message2.actorId != message1.actorId)
                 )
@@ -2863,9 +2861,8 @@ class ChatActivity :
             TextUtils.isEmpty(messageRight.systemMessage) &&
             DateFormatter.isSameDay(messageLeft.createdAt, messageRight.createdAt)
 
-    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
-        return DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
-    }
+    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean =
+        DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val id = (
