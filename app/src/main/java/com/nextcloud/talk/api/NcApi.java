@@ -542,12 +542,11 @@ public interface NcApi {
     @GET
     Observable<RoomsOverall> getOpenConversations(@Header("Authorization") String authorization, @Url String url);
 
-
-    /*
-     * OCS Status API
-     */
     @GET
     Observable<StatusOverall> status(@Header("Authorization") String authorization, @Url String url);
+
+    @GET
+    Observable<StatusOverall> backupStatus(@Header("Authorization") String authorization, @Url String url);
 
     @GET
     Observable<ResponseBody> getPredefinedStatuses(@Header("Authorization") String authorization, @Url String url);
