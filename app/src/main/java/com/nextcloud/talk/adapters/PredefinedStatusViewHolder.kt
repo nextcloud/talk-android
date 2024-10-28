@@ -8,6 +8,7 @@
 package com.nextcloud.talk.adapters
 
 import android.content.Context
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.databinding.PredefinedStatusBinding
@@ -22,6 +23,8 @@ class PredefinedStatusViewHolder(private val binding: PredefinedStatusBinding) :
         binding.root.setOnClickListener { clickListener.onClick(status) }
         binding.icon.text = status.icon
         binding.name.text = status.message
+
+        binding.resetStatusButton.visibility = if(position == 0) View.VISIBLE else View.GONE
 
         if (status.clearAt == null) {
             binding.clearAt.text = context.getString(R.string.dontClear)
