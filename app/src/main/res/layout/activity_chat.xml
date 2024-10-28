@@ -99,6 +99,12 @@
         android:layout_weight="1">
 
         <include
+            android:id="@+id/offline"
+            layout="@layout/no_saved_messages_view"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <include
             android:id="@+id/lobby"
             layout="@layout/lobby_view"
             android:visibility="gone"

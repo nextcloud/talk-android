@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import android.util.Log
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
@@ -91,6 +92,11 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _lastReadMessageFlow:
         MutableSharedFlow<Int> = MutableSharedFlow()
 
+    override val generalUIFlow: Flow<String>
+        get() = _generalUIFlow
+
+    private val _generalUIFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -133,6 +139,7 @@ class OfflineFirstChatRepository @Inject constructor(
             } else {
                 if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
+                    _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
                 } else {
                     Log.d(
                         TAG,
