@@ -352,7 +352,6 @@ class CallActivity : CallBaseActivity() {
     private var reactionAnimator: ReactionAnimator? = null
     private var othersInCall = false
     private var isOneToOneConversation = false
-    private var isGroupConversation = false
 
     private lateinit var micInputAudioRecorder: AudioRecord
     private var micInputAudioRecordThread: Thread? = null
