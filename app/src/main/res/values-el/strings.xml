@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Επεξεργασία</string>
     <string name="appbar_search_in">Αναζήτηση στο %s</string>
+    <string name="archived">Αρχειοθετήθηκε</string>
     <string name="audio_output_dialog_headline">Έξοδος ήχου</string>
     <string name="audio_output_phone">Τηλέφωνο</string>
     <string name="audio_output_speaker">Μεγάφωνο</string>

@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Taisyti</string>
     <string name="appbar_search_in">Ieškoti %s</string>
+    <string name="archived">Archyvuota</string>
     <string name="audio_call">Garso skambutis</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Garso išvestis</string>

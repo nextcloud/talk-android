@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Muokkaa</string>
     <string name="appbar_search_in">Etsi kohteesta %s</string>
+    <string name="archived">Arkistoitu</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Äänen ulostulo</string>
     <string name="audio_output_phone">Puhelin</string>

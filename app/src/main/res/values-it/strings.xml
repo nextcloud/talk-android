@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Modifica</string>
     <string name="appbar_search_in">Cerca in %s</string>
+    <string name="archived">Archiviati</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Uscita audio</string>
     <string name="audio_output_phone">Telefono</string>

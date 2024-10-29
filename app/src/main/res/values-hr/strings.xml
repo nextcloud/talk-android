@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Uredi</string>
     <string name="appbar_search_in">Traži u %s</string>
+    <string name="archived">Arhivirano</string>
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Zvučnik</string>
     <string name="avatar">Avatar</string>

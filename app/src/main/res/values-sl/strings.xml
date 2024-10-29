@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Uredi</string>
     <string name="appbar_search_in">Poišči v %s</string>
+    <string name="archived">Arhivirano</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Odvod zvoka</string>
     <string name="audio_output_phone">Telefon</string>

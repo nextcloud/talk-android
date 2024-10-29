@@ -3,6 +3,7 @@
     <string name= "nc_edit">Szerkesztés</string>
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
+    <string name="archived">Archiválva</string>
     <string name="audio_call">Audio hívás</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Hangkimenet</string>

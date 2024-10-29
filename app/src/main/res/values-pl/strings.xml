@@ -4,6 +4,7 @@
     <string name="add_to_notes">Dodaj do Notatek</string>
     <string name="added_to_favorites">Dodano rozmowę %1$s do ulubionych</string>
     <string name="appbar_search_in">Szukaj w %s</string>
+    <string name="archived">Zarchiwizowane</string>
     <string name="audio_call">Rozmowa audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Wyjście audio</string>
