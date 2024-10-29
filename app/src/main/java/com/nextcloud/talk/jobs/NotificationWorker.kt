@@ -220,7 +220,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
-
     private fun handleCallPushMessage() {
         val userBeingCalled = userManager.getUserWithId(signatureVerification.user!!.id!!).blockingGet()
 

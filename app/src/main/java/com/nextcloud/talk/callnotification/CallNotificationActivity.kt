@@ -176,7 +176,7 @@ class CallNotificationActivity : CallBaseActivity() {
         binding!!.callAnswerVoiceOnlyView.setOnClickListener {
             Log.d(TAG, "accept call (voice only)")
             intent.putExtra(KEY_CALL_VOICE_ONLY, true)
-            intent.putExtra(KEY_ROOM_ONE_TO_ONE,isOneToOneCall)
+            intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
             proceedToCall()
         }
         binding!!.callAnswerCameraView.setOnClickListener {
@@ -194,7 +194,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun proceedToCall() {
         val callIntent = Intent(this, CallActivity::class.java)
-        intent.putExtra(KEY_ROOM_ONE_TO_ONE,isOneToOneCall)
+        intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
         startActivity(callIntent)
     }

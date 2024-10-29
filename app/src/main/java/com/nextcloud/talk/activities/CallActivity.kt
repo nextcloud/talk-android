@@ -682,7 +682,7 @@ class CallActivity : CallBaseActivity() {
             binding!!.hangupButton.setOnClickListener {
                 showPopupMenu()
             }
-        }else{
+        } else {
             if (isModerator) {
                 binding!!.hangupButton.setOnLongClickListener {
                     showPopupMenu()
