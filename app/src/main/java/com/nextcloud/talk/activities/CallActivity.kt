@@ -475,7 +475,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
-        initClickListeners(isModerator, isOneToOneConversation, isGroupConversation)
+        initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
         pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
             .setDuration(310)
@@ -619,11 +619,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initClickListeners(
-        isModerator: Boolean,
-        isOneToOneConversation: Boolean,
-        isGroupConversation: Boolean
-    ) {
+    private fun initClickListeners(isModerator: Boolean, isOneToOneConversation: Boolean) {
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
 
         binding!!.audioOutputButton.setOnClickListener {
