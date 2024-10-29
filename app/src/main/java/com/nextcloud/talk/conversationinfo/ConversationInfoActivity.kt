@@ -658,9 +658,17 @@ class ConversationInfoActivity :
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
                                 if (errorType == LeaveConversationWorker.ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT) {
-                                    Snackbar.make( binding.root, R.string.nc_last_moderator_leaving_room_warning, Snackbar.LENGTH_LONG ).show()
+                                    Snackbar.make(
+                                        binding.root,
+                                        R.string.nc_last_moderator_leaving_room_warning,
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
                                 } else {
-                                    Snackbar.make( binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG ).show()
+                                    Snackbar.make(
+                                        binding.root,
+                                        R.string.nc_common_error_sorry,
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
                                 }
                             }
                             else -> {
