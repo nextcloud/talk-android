@@ -70,15 +70,15 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "Failed to remove self from room", e)
                         val httpException = e as? HttpException
-                        val errorData = if (httpException?.code() == 400) {
+                        val errorData = if (httpException?.code() == HTTP_ERROR_CODE_400) {
                             Data.Builder()
                                 .putString("error_type", ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT)
                                 .build()
-                        }
-                        else {
+                        } else {
                             Data.Builder()
                                 .putString("error_type", ERROR_OTHER)
-                                .build() }
+                                .build()
+                        }
                         result.set(Result.failure(errorData))
                     }
 
@@ -97,5 +97,6 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
         private const val TAG = "LeaveConversationWorker"
         const val ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT = "NO_OTHER_MODERATORS_OR_OWNERS_LEFT"
         const val ERROR_OTHER = "ERROR_OTHER"
+        const val HTTP_ERROR_CODE_400 = 400
     }
 }
