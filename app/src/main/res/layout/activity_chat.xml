@@ -157,8 +157,9 @@
             app:textAutoLink="all"
             tools:visibility="visible" />
 
-        <com.nextcloud.ui.popupbubble.PopupBubble
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/unreadMessagesPopup"
+            style="@style/Widget.AppTheme.Button.ElevatedButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@id/typing_indicator_wrapper"
@@ -172,6 +173,8 @@
             android:minHeight="@dimen/min_size_clickable_area"
             android:text="@string/nc_new_messages"
             android:theme="@style/Button.Primary"
+            android:visibility="gone"
+            tools:visibility="visible"
             app:background="@color/colorPrimary"
             app:cornerRadius="@dimen/button_corner_radius"
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
