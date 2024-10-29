@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Bewerken</string>
     <string name="appbar_search_in">Zoeken in %s</string>
+    <string name="archived">Gearchiveerd</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Telefoon</string>

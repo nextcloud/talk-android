@@ -3,6 +3,7 @@
     <string name= "nc_edit">Aldatu</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
+    <string name="archived">Artxibatuta</string>
     <string name="audio_call">Audio deia</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio irteera</string>

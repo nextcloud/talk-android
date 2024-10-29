@@ -3,6 +3,7 @@
     <string name= "nc_edit">Редактирование</string>
     <string name="add_to_notes">Добавить в заметки</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="archived">В архиве</string>
     <string name="audio_call">Аудиозвонок</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудиовыход</string>

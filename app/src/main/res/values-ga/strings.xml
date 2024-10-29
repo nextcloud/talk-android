@@ -4,6 +4,7 @@
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
+    <string name="archived">Cartlannaithe</string>
     <string name="audio_call">Glao Fuaime</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Aschur fuaime</string>

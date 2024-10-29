@@ -4,6 +4,7 @@
     <string name="add_to_notes">افزودن به یادداشت‌ها</string>
     <string name="added_to_favorites">گفتگوی %1$sبه علاقه‌مندی‌ها افزوده شد</string>
     <string name="appbar_search_in">جستجو در %s</string>
+    <string name="archived">Archived</string>
     <string name="audio_call">تماس شنیداری</string>
     <string name="audio_output_bluetooth">بلوتوث</string>
     <string name="audio_output_dialog_headline">خروجی صدا</string>

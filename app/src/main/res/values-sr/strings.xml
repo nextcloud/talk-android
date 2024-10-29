@@ -4,6 +4,7 @@
     <string name="add_to_notes">Додај у Белешке</string>
     <string name="added_to_favorites">Разговор %1$s је додат у омиљене</string>
     <string name="appbar_search_in">Тражи у %s</string>
+    <string name="archived">Архивирано</string>
     <string name="audio_call">Гласовни позив</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудио излаз</string>

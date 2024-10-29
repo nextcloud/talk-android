@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Modìfica</string>
     <string name="appbar_search_in">Chirca in %s</string>
+    <string name="archived">Archiviadu</string>
     <string name="audio_output_phone">Telèfonu</string>
     <string name="audio_output_speaker">Altoparlante</string>
     <string name="avatar">Avatar</string>

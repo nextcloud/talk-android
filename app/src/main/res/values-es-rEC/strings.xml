@@ -2,6 +2,7 @@
   <resources>
     <string name= "nc_edit">Editar</string>
     <string name="appbar_search_in">Compartir en %s</string>
+    <string name="archived">Archivado</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
     <string name="audio_output_phone">Teléfono fijo</string>
