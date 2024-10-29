@@ -21,7 +21,6 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentTransaction
@@ -660,11 +659,12 @@ class ConversationInfoActivity :
                                 startActivity(intent)
                             }
                             WorkInfo.State.FAILED -> {
-                                Toast.makeText(
-                                    context,
-                                    R.string.nc_last_moderator_leaving_room_warning,
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                val errorType = workInfo.outputData.getString("error_type")
+                                if (errorType == LeaveConversationWorker.ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT) {
+                                    Snackbar.make( binding.root, R.string.nc_last_moderator_leaving_room_warning, Snackbar.LENGTH_LONG ).show()
+                                } else {
+                                    Snackbar.make( binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG ).show()
+                                }
                             }
                             else -> {
                             }

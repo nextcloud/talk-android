@@ -10,6 +10,7 @@ package com.nextcloud.talk.jobs
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
+import androidx.work.Data
 import androidx.work.ListenableWorker
 import androidx.work.WorkerParameters
 import androidx.work.impl.utils.futures.SettableFuture
@@ -28,6 +29,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @SuppressLint("RestrictedApi")
@@ -67,9 +69,17 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
 
                     override fun onError(e: Throwable) {
                         Log.e(TAG, "Failed to remove self from room", e)
-                        if (e.message?.contains("HTTP 400") == true) {
-                            result.set(Result.failure())
+                        val httpException = e as? HttpException
+                        val errorData = if (httpException?.code() == 400) {
+                            Data.Builder()
+                                .putString("error_type", ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT)
+                                .build()
                         }
+                        else {
+                            Data.Builder()
+                                .putString("error_type", ERROR_OTHER)
+                                .build() }
+                        result.set(Result.failure(errorData))
                     }
 
                     override fun onComplete() {
@@ -85,5 +95,7 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
 
     companion object {
         private const val TAG = "LeaveConversationWorker"
+        const val ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT = "NO_OTHER_MODERATORS_OR_OWNERS_LEFT"
+        const val ERROR_OTHER = "ERROR_OTHER"
     }
 }
