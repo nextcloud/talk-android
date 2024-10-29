@@ -36,6 +36,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import okhttp3.Cache
 import java.io.IOException
@@ -91,7 +92,7 @@ class CallNotificationActivity : CallBaseActivity() {
         notificationTimestamp = extras.getInt(BundleKeys.KEY_NOTIFICATION_TIMESTAMP)
         displayName = extras.getString(BundleKeys.KEY_CONVERSATION_DISPLAY_NAME, "")
         callFlag = extras.getInt(BundleKeys.KEY_CALL_FLAG)
-        isOneToOneCall = extras.getBoolean(BundleKeys.KEY_ROOM_ONE_TO_ONE)
+        isOneToOneCall = extras.getBoolean(KEY_ROOM_ONE_TO_ONE)
         conversationName = extras.getString(BundleKeys.KEY_CONVERSATION_NAME, "")
         internalUserId = extras.getLong(BundleKeys.KEY_INTERNAL_USER_ID)
     }
@@ -175,6 +176,7 @@ class CallNotificationActivity : CallBaseActivity() {
         binding!!.callAnswerVoiceOnlyView.setOnClickListener {
             Log.d(TAG, "accept call (voice only)")
             intent.putExtra(KEY_CALL_VOICE_ONLY, true)
+            intent.putExtra(KEY_ROOM_ONE_TO_ONE,isOneToOneCall)
             proceedToCall()
         }
         binding!!.callAnswerCameraView.setOnClickListener {
@@ -192,6 +194,7 @@ class CallNotificationActivity : CallBaseActivity() {
 
     private fun proceedToCall() {
         val callIntent = Intent(this, CallActivity::class.java)
+        intent.putExtra(KEY_ROOM_ONE_TO_ONE,isOneToOneCall)
         callIntent.putExtras(intent.extras!!)
         startActivity(callIntent)
     }

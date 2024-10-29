@@ -112,13 +112,12 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_PASSWORD
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FROM_NOTIFICATION_START_CALL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ROOM_GROUP
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MODIFIED_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
@@ -385,8 +384,7 @@ class CallActivity : CallBaseActivity() {
         canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
         canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
         isModerator = extras.getBoolean(KEY_IS_MODERATOR, false)
-        isOneToOneConversation = extras.getBoolean(KEY_IS_ROOM_ONE_TO_ONE, false)
-        isGroupConversation = extras.getBoolean(KEY_IS_ROOM_GROUP, false)
+        isOneToOneConversation = extras.getBoolean(KEY_ROOM_ONE_TO_ONE, false)
 
         if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
             isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
@@ -676,29 +674,23 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        if (isGroupConversation) {
-            binding!!.hangupButton.setOnClickListener {
-                hangup(true, null)
-            }
-        }
-
-        if (isOneToOneConversation && isModerator) {
-            binding!!.hangupButton.setOnClickListener {
-                showPopupMenu()
-            }
-        }
-
         if (isOneToOneConversation) {
             binding!!.hangupButton.setOnLongClickListener {
                 hangup(true, null)
                 true
             }
-        }
-
-        if (isModerator && isGroupConversation) {
-            binding!!.hangupButton.setOnLongClickListener {
+            binding!!.hangupButton.setOnClickListener {
                 showPopupMenu()
-                true
+            }
+        }else{
+            if (isModerator) {
+                binding!!.hangupButton.setOnLongClickListener {
+                    showPopupMenu()
+                    true
+                }
+            }
+            binding!!.hangupButton.setOnClickListener {
+                hangup(true, null)
             }
         }
 

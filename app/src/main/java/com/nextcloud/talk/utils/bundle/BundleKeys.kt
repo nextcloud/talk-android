@@ -80,6 +80,4 @@ object BundleKeys {
     const val KEY_CREDENTIALS: String = "KEY_CREDENTIALS"
     const val KEY_FIELD_MAP: String = "KEY_FIELD_MAP"
     const val KEY_CHAT_URL: String = "KEY_CHAT_URL"
-    const val KEY_IS_ROOM_ONE_TO_ONE: String = "KEY_IS_ROOM_ONE_TO_ONE"
-    const val KEY_IS_ROOM_GROUP: String = "KEY_IS_ROOM_GROUP"
 }

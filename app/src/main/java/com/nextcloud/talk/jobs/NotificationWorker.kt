@@ -220,6 +220,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
+
     private fun handleCallPushMessage() {
         val userBeingCalled = userManager.getUserWithId(signatureVerification.user!!.id!!).blockingGet()
 
@@ -231,7 +232,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
             bundle.putBoolean(KEY_FROM_NOTIFICATION_START_CALL, true)
 
-            val isOneToOneCall = conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            val isOneToOneCall = conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
             bundle.putBoolean(KEY_ROOM_ONE_TO_ONE, isOneToOneCall) // ggf change in Activity? not necessary????
             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversation.name)
