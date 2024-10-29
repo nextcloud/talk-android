@@ -24,7 +24,6 @@ public class UnreadNoticeMessageViewHolder extends MessageHolders.SystemMessageV
 
     @Override
     public void viewDetached() {
-//        messagesListAdapter.deleteById("-1");
     }
 
     @Override
