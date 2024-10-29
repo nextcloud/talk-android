@@ -291,7 +291,6 @@ class ChatActivity :
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var newMessagesCount = 0
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
@@ -706,8 +705,8 @@ class ChatActivity :
 
                     removeUnreadMessagesMarker()
 
-                    if (binding.unreadMessagesPopup.isShown == true) {
-                        binding.unreadMessagesPopup.hide()
+                    if (binding.unreadMessagesPopup.isShown) {
+                        binding.unreadMessagesPopup.visibility = View.GONE
                     }
                     binding.messagesListView.smoothScrollToPosition(0)
                 }
@@ -718,8 +717,8 @@ class ChatActivity :
                         if (code.toString().startsWith("2")) {
                             myFirstMessage = state.message
 
-                            if (binding.unreadMessagesPopup.isShown == true) {
-                                binding.unreadMessagesPopup.hide()
+                            if (binding.unreadMessagesPopup.isShown) {
+                                binding.unreadMessagesPopup.visibility = View.GONE
                             }
 
                             binding.messagesListView.smoothScrollToPosition(0)
@@ -964,7 +963,7 @@ class ChatActivity :
     }
 
     private fun removeUnreadMessagesMarker() {
-        val index = adapter?.getMessagePositionById("-1")
+        val index = adapter?.getMessagePositionById(UNREAD_MESSAGES_MARKER_ID.toString())
         if (index != null && index != -1) {
             adapter?.items?.removeAt(index)
         }
@@ -989,22 +988,9 @@ class ChatActivity :
 
         setupSwipeToReply()
 
-        binding.unreadMessagesPopup.setRecyclerView(binding.messagesListView)
-
-        binding.unreadMessagesPopup.setPopupBubbleListener { _ ->
-            if (newMessagesCount != 0) {
-                val scrollPosition = if (newMessagesCount - 1 < 0) {
-                    0
-                } else {
-                    newMessagesCount - 1
-                }
-                Handler().postDelayed(
-                    {
-                        binding.messagesListView.smoothScrollToPosition(scrollPosition)
-                    },
-                    NEW_MESSAGES_POPUP_BUBBLE_DELAY
-                )
-            }
+        binding.unreadMessagesPopup.setOnClickListener {
+            binding.messagesListView.smoothScrollToPosition(0)
+            binding.unreadMessagesPopup.visibility = View.GONE
         }
 
         binding.scrollDownButton.setOnClickListener {
@@ -1023,21 +1009,14 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0 &&
-                        !binding.unreadMessagesPopup.isShown
-                    ) {
-                        binding.scrollDownButton.visibility = View.VISIBLE
-                    } else {
+                    if (isScrolledToBottom()) {
+                        binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
-                    }
-
-                    if (newMessagesCount != 0 && layoutManager != null) {
-                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
-                            newMessagesCount = 0
-
-                            if (binding.unreadMessagesPopup.isShown) {
-                                binding.unreadMessagesPopup.hide()
-                            }
+                    } else {
+                        if (binding.unreadMessagesPopup.isShown) {
+                            binding.scrollDownButton.visibility = View.GONE
+                        } else {
+                            binding.scrollDownButton.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -2598,7 +2577,7 @@ class ChatActivity :
                 scrollToBottom = true
             } else {
                 scrollToBottom = false
-                binding.unreadMessagesPopup.show()
+                binding.unreadMessagesPopup.visibility = View.VISIBLE
                 // here we have the problem that the chat jumps for every update
             }
         }
@@ -2619,13 +2598,18 @@ class ChatActivity :
                 it.addToStart(chatMessage, scrollToBottom)
             }
         }
+
+        // workaround to jump back to unread messages marker
+        if (setUnreadMessagesMarker) {
+            scrollToFirstUnreadMessage()
+        }
     }
 
     private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
 
     private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
         val unreadChatMessage = ChatMessage()
-        unreadChatMessage.jsonMessageId = -1
+        unreadChatMessage.jsonMessageId = UNREAD_MESSAGES_MARKER_ID
         unreadChatMessage.actorId = "-1"
         unreadChatMessage.timestamp = chatMessageList[0].timestamp
         unreadChatMessage.message = context.getString(R.string.nc_new_messages)
@@ -2657,7 +2641,7 @@ class ChatActivity :
 
     private fun scrollToFirstUnreadMessage() {
         adapter?.let {
-            scrollToAndCenterMessageWithId("-1")
+            scrollToAndCenterMessageWithId(UNREAD_MESSAGES_MARKER_ID.toString())
         }
     }
 
@@ -3470,7 +3454,7 @@ class ChatActivity :
             CONTENT_TYPE_POLL -> message.isPoll()
             CONTENT_TYPE_LINK_PREVIEW -> message.isLinkPreview()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
-            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
+            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
 
             else -> false
