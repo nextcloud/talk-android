@@ -4,6 +4,7 @@
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
+    <string name="archive_conversation">Conversation Archiver</string>
     <string name="archived">Archivé</string>
     <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -629,6 +630,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
     <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
+    <string name="unarchive_conversation">Conversation Désarchiver </string>
+    <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unban">Retirer le ban</string>
     <string name="unread">Non lu</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>

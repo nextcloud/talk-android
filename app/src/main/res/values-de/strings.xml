@@ -4,6 +4,8 @@
     <string name="add_to_notes">Zu Notizen hinzufügen</string>
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
+    <string name="archive_conversation">Unterhaltung archivieren</string>
+    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter „Archiviert“, um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
     <string name="archived">Archiviert</string>
     <string name="audio_call">Audioanruf</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -628,6 +630,8 @@
     <string name="typing_are_typing">schreiben…</string>
     <string name="typing_is_typing">schreibt…</string>
     <string name="typing_x_others">und %1$s andere schreiben…</string>
+    <string name="unarchive_conversation">Unterhaltung dearchivieren</string>
+    <string name="unarchive_hint">Sobald eine Unterhaltung dearchiviert wurde, wird sie standardmäßig wieder angezeigt.</string>
     <string name="unban">Entsperren</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
