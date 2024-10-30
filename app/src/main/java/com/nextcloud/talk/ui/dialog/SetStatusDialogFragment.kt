@@ -39,6 +39,7 @@ import com.nextcloud.talk.databinding.DialogSetStatusBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.ClearAt
 import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
@@ -150,6 +151,37 @@ class SetStatusDialogFragment :
                     }
                 })
         }
+
+
+
+
+    }
+
+    fun backupStatus(){
+        ncApi.backupStatus(credentials, ApiUtils.getUrlForBackupStatus(currentUser?.baseUrl!!,currentUser?.userId!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<StatusOverall> {
+
+                override fun onSubscribe(d: Disposable) {
+
+                }
+
+                override fun onNext(statusOverall:StatusOverall) {
+                    val status = statusOverall
+                    Log.d("TAG","$status")
+                }
+
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error while fetching predefined statuses", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+
     }
 
     @SuppressLint("InflateParams")
@@ -400,6 +432,10 @@ class SetStatusDialogFragment :
                     // unused atm
                 }
             })
+    }
+
+    private fun getBackupStatus(){
+
     }
 
     private fun visualizeStatus(statusType: String) {
