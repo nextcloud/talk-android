@@ -320,7 +320,7 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     //tests
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.4")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.7.5")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation 'junit:junit:4.13.2'
