@@ -4,6 +4,7 @@
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
+    <string name="archived">مؤرشفة</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
     <string name="audio_output_dialog_headline">مَخِرج الصوت</string>

@@ -4,6 +4,8 @@
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
+    <string name="archive_conversation">Archive Conversation</string>
+    <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \'Archived\' to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -628,6 +630,8 @@
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_x_others">and %1$s others are typing …</string>
+    <string name="unarchive_conversation">Unarchive Conversation</string>
+    <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
     <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
