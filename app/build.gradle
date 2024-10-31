@@ -197,7 +197,7 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     implementation "com.vanniktech:emoji-google:0.18.0"
     implementation "androidx.emoji2:emoji2:${emojiVersion}"
     implementation "androidx.emoji2:emoji2-bundled:${emojiVersion}"
