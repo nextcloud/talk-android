@@ -156,7 +156,7 @@
     <string name="nc_delete_message">Удалить</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Сообщение удалено, но его содержимое могло быть прочитано другими службами</string>
     <string name="nc_deleted_user">Пользователь %1$s был удален</string>
-    <string name="nc_demote">Сместить с поста модератора</string>
+    <string name="nc_demote">Исключить из модераторов</string>
     <string name="nc_description_record_voice">Запись голосового сообщения</string>
     <string name="nc_description_send_message_button">Отправить сообщение</string>
     <string name="nc_diagnose_account_category_title">Текущая учётная запись</string>
