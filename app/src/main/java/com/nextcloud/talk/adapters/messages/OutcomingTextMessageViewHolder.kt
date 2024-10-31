@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -38,8 +39,11 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingTextMessageViewHolder(itemView: View) : OutcomingTextMessageViewHolder<ChatMessage>(itemView) {
-    private val binding: ItemCustomOutcomingTextMessageBinding = ItemCustomOutcomingTextMessageBinding.bind(itemView)
+class OutcomingTextMessageViewHolder(itemView: View) :
+    OutcomingTextMessageViewHolder<ChatMessage>(itemView),
+    AdjustableMessageHolderInterface {
+
+    override val binding: ItemCustomOutcomingTextMessageBinding = ItemCustomOutcomingTextMessageBinding.bind(itemView)
     private val realView: View = itemView
 
     @Inject

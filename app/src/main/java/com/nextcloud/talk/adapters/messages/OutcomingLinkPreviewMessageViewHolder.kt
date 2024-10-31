@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -38,9 +39,10 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
-    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload) {
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload),
+    AdjustableMessageHolderInterface {
 
-    private val binding: ItemCustomOutcomingLinkPreviewMessageBinding =
+    override val binding: ItemCustomOutcomingLinkPreviewMessageBinding =
         ItemCustomOutcomingLinkPreviewMessageBinding.bind(itemView)
 
     @Inject

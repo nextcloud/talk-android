@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2024 Sowjanya Kota<sowjanya.kch@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -43,9 +44,10 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingDeckCardViewHolder(
     outcomingView: View
-) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
+) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView),
+    AdjustableMessageHolderInterface {
 
-    private val binding: ItemCustomOutcomingDeckCardMessageBinding = ItemCustomOutcomingDeckCardMessageBinding.bind(
+    override val binding: ItemCustomOutcomingDeckCardMessageBinding = ItemCustomOutcomingDeckCardMessageBinding.bind(
         itemView
     )
 
