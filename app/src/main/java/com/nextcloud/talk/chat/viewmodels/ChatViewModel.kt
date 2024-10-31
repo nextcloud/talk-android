@@ -141,12 +141,12 @@ class ChatViewModel @Inject constructor(
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
 
-    object NoteToSelfNotAvaliableState : ViewState
-    open class NoteToSelfAvaliableState(val roomToken: String) : ViewState
+    object NoteToSelfNotAvailableState : ViewState
+    open class NoteToSelfAvailableState(val roomToken: String) : ViewState
 
-    private val _getNoteToSelfAvaliability: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfNotAvaliableState)
-    val getNoteToSelfAvaliability: LiveData<ViewState>
-        get() = _getNoteToSelfAvaliability
+    private val _getNoteToSelfAvailability: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfNotAvailableState)
+    val getNoteToSelfAvailability: LiveData<ViewState>
+        get() = _getNoteToSelfAvailability
 
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
@@ -732,9 +732,9 @@ class ChatViewModel @Inject constructor(
                         val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
                         ConversationUtils.isNoteToSelfConversation(model)
                     }
-                    _getNoteToSelfAvaliability.value = NoteToSelfAvaliableState(noteToSelf.token!!)
+                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token!!)
                 } catch (e: NoSuchElementException) {
-                    _getNoteToSelfAvaliability.value = NoteToSelfNotAvaliableState
+                    _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
                     Log.e(TAG, "Note to self not found $e")
                 }
             }
