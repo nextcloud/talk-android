@@ -163,6 +163,7 @@
             <trusting group="androidx.recyclerview"/>
             <trusting group="androidx.room"/>
             <trusting group="androidx.sqlite"/>
+            <trusting group="androidx.tracing"/>
             <trusting group="androidx.webkit"/>
             <trusting group="androidx.work"/>
          </trusted-key>
