@@ -4,6 +4,8 @@
     <string name="add_to_notes">Adicionar às Notas</string>
     <string name="added_to_favorites">Conversa adicionada %1$s para favoritos</string>
     <string name="appbar_search_in">Pesquisar em %s</string>
+    <string name="archive_conversation">Arquive conversa</string>
+    <string name="archive_hint">Depois que uma conversa for arquivada, ela ficará oculta por padrão. Selecione o filtro \'Arquivado\' para visualizar conversas arquivadas. Menções diretas ainda serão recebidas.</string>
     <string name="archived">Arquivado</string>
     <string name="audio_call">Chamada de áudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -38,6 +40,7 @@
     <string name="create_issue">Criar problema</string>
     <string name="custom">Personalizar</string>
     <string name="danger_zone">Zona de perigo</string>
+    <string name="deck_card_description">%1$s em %2$s</string>
     <string name="delete_avatar">Excluir avatar</string>
     <string name="deleted_conversation">Conversa excluída %1$s</string>
     <string name="dnd">Não perturbe</string>
@@ -392,6 +395,8 @@
     <string name="nc_sent_an_audio_you">Você enviou um áudio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou uma imagem.</string>
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviei uma carta deck</string>
+    <string name="nc_sent_deck_card_you">Você enviou uma carta de deck</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou um local.</string>
     <string name="nc_sent_poll" formatted="true">%1$s enviou uma enquete.</string>
@@ -625,6 +630,8 @@
     <string name="typing_are_typing">estão digitando…</string>
     <string name="typing_is_typing">está digitando …</string>
     <string name="typing_x_others">e %1$s outros estão digitando...</string>
+    <string name="unarchive_conversation">Conversa Desarquiva</string>
+    <string name="unarchive_hint">Uma vez que uma conversa não for marcada, ela será mostrada por padrão novamente.</string>
     <string name="unban">Proibir</string>
     <string name="unread">Não lido</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
