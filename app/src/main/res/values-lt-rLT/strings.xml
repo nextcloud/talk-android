@@ -326,6 +326,7 @@
     <string name="set_status">Nustatyti būseną</string>
     <string name="set_status_message">Nustatyti būsenos žinutę</string>
     <string name="share">Bendrinti</string>
+    <string name="shared_items_audio">Garso įrašai</string>
     <string name="shared_items_file">Failas</string>
     <string name="shared_items_media">Medija</string>
     <string name="shared_items_other">Kita</string>

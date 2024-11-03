@@ -4,6 +4,8 @@
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
+    <string name="archive_conversation">أرشفة المحادثة</string>
+    <string name="archive_hint">بمجرد أرشفة المحادثة، ستكون مخفية بشكل تلقائي. إختَر فلترة \"المؤرشف\" لعرض المحادثات المؤرشفة. سوف تظل الإشارات المباشرة متاحة.  </string>
     <string name="archived">مؤرشفة</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
@@ -628,6 +630,8 @@
     <string name="typing_are_typing">يكتبون ...</string>
     <string name="typing_is_typing">يكتب...</string>
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
+    <string name="unarchive_conversation">إرجاع المحادثة من الأرشيف</string>
+    <string name="unarchive_hint">بمجرد إعادة المحادثة من الأرشيف، سوف تظهر مجدداً بشكل تلقائي.</string>
     <string name="unban">رفع الحظر</string>
     <string name="unread">غير مقروء</string>
     <string name="upload_new_avatar_from_device">رفع صورة رمزية جديدة للملف الشخصي من الجهاز</string>
