@@ -97,7 +97,7 @@
     <string name="nc_all_ok_operation">Hepsi tamam!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
-    <string name="nc_bluetooth_permission_hint">Bluetooth hoparlörleri etkinleştirmek için lütfen \"Yakındaki aygıtlar\" izni verin.</string>
+    <string name="nc_bluetooth_permission_hint">Bluetooth hoparlörleri kullanıma almak için lütfen \"Yakındaki aygıtlar\" izni verin.</string>
     <string name="nc_call_button_content_description_advanced">Gelişmiş çağrı seçenekleri</string>
     <string name="nc_call_button_content_description_answer_video_call">Görüntülü çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_answer_voice_only">Yalnızca sesli çağrı olarak yanıtla</string>
@@ -141,7 +141,7 @@
     <string name="nc_common_copy">Kopyala</string>
     <string name="nc_common_copy_success">Panoya kopyalandı</string>
     <string name="nc_common_create">Ekle</string>
-    <string name="nc_common_disabled">Devre dışı</string>
+    <string name="nc_common_disabled">Kullanımdan kaldırılmış</string>
     <string name="nc_common_dismiss">Yok say</string>
     <string name="nc_common_error_sorry">Ne yazık ki bir sorun çıktı!</string>
     <string name="nc_common_set">Ayarla</string>
@@ -177,7 +177,7 @@
     <string name="nc_diagnose_account_server">Sunucu</string>
     <string name="nc_diagnose_account_server_notification_app">Sunucu bildirimi uygulaması kurulmuş mu?</string>
     <string name="nc_diagnose_account_user_name">Kullanıcı adı</string>
-    <string name="nc_diagnose_account_user_status_enabled">Kullanıcı durumu etkinleştirilmiş mi?</string>
+    <string name="nc_diagnose_account_user_status_enabled">Kullanıcı durumu kullanıma alınmış mı?</string>
     <string name="nc_diagnose_android_version_title">Android sürümü</string>
     <string name="nc_diagnose_app_category_title">Uygulama</string>
     <string name="nc_diagnose_app_name_title">Uygulama adı</string>
@@ -203,8 +203,8 @@
     <string name="nc_diagnose_latest_push_registration_at_server_fail">Henüz sunucuda kaydedilmemiş</string>
     <string name="nc_diagnose_meta_category_title">Üst veri bilgileri</string>
     <string name="nc_diagnose_meta_system_report_date">Sistem raporu hazırlama</string>
-    <string name="nc_diagnose_notification_calls_channel_permission">Çağrı bildirimi kanalı etkin mi?</string>
-    <string name="nc_diagnose_notification_messages_channel_permission">İleti bildirimi kanalı etkin mi?</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Çağrı bildirimi kanalı kullanıma alınmış mı?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">İleti bildirimi kanalı kullanıma alınmış mı?</string>
     <string name="nc_diagnose_notification_permission">Bildirim izinleri</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
     <string name="nc_diagnose_server_talk_version">Sunucunun Konuş sürümü</string>
@@ -218,7 +218,7 @@
     <string name="nc_dialog_outdated_client">Uygulama sürümü çok eski</string>
     <string name="nc_dialog_outdated_client_description">Uygulama çok eski ve artık bu sunucu tarafından desteklenmiyor. Lütfen güncelleyin.</string>
     <string name="nc_dialog_outdated_client_option_update">Güncelle</string>
-    <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden etkinleştirmek ya da silmek ister misiniz?</string>
+    <string name="nc_dialog_reauth_or_delete">Bu hesabı yeniden kullanıma almak ya da silmek ister misiniz?</string>
     <string name="nc_dialog_save_to_storage_content">Bu ortamı depolama alanına kaydetmek, aygıtınızdaki diğer uygulamaların da buna erişmesine izin verir.</string>
     <string name="nc_dialog_save_to_storage_continue">İlerlemek istiyor musunuz?</string>
     <string name="nc_dialog_save_to_storage_no">Hayır</string>
@@ -258,8 +258,8 @@
     <string name="nc_groups">Gruplar</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_guest_access">Konuk erişimi</string>
-    <string name="nc_guest_access_allow_failed">Konuk erişimi etkinleştirilemez ya da devre dışı bırakılamaz.</string>
-    <string name="nc_guest_access_allow_summary">Bu seçenek etkinleştirildiğinde, konuklar bu görüşmeyi herkese açık bir katılma bağlantısı ile paylaşabilir.</string>
+    <string name="nc_guest_access_allow_failed">Konuk erişimi kullanıma alınamaz ya da kullanımdan kaldırılamaz.</string>
+    <string name="nc_guest_access_allow_summary">Bu seçenek kullanıma alındığında, konuklar bu görüşmeyi herkese açık bir katılma bağlantısı ile paylaşabilir.</string>
     <string name="nc_guest_access_allow_title">Konuklar katılabilsin</string>
     <string name="nc_guest_access_password_dialog_hint">Bir parola yazın</string>
     <string name="nc_guest_access_password_dialog_title">Konuk erişimi parolası</string>
@@ -325,7 +325,7 @@
     <string name="nc_notification_channel_uploads">Yüklemeler</string>
     <string name="nc_notification_channel_uploads_description">Yükleme ilerlemesi bildirilsin</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Bildirim izni ve pil ayarları, bildirimleri almak için doğru şekilde ayarlanmış. Yine de bildirim almakta sorun yaşıyorsanız lütfen çağrı ve iletiler için bildirim kanallarının etkin olup olmadığını denetleyin. Daha fazla yardım almak için DontKillMyApp.com adresine ya da sorun giderme kontrol listesine bakabilirsiniz. Bunlar işe yaramazsa lütfen tanılama ekranına gidin ve bir hata bildirimi gönderin.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Bildirim izni ve pil ayarları, bildirimleri almak için doğru şekilde ayarlanmış. Yine de bildirim almakta sorun yaşıyorsanız lütfen çağrı ve iletiler için bildirim kanallarının kullanıma alınmış olup olmadığını denetleyin. Daha fazla yardım almak için DontKillMyApp.com adresine ya da sorun giderme kontrol listesine bakabilirsiniz. Bunlar işe yaramazsa lütfen tanılama ekranına gidin ve bir hata bildirimi gönderin.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Bildirim sorunlarını çözme</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
     <string name="nc_notify_me_mention">Anmalar bildirilsin</string>
@@ -353,9 +353,9 @@
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
     <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı ile davet edilebilir.</string>
-    <string name="nc_push_disabled">Anında bildirimler devre dışı</string>
+    <string name="nc_push_disabled">Anında bildirimler kullanımdan kaldırılmış</string>
     <string name="nc_push_to_talk">Bas-konuş</string>
-    <string name="nc_push_to_talk_desc">Mikrofon devre dışı iken, Bas-konuş üzerine tıklayıp basılı tutun</string>
+    <string name="nc_push_to_talk_desc">Mikrofon kullanımdan kaldırılmışken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_refresh">Yenlle</string>
     <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remote_audio_off">Uzak ses kapalı</string>
@@ -421,7 +421,7 @@
     <string name="nc_settings_call_ringtone">Çağrılar</string>
     <string name="nc_settings_diagnose_subtitle">Ayarları denetlemek için tanılama ekranını açın ya da bir hata bildirimi oluşturun</string>
     <string name="nc_settings_diagnose_title">Tanılama</string>
-    <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi devre dışı bırakır (garanti edilmez)</string>
+    <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi kullanımdan kaldırır (garanti edilmez)</string>
     <string name="nc_settings_incognito_keyboard_title">Tuş takımı gizliliği</string>
     <string name="nc_settings_no_ringtone">Ses yok</string>
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Konuş uygulaması kurulu değil</string>
@@ -540,7 +540,7 @@
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
     <string name="record_active_info">Çağrı kaydediliyor</string>
     <string name="record_cancel_start">Kaydı başlatmaktan vazgeç</string>
-    <string name="record_failed_info">Kayıt yapılamadı. lütfen yöneticinizle görüşün.</string>
+    <string name="record_failed_info">Kayıt yapılamadı. lütfen yöneticiniz ile görüşün.</string>
     <string name="record_start_description">Kaydı başlat</string>
     <string name="record_stop_confirm_message">Kaydı durdurmak istediğinize emin misiniz?</string>
     <string name="record_stop_confirm_title">Çağrı kaydını durdur</string>
