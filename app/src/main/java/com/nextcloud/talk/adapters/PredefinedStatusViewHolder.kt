@@ -24,7 +24,7 @@ class PredefinedStatusViewHolder(private val binding: PredefinedStatusBinding) :
         binding.icon.text = status.icon
         binding.name.text = status.message
 
-        binding.resetStatusButton.visibility = if(position == 0) View.VISIBLE else View.GONE
+        binding.resetStatusButton.visibility = if (position == 0) View.VISIBLE else View.GONE
 
         if (status.clearAt == null) {
             binding.clearAt.text = context.getString(R.string.dontClear)

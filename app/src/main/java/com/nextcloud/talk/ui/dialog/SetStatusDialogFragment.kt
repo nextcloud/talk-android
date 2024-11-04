@@ -115,73 +115,72 @@ class SetStatusDialogFragment :
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
             credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)!!
-            ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl!!))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<ResponseBody> {
-
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(responseBody: ResponseBody) {
-                        val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
-                            responseBody
-                                .string(),
-                            PredefinedStatusOverall::class.java
-                        )
-                        predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
-
-                        if (currentStatus?.messageIsPredefined == true &&
-                            currentStatus?.messageId?.isNotEmpty() == true
-                        ) {
-                            val messageId = currentStatus!!.messageId
-                            selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
-                        }
-
-                        adapter.notifyDataSetChanged()
-                    }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error while fetching predefined statuses", e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
+            checkBackupStatus()
+            fetchPredefinedStatuses()
         }
-
-
-
-
     }
 
-    fun backupStatus(){
-        ncApi.backupStatus(credentials, ApiUtils.getUrlForBackupStatus(currentUser?.baseUrl!!,currentUser?.userId!!))
+    private fun fetchPredefinedStatuses() {
+        ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<ResponseBody> {
+                override fun onSubscribe(d: Disposable) {}
+
+                override fun onNext(responseBody: ResponseBody) {
+                    val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
+                        responseBody.string(),
+                        PredefinedStatusOverall::class.java
+                    )
+                    predefinedStatusOverall.ocs?.data?.let { predefinedStatusesList.addAll(it) }
+
+                    if (currentStatus?.messageIsPredefined == true && currentStatus?.messageId?.isNotEmpty() == true) {
+                        val messageId = currentStatus!!.messageId
+                        selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
+                    }
+
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error while fetching predefined statuses", e)
+                }
+
+                override fun onComplete() {}
+            })
+    }
+
+    private fun checkBackupStatus() {
+        ncApi.backupStatus(credentials, ApiUtils.getUrlForBackupStatus(currentUser?.baseUrl!!, currentUser?.userId!!))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<StatusOverall> {
 
                 override fun onSubscribe(d: Disposable) {
-
                 }
 
-                override fun onNext(statusOverall:StatusOverall) {
-                    val status = statusOverall
-                    Log.d("TAG","$status")
+                override fun onNext(statusOverall: StatusOverall) {
+                    if (statusOverall.ocs?.meta?.statusCode == 200) {
+                        val status = statusOverall.ocs?.data
+                        if (status?.messageIsPredefined == false) {
+                            val backupPredefinedStatus = PredefinedStatus(
+                                status?.userId!!,
+                                status.icon,
+                                status.message!!,
+                                ClearAt(type = "period", time = status.clearAt.toString())
+                            )
+                            predefinedStatusesList.add(0, backupPredefinedStatus)
+                        }
+                    }
                 }
-
 
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Error while fetching predefined statuses", e)
                 }
 
                 override fun onComplete() {
-                    // unused atm
                 }
             })
-
     }
 
     @SuppressLint("InflateParams")
@@ -432,10 +431,6 @@ class SetStatusDialogFragment :
                     // unused atm
                 }
             })
-    }
-
-    private fun getBackupStatus(){
-
     }
 
     private fun visualizeStatus(statusType: String) {
