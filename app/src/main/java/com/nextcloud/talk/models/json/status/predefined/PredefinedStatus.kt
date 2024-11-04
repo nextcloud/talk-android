@@ -18,7 +18,7 @@ data class PredefinedStatus(
     @JsonField(name = ["id"])
     var id: String,
     @JsonField(name = ["icon"])
-    var icon: String,
+    var icon: String?,
     @JsonField(name = ["message"])
     var message: String,
     @JsonField(name = ["clearAt"])

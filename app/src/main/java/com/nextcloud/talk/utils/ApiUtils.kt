@@ -483,8 +483,8 @@ object ApiUtils {
     }
 
     @JvmStatic
-    fun getUrlForBackupStatus(baseUrl:String, userId:String):String{
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/_$userId"
+    fun getUrlForBackupStatus(baseUrl: String, userId: String): String {
+        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/statuses/_$userId"
     }
 
     fun getUrlForSetStatusType(baseUrl: String): String {

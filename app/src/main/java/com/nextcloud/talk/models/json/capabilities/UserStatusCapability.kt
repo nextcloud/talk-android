@@ -25,5 +25,5 @@ data class UserStatusCapability(
     var supportsEmoji: Boolean
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(false, false,false)
+    constructor() : this(false, false, false)
 }
