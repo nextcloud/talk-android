@@ -17,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -25,6 +26,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -49,6 +51,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
 
@@ -71,6 +75,9 @@ class MessageActionsDialog(
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     private lateinit var dialogMessageActionsBinding: DialogMessageActionsBinding
 
@@ -122,11 +129,15 @@ class MessageActionsDialog(
         )
         chatActivity.chatViewModel.getNoteToSelfAvailability.observe(this) { state ->
             when (state) {
-                is ChatViewModel.NoteToSelfAvailableState -> {
-                    initMenuAddToNote(
-                        !message.isDeleted && !ConversationUtils.isNoteToSelfConversation(currentConversation),
-                        state.roomToken
-                    )
+                is ChatViewModel.NoteToSelfAvaliableState -> {
+                    this.lifecycleScope.launch {
+                        initMenuAddToNote(
+                            !message.isDeleted &&
+                                !ConversationUtils.isNoteToSelfConversation(currentConversation) &&
+                                networkMonitor.isOnline.first(),
+                            state.roomToken
+                        )
+                    }
                 }
                 else -> {
                     initMenuAddToNote(
@@ -136,39 +147,47 @@ class MessageActionsDialog(
             }
         }
 
-        initMenuItemTranslate(
-            !message.isDeleted &&
+        this.lifecycleScope.launch {
+            initMenuItemTranslate(
+                !message.isDeleted &&
+                    ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
+                    CapabilitiesUtil.isTranslationsSupported(spreedCapabilities) &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuEditorDetails(message.lastEditTimestamp!! != 0L && !message.isDeleted)
+            initMenuReplyToMessage(message.replyable && hasChatPermission)
+            initMenuReplyPrivately(
+                message.replyable &&
+                    hasUserId(user) &&
+                    hasUserActorId(message) &&
+                    currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuEditMessage(isMessageEditable)
+            initMenuDeleteMessage(showMessageDeletionButton && networkMonitor.isOnline.first())
+            initMenuForwardMessage(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
-                CapabilitiesUtil.isTranslationsSupported(spreedCapabilities)
-        )
-        initMenuEditorDetails(message.lastEditTimestamp!! != 0L && !message.isDeleted)
-        initMenuReplyToMessage(message.replyable && hasChatPermission)
-        initMenuReplyPrivately(
-            message.replyable &&
-                hasUserId(user) &&
-                hasUserActorId(message) &&
-                currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
-        )
-        initMenuEditMessage(isMessageEditable)
-        initMenuDeleteMessage(showMessageDeletionButton)
-        initMenuForwardMessage(
-            ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
-                !(message.isDeletedCommentMessage || message.isDeleted)
-        )
-        initMenuRemindMessage(
-            !message.isDeleted &&
-                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
-                currentConversation!!.remoteServer.isNullOrEmpty()
-        )
-        initMenuMarkAsUnread(
-            message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
-                ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType()
-        )
-        initMenuShare(messageHasFileAttachment || messageHasRegularText)
-        initMenuItemOpenNcApp(
-            ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
-        )
-        initMenuItemSave(message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)
+                    !(message.isDeletedCommentMessage || message.isDeleted) &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuRemindMessage(
+                !message.isDeleted &&
+                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
+                    currentConversation!!.remoteServer.isNullOrEmpty() &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuMarkAsUnread(
+                message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
+                    ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuShare(messageHasFileAttachment || messageHasRegularText && networkMonitor.isOnline.first())
+            initMenuItemOpenNcApp(
+                ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType() &&
+                    networkMonitor.isOnline.first()
+            )
+            initMenuItemSave(message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)
+        }
     }
 
     override fun onStart() {

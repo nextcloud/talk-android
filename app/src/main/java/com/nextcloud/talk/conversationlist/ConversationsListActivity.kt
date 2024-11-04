@@ -21,8 +21,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.ConnectivityManager
-import android.net.NetworkCapabilities
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -43,6 +41,7 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuItemCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -136,6 +135,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
@@ -307,6 +307,7 @@ class ConversationsListActivity :
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
                 showNetworkErrorDialog(!isOnline)
+                handleUI(isOnline)
             }.collect()
         }
 
@@ -891,15 +892,10 @@ class ConversationsListActivity :
         binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    @Suppress("ReturnCount")
-    private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val network = connectivityManager.activeNetwork ?: return false
-        val capabilities = connectivityManager.getNetworkCapabilities(network) ?: return false
-        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+    private fun handleUI(show: Boolean) {
+        binding.floatingActionButton.isEnabled = show
+        binding.searchText.isEnabled = show
+        binding.searchText.isVisible = show
     }
 
     private fun sortConversations(conversationItems: MutableList<AbstractFlexibleItem<*>>) {
@@ -1345,18 +1341,20 @@ class ConversationsListActivity :
     }
 
     override fun onItemLongClick(position: Int) {
-        if (showShareToScreen) {
-            Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
-        } else {
-            val clickedItem: Any? = adapter!!.getItem(position)
-            if (clickedItem != null && clickedItem is ConversationItem) {
-                val conversation = clickedItem.model
-                conversationsListBottomDialog = ConversationsListBottomDialog(
-                    this,
-                    userManager.currentUser.blockingGet(),
-                    conversation
-                )
-                conversationsListBottomDialog!!.show()
+        this.lifecycleScope.launch {
+            if (showShareToScreen || !networkMonitor.isOnline.first()) {
+                Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
+            } else {
+                val clickedItem: Any? = adapter!!.getItem(position)
+                if (clickedItem != null && clickedItem is ConversationItem) {
+                    val conversation = clickedItem.model
+                    conversationsListBottomDialog = ConversationsListBottomDialog(
+                        this@ConversationsListActivity,
+                        userManager.currentUser.blockingGet(),
+                        conversation
+                    )
+                    conversationsListBottomDialog!!.show()
+                }
             }
         }
     }

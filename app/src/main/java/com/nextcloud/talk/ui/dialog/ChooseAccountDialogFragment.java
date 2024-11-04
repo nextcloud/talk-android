@@ -10,7 +10,11 @@ package com.nextcloud.talk.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -261,6 +265,29 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.dialog.colorDialogMenuText(binding.manageSettings);
     }
 
+    // Would have preferred to use NetworkMonitor but java with kotlin flows is ugly
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager == null) {
+            return false;
+        }
+
+        Network network = connectivityManager.getActiveNetwork();
+        if (network == null) {
+            return false;
+        }
+
+        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
+        if (capabilities == null) {
+            return false;
+        }
+
+        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
+            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
+    }
+
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
@@ -316,6 +343,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         }
         binding.accountsList.setHasFixedSize(true);
         binding.accountsList.setAdapter(adapter);
+
+        if (!isNetworkAvailable(getContext())) {
+            binding.addAccount.setVisibility(View.GONE);
+        }
     }
 
     public static ChooseAccountDialogFragment newInstance() {

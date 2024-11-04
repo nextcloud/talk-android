@@ -114,6 +114,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
@@ -237,6 +238,9 @@ class ChatActivity :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     lateinit var chatViewModel: ChatViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
@@ -2928,6 +2932,14 @@ class ChatActivity :
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
+
+                this.lifecycleScope.launch {
+                    networkMonitor.isOnline.onEach { isOnline ->
+                        conversationVoiceCallMenuItem?.isVisible = isOnline
+                        searchItem?.isVisible = isOnline
+                        conversationVideoMenuItem?.isVisible = isOnline
+                    }.collect()
+                }
 
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
                     Handler().post {
