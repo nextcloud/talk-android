@@ -45,6 +45,7 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil.isRestoreStatusAvailable
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.vanniktech.emoji.EmojiPopup
@@ -115,7 +116,9 @@ class SetStatusDialogFragment :
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
             credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)!!
-            checkBackupStatus()
+            if (isRestoreStatusAvailable(currentUser!!)) {
+                checkBackupStatus()
+            }
             fetchPredefinedStatuses()
         }
     }
