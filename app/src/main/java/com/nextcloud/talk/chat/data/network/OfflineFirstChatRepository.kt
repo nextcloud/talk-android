@@ -53,7 +53,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override val messageFlow:
         Flow<
-            Pair<
+            Triple<
+                Boolean,
                 Boolean,
                 List<ChatMessage>
                 >
@@ -62,7 +63,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private val _messageFlow:
         MutableSharedFlow<
-            Pair<
+            Triple<
+                Boolean,
                 Boolean,
                 List<ChatMessage>
                 >
@@ -142,6 +144,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 // set up field map to load the newest messages
                 val fieldMap = getFieldMap(
                     lookIntoFuture = false,
+                    timeout = 0,
                     includeLastKnown = true,
                     setReadMarker = true,
                     lastKnown = null
@@ -229,6 +232,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val fieldMap = getFieldMap(
                 lookIntoFuture = false,
+                timeout = 0,
                 includeLastKnown = false,
                 setReadMarker = true,
                 lastKnown = beforeMessageId.toInt()
@@ -254,12 +258,17 @@ class OfflineFirstChatRepository @Inject constructor(
 
             var fieldMap = getFieldMap(
                 lookIntoFuture = true,
+                // timeout for first longpoll is 0, so "unread message" info is not shown if there were
+                // initially no messages but someone writes us in the first 30 seconds.
+                timeout = 0,
                 includeLastKnown = false,
                 setReadMarker = true,
                 lastKnown = initialMessageId.toInt()
             )
 
             val networkParams = Bundle()
+
+            var showUnreadMessagesMarker = true
 
             while (true) {
                 if (!monitor.isOnline.first() || itIsPaused) {
@@ -272,8 +281,14 @@ class OfflineFirstChatRepository @Inject constructor(
                     val resultsFromSync = sync(networkParams)
                     if (!resultsFromSync.isNullOrEmpty()) {
                         val chatMessages = resultsFromSync.map(ChatMessageEntity::asModel)
-                        val pair = Pair(true, chatMessages)
-                        _messageFlow.emit(pair)
+
+                        val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
+                        showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
+
+                        val triple = Triple(true, showUnreadMessagesMarker, chatMessages)
+                        _messageFlow.emit(triple)
+                    } else {
+                        Log.d(TAG, "resultsFromSync are null or empty")
                     }
 
                     updateUiForLastCommonRead()
@@ -283,10 +298,13 @@ class OfflineFirstChatRepository @Inject constructor(
                     // update field map vars for next cycle
                     fieldMap = getFieldMap(
                         lookIntoFuture = true,
+                        timeout = 30,
                         includeLastKnown = false,
                         setReadMarker = true,
                         lastKnown = newestMessage
                     )
+
+                    showUnreadMessagesMarker = false
                 }
             }
         }
@@ -325,6 +343,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private fun getFieldMap(
         lookIntoFuture: Boolean,
+        timeout: Int,
         includeLastKnown: Boolean,
         setReadMarker: Boolean,
         lastKnown: Int?,
@@ -342,7 +361,7 @@ class OfflineFirstChatRepository @Inject constructor(
             fieldMap["lastCommonReadId"] = it
         }
 
-        fieldMap["timeout"] = if (lookIntoFuture) 30 else 0
+        fieldMap["timeout"] = timeout
         fieldMap["limit"] = limit
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
@@ -357,6 +376,7 @@ class OfflineFirstChatRepository @Inject constructor(
         if (loadFromServer) {
             val fieldMap = getFieldMap(
                 lookIntoFuture = false,
+                timeout = 0,
                 includeLastKnown = true,
                 setReadMarker = false,
                 lastKnown = messageId.toInt(),
@@ -664,8 +684,8 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         if (list.isNotEmpty()) {
-            val pair = Pair(false, list)
-            _messageFlow.emit(pair)
+            val triple = Triple(false, false, list)
+            _messageFlow.emit(triple)
         }
     }
 
@@ -690,8 +710,8 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         if (list.isNotEmpty()) {
-            val pair = Pair(false, list)
-            _messageFlow.emit(pair)
+            val triple = Triple(false, false, list)
+            _messageFlow.emit(triple)
         }
     }
 

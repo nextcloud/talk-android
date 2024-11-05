@@ -296,7 +296,6 @@ class ChatActivity :
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
     var pullChatMessagesPending = false
-    var newMessagesCount = 0
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
@@ -756,8 +755,10 @@ class ChatActivity :
                 is MessageInputViewModel.SendChatMessageSuccessState -> {
                     myFirstMessage = state.message
 
-                    if (binding.unreadMessagesPopup.isShown == true) {
-                        binding.unreadMessagesPopup.hide()
+                    removeUnreadMessagesMarker()
+
+                    if (binding.unreadMessagesPopup.isShown) {
+                        binding.unreadMessagesPopup.visibility = View.GONE
                     }
                     binding.messagesListView.smoothScrollToPosition(0)
                 }
@@ -768,8 +769,8 @@ class ChatActivity :
                         if (code.toString().startsWith("2")) {
                             myFirstMessage = state.message
 
-                            if (binding.unreadMessagesPopup.isShown == true) {
-                                binding.unreadMessagesPopup.hide()
+                            if (binding.unreadMessagesPopup.isShown) {
+                                binding.unreadMessagesPopup.visibility = View.GONE
                             }
 
                             binding.messagesListView.smoothScrollToPosition(0)
@@ -853,9 +854,10 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             chatViewModel.getMessageFlow
-                .onEach { pair ->
-                    val lookIntoFuture = pair.first
-                    var chatMessageList = pair.second
+                .onEach { triple ->
+                    val lookIntoFuture = triple.first
+                    val setUnreadMessagesMarker = triple.second
+                    var chatMessageList = triple.third
 
                     chatMessageList = handleSystemMessages(chatMessageList)
 
@@ -871,7 +873,8 @@ class ChatActivity :
                     }
 
                     if (lookIntoFuture) {
-                        processMessagesFromTheFuture(chatMessageList)
+                        Log.d(TAG, "chatMessageList.size in getMessageFlow:" + chatMessageList.size)
+                        processMessagesFromTheFuture(chatMessageList, setUnreadMessagesMarker)
                     } else {
                         processMessagesNotFromTheFuture(chatMessageList)
                         collapseSystemMessages()
@@ -1011,6 +1014,13 @@ class ChatActivity :
         }
     }
 
+    private fun removeUnreadMessagesMarker() {
+        val index = adapter?.getMessagePositionById(UNREAD_MESSAGES_MARKER_ID.toString())
+        if (index != null && index != -1) {
+            adapter?.items?.removeAt(index)
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onResume() {
         super.onResume()
@@ -1030,22 +1040,9 @@ class ChatActivity :
 
         setupSwipeToReply()
 
-        binding.unreadMessagesPopup.setRecyclerView(binding.messagesListView)
-
-        binding.unreadMessagesPopup.setPopupBubbleListener { _ ->
-            if (newMessagesCount != 0) {
-                val scrollPosition = if (newMessagesCount - 1 < 0) {
-                    0
-                } else {
-                    newMessagesCount - 1
-                }
-                Handler().postDelayed(
-                    {
-                        binding.messagesListView.smoothScrollToPosition(scrollPosition)
-                    },
-                    NEW_MESSAGES_POPUP_BUBBLE_DELAY
-                )
-            }
+        binding.unreadMessagesPopup.setOnClickListener {
+            binding.messagesListView.smoothScrollToPosition(0)
+            binding.unreadMessagesPopup.visibility = View.GONE
         }
 
         binding.scrollDownButton.setOnClickListener {
@@ -1064,21 +1061,14 @@ class ChatActivity :
                 super.onScrollStateChanged(recyclerView, newState)
 
                 if (newState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
-                    if (layoutManager!!.findFirstCompletelyVisibleItemPosition() > 0 &&
-                        !binding.unreadMessagesPopup.isShown
-                    ) {
-                        binding.scrollDownButton.visibility = View.VISIBLE
-                    } else {
+                    if (isScrolledToBottom()) {
+                        binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
-                    }
-
-                    if (newMessagesCount != 0 && layoutManager != null) {
-                        if (layoutManager!!.findFirstCompletelyVisibleItemPosition() < newMessagesCount) {
-                            newMessagesCount = 0
-
-                            if (binding.unreadMessagesPopup.isShown) {
-                                binding.unreadMessagesPopup.hide()
-                            }
+                    } else {
+                        if (binding.unreadMessagesPopup.isShown) {
+                            binding.scrollDownButton.visibility = View.GONE
+                        } else {
+                            binding.scrollDownButton.visibility = View.VISIBLE
                         }
                     }
                 }
@@ -2653,13 +2643,22 @@ class ChatActivity :
         }
     }
 
-    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>) {
-        val newMessagesAvailable = (adapter?.itemCount ?: 0) > 0 && chatMessageList.isNotEmpty()
-        val insertNewMessagesNotice = shouldInsertNewMessagesNotice(newMessagesAvailable, chatMessageList)
-        val scrollToEndOnUpdate = isScrolledToBottom()
+    private fun processMessagesFromTheFuture(chatMessageList: List<ChatMessage>, setUnreadMessagesMarker: Boolean) {
+        binding.scrollDownButton.visibility = View.GONE
 
-        if (insertNewMessagesNotice) {
-            updateUnreadMessageInfos(chatMessageList, scrollToEndOnUpdate)
+        val scrollToBottom: Boolean
+
+        if (setUnreadMessagesMarker) {
+            scrollToBottom = false
+            setUnreadMessageMarker(chatMessageList)
+        } else {
+            if (isScrolledToBottom()) {
+                scrollToBottom = true
+            } else {
+                scrollToBottom = false
+                binding.unreadMessagesPopup.visibility = View.VISIBLE
+                // here we have the problem that the chat jumps for every update
+            }
         }
 
         for (chatMessage in chatMessageList) {
@@ -2674,44 +2673,26 @@ class ChatActivity :
                     (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
                 chatMessage.isFormerOneToOneConversation =
                     (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
-                it.addToStart(chatMessage, scrollToEndOnUpdate)
+                Log.d(TAG, "chatMessage to add:" + chatMessage.message)
+                it.addToStart(chatMessage, scrollToBottom)
             }
         }
 
-        if (insertNewMessagesNotice && scrollToEndOnUpdate && adapter != null) {
+        // workaround to jump back to unread messages marker
+        if (setUnreadMessagesMarker) {
             scrollToFirstUnreadMessage()
         }
     }
 
     private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
 
-    private fun shouldInsertNewMessagesNotice(newMessagesAvailable: Boolean, chatMessageList: List<ChatMessage>) =
-        if (newMessagesAvailable) {
-            chatMessageList.any { it.actorId != conversationUser!!.userId }
-        } else {
-            false
-        }
-
-    private fun updateUnreadMessageInfos(chatMessageList: List<ChatMessage>, scrollToEndOnUpdate: Boolean) {
+    private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
         val unreadChatMessage = ChatMessage()
-        unreadChatMessage.jsonMessageId = -1
+        unreadChatMessage.jsonMessageId = UNREAD_MESSAGES_MARKER_ID
         unreadChatMessage.actorId = "-1"
         unreadChatMessage.timestamp = chatMessageList[0].timestamp
         unreadChatMessage.message = context.getString(R.string.nc_new_messages)
         adapter?.addToStart(unreadChatMessage, false)
-
-        if (scrollToEndOnUpdate) {
-            binding.scrollDownButton.visibility = View.GONE
-            newMessagesCount = 0
-        } else {
-            if (binding.unreadMessagesPopup.isShown) {
-                newMessagesCount++
-            } else {
-                newMessagesCount = 1
-                binding.scrollDownButton.visibility = View.GONE
-                binding.unreadMessagesPopup.show()
-            }
-        }
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
@@ -2739,7 +2720,7 @@ class ChatActivity :
 
     private fun scrollToFirstUnreadMessage() {
         adapter?.let {
-            scrollToAndCenterMessageWithId("-1")
+            scrollToAndCenterMessageWithId(UNREAD_MESSAGES_MARKER_ID.toString())
         }
     }
 
@@ -2754,7 +2735,8 @@ class ChatActivity :
             return false
         }
 
-        if (!message1IsSystem && (
+        if (!message1IsSystem &&
+            (
                 (message1.actorType != message2.actorType) ||
                     (message2.actorId != message1.actorId)
                 )
@@ -2863,9 +2845,8 @@ class ChatActivity :
             TextUtils.isEmpty(messageRight.systemMessage) &&
             DateFormatter.isSameDay(messageLeft.createdAt, messageRight.createdAt)
 
-    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean {
-        return DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
-    }
+    private fun isSameDayMessages(message1: ChatMessage, message2: ChatMessage): Boolean =
+        DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
         val id = (
@@ -3555,7 +3536,7 @@ class ChatActivity :
             CONTENT_TYPE_POLL -> message.isPoll()
             CONTENT_TYPE_LINK_PREVIEW -> message.isLinkPreview()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
-            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
+            CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
             CONTENT_TYPE_TEMP -> message.id == "-3"
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
@@ -3765,28 +3746,16 @@ class ChatActivity :
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val CONTENT_TYPE_DECK_CARD: Byte = 8
         private const val CONTENT_TYPE_TEMP: Byte = 9
-        private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
+        private const val UNREAD_MESSAGES_MARKER_ID = -1
+        private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
-        private const val HTTP_CODE_OK: Int = 200
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
-        private const val OBJECT_MESSAGE: String = "{object}"
-        private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
-        private const val MINIMUM_VOICE_RECORD_TO_STOP: Int = 200
-        private const val VOICE_RECORD_CANCEL_SLIDER_X: Int = -50
-        private const val VOICE_RECORD_LOCK_BUTTON_Y: Int = -130
         private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
-        private const val VOICE_MESSAGE_FILE_SUFFIX = ".mp3"
-
-        // Samplingrate 22050 was chosen because somehow 44100 failed to playback on safari when recorded on android.
-        // Please test with firefox, chrome, safari and mobile clients if changing anything regarding the sound.
-        private const val VOICE_MESSAGE_SAMPLING_RATE = 22050
-        private const val VOICE_MESSAGE_ENCODING_BIT_RATE = 32000
-        private const val VOICE_MESSAGE_CHANNELS = 1
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val FULLY_OPAQUE_INT: Int = 255
@@ -3795,40 +3764,21 @@ class ChatActivity :
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val TOOLBAR_AVATAR_RATIO = 1.5
         private const val STATUS_SIZE_IN_DP = 9f
-        private const val HTTP_CODE_NOT_MODIFIED = 304
-        private const val HTTP_CODE_PRECONDITION_FAILED = 412
         private const val HTTP_BAD_REQUEST = 400
         private const val HTTP_FORBIDDEN = 403
         private const val HTTP_NOT_FOUND = 404
-        private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
-        private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MESSAGE_PULL_LIMIT = 100
-        private const val PAGE_SIZE = 100
         private const val INVITE_LENGTH = 6
         private const val ACTOR_LENGTH = 6
-        private const val ANIMATION_DURATION: Long = 750
-        private const val LOOKING_INTO_FUTURE_TIMEOUT = 30
         private const val CHUNK_SIZE: Int = 10
         private const val ONE_SECOND_IN_MILLIS = 1000
-        private const val SAMPLE_RATE = 8000
-        private const val VOICE_RECORDING_LOCK_ANIMATION_DURATION = 500
-        private const val AUDIO_VALUE_MAX = 40
-        private const val AUDIO_VALUE_MIN = 20
-        private const val AUDIO_VALUE_SLEEP: Long = 50
         private const val WHITESPACE = " "
         private const val COMMA = ", "
         private const val TYPING_INDICATOR_ANIMATION_DURATION = 200L
         private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
         private const val TYPING_INDICATOR_POSITION_VISIBLE = -18f
         private const val TYPING_INDICATOR_POSITION_HIDDEN = -1f
-        private const val TYPING_DURATION_TO_SEND_NEXT_TYPING_MESSAGE = 10000L
-        private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
-        private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
-        private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
-        private const val CALL_STARTED_ID = -2
         private const val MILISEC_15: Long = 15
-        private const val LINEBREAK = "\n"
-        private const val CURSOR_KEY = "_cursor"
         private const val CURRENT_AUDIO_MESSAGE_KEY = "CURRENT_AUDIO_MESSAGE"
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
