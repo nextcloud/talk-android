@@ -91,13 +91,13 @@ import com.nextcloud.talk.adapters.messages.IncomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingVoiceMessageViewHolder
 import com.nextcloud.talk.adapters.messages.MessagePayload
+import com.nextcloud.talk.adapters.messages.OutcomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLinkPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingLocationMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPollMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingPreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingTextMessageViewHolder
 import com.nextcloud.talk.adapters.messages.OutcomingVoiceMessageViewHolder
-import com.nextcloud.talk.adapters.messages.OutcomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.PreviewMessageInterface
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
@@ -540,7 +540,6 @@ class ChatActivity :
 
         messageInputViewModel.messageQueueFlow.observe(this) { list ->
             list.forEachIndexed { _, qMsg ->
-                Log.d("Julius", "Message recieved: ${qMsg.message}")
                 val temporaryChatMessage = ChatMessage()
                 temporaryChatMessage.jsonMessageId = -3
                 temporaryChatMessage.actorId = "-3"
@@ -565,7 +564,6 @@ class ChatActivity :
                     pos = adapter?.getMessagePositionById("-3")
                 }
                 adapter?.notifyDataSetChanged()
-                Log.d("Julius", "End i: $i")
             }
         }
 
@@ -664,13 +662,13 @@ class ChatActivity :
                                 withCredentials = credentials!!,
                                 withUrl = urlForChatting
                             )
+                            messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                         }
                     } else {
                         Log.w(
                             TAG,
                             "currentConversation was null in observer ChatViewModel.GetCapabilitiesInitialLoadState"
                         )
-                        messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                     }
                 }
 
