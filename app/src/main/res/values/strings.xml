@@ -505,9 +505,7 @@ How to translate with transifex:
     <string name="nc_delete_message">Delete</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
-    <string name="nc_last_moderator_leaving_room_warning">
-        You need to promote a new moderator before you can leave the conversation
-    </string>
+    <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
 
     <string name="share">Share</string>
     <string name="send_to">Send to</string>
