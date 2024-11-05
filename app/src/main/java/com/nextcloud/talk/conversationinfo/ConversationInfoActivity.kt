@@ -25,7 +25,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.afollestad.materialdialogs.LayoutMode.WRAP_CONTENT
@@ -632,17 +634,48 @@ class ConversationInfoActivity :
     }
 
     private fun leaveConversation() {
-        workerData?.let {
-            WorkManager.getInstance(context).enqueue(
-                OneTimeWorkRequest.Builder(
-                    LeaveConversationWorker::class
-                        .java
-                ).setInputData(it).build()
-            )
+        workerData?.let { data ->
+            val workRequest = OneTimeWorkRequest.Builder(LeaveConversationWorker::class.java)
+                .setInputData(data)
+                .build()
 
-            val intent = Intent(context, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)
+            WorkManager.getInstance(context)
+                .enqueueUniqueWork(
+                    "leave_conversation_work",
+                    ExistingWorkPolicy.REPLACE,
+                    workRequest
+                )
+
+            WorkManager.getInstance(context).getWorkInfoByIdLiveData(workRequest.id)
+                .observe(this, { workInfo: WorkInfo? ->
+                    if (workInfo != null) {
+                        when (workInfo.state) {
+                            WorkInfo.State.SUCCEEDED -> {
+                                val intent = Intent(context, MainActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                startActivity(intent)
+                            }
+                            WorkInfo.State.FAILED -> {
+                                val errorType = workInfo.outputData.getString("error_type")
+                                if (errorType == LeaveConversationWorker.ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT) {
+                                    Snackbar.make(
+                                        binding.root,
+                                        R.string.nc_last_moderator_leaving_room_warning,
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
+                                } else {
+                                    Snackbar.make(
+                                        binding.root,
+                                        R.string.nc_common_error_sorry,
+                                        Snackbar.LENGTH_LONG
+                                    ).show()
+                                }
+                            }
+                            else -> {
+                            }
+                        }
+                    }
+                })
         }
     }
 
