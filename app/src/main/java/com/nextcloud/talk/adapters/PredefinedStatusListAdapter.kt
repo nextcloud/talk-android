@@ -16,7 +16,8 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 
 class PredefinedStatusListAdapter(
     private val clickListener: PredefinedStatusClickListener,
-    val context: Context
+    val context: Context,
+    var isBackupStatusAvailable: Boolean
 ) : RecyclerView.Adapter<PredefinedStatusViewHolder>() {
     internal var list: List<PredefinedStatus> = emptyList()
 
@@ -26,7 +27,7 @@ class PredefinedStatusListAdapter(
     }
 
     override fun onBindViewHolder(holder: PredefinedStatusViewHolder, position: Int) {
-        holder.bind(list[position], clickListener, context)
+        holder.bind(list[position], clickListener, context, isBackupStatusAvailable)
     }
 
     override fun getItemCount(): Int {

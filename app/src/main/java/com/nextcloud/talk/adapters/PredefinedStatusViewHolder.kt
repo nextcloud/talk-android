@@ -17,14 +17,18 @@ import com.nextcloud.talk.utils.DisplayUtils
 
 private const val ONE_SECOND_IN_MILLIS = 1000
 
+@Suppress("DEPRECATION")
 class PredefinedStatusViewHolder(private val binding: PredefinedStatusBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(status: PredefinedStatus, clickListener: PredefinedStatusClickListener, context: Context) {
+    fun bind(
+        status: PredefinedStatus,
+        clickListener: PredefinedStatusClickListener,
+        context: Context,
+        isBackupStatusAvailable: Boolean
+    ) {
         binding.root.setOnClickListener { clickListener.onClick(status) }
         binding.icon.text = status.icon
         binding.name.text = status.message
-
-        binding.resetStatusButton.visibility = if (position == 0) View.VISIBLE else View.GONE
 
         if (status.clearAt == null) {
             binding.clearAt.text = context.getString(R.string.dontClear)
@@ -41,6 +45,12 @@ class PredefinedStatusViewHolder(private val binding: PredefinedStatusBinding) :
                 if (clearAt.time.equals("day")) {
                     binding.clearAt.text = context.getString(R.string.today)
                 }
+            }
+        }
+        if (isBackupStatusAvailable) {
+            binding.resetStatusButton.visibility = if (position == 0) View.VISIBLE else View.GONE
+            if (position == 0) {
+                binding.clearAt.text = context.getString(R.string.previously_set)
             }
         }
     }

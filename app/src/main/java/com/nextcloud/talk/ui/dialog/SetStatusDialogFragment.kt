@@ -94,6 +94,7 @@ class SetStatusDialogFragment :
     private lateinit var adapter: PredefinedStatusListAdapter
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
+    private var isBackupStatusAvailable = false
 
     @Inject
     lateinit var ncApi: NcApi
@@ -130,6 +131,7 @@ class SetStatusDialogFragment :
             .subscribe(object : Observer<ResponseBody> {
                 override fun onSubscribe(d: Disposable) {}
 
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onNext(responseBody: ResponseBody) {
                     val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
                         responseBody.string(),
@@ -162,18 +164,20 @@ class SetStatusDialogFragment :
                 override fun onSubscribe(d: Disposable) {
                 }
 
+                @SuppressLint("NotifyDataSetChanged")
                 override fun onNext(statusOverall: StatusOverall) {
                     if (statusOverall.ocs?.meta?.statusCode == 200) {
                         val status = statusOverall.ocs?.data
-                        if (status?.messageIsPredefined == false) {
-                            val backupPredefinedStatus = PredefinedStatus(
-                                status?.userId!!,
-                                status.icon,
-                                status.message!!,
-                                ClearAt(type = "period", time = status.clearAt.toString())
-                            )
-                            predefinedStatusesList.add(0, backupPredefinedStatus)
-                        }
+                        isBackupStatusAvailable = true
+                        val backupPredefinedStatus = PredefinedStatus(
+                            status?.userId!!,
+                            status.icon,
+                            status.message!!,
+                            ClearAt(type = "period", time = status.clearAt.toString())
+                        )
+                        adapter.isBackupStatusAvailable = true
+                        predefinedStatusesList.add(0, backupPredefinedStatus)
+                        adapter.notifyDataSetChanged()
                     }
                 }
 
@@ -202,7 +206,7 @@ class SetStatusDialogFragment :
 
         setupCurrentStatus()
 
-        adapter = PredefinedStatusListAdapter(this, requireContext())
+        adapter = PredefinedStatusListAdapter(this, requireContext(), isBackupStatusAvailable)
         adapter.list = predefinedStatusesList
 
         binding.predefinedStatusList.adapter = adapter
