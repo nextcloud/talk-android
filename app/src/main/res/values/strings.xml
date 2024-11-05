@@ -827,5 +827,6 @@ How to translate with transifex:
     <string name="archived">Archived</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \'Archived\' to view archived conversations. Direct mentions will still be received.</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
+    <string name="previously_set">Previously set</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
 </resources>
