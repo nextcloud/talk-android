@@ -285,8 +285,8 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        val pair = Triple(true, showUnreadMessagesMarker, chatMessages)
-                        _messageFlow.emit(pair)
+                        val triple = Triple(true, showUnreadMessagesMarker, chatMessages)
+                        _messageFlow.emit(triple)
                     } else {
                         Log.d(TAG, "resultsFromSync are null or empty")
                     }
@@ -684,8 +684,8 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         if (list.isNotEmpty()) {
-            val pair = Triple(false, false, list)
-            _messageFlow.emit(pair)
+            val triple = Triple(false, false, list)
+            _messageFlow.emit(triple)
         }
     }
 
@@ -710,8 +710,8 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         if (list.isNotEmpty()) {
-            val pair = Triple(false, false, list)
-            _messageFlow.emit(pair)
+            val triple = Triple(false, false, list)
+            _messageFlow.emit(triple)
         }
     }
 
