@@ -250,7 +250,7 @@ object Migrations {
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +
-                    "ADD `hasArchived` INTEGER;"
+                    "ADD COLUMN hasArchived INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "hasArchived already exists")
