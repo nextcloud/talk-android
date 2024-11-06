@@ -98,7 +98,6 @@ class SetStatusDialogFragment :
     private lateinit var popup: EmojiPopup
     private var isBackupStatusAvailable = false
 
-
     @Inject
     lateinit var ncApi: NcApi
 
@@ -284,8 +283,11 @@ class SetStatusDialogFragment :
         }
     }
 
-    override fun revertStatus(){
-        ncApi.revertStatus(credentials, ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId))
+    override fun revertStatus()  {
+        ncApi.revertStatus(
+            credentials,
+            ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId)
+        )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
@@ -294,9 +296,9 @@ class SetStatusDialogFragment :
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
-                override fun onNext(genericOverall:GenericOverall) {
-                    Log.d(TAG,"$genericOverall")
-                    if(genericOverall.ocs?.meta?.statusCode == 200){
+                override fun onNext(genericOverall: GenericOverall) {
+                    Log.d(TAG, "$genericOverall")
+                    if (genericOverall.ocs?.meta?.statusCode == 200) {
                         Snackbar.make(
                             binding.root,
                             R.string.status_reverted,
@@ -316,8 +318,6 @@ class SetStatusDialogFragment :
                 override fun onComplete() {
                 }
             })
-
-
     }
 
     private fun setupGeneralStatusOptions() {
