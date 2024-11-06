@@ -172,7 +172,7 @@ class SetStatusDialogFragment :
                         backupStatus = statusOverall.ocs?.data!!
                         isBackupStatusAvailable = true
                         val backupPredefinedStatus = PredefinedStatus(
-                            backupStatus?.userId!!,
+                            backupStatus.userId!!,
                             backupStatus.icon,
                             backupStatus.message!!,
                             ClearAt(type = "period", time = backupStatus.clearAt.toString())
