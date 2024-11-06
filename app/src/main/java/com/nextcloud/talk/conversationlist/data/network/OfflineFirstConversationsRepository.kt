@@ -10,7 +10,6 @@ package com.nextcloud.talk.conversationlist.data.network
 
 import android.util.Log
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
-import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -107,7 +106,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
         var conversationsFromSync: List<ConversationEntity>? = null
 
         if (!monitor.isOnline.first()) {
-            Log.d(OfflineFirstChatRepository.TAG, "Device is offline, can't load conversations from server")
+            Log.d(TAG, "Device is offline, can't load conversations from server")
             return null
         }
 

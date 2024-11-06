@@ -49,7 +49,7 @@ interface ChatNetworkDataSource {
     ): Observable<GenericOverall>
 
     fun leaveRoom(credentials: String, url: String): Observable<GenericOverall>
-    fun sendChatMessage(
+    suspend fun sendChatMessage(
         credentials: String,
         url: String,
         message: CharSequence,
@@ -57,7 +57,7 @@ interface ChatNetworkDataSource {
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Observable<ChatOverallSingleMessage>
+    ): ChatOverallSingleMessage
 
     fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>

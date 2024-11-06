@@ -11,6 +11,7 @@ import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
@@ -75,4 +76,16 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Destroys unused resources.
      */
     fun handleChatOnBackPress()
+
+    suspend fun sendChatMessage(
+        credentials: String,
+        url: String,
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Flow<Result<ChatOverallSingleMessage>>
+
+    suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 }

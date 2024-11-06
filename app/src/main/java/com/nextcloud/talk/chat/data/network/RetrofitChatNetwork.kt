@@ -136,7 +136,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
             it
         }
 
-    override fun sendChatMessage(
+    override suspend fun sendChatMessage(
         credentials: String,
         url: String,
         message: CharSequence,
@@ -144,8 +144,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Observable<ChatOverallSingleMessage> =
-        ncApi.sendChatMessage(
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.sendChatMessage(
             credentials,
             url,
             message,
@@ -153,9 +153,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
             replyTo,
             sendWithoutNotification,
             referenceId
-        ).map {
-            it
-        }
+        )
 
     override fun pullChatMessages(
         credentials: String,
