@@ -830,4 +830,5 @@ How to translate with transifex:
     <string name="previously_set">Previously set</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="status_reverted">Status Reverted</string>
+    <string name="automatic_status_set">Your status was set automatically</string>
 </resources>

@@ -177,6 +177,7 @@ class SetStatusDialogFragment :
                             backupStatus.message!!,
                             ClearAt(type = "period", time = backupStatus.clearAt.toString())
                         )
+                        binding.automaticStatus.visibility = View.VISIBLE
                         adapter.isBackupStatusAvailable = true
                         predefinedStatusesList.add(0, backupPredefinedStatus)
                         adapter.notifyDataSetChanged()
@@ -305,6 +306,7 @@ class SetStatusDialogFragment :
                                 R.string.status_reverted,
                                 Snackbar.LENGTH_LONG
                             ).show()
+                            binding.automaticStatus.visibility = View.GONE
                             adapter.isBackupStatusAvailable = false
                             predefinedStatusesList.removeAt(0)
                             adapter.notifyDataSetChanged()
