@@ -49,7 +49,7 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 12,
+    version = 13,
     autoMigrations = [
         AutoMigration(from = 9, to = 11)
     ],
@@ -114,7 +114,8 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_7_8,
                     Migrations.MIGRATION_8_9,
                     Migrations.MIGRATION_10_11,
-                    Migrations.MIGRATION_11_12
+                    Migrations.MIGRATION_11_12,
+                    Migrations.MIGRATION_12_13
                 )
                 .allowMainThreadQueries()
                 .addCallback(
@@ -128,8 +129,8 @@ abstract class TalkDatabase : RoomDatabase() {
                 .build()
         }
 
-        private fun getCipherMigrationHook(): SQLiteDatabaseHook {
-            return object : SQLiteDatabaseHook {
+        private fun getCipherMigrationHook(): SQLiteDatabaseHook =
+            object : SQLiteDatabaseHook {
                 override fun preKey(database: SQLiteDatabase) {
                     // unused atm
                 }
@@ -140,6 +141,5 @@ abstract class TalkDatabase : RoomDatabase() {
                     Log.i(TAG, "DB cipher_migrate END")
                 }
             }
-        }
     }
 }

@@ -63,7 +63,8 @@ class ChatViewModel @Inject constructor(
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userProvider: CurrentUserProviderNew
-) : ViewModel(), DefaultLifecycleObserver {
+) : ViewModel(),
+    DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -478,12 +479,12 @@ class ChatViewModel @Inject constructor(
         chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
                     disposableSet.add(d)
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
+                override fun onNext(genericOverall: ChatOverallSingleMessage) {
                     // unused atm
                 }
 
@@ -609,9 +610,7 @@ class ChatViewModel @Inject constructor(
         cachedFile.delete()
     }
 
-    fun getCurrentVoiceRecordFile(): String {
-        return mediaRecorderManager.currentVoiceRecordFile
-    }
+    fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
     fun uploadFile(fileUri: String, room: String, displayName: String, metaData: String) {
         try {

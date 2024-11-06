@@ -117,9 +117,12 @@ data class ChatMessage(
 
     var isTempMessage: Boolean = false,
 
-    var tempMessageId: Int = -1
+    var tempMessageId: Int = -1,
 
-) : MessageContentType, MessageContentType.Image {
+    var referenceId: String? = null
+
+) : MessageContentType,
+    MessageContentType.Image {
 
     var extractedUrlToPreview: String? = null
 
@@ -240,8 +243,8 @@ data class ChatMessage(
         }
     }
 
-    fun getCalculateMessageType(): MessageType {
-        return if (!TextUtils.isEmpty(systemMessage)) {
+    fun getCalculateMessageType(): MessageType =
+        if (!TextUtils.isEmpty(systemMessage)) {
             MessageType.SYSTEM_MESSAGE
         } else if (isVoiceMessage) {
             MessageType.VOICE_MESSAGE
@@ -256,19 +259,15 @@ data class ChatMessage(
         } else {
             MessageType.REGULAR_TEXT_MESSAGE
         }
-    }
 
-    override fun getId(): String {
-        return jsonMessageId.toString()
-    }
+    override fun getId(): String = jsonMessageId.toString()
 
-    override fun getText(): String {
-        return if (message != null) {
+    override fun getText(): String =
+        if (message != null) {
             getParsedMessage(message, messageParameters)!!
         } else {
             ""
         }
-    }
 
     fun getNullsafeActorDisplayName() =
         if (!TextUtils.isEmpty(actorDisplayName)) {
@@ -277,22 +276,19 @@ data class ChatMessage(
             sharedApplication!!.getString(R.string.nc_guest)
         }
 
-    override fun getUser(): IUser {
-        return object : IUser {
-            override fun getId(): String {
-                return "$actorType/$actorId"
-            }
+    override fun getUser(): IUser =
+        object : IUser {
+            override fun getId(): String = "$actorType/$actorId"
 
-            override fun getName(): String {
-                return if (!TextUtils.isEmpty(actorDisplayName)) {
+            override fun getName(): String =
+                if (!TextUtils.isEmpty(actorDisplayName)) {
                     actorDisplayName!!
                 } else {
                     sharedApplication!!.getString(R.string.nc_guest)
                 }
-            }
 
-            override fun getAvatar(): String? {
-                return when {
+            override fun getAvatar(): String? =
+                when {
                     activeUser == null -> {
                         null
                     }
@@ -317,21 +313,14 @@ data class ChatMessage(
                         ApiUtils.getUrlForGuestAvatar(activeUser!!.baseUrl!!, apiId, true)
                     }
                 }
-            }
         }
-    }
 
-    override fun getCreatedAt(): Date {
-        return Date(timestamp * MILLIES)
-    }
+    override fun getCreatedAt(): Date = Date(timestamp * MILLIES)
 
-    override fun getSystemMessage(): String {
-        return EnumSystemMessageTypeConverter().convertToString(systemMessageType)
-    }
+    override fun getSystemMessage(): String = EnumSystemMessageTypeConverter().convertToString(systemMessageType)
 
-    private fun isHashMapEntryEqualTo(map: HashMap<String?, String?>, key: String, searchTerm: String): Boolean {
-        return map != null && MessageDigest.isEqual(map[key]!!.toByteArray(), searchTerm.toByteArray())
-    }
+    private fun isHashMapEntryEqualTo(map: HashMap<String?, String?>, key: String, searchTerm: String): Boolean =
+        map != null && MessageDigest.isEqual(map[key]!!.toByteArray(), searchTerm.toByteArray())
 
     // needed a equals and hashcode function to fix detekt errors
     override fun equals(other: Any?): Boolean {
@@ -340,9 +329,7 @@ data class ChatMessage(
         return false
     }
 
-    override fun hashCode(): Int {
-        return 0
-    }
+    override fun hashCode(): Int = 0
 
     val isVoiceMessage: Boolean
         get() = "voice-message" == messageType
