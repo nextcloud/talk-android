@@ -190,6 +190,7 @@
     <string name="nc_hint_enter_a_message">Введіть повідомлення ...</string>
     <string name="nc_important_conversation">Важлива розмова</string>
     <string name="nc_important_conversation_desc">Сповіщення в цій розмові ігнорують опцію \"Не турбувати\"</string>
+    <string name="nc_last_moderator_leaving_room_warning">Перед тим, як вийти з розмови, вам потрібно призначити нового модератора</string>
     <string name="nc_last_modified">%1$s | Остання зміна: %2$s</string>
     <string name="nc_leave">Вийти з групи</string>
     <string name="nc_leaving_call">Завершення виклику ...</string>

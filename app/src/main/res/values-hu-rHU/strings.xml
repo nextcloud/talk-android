@@ -212,6 +212,7 @@
     <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
     <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_open_conversations">Csatlakozás a nyílt beszélgetésekhez</string>
+    <string name="nc_last_moderator_leaving_room_warning">Új moderátort kell kineveznie, mielőtt elhagyhatja a beszélgetést</string>
     <string name="nc_last_modified">%1$s | Utoljára módosítva: %2$s</string>
     <string name="nc_leave">Beszélgetés elhagyása</string>
     <string name="nc_leaving_call">Hívás elhagyása…</string>

@@ -267,6 +267,7 @@
     <string name="nc_important_conversation_desc">Powiadomienia w tej rozmowie ignorują ustawienia \"Nie przeszkadzać\"</string>
     <string name="nc_invitations">Zaproszenia</string>
     <string name="nc_join_open_conversations">Dołącz do otwartych rozmów</string>
+    <string name="nc_last_moderator_leaving_room_warning">Zanim opuścisz rozmowę, musisz wybrać nowego moderatora</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
     <string name="nc_leave">Opuść rozmowę</string>
     <string name="nc_leaving_call">Opuszczanie połączenia…</string>

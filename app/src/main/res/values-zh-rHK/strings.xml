@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
+    <string name="nc_last_moderator_leaving_room_warning">在您離開對話之前您需要推舉一位新的主持人</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>
     <string name="nc_leaving_call">正在離開通話 …</string>

@@ -277,6 +277,7 @@
     <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
     <string name="nc_invitations">Invitasjoner</string>
     <string name="nc_join_open_conversations">Bli med i åpne samtaler</string>
+    <string name="nc_last_moderator_leaving_room_warning">Du må forfremme en ny moderator før du kan forlate samtalen</string>
     <string name="nc_last_modified">%1$s | Sist endret: %2$s</string>
     <string name="nc_leave">Forlat samtale</string>
     <string name="nc_leaving_call">Forlater samtalen...</string>

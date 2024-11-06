@@ -198,6 +198,7 @@
     <string name="nc_hint_enter_a_message">Escribe un mensaje...</string>
     <string name="nc_important_conversation">Conversación importante</string>
     <string name="nc_important_conversation_desc">Las notificaciones en esta conversación anularán la configuración de No molestar</string>
+    <string name="nc_last_moderator_leaving_room_warning">Necesitas promover un nuevo moderador antes de poder abandonar la conversación</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
     <string name="nc_leave">Dejar la conversación</string>
     <string name="nc_leaving_call">Saliendo de la llamada...</string>

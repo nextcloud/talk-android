@@ -266,6 +266,7 @@
     <string name="nc_important_conversation_desc">Oznámenia v tejto konverzácii sa prepíšu nastavením Nerušiť</string>
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
+    <string name="nc_last_moderator_leaving_room_warning">Skôr než budete môcť opustiť rozhovor, je potrebné niekomu odovzdať rolu moderátora.</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Opustiť konverzáciu</string>
     <string name="nc_leaving_call">Opúšťam hovor …</string>

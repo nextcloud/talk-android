@@ -278,6 +278,7 @@
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
     <string name="nc_invitations">Inbjudningar</string>
     <string name="nc_join_open_conversations">Gå med i öppna konversationer</string>
+    <string name="nc_last_moderator_leaving_room_warning">Du måste tilldela en ny moderator innan du kan lämna konversationen</string>
     <string name="nc_last_modified">%1$s | Senast ändrad: %2$s</string>
     <string name="nc_leave">Lämna konversationen</string>
     <string name="nc_leaving_call">Lägger på …</string>

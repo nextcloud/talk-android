@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
     <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
+    <string name="nc_last_moderator_leaving_room_warning">Sie müssen einen neuen Moderator bestimmen, bevor Sie die Unterhaltung verlassen können.</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
     <string name="nc_leaving_call">Verlasse Anruf …</string>
