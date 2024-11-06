@@ -386,6 +386,16 @@
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/automatic_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding ="10dp"
+            android:text= "@string/automatic_status_set"
+            android:visibility="gone"
+            tools:visibility="visible">
+        </TextView>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/predefinedStatusList"
             android:layout_width="match_parent"
