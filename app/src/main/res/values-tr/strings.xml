@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">Bu görüşmedeki bildirimler Rahatsız Etmeyin ayarlarını değiştirecek</string>
     <string name="nc_invitations">Davetler</string>
     <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
+    <string name="nc_last_moderator_leaving_room_warning">Görüşmeden ayrılmadan önce başka bir kullanıcıyı sorumluluğa yükseltmelisiniz</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
     <string name="nc_leave">Görüşmeden ayrıl</string>
     <string name="nc_leaving_call">Çağrıdan çıkılıyor…</string>

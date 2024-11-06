@@ -267,6 +267,7 @@
     <string name="nc_important_conversation_desc">Las notificaciones de esta conversación anularán el ajuste de No Molestar</string>
     <string name="nc_invitations">Invitaciones</string>
     <string name="nc_join_open_conversations">Unirse a conversaciones abiertas</string>
+    <string name="nc_last_moderator_leaving_room_warning">Debe escoger a un nuevo moderador antes de que pueda abandonar la conversación</string>
     <string name="nc_last_modified">%1$s | Modificado por última vez: %2$s</string>
     <string name="nc_leave">Abandonar conversación</string>
     <string name="nc_leaving_call">Abandonando llamada …</string>

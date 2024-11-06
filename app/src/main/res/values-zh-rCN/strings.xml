@@ -215,6 +215,7 @@
     <string name="nc_important_conversation_desc">此对话中的通知将覆盖免打扰设置</string>
     <string name="nc_invitations">邀请函</string>
     <string name="nc_join_open_conversations">加入公开对话</string>
+    <string name="nc_last_moderator_leaving_room_warning">在您离开对话之前需要推举一位新的主持人</string>
     <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
     <string name="nc_leave">离开对话</string>
     <string name="nc_leaving_call">正在离开通话 ...</string>

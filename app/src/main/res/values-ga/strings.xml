@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">Sáróidh fógraí sa chomhrá seo na socruithe Ná Cuir Isteach</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
+    <string name="nc_last_moderator_leaving_room_warning">Ní mór duit modhnóir nua a chur chun cinn sula bhféadfaidh tú an comhrá a fhágáil</string>
     <string name="nc_last_modified">%1$s | Athraithe is déanaí: %2$s</string>
     <string name="nc_leave">Fág an comhrá</string>
     <string name="nc_leaving_call">Ag fágáil an ghlao…</string>

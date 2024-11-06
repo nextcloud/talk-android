@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Participe de conversas abertas</string>
+    <string name="nc_last_moderator_leaving_room_warning">Você precisa promover um novo moderador antes de sair da conversa</string>
     <string name="nc_last_modified">%1$s | Modificado recentemente: %2$s</string>
     <string name="nc_leave">Sair da conversa</string>
     <string name="nc_leaving_call">Saindo da chamada …</string>

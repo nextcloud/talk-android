@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>
     <string name="nc_invitations">Позивнице</string>
     <string name="nc_join_open_conversations">Придружи се отвореном разговору</string>
+    <string name="nc_last_moderator_leaving_room_warning">Морате да промовишете новог модератора пре него што напустите разговор</string>
     <string name="nc_last_modified">%1$s | Последње измењено: %2$s</string>
     <string name="nc_leave">Напусти разговор</string>
     <string name="nc_leaving_call">Напуштање позива ...</string>

@@ -198,6 +198,7 @@
     <string name="nc_important_conversation_desc">Prikaz obvestil v tem pogovoru onemogočil nastavitev Ne moti.</string>
     <string name="nc_invitations">Povabila</string>
     <string name="nc_join_open_conversations">Pridruži se odprtemu pogovoru</string>
+    <string name="nc_last_moderator_leaving_room_warning">Pred odhodom iz pogovora je treba nekoga določiti za moderatorja.</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
     <string name="nc_leaving_call">Poteka prekinjanje klica …</string>

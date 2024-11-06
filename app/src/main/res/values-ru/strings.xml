@@ -244,6 +244,7 @@
     <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_invitations">Приглашения</string>
     <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
+    <string name="nc_last_moderator_leaving_room_warning">Вам нужно назначить нового модератора перед тем, как покинуть обсуждение</string>
     <string name="nc_last_modified">%1$s | Последнее изменение: %2$s</string>
     <string name="nc_leave">Покинуть беседу</string>
     <string name="nc_leaving_call">Завершение вызова …</string>

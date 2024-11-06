@@ -280,6 +280,7 @@
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
+    <string name="nc_last_moderator_leaving_room_warning">Vous devez promouvoir un nouveau modérateur avant de pouvoir quitter la conversation.</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
     <string name="nc_leaving_call">Fin d\'appel …</string>

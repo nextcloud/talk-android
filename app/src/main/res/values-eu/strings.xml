@@ -227,6 +227,7 @@
     <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_invitations">Gonbidapenak</string>
     <string name="nc_join_open_conversations">Sartu elkarrizketa irekietara</string>
+    <string name="nc_last_moderator_leaving_room_warning">Moderatzaile berri bat sustatu behar duzu elkarrizketatik irten aurretik</string>
     <string name="nc_last_modified">%1$s | Azkenengoz aldatuta: %2$s</string>
     <string name="nc_leave">Atera elkarrizketatik</string>
     <string name="nc_leaving_call">Deia uzten …</string>

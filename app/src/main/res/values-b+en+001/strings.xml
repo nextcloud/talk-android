@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
+    <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
     <string name="nc_last_modified">%1$s | Last modified: %2$s</string>
     <string name="nc_leave">Leave conversation</string>
     <string name="nc_leaving_call">Leaving call …</string>

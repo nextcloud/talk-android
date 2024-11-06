@@ -186,6 +186,7 @@
     <string name="nc_hint_enter_a_message">메시지 입력…</string>
     <string name="nc_important_conversation">중요한 대화</string>
     <string name="nc_join_open_conversations">공개 대화에 참가</string>
+    <string name="nc_last_moderator_leaving_room_warning">대화를 떠나기 전 새 중재자를 임명해야 합니다.</string>
     <string name="nc_last_modified">%1$s | 최종 수정: %2$s</string>
     <string name="nc_leave">대화 나가기</string>
     <string name="nc_leaving_call">통화 종료 중 ...</string>

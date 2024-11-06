@@ -266,6 +266,7 @@
     <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_invitations">招待</string>
     <string name="nc_join_open_conversations">オープンな会話に参加する</string>
+    <string name="nc_last_moderator_leaving_room_warning">会話から離れる前に、新しいモデレーターを昇格させる必要があります</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
     <string name="nc_leaving_call">通話を終了 …</string>

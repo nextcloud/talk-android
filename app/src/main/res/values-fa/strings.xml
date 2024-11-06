@@ -170,6 +170,7 @@
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_invitations">دعوت‌ها</string>
     <string name="nc_join_open_conversations">پیوستن به گفتگوهای باز</string>
+    <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
     <string name="nc_last_modified">تغییرات %1$s |  آخرین تغییرات: %2$s</string>
     <string name="nc_leave">ترک گفتگو</string>
     <string name="nc_leaving_call">در حال ترک تماس ...</string>
