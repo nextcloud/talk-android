@@ -283,41 +283,43 @@ class SetStatusDialogFragment :
         }
     }
 
-    override fun revertStatus()  {
-        ncApi.revertStatus(
-            credentials,
-            ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId)
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<GenericOverall> {
+    override fun revertStatus() {
+        if (isRestoreStatusAvailable(currentUser!!)) {
+            ncApi.revertStatus(
+                credentials,
+                ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
 
-                override fun onSubscribe(d: Disposable) {
-                }
-
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "$genericOverall")
-                    if (genericOverall.ocs?.meta?.statusCode == 200) {
-                        Snackbar.make(
-                            binding.root,
-                            R.string.status_reverted,
-                            Snackbar.LENGTH_LONG
-                        ).show()
-                        adapter.isBackupStatusAvailable = false
-                        predefinedStatusesList.removeAt(0)
-                        adapter.notifyDataSetChanged()
-                        currentStatus = backupStatus
-                        setupCurrentStatus()
+                    override fun onSubscribe(d: Disposable) {
                     }
-                }
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error while fetching predefined statuses", e)
-                }
 
-                override fun onComplete() {
-                }
-            })
+                    @SuppressLint("NotifyDataSetChanged")
+                    override fun onNext(genericOverall: GenericOverall) {
+                        Log.d(TAG, "$genericOverall")
+                        if (genericOverall.ocs?.meta?.statusCode == 200) {
+                            Snackbar.make(
+                                binding.root,
+                                R.string.status_reverted,
+                                Snackbar.LENGTH_LONG
+                            ).show()
+                            adapter.isBackupStatusAvailable = false
+                            predefinedStatusesList.removeAt(0)
+                            adapter.notifyDataSetChanged()
+                            currentStatus = backupStatus
+                            setupCurrentStatus()
+                        }
+                    }
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error while fetching predefined statuses", e)
+                    }
+
+                    override fun onComplete() {
+                    }
+                })
+        }
     }
 
     private fun setupGeneralStatusOptions() {
