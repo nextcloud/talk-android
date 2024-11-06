@@ -21,7 +21,7 @@ import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.Observer
@@ -144,6 +144,11 @@ class MessageInputViewModel @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
+        // TODO: add temporary message with ref id
+
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Random SHA-256 Hash: $referenceId")
+
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
@@ -161,10 +166,11 @@ class MessageInputViewModel @Inject constructor(
             message,
             displayName,
             replyTo,
-            sendWithoutNotification
+            sendWithoutNotification,
+            referenceId
         ).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
                     disposableSet.add(d)
                 }
@@ -177,7 +183,9 @@ class MessageInputViewModel @Inject constructor(
                     // unused atm
                 }
 
-                override fun onNext(t: GenericOverall) {
+                override fun onNext(t: ChatOverallSingleMessage) {
+                    Log.d(TAG, "received ref id: " + (t.ocs?.data?.referenceId ?: "none"))
+                    // TODO check ref id and replace temp message
                     _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                 }
             })
