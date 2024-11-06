@@ -16,6 +16,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observable
 import retrofit2.Response
 
@@ -103,26 +104,24 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         url: String,
         message: String,
         displayName: String
-    ): Observable<GenericOverall> {
-        return ncApi.sendChatMessage(
+    ): Observable<ChatOverallSingleMessage> =
+        ncApi.sendChatMessage(
             credentials,
             url,
             message,
             displayName,
             null,
-            false
+            false,
+            SendMessageUtils().generateReferenceId() // TODO add temp message before with ref id..
         ).map {
             it
         }
-    }
 
     override fun checkForNoteToSelf(
         credentials: String,
         url: String,
         includeStatus: Boolean
-    ): Observable<RoomsOverall> {
-        return ncApi.getRooms(credentials, url, includeStatus).map { it }
-    }
+    ): Observable<RoomsOverall> = ncApi.getRooms(credentials, url, includeStatus).map { it }
 
     override fun shareLocationToNotes(
         credentials: String,
@@ -130,13 +129,12 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         objectType: String,
         objectId: String,
         metadata: String
-    ): Observable<GenericOverall> {
-        return ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
-    }
+    ): Observable<GenericOverall> = ncApi.sendLocation(credentials, url, objectType, objectId, metadata).map { it }
 
-    override fun leaveRoom(credentials: String, url: String): Observable<GenericOverall> {
-        return ncApi.leaveRoom(credentials, url).map { it }
-    }
+    override fun leaveRoom(credentials: String, url: String): Observable<GenericOverall> =
+        ncApi.leaveRoom(credentials, url).map {
+            it
+        }
 
     override fun sendChatMessage(
         credentials: String,
@@ -144,36 +142,42 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         message: CharSequence,
         displayName: String,
         replyTo: Int,
-        sendWithoutNotification: Boolean
-    ): Observable<GenericOverall> {
-        return ncApi.sendChatMessage(credentials, url, message, displayName, replyTo, sendWithoutNotification).map {
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Observable<ChatOverallSingleMessage> =
+        ncApi.sendChatMessage(
+            credentials,
+            url,
+            message,
+            displayName,
+            replyTo,
+            sendWithoutNotification,
+            referenceId
+        ).map {
             it
         }
-    }
 
     override fun pullChatMessages(
         credentials: String,
         url: String,
         fieldMap: HashMap<String, Int>
-    ): Observable<Response<*>> {
-        return ncApi.pullChatMessages(credentials, url, fieldMap).map { it }
-    }
+    ): Observable<Response<*>> = ncApi.pullChatMessages(credentials, url, fieldMap).map { it }
 
-    override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> {
-        return ncApi.deleteChatMessage(credentials, url).map { it }
-    }
+    override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> =
+        ncApi.deleteChatMessage(credentials, url).map {
+            it
+        }
 
-    override fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall> {
-        return ncApi.createRoom(credentials, url, map).map { it }
-    }
+    override fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall> =
+        ncApi.createRoom(credentials, url, map).map {
+            it
+        }
 
     override fun setChatReadMarker(
         credentials: String,
         url: String,
         previousMessageId: Int
-    ): Observable<GenericOverall> {
-        return ncApi.setChatReadMarker(credentials, url, previousMessageId).map { it }
-    }
+    ): Observable<GenericOverall> = ncApi.setChatReadMarker(credentials, url, previousMessageId).map { it }
 
     override fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage> {
         return ncApi.editChatMessage(credentials, url, text).map { it }

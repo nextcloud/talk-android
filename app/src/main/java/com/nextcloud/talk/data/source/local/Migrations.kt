@@ -48,6 +48,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_12_13 = object : Migration(12, 13) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 12 to 13")
+            addReferenceIdToChatMessages(db)
+        }
+    }
+
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +
@@ -255,6 +262,17 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "hasArchived already exists")
+        }
+    }
+
+    fun addReferenceIdToChatMessages(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN referenceId TEXT;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column referenceId to table ChatMessages")
         }
     }
 }
