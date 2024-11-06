@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat
 
 import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -36,6 +37,7 @@ import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.widget.doAfterTextChanged
@@ -43,7 +45,11 @@ import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
+import coil.Coil.imageLoader
 import coil.load
+import coil.request.ImageRequest
+import coil.target.Target
+import coil.transform.CircleCropTransformation
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
@@ -118,6 +124,7 @@ class MessageInputFragment : Fragment() {
     private var mentionAutocomplete: Autocomplete<*>? = null
     private var xcounter = 0f
     private var ycounter = 0f
+    private var isCollapsed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -194,6 +201,49 @@ class MessageInputFragment : Fragment() {
                 binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
             } else {
                 binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
+            }
+        }
+
+        chatActivity.messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
+            val (message, show) = it
+            if (show) {
+                binding.fragmentCallStarted.callAuthorChip.text = message.actorDisplayName
+                binding.fragmentCallStarted.callAuthorChipSecondary.text = message.actorDisplayName
+                val user = userManager.currentUser.blockingGet()
+                val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
+                    ApiUtils.getUrlForGuestAvatar(
+                        user!!.baseUrl!!,
+                        message.actorDisplayName,
+                        true
+                    )
+                } else {
+                    ApiUtils.getUrlForAvatar(user!!.baseUrl!!, message.actorId, false)
+                }
+
+                val imageRequest: ImageRequest = ImageRequest.Builder(requireContext())
+                    .data(url)
+                    .crossfade(true)
+                    .transformations(CircleCropTransformation())
+                    .target(object : Target {
+                        override fun onStart(placeholder: Drawable?) {
+                            // unused atm
+                        }
+
+                        override fun onError(error: Drawable?) {
+                            // unused atm
+                        }
+
+                        override fun onSuccess(result: Drawable) {
+                            binding.fragmentCallStarted.callAuthorChip.chipIcon = result
+                            binding.fragmentCallStarted.callAuthorChipSecondary.chipIcon = result
+                        }
+                    })
+                    .build()
+
+                imageLoader(requireContext()).enqueue(imageRequest)
+                binding.fragmentCallStarted.root.visibility = View.VISIBLE
+            } else {
+                binding.fragmentCallStarted.root.visibility = View.GONE
             }
         }
     }
@@ -390,6 +440,41 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentMessageInputView.button?.contentDescription =
             resources.getString(R.string.nc_description_send_message_button)
+
+        binding.fragmentCallStarted.joinAudioCall.setOnClickListener {
+            chatActivity.joinAudioCall()
+        }
+
+        binding.fragmentCallStarted.joinVideoCall.setOnClickListener {
+            chatActivity.joinVideoCall()
+        }
+
+        binding.fragmentCallStarted.callStartedCloseBtn.setOnClickListener {
+            isCollapsed = !isCollapsed
+            if (isCollapsed) {
+                binding.fragmentCallStarted.callAuthorLayout.visibility = View.GONE
+                binding.fragmentCallStarted.callBtnLayout.visibility = View.GONE
+                binding.fragmentCallStarted.callAuthorChipSecondary.visibility = View.VISIBLE
+                binding.fragmentCallStarted.callStartedSecondaryText.visibility = View.VISIBLE
+            } else {
+                binding.fragmentCallStarted.callAuthorLayout.visibility = View.VISIBLE
+                binding.fragmentCallStarted.callBtnLayout.visibility = View.VISIBLE
+                binding.fragmentCallStarted.callAuthorChipSecondary.visibility = View.GONE
+                binding.fragmentCallStarted.callStartedSecondaryText.visibility = View.GONE
+            }
+
+            setDropDown(isCollapsed)
+        }
+    }
+
+    private fun setDropDown(collapsed: Boolean) {
+        val drawable = if (collapsed) {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_keyboard_arrow_up)
+        } else {
+            AppCompatResources.getDrawable(requireContext(), R.drawable.ic_keyboard_arrow_down)
+        }
+
+        binding.fragmentCallStarted.callStartedCloseBtn.setImageDrawable(drawable)
     }
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
@@ -906,6 +991,22 @@ class MessageInputFragment : Fragment() {
         }
         binding.fragmentEditView.clearEdit.let {
             viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
+
+        binding.fragmentCallStarted.callStartedBackground.apply {
+            viewThemeUtils.talk.themeOutgoingMessageBubble(this, grouped = true, false)
+        }
+
+        binding.fragmentCallStarted.callAuthorChip.apply {
+            viewThemeUtils.material.colorChipBackground(this)
+        }
+
+        binding.fragmentCallStarted.callAuthorChipSecondary.apply {
+            viewThemeUtils.material.colorChipBackground(this)
+        }
+
+        binding.fragmentCallStarted.callStartedCloseBtn.apply {
+            viewThemeUtils.platform.colorImageView(this, ColorRole.PRIMARY)
         }
     }
 

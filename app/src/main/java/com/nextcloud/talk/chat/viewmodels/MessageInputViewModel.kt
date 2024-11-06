@@ -18,6 +18,7 @@ import androidx.lifecycle.asLiveData
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -128,6 +129,10 @@ class MessageInputViewModel @Inject constructor(
     private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
     val messageQueueFlow: LiveData<List<QueuedMessage>>
         get() = _messageQueueFlow
+
+    private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
+    val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
+        get() = _callStartedFlow
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -312,6 +317,10 @@ class MessageInputViewModel @Inject constructor(
             }
         }
         dataStore.saveMessageQueue(internalId, queue)
+    }
+
+    fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {
+        _callStartedFlow.postValue(Pair(recent, show))
     }
 
     companion object {

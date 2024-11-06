@@ -20,7 +20,46 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/standard_margin"
+        android:orientation="horizontal"
+        android:gravity="end">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/call_author_chip_secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:chipIcon="@drawable/account_circle_48dp"
+            app:chipCornerRadius="@dimen/dialogBorderRadius"
+            tools:text="Julius James Linus"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/call_started_secondary_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/standard_quarter_margin"
+            android:text="@string/started_a_call"
+            android:visibility="gone"
+            tools:visibility="visible"/>
+
+        <ImageView
+            android:id="@+id/call_started_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:contentDescription="@string/close_icon"
+            android:src="@drawable/ic_keyboard_arrow_down"
+            android:background="?attr/selectableItemBackground"
+            android:layout_gravity="center"
+            />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/call_author_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/standard_half_margin"
         android:orientation="horizontal"
         android:gravity="center">
 
@@ -42,6 +81,7 @@
 
 
     <LinearLayout
+        android:id="@+id/call_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"

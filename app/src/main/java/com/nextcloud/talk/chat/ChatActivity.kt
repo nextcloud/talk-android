@@ -81,7 +81,6 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.TakePhotoActivity
 import com.nextcloud.talk.adapters.messages.CallStartedMessageInterface
-import com.nextcloud.talk.adapters.messages.CallStartedViewHolder
 import com.nextcloud.talk.adapters.messages.CommonMessageInterface
 import com.nextcloud.talk.adapters.messages.IncomingDeckCardViewHolder
 import com.nextcloud.talk.adapters.messages.IncomingLinkPreviewMessageViewHolder
@@ -879,7 +878,7 @@ class ChatActivity :
                     }
 
                     processExpiredMessages()
-                    processCallStartedMessages(chatMessageList)
+                    processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
                 }
@@ -1197,17 +1196,6 @@ class ChatActivity :
         messageHolders.setOutcomingImageConfig(
             OutcomingPreviewMessageViewHolder::class.java,
             R.layout.item_custom_outcoming_preview_message
-        )
-
-        messageHolders.registerContentType(
-            CONTENT_TYPE_CALL_STARTED,
-            CallStartedViewHolder::class.java,
-            payload,
-            R.layout.call_started_message,
-            CallStartedViewHolder::class.java,
-            payload,
-            R.layout.call_started_message,
-            this
         )
 
         messageHolders.registerContentType(
@@ -2559,7 +2547,7 @@ class ChatActivity :
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
     }
 
-    private fun processCallStartedMessages(chatMessageList: List<ChatMessage>) {
+    private fun processCallStartedMessages() {
         try {
             val mostRecentCallSystemMessage = adapter?.items?.first {
                 it.item is ChatMessage &&
@@ -2577,8 +2565,7 @@ class ChatActivity :
 
             if (mostRecentCallSystemMessage != null) {
                 processMostRecentMessage(
-                    mostRecentCallSystemMessage as ChatMessage,
-                    chatMessageList
+                    mostRecentCallSystemMessage as ChatMessage
                 )
             }
         } catch (e: NoSuchElementException) {
@@ -3542,29 +3529,21 @@ class ChatActivity :
             else -> false
         }
 
-    private fun processMostRecentMessage(recent: ChatMessage, chatMessageList: List<ChatMessage>) {
+    private fun processMostRecentMessage(recent: ChatMessage) {
         when (recent.systemMessageType) {
-            ChatMessage.SystemMessageType.CALL_STARTED -> { // add CallStartedMessage with id -2
+            ChatMessage.SystemMessageType.CALL_STARTED -> {
                 if (!callStarted) {
-                    val callStartedChatMessage = ChatMessage()
-                    callStartedChatMessage.jsonMessageId = CALL_STARTED_ID
-                    callStartedChatMessage.actorId = "-2"
-                    val name = if (recent.actorDisplayName.isNullOrEmpty()) "Guest" else recent.actorDisplayName
-                    callStartedChatMessage.actorDisplayName = name
-                    callStartedChatMessage.actorType = recent.actorType
-                    callStartedChatMessage.timestamp = chatMessageList[0].timestamp
-                    callStartedChatMessage.message = null
-                    adapter?.addToStart(callStartedChatMessage, false)
+                    messageInputViewModel.showCallStartedIndicator(recent, true)
                     callStarted = true
                 }
-            } // remove CallStartedMessage with id -2
+            }
             ChatMessage.SystemMessageType.CALL_ENDED,
             ChatMessage.SystemMessageType.CALL_MISSED,
             ChatMessage.SystemMessageType.CALL_TRIED,
             ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE -> {
-                adapter?.deleteById("-2")
                 callStarted = false
-            } // remove message of id -2
+                messageInputViewModel.showCallStartedIndicator(recent, false)
+            }
             else -> {}
         }
     }
