@@ -7,6 +7,7 @@
 package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -20,7 +21,8 @@ import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observable
 import retrofit2.Response
 
-class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
+class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
+    ChatNetworkDataSource {
     override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
@@ -136,7 +138,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
             it
         }
 
-    override fun sendChatMessage(
+    override suspend fun sendChatMessage(
         credentials: String,
         url: String,
         message: CharSequence,
@@ -144,8 +146,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Observable<ChatOverallSingleMessage> =
-        ncApi.sendChatMessage(
+    ): ChatOverallSingleMessage =
+        ncApiCoroutines.sendChatMessage(
             credentials,
             url,
             message,
@@ -153,9 +155,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
             replyTo,
             sendWithoutNotification,
             referenceId
-        ).map {
-            it
-        }
+        )
 
     override fun pullChatMessages(
         credentials: String,
