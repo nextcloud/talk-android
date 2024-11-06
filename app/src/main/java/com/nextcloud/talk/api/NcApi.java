@@ -353,12 +353,6 @@ public interface NcApi {
                                                @Field("referenceId") String referenceId
                                                );
 
-    @FormUrlEncoded
-    @PUT
-    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization,
-                                                         @Url String url,
-                                                         @Field("message") String message);
-
     @GET
     Observable<Response<ChatShareOverall>> getSharedItems(
         @Header("Authorization") String authorization,

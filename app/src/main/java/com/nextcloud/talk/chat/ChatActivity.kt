@@ -208,7 +208,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -813,18 +812,18 @@ class ChatActivity :
                 }
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
-                    if (state.e is HttpException) {
-                        val code = state.e.code()
-                        if (code.toString().startsWith("2")) {
-                            myFirstMessage = state.message
-
-                            if (binding.unreadMessagesPopup.isShown) {
-                                binding.unreadMessagesPopup.visibility = View.GONE
-                            }
-
-                            binding.messagesListView.smoothScrollToPosition(0)
-                        }
-                    }
+                    // if (state.e is HttpException) {
+                    //     val code = state.e.code()
+                    //     if (code.toString().startsWith("2")) {
+                    //         myFirstMessage = state.message
+                    //
+                    //         if (binding.unreadMessagesPopup.isShown) {
+                    //             binding.unreadMessagesPopup.visibility = View.GONE
+                    //         }
+                    //
+                    //         binding.messagesListView.smoothScrollToPosition(0)
+                    //     }
+                    // }
                 }
 
                 else -> {}
