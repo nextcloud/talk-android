@@ -62,8 +62,8 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "parent") var parentMessageId: Long? = null,
     @ColumnInfo(name = "reactions") var reactions: LinkedHashMap<String, Int>? = null,
     @ColumnInfo(name = "reactionsSelf") var reactionsSelf: ArrayList<String>? = null,
+    @ColumnInfo(name = "referenceId") var referenceId: String? = null,
     @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
     @ColumnInfo(name = "timestamp") var timestamp: Long = 0
-    // missing/not needed: referenceId
     // missing/not needed: silent
 )
