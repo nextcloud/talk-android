@@ -52,6 +52,9 @@ class PredefinedStatusViewHolder(private val binding: PredefinedStatusBinding) :
             if (position == 0) {
                 binding.clearAt.text = context.getString(R.string.previously_set)
             }
+            binding.resetStatusButton.setOnClickListener{
+                clickListener.revertStatus()
+            }
         }
     }
 }

@@ -28,6 +28,7 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
@@ -88,6 +89,7 @@ class SetStatusDialogFragment :
 
     private var currentUser: User? = null
     private var currentStatus: Status? = null
+    private lateinit var backupStatus: Status
 
     val predefinedStatusesList = ArrayList<PredefinedStatus>()
 
@@ -95,6 +97,7 @@ class SetStatusDialogFragment :
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
     private var isBackupStatusAvailable = false
+
 
     @Inject
     lateinit var ncApi: NcApi
@@ -167,13 +170,13 @@ class SetStatusDialogFragment :
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onNext(statusOverall: StatusOverall) {
                     if (statusOverall.ocs?.meta?.statusCode == 200) {
-                        val status = statusOverall.ocs?.data
+                        backupStatus = statusOverall.ocs?.data!!
                         isBackupStatusAvailable = true
                         val backupPredefinedStatus = PredefinedStatus(
-                            status?.userId!!,
-                            status.icon,
-                            status.message!!,
-                            ClearAt(type = "period", time = status.clearAt.toString())
+                            backupStatus?.userId!!,
+                            backupStatus.icon,
+                            backupStatus.message!!,
+                            ClearAt(type = "period", time = backupStatus.clearAt.toString())
                         )
                         adapter.isBackupStatusAvailable = true
                         predefinedStatusesList.add(0, backupPredefinedStatus)
@@ -221,7 +224,6 @@ class SetStatusDialogFragment :
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
         binding.emoji.setOnClickListener { openEmojiPopup() }
-
         popup = EmojiPopup(
             rootView = view,
             editText = binding.emoji,
@@ -280,6 +282,42 @@ class SetStatusDialogFragment :
                 }
             }
         }
+    }
+
+    override fun revertStatus(){
+        ncApi.revertStatus(credentials, ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<GenericOverall> {
+
+                override fun onSubscribe(d: Disposable) {
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onNext(genericOverall:GenericOverall) {
+                    Log.d(TAG,"$genericOverall")
+                    if(genericOverall.ocs?.meta?.statusCode == 200){
+                        Snackbar.make(
+                            binding.root,
+                            R.string.status_reverted,
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                        adapter.isBackupStatusAvailable = false
+                        predefinedStatusesList.removeAt(0)
+                        adapter.notifyDataSetChanged()
+                        currentStatus = backupStatus
+                        setupCurrentStatus()
+                    }
+                }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error while fetching predefined statuses", e)
+                }
+
+                override fun onComplete() {
+                }
+            })
+
+
     }
 
     private fun setupGeneralStatusOptions() {
