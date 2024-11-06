@@ -24,6 +24,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -37,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -751,6 +753,50 @@ class OfflineFirstChatRepository @Inject constructor(
     override fun handleChatOnBackPress() {
         scope.cancel()
     }
+
+    override suspend fun sendChatMessage(
+        credentials: String,
+        url: String,
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Flow<Result<ChatOverallSingleMessage>> =
+        flow {
+            try {
+                val response = network.sendChatMessage(
+                    credentials,
+                    url,
+                    message,
+                    displayName,
+                    replyTo,
+                    sendWithoutNotification,
+                    referenceId
+                )
+                emit(Result.success(response))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
+            }
+        }
+
+    override suspend fun editChatMessage(
+        credentials: String,
+        url: String,
+        text: String
+    ): Flow<Result<ChatOverallSingleMessage>> =
+        flow {
+            try {
+                val response = network.editChatMessage(
+                    credentials,
+                    url,
+                    text
+                )
+                emit(Result.success(response))
+            } catch (e: Exception) {
+                emit(Result.failure(e))
+            }
+        }
 
     companion object {
         val TAG = OfflineFirstChatRepository::class.simpleName
