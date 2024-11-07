@@ -28,7 +28,6 @@ import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
@@ -301,11 +300,6 @@ class SetStatusDialogFragment :
                     override fun onNext(genericOverall: GenericOverall) {
                         Log.d(TAG, "$genericOverall")
                         if (genericOverall.ocs?.meta?.statusCode == 200) {
-                            Snackbar.make(
-                                binding.root,
-                                R.string.status_reverted,
-                                Snackbar.LENGTH_LONG
-                            ).show()
                             binding.automaticStatus.visibility = View.GONE
                             adapter.isBackupStatusAvailable = false
                             predefinedStatusesList.removeAt(0)
