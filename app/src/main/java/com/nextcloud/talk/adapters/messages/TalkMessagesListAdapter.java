@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2020 Tobias Kaminsky <tobias.kaminsky@nextcloud.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -34,43 +35,50 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        if (holder instanceof IncomingTextMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingTextMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
 
-        if (holder instanceof IncomingTextMessageViewHolder) {
-            ((IncomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
-        } else if (holder instanceof OutcomingTextMessageViewHolder) {
-            ((OutcomingTextMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof IncomingLocationMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingLocationMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
 
-        } else if (holder instanceof IncomingLocationMessageViewHolder) {
-            ((IncomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
-        } else if (holder instanceof OutcomingLocationMessageViewHolder) {
-            ((OutcomingLocationMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof IncomingLinkPreviewMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingLinkPreviewMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
 
-        } else if (holder instanceof IncomingLinkPreviewMessageViewHolder) {
-            ((IncomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
-        } else if (holder instanceof OutcomingLinkPreviewMessageViewHolder) {
-            ((OutcomingLinkPreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof IncomingVoiceMessageViewHolder holderInstance) {
+            holderInstance.assignVoiceMessageInterface(chatActivity);
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingVoiceMessageViewHolder holderInstance) {
+            holderInstance.assignVoiceMessageInterface(chatActivity);
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
 
-        } else if (holder instanceof IncomingVoiceMessageViewHolder) {
-            ((IncomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatActivity);
-            ((IncomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
-        } else if (holder instanceof OutcomingVoiceMessageViewHolder) {
-            ((OutcomingVoiceMessageViewHolder) holder).assignVoiceMessageInterface(chatActivity);
-            ((OutcomingVoiceMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof PreviewMessageViewHolder holderInstance) {
+            holderInstance.assignPreviewMessageInterface(chatActivity);
+            holderInstance.assignCommonMessageInterface(chatActivity);
 
-        } else if (holder instanceof PreviewMessageViewHolder) {
-            ((PreviewMessageViewHolder) holder).assignPreviewMessageInterface(chatActivity);
-            ((PreviewMessageViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof SystemMessageViewHolder holderInstance) {
+            holderInstance.assignSystemMessageInterface(chatActivity);
 
-        } else if (holder instanceof SystemMessageViewHolder) {
-            ((SystemMessageViewHolder) holder).assignSystemMessageInterface(chatActivity);
-        } else if (holder instanceof CallStartedViewHolder) {
-            ((CallStartedViewHolder) holder).assignCallStartedMessageInterface(chatActivity);
-        } else if (holder instanceof TemporaryMessageViewHolder) {
-            ((TemporaryMessageViewHolder) holder).assignTemporaryMessageInterface(chatActivity);
-        }else if (holder instanceof IncomingDeckCardViewHolder){
-            ((IncomingDeckCardViewHolder) holder).assignCommonMessageInterface(chatActivity);
-        } else if(holder instanceof OutcomingDeckCardViewHolder){
-            ((OutcomingDeckCardViewHolder) holder).assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof CallStartedViewHolder holderInstance) {
+            holderInstance.assignCallStartedMessageInterface(chatActivity);
+
+        } else if (holder instanceof TemporaryMessageViewHolder holderInstance) {
+            holderInstance.assignTemporaryMessageInterface(chatActivity);
+
+        } else if (holder instanceof IncomingDeckCardViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingDeckCardViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
         }
 
         super.onBindViewHolder(holder, position);

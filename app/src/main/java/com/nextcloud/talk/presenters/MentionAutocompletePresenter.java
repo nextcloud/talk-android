@@ -126,28 +126,33 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
 
                 @Override
                 public void onNext(@NonNull MentionOverall mentionOverall) {
-                    List<Mention> mentionsList = mentionOverall.getOcs().getData();
+                    if (mentionOverall.getOcs() != null) {
+                        List<Mention> mentionsList = mentionOverall.getOcs().getData();
 
-                    if (mentionsList.size() == 0) {
-                        adapter.clear();
-                    } else {
-                        List<AbstractFlexibleItem> internalAbstractFlexibleItemList =
-                            new ArrayList<>(mentionsList.size());
-                        for (Mention mention : mentionsList) {
-                            internalAbstractFlexibleItemList.add(
-                                new MentionAutocompleteItem(
-                                    mention,
-                                    currentUser,
-                                    context,
-                                    roomToken,
-                                    viewThemeUtils));
+                        if (mentionsList != null) {
+
+                            if (mentionsList.isEmpty()) {
+                                adapter.clear();
+                            } else {
+                                List<AbstractFlexibleItem> internalAbstractFlexibleItemList =
+                                    new ArrayList<>(mentionsList.size());
+                                for (Mention mention : mentionsList) {
+                                    internalAbstractFlexibleItemList.add(
+                                        new MentionAutocompleteItem(
+                                            mention,
+                                            currentUser,
+                                            context,
+                                            roomToken,
+                                            viewThemeUtils));
+                                }
+
+                                if (adapter.getItemCount() != 0) {
+                                    adapter.clear();
+                                }
+
+                                adapter.updateDataSet(internalAbstractFlexibleItemList);
+                            }
                         }
-
-                        if (adapter.getItemCount() != 0) {
-                            adapter.clear();
-                        }
-
-                        adapter.updateDataSet(internalAbstractFlexibleItemList);
                     }
                 }
 

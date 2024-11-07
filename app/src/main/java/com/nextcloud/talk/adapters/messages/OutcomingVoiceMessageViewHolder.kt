@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2023 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
@@ -45,9 +46,10 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingVoiceMessageViewHolder(outcomingView: View) :
-    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView) {
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView),
+    AdjustableMessageHolderInterface {
 
-    private val binding: ItemCustomOutcomingVoiceMessageBinding = ItemCustomOutcomingVoiceMessageBinding.bind(itemView)
+    override val binding: ItemCustomOutcomingVoiceMessageBinding = ItemCustomOutcomingVoiceMessageBinding.bind(itemView)
 
     @JvmField
     @Inject

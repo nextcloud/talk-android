@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -47,8 +48,10 @@ import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingLocationMessageViewHolder(incomingView: View) :
-    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(incomingView) {
-    private val binding: ItemCustomOutcomingLocationMessageBinding =
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(incomingView),
+    AdjustableMessageHolderInterface {
+
+    override val binding: ItemCustomOutcomingLocationMessageBinding =
         ItemCustomOutcomingLocationMessageBinding.bind(itemView)
     private val realView: View = itemView
 
