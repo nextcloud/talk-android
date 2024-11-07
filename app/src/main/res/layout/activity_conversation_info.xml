@@ -301,6 +301,52 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/lock_conversation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/standard_margin"
+                android:paddingEnd="@dimen/standard_margin"
+                android:orientation="horizontal"
+                android:background="?android:attr/selectableItemBackground">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/standard_half_margin"
+                    android:paddingBottom="@dimen/standard_half_margin"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_lock_white_24px"
+                        app:tint="@color/grey_600" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/lock_conversation"
+                        android:textSize="@dimen/headline_text_size" />
+
+                </LinearLayout>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/lobby_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="@dimen/standard_margin"
+                    android:layout_marginEnd="1dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/participants"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

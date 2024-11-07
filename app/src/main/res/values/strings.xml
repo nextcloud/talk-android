@@ -384,6 +384,7 @@ How to translate with transifex:
     <string name="nc_new_mention">Unread mentions</string>
     <string name="conversations">Conversations</string>
     <string name="openConversations">Open conversations</string>
+    <string name="lock_conversation">Lock conversation</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
