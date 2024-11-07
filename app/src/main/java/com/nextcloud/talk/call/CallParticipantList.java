@@ -86,8 +86,8 @@ public class CallParticipantList {
                 callParticipants.remove(callParticipant.getSessionId());
                 // No need to copy it, as it will be no longer used.
                 callParticipant.setInCall(Participant.InCallFlags.DISCONNECTED);
-                left.add(callParticipant);
             }
+            left.addAll(knownCallParticipantsNotFound);
 
             if (!joined.isEmpty() || !updated.isEmpty() || !left.isEmpty()) {
                 callParticipantListNotifier.notifyChanged(joined, updated, left, unchanged);

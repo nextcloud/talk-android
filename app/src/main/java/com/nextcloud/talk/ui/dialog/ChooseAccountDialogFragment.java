@@ -109,7 +109,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
         themeViews();
         setupCurrentUser(user);
-        setupListeners(user);
+        setupListeners();
         setupAdapter();
         prepareViews();
     }
@@ -220,7 +220,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         adapter.updateDataSet(userItems, false);
     }
 
-    private void setupListeners(User user) {
+    private void setupListeners() {
         // Creating listeners for quick-actions
         binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
 
@@ -240,7 +240,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.setStatus.setOnClickListener(v -> {
             dismiss();
 
-            if (status != null) {
+            if (status != null && getActivity() != null) {
                 SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(status);
                 setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
             } else {
