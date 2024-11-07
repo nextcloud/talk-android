@@ -312,6 +312,7 @@ class SetStatusDialogFragment :
                             adapter.notifyDataSetChanged()
                             currentStatus = backupStatus
                             setupCurrentStatus()
+                            dismiss()
                         }
                     }
                     override fun onError(e: Throwable) {
