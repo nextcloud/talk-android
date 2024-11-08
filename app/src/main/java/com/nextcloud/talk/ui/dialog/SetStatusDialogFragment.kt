@@ -167,7 +167,7 @@ class SetStatusDialogFragment :
 
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onNext(statusOverall: StatusOverall) {
-                    if (statusOverall.ocs?.meta?.statusCode == 200) {
+                    if (statusOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
                         backupStatus = statusOverall.ocs?.data!!
                         isBackupStatusAvailable = true
                         val backupPredefinedStatus = PredefinedStatus(
@@ -299,7 +299,7 @@ class SetStatusDialogFragment :
                     @SuppressLint("NotifyDataSetChanged")
                     override fun onNext(genericOverall: GenericOverall) {
                         Log.d(TAG, "$genericOverall")
-                        if (genericOverall.ocs?.meta?.statusCode == 200) {
+                        if (genericOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
                             binding.automaticStatus.visibility = View.GONE
                             adapter.isBackupStatusAvailable = false
                             predefinedStatusesList.removeAt(0)
@@ -624,6 +624,7 @@ class SetStatusDialogFragment :
      */
     companion object {
         private val TAG = SetStatusDialogFragment::class.simpleName
+        private const val HTTP_STATUS_CODE_OK = 200
 
         @JvmStatic
         fun newInstance(status: Status): SetStatusDialogFragment {
