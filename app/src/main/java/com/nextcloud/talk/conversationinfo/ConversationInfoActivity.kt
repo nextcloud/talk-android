@@ -256,6 +256,18 @@ class ConversationInfoActivity :
                 else -> {}
             }
         }
+
+        viewModel.getConversationReadOnlyState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.SetConversationReadOnlySuccessState -> {
+                }
+                is ConversationInfoViewModel.SetConversationReadOnlyErrorState -> {
+                    Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
+                }
+                else -> {
+                }
+            }
+        }
     }
 
     private fun setupActionBar() {
@@ -658,6 +670,7 @@ class ConversationInfoActivity :
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 startActivity(intent)
                             }
+
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
                                 if (errorType == LeaveConversationWorker.ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT) {
@@ -674,6 +687,7 @@ class ConversationInfoActivity :
                                     ).show()
                                 }
                             }
+
                             else -> {
                             }
                         }
@@ -826,6 +840,18 @@ class ConversationInfoActivity :
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
 
+        if (ConversationUtils.isConversationReadOnlyAvailable(conversationCopy, spreedCapabilities)) {
+            binding.lockConversation.visibility = VISIBLE
+            binding.lockConversation.setOnClickListener {
+                val isChecked = binding.lockConversationSwitch.isChecked
+                binding.lockConversationSwitch.isChecked = !isChecked
+                val state = if (isChecked) 0 else 1
+                makeConversationReadOnly(conversationUser, conversationToken, state)
+            }
+        } else {
+            binding.lockConversation.visibility = GONE
+        }
+
         if (!isDestroyed) {
             binding.dangerZoneOptions.visibility = VISIBLE
 
@@ -896,6 +922,10 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
             }
         }
+    }
+
+    private fun makeConversationReadOnly(conversationUser: User, roomToken: String, state: Int) {
+        viewModel.setConversationReadOnly(conversationUser, roomToken, state)
     }
 
     private fun initRecordingConsentOption() {

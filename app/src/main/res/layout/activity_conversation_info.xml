@@ -335,14 +335,13 @@
                 </LinearLayout>
 
                 <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/lobby_switch"
+                    android:id="@+id/lock_conversation_switch"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/standard_margin"
                     android:layout_marginEnd="1dp"
-                    android:checked="false"
-                    android:clickable="true"
+                    android:clickable="false"
                     android:focusable="true" />
             </LinearLayout>
 

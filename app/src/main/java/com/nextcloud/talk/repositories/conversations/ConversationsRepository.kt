@@ -34,4 +34,6 @@ interface ConversationsRepository {
     suspend fun archiveConversation(credentials: String, url: String): GenericOverall
 
     suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall
+
+    fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall>
 }

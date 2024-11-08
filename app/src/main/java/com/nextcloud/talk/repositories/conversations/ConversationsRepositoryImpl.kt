@@ -100,6 +100,10 @@ class ConversationsRepositoryImpl(
         return coroutineApi.unarchiveConversation(credentials, url)
     }
 
+    override fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall> {
+        return api.setConversationReadOnly(credentials, url, state)
+    }
+
     private fun apiVersion(): Int {
         return ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4))
     }

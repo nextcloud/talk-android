@@ -42,6 +42,14 @@ object ConversationUtils {
             !isNoteToSelfConversation(conversation)
     }
 
+    fun isConversationReadOnlyAvailable(
+        conversation: ConversationModel,
+        spreedCapabilities: SpreedCapability
+    ): Boolean {
+        return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS) &&
+            canModerate(conversation, spreedCapabilities)
+    }
+
     fun isLobbyViewApplicable(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean {
         return !canModerate(conversation, spreedCapabilities) &&
             (
