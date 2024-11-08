@@ -1327,7 +1327,7 @@ class ConversationInfoActivity :
         }
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "StringFormatInvalid")
     override fun onItemClick(view: View?, position: Int): Boolean {
         if (!ConversationUtils.canModerate(conversation!!, spreedCapabilities)) {
             return true
