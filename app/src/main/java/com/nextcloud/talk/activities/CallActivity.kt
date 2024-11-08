@@ -671,16 +671,16 @@ class CallActivity : CallBaseActivity() {
 
         if (isOneToOneConversation) {
             binding!!.hangupButton.setOnLongClickListener {
-                hangup(true, false)
+                showLeavePopupMenu()
                 true
             }
             binding!!.hangupButton.setOnClickListener {
-                showPopupMenu()
+                hangup(true, true)
             }
         } else {
             if (isModerator) {
                 binding!!.hangupButton.setOnLongClickListener {
-                    showPopupMenu()
+                    showEndCallPopupMenu()
                     true
                 }
             }
@@ -689,10 +689,18 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        binding!!.popupMenu.setOnClickListener {
-            hangup(true, true)
-            binding!!.popupMenu.visibility = View.GONE
+        if(!isOneToOneConversation){
+            binding!!.popupMenu.setOnClickListener {
+                hangup(true, true)
+                binding!!.popupMenu.visibility = View.GONE
+            }
+        }else{
+            binding!!.popupMenu.setOnClickListener {
+                hangup(true,false)
+                binding!!.popupMenu.visibility =View.GONE
+            }
         }
+
 
         binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
         binding!!.gridview.onItemClickListener =
@@ -729,8 +737,15 @@ class CallActivity : CallBaseActivity() {
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
     }
 
-    private fun showPopupMenu() {
+    private fun showEndCallPopupMenu() {
         binding!!.popupMenu.visibility = View.VISIBLE
+        binding!!.popupMenu.text = context.getString(R.string.end_call_for_everyone)
+    }
+
+    private fun showLeavePopupMenu(){
+        binding!!.popupMenu.visibility = View.VISIBLE
+        binding!!.popupMenu.text = context.getString(R.string.leave_call)
+
     }
 
     private fun createCameraEnumerator() {
