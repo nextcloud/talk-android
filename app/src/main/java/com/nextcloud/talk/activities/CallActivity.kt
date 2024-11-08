@@ -896,6 +896,7 @@ class CallActivity : CallBaseActivity() {
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
+                binding!!.popupMenu.visibility = View.GONE
             }
             false
         }
@@ -903,6 +904,7 @@ class CallActivity : CallBaseActivity() {
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
+                binding!!.popupMenu.visibility = View.GONE
             }
             false
         }
@@ -1378,30 +1380,6 @@ class CallActivity : CallBaseActivity() {
                 }
             }
         }
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        if (binding!!.popupMenu.visibility == View.VISIBLE) {
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val buttonLocation = IntArray(2)
-                binding!!.popupMenu.getLocationOnScreen(buttonLocation)
-
-                val popupMenuWidth = binding!!.popupMenu.width
-                val popupMenuHeight = binding!!.popupMenu.height
-
-                val buttonLeft = buttonLocation[0]
-                val buttonTop = buttonLocation[1]
-                val buttonRight = buttonLeft + popupMenuWidth
-                val buttonBottom = buttonTop + popupMenuHeight
-
-                val x = event.rawX
-                val y = event.rawY
-                if (x < buttonLeft || x > buttonRight || y < buttonTop || y > buttonBottom) {
-                    binding!!.popupMenu.visibility = View.GONE
-                }
-            }
-        }
-        return super.dispatchTouchEvent(event)
     }
 
     fun clickRaiseOrLowerHandButton() {
