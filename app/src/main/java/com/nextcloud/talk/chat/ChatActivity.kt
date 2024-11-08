@@ -101,6 +101,8 @@ import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
+import com.nextcloud.talk.adapters.messages.TemporaryMessageInterface
+import com.nextcloud.talk.adapters.messages.TemporaryMessageViewHolder
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -213,7 +215,8 @@ class ChatActivity :
     CommonMessageInterface,
     PreviewMessageInterface,
     SystemMessageInterface,
-    CallStartedMessageInterface {
+    CallStartedMessageInterface,
+    TemporaryMessageInterface {
 
     var active = false
 
@@ -534,6 +537,37 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
+        messageInputViewModel.messageQueueFlow.observe(this) { list ->
+            list.forEachIndexed { _, qMsg ->
+                Log.d("Julius", "Message recieved: ${qMsg.message}")
+                val temporaryChatMessage = ChatMessage()
+                temporaryChatMessage.jsonMessageId = -3
+                temporaryChatMessage.actorId = "-3"
+                temporaryChatMessage.timestamp = System.currentTimeMillis() / 1000
+                temporaryChatMessage.message = qMsg.message.toString()
+                temporaryChatMessage.tempMessageId = qMsg.id
+                temporaryChatMessage.isTempMessage = true
+                temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
+                val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
+                adapter?.addToStart(temporaryChatMessage, true)
+                adapter?.notifyDataSetChanged()
+            }
+        }
+
+        messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
+            if (size == 0) {
+                var i = 0
+                var pos = adapter?.getMessagePositionById("-3")
+                while (pos != null && pos > -1) {
+                    adapter?.items?.removeAt(pos)
+                    i++
+                    pos = adapter?.getMessagePositionById("-3")
+                }
+                adapter?.notifyDataSetChanged()
+                Log.d("Julius", "End i: $i")
+            }
+        }
+
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->
@@ -620,6 +654,7 @@ class ChatActivity :
                             withCredentials = credentials!!,
                             withUrl = urlForChatting
                         )
+                        messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                     }
                 }
 
@@ -1167,6 +1202,17 @@ class ChatActivity :
             CallStartedViewHolder::class.java,
             payload,
             R.layout.call_started_message,
+            this
+        )
+
+        messageHolders.registerContentType(
+            CONTENT_TYPE_TEMP,
+            TemporaryMessageViewHolder::class.java,
+            payload,
+            R.layout.item_temporary_message,
+            TemporaryMessageViewHolder::class.java,
+            payload,
+            R.layout.item_temporary_message,
             this
         )
 
@@ -2330,8 +2376,8 @@ class ChatActivity :
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
+                    Log.e(TAG, "setActionBarTitle failed $e")
                     currentConversation?.displayName
-                    error(e)
                 }
             } else {
                 ""
@@ -2445,9 +2491,9 @@ class ChatActivity :
 
         if (currentConversation!!.remoteServer != null) {
             val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
-            ncApi!!.getSignalingSettings(
+            ncApi.getSignalingSettings(
                 credentials,
-                ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl, roomToken!!)
+                ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl, roomToken)
             ).blockingSubscribe(object : Observer<SignalingSettingsOverall> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
@@ -3072,7 +3118,10 @@ class ChatActivity :
 
     private fun openMessageActionsDialog(iMessage: IMessage?) {
         val message = iMessage as ChatMessage
-        if (hasVisibleItems(message) && !isSystemMessage(message)) {
+        if (hasVisibleItems(message) &&
+            !isSystemMessage(message) &&
+            message.id != "-3"
+        ) {
             MessageActionsDialog(
                 this,
                 message,
@@ -3475,6 +3524,7 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == "-1"
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
+            CONTENT_TYPE_TEMP -> message.id == "-3"
 
             else -> false
         }
@@ -3626,6 +3676,30 @@ class ChatActivity :
         startACall(false, false)
     }
 
+    override fun editTemporaryMessage(id: Int, newMessage: String) {
+        messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
+        adapter?.notifyDataSetChanged() // TODO optimize this
+    }
+
+    override fun deleteTemporaryMessage(id: Int) {
+        messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
+        var i = 0
+        val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
+        for (item in adapter?.items!!) {
+            if (i > max!! && max < 1) break
+            if (item.item is ChatMessage &&
+                (item.item as ChatMessage).isTempMessage &&
+                (item.item as ChatMessage).tempMessageId == id
+            ) {
+                val index = adapter?.items!!.indexOf(item)
+                adapter?.items!!.removeAt(index)
+                adapter?.notifyItemRemoved(index)
+                break
+            }
+            i++
+        }
+    }
+
     private fun logConversationInfos(methodName: String) {
         Log.d(TAG, " |-----------------------------------------------")
         Log.d(TAG, " | method: $methodName")
@@ -3655,6 +3729,7 @@ class ChatActivity :
         private const val CONTENT_TYPE_VOICE_MESSAGE: Byte = 5
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
+        private const val CONTENT_TYPE_TEMP: Byte = 8
         private const val NEW_MESSAGES_POPUP_BUBBLE_DELAY: Long = 200
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
