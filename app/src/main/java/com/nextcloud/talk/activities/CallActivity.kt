@@ -689,18 +689,17 @@ class CallActivity : CallBaseActivity() {
             }
         }
 
-        if(!isOneToOneConversation){
+        if (!isOneToOneConversation) {
             binding!!.popupMenu.setOnClickListener {
                 hangup(true, true)
                 binding!!.popupMenu.visibility = View.GONE
             }
-        }else{
+        } else {
             binding!!.popupMenu.setOnClickListener {
-                hangup(true,false)
-                binding!!.popupMenu.visibility =View.GONE
+                hangup(true, false)
+                binding!!.popupMenu.visibility = View.GONE
             }
         }
-
 
         binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
         binding!!.gridview.onItemClickListener =
@@ -742,10 +741,9 @@ class CallActivity : CallBaseActivity() {
         binding!!.popupMenu.text = context.getString(R.string.end_call_for_everyone)
     }
 
-    private fun showLeavePopupMenu(){
+    private fun showLeavePopupMenu() {
         binding!!.popupMenu.visibility = View.VISIBLE
         binding!!.popupMenu.text = context.getString(R.string.leave_call)
-
     }
 
     private fun createCameraEnumerator() {
@@ -2079,7 +2077,7 @@ class CallActivity : CallBaseActivity() {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
         }
-        val endCall: Boolean? = if(endCallForAll) true else null
+        val endCall: Boolean? = if (endCallForAll) true else null
 
         ncApi!!.leaveCall(credentials, ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!), endCall)
             .subscribeOn(Schedulers.io())
