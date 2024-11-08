@@ -403,10 +403,9 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun webinaryRoomType(conversation: ConversationModel): Boolean {
-        return conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+    private fun webinaryRoomType(conversation: ConversationModel): Boolean =
+        conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
             conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
-    }
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked = binding.webinarInfoView.lobbySwitch.isChecked
@@ -794,6 +793,7 @@ class ConversationInfoActivity :
 
         if (!CapabilitiesUtil.isArchiveConversationsAvailable(spreedCapabilities)) {
             binding.archiveConversationBtn.visibility = GONE
+            binding.archiveConversationTextHint.visibility = GONE
         }
 
         binding.archiveConversationBtn.setOnClickListener {
