@@ -839,13 +839,15 @@ class ConversationInfoActivity :
             binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
-
         if (ConversationUtils.isConversationReadOnlyAvailable(conversationCopy, spreedCapabilities)) {
             binding.lockConversation.visibility = VISIBLE
+            binding.lockConversationSwitch.isChecked = databaseStorageModule!!.getBoolean("lock_switch", false)
+
             binding.lockConversation.setOnClickListener {
-                val isChecked = binding.lockConversationSwitch.isChecked
-                binding.lockConversationSwitch.isChecked = !isChecked
-                val state = if (isChecked) 0 else 1
+                val isLocked = binding.lockConversationSwitch.isChecked
+                binding.lockConversationSwitch.isChecked = !isLocked
+                databaseStorageModule!!.saveBoolean("lock_switch", !isLocked)
+                val state = if (isLocked) 0 else 1
                 makeConversationReadOnly(conversationUser, conversationToken, state)
             }
         } else {
