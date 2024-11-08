@@ -77,6 +77,7 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.ui.dialog.DialogBanListFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -791,7 +792,7 @@ class ConversationInfoActivity :
             }
         }
 
-        if (!CapabilitiesUtil.isArchiveConversationsAvailable(spreedCapabilities)) {
+        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)) {
             binding.archiveConversationBtn.visibility = GONE
             binding.archiveConversationTextHint.visibility = GONE
         }
