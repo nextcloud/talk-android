@@ -2919,6 +2919,7 @@ class CallActivity : CallBaseActivity() {
             raisedHand = if (callParticipantModel.raisedHand != null) callParticipantModel.raisedHand.state else false
         }
 
+        @SuppressLint("StringFormatInvalid")
         override fun onChange() {
             if (callParticipantModel.raisedHand == null || !callParticipantModel.raisedHand.state) {
                 raisedHand = false
