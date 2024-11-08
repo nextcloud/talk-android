@@ -671,7 +671,7 @@ class CallActivity : CallBaseActivity() {
 
         if (isOneToOneConversation) {
             binding!!.hangupButton.setOnLongClickListener {
-                showLeavePopupMenu()
+                showLeaveCallPopupMenu()
                 true
             }
             binding!!.hangupButton.setOnClickListener {
@@ -741,7 +741,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.popupMenu.text = context.getString(R.string.end_call_for_everyone)
     }
 
-    private fun showLeavePopupMenu() {
+    private fun showLeaveCallPopupMenu() {
         binding!!.popupMenu.visibility = View.VISIBLE
         binding!!.popupMenu.text = context.getString(R.string.leave_call)
     }
