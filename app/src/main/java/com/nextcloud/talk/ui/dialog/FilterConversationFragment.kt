@@ -22,6 +22,8 @@ import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogFilterConversationBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
 import javax.inject.Inject
 
@@ -104,7 +106,14 @@ class FilterConversationFragment : DialogFragment() {
     private fun setUpChips() {
         binding.unreadFilterChip.isChecked = filterState[UNREAD]!!
         binding.mentionedFilterChip.isChecked = filterState[MENTION]!!
-        binding.archivedFilterChip.isChecked = filterState[ARCHIVE]!!
+
+        binding.archivedFilterChip.visibility = View.GONE
+        userManager.currentUser.blockingGet().capabilities?.spreedCapability?.let {
+            if (hasSpreedFeatureCapability(it, SpreedFeatures.ARCHIVE_CONVERSATIONS)) {
+                binding.archivedFilterChip.visibility = View.VISIBLE
+                binding.archivedFilterChip.isChecked = filterState[ARCHIVE]!!
+            }
+        }
     }
 
     private fun processSubmit() {
