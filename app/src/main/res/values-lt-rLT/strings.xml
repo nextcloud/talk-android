@@ -111,6 +111,7 @@
     <string name="nc_diagnose_android_version_title">Android versija</string>
     <string name="nc_diagnose_app_category_title">Programėlė</string>
     <string name="nc_diagnose_app_name_title">Programėlės pavadinimas</string>
+    <string name="nc_diagnose_app_version_title">Programėlės versija</string>
     <string name="nc_diagnose_battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="nc_diagnose_device_name_title">Įrenginys</string>
     <string name="nc_diagnose_phone_category_title">Telefonas</string>

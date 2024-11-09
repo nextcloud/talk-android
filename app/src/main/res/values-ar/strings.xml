@@ -38,7 +38,7 @@
     <string name="conversations">محادثات</string>
     <string name="create_conversation">انشاء محادثة</string>
     <string name="create_issue">تكوين إشكالية </string>
-    <string name="custom">مُخصّص</string>
+    <string name="custom">مخصص</string>
     <string name="danger_zone">منطقة خطر</string>
     <string name="deck_card_description">%1$s في %2$s</string>
     <string name="delete_avatar">إمسح صورة الملف الشخصي الرمزية</string>
@@ -281,6 +281,7 @@
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
     <string name="nc_join_open_conversations">الانضمام إلى محادثات جارية</string>
+    <string name="nc_last_moderator_leaving_room_warning">تحتاج إلى إنشاء ميسر جديد قبل أن تتمكن من مغادرة المحادثة</string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>
     <string name="nc_leaving_call">مُغادرة المكالمة …</string>
