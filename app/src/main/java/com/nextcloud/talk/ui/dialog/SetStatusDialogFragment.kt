@@ -591,7 +591,7 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onComplete() {
-                        //unused atm
+                        // unused atm
                     }
                 })
         }
