@@ -56,6 +56,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
+import retrofit2.HttpException
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -191,7 +192,11 @@ class SetStatusDialogFragment :
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error while fetching predefined statuses", e)
+                    if (e is HttpException && e.code() == HTTP_STATUS_CODE_NOT_FOUND) {
+                        Log.d(TAG, "User does not have a backup status set")
+                    } else {
+                        Log.e(TAG, "Error while getting user backup status", e)
+                    }
                 }
 
                 override fun onComplete() {
@@ -319,7 +324,7 @@ class SetStatusDialogFragment :
                         }
                     }
                     override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error while fetching predefined statuses", e)
+                        Log.e(TAG, "Failed to revert user status", e)
                     }
 
                     override fun onComplete() {
@@ -585,7 +590,8 @@ class SetStatusDialogFragment :
                         Log.e(TAG, "failed to set PredefinedStatusMessage", e)
                     }
 
-                    override fun onComplete()  {
+                    override fun onComplete() {
+                        //unused atm
                     }
                 })
         }
@@ -651,6 +657,7 @@ class SetStatusDialogFragment :
     companion object {
         private val TAG = SetStatusDialogFragment::class.simpleName
         private const val HTTP_STATUS_CODE_OK = 200
+        private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
         @JvmStatic
         fun newInstance(status: Status): SetStatusDialogFragment {
