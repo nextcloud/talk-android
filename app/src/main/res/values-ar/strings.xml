@@ -201,9 +201,9 @@
     <string name="nc_diagnose_gplay_available_title">خدمات متجر التطبيقات من قوقل Google play</string>
     <string name="nc_diagnose_gplay_available_yes">خدمات متجر التطبيقات من قوقل Google play متاحة</string>
     <string name="nc_diagnose_latest_push_registration_at_push_proxy">آخر تسجيل لعملية إدخال push في وكيل الإدخال push proxy</string>
-    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">لم يتم التسجيل بعدُ في وكيل الإدخال push proxy</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">لم يتم التسجيل حتى الآن في وكيل الإرسال Push proxy</string>
     <string name="nc_diagnose_latest_push_registration_at_server">آخر تسجيل لعملية إدخال push في الخادم</string>
-    <string name="nc_diagnose_latest_push_registration_at_server_fail">لم يتم التسجيل بعدُ في الخادم</string>
+    <string name="nc_diagnose_latest_push_registration_at_server_fail">لم يتم التسجيل حتى الآن في الخادم</string>
     <string name="nc_diagnose_meta_category_title">معلومات وصفية</string>
     <string name="nc_diagnose_meta_system_report_date">توليد تقرير النظام</string>
     <string name="nc_diagnose_notification_calls_channel_permission">هل قناة الإشعار بالمكالمات مُمكّنة؟</string>
@@ -344,7 +344,7 @@
     <string name="nc_password">كلمة المرور</string>
     <string name="nc_permissions_ask">تعيين الأذونات</string>
     <string name="nc_permissions_denied">بعض الأذونات تمّ رفضها</string>
-    <string name="nc_permissions_rationale_dialog_title">إسمَح بالأذونات رجاءً</string>
+    <string name="nc_permissions_rationale_dialog_title">يرجى السماح بالأذونات</string>
     <string name="nc_permissions_settings">فتح الإعدادات</string>
     <string name="nc_permissions_settings_hint">إمنح الأذونات رجاءً من Settings > Permissions</string>
     <string name="nc_phone_book_integration_account_not_found">الحساب غير موجود </string>
