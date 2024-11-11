@@ -77,6 +77,7 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.ui.dialog.DialogBanListFragment
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
@@ -403,10 +404,9 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun webinaryRoomType(conversation: ConversationModel): Boolean {
-        return conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+    private fun webinaryRoomType(conversation: ConversationModel): Boolean =
+        conversation.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
             conversation.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
-    }
 
     private fun reconfigureLobbyTimerView(dateTime: Calendar? = null) {
         val isChecked = binding.webinarInfoView.lobbySwitch.isChecked
@@ -792,8 +792,9 @@ class ConversationInfoActivity :
             }
         }
 
-        if (!CapabilitiesUtil.isArchiveConversationsAvailable(spreedCapabilities)) {
+        if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)) {
             binding.archiveConversationBtn.visibility = GONE
+            binding.archiveConversationTextHint.visibility = GONE
         }
 
         binding.archiveConversationBtn.setOnClickListener {

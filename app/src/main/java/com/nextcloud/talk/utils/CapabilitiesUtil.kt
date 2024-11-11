@@ -56,7 +56,7 @@ enum class SpreedFeatures(val value: String) {
     DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited"),
     BAN_V1("ban-v1"),
     EDIT_MESSAGES_NOTE_TO_SELF("edit-messages-note-to-self"),
-    ARCHIVE_CONVERSATIONS("archived-conversations")
+    ARCHIVE_CONVERSATIONS("archived-conversations-v2")
 }
 
 @Suppress("TooManyFunctions")
@@ -84,14 +84,11 @@ object CapabilitiesUtil {
     //region CoreCapabilities
 
     @JvmStatic
-    fun isLinkPreviewAvailable(user: User): Boolean {
-        return user.capabilities?.coreCapability?.referenceApi != null &&
+    fun isLinkPreviewAvailable(user: User): Boolean =
+        user.capabilities?.coreCapability?.referenceApi != null &&
             user.capabilities?.coreCapability?.referenceApi == "true"
-    }
 
-    fun canGeneratePrettyURL(user: User): Boolean {
-        return user.capabilities?.coreCapability?.modRewriteWorking == true
-    }
+    fun canGeneratePrettyURL(user: User): Boolean = user.capabilities?.coreCapability?.modRewriteWorking == true
 
     // endregion
 
@@ -105,9 +102,8 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
-    }
+    fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
+        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA)
 
     fun getMessageMaxLength(spreedCapabilities: SpreedCapability): Int {
         if (spreedCapabilities.config?.containsKey("chat") == true) {
@@ -157,16 +153,14 @@ object CapabilitiesUtil {
         return "/Talk"
     }
 
-    fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
-    }
+    fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean =
+        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
 
-    fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
-    }
+    fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean =
+        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
 
-    fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean {
-        return if (
+    fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean =
+        if (
             spreedCapabilities.config?.containsKey("call") == true &&
             spreedCapabilities.config!!["call"] != null &&
             spreedCapabilities.config!!["call"]!!.containsKey("enabled")
@@ -176,7 +170,6 @@ object CapabilitiesUtil {
             // older nextcloud versions without the capability can't disable the calls
             true
         }
-    }
 
     fun isCallReactionsSupported(user: User?): Boolean {
         if (user?.capabilities != null) {
@@ -188,12 +181,11 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isTranslationsSupported(spreedCapabilities: SpreedCapability): Boolean {
-        return spreedCapabilities.config?.containsKey("chat") == true &&
+    fun isTranslationsSupported(spreedCapabilities: SpreedCapability): Boolean =
+        spreedCapabilities.config?.containsKey("chat") == true &&
             spreedCapabilities.config!!["chat"] != null &&
             spreedCapabilities.config!!["chat"]!!.containsKey("has-translation-providers") &&
             spreedCapabilities.config!!["chat"]!!["has-translation-providers"] == true
-    }
 
     fun getRecordingConsentType(spreedCapabilities: SpreedCapability): Int {
         if (
@@ -213,9 +205,8 @@ object CapabilitiesUtil {
         return RECORDING_CONSENT_NOT_REQUIRED
     }
 
-    fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
-    }
+    fun isBanningAvailable(spreedCapabilities: SpreedCapability): Boolean =
+        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.BAN_V1)
 
     // endregion
 
@@ -249,16 +240,11 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun isFederationAvailable(user: User): Boolean {
-        return hasSpreedFeatureCapability(user.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1) &&
+    fun isFederationAvailable(user: User): Boolean =
+        hasSpreedFeatureCapability(user.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1) &&
             user.capabilities!!.spreedCapability!!.config?.containsKey("federation") == true &&
             user.capabilities!!.spreedCapability!!.config!!["federation"] != null &&
             user.capabilities!!.spreedCapability!!.config!!["federation"]!!.containsKey("enabled")
-    }
-
-    fun isArchiveConversationsAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)
-    }
 
     // endregion
 
@@ -275,20 +261,18 @@ object CapabilitiesUtil {
 
     //region ProvisioningCapabilities
 
-    fun canEditScopes(user: User): Boolean {
-        return user.capabilities?.provisioningCapability?.accountPropertyScopesVersion != null &&
+    fun canEditScopes(user: User): Boolean =
+        user.capabilities?.provisioningCapability?.accountPropertyScopesVersion != null &&
             user.capabilities!!.provisioningCapability!!.accountPropertyScopesVersion!! > 1
-    }
 
     // endregion
 
     //region UserStatusCapabilities
 
     @JvmStatic
-    fun isUserStatusAvailable(user: User): Boolean {
-        return user.capabilities?.userStatusCapability?.enabled == true &&
+    fun isUserStatusAvailable(user: User): Boolean =
+        user.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true
-    }
 
     // endregion
 
