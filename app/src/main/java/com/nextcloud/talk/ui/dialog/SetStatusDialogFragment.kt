@@ -92,6 +92,8 @@ class SetStatusDialogFragment :
 
     val predefinedStatusesList = ArrayList<PredefinedStatus>()
 
+    private val disposables: MutableList<Disposable> = ArrayList()
+
     private lateinit var adapter: PredefinedStatusListAdapter
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
@@ -130,7 +132,9 @@ class SetStatusDialogFragment :
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<ResponseBody> {
-                override fun onSubscribe(d: Disposable) {}
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
 
                 @SuppressLint("NotifyDataSetChanged")
                 override fun onNext(responseBody: ResponseBody) {
@@ -152,7 +156,9 @@ class SetStatusDialogFragment :
                     Log.e(TAG, "Error while fetching predefined statuses", e)
                 }
 
-                override fun onComplete() {}
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
@@ -163,6 +169,7 @@ class SetStatusDialogFragment :
             .subscribe(object : Observer<StatusOverall> {
 
                 override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
                 }
 
                 @SuppressLint("NotifyDataSetChanged")
@@ -188,6 +195,7 @@ class SetStatusDialogFragment :
                 }
 
                 override fun onComplete() {
+                    // unused atm
                 }
             })
     }
@@ -294,6 +302,7 @@ class SetStatusDialogFragment :
                 .subscribe(object : Observer<GenericOverall> {
 
                     override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
                     }
 
                     @SuppressLint("NotifyDataSetChanged")
@@ -314,6 +323,7 @@ class SetStatusDialogFragment :
                     }
 
                     override fun onComplete() {
+                        // unused atm
                     }
                 })
         }
@@ -432,7 +442,7 @@ class SetStatusDialogFragment :
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    // unused atm
+                    disposables.add(d)
                 }
 
                 override fun onNext(statusOverall: GenericOverall) {
@@ -459,7 +469,7 @@ class SetStatusDialogFragment :
             )
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    // unused atm
+                    disposables.add(d)
                 }
 
                 override fun onNext(statusOverall: GenericOverall) {
@@ -562,7 +572,9 @@ class SetStatusDialogFragment :
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) = Unit
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
+                    }
 
                     override fun onNext(t: GenericOverall) {
                         Log.d(TAG, "PredefinedStatusMessage successfully set")
@@ -573,7 +585,8 @@ class SetStatusDialogFragment :
                         Log.e(TAG, "failed to set PredefinedStatusMessage", e)
                     }
 
-                    override fun onComplete() = Unit
+                    override fun onComplete()  {
+                    }
                 })
         }
     }
@@ -617,6 +630,19 @@ class SetStatusDialogFragment :
                 else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
             }
         }
+    }
+
+    private fun dispose() {
+        for (i in disposables.indices) {
+            if (!disposables[i].isDisposed) {
+                disposables[i].dispose()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        dispose()
+        super.onDestroy()
     }
 
     /**
