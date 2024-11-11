@@ -56,7 +56,7 @@ enum class SpreedFeatures(val value: String) {
     DELETE_MESSAGES_UNLIMITED("delete-messages-unlimited"),
     BAN_V1("ban-v1"),
     EDIT_MESSAGES_NOTE_TO_SELF("edit-messages-note-to-self"),
-    ARCHIVE_CONVERSATIONS("archived-conversations")
+    ARCHIVE_CONVERSATIONS("archived-conversations-v2")
 }
 
 @Suppress("TooManyFunctions")
