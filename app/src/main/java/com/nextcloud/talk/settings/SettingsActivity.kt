@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -89,6 +90,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
@@ -1278,29 +1280,33 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun observeReadPrivacy() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             var state = appPreferences.readPrivacy
             readPrivacyFlow.collect { newBoolean ->
                 if (state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
-                    try {
-                        credentials?.let { credentials ->
-                            ncApiCoroutines.setReadStatusPrivacy(
-                                credentials,
-                                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                                json.toRequestBody("application/json".toMediaTypeOrNull())
-                            )
-                            Log.i(TAG, "reading status set")
-                        }
-                    } catch (e: Exception) {
-                        appPreferences.setReadPrivacy(!newBoolean)
-                        binding.settingsReadPrivacySwitch.isChecked = !newBoolean
-                        if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
-                            Log.e(TAG, "read_status_privacy : Key or value is invalid")
-                        } else {
-                            Log.e(TAG, "Error updating read status", e)
+                    withContext(Dispatchers.IO) {
+                        try {
+                            credentials?.let { credentials ->
+                                ncApiCoroutines.setReadStatusPrivacy(
+                                    credentials,
+                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                    json.toRequestBody("application/json".toMediaTypeOrNull())
+                                )
+                                Log.i(TAG, "reading status set")
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                appPreferences.setReadPrivacy(!newBoolean)
+                                binding.settingsReadPrivacySwitch.isChecked = !newBoolean
+                            }
+                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                                Log.e(TAG, "read_status_privacy : Key or value is invalid")
+                            } else {
+                                Log.e(TAG, "Error setting read status", e)
+                            }
                         }
                     }
                 }
@@ -1309,31 +1315,36 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun observeTypingStatus() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             var state = appPreferences.typingStatus
             typingStatusFlow.collect { newBoolean ->
                 if (state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
-
-                    try {
-                        credentials?.let { credentials ->
-                            ncApiCoroutines.setTypingStatusPrivacy(
-                                credentials,
-                                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                                json.toRequestBody("application/json".toMediaTypeOrNull())
-                            )
-                            loadCapabilitiesAndUpdateSettings()
-                            Log.i(TAG, "typing status set")
-                        }
-                    } catch (e: Exception) {
-                        appPreferences.typingStatus = !newBoolean
-                        binding.settingsTypingStatusSwitch.isChecked = !newBoolean
-                        if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
-                            Log.e(TAG, "typing_privacy : Key or value is invalid")
-                        } else {
-                            Log.e(TAG, "Error updating typing status", e)
+                    withContext(Dispatchers.IO) {
+                        try {
+                            credentials?.let { credentials ->
+                                ncApiCoroutines.setTypingStatusPrivacy(
+                                    credentials,
+                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                    json.toRequestBody("application/json".toMediaTypeOrNull())
+                                )
+                            }
+                            withContext(Dispatchers.Main) {
+                                loadCapabilitiesAndUpdateSettings()
+                                Log.i(TAG, "typing status set")
+                            }
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
+                                appPreferences.typingStatus = !newBoolean
+                                binding.settingsTypingStatusSwitch.isChecked = !newBoolean
+                            }
+                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                                Log.e(TAG, "typing_privacy : Key or value is invalid")
+                            } else {
+                                Log.e(TAG, "Error setting typing status", e)
+                            }
                         }
                     }
                 }
