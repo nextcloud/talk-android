@@ -176,7 +176,6 @@ class CallNotificationActivity : CallBaseActivity() {
         binding!!.callAnswerVoiceOnlyView.setOnClickListener {
             Log.d(TAG, "accept call (voice only)")
             intent.putExtra(KEY_CALL_VOICE_ONLY, true)
-            intent.putExtra(KEY_ROOM_ONE_TO_ONE, isOneToOneCall)
             proceedToCall()
         }
         binding!!.callAnswerCameraView.setOnClickListener {
@@ -199,9 +198,7 @@ class CallNotificationActivity : CallBaseActivity() {
         startActivity(callIntent)
     }
 
-    private fun isInCallWithVideo(callFlag: Int): Boolean {
-        return (callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
-    }
+    private fun isInCallWithVideo(callFlag: Int): Boolean = (callFlag and Participant.InCallFlags.WITH_VIDEO) > 0
 
     override fun onStop() {
         val notificationManager = NotificationManagerCompat.from(context)
