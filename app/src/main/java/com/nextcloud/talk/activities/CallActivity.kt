@@ -680,7 +680,7 @@ class CallActivity : CallBaseActivity() {
         } else {
             if (isModerator) {
                 binding!!.hangupButton.setOnLongClickListener {
-                    showEndCallPopupMenu()
+                    showEndCallForAllPopupMenu()
                     true
                 }
             }
@@ -690,14 +690,14 @@ class CallActivity : CallBaseActivity() {
         }
 
         if (!isOneToOneConversation) {
-            binding!!.popupMenu.setOnClickListener {
+            binding!!.endCallPopupMenu.setOnClickListener {
                 hangup(true, true)
-                binding!!.popupMenu.visibility = View.GONE
+                binding!!.endCallPopupMenu.visibility = View.GONE
             }
         } else {
-            binding!!.popupMenu.setOnClickListener {
+            binding!!.endCallPopupMenu.setOnClickListener {
                 hangup(true, false)
-                binding!!.popupMenu.visibility = View.GONE
+                binding!!.endCallPopupMenu.visibility = View.GONE
             }
         }
 
@@ -736,14 +736,14 @@ class CallActivity : CallBaseActivity() {
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
     }
 
-    private fun showEndCallPopupMenu() {
-        binding!!.popupMenu.visibility = View.VISIBLE
-        binding!!.popupMenu.text = context.getString(R.string.end_call_for_everyone)
+    private fun showEndCallForAllPopupMenu() {
+        binding!!.endCallPopupMenu.visibility = View.VISIBLE
+        binding!!.endCallPopupMenu.text = context.getString(R.string.end_call_for_everyone)
     }
 
     private fun showLeaveCallPopupMenu() {
-        binding!!.popupMenu.visibility = View.VISIBLE
-        binding!!.popupMenu.text = context.getString(R.string.leave_call)
+        binding!!.endCallPopupMenu.visibility = View.VISIBLE
+        binding!!.endCallPopupMenu.text = context.getString(R.string.leave_call)
     }
 
     private fun createCameraEnumerator() {
@@ -894,7 +894,7 @@ class CallActivity : CallBaseActivity() {
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
-                binding!!.popupMenu.visibility = View.GONE
+                binding!!.endCallPopupMenu.visibility = View.GONE
             }
             false
         }
@@ -902,7 +902,7 @@ class CallActivity : CallBaseActivity() {
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
-                binding!!.popupMenu.visibility = View.GONE
+                binding!!.endCallPopupMenu.visibility = View.GONE
             }
             false
         }
@@ -1795,7 +1795,8 @@ class CallActivity : CallBaseActivity() {
     private fun startCallTimeCounter(callStartTime: Long) {
         if (callStartTime != 0L &&
             hasSpreedFeatureCapability(
-                conversationUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.RECORDING_V1
+                conversationUser!!.capabilities!!.spreedCapability!!,
+                SpreedFeatures.RECORDING_V1
             )
         ) {
             binding!!.callDuration.visibility = View.VISIBLE
@@ -2239,8 +2240,10 @@ class CallActivity : CallBaseActivity() {
             // remote session ID. However, if the other participant does not have audio nor video that participant
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
-            if (hasMCU && participantHasAudioOrVideo ||
-                !hasMCU && selfParticipantHasAudioOrVideo &&
+            if (hasMCU &&
+                participantHasAudioOrVideo ||
+                !hasMCU &&
+                selfParticipantHasAudioOrVideo &&
                 (!participantHasAudioOrVideo || sessionId < currentSessionId!!)
             ) {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false)
@@ -2263,15 +2266,14 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun participantInCallFlagsHaveAudioOrVideo(participant: Participant?): Boolean {
-        return if (participant == null) {
+    private fun participantInCallFlagsHaveAudioOrVideo(participant: Participant?): Boolean =
+        if (participant == null) {
             false
         } else {
             participant.inCall and Participant.InCallFlags.WITH_AUDIO.toLong() > 0 ||
                 !isVoiceOnlyCall &&
                 participant.inCall and Participant.InCallFlags.WITH_VIDEO.toLong() > 0
         }
-    }
 
     private fun getPeerConnectionWrapperForSessionIdAndType(sessionId: String?, type: String): PeerConnectionWrapper? {
         for (wrapper in peerConnectionWrapperList) {
@@ -2519,10 +2521,12 @@ class CallActivity : CallBaseActivity() {
     fun onMessageEvent(proximitySensorEvent: ProximitySensorEvent) {
         if (!isVoiceOnlyCall) {
             val enableVideo = proximitySensorEvent.proximitySensorEventType ==
-                ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR && videoOn
+                ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR &&
+                videoOn
             if (permissionUtil!!.isCameraPermissionGranted() &&
                 (currentCallStatus === CallStatus.CONNECTING || isConnectionEstablished) &&
-                videoOn && enableVideo != localVideoTrack!!.enabled()
+                videoOn &&
+                enableVideo != localVideoTrack!!.enabled()
             ) {
                 toggleMedia(enableVideo, true)
             }
@@ -3156,7 +3160,8 @@ class CallActivity : CallBaseActivity() {
         get() = hasSpreedFeatureCapability(
             conversationUser.capabilities!!.spreedCapability!!,
             SpreedFeatures.RAISE_HAND
-        ) || isBreakoutRoom
+        ) ||
+            isBreakoutRoom
 
     private inner class SelfVideoTouchListener : OnTouchListener {
         @SuppressLint("ClickableViewAccessibility")

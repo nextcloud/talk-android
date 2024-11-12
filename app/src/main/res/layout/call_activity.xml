@@ -196,7 +196,7 @@
                 app:alignItems="center">
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/popup_menu"
+                    android:id="@+id/end_call_popup_menu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
