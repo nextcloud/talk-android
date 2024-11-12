@@ -91,6 +91,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.Locale
@@ -1291,11 +1292,16 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                                 ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
                                 json.toRequestBody("application/json".toMediaTypeOrNull())
                             )
+                            Log.i(TAG, "reading status set")
                         }
-                        Log.i(TAG, "reading status set")
                     } catch (e: Exception) {
                         appPreferences.setReadPrivacy(!newBoolean)
                         binding.settingsReadPrivacySwitch.isChecked = !newBoolean
+                        if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                            Log.e(TAG, "read_status_privacy : Key or value is invalid")
+                        } else {
+                            Log.e(TAG, "Error updating read status", e)
+                        }
                     }
                 }
             }
@@ -1318,13 +1324,17 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                                 ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
                                 json.toRequestBody("application/json".toMediaTypeOrNull())
                             )
+                            loadCapabilitiesAndUpdateSettings()
+                            Log.i(TAG, "typing status set")
                         }
-
-                        loadCapabilitiesAndUpdateSettings()
-                        Log.i(TAG, "typing status set")
                     } catch (e: Exception) {
                         appPreferences.typingStatus = !newBoolean
                         binding.settingsTypingStatusSwitch.isChecked = !newBoolean
+                        if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                            Log.e(TAG, "typing_privacy : Key or value is invalid")
+                        } else {
+                            Log.e(TAG, "Error updating typing status", e)
+                        }
                     }
                 }
             }
@@ -1338,5 +1348,6 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
         const val HTTP_CODE_OK: Int = 200
+        const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
     }
 }
