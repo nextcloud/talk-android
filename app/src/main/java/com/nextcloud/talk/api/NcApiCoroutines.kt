@@ -11,7 +11,10 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import io.reactivex.Observable
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -116,4 +119,18 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @POST
+    fun setReadStatusPrivacy(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Body body: RequestBody
+    ): GenericOverall
+
+    @POST
+    fun setTypingStatusPrivacy(
+        @Header("Authorization") authorization: String?,
+        @Url url: String,
+        @Body body: RequestBody
+    ): GenericOverall
 }
