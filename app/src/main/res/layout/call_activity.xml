@@ -94,7 +94,8 @@
                     android:src="@drawable/record_stop"
                     android:translationZ="2dp"
                     android:visibility="gone"
-                    tools:visibility="visible"></ImageView>
+                    tools:visibility="visible">
+                </ImageView>
             </LinearLayout>
 
             <LinearLayout
@@ -182,14 +183,37 @@
                 android:layout_marginBottom="50dp">
             </RelativeLayout>
 
+
+            <com.google.android.flexbox.FlexboxLayout
+                android:id="@+id/flexboxLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:layout_marginBottom="@dimen/standard_half_margin"
+                app:flexDirection="row"
+                android:layout_alignParentBottom="true"
+                app:justifyContent="flex_end"
+                app:alignItems="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/end_call_popup_menu"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:backgroundTint="@android:color/white"
+                    android:textColor="@android:color/holo_red_light"
+                    app:icon="@drawable/ic_call_end_white_24px"
+                    app:iconTint="@android:color/holo_red_light"
+                    app:iconGravity="textEnd"
+                    app:iconPadding="16dp"
+                    tools:text="@string/end_call_for_everyone"/>
+
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/lower_hand_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginBottom="@dimen/standard_half_margin"
                 android:contentDescription="@string/lower_hand"
                 android:visibility="gone"
                 app:backgroundTint="@color/call_buttons_background"
@@ -198,7 +222,11 @@
                 app:shapeAppearance="@style/fab_3_rounded"
                 app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
                 app:tint="@color/white"
-                tools:visibility="visible" />
+                tools:visibility = "visible"/>
+
+        </com.google.android.flexbox.FlexboxLayout>
+
+
 
         </RelativeLayout>
 

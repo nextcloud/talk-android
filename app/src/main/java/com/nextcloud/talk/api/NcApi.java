@@ -246,7 +246,8 @@ public interface NcApi {
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
     */
     @DELETE
-    Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url);
+    Observable<GenericOverall> leaveCall(@Nullable @Header("Authorization") String authorization, @Url String url,
+                                         @Nullable @Query("all") Boolean all);
 
     @GET
     Observable<SignalingSettingsOverall> getSignalingSettings(@Nullable @Header("Authorization") String authorization,
