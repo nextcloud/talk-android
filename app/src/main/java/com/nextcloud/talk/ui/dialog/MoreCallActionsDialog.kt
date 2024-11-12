@@ -96,9 +96,8 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 capabilities?.spreedCapability?.config!!["call"]!!["supported-reactions"] as ArrayList<*>
 
             val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
+                EMOJI_WIDTH,
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
 
             availableReactions.forEach {
@@ -185,5 +184,6 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     companion object {
         private const val TAG = "MoreCallActionsDialog"
         private const val TEXT_SIZE = 20f
+        private const val EMOJI_WIDTH = 80
     }
 }
