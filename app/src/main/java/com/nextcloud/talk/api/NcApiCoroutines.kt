@@ -121,14 +121,14 @@ interface NcApiCoroutines {
 
     @POST
     suspend fun setReadStatusPrivacy(
-        @Header("Authorization") authorization: String?,
+        @Header("Authorization") authorization: String,
         @Url url: String,
         @Body body: RequestBody
     ): GenericOverall
 
     @POST
     suspend fun setTypingStatusPrivacy(
-        @Header("Authorization") authorization: String?,
+        @Header("Authorization") authorization: String,
         @Url url: String,
         @Body body: RequestBody
     ): GenericOverall
