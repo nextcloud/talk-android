@@ -1285,11 +1285,13 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
                     try {
-                        ncApiCoroutines.setReadStatusPrivacy(
-                            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                            ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                            json.toRequestBody("application/json".toMediaTypeOrNull())
-                        )
+                        credentials?.let { credentials ->
+                            ncApiCoroutines.setReadStatusPrivacy(
+                                credentials,
+                                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                json.toRequestBody("application/json".toMediaTypeOrNull())
+                            )
+                        }
                         Log.i(TAG, "reading status set")
                     } catch (e: Exception) {
                         appPreferences.setReadPrivacy(!newBoolean)
@@ -1310,11 +1312,14 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
 
                     try {
-                        ncApiCoroutines.setTypingStatusPrivacy(
-                            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                            ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                            json.toRequestBody("application/json".toMediaTypeOrNull())
-                        )
+                        credentials?.let { credentials ->
+                            ncApiCoroutines.setTypingStatusPrivacy(
+                                credentials,
+                                ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                json.toRequestBody("application/json".toMediaTypeOrNull())
+                            )
+                        }
+
                         loadCapabilitiesAndUpdateSettings()
                         Log.i(TAG, "typing status set")
                     } catch (e: Exception) {
