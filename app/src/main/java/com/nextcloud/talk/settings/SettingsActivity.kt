@@ -49,6 +49,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -104,6 +105,9 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     lateinit var ncApi: NcApi
 
     @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
+
+    @Inject
     lateinit var userManager: UserManager
 
     @Inject
@@ -123,6 +127,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
 
+    @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -260,6 +265,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         setupNotificationPermissionSettings()
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
@@ -603,7 +609,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         }
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "StringFormatInvalid")
     private fun removeCurrentAccount() {
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
@@ -1278,31 +1284,17 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
-                    ncApi.setReadStatusPrivacy(
-                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                        json.toRequestBody("application/json".toMediaTypeOrNull())
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<GenericOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
-
-                            override fun onNext(genericOverall: GenericOverall) {
-                                // unused atm
-                            }
-
-                            override fun onError(e: Throwable) {
-                                appPreferences.setReadPrivacy(!newBoolean)
-                                binding.settingsReadPrivacySwitch.isChecked = !newBoolean
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
+                    try {
+                        ncApiCoroutines.setReadStatusPrivacy(
+                            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                            ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                            json.toRequestBody("application/json".toMediaTypeOrNull())
+                        )
+                        Log.i(TAG, "reading status set")
+                    } catch (e: Exception) {
+                        appPreferences.setReadPrivacy(!newBoolean)
+                        binding.settingsReadPrivacySwitch.isChecked = !newBoolean
+                    }
                 }
             }
         }
@@ -1316,32 +1308,19 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
-                    ncApi.setTypingStatusPrivacy(
-                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                        json.toRequestBody("application/json".toMediaTypeOrNull())
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<GenericOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
 
-                            override fun onNext(genericOverall: GenericOverall) {
-                                loadCapabilitiesAndUpdateSettings()
-                                Log.i(TAG, "onNext called typing status set")
-                            }
-
-                            override fun onError(e: Throwable) {
-                                appPreferences.typingStatus = !newBoolean
-                                binding.settingsTypingStatusSwitch.isChecked = !newBoolean
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
+                    try {
+                        ncApiCoroutines.setTypingStatusPrivacy(
+                            ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
+                            ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                            json.toRequestBody("application/json".toMediaTypeOrNull())
+                        )
+                        loadCapabilitiesAndUpdateSettings()
+                        Log.i(TAG, "typing status set")
+                    } catch (e: Exception) {
+                        appPreferences.typingStatus = !newBoolean
+                        binding.settingsTypingStatusSwitch.isChecked = !newBoolean
+                    }
                 }
             }
         }
