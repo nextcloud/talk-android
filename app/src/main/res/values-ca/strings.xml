@@ -4,6 +4,8 @@
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
+    <string name="archive_conversation">Arxiva la conversa</string>
+    <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -272,6 +274,7 @@
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
     <string name="nc_join_open_conversations">Uneix-te a converses obertes</string>
+    <string name="nc_last_moderator_leaving_room_warning">Heu de promocionar un nou moderador abans de deixar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
     <string name="nc_leave">Surt de la conversa</string>
     <string name="nc_leaving_call">S\'està abandonant la trucada…</string>
