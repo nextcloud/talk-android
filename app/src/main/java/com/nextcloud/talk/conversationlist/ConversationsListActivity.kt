@@ -234,6 +234,8 @@ class ConversationsListActivity :
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
+
+        currentUser = userManager.currentUser.blockingGet()
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
@@ -278,7 +280,7 @@ class ConversationsListActivity :
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
         }
-        currentUser = userManager.currentUser.blockingGet()
+
         if (currentUser != null) {
             if (isServerEOL(currentUser!!.serverVersion?.major)) {
                 showServerEOLDialog()
@@ -296,7 +298,7 @@ class ConversationsListActivity :
             fetchRooms()
             fetchPendingInvitations()
         } else {
-            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
+            Log.e(TAG, "currentUser is null")
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
 
@@ -762,9 +764,8 @@ class ConversationsListActivity :
         )
     }
 
-    private fun hasActivityActionSendIntent(): Boolean {
-        return Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
-    }
+    private fun hasActivityActionSendIntent(): Boolean =
+        Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     private fun showSearchView(searchView: SearchView?, searchItem: MenuItem?) {
         binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -1269,10 +1270,9 @@ class ConversationsListActivity :
             !participantPermissions.canIgnoreLobby()
     }
 
-    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean {
-        return conversation.conversationReadOnlyState ===
+    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean =
+        conversation.conversationReadOnlyState ===
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
-    }
 
     private fun handleSharedData() {
         collectDataFromIntent()
