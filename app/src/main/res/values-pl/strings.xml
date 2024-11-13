@@ -40,6 +40,7 @@
     <string name="emoji_backspace">Cofnij</string>
     <string name="emoji_category_recent">Ostatnie</string>
     <string name="encrypted">Zaszyfrowane</string>
+    <string name="end_call_for_everyone">Zakończ połączenie dla wszystkich</string>
     <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
     <string name="file_list_folder">katalog</string>
@@ -52,6 +53,7 @@
     <string name="languages_error_message">Nie udało się pobrać języków</string>
     <string name="languages_error_title">Pobieranie nie powiodło się</string>
     <string name="later_today">Później dzisiaj</string>
+    <string name="leave_call">Rozłącz się</string>
     <string name="left_conversation">Opuściłeś rozmowę %1$s</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
     <string name="lock_symbol">Symbol zamknięcia</string>

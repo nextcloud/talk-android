@@ -26,6 +26,7 @@
     <string name="edit">Muokkaa</string>
     <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="encrypted">Salattu</string>
+    <string name="end_call_for_everyone">Päätä puhelu kaikkien osalta</string>
     <string name="failed_to_save">Ei voitu tallentaa %1$s</string>
     <string name="file_list_folder">kansio</string>
     <string name="file_list_loading">Ladataan…</string>
@@ -34,6 +35,7 @@
     <string name="hint_edited_message">(muokattu)</string>
     <string name="invisible">Näkymätön</string>
     <string name="later_today">Myöhemmin tänään</string>
+    <string name="leave_call">Poistu puhelusta</string>
     <string name="load_more_results">Lataa lisää tuloksia</string>
     <string name="lower_hand">Laske käsi</string>
     <string name="menu_item_sort_by_date_newest_first">Uusin ensin</string>

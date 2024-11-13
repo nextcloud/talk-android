@@ -29,6 +29,7 @@
     <string name="emoji_backspace">Backspace /Назад/</string>
     <string name="emoji_category_recent">Скорошни</string>
     <string name="encrypted">Криптиран</string>
+    <string name="end_call_for_everyone">Прекратяване на разговора за всички</string>
     <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
     <string name="file_list_folder">папка</string>
@@ -36,6 +37,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 часа</string>
     <string name="invisible">Невидим</string>
+    <string name="leave_call">Напускане на обаждането</string>
     <string name="load_more_results">Зареждане на още резултати</string>
     <string name="lock_symbol">Символ за заключване</string>
     <string name="lower_hand">Сваляне на ръка</string>
@@ -192,6 +194,7 @@
     <string name="nc_hint_enter_a_message">Въвеждане на съобщение …</string>
     <string name="nc_important_conversation">Важен разговор</string>
     <string name="nc_important_conversation_desc">Известията в този разговор ще отменят настройките „Не безпокойте“</string>
+    <string name="nc_last_moderator_leaving_room_warning">Трябва да повишите нов модератор, преди да можете да напуснете разговора</string>
     <string name="nc_last_modified">%1$s Последна промяна: %2$s</string>
     <string name="nc_leave">Напускане на разговор</string>
     <string name="nc_leaving_call">Напускане на обаждането …</string>

@@ -36,6 +36,7 @@
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 uur</string>
     <string name="invisible">Onzichtbaar</string>
+    <string name="leave_call">Verlaat oproep</string>
     <string name="load_more_results">Laad meer resultaten</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="lower_hand">Hand omlaag</string>

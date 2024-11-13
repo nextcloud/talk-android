@@ -51,6 +51,7 @@
     <string name="emoji_backspace">سهم خلفي backspace</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
     <string name="encrypted">مُشفّر</string>
+    <string name="end_call_for_everyone">إنهاء المكالمة للجميع</string>
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
     <string name="error_unbanning">حدث خطأ عند محاولة رفع الحظر عن مشارك</string>
     <string name="failed_to_save">تعذّر حفظ %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">تعذّرت استعادة اللغات</string>
     <string name="languages_error_title">فشلت الاستعادة</string>
     <string name="later_today">في وقت لاحقٍ اليوم</string>
+    <string name="leave_call">مغادرة المكالمة</string>
     <string name="left_conversation">أنت غادرت المحادثة %1$s</string>
     <string name="load_more_results">تحميل المزيد من النتائج</string>
     <string name="lock_symbol">رمز القفل</string>

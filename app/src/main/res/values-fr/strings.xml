@@ -50,6 +50,7 @@
     <string name="emoji_backspace">Retour arrière</string>
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
+    <string name="end_call_for_everyone">Mettre fin à l\'appel pour tout le monde</string>
     <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="error_unbanning">Une erreur est survenue à la réintégration du participant</string>
     <string name="failed_to_save">Échec de la sauvegarde de %1$s</string>
@@ -65,6 +66,7 @@
     <string name="languages_error_message">Les langues n\'ont pas pu être récupérées</string>
     <string name="languages_error_title">Récupération échouée</string>
     <string name="later_today">Plus tard aujourd\'hui</string>
+    <string name="leave_call">Quitter l\'appel</string>
     <string name="left_conversation">Vous avez quitté la conversation %1$s</string>
     <string name="load_more_results">Charger plus de résultats</string>
     <string name="lock_symbol">Symbole de verrouillage</string>

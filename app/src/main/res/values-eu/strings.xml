@@ -37,6 +37,7 @@
     <string name="emoji_backspace">Atzera</string>
     <string name="emoji_category_recent">Azkenak</string>
     <string name="encrypted">Zifratua</string>
+    <string name="end_call_for_everyone">Amaitu deia denontzat</string>
     <string name="error_loading_chats">Arazo bat gertatu da zure txatak kargatzean</string>
     <string name="failed_to_save">%1$s gordetzeak huts egin du</string>
     <string name="file_list_folder">karpeta</string>
@@ -49,6 +50,7 @@
     <string name="languages_error_message">Ezin izan dira hizkuntzak berreskuratu</string>
     <string name="languages_error_title">Ezin izan da berreskuratu</string>
     <string name="later_today">Beranduago gaur</string>
+    <string name="leave_call">Utzi deia</string>
     <string name="left_conversation"> %1$s elkarrizketa utzi duzu</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
     <string name="lock_symbol">Blokeo sinboloa</string>

@@ -47,6 +47,7 @@
     <string name="emoji_backspace">Tilbake</string>
     <string name="emoji_category_recent">Nylig</string>
     <string name="encrypted">Kryptert</string>
+    <string name="end_call_for_everyone">Avslutt samtale for alle</string>
     <string name="error_loading_chats">Det oppstod et problem med å laste inn chattene dine</string>
     <string name="error_unbanning">Det oppstod feil ved oppheving av utestengelse av deltaker</string>
     <string name="failed_to_save">Kunne ikke lagre %1$s</string>
@@ -62,6 +63,7 @@
     <string name="languages_error_message">Språk kunne ikke hentes</string>
     <string name="languages_error_title">Henting feilet</string>
     <string name="later_today">Senere i dag</string>
+    <string name="leave_call">Forlat samtalen</string>
     <string name="left_conversation">Du forlot samtalen %1$s</string>
     <string name="load_more_results">Hent flere resultat</string>
     <string name="lock_symbol">Lås symbol</string>

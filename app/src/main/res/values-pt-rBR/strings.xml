@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Retroceder</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Criptografado</string>
+    <string name="end_call_for_everyone">Encerrar chamada para todos</string>
     <string name="error_loading_chats">Ocorreu um problema ao carregar seus bate-papos</string>
     <string name="error_unbanning">Ocorreu um erro ao cancelar o banimento do participante</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Não foi possível recuperar os idiomas</string>
     <string name="languages_error_title">Falha na recuperação</string>
     <string name="later_today">Hoje mais tarde</string>
+    <string name="leave_call">Sair da chamada</string>
     <string name="left_conversation">Você saiu da conversa %1$s</string>
     <string name="load_more_results">Carregar mais resultados </string>
     <string name="lock_symbol">Símbolo de cadeado</string>

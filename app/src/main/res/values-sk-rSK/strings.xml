@@ -40,6 +40,7 @@
     <string name="emoji_backspace">Spätná lomka</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
+    <string name="end_call_for_everyone">Ukončiť hovor pre všetkých</string>
     <string name="error_loading_chats">Nastal problém s načítaním vašich správ</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
     <string name="file_list_folder">priečinok</string>
@@ -52,6 +53,7 @@
     <string name="languages_error_message">Jazyky sa nedali získať</string>
     <string name="languages_error_title">Získanie zlyhalo</string>
     <string name="later_today">Neskôr dnes</string>
+    <string name="leave_call">Opustiť hovor</string>
     <string name="left_conversation">Opustili ste konverzáciu %1$s</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
     <string name="lock_symbol">Symbol zámku</string>

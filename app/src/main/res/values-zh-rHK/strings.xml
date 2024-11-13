@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">最新</string>
     <string name="encrypted">已加密</string>
+    <string name="end_call_for_everyone">為所有人結束通話</string>
     <string name="error_loading_chats">載入您的聊天記錄時時發生問題</string>
     <string name="error_unbanning">取消封禁參與者時發生錯誤</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">無法擷取語言</string>
     <string name="languages_error_title">擷取失敗</string>
     <string name="later_today">今日稍後</string>
+    <string name="leave_call">離開通話</string>
     <string name="left_conversation">你離開了對話 %1$s</string>
     <string name="load_more_results">正在載入更多結果</string>
     <string name="lock_symbol">鎖符號</string>

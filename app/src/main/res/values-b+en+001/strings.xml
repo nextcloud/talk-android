@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
+    <string name="end_call_for_everyone">End call for everyone</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>
     <string name="failed_to_save">Failed to save %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="later_today">Later today</string>
+    <string name="leave_call">Leave call</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
     <string name="lock_symbol">Lock symbol</string>

@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Брисање улево</string>
     <string name="emoji_category_recent">Недавно</string>
     <string name="encrypted">Шифровано</string>
+    <string name="end_call_for_everyone">Заврши позив за све</string>
     <string name="error_loading_chats">Дошло је до проблема приликом учитавања ваших четова</string>
     <string name="error_unbanning">Дошло је до грешке приликом укидања забране за учесника</string>
     <string name="failed_to_save">Није успело чување %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Није успело преузимање језика</string>
     <string name="languages_error_title">Није успело преузимање</string>
     <string name="later_today">Касније данас</string>
+    <string name="leave_call">Напусти разговор</string>
     <string name="left_conversation">Напустили сте разговор %1$s</string>
     <string name="load_more_results">Учитај још резултата</string>
     <string name="lock_symbol">Симбол катанца</string>

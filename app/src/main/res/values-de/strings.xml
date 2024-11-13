@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Rücktaste</string>
     <string name="emoji_category_recent">Neueste</string>
     <string name="encrypted">Verschlüsselt</string>
+    <string name="end_call_for_everyone">Anruf für alle beenden</string>
     <string name="error_loading_chats">Beim Laden Ihrer Chats ist ein Problem aufgetreten</string>
     <string name="error_unbanning">Fehler beim Entsperren des Teilnehmers</string>
     <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Sprachen konnten nicht abgerufen werden</string>
     <string name="languages_error_title">Abrufen fehlgeschlagen</string>
     <string name="later_today">Später heute</string>
+    <string name="leave_call">Anruf verlassen</string>
     <string name="left_conversation">Sie haben die Unterhaltung %1$s verlassen</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="lock_symbol">Schloss-Symbol</string>

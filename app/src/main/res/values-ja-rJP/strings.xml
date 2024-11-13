@@ -40,6 +40,7 @@
     <string name="emoji_backspace">バックスペース</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">暗号化済み</string>
+    <string name="end_call_for_everyone">全員の通話を終了する</string>
     <string name="error_loading_chats">あなたのチャットの読み込み中に問題が発生しました</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
     <string name="file_list_folder">フォルダー</string>
@@ -52,6 +53,7 @@
     <string name="languages_error_message">言語を取得できませんでした</string>
     <string name="languages_error_title">取得に失敗しました</string>
     <string name="later_today">今日この後</string>
+    <string name="leave_call">通話終了</string>
     <string name="left_conversation">あなたは会話%1$sから離れました</string>
     <string name="load_more_results">結果をさらに読み込む</string>
     <string name="lock_symbol">鍵の記号</string>

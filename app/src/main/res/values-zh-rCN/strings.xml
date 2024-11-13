@@ -35,6 +35,7 @@
     <string name="emoji_backspace">退格</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">已加密</string>
+    <string name="end_call_for_everyone">为所有人结束通话</string>
     <string name="error_loading_chats">加载聊天记录时出错</string>
     <string name="failed_to_save">保存%1$s失败</string>
     <string name="file_list_folder">文件夹</string>
@@ -43,6 +44,7 @@
     <string name="fourHours">4小时</string>
     <string name="invisible">隐身</string>
     <string name="later_today">今日稍晚</string>
+    <string name="leave_call">离开通话</string>
     <string name="left_conversation">你已离开对话%1$s</string>
     <string name="load_more_results">加载更多结果</string>
     <string name="lock_symbol">锁定头像</string>

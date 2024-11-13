@@ -30,6 +30,7 @@
     <string name="emoji_backspace">백스페이스</string>
     <string name="emoji_category_recent">최근 항목</string>
     <string name="encrypted">암호화</string>
+    <string name="end_call_for_everyone">모든 이들에 대해 통화 끝내기</string>
     <string name="error_loading_chats">당신의 채팅을 불러들이는데 문제가 생겼습니다.</string>
     <string name="failed_to_save">%1$s 저장 실패</string>
     <string name="file_list_folder">폴더</string>
@@ -39,6 +40,7 @@
     <string name="hint_edited_message">(수정됨)</string>
     <string name="invisible">숨겨짐</string>
     <string name="later_today">오늘 중</string>
+    <string name="leave_call">통화 떠나기</string>
     <string name="load_more_results">더 많은 결과 불러오기</string>
     <string name="lock_symbol">자물쇠 기호</string>
     <string name="lower_hand">손 내리기</string>
