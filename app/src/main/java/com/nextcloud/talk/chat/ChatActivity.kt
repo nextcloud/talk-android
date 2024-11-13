@@ -411,11 +411,10 @@ class ChatActivity :
         setContentView(binding.root)
         setupSystemColors()
 
-        messageInputFragment = MessageInputFragment()
-
         conversationUser = currentUserProvider.currentUser.blockingGet()
-
         handleIntent(intent)
+
+        messageInputFragment = getMessageInputFragment()
 
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
@@ -454,6 +453,15 @@ class ChatActivity :
             voiceMessageToRestoreId = ""
             voiceMessageToRestoreAudioPosition = 0
             voiceMessageToRestoreWasPlaying = false
+        }
+    }
+
+    private fun getMessageInputFragment(): MessageInputFragment {
+        val internalId = conversationUser!!.id.toString() + "@" + roomToken
+        return MessageInputFragment().apply {
+            arguments = Bundle().apply {
+                putString(CONVERSATION_INTERNAL_ID, internalId)
+            }
         }
     }
 
@@ -990,7 +998,7 @@ class ChatActivity :
             } else {
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
-                    replace(R.id.fragment_container_activity_chat, MessageInputFragment())
+                    replace(R.id.fragment_container_activity_chat, getMessageInputFragment())
                 }
             }
         }
@@ -3784,5 +3792,6 @@ class ChatActivity :
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
+        const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
     }
 }
