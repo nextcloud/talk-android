@@ -12,18 +12,27 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationcreation.AllowGuestsUiState
+import com.nextcloud.talk.conversationcreation.RoomUIState
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationInfoViewModel @Inject constructor(
@@ -94,6 +103,10 @@ class ConversationInfoViewModel @Inject constructor(
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
     open class GetCapabilitiesSuccessState(val spreedCapabilities: SpreedCapability) : ViewState
+
+    private val _allowGuestsViewState = MutableLiveData<AllowGuestsUIState>(AllowGuestsUIState.None)
+    val allowGuestsViewState: LiveData<AllowGuestsUIState>
+        get() = _allowGuestsViewState
 
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
@@ -233,6 +246,23 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
+
+    fun allowGuests(token:String,allow:Boolean){
+        viewModelScope.launch{
+           try{
+               val allowGuestsResult = conversationsRepository.allowGuests(token,allow)
+               val statusCode: GenericMeta? = allowGuestsResult.ocs?.meta
+               val result = (statusCode?.statusCode == STATUS_CODE_OK)
+               if (result) {
+                   _allowGuestsViewState.value = AllowGuestsUIState.Success(result)
+               }
+           }catch(exception:Exception){
+               _allowGuestsViewState.value = AllowGuestsUIState.Error(exception.message?: "")
+
+           }
+        }
+    }
+
     suspend fun archiveConversation(user: User, token: String) {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
@@ -266,5 +296,11 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.simpleName
+    }
+
+    sealed class AllowGuestsUIState {
+        data object None : AllowGuestsUIState()
+        data class Success(val result: Boolean) : AllowGuestsUIState()
+        data class Error(val message: String) : AllowGuestsUIState()
     }
 }

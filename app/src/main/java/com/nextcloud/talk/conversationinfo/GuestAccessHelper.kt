@@ -12,9 +12,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LifecycleOwner
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogPasswordBinding
@@ -33,9 +35,10 @@ class GuestAccessHelper(
     private val binding: ActivityConversationInfoBinding,
     private val conversation: ConversationModel,
     private val spreedCapabilities: SpreedCapability,
-    private val conversationUser: User
+    private val conversationUser: User,
+    private val viewModel: ConversationInfoViewModel,
+    private val lifecycleOwner: LifecycleOwner
 ) {
-
     private val conversationsRepository = activity.conversationsRepository
     private val viewThemeUtils = activity.viewThemeUtils
     private val context = activity.context
@@ -61,11 +64,27 @@ class GuestAccessHelper(
         binding.guestAccessView.guestAccessSettingsAllowGuest.setOnClickListener {
             val isChecked = binding.guestAccessView.allowGuestsSwitch.isChecked
             binding.guestAccessView.allowGuestsSwitch.isChecked = !isChecked
-            conversationsRepository.allowGuests(
-                conversation.token!!,
-                !isChecked
-            ).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe(AllowGuestsResultObserver())
+            viewModel.allowGuests(conversation.token, !isChecked)
+            viewModel.allowGuestsViewState.observe(lifecycleOwner){uiState ->
+                when(uiState){
+                    is ConversationInfoViewModel.AllowGuestsUIState.Success ->{
+                        if(uiState.result){
+                            showAllOptions()
+                        }else{
+                            hideAllOptions()
+                        }
+                    }
+                    is ConversationInfoViewModel.AllowGuestsUIState.Error ->{
+                        val exception = uiState.message
+                        val message = context.getString(R.string.nc_guest_access_allow_failed)
+                        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
+                        Log.e(TAG, exception)
+                    }
+                    ConversationInfoViewModel.AllowGuestsUIState.None ->{
+                        //unused atm
+                    }
+                }
+            }
         }
 
         binding.guestAccessView.guestAccessSettingsPasswordProtection.setOnClickListener {
@@ -141,32 +160,6 @@ class GuestAccessHelper(
                 ).show()
             }
         }
-    }
-
-    inner class AllowGuestsResultObserver : Observer<ConversationsRepository.AllowGuestsResult> {
-
-        private lateinit var allowGuestsResult: ConversationsRepository.AllowGuestsResult
-
-        override fun onNext(t: ConversationsRepository.AllowGuestsResult) {
-            allowGuestsResult = t
-        }
-
-        override fun onError(e: Throwable) {
-            val message = context.getString(R.string.nc_guest_access_allow_failed)
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-            Log.e(TAG, message, e)
-        }
-
-        override fun onComplete() {
-            binding.guestAccessView.allowGuestsSwitch.isChecked = allowGuestsResult.allow
-            if (allowGuestsResult.allow) {
-                showAllOptions()
-            } else {
-                hideAllOptions()
-            }
-        }
-
-        override fun onSubscribe(d: Disposable) = Unit
     }
 
     private fun showAllOptions() {

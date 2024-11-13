@@ -12,11 +12,7 @@ import io.reactivex.Observable
 
 interface ConversationsRepository {
 
-    data class AllowGuestsResult(
-        val allow: Boolean
-    )
-
-    fun allowGuests(token: String, allow: Boolean): Observable<AllowGuestsResult>
+    suspend fun allowGuests(token: String, allow: Boolean): GenericOverall
 
     data class PasswordResult(
         val passwordSet: Boolean,

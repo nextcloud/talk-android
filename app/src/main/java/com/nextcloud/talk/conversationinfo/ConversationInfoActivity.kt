@@ -916,7 +916,9 @@ class ConversationInfoActivity :
                     it,
                     conversation!!,
                     spreedCapabilities,
-                    conversationUser
+                    conversationUser,
+                    viewModel,
+                    this
                 ).setupGuestAccess()
             }
             if (ConversationUtils.isNoteToSelfConversation(conversation!!)) {
