@@ -39,6 +39,7 @@
     <string name="emoji_backspace">Вернуться</string>
     <string name="emoji_category_recent">Недавние</string>
     <string name="encrypted">Зашифровано</string>
+    <string name="end_call_for_everyone">Завершить звонок для всех</string>
     <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="error_unbanning">Произошла ошибка при разблокировке участника</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
@@ -51,6 +52,7 @@
     <string name="internal_note">Внутреннее примечание</string>
     <string name="invisible">Невидимый</string>
     <string name="later_today">Позже сегодня</string>
+    <string name="leave_call">Покинуть вызов</string>
     <string name="left_conversation">Вы покинули чат %1$s </string>
     <string name="load_more_results">Показать больше результатов</string>
     <string name="lock_symbol">Символ блокировки</string>

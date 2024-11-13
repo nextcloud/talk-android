@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Cúlspás</string>
     <string name="emoji_category_recent">le déanaí</string>
     <string name="encrypted">Criptithe</string>
+    <string name="end_call_for_everyone">Cuir deireadh leis an nglao do chách</string>
     <string name="error_loading_chats">Tharla fadhb agus do chomhráite á lódáil</string>
     <string name="error_unbanning">Tharla earráid agus rannpháirtí á bhaint de</string>
     <string name="failed_to_save">Theip ar shábháil %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Níorbh fhéidir teangacha a aisghabháil</string>
     <string name="languages_error_title">Theip ar an aisghabháil</string>
     <string name="later_today">Níos déanaí inniu</string>
+    <string name="leave_call">Fág glaoch</string>
     <string name="left_conversation">D\'fhág tú an comhrá %1$s</string>
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
     <string name="lock_symbol">Siombail ghlais</string>

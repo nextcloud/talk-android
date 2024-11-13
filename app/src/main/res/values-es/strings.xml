@@ -40,6 +40,7 @@
     <string name="emoji_backspace">Tecla de retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
+    <string name="end_call_for_everyone">Finalizar llamada para todos</string>
     <string name="error_loading_chats">Hubo un problema cargando sus chats</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="file_list_folder">carpeta</string>
@@ -52,6 +53,7 @@
     <string name="languages_error_message">Los lenguajes no pudieron ser recuperados</string>
     <string name="languages_error_title">Recuperación fallida</string>
     <string name="later_today">Más tarde hoy</string>
+    <string name="leave_call">Dejar llamada</string>
     <string name="left_conversation">Ud. Abandonó la conversación %1$s</string>
     <string name="load_more_results">Cargar más resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>

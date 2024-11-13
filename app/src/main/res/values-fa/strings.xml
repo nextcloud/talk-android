@@ -33,12 +33,14 @@
     <string name="edit">ویرایش</string>
     <string name="emoji_category_recent">اخیر</string>
     <string name="encrypted">Encrypted</string>
+    <string name="end_call_for_everyone">End call for everyone</string>
     <string name="file_list_folder">پوشه</string>
     <string name="file_list_loading">بارگذاری …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">۴ ساعت</string>
     <string name="invisible">نامرئی</string>
     <string name="later_today">تا آخر وقت همین امروز</string>
+    <string name="leave_call">Leave call</string>
     <string name="load_more_results">بار کردن نتیحه‌های بیش‌تر</string>
     <string name="lock_symbol">نماد قفل</string>
     <string name="mentioned">Mentioned</string>

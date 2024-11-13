@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
+    <string name="end_call_for_everyone">Çağrıyı herkes için sonlandır</string>
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="error_unbanning">Katılımcının yasaklaması kaldırılırken sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Diller alınamadı</string>
     <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
+    <string name="leave_call">Çağrıdan ayrıl</string>
     <string name="left_conversation">%1$s görüşmesinden ayrıldınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="lock_symbol">Kilit simgesi</string>

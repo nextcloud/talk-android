@@ -50,6 +50,7 @@
     <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
+    <string name="end_call_for_everyone">Avsluta samtal för alla</string>
     <string name="error_loading_chats">Det gick inte att ladda dina chattar</string>
     <string name="error_unbanning">Fel uppstod när deltagare skulle avblockeras</string>
     <string name="failed_to_save">Misslyckades att spara  %1$s</string>
@@ -64,6 +65,7 @@
     <string name="languages_error_message">Kunde inte hämta språk</string>
     <string name="languages_error_title">Hämtning misslyckades</string>
     <string name="later_today">Senare idag</string>
+    <string name="leave_call">Lämna samtalet</string>
     <string name="left_conversation">Du lämnade konversationen %1$s</string>
     <string name="load_more_results">Visa fler resultat</string>
     <string name="lock_symbol">Låssymbol</string>

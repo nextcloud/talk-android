@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">يېقىنقى</string>
     <string name="encrypted">شىفىرلانغان</string>
+    <string name="end_call_for_everyone">ھەممەيلەنگە تېلېفون قىلىش</string>
     <string name="error_loading_chats">پاراڭلىرىڭىزنى يۈكلەشتە مەسىلە كۆرۈلدى</string>
     <string name="error_unbanning">قاتناشقۇچىنى چەكلىگەندە خاتالىق كۆرۈلدى</string>
     <string name="failed_to_save">% 1 $ نى تېجەلمىدى</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">تىللارنى ئەسلىگە كەلتۈرگىلى بولمىدى</string>
     <string name="languages_error_title">ئەسلىگە كەلتۈرۈش مەغلۇب بولدى</string>
     <string name="later_today">بۈگۈن بۈگۈن</string>
+    <string name="leave_call">تېلېفون قىلىڭ</string>
     <string name="left_conversation">سۆھبەتتىن% 1 $ s ئايرىلدىڭىز</string>
     <string name="load_more_results">تېخىمۇ كۆپ نەتىجىلەرنى يۈكلەڭ</string>
     <string name="lock_symbol">قۇلۇپ بەلگىسى</string>

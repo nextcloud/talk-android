@@ -51,6 +51,7 @@
     <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
+    <string name="end_call_for_everyone">Finalizar a chamada para todos</string>
     <string name="error_loading_chats">Produciuse un problema ao cargar as súas parolas</string>
     <string name="error_unbanning">Produciuse un erro ao retirar a expulsión dun participante</string>
     <string name="failed_to_save">Produciuse un fallo ao gardar %1$s</string>
@@ -66,6 +67,7 @@
     <string name="languages_error_message">Non foi posíbel recuperar os idiomas</string>
     <string name="languages_error_title">Produciuse un fallo na recuperación</string>
     <string name="later_today">Hoxe máis tarde</string>
+    <string name="leave_call">Deixar a chamada</string>
     <string name="left_conversation">Vde. deixou a conversa %1$s</string>
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>

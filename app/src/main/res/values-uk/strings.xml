@@ -29,6 +29,7 @@
     <string name="emoji_backspace">Повернутися</string>
     <string name="emoji_category_recent">Нещодавні</string>
     <string name="encrypted">Зашифровано</string>
+    <string name="end_call_for_everyone">Завершити дзвінок для всіх</string>
     <string name="error_loading_chats">Виникла проблема під час завантаження ваших чатів</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
     <string name="file_list_folder">каталог</string>
@@ -37,6 +38,7 @@
     <string name="fourHours">4 години</string>
     <string name="invisible">Невидимка</string>
     <string name="later_today">Пізніше сьогодні</string>
+    <string name="leave_call">Вийти</string>
     <string name="load_more_results">Завантажити більше результатів</string>
     <string name="lock_symbol">Символ блокування</string>
     <string name="lower_hand">Опустити руку</string>

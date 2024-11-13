@@ -35,6 +35,7 @@
     <string name="emoji_backspace">Visszatörlés</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
     <string name="encrypted">Titkosított</string>
+    <string name="end_call_for_everyone">Hívás befejezése mindenki számára</string>
     <string name="error_loading_chats">Hiba történt a csevegések betöltése során</string>
     <string name="failed_to_save">Sikertelen mentés: %1$s</string>
     <string name="file_list_folder">mappa</string>
@@ -43,6 +44,7 @@
     <string name="fourHours">4 óra </string>
     <string name="invisible">Láthatatlan</string>
     <string name="later_today">Mai nap később</string>
+    <string name="leave_call">Hívás elhagyása</string>
     <string name="left_conversation">Elhagyta a következő beszélgetést: %1$s</string>
     <string name="load_more_results">További találatok betöltése</string>
     <string name="lock_symbol">Zár szimbólum</string>
