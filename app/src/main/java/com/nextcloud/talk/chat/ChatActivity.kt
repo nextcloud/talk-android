@@ -2685,12 +2685,14 @@ class ChatActivity :
     private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
 
     private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
-        val unreadChatMessage = ChatMessage()
-        unreadChatMessage.jsonMessageId = UNREAD_MESSAGES_MARKER_ID
-        unreadChatMessage.actorId = "-1"
-        unreadChatMessage.timestamp = chatMessageList[0].timestamp
-        unreadChatMessage.message = context.getString(R.string.nc_new_messages)
-        adapter?.addToStart(unreadChatMessage, false)
+        if (chatMessageList.isNotEmpty()) {
+            val unreadChatMessage = ChatMessage()
+            unreadChatMessage.jsonMessageId = UNREAD_MESSAGES_MARKER_ID
+            unreadChatMessage.actorId = "-1"
+            unreadChatMessage.timestamp = chatMessageList[0].timestamp
+            unreadChatMessage.message = context.getString(R.string.nc_new_messages)
+            adapter?.addToStart(unreadChatMessage, false)
+        }
     }
 
     private fun processMessagesNotFromTheFuture(chatMessageList: List<ChatMessage>) {
