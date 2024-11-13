@@ -1144,8 +1144,17 @@ class ConversationsListActivity :
     private fun performFilterAndSearch(filter: String?) {
         if (filter!!.length >= SEARCH_MIN_CHARS) {
             clearMessageSearchResults()
-            adapter!!.setFilter(filter)
-            adapter!!.filterItems()
+
+            if (hasFilterEnabled()) {
+                adapter?.updateDataSet(conversationItems)
+                adapter!!.setFilter(filter)
+                adapter!!.filterItems()
+                adapter?.updateDataSet(filterableConversationItems)
+            } else {
+                adapter!!.setFilter(filter)
+                adapter!!.filterItems()
+            }
+
             if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
                 startMessageSearch(filter)
             }
