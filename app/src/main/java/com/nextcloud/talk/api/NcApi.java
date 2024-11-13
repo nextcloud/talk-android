@@ -195,18 +195,6 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> removeSelfFromRoom(@Header("Authorization") String authorization, @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @POST
-    Observable<GenericOverall> makeRoomPublic(@Header("Authorization") String authorization, @Url String url);
-
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @DELETE
-    Observable<GenericOverall> makeRoomPrivate(@Header("Authorization") String authorization, @Url String url);
-
     @DELETE
     Observable<GenericOverall> deleteRoom(@Header("Authorization") String authorization, @Url String url);
 
