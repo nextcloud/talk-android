@@ -341,11 +341,6 @@ public interface NcApi {
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
                                                                @QueryMap Map<String, String> fields);
 
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization,
-                                           @Url String url,
-                                           @Field("password") String password);
 
     @FormUrlEncoded
     @PUT
