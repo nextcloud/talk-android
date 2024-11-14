@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -252,7 +251,7 @@ class ConversationInfoViewModel @Inject constructor(
            try{
                val allowGuestsResult = conversationsRepository.allowGuests(token,allow)
                val statusCode: GenericMeta? = allowGuestsResult.ocs?.meta
-               val result = (statusCode?.statusCode == STATUS_CODE_OK)
+               val result = statusCode?.statusCode == STATUS_CODE_OK
                if (result) {
                    _allowGuestsViewState.value = AllowGuestsUIState.Success(allow)
                }
@@ -269,7 +268,7 @@ class ConversationInfoViewModel @Inject constructor(
             try{
                 val setPasswordResult = conversationsRepository.setPassword(password,token)
                 val statusCode: GenericMeta? = setPasswordResult.ocs?.meta
-                val result = (statusCode?.statusCode == STATUS_CODE_OK)
+                val result = statusCode?.statusCode == STATUS_CODE_OK
                     if(result){
                         _passwordViewState.value = PasswordUiState.Success(result)
                     }
