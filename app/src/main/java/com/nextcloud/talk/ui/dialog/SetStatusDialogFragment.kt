@@ -39,11 +39,13 @@ import com.nextcloud.talk.databinding.DialogSetStatusBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.ClearAt
 import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil.isRestoreStatusAvailable
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.vanniktech.emoji.EmojiPopup
@@ -54,6 +56,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.ResponseBody
+import retrofit2.HttpException
 import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
@@ -86,12 +89,16 @@ class SetStatusDialogFragment :
 
     private var currentUser: User? = null
     private var currentStatus: Status? = null
+    private lateinit var backupStatus: Status
 
     val predefinedStatusesList = ArrayList<PredefinedStatus>()
+
+    private val disposables: MutableList<Disposable> = ArrayList()
 
     private lateinit var adapter: PredefinedStatusListAdapter
     private var clearAt: Long? = null
     private lateinit var popup: EmojiPopup
+    private var isBackupStatusAvailable = false
 
     @Inject
     lateinit var ncApi: NcApi
@@ -114,42 +121,88 @@ class SetStatusDialogFragment :
             currentStatus = it.getParcelable(ARG_CURRENT_STATUS_PARAM)
 
             credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)!!
-            ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl!!))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<ResponseBody> {
+            if (isRestoreStatusAvailable(currentUser!!)) {
+                checkBackupStatus()
+            }
+            fetchPredefinedStatuses()
+        }
+    }
 
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
+    private fun fetchPredefinedStatuses() {
+        ncApi.getPredefinedStatuses(credentials, ApiUtils.getUrlForPredefinedStatuses(currentUser?.baseUrl!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<ResponseBody> {
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onNext(responseBody: ResponseBody) {
+                    val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
+                        responseBody.string(),
+                        PredefinedStatusOverall::class.java
+                    )
+                    predefinedStatusOverall.ocs?.data?.let { predefinedStatusesList.addAll(it) }
+
+                    if (currentStatus?.messageIsPredefined == true && currentStatus?.messageId?.isNotEmpty() == true) {
+                        val messageId = currentStatus!!.messageId
+                        selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
                     }
 
-                    override fun onNext(responseBody: ResponseBody) {
-                        val predefinedStatusOverall: PredefinedStatusOverall = LoganSquare.parse(
-                            responseBody
-                                .string(),
-                            PredefinedStatusOverall::class.java
+                    adapter.notifyDataSetChanged()
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error while fetching predefined statuses", e)
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
+    }
+
+    private fun checkBackupStatus() {
+        ncApi.backupStatus(credentials, ApiUtils.getUrlForBackupStatus(currentUser?.baseUrl!!, currentUser?.userId!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<StatusOverall> {
+
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
+
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onNext(statusOverall: StatusOverall) {
+                    if (statusOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
+                        backupStatus = statusOverall.ocs?.data!!
+                        isBackupStatusAvailable = true
+                        val backupPredefinedStatus = PredefinedStatus(
+                            backupStatus.userId!!,
+                            backupStatus.icon,
+                            backupStatus.message!!,
+                            ClearAt(type = "period", time = backupStatus.clearAt.toString())
                         )
-                        predefinedStatusOverall.ocs?.data?.let { it1 -> predefinedStatusesList.addAll(it1) }
-
-                        if (currentStatus?.messageIsPredefined == true &&
-                            currentStatus?.messageId?.isNotEmpty() == true
-                        ) {
-                            val messageId = currentStatus!!.messageId
-                            selectedPredefinedStatus = predefinedStatusesList.firstOrNull { ps -> messageId == ps.id }
-                        }
-
+                        binding.automaticStatus.visibility = View.VISIBLE
+                        adapter.isBackupStatusAvailable = true
+                        predefinedStatusesList.add(0, backupPredefinedStatus)
                         adapter.notifyDataSetChanged()
                     }
+                }
 
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error while fetching predefined statuses", e)
+                override fun onError(e: Throwable) {
+                    if (e is HttpException && e.code() == HTTP_STATUS_CODE_NOT_FOUND) {
+                        Log.d(TAG, "User does not have a backup status set")
+                    } else {
+                        Log.e(TAG, "Error while getting user backup status", e)
                     }
+                }
 
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        }
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     @SuppressLint("InflateParams")
@@ -168,7 +221,7 @@ class SetStatusDialogFragment :
 
         setupCurrentStatus()
 
-        adapter = PredefinedStatusListAdapter(this, requireContext())
+        adapter = PredefinedStatusListAdapter(this, requireContext(), isBackupStatusAvailable)
         adapter.list = predefinedStatusesList
 
         binding.predefinedStatusList.adapter = adapter
@@ -183,7 +236,6 @@ class SetStatusDialogFragment :
         binding.clearStatus.setOnClickListener { clearStatus() }
         binding.setStatus.setOnClickListener { setStatusMessage() }
         binding.emoji.setOnClickListener { openEmojiPopup() }
-
         popup = EmojiPopup(
             rootView = view,
             editText = binding.emoji,
@@ -241,6 +293,44 @@ class SetStatusDialogFragment :
                     }
                 }
             }
+        }
+    }
+
+    override fun revertStatus() {
+        if (isRestoreStatusAvailable(currentUser!!)) {
+            ncApi.revertStatus(
+                credentials,
+                ApiUtils.getUrlForRevertStatus(currentUser?.baseUrl!!, currentStatus?.messageId)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<GenericOverall> {
+
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
+                    }
+
+                    @SuppressLint("NotifyDataSetChanged")
+                    override fun onNext(genericOverall: GenericOverall) {
+                        Log.d(TAG, "$genericOverall")
+                        if (genericOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
+                            binding.automaticStatus.visibility = View.GONE
+                            adapter.isBackupStatusAvailable = false
+                            predefinedStatusesList.removeAt(0)
+                            adapter.notifyDataSetChanged()
+                            currentStatus = backupStatus
+                            setupCurrentStatus()
+                            dismiss()
+                        }
+                    }
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Failed to revert user status", e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         }
     }
 
@@ -357,7 +447,7 @@ class SetStatusDialogFragment :
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    // unused atm
+                    disposables.add(d)
                 }
 
                 override fun onNext(statusOverall: GenericOverall) {
@@ -384,7 +474,7 @@ class SetStatusDialogFragment :
             )
             .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
                 override fun onSubscribe(d: Disposable) {
-                    // unused atm
+                    disposables.add(d)
                 }
 
                 override fun onNext(statusOverall: GenericOverall) {
@@ -487,7 +577,9 @@ class SetStatusDialogFragment :
             )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())?.subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) = Unit
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
+                    }
 
                     override fun onNext(t: GenericOverall) {
                         Log.d(TAG, "PredefinedStatusMessage successfully set")
@@ -498,7 +590,9 @@ class SetStatusDialogFragment :
                         Log.e(TAG, "failed to set PredefinedStatusMessage", e)
                     }
 
-                    override fun onComplete() = Unit
+                    override fun onComplete() {
+                        // unused atm
+                    }
                 })
         }
     }
@@ -544,11 +638,26 @@ class SetStatusDialogFragment :
         }
     }
 
+    private fun dispose() {
+        for (i in disposables.indices) {
+            if (!disposables[i].isDisposed) {
+                disposables[i].dispose()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        dispose()
+        super.onDestroy()
+    }
+
     /**
      * Fragment creator
      */
     companion object {
         private val TAG = SetStatusDialogFragment::class.simpleName
+        private const val HTTP_STATUS_CODE_OK = 200
+        private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
         @JvmStatic
         fun newInstance(status: Status): SetStatusDialogFragment {

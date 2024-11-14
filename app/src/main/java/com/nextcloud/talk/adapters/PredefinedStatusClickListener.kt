@@ -10,4 +10,5 @@ import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 
 interface PredefinedStatusClickListener {
     fun onClick(predefinedStatus: PredefinedStatus)
+    fun revertStatus()
 }

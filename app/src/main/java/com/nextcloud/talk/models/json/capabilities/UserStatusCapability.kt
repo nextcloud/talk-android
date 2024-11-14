@@ -19,9 +19,11 @@ import kotlinx.serialization.Serializable
 data class UserStatusCapability(
     @JsonField(name = ["enabled"])
     var enabled: Boolean,
+    @JsonField(name = ["restore"])
+    var restore: Boolean,
     @JsonField(name = ["supports_emoji"])
     var supportsEmoji: Boolean
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
-    constructor() : this(false, false)
+    constructor() : this(false, false, false)
 }
