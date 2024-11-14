@@ -111,6 +111,7 @@ class MessageInputFragment : Fragment() {
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var binding: FragmentMessageInputBinding
+    private lateinit var conversationInternalId: String
     private var typedWhileTypingTimerIsRunning: Boolean = false
     private var typingTimer: CountDownTimer? = null
     private lateinit var chatActivity: ChatActivity
@@ -122,6 +123,10 @@ class MessageInputFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+        conversationInternalId = arguments?.getString(ChatActivity.CONVERSATION_INTERNAL_ID).orEmpty()
+        if (conversationInternalId.isEmpty()) {
+            Log.e(TAG, "internalId for conversation passed to MessageInputFragment is empty")
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -143,7 +148,7 @@ class MessageInputFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        chatActivity.messageInputViewModel.restoreMessageQueue(chatActivity.currentConversation!!.internalId)
+        chatActivity.messageInputViewModel.restoreMessageQueue(conversationInternalId)
     }
 
     override fun onDestroyView() {
@@ -728,9 +733,8 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun isTypingStatusEnabled(): Boolean {
-        return !CapabilitiesUtil.isTypingStatusPrivate(chatActivity.conversationUser!!)
-    }
+    private fun isTypingStatusEnabled(): Boolean =
+        !CapabilitiesUtil.isTypingStatusPrivate(chatActivity.conversationUser!!)
 
     private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
         var metaData = ""
