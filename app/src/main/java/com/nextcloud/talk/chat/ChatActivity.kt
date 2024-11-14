@@ -184,7 +184,9 @@ import com.stfalcon.chatkit.messages.MessageHolders.ContentChecker
 import com.stfalcon.chatkit.messages.MessagesListAdapter
 import com.stfalcon.chatkit.utils.DateFormatter
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -702,14 +704,8 @@ class ChatActivity :
                     logConversationInfos("joinRoomWithPassword#onNext")
 
                     setupWebsocket()
-                    if (webSocketInstance != null) {
-                        webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                            roomToken,
-                            sessionIdAfterRoomJoined,
-                            externalSignalingServer?.federation
-                        )
-                    }
-                    if (startCallFromNotification != null && startCallFromNotification) {
+
+                    if (startCallFromNotification) {
                         startCallFromNotification = false
                         startACall(voiceOnly, false)
                     }
@@ -2452,7 +2448,7 @@ class ChatActivity :
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
 
         adapter = null
-        Log.d(TAG, "inConversation was set to false!")
+        disposables.dispose()
     }
 
     private fun joinRoomWithPassword() {
@@ -2477,13 +2473,6 @@ class ChatActivity :
             Log.d(TAG, "sessionID was valid -> skip joinRoom")
 
             setupWebsocket()
-            if (webSocketInstance != null) {
-                webSocketInstance?.joinRoomWithRoomTokenAndSession(
-                    roomToken,
-                    sessionIdAfterRoomJoined,
-                    externalSignalingServer?.federation
-                )
-            }
         }
     }
 
@@ -2514,57 +2503,78 @@ class ChatActivity :
             return
         }
 
-        if (currentConversation!!.remoteServer != null) {
+        if (currentConversation!!.remoteServer?.isNotEmpty() == true) {
             val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
             ncApi.getSignalingSettings(
                 credentials,
                 ApiUtils.getUrlForSignalingSettings(apiVersion, conversationUser!!.baseUrl, roomToken)
-            ).blockingSubscribe(object : Observer<SignalingSettingsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
-                    if (signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer == null ||
-                        signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer?.isEmpty() == true
-                    ) {
-                        return
+            )
+                .subscribeOn(Schedulers.io())
+                ?.observeOn(AndroidSchedulers.mainThread())
+                ?.subscribe(object : Observer<SignalingSettingsOverall> {
+                    override fun onSubscribe(d: Disposable) {
+                        disposables.add(d)
                     }
 
-                    externalSignalingServer = ExternalSignalingServer()
-                    externalSignalingServer!!.externalSignalingServer = signalingSettingsOverall.ocs!!.settings!!
-                        .externalSignalingServer
-                    externalSignalingServer!!.externalSignalingTicket = signalingSettingsOverall.ocs!!.settings!!
-                        .externalSignalingTicket
-                    externalSignalingServer!!.federation = signalingSettingsOverall.ocs!!.settings!!.federation
+                    override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
+                        if (signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer == null ||
+                            signalingSettingsOverall.ocs!!.settings!!.externalSignalingServer?.isEmpty() == true
+                        ) {
+                            return
+                        }
 
-                    webSocketInstance = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
-                        externalSignalingServer!!.externalSignalingServer,
-                        conversationUser,
-                        externalSignalingServer!!.externalSignalingTicket,
-                        TextUtils.isEmpty(credentials)
-                    )
-                }
+                        externalSignalingServer = ExternalSignalingServer()
+                        externalSignalingServer!!.externalSignalingServer = signalingSettingsOverall.ocs!!.settings!!
+                            .externalSignalingServer
+                        externalSignalingServer!!.externalSignalingTicket = signalingSettingsOverall.ocs!!.settings!!
+                            .externalSignalingTicket
+                        externalSignalingServer!!.federation = signalingSettingsOverall.ocs!!.settings!!.federation
 
-                override fun onError(e: Throwable) {
-                    Log.e(CallActivity.TAG, e.message, e)
-                }
+                        webSocketInstance = WebSocketConnectionHelper.getExternalSignalingInstanceForServer(
+                            externalSignalingServer!!.externalSignalingServer,
+                            conversationUser,
+                            externalSignalingServer!!.externalSignalingTicket,
+                            TextUtils.isEmpty(credentials)
+                        )
 
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+                        if (webSocketInstance != null) {
+                            webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                                roomToken,
+                                sessionIdAfterRoomJoined,
+                                externalSignalingServer?.federation
+                            )
+                        }
+
+                        signalingMessageSender = webSocketInstance?.signalingMessageSender
+                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+                        webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
+                    }
+
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, e.message, e)
+                    }
+
+                    override fun onComplete() {
+                        // unused atm
+                    }
+                })
         } else {
             webSocketInstance = WebSocketConnectionHelper.getWebSocketInstanceForUser(conversationUser!!)
-        }
 
-        if (webSocketInstance == null) {
-            Log.d(TAG, "webSocketInstance not set up. This should only happen when not using the HPB")
-        }
+            if (webSocketInstance != null) {
+                webSocketInstance?.joinRoomWithRoomTokenAndSession(
+                    roomToken,
+                    sessionIdAfterRoomJoined,
+                    null
+                )
 
-        signalingMessageSender = webSocketInstance?.signalingMessageSender
-        webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
-        webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
+                signalingMessageSender = webSocketInstance?.signalingMessageSender
+                webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
+                webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
+            } else {
+                Log.d(TAG, "webSocketInstance not set up. This is only expected when not using the HPB")
+            }
+        }
     }
 
     private fun processCallStartedMessages(chatMessageList: List<ChatMessage>) {
