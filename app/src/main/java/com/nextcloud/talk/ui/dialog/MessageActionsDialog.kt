@@ -129,7 +129,7 @@ class MessageActionsDialog(
         )
         chatActivity.chatViewModel.getNoteToSelfAvailability.observe(this) { state ->
             when (state) {
-                is ChatViewModel.NoteToSelfAvaliableState -> {
+                is ChatViewModel.NoteToSelfAvailableState -> {
                     this.lifecycleScope.launch {
                         initMenuAddToNote(
                             !message.isDeleted &&
