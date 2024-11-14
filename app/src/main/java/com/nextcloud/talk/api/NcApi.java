@@ -436,7 +436,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> setReadOnlyState(@Header("Authorization") String authorization,
+    Observable<GenericOverall> setConversationReadOnly(@Header("Authorization") String authorization,
                                                 @Url String url,
                                                 @Field("state") int state);
 

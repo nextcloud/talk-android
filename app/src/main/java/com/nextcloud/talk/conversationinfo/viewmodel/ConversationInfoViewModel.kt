@@ -76,6 +76,13 @@ class ConversationInfoViewModel @Inject constructor(
     val getUnBanActorState: LiveData<ViewState>
         get() = _getUnBanActorState
 
+    object SetConversationReadOnlySuccessState : ViewState
+    object SetConversationReadOnlyErrorState : ViewState
+
+    private val _getConversationReadOnlyState: MutableLiveData<ViewState> = MutableLiveData()
+    val getConversationReadOnlyState: LiveData<ViewState>
+        get() = _getConversationReadOnlyState
+
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
     open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
@@ -174,6 +181,30 @@ class ConversationInfoViewModel @Inject constructor(
 
                 override fun onNext(talkBan: TalkBan) {
                     _getBanActorState.value = BanActorSuccessState(talkBan)
+                }
+            })
+    }
+
+    fun setConversationReadOnly(user: User, token: String, state: Int) {
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, token)
+        conversationsRepository.setConversationReadOnly(user.getCredentials(), url, state)
+            .subscribeOn(Schedulers.io())
+            ?.observeOn(AndroidSchedulers.mainThread())
+            ?.subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(p0: Disposable) {
+                }
+
+                override fun onError(error: Throwable) {
+                    _getConversationReadOnlyState.value = SetConversationReadOnlyErrorState
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+
+                override fun onNext(p0: GenericOverall) {
+                    _getConversationReadOnlyState.value = SetConversationReadOnlySuccessState
                 }
             })
     }

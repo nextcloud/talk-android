@@ -231,7 +231,7 @@ object ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/password"
     }
 
-    fun getUrlForRoomReadOnlyState(version: Int, baseUrl: String?, token: String?): String {
+    fun getUrlForConversationReadOnly(version: Int, baseUrl: String?, token: String?): String {
         return getUrlForRoom(version, baseUrl, token) + "/read-only"
     }
 

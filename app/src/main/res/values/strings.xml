@@ -386,6 +386,7 @@ How to translate with transifex:
     <string name="nc_new_mention">Unread mentions</string>
     <string name="conversations">Conversations</string>
     <string name="openConversations">Open conversations</string>
+    <string name="lock_conversation">Lock conversation</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
@@ -825,4 +826,5 @@ How to translate with transifex:
     <string name="archived">Archived</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \'Archived\' to view archived conversations. Direct mentions will still be received.</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
+    <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
 </resources>
