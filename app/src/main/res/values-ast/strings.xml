@@ -43,6 +43,7 @@
     <string name="invisible">Invisible</string>
     <string name="languages_error_message">Nun se pudieron recuperar les llingües</string>
     <string name="languages_error_title">La recuperación falló</string>
+    <string name="leave_call">Colar de la llamada</string>
     <string name="left_conversation">Colesti de la conversación «%1$s»</string>
     <string name="load_more_results">Cargar más resultaos</string>
     <string name="lower_hand">Baxar la mano</string>

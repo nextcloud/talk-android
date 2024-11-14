@@ -48,6 +48,7 @@
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
     <string name="encrypted">Šifrované</string>
+    <string name="end_call_for_everyone">Ukončit hovor pro všechny</string>
     <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
     <string name="error_unbanning">Došlo k chybě při rušení vyloučení účastníka</string>
     <string name="failed_to_save">Nepodařilo se uložit %1$s</string>
@@ -63,6 +64,7 @@
     <string name="languages_error_message">Jazyky se nepodařilo získat</string>
     <string name="languages_error_title">Získání se nezdařil</string>
     <string name="later_today">Později dnes</string>
+    <string name="leave_call">Opustit hovor</string>
     <string name="left_conversation">Opustili jste konverzaci %1$s</string>
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="lock_symbol">Symbol zámku</string>

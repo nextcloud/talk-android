@@ -50,6 +50,7 @@
     <string name="emoji_backspace">Retrocés</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>
+    <string name="end_call_for_everyone">Finalitzar la trucada per a tothom</string>
     <string name="error_loading_chats">S\'ha produït un problema carregant els xats</string>
     <string name="error_unbanning">S\'ha produït un error en anul·lar la prohibició del participant</string>
     <string name="failed_to_save">No s\'ha pogut desar %1$s</string>
@@ -65,6 +66,7 @@
     <string name="languages_error_message">No s\'han pogut recuperar els idiomes</string>
     <string name="languages_error_title">Ha fallat la recuperació</string>
     <string name="later_today">Avui més tard</string>
+    <string name="leave_call">Abandona la trucada</string>
     <string name="left_conversation">Heu abandonat la conversa %1$s</string>
     <string name="load_more_results">Carregar més resultats</string>
     <string name="lock_symbol">Símbol de bloqueig</string>
