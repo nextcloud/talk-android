@@ -2514,7 +2514,7 @@ class ChatActivity :
             return
         }
 
-        if (currentConversation!!.remoteServer != null) {
+        if (currentConversation!!.remoteServer?.isNotEmpty() == true) {
             val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
             ncApi.getSignalingSettings(
                 credentials,
