@@ -22,6 +22,7 @@ import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import com.vanniktech.emoji.EmojiTextView
 import javax.inject.Inject
@@ -96,9 +97,8 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 capabilities?.spreedCapability?.config!!["call"]!!["supported-reactions"] as ArrayList<*>
 
             val param = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                1.0f
+                DisplayUtils.convertDpToPixel(EMOJI_WIDTH.toFloat(), callActivity).toInt(),
+                LinearLayout.LayoutParams.MATCH_PARENT
             )
 
             availableReactions.forEach {
@@ -185,5 +185,6 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
     companion object {
         private const val TAG = "MoreCallActionsDialog"
         private const val TEXT_SIZE = 20f
+        private const val EMOJI_WIDTH = 40
     }
 }
