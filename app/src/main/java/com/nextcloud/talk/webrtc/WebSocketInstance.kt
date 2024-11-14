@@ -391,7 +391,7 @@ class WebSocketInstance internal constructor(
                 roomToken == currentRoomToken &&
                 normalBackendSession == currentNormalBackendSession &&
                 federation?.roomId == currentFederation?.roomId &&
-                federation?.nextcloudServer == federation?.nextcloudServer
+                federation?.nextcloudServer == currentFederation?.nextcloudServer
             ) {
                 Log.d(TAG, "roomToken & session are unchanged. Joining locally without to send websocket message")
                 sendRoomJoinedEvent()
