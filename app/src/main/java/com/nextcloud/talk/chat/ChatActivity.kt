@@ -2448,7 +2448,7 @@ class ChatActivity :
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
 
         adapter = null
-        Log.d(TAG, "inConversation was set to false!")
+        disposables.dispose()
     }
 
     private fun joinRoomWithPassword() {
@@ -2513,7 +2513,7 @@ class ChatActivity :
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SignalingSettingsOverall> {
                     override fun onSubscribe(d: Disposable) {
-                        // unused atm
+                        disposables.add(d)
                     }
 
                     override fun onNext(signalingSettingsOverall: SignalingSettingsOverall) {
