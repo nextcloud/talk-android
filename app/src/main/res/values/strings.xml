@@ -455,6 +455,7 @@ How to translate with transifex:
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_resend_invitations_failed">Invitations were not send due to an error.</string>
     <string name="nc_share_link">Share link</string>
+    <string name="nc_weak_password">Password must be atleast 8 characters length</string>
 
     <!-- Content descriptions -->
     <string name="nc_description_send_message_button">Send message</string>

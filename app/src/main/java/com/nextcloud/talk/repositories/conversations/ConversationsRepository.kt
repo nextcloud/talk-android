@@ -20,8 +20,6 @@ interface ConversationsRepository {
         val message: String
     )
 
-    fun password(password: String, token: String): Observable<PasswordResult>
-
     data class ResendInvitationsResult(
         val successful: Boolean
     )
@@ -30,6 +28,8 @@ interface ConversationsRepository {
     suspend fun archiveConversation(credentials: String, url: String): GenericOverall
 
     suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall
+
+    suspend fun setPassword(password: String, token: String): GenericOverall
 
     fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall>
 }

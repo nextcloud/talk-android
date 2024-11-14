@@ -132,4 +132,12 @@ interface NcApiCoroutines {
         @Url url: String,
         @Body body: RequestBody
     ): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setPassword2(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("password") password: String
+    ): GenericOverall
 }

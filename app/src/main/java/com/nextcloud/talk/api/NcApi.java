@@ -332,7 +332,7 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
+    Observable<GenericOverall> setPassword2(@Header("Authorization") String authorization,
                                                       @Url String url,
                                                       @Field("password") String password);
 
