@@ -104,7 +104,7 @@ class GuestAccessHelper(
         }
     }
 
-    private fun passwordObserver()  {
+    private fun passwordObserver() {
         viewModel.passwordViewState.observe(lifecycleOwner) { uiState ->
             when (uiState) {
                 is ConversationInfoViewModel.PasswordUiState.Success -> {

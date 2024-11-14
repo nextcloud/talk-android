@@ -246,7 +246,7 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
-    fun allowGuests(token: String, allow: Boolean)  {
+    fun allowGuests(token: String, allow: Boolean) {
         viewModelScope.launch {
             try {
                 val allowGuestsResult = conversationsRepository.allowGuests(token, allow)
@@ -262,7 +262,7 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @SuppressLint("SuspiciousIndentation")
-    fun setPassword(password: String, token: String)  {
+    fun setPassword(password: String, token: String) {
         viewModelScope.launch {
             try {
                 val setPasswordResult = conversationsRepository.setPassword(password, token)
