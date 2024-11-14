@@ -38,7 +38,7 @@ class ConversationsRepositoryImpl(
         )
 
         val result: GenericOverall = if (allow) {
-           coroutineApi.makeRoomPublic(
+            coroutineApi.makeRoomPublic(
                 credentials,
                 url
             )
@@ -50,7 +50,6 @@ class ConversationsRepositoryImpl(
         }
         return result
     }
-
 
     override fun resendInvitations(token: String): Observable<ResendInvitationsResult> {
         val apiObservable = api.resendParticipantInvitations(
@@ -80,7 +79,7 @@ class ConversationsRepositoryImpl(
     }
 
     override suspend fun setPassword(password: String, token: String): GenericOverall {
-        val result = coroutineApi.setPassword2(
+        val result = coroutineApi.setPassword(
             credentials,
             ApiUtils.getUrlForRoomPassword(
                 apiVersion,
@@ -98,6 +97,5 @@ class ConversationsRepositoryImpl(
 
     companion object {
         const val STATUS_CODE_OK = 200
-        const val STATUS_CODE_BAD_REQUEST = 400
     }
 }

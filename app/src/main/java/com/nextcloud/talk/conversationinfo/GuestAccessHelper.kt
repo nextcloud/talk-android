@@ -65,23 +65,23 @@ class GuestAccessHelper(
             val isChecked = binding.guestAccessView.allowGuestsSwitch.isChecked
             binding.guestAccessView.allowGuestsSwitch.isChecked = !isChecked
             viewModel.allowGuests(conversation.token, !isChecked)
-            viewModel.allowGuestsViewState.observe(lifecycleOwner){uiState ->
-                when(uiState){
-                    is ConversationInfoViewModel.AllowGuestsUIState.Success ->{
-                        if(uiState.allow){
+            viewModel.allowGuestsViewState.observe(lifecycleOwner) { uiState ->
+                when (uiState) {
+                    is ConversationInfoViewModel.AllowGuestsUIState.Success -> {
+                        binding.guestAccessView.allowGuestsSwitch.isChecked = uiState.allow
+                        if (uiState.allow) {
                             showAllOptions()
-                        }else{
+                        } else {
                             hideAllOptions()
                         }
                     }
-                    is ConversationInfoViewModel.AllowGuestsUIState.Error ->{
+                    is ConversationInfoViewModel.AllowGuestsUIState.Error -> {
                         val exception = uiState.message
                         val message = context.getString(R.string.nc_guest_access_allow_failed)
                         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                         Log.e(TAG, exception)
                     }
-                    ConversationInfoViewModel.AllowGuestsUIState.None ->{
-                        //unused atm
+                    ConversationInfoViewModel.AllowGuestsUIState.None -> {
                     }
                 }
             }
@@ -91,8 +91,8 @@ class GuestAccessHelper(
             val isChecked = binding.guestAccessView.passwordProtectionSwitch.isChecked
             binding.guestAccessView.passwordProtectionSwitch.isChecked = !isChecked
             if (isChecked) {
-             viewModel.setPassword("",conversation.token)
-                passwordObserver(false,"")
+                viewModel.setPassword("", conversation.token)
+                passwordObserver()
             } else {
                 showPasswordDialog()
             }
@@ -104,36 +104,23 @@ class GuestAccessHelper(
         }
     }
 
-    private fun passwordObserver(passwordSet:Boolean, password:String){
-        viewModel.passwordViewState.observe(lifecycleOwner){uiState ->
-            when(uiState){
-                is ConversationInfoViewModel.PasswordUiState.Success ->{
-                    val weakPassword = password.trim().length < 8
-                    binding.guestAccessView.passwordProtectionSwitch.isChecked = passwordSet && weakPassword
-                    if (weakPassword && passwordSet) {
-                        val builder = MaterialAlertDialogBuilder(activity)
-                        builder.apply {
-                            setTitle(R.string.nc_guest_access_password_weak_alert_title)
-                            setMessage(R.string.nc_weak_password)
-                            setPositiveButton("OK") { _, _ ->
-                            }
-                        }
-                        createDialog(builder)
-                    }
+    private fun passwordObserver()  {
+        viewModel.passwordViewState.observe(lifecycleOwner) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.PasswordUiState.Success -> {
+                    // unused atm
                 }
-                is ConversationInfoViewModel.PasswordUiState.Error ->{
+                is ConversationInfoViewModel.PasswordUiState.Error -> {
                     val exception = uiState.message
                     val message = context.getString(R.string.nc_guest_access_password_failed)
                     Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, exception)
-
                 }
-                is ConversationInfoViewModel.PasswordUiState.None ->{
-                    //unused atm
+                is ConversationInfoViewModel.PasswordUiState.None -> {
+                    // unused atm
                 }
             }
         }
-
     }
 
     private fun showPasswordDialog() {
@@ -145,14 +132,14 @@ class GuestAccessHelper(
             setTitle(R.string.nc_guest_access_password_dialog_title)
             setPositiveButton(R.string.nc_ok) { _, _ ->
                 val password = dialogPassword.password.text.toString()
-                 viewModel.setPassword(password, conversation.token)
-                passwordObserver(true, password)
+                viewModel.setPassword(password, conversation.token)
             }
             setNegativeButton(R.string.nc_cancel) { _, _ ->
                 binding.guestAccessView.passwordProtectionSwitch.isChecked = false
             }
         }
         createDialog(builder)
+        passwordObserver()
     }
 
     private fun createDialog(builder: MaterialAlertDialogBuilder) {
@@ -202,37 +189,6 @@ class GuestAccessHelper(
     private fun hideAllOptions() {
         binding.guestAccessView.guestAccessSettingsPasswordProtection.visibility = View.GONE
         binding.guestAccessView.resendInvitationsButton.visibility = View.GONE
-    }
-
-    inner class PasswordResultObserver(private val setPassword: Boolean) :
-        Observer<ConversationsRepository.PasswordResult> {
-
-        private lateinit var passwordResult: ConversationsRepository.PasswordResult
-
-        override fun onSubscribe(d: Disposable) = Unit
-
-        override fun onNext(t: ConversationsRepository.PasswordResult) {
-            passwordResult = t
-        }
-
-        override fun onError(e: Throwable) {
-            val message = context.getString(R.string.nc_guest_access_password_failed)
-            Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-            Log.e(TAG, message, e)
-        }
-
-        override fun onComplete() {
-            binding.guestAccessView.passwordProtectionSwitch.isChecked = passwordResult.passwordSet && setPassword
-            if (passwordResult.passwordIsWeak) {
-                val builder = MaterialAlertDialogBuilder(activity)
-                builder.apply {
-                    setTitle(R.string.nc_guest_access_password_weak_alert_title)
-                    setMessage(passwordResult.message)
-                    setPositiveButton("OK") { _, _ -> }
-                }
-                createDialog(builder)
-            }
-        }
     }
 
     companion object {
