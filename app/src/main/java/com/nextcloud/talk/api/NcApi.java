@@ -373,10 +373,6 @@ public interface NcApi {
                                                                  @Nullable @Query("limit") Integer limit,
                                                                  @QueryMap Map<String, String> fields);
 
-    // Url is: /api/{apiVersion}/room/{token}/pin
-    @POST
-    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
-                                                          @Url String url);
 
     // Url is: /api/{apiVersion}/room/{token}/favorites
     @DELETE
