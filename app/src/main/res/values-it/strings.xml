@@ -8,6 +8,7 @@
     <string name="audio_output_phone">Telefono</string>
     <string name="audio_output_speaker">Altoparlante</string>
     <string name="audio_output_wired_headset">Auricolare cablato</string>
+    <string name="automatic_status_set">Stato impostato automaticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Assente</string>
     <string name="calendar">Calendario</string>
@@ -39,6 +40,7 @@
     <string name="later_today">Più tardi oggi</string>
     <string name="leave_call">Lascia la chiamata</string>
     <string name="load_more_results">Mostra altri risultati</string>
+    <string name="lock_conversation">Blocca conversazione</string>
     <string name="lock_symbol">Simbolo lucchetto</string>
     <string name="lower_hand">Abbassa la mano</string>
     <string name="menu_item_sort_by_date_newest_first">Prima i più recenti</string>
@@ -392,10 +394,12 @@
     <string name="polls_results_subtitle">Risultati</string>
     <string name="polls_settings">Impostazioni</string>
     <string name="polls_submit_vote">Votare</string>
+    <string name="previously_set">Impostato in precedenza</string>
     <string name="raise_hand">Alza la mano</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
     <string name="recording_settings_title">Registrazione</string>
+    <string name="reset_status">Ripristina stato</string>
     <string name="save">Salva</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
     <string name="scope_federated_title">Federato</string>

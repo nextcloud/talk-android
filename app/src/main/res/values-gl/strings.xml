@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Teléfono</string>
     <string name="audio_output_speaker">Altofalante</string>
     <string name="audio_output_wired_headset">Auriculares con cable</string>
+    <string name="automatic_status_set">O seu estado foi estabelecido automaticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="back_button">Botón «Atrás»</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">Deixar a chamada</string>
     <string name="left_conversation">Vde. deixou a conversa %1$s</string>
     <string name="load_more_results">Cargando máis resultados</string>
+    <string name="lock_conversation">Bloquear a conversa</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
     <string name="marked_as_read">A conversa %1$s foi marcada como lida</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">Axustes</string>
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
+    <string name="previously_set">Estabelecido previamente</string>
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Non é posible compartir ficheiros dende o almacenamento sen permisos</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">Gravando</string>
     <string name="removed_from_favorites">Retirouse a conversa %1$s dos favoritos</string>
     <string name="renamed_conversation">Cambióuselle o nome a conversa %1$s</string>
+    <string name="reset_status">Restabelecer o estado</string>
     <string name="restrict_join_other_room_while_call">Non é posible unirse a outras salas mentres está nunha chamada</string>
     <string name="save">Gardar</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>

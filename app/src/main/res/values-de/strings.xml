@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Lautsprecher</string>
     <string name="audio_output_wired_headset">Kabelgebundener Kopfhörer</string>
+    <string name="automatic_status_set">Ihr Status wurde automatisch gesetzt</string>
     <string name="avatar">Avatar</string>
     <string name="away">Abwesend</string>
     <string name="back_button">Zurück-Schaltfläche</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">Anruf verlassen</string>
     <string name="left_conversation">Sie haben die Unterhaltung %1$s verlassen</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
+    <string name="lock_conversation">Unterhaltung sperren</string>
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="lower_hand">Hand herunternehmen</string>
     <string name="marked_as_read">Unterhaltung %1$s als gelesen markiert</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">Einstellungen</string>
     <string name="polls_submit_vote">Abstimmen</string>
     <string name="polls_voted_hidden_success">Stimme abgegeben</string>
+    <string name="previously_set">Zuvor eingestellt</string>
     <string name="raise_hand">Hand heben</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Dateien können nicht ohne Berechtigung geteilt werden</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">Aufnahme</string>
     <string name="removed_from_favorites">Unterhaltung %1$s aus Favoriten entfernt</string>
     <string name="renamed_conversation">Unterhaltung %1$s wurde umbenannt</string>
+    <string name="reset_status">Status zurücksetzen</string>
     <string name="restrict_join_other_room_while_call">Während einer Unterhaltung können Sie keinen anderen Räumen beitreten</string>
     <string name="save">Speichern</string>
     <string name="scope_federated_description">Nur mit vertrauenswürdigen Servern synchronisieren</string>

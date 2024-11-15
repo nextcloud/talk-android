@@ -13,6 +13,7 @@
     <string name="audio_output_phone">電話</string>
     <string name="audio_output_speaker">揚聲器</string>
     <string name="audio_output_wired_headset">有線式頭戴耳機</string>
+    <string name="automatic_status_set">您的狀態為自動設定</string>
     <string name="avatar">頭像</string>
     <string name="away">外出</string>
     <string name="back_button">上一頁按鈕</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">離開通話</string>
     <string name="left_conversation">您離開了對話 %1$s</string>
     <string name="load_more_results">載入更多結果</string>
+    <string name="lock_conversation">鎖定對話</string>
     <string name="lock_symbol">上鎖符號</string>
     <string name="lower_hand">放手</string>
     <string name="marked_as_read">將對話 %1$s 標記為已讀</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
     <string name="polls_voted_hidden_success">投票已提交</string>
+    <string name="previously_set">先前設定</string>
     <string name="raise_hand">舉手</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從儲存空間分享檔案</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">錄音</string>
     <string name="removed_from_favorites">從最愛移除了對話 %1$s</string>
     <string name="renamed_conversation">對話 %1$s 已重新命名</string>
+    <string name="reset_status">重設狀態</string>
     <string name="restrict_join_other_room_while_call">通話時無法加入其他聊天室</string>
     <string name="save">儲存</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>

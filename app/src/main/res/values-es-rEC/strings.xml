@@ -8,6 +8,7 @@
     <string name="audio_output_phone">Teléfono fijo</string>
     <string name="audio_output_speaker">Altavoz</string>
     <string name="audio_output_wired_headset">Auriculares con cable</string>
+    <string name="automatic_status_set">Tu estado se estableció automáticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="calendar">Calendario</string>
@@ -41,6 +42,7 @@
     <string name="invisible">Invisible</string>
     <string name="leave_call">Dejar la llamada</string>
     <string name="load_more_results">Cargar más resultados</string>
+    <string name="lock_conversation">Bloquear conversación</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Bajar la mano</string>
     <string name="mentioned">Mencionado</string>
@@ -434,6 +436,7 @@
     <string name="polls_settings">Ajustes</string>
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
+    <string name="previously_set">Previamente establecido</string>
     <string name="raise_hand">Levantar la mano</string>
     <string name="reactions_tab_all">Todos</string>
     <string name="read_storage_no_permission">No es posible compartir archivos desde el almacenamiento sin permisos</string>
@@ -446,6 +449,7 @@
     <string name="record_stop_description">Detener grabación</string>
     <string name="record_stopping">Deteniendo la grabación...</string>
     <string name="recording_settings_title">Grabación</string>
+    <string name="reset_status">Restablecer estado</string>
     <string name="restrict_join_other_room_while_call">No es posible unirse a otras salas mientras se está en una llamada</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Solo sincronizar con servidores de confianza</string>

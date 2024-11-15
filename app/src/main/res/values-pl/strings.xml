@@ -11,6 +11,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Głośnik</string>
     <string name="audio_output_wired_headset">Słuchawki przewodowe</string>
+    <string name="automatic_status_set">Twój status został ustawiony automatycznie</string>
     <string name="avatar">Awatar</string>
     <string name="away">Bezczynny</string>
     <string name="calendar">Kalendarz</string>
@@ -56,6 +57,7 @@
     <string name="leave_call">Rozłącz się</string>
     <string name="left_conversation">Opuściłeś rozmowę %1$s</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
+    <string name="lock_conversation">Zablokuj rozmowę</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="lower_hand">Opuścić rękę</string>
     <string name="marked_as_read">Oznaczono rozmowę %1$s jako przeczytaną</string>
@@ -524,6 +526,7 @@
     <string name="polls_settings">Ustawienia</string>
     <string name="polls_submit_vote">Wyniki głosowania</string>
     <string name="polls_voted_hidden_success">Oddano głos</string>
+    <string name="previously_set">Ustawione wcześniej</string>
     <string name="raise_hand">Podnieść rękę</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
@@ -543,6 +546,7 @@
     <string name="recording_settings_title">Nagranie</string>
     <string name="removed_from_favorites">Usunięto rozmowę %1$s z ulubionych</string>
     <string name="renamed_conversation">Nazwa rozmowy %1$s została zmieniona</string>
+    <string name="reset_status">Zresetuj status</string>
     <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
