@@ -18,11 +18,9 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -81,13 +79,6 @@ class ConversationInfoViewModel @Inject constructor(
     val getUnBanActorState: LiveData<ViewState>
         get() = _getUnBanActorState
 
-    object SetConversationReadOnlySuccessState : ViewState
-    object SetConversationReadOnlyErrorState : ViewState
-
-    private val _getConversationReadOnlyState: MutableLiveData<ViewState> = MutableLiveData()
-    val getConversationReadOnlyState: LiveData<ViewState>
-        get() = _getConversationReadOnlyState
-
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
     open class GetRoomSuccessState(val conversationModel: ConversationModel) : ViewState
@@ -112,9 +103,15 @@ class ConversationInfoViewModel @Inject constructor(
     val getCapabilitiesViewState: LiveData<ViewState>
         get() = _getCapabilitiesViewState
 
-    private val _clearChatHistoryViewState:MutableLiveData<ClearChatHistoryViewState> = MutableLiveData(ClearChatHistoryViewState.None)
-    val clearChatHistoryViewState:LiveData<ClearChatHistoryViewState>
+    private val _clearChatHistoryViewState: MutableLiveData<ClearChatHistoryViewState> =
+        MutableLiveData(ClearChatHistoryViewState.None)
+    val clearChatHistoryViewState: LiveData<ClearChatHistoryViewState>
         get() = _clearChatHistoryViewState
+
+    private val _getConversationReadOnlyState: MutableLiveData<SetConversationReadOnlyViewState> =
+        MutableLiveData(SetConversationReadOnlyViewState.None)
+    val getConversationReadOnlyState: LiveData<SetConversationReadOnlyViewState>
+        get() = _getConversationReadOnlyState
 
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
@@ -202,28 +199,15 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
-    fun setConversationReadOnly(user: User, token: String, state: Int) {
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, token)
-        conversationsRepository.setConversationReadOnly(user.getCredentials(), url, state)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(p0: Disposable) {
-                }
-
-                override fun onError(error: Throwable) {
-                    _getConversationReadOnlyState.value = SetConversationReadOnlyErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(p0: GenericOverall) {
-                    _getConversationReadOnlyState.value = SetConversationReadOnlySuccessState
-                }
-            })
+    fun setConversationReadOnly(roomToken: String, state: Int) {
+        viewModelScope.launch {
+            try {
+                conversationsRepository.setConversationReadOnly(roomToken, state)
+                _getConversationReadOnlyState.value = SetConversationReadOnlyViewState.Success
+            } catch (exception: Exception) {
+                _getConversationReadOnlyState.value = SetConversationReadOnlyViewState.Error(exception)
+            }
+        }
     }
 
     fun unbanActor(user: User, token: String, banId: Int) {
@@ -285,16 +269,12 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
-    fun clearChatHistory(apiVersion:Int,roomToken:String){
-        viewModelScope.launch{
-            try{
-                val clearChatResult = conversationsRepository.clearChatHistory(apiVersion,roomToken)
-                val statusCode: GenericMeta? = clearChatResult.ocs?.meta
-                val result = statusCode?.statusCode == STATUS_CODE_OK
-                if (result) {
-                    _clearChatHistoryViewState.value = ClearChatHistoryViewState.Success
-                }
-            }catch(exception:Exception){
+    fun clearChatHistory(apiVersion: Int, roomToken: String)  {
+        viewModelScope.launch {
+            try {
+                conversationsRepository.clearChatHistory(apiVersion, roomToken)
+                _clearChatHistoryViewState.value = ClearChatHistoryViewState.Success
+            } catch (exception: Exception) {
                 _clearChatHistoryViewState.value = ClearChatHistoryViewState.Error(exception)
             }
         }
@@ -323,10 +303,16 @@ class ConversationInfoViewModel @Inject constructor(
         private val TAG = ConversationInfoViewModel::class.simpleName
     }
 
-    sealed class ClearChatHistoryViewState{
-        data object None: ClearChatHistoryViewState()
-        data object Success:ClearChatHistoryViewState()
-        data class Error(val exception:Exception):ClearChatHistoryViewState()
+    sealed class ClearChatHistoryViewState {
+        data object None : ClearChatHistoryViewState()
+        data object Success : ClearChatHistoryViewState()
+        data class Error(val exception: Exception) : ClearChatHistoryViewState()
+    }
+
+    sealed class SetConversationReadOnlyViewState {
+        data object None : SetConversationReadOnlyViewState()
+        data object Success : SetConversationReadOnlyViewState()
+        data class Error(val exception: Exception) : SetConversationReadOnlyViewState()
     }
 
     sealed class AllowGuestsUIState {

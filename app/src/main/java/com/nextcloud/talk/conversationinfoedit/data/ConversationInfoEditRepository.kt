@@ -20,5 +20,5 @@ interface ConversationInfoEditRepository {
 
     suspend fun renameConversation(roomToken: String, roomNameNew: String): GenericOverall
 
-    suspend fun setConversationDescription(roomToken:String, conversationDescription:String?): GenericOverall
+    suspend fun setConversationDescription(roomToken: String, conversationDescription: String?): GenericOverall
 }

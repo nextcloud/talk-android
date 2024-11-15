@@ -47,11 +47,12 @@ class ConversationInfoEditViewModel @Inject constructor(
         get() = _viewState
 
     private val _renameRoomUiState = MutableLiveData<RenameRoomUiState>(RenameRoomUiState.None)
-    val renameRoomUiState:LiveData<RenameRoomUiState>
+    val renameRoomUiState: LiveData<RenameRoomUiState>
         get() = _renameRoomUiState
 
-    private val _setConversationDescriptionUiState = MutableLiveData<SetConversationDescriptionUiState>(SetConversationDescriptionUiState.None)
-    val setConversationDescriptionUiState:LiveData<SetConversationDescriptionUiState>
+    private val _setConversationDescriptionUiState =
+        MutableLiveData<SetConversationDescriptionUiState>(SetConversationDescriptionUiState.None)
+    val setConversationDescriptionUiState: LiveData<SetConversationDescriptionUiState>
         get() = _setConversationDescriptionUiState
 
     fun getRoom(user: User, token: String) {
@@ -76,31 +77,34 @@ class ConversationInfoEditViewModel @Inject constructor(
             ?.subscribe(DeleteConversationAvatarObserver())
     }
 
-    fun renameRoom(roomToken:String, newRoomName:String){
-        viewModelScope.launch{
-            try{
+    fun renameRoom(roomToken: String, newRoomName: String)  {
+        viewModelScope.launch {
+            try {
                 val renameRoomResult = conversationInfoEditRepository.renameConversation(roomToken, newRoomName)
-                val statusCode:GenericMeta? = renameRoomResult.ocs?.meta
+                val statusCode: GenericMeta? = renameRoomResult.ocs?.meta
                 val result = statusCode?.statusCode == STATUS_CODE_OK
-                if(result){
+                if (result) {
                     _renameRoomUiState.value = RenameRoomUiState.Success(result)
                 }
-            }catch(exception:Exception){
+            } catch (exception: Exception) {
                 _renameRoomUiState.value = RenameRoomUiState.Error(exception)
             }
         }
     }
 
-    fun setConversationDescription(roomToken:String, conversationDescription:String?){
-        viewModelScope.launch{
-            try{
-                val setConversationDescriptionResult = conversationInfoEditRepository.setConversationDescription(roomToken, conversationDescription)
+    fun setConversationDescription(roomToken: String, conversationDescription: String?)  {
+        viewModelScope.launch {
+            try {
+                val setConversationDescriptionResult = conversationInfoEditRepository.setConversationDescription(
+                    roomToken,
+                    conversationDescription
+                )
                 val statusCode: GenericMeta? = setConversationDescriptionResult.ocs?.meta
                 val result = statusCode?.statusCode == STATUS_CODE_OK
-                if(result){
+                if (result) {
                     _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success(result)
                 }
-            }catch(exception:Exception){
+            } catch (exception: Exception) {
                 _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Error(exception)
             }
         }
@@ -167,15 +171,15 @@ class ConversationInfoEditViewModel @Inject constructor(
         private val TAG = ConversationInfoEditViewModel::class.simpleName
     }
 
-    sealed class RenameRoomUiState{
-        data object None: RenameRoomUiState()
-        data class Success(val result:Boolean): RenameRoomUiState()
-        data class Error(val exception:Exception): RenameRoomUiState()
+    sealed class RenameRoomUiState {
+        data object None : RenameRoomUiState()
+        data class Success(val result: Boolean) : RenameRoomUiState()
+        data class Error(val exception: Exception) : RenameRoomUiState()
     }
 
-    sealed class SetConversationDescriptionUiState{
-        data object None: SetConversationDescriptionUiState()
-        data class Success(val result:Boolean):SetConversationDescriptionUiState()
-        data class Error(val exception:Exception):SetConversationDescriptionUiState()
+    sealed class SetConversationDescriptionUiState {
+        data object None : SetConversationDescriptionUiState()
+        data class Success(val result: Boolean) : SetConversationDescriptionUiState()
+        data class Error(val exception: Exception) : SetConversationDescriptionUiState()
     }
 }

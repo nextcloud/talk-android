@@ -171,13 +171,12 @@ class RenameConversationDialogFragment : DialogFragment() {
     private fun setupStateObserver() {
         viewModel.renameRoomUiState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is ConversationInfoEditViewModel.RenameRoomUiState.None ->{
-
+                is ConversationInfoEditViewModel.RenameRoomUiState.None -> {
                 }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Success ->{
+                is ConversationInfoEditViewModel.RenameRoomUiState.Success -> {
                     handleSuccess()
                 }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Error ->{
+                is ConversationInfoEditViewModel.RenameRoomUiState.Error -> {
                     showError()
                 }
             }

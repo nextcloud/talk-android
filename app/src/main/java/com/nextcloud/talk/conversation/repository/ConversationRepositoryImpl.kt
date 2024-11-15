@@ -23,8 +23,6 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
-
-
     override fun createConversation(
         roomName: String,
         conversationType: ConversationEnums.ConversationType?

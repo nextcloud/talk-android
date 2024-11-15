@@ -167,19 +167,18 @@ class ConversationInfoEditActivity : BaseActivity() {
                 else -> {}
             }
         }
-        conversationInfoEditViewModel.renameRoomUiState.observe(this){uiState ->
-            when(uiState){
-                is ConversationInfoEditViewModel.RenameRoomUiState.None ->{
-
+        conversationInfoEditViewModel.renameRoomUiState.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoEditViewModel.RenameRoomUiState.None -> {
                 }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Success ->{
+                is ConversationInfoEditViewModel.RenameRoomUiState.Success -> {
                     if (CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)) {
                         saveConversationDescription()
                     } else {
                         finish()
                     }
                 }
-                is ConversationInfoEditViewModel.RenameRoomUiState.Error ->{
+                is ConversationInfoEditViewModel.RenameRoomUiState.Error -> {
                     Snackbar.make(
                         binding.root,
                         context.getString(R.string.default_error_msg),
@@ -190,27 +189,23 @@ class ConversationInfoEditActivity : BaseActivity() {
             }
         }
 
-        conversationInfoEditViewModel.setConversationDescriptionUiState.observe(this){ uiState ->
-            when(uiState){
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.None ->{
-
+        conversationInfoEditViewModel.setConversationDescriptionUiState.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.None -> {
                 }
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Success ->{
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Success -> {
                     finish()
                 }
-                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Error ->{
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Error -> {
                     Snackbar.make(
                         binding.root,
                         context.getString(R.string.default_error_msg),
                         Snackbar.LENGTH_LONG
                     ).show()
                     Log.e(TAG, "Error while saving conversation description", uiState.exception)
-
                 }
             }
-
         }
-
     }
 
     private fun setupAvatarOptions() {
@@ -276,14 +271,14 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     private fun saveConversationNameAndDescription() {
         val newRoomName = binding.conversationName.text.toString()
-         conversationInfoEditViewModel.renameRoom(
-             conversation!!.token,
-             newRoomName
-         )
+        conversationInfoEditViewModel.renameRoom(
+            conversation!!.token,
+            newRoomName
+        )
     }
 
     fun saveConversationDescription() {
-       val conversationDescription = binding.conversationDescription.text.toString()
+        val conversationDescription = binding.conversationDescription.text.toString()
         conversationInfoEditViewModel.setConversationDescription(conversation!!.token, conversationDescription)
     }
 

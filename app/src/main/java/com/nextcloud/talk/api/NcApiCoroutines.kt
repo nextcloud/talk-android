@@ -142,8 +142,13 @@ interface NcApiCoroutines {
     ): GenericOverall
 
     @DELETE
-    suspend fun clearChatHistory(
+    suspend fun clearChatHistory(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun setConversationReadOnly(
         @Header("Authorization") authorization: String,
-        @Url url: String
+        @Url url: String,
+        @Field("state") state: Int
     ): GenericOverall
 }

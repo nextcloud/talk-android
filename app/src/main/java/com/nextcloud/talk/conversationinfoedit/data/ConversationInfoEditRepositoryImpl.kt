@@ -20,9 +20,11 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi,
+class ConversationInfoEditRepositoryImpl(
+    private val ncApi: NcApi,
     private val ncApiCoroutines: NcApiCoroutines,
-    currentUserProvider: CurrentUserProviderNew) :
+    currentUserProvider: CurrentUserProviderNew
+) :
     ConversationInfoEditRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()

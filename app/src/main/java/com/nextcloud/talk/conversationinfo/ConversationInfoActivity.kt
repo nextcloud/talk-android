@@ -260,37 +260,33 @@ class ConversationInfoActivity :
 
         viewModel.getConversationReadOnlyState.observe(this) { state ->
             when (state) {
-                is ConversationInfoViewModel.SetConversationReadOnlySuccessState -> {
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
                 }
-                is ConversationInfoViewModel.SetConversationReadOnlyErrorState -> {
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
                     Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
                 }
-                else -> {
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
+
                 }
             }
         }
 
-        viewModel.clearChatHistoryViewState.observe(this){uiState ->
-            when(uiState){
-                is ConversationInfoViewModel.ClearChatHistoryViewState.None ->{
-
+        viewModel.clearChatHistoryViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.ClearChatHistoryViewState.None -> {
                 }
-                is ConversationInfoViewModel.ClearChatHistoryViewState.Success ->{
+                is ConversationInfoViewModel.ClearChatHistoryViewState.Success -> {
                     Snackbar.make(
                         binding.root,
                         context.getString(R.string.nc_clear_history_success),
                         Snackbar.LENGTH_LONG
                     ).show()
-
-
                 }
-                is ConversationInfoViewModel.ClearChatHistoryViewState.Error ->{
+                is ConversationInfoViewModel.ClearChatHistoryViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", uiState.exception)
-
                 }
             }
-
         }
     }
 
@@ -747,7 +743,7 @@ class ConversationInfoActivity :
 
     private fun clearHistory() {
         val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-        viewModel.clearChatHistory(apiVersion,conversationToken)
+        viewModel.clearChatHistory(apiVersion, conversationToken)
     }
 
     private fun deleteConversation() {
@@ -842,7 +838,7 @@ class ConversationInfoActivity :
                 binding.lockConversationSwitch.isChecked = !isLocked
                 databaseStorageModule!!.saveBoolean("lock_switch", !isLocked)
                 val state = if (isLocked) 0 else 1
-                makeConversationReadOnly(conversationUser, conversationToken, state)
+                makeConversationReadOnly(conversationToken, state)
             }
         } else {
             binding.lockConversation.visibility = GONE
@@ -922,8 +918,8 @@ class ConversationInfoActivity :
         }
     }
 
-    private fun makeConversationReadOnly(conversationUser: User, roomToken: String, state: Int) {
-        viewModel.setConversationReadOnly(conversationUser, roomToken, state)
+    private fun makeConversationReadOnly(roomToken: String, state: Int) {
+        viewModel.setConversationReadOnly( roomToken, state)
     }
 
     private fun initRecordingConsentOption() {

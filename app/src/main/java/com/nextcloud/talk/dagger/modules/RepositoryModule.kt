@@ -162,7 +162,7 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         userProvider: CurrentUserProviderNew
     ): ConversationInfoEditRepository {
-        return ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines,userProvider)
+        return ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
     }
 
     @Provides
