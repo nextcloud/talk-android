@@ -472,9 +472,6 @@ public interface NcApi {
                                             @Field("objectId") String objectId,
                                             @Field("metaData") String metaData);
 
-    @DELETE
-    Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
-
     @FormUrlEncoded
     @POST
     Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization,
