@@ -7,8 +7,10 @@
 package com.nextcloud.talk.conversationinfoedit.data
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.Mimetype
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -18,7 +20,9 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 
-class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserProvider: CurrentUserProviderNew) :
+class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi,
+    private val ncApiCoroutines: NcApiCoroutines,
+    currentUserProvider: CurrentUserProviderNew) :
     ConversationInfoEditRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
@@ -52,5 +56,19 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi, currentUserPr
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
+    }
+
+    override suspend fun renameConversation(roomToken: String, newRoomName: String): GenericOverall {
+        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+
+        return ncApiCoroutines.renameRoom(
+            credentials,
+            ApiUtils.getUrlForRoom(
+                apiVersion,
+                currentUser.baseUrl!!,
+                roomToken
+            ),
+            newRoomName
+        )
     }
 }

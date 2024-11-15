@@ -11,7 +11,6 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
@@ -24,22 +23,7 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
-    override fun renameConversation(roomToken: String, roomNameNew: String): Observable<GenericOverall> {
-        val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
-        return ncApi.renameRoom(
-            credentials,
-            ApiUtils.getUrlForRoom(
-                apiVersion,
-                currentUser.baseUrl!!,
-                roomToken
-            ),
-            roomNameNew
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(API_RETRIES)
-    }
 
     override fun createConversation(
         roomName: String,
@@ -76,6 +60,5 @@ class ConversationRepositoryImpl(private val ncApi: NcApi, currentUserProvider: 
     companion object {
         private const val ROOM_TYPE_PUBLIC = "3"
         private const val ROOM_TYPE_GROUP = "2"
-        const val API_RETRIES: Long = 3
     }
 }
