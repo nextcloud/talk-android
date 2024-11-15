@@ -127,13 +127,6 @@ public interface NcApi {
 
     @FormUrlEncoded
     @PUT
-    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization,
-                                          @Url String url,
-                                          @Field("roomName") String roomName);
-
-
-    @FormUrlEncoded
-    @PUT
     Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization,
                                                           @Url String url,
                                                           @Field("description") String description);

@@ -184,6 +184,7 @@ class RenameConversationDialogFragment : DialogFragment() {
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun handleSuccess() {
         eventBus.post(ConversationsListFetchDataEvent())
 
