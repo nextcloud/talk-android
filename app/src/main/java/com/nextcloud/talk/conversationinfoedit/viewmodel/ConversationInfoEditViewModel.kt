@@ -50,6 +50,10 @@ class ConversationInfoEditViewModel @Inject constructor(
     val renameRoomUiState:LiveData<RenameRoomUiState>
         get() = _renameRoomUiState
 
+    private val _setConversationDescriptionUiState = MutableLiveData<SetConversationDescriptionUiState>(SetConversationDescriptionUiState.None)
+    val setConversationDescriptionUiState:LiveData<SetConversationDescriptionUiState>
+        get() = _setConversationDescriptionUiState
+
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
         repository.getRoom(user, token)
@@ -83,6 +87,21 @@ class ConversationInfoEditViewModel @Inject constructor(
                 }
             }catch(exception:Exception){
                 _renameRoomUiState.value = RenameRoomUiState.Error(exception)
+            }
+        }
+    }
+
+    fun setConversationDescription(roomToken:String, conversationDescription:String?){
+        viewModelScope.launch{
+            try{
+                val setConversationDescriptionResult = conversationInfoEditRepository.setConversationDescription(roomToken, conversationDescription)
+                val statusCode: GenericMeta? = setConversationDescriptionResult.ocs?.meta
+                val result = statusCode?.statusCode == STATUS_CODE_OK
+                if(result){
+                    _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success(result)
+                }
+            }catch(exception:Exception){
+                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Error(exception)
             }
         }
     }
@@ -152,5 +171,11 @@ class ConversationInfoEditViewModel @Inject constructor(
         data object None: RenameRoomUiState()
         data class Success(val result:Boolean): RenameRoomUiState()
         data class Error(val exception:Exception): RenameRoomUiState()
+    }
+
+    sealed class SetConversationDescriptionUiState{
+        data object None: SetConversationDescriptionUiState()
+        data class Success(val result:Boolean):SetConversationDescriptionUiState()
+        data class Error(val exception:Exception):SetConversationDescriptionUiState()
     }
 }

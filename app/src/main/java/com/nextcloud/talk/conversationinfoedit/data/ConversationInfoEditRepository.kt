@@ -19,4 +19,6 @@ interface ConversationInfoEditRepository {
     fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel>
 
     suspend fun renameConversation(roomToken: String, roomNameNew: String): GenericOverall
+
+    suspend fun setConversationDescription(roomToken:String, conversationDescription:String?): GenericOverall
 }

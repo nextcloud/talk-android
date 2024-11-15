@@ -36,15 +36,10 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 import javax.inject.Inject
 
@@ -195,6 +190,27 @@ class ConversationInfoEditActivity : BaseActivity() {
             }
         }
 
+        conversationInfoEditViewModel.setConversationDescriptionUiState.observe(this){ uiState ->
+            when(uiState){
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.None ->{
+
+                }
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Success ->{
+                    finish()
+                }
+                is ConversationInfoEditViewModel.SetConversationDescriptionUiState.Error ->{
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.default_error_msg),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Error while saving conversation description", uiState.exception)
+
+                }
+            }
+
+        }
+
     }
 
     private fun setupAvatarOptions() {
@@ -267,43 +283,8 @@ class ConversationInfoEditActivity : BaseActivity() {
     }
 
     fun saveConversationDescription() {
-        val apiVersion =
-            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-
-        ncApi.setConversationDescription(
-            credentials,
-            ApiUtils.getUrlForConversationDescription(
-                apiVersion,
-                conversationUser.baseUrl!!,
-                conversation!!.token
-            ),
-            binding.conversationDescription.text.toString()
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    finish()
-                }
-
-                override fun onError(e: Throwable) {
-                    Snackbar.make(
-                        binding.root,
-                        context.getString(R.string.default_error_msg),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Error while saving conversation description", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+       val conversationDescription = binding.conversationDescription.text.toString()
+        conversationInfoEditViewModel.setConversationDescription(conversation!!.token, conversationDescription)
     }
 
     private fun handleResult(result: ActivityResult, onResult: (result: ActivityResult) -> Unit) {

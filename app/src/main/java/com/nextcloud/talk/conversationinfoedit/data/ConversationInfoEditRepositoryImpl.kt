@@ -71,4 +71,19 @@ class ConversationInfoEditRepositoryImpl(private val ncApi: NcApi,
             newRoomName
         )
     }
+
+    override suspend fun setConversationDescription(
+        roomToken: String,
+        conversationDescription: String?
+    ): GenericOverall {
+        return ncApiCoroutines.setConversationDescription(
+            credentials,
+            ApiUtils.getUrlForConversationDescription(
+                apiVersion,
+                currentUser.baseUrl!!,
+                roomToken
+            ),
+            conversationDescription
+        )
+    }
 }
