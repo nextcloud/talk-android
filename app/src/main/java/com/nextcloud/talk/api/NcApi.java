@@ -120,19 +120,6 @@ public interface NcApi {
 
     /*
         QueryMap items are as follows:
-            - "roomName" : "newName"
-
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
-     */
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization,
-                                                          @Url String url,
-                                                          @Field("description") String description);
-
-    /*
-        QueryMap items are as follows:
             - "newParticipant" : "user"
 
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants
