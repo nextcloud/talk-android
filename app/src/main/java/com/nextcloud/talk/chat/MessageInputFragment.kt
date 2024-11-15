@@ -248,7 +248,7 @@ class MessageInputFragment : Fragment() {
         if (isOnline) {
             chatActivity.messageInputViewModel.switchToMessageQueue(false)
             chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
-                chatActivity.currentConversation!!.internalId,
+                conversationInternalId,
                 chatActivity.conversationUser!!.getCredentials(),
                 ApiUtils.getUrlForChat(
                     chatActivity.chatApiVersion,
@@ -796,7 +796,7 @@ class MessageInputFragment : Fragment() {
 
     private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
-            chatActivity.currentConversation!!.internalId,
+            conversationInternalId,
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,
