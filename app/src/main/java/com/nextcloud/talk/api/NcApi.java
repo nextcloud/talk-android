@@ -394,12 +394,6 @@ public interface NcApi {
                                                     @Field("level") int level);
 
     @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setConversationReadOnly(@Header("Authorization") String authorization,
-                                                @Url String url,
-                                                @Field("state") int state);
-
-    @FormUrlEncoded
     @POST
     Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization,
                                                  @Url String url,
