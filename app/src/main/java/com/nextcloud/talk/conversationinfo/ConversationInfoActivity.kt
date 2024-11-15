@@ -746,7 +746,8 @@ class ConversationInfoActivity :
     }
 
     private fun clearHistory() {
-        viewModel.clearChatHistory(conversationToken)
+        val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+        viewModel.clearChatHistory(apiVersion,conversationToken)
     }
 
     private fun deleteConversation() {

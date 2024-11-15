@@ -27,5 +27,5 @@ interface ConversationsRepository {
 
     fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall>
 
-    suspend fun clearChatHistory(roomToken:String): GenericOverall
+    suspend fun clearChatHistory(apiVersion:Int,roomToken:String): GenericOverall
 }

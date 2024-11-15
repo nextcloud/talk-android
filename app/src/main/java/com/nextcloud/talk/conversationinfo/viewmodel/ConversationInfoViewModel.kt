@@ -285,10 +285,10 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
-    fun clearChatHistory(roomToken:String){
+    fun clearChatHistory(apiVersion:Int,roomToken:String){
         viewModelScope.launch{
             try{
-                val clearChatResult = conversationsRepository.clearChatHistory(roomToken)
+                val clearChatResult = conversationsRepository.clearChatHistory(apiVersion,roomToken)
                 val statusCode: GenericMeta? = clearChatResult.ocs?.meta
                 val result = statusCode?.statusCode == STATUS_CODE_OK
                 if (result) {
