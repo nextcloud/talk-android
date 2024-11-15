@@ -172,6 +172,29 @@ class ConversationInfoEditActivity : BaseActivity() {
                 else -> {}
             }
         }
+        conversationInfoEditViewModel.renameRoomUiState.observe(this){uiState ->
+            when(uiState){
+                is ConversationInfoEditViewModel.RenameRoomUiState.None ->{
+
+                }
+                is ConversationInfoEditViewModel.RenameRoomUiState.Success ->{
+                    if (CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)) {
+                        saveConversationDescription()
+                    } else {
+                        finish()
+                    }
+                }
+                is ConversationInfoEditViewModel.RenameRoomUiState.Error ->{
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.default_error_msg),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                    Log.e(TAG, "Error while saving conversation name", uiState.exception)
+                }
+            }
+        }
+
     }
 
     private fun setupAvatarOptions() {
@@ -236,47 +259,11 @@ class ConversationInfoEditActivity : BaseActivity() {
     }
 
     private fun saveConversationNameAndDescription() {
-        val apiVersion =
-            ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-
-        ncApi.renameRoom(
-            credentials,
-            ApiUtils.getUrlForRoom(
-                apiVersion,
-                conversationUser.baseUrl!!,
-                conversation!!.token
-            ),
-            binding.conversationName.text.toString()
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    if (CapabilitiesUtil.isConversationDescriptionEndpointAvailable(spreedCapabilities)) {
-                        saveConversationDescription()
-                    } else {
-                        finish()
-                    }
-                }
-
-                override fun onError(e: Throwable) {
-                    Snackbar.make(
-                        binding.root,
-                        context.getString(R.string.default_error_msg),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    Log.e(TAG, "Error while saving conversation name", e)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+        val newRoomName = binding.conversationName.text.toString()
+         conversationInfoEditViewModel.renameRoom(
+             conversation!!.token,
+             newRoomName
+         )
     }
 
     fun saveConversationDescription() {
