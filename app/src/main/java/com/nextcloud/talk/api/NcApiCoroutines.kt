@@ -120,6 +120,12 @@ interface NcApiCoroutines {
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @POST
+    suspend fun addConversationToFavorites(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
+
+    @POST
     suspend fun setReadStatusPrivacy(
         @Header("Authorization") authorization: String,
         @Url url: String,
