@@ -18,9 +18,11 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
+import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -109,6 +111,10 @@ class ConversationInfoViewModel @Inject constructor(
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
         get() = _getCapabilitiesViewState
+
+    private val _clearChatHistoryViewState:MutableLiveData<ClearChatHistoryViewState> = MutableLiveData(ClearChatHistoryViewState.None)
+    val clearChatHistoryViewState:LiveData<ClearChatHistoryViewState>
+        get() = _clearChatHistoryViewState
 
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
@@ -279,6 +285,21 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
+    fun clearChatHistory(roomToken:String){
+        viewModelScope.launch{
+            try{
+                val clearChatResult = conversationsRepository.clearChatHistory(roomToken)
+                val statusCode: GenericMeta? = clearChatResult.ocs?.meta
+                val result = statusCode?.statusCode == STATUS_CODE_OK
+                if (result) {
+                    _clearChatHistoryViewState.value = ClearChatHistoryViewState.Success
+                }
+            }catch(exception:Exception){
+                _clearChatHistoryViewState.value = ClearChatHistoryViewState.Error(exception)
+            }
+        }
+    }
+
     inner class GetRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
             // unused atm
@@ -300,6 +321,12 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.simpleName
+    }
+
+    sealed class ClearChatHistoryViewState{
+        data object None: ClearChatHistoryViewState()
+        data object Success:ClearChatHistoryViewState()
+        data class Error(val exception:Exception):ClearChatHistoryViewState()
     }
 
     sealed class AllowGuestsUIState {

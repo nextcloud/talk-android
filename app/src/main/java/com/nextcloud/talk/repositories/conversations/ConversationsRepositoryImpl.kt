@@ -91,6 +91,13 @@ class ConversationsRepositoryImpl(
         return result
     }
 
+    override suspend fun clearChatHistory(roomToken:String): GenericOverall {
+        return coroutineApi.clearChatHistory(
+            credentials,
+            ApiUtils.getUrlForChat(apiVersion(), user.baseUrl!!, roomToken)
+        )
+    }
+
     private fun apiVersion(): Int {
         return ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4))
     }

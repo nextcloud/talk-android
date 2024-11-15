@@ -140,4 +140,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("password") password: String
     ): GenericOverall
+
+    @DELETE
+    suspend fun clearChatHistory(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
 }
