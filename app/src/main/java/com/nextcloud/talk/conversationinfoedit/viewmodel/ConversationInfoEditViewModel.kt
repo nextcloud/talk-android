@@ -15,8 +15,6 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -77,33 +75,26 @@ class ConversationInfoEditViewModel @Inject constructor(
             ?.subscribe(DeleteConversationAvatarObserver())
     }
 
-    fun renameRoom(roomToken: String, newRoomName: String)  {
+    fun renameRoom(roomToken: String, newRoomName: String) {
         viewModelScope.launch {
             try {
-                val renameRoomResult = conversationInfoEditRepository.renameConversation(roomToken, newRoomName)
-                val statusCode: GenericMeta? = renameRoomResult.ocs?.meta
-                val result = statusCode?.statusCode == STATUS_CODE_OK
-                if (result) {
-                    _renameRoomUiState.value = RenameRoomUiState.Success(result)
-                }
+                conversationInfoEditRepository.renameConversation(roomToken, newRoomName)
+                _renameRoomUiState.value = RenameRoomUiState.Success
             } catch (exception: Exception) {
                 _renameRoomUiState.value = RenameRoomUiState.Error(exception)
             }
         }
     }
 
-    fun setConversationDescription(roomToken: String, conversationDescription: String?)  {
+    fun setConversationDescription(roomToken: String, conversationDescription: String?) {
         viewModelScope.launch {
             try {
-                val setConversationDescriptionResult = conversationInfoEditRepository.setConversationDescription(
+                conversationInfoEditRepository.setConversationDescription(
                     roomToken,
                     conversationDescription
                 )
-                val statusCode: GenericMeta? = setConversationDescriptionResult.ocs?.meta
-                val result = statusCode?.statusCode == STATUS_CODE_OK
-                if (result) {
-                    _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success(result)
-                }
+
+                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success
             } catch (exception: Exception) {
                 _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Error(exception)
             }
@@ -173,13 +164,13 @@ class ConversationInfoEditViewModel @Inject constructor(
 
     sealed class RenameRoomUiState {
         data object None : RenameRoomUiState()
-        data class Success(val result: Boolean) : RenameRoomUiState()
+        data object Success : RenameRoomUiState()
         data class Error(val exception: Exception) : RenameRoomUiState()
     }
 
     sealed class SetConversationDescriptionUiState {
         data object None : SetConversationDescriptionUiState()
-        data class Success(val result: Boolean) : SetConversationDescriptionUiState()
+        data object Success : SetConversationDescriptionUiState()
         data class Error(val exception: Exception) : SetConversationDescriptionUiState()
     }
 }

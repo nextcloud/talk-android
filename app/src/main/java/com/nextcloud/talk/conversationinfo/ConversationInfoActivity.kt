@@ -266,7 +266,6 @@ class ConversationInfoActivity :
                     Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
                 }
                 is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
-
                 }
             }
         }
@@ -919,7 +918,7 @@ class ConversationInfoActivity :
     }
 
     private fun makeConversationReadOnly(roomToken: String, state: Int) {
-        viewModel.setConversationReadOnly( roomToken, state)
+        viewModel.setConversationReadOnly(roomToken, state)
     }
 
     private fun initRecordingConsentOption() {

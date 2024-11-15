@@ -269,7 +269,7 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
-    fun clearChatHistory(apiVersion: Int, roomToken: String)  {
+    fun clearChatHistory(apiVersion: Int, roomToken: String) {
         viewModelScope.launch {
             try {
                 conversationsRepository.clearChatHistory(apiVersion, roomToken)
