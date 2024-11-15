@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Telèfon</string>
     <string name="audio_output_speaker">Altaveu</string>
     <string name="audio_output_wired_headset">Auriculars per cable</string>
+    <string name="automatic_status_set">S\'ha indicat l\'estat automàticament</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent</string>
     <string name="back_button">Botó Enrere</string>
@@ -69,6 +70,7 @@
     <string name="leave_call">Abandona la trucada</string>
     <string name="left_conversation">Heu abandonat la conversa %1$s</string>
     <string name="load_more_results">Carregar més resultats</string>
+    <string name="lock_conversation">Bloqueja la conversa</string>
     <string name="lock_symbol">Símbol de bloqueig</string>
     <string name="lower_hand">Baixa mà</string>
     <string name="marked_as_read">S\'ha marcat com a llegida la conversa %1$s</string>
@@ -533,6 +535,7 @@
     <string name="polls_settings">Paràmetres</string>
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">S\'ha enviat el vot</string>
+    <string name="previously_set">Definits anteriorment</string>
     <string name="raise_hand">Aixeca la mà</string>
     <string name="reactions_tab_all">Totes</string>
     <string name="read_storage_no_permission">No es poden compartir fitxers des de l\'emmagatzematge sense permisos</string>
@@ -552,6 +555,7 @@
     <string name="recording_settings_title">Enregistrament</string>
     <string name="removed_from_favorites">S\'ha suprimit la conversa %1$s dels preferits</string>
     <string name="renamed_conversation">S\'ha canviat el nom de la conversa %1$s</string>
+    <string name="reset_status">Reinicialitza l\'estat</string>
     <string name="restrict_join_other_room_while_call">No és possible unir-se a altres sales mentre s\'està en una trucada</string>
     <string name="save">Desa</string>
     <string name="scope_federated_description">Sincronitza només amb servidors de confiança</string>

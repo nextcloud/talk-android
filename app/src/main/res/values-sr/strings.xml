@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Телефон</string>
     <string name="audio_output_speaker">Звучник</string>
     <string name="audio_output_wired_headset">Жичане слушалице са микрофоном</string>
+    <string name="automatic_status_set">Ваш статус је аутоматски постављен</string>
     <string name="avatar">Аватар</string>
     <string name="away">Одсутан</string>
     <string name="back_button">Дугме назад</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">Напусти разговор</string>
     <string name="left_conversation">Напустили сте разговор %1$s</string>
     <string name="load_more_results">Учитај још резултата</string>
+    <string name="lock_conversation">Закључај разговор</string>
     <string name="lock_symbol">Симбол катанца</string>
     <string name="lower_hand">Спуштена рука</string>
     <string name="marked_as_read">Разговор %1$s је означен као прочитан</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">Поставке</string>
     <string name="polls_submit_vote">Глас</string>
     <string name="polls_voted_hidden_success">Глас је предат</string>
+    <string name="previously_set">Претходно постављено</string>
     <string name="raise_hand">Подигни руку</string>
     <string name="reactions_tab_all">Све</string>
     <string name="read_storage_no_permission">Дељење фајлова из складишта није могуће без дозвола</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">Снимање</string>
     <string name="removed_from_favorites">Разговор %1$s је уклоњен из омиљених</string>
     <string name="renamed_conversation">Промењен је наслов разговора %1$s</string>
+    <string name="reset_status">Ресетуј статус</string>
     <string name="restrict_join_other_room_while_call">Док сте у позиву не можете да приступите осталим собама</string>
     <string name="save">Сачувај</string>
     <string name="scope_federated_description">Само синхронизује са серверима од поверења</string>

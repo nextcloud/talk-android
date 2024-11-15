@@ -8,6 +8,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Zvočnik</string>
     <string name="audio_output_wired_headset">Ožičene slušalke</string>
+    <string name="automatic_status_set">Stanje je določeno samodejno</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
     <string name="calendar">Koledar</string>
@@ -41,6 +42,7 @@
     <string name="invisible">Drugim nevidno</string>
     <string name="leave_call">Zapusti klic</string>
     <string name="load_more_results">Naloži več zadetkov</string>
+    <string name="lock_conversation">Zakleni pogovor</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="lower_hand">Spusti roko</string>
     <string name="menu_item_sort_by_date_newest_first">najprej najnovejše</string>
@@ -435,6 +437,7 @@
     <string name="polls_settings">Nastavitve</string>
     <string name="polls_submit_vote">Glas</string>
     <string name="polls_voted_hidden_success">Oddan glas</string>
+    <string name="previously_set">Predhodno nastavljeno</string>
     <string name="raise_hand">Dvigni roko</string>
     <string name="reactions_tab_all">Vse</string>
     <string name="read_storage_no_permission">Skupna raba datotek iz pomnilnika ni mogoča brez dovoljenj</string>
@@ -448,6 +451,7 @@
     <string name="recording_consent_for_conversation_title">Strinjanje s snemanjem</string>
     <string name="recording_consent_title">Klic se morda snema.</string>
     <string name="recording_settings_title">Snemanje</string>
+    <string name="reset_status">Ponastavi stanje</string>
     <string name="save">Shrani</string>
     <string name="scope_federated_description">Usklajuj le z zaupanja vrednimi strežniki</string>
     <string name="scope_federated_title">Zvezno</string>

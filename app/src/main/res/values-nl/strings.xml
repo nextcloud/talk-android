@@ -38,6 +38,7 @@
     <string name="invisible">Onzichtbaar</string>
     <string name="leave_call">Verlaat oproep</string>
     <string name="load_more_results">Laad meer resultaten</string>
+    <string name="lock_conversation">Gesprek vergrendelen</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="lower_hand">Hand omlaag</string>
     <string name="menu_item_sort_by_date_newest_first">Nieuwste eerst</string>

@@ -11,6 +11,7 @@
     <string name="audio_output_phone">شماره تلفن</string>
     <string name="audio_output_speaker">بلندگو</string>
     <string name="audio_output_wired_headset">گوشکی سیمی</string>
+    <string name="automatic_status_set">Your status was set automatically</string>
     <string name="avatar">آواتار</string>
     <string name="away">دور</string>
     <string name="back_button">دکمهٔ بازگشت</string>
@@ -42,6 +43,7 @@
     <string name="later_today">تا آخر وقت همین امروز</string>
     <string name="leave_call">Leave call</string>
     <string name="load_more_results">بار کردن نتیحه‌های بیش‌تر</string>
+    <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">نماد قفل</string>
     <string name="mentioned">Mentioned</string>
     <string name="menu_item_sort_by_date_newest_first">تازه‌ترین‌ها اول </string>
@@ -360,9 +362,11 @@
     <string name="polls_settings">تنظیمات</string>
     <string name="polls_submit_vote">رای</string>
     <string name="polls_voted_hidden_success">رای فرستاده شد</string>
+    <string name="previously_set">Previously set</string>
     <string name="raise_hand">بالا بردن دست</string>
     <string name="reactions_tab_all">همه</string>
     <string name="recording_settings_title">ضبط جلسه</string>
+    <string name="reset_status">Reset status</string>
     <string name="save">ذخیره</string>
     <string name="scope_federated_description">فقط با سرورهای قابل اعتماد همگام سازی شود</string>
     <string name="scope_federated_title">فدرال</string>

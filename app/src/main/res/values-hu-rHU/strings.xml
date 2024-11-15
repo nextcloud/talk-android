@@ -10,6 +10,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Hangszóró</string>
     <string name="audio_output_wired_headset">Vezetékes fejhallgató</string>
+    <string name="automatic_status_set">Az állapota automatikusan lett beállítva</string>
     <string name="avatar">Profilkép</string>
     <string name="away">Távol</string>
     <string name="calendar">Naptár</string>
@@ -47,6 +48,7 @@
     <string name="leave_call">Hívás elhagyása</string>
     <string name="left_conversation">Elhagyta a következő beszélgetést: %1$s</string>
     <string name="load_more_results">További találatok betöltése</string>
+    <string name="lock_conversation">Beszélgetés zárolása</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
     <string name="marked_as_read">%1$s beszélgetés olvasottként jelölése</string>
@@ -459,6 +461,7 @@
     <string name="polls_settings">Beállítások</string>
     <string name="polls_submit_vote">Szavazat leadása</string>
     <string name="polls_voted_hidden_success">Szavazat leadva</string>
+    <string name="previously_set">Előzőleg beállított</string>
     <string name="raise_hand">Kéz felemelése</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
@@ -475,6 +478,7 @@
     <string name="recording_settings_title">Felvétel</string>
     <string name="removed_from_favorites">A(z) %1$s beszélgetés eltávolítva a kedvencek közül</string>
     <string name="renamed_conversation">%1$s beszélgetés át lett nevezve</string>
+    <string name="reset_status">Állapot visszaállítása</string>
     <string name="restrict_join_other_room_while_call">Hívás közben nem lehet más szobákhoz csatlakozni</string>
     <string name="save">Mentés</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>

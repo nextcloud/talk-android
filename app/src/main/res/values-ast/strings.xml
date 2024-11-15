@@ -11,6 +11,7 @@
     <string name="audio_output_phone">Teléfonu</string>
     <string name="audio_output_speaker">Altavoz</string>
     <string name="audio_output_wired_headset">Cascos con cable</string>
+    <string name="automatic_status_set">L\'estáu afitóse automáticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
     <string name="calendar">Calendariu</string>
@@ -46,6 +47,7 @@
     <string name="leave_call">Colar de la llamada</string>
     <string name="left_conversation">Colesti de la conversación «%1$s»</string>
     <string name="load_more_results">Cargar más resultaos</string>
+    <string name="lock_conversation">Bloquiar la conversación</string>
     <string name="lower_hand">Baxar la mano</string>
     <string name="menu_item_sort_by_date_newest_first">Primero lo nuevo</string>
     <string name="menu_item_sort_by_date_oldest_first">Primero lo antiguo</string>
@@ -286,6 +288,7 @@
     <string name="polls_question">Entruga</string>
     <string name="polls_results_subtitle">Resultaos</string>
     <string name="polls_settings">Configuración</string>
+    <string name="previously_set">Afitóse con anterioridá</string>
     <string name="raise_hand">Alzar la mano</string>
     <string name="reactions_tab_all">Too</string>
     <string name="record_start_description">Aniciar la grabación</string>
@@ -293,6 +296,7 @@
     <string name="record_stop_description">Parar la grabación</string>
     <string name="record_stopping">Dexando de grabar…</string>
     <string name="renamed_conversation">Renomóse la conversación «%1$s»</string>
+    <string name="reset_status">Reafitar l\'estáu</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Namás sincronizar con sirvidores d\'enfotu</string>
     <string name="scope_federated_title">Federada</string>

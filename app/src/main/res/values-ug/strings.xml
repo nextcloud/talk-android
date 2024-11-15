@@ -13,6 +13,7 @@
     <string name="audio_output_phone">تېلېفون</string>
     <string name="audio_output_speaker">سۆزلىگۈچى</string>
     <string name="audio_output_wired_headset">سىملىق تىڭشىغۇچ</string>
+    <string name="automatic_status_set">ھالىتىڭىز ئاپتوماتىك تەڭشەلدى</string>
     <string name="avatar">Avatar</string>
     <string name="away">يىراق</string>
     <string name="back_button">قايتىش كۇنۇپكىسى</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">تېلېفون قىلىڭ</string>
     <string name="left_conversation">سۆھبەتتىن% 1 $ s ئايرىلدىڭىز</string>
     <string name="load_more_results">تېخىمۇ كۆپ نەتىجىلەرنى يۈكلەڭ</string>
+    <string name="lock_conversation">سۆھبەتنى قۇلۇپلاڭ</string>
     <string name="lock_symbol">قۇلۇپ بەلگىسى</string>
     <string name="lower_hand">تۆۋەن قول</string>
     <string name="marked_as_read">بەلگە قىلىنغان سۆھبەت% 1 $ s دەپ يېزىلغان</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">تەڭشەك</string>
     <string name="polls_submit_vote">بېلەت تاشلاش</string>
     <string name="polls_voted_hidden_success">بېلەت تاشلاندى</string>
+    <string name="previously_set">ئىلگىرى تەڭشەلگەن</string>
     <string name="raise_hand">قولىنى كۆتۈرۈڭ</string>
     <string name="reactions_tab_all">ھەممىسى</string>
     <string name="read_storage_no_permission">ھۆججەتلەرنى ساقلاشتىن ئورتاقلىشىش رۇخسەتسىز مۇمكىن ئەمەس</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">خاتىرىلەش</string>
     <string name="removed_from_favorites">ياقتۇرىدىغان سۆزلەردىن% 1 $ s ئۆچۈرۈلدى</string>
     <string name="renamed_conversation">سۆھبەت% 1 $ s غا ئۆزگەرتىلدى</string>
+    <string name="reset_status">ھالىتىنى ئەسلىگە كەلتۈرۈش</string>
     <string name="restrict_join_other_room_while_call">تېلېفون قىلغاندا باشقا ياتاقلارغا قوشۇلۇش مۇمكىن ئەمەس</string>
     <string name="save">ساقلاش</string>
     <string name="scope_federated_description">پەقەت ئىشەنچلىك مۇلازىمېتىرلارغا ماسقەدەملەڭ</string>

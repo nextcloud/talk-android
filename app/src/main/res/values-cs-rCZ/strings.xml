@@ -11,6 +11,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Reproduktor</string>
     <string name="audio_output_wired_headset">Drátová náhlavní souprava</string>
+    <string name="automatic_status_set">Váš stav byl nastaven automaticky</string>
     <string name="avatar">Profilový obrázek</string>
     <string name="away">Pryč</string>
     <string name="back_button">Tlačítko zpět</string>
@@ -67,6 +68,7 @@
     <string name="leave_call">Opustit hovor</string>
     <string name="left_conversation">Opustili jste konverzaci %1$s</string>
     <string name="load_more_results">Načíst další výsledky</string>
+    <string name="lock_conversation">Uzamknout konverzaci</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
     <string name="marked_as_read">Konverzace %1$s označena jako přečtená</string>
@@ -538,6 +540,7 @@
     <string name="polls_settings">Nastavení</string>
     <string name="polls_submit_vote">Hlasovat</string>
     <string name="polls_voted_hidden_success">Hlas odeslán</string>
+    <string name="previously_set">Dříve nastavené</string>
     <string name="raise_hand">Hlásit se</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
@@ -557,6 +560,7 @@
     <string name="recording_settings_title">Zaznamenávání</string>
     <string name="removed_from_favorites">Konverzace %1$s odebrána z oblíbených</string>
     <string name="renamed_conversation">Konverzace %1$s byla přejmenována</string>
+    <string name="reset_status">Resetovat stav</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>
     <string name="save">Uložit</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
