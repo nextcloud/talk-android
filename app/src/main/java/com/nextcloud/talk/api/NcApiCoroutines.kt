@@ -125,6 +125,12 @@ interface NcApiCoroutines {
         @Url url: String
     ): GenericOverall
 
+    @DELETE
+    suspend fun removeConversationFromFavorites(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
+
     @POST
     suspend fun setReadStatusPrivacy(
         @Header("Authorization") authorization: String,
