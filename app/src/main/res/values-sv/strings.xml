@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Högtalare</string>
     <string name="audio_output_wired_headset">Sladdansluten hörlur</string>
+    <string name="automatic_status_set">Din status ställdes in automatiskt</string>
     <string name="avatar">Avatar</string>
     <string name="away">Borta</string>
     <string name="back_button">Tillbakaknapp</string>
@@ -68,6 +69,7 @@
     <string name="leave_call">Lämna samtalet</string>
     <string name="left_conversation">Du lämnade konversationen %1$s</string>
     <string name="load_more_results">Visa fler resultat</string>
+    <string name="lock_conversation">Lås konversation</string>
     <string name="lock_symbol">Låssymbol</string>
     <string name="lower_hand">Ta ner handen</string>
     <string name="marked_as_read">Markerade konversationen %1$s som läst</string>
@@ -539,6 +541,7 @@
     <string name="polls_settings">Inställningar</string>
     <string name="polls_submit_vote">Rösta</string>
     <string name="polls_voted_hidden_success">Röst inlämnad</string>
+    <string name="previously_set">Tidigare inställd</string>
     <string name="raise_hand">Räck upp handen</string>
     <string name="reactions_tab_all">Alla</string>
     <string name="read_storage_no_permission">Att dela filer från lagring är inte möjligt utan behörighet</string>
@@ -558,6 +561,7 @@
     <string name="recording_settings_title">Inspelning</string>
     <string name="removed_from_favorites">Tog bort konversationen %1$s från favoriter</string>
     <string name="renamed_conversation">Konversationen %1$s har bytt namn</string>
+    <string name="reset_status">Återställ status</string>
     <string name="restrict_join_other_room_while_call">Det är inte möjligt att gå med i andra rum under ett samtal</string>
     <string name="save">Spara</string>
     <string name="scope_federated_description">Synkronisera endast med betrodda servrar</string>

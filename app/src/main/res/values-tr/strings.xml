@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Hoparlör</string>
     <string name="audio_output_wired_headset">Kablolu kulaklık</string>
+    <string name="automatic_status_set">Durumunuz otomatik olarak ayarlanmış</string>
     <string name="avatar">Avatar</string>
     <string name="away">Uzakta</string>
     <string name="back_button">Geri düğmesi</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">Çağrıdan ayrıl</string>
     <string name="left_conversation">%1$s görüşmesinden ayrıldınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
+    <string name="lock_conversation">Görüşmeyi kilitle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="lower_hand">Eli indir</string>
     <string name="marked_as_read">%1$s görüşmesi okunmuş olarak işaretlendi</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">Ayarlar</string>
     <string name="polls_submit_vote">Oy</string>
     <string name="polls_voted_hidden_success">Oy verildi</string>
+    <string name="previously_set">Önceden ayarlanmış</string>
     <string name="raise_hand">El kaldır</string>
     <string name="reactions_tab_all">Tümü</string>
     <string name="read_storage_no_permission">İzin verilmeden depolamadaki dosyalar paylaşılamaz</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">Kaydediliyor</string>
     <string name="removed_from_favorites">%1$s görüşmesi sık kullanılanlardan kaldırıldı</string>
     <string name="renamed_conversation">%1$s görüşmesi yeniden adlandırıldı</string>
+    <string name="reset_status">Durumu sıfırla</string>
     <string name="restrict_join_other_room_while_call">Bir çağrı sürerken diğer odalara katılamazsınız</string>
     <string name="save">Kaydet</string>
     <string name="scope_federated_description">Yalnızca güvenilen sunucular ile eşitlensin</string>

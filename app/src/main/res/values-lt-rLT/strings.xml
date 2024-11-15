@@ -7,6 +7,7 @@
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Garso išvestis</string>
     <string name="audio_output_phone">Telefonas</string>
+    <string name="automatic_status_set">Jūsų būsena buvo nustatyta automatiškai</string>
     <string name="avatar">Avataras</string>
     <string name="away">Atsitraukęs</string>
     <string name="calendar">Kalendorius</string>
@@ -33,6 +34,7 @@
     <string name="later_today">Šiandien vėliau</string>
     <string name="leave_call">Išeiti iš skambučio</string>
     <string name="load_more_results">Įkelti daugiau rezultatų</string>
+    <string name="lock_conversation">Užrakinti pokalbį</string>
     <string name="lower_hand">Nuleisti ranką</string>
     <string name="menu_item_sort_by_date_newest_first">Naujausi pirma</string>
     <string name="menu_item_sort_by_date_oldest_first">Seniausi pirma</string>

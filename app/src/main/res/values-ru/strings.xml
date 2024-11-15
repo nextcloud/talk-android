@@ -10,6 +10,7 @@
     <string name="audio_output_phone">Телефон</string>
     <string name="audio_output_speaker">Динамик</string>
     <string name="audio_output_wired_headset">Проводная гарнитура</string>
+    <string name="automatic_status_set">Ваш статус был установлен автоматически</string>
     <string name="avatar">Аватар</string>
     <string name="away">Отошёл</string>
     <string name="calendar">Календарь</string>
@@ -55,6 +56,7 @@
     <string name="leave_call">Покинуть вызов</string>
     <string name="left_conversation">Вы покинули чат %1$s </string>
     <string name="load_more_results">Показать больше результатов</string>
+    <string name="lock_conversation">Заблокировать обсуждение</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="lower_hand">Опустить руку</string>
     <string name="marked_as_read">Отметить чат %1$s как прочитанный</string>
@@ -499,6 +501,7 @@
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Голосовать</string>
     <string name="polls_voted_hidden_success">Голос отправлен</string>
+    <string name="previously_set">Установлено ранее</string>
     <string name="raise_hand">Поднять руку</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
@@ -515,6 +518,7 @@
     <string name="recording_consent_for_conversation_title">Согласие на запись вызова</string>
     <string name="recording_consent_title">Звонок может быть записан.</string>
     <string name="recording_settings_title">Запись</string>
+    <string name="reset_status">Сбросить статус</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>

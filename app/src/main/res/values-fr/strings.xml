@@ -12,6 +12,7 @@
     <string name="audio_output_phone">Téléphone</string>
     <string name="audio_output_speaker">Haut-parleur</string>
     <string name="audio_output_wired_headset">Écouteurs filaires</string>
+    <string name="automatic_status_set">Votre état a été automatiquement défini</string>
     <string name="avatar">Avatar</string>
     <string name="away">Absent(e)</string>
     <string name="back_button">Bouton précédent</string>
@@ -69,6 +70,7 @@
     <string name="leave_call">Quitter l\'appel</string>
     <string name="left_conversation">Vous avez quitté la conversation %1$s</string>
     <string name="load_more_results">Charger plus de résultats</string>
+    <string name="lock_conversation">Verrouiller la conversation</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
     <string name="marked_as_read">La conversation %1$s a été marquée comme lue</string>
@@ -543,6 +545,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="polls_settings">Paramètres</string>
     <string name="polls_submit_vote">Vote</string>
     <string name="polls_voted_hidden_success">Vote soumis</string>
+    <string name="previously_set">Précédemment défini</string>
     <string name="raise_hand">Lever la main</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
@@ -562,6 +565,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="recording_settings_title">Enregistrement</string>
     <string name="removed_from_favorites">La conversation %1$s a été supprimée des favorites</string>
     <string name="renamed_conversation">La conversation %1$s a été renommée</string>
+    <string name="reset_status">Réinitialiser l\'état</string>
     <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre une autre salle pendant un appel</string>
     <string name="save">Sauvegarder</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>

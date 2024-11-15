@@ -10,6 +10,7 @@
     <string name="audio_output_phone">电话</string>
     <string name="audio_output_speaker">扬声器</string>
     <string name="audio_output_wired_headset">有线耳机</string>
+    <string name="automatic_status_set">您的状态已自动设定</string>
     <string name="avatar">头像</string>
     <string name="away">离开</string>
     <string name="calendar">日历</string>
@@ -47,6 +48,7 @@
     <string name="leave_call">离开通话</string>
     <string name="left_conversation">你已离开对话%1$s</string>
     <string name="load_more_results">加载更多结果</string>
+    <string name="lock_conversation">锁定对话</string>
     <string name="lock_symbol">锁定头像</string>
     <string name="lower_hand">放下手 </string>
     <string name="marked_as_read">已将对话%1$s标记为已读</string>
@@ -463,6 +465,7 @@
     <string name="polls_settings">设置</string>
     <string name="polls_submit_vote">投票</string>
     <string name="polls_voted_hidden_success">投票已提交</string>
+    <string name="previously_set">先前设定</string>
     <string name="raise_hand">举起手 </string>
     <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能分享来自存储的文件</string>
@@ -482,6 +485,7 @@
     <string name="recording_settings_title">录音</string>
     <string name="removed_from_favorites">对话%1$s已从收藏中移除</string>
     <string name="renamed_conversation">对话%1$s已重命名</string>
+    <string name="reset_status">重置状态</string>
     <string name="restrict_join_other_room_while_call">在通话时无法加入其他房间</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>

@@ -11,6 +11,7 @@
     <string name="audio_output_phone">Telefon</string>
     <string name="audio_output_speaker">Høytaler</string>
     <string name="audio_output_wired_headset">Kablede hodetelefoner</string>
+    <string name="automatic_status_set">Statusen din ble satt</string>
     <string name="avatar">Avatar</string>
     <string name="away">Borte</string>
     <string name="back_button">Tilbake-knapp</string>
@@ -66,6 +67,7 @@
     <string name="leave_call">Forlat samtalen</string>
     <string name="left_conversation">Du forlot samtalen %1$s</string>
     <string name="load_more_results">Hent flere resultat</string>
+    <string name="lock_conversation">Lås samtalen</string>
     <string name="lock_symbol">Lås symbol</string>
     <string name="lower_hand">Senk hånden</string>
     <string name="marked_as_read">Merket samtale %1$s som lest</string>
@@ -534,6 +536,7 @@
     <string name="polls_settings">Innstillinger</string>
     <string name="polls_submit_vote">Stemme</string>
     <string name="polls_voted_hidden_success">Stemme sendt inn</string>
+    <string name="previously_set">Tidligere angitt</string>
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Deling av filer fra lagring er ikke mulig uten tillatelser</string>
@@ -553,6 +556,7 @@
     <string name="recording_settings_title">Innspilling</string>
     <string name="removed_from_favorites">Fjernet samtalen%1$s fra favoritter</string>
     <string name="renamed_conversation">Samtalen %1$s ble omdøpt</string>
+    <string name="reset_status">Tilbakestill status</string>
     <string name="restrict_join_other_room_while_call">Det er ikke mulig å bli med i andre rom mens du er i en samtale</string>
     <string name="save">Lagre</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>

@@ -10,6 +10,7 @@
     <string name="audio_output_phone">Telefonoa</string>
     <string name="audio_output_speaker">Bozgorailua</string>
     <string name="audio_output_wired_headset">Kabledun entzungailua</string>
+    <string name="automatic_status_set">Zure egoera automatikoki ezarriko dira</string>
     <string name="avatar">Avatarra</string>
     <string name="away">Kanpoan</string>
     <string name="ban">Debekatu</string>
@@ -53,6 +54,7 @@
     <string name="leave_call">Utzi deia</string>
     <string name="left_conversation"> %1$s elkarrizketa utzi duzu</string>
     <string name="load_more_results">Kargatu emaitza gehiago </string>
+    <string name="lock_conversation">Blokeatu elkarrizketa</string>
     <string name="lock_symbol">Blokeo sinboloa</string>
     <string name="lower_hand">Jaitsi eskua</string>
     <string name="marked_as_read">Markatu %1$s elkarrizketa irakurrita gisa</string>
@@ -477,6 +479,7 @@
     <string name="polls_settings">Ezarpenak</string>
     <string name="polls_submit_vote">Bozkatu</string>
     <string name="polls_voted_hidden_success">Botoa eman da</string>
+    <string name="previously_set">Lehendik ezarrita</string>
     <string name="raise_hand">Jaso eskua</string>
     <string name="reactions_tab_all">Denak</string>
     <string name="read_storage_no_permission">Ezin dira fitxategiak biltegitik partekatu baimenik gabe</string>
@@ -496,6 +499,7 @@
     <string name="recording_settings_title">Grabatzea</string>
     <string name="removed_from_favorites">%1$s elkarrizketa gogokoetatik kendu da</string>
     <string name="renamed_conversation"> %1$s elkarrizketa kendu da</string>
+    <string name="reset_status">Berrezarri egoera</string>
     <string name="restrict_join_other_room_while_call">Ezin da beste geletan sartu dei batean ari zaren bitartean</string>
     <string name="save">Gorde</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>

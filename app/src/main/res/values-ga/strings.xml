@@ -13,6 +13,7 @@
     <string name="audio_output_phone">Fón</string>
     <string name="audio_output_speaker">Cainteoir</string>
     <string name="audio_output_wired_headset">Cluasán sreangaithe</string>
+    <string name="automatic_status_set">Socraíodh do stádas go huathoibríoch</string>
     <string name="avatar">Avatar</string>
     <string name="away">Amach</string>
     <string name="back_button">Cnaipe ar ais</string>
@@ -70,6 +71,7 @@
     <string name="leave_call">Fág glaoch</string>
     <string name="left_conversation">D\'fhág tú an comhrá %1$s</string>
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
+    <string name="lock_conversation">Cuir glas ar an gcomhrá</string>
     <string name="lock_symbol">Siombail ghlais</string>
     <string name="lower_hand">Lámh íochtair</string>
     <string name="marked_as_read">Marcáladh comhrá %1$s mar léite</string>
@@ -543,6 +545,7 @@
     <string name="polls_settings">Socruithe</string>
     <string name="polls_submit_vote">Vóta</string>
     <string name="polls_voted_hidden_success">Vóta curtha isteach</string>
+    <string name="previously_set">Socraíodh roimhe seo</string>
     <string name="raise_hand">Ardaigh lámh</string>
     <string name="reactions_tab_all">Gach</string>
     <string name="read_storage_no_permission">Ní féidir comhaid a roinnt ón stóras gan ceadanna</string>
@@ -562,6 +565,7 @@
     <string name="recording_settings_title">Taifeadadh</string>
     <string name="removed_from_favorites">Baineadh comhrá %1$s de cheanáin</string>
     <string name="renamed_conversation">Athainmníodh comhrá %1$s</string>
+    <string name="reset_status">Stádas a athshocrú</string>
     <string name="restrict_join_other_room_while_call">Ní féidir dul isteach i seomraí eile agus tú ar ghlao</string>
     <string name="save">Sábháil</string>
     <string name="scope_federated_description">Sioncrónaigh le freastalaithe iontaofa amháin</string>

@@ -11,6 +11,7 @@
     <string name="audio_output_phone">携帯</string>
     <string name="audio_output_speaker">スピーカー</string>
     <string name="audio_output_wired_headset">有線ヘッドセット</string>
+    <string name="automatic_status_set">あなたのステータスは自動的に設定されました</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
     <string name="calendar">カレンダー</string>
@@ -56,6 +57,7 @@
     <string name="leave_call">通話終了</string>
     <string name="left_conversation">あなたは会話%1$sから離れました</string>
     <string name="load_more_results">結果をさらに読み込む</string>
+    <string name="lock_conversation">会話をロック</string>
     <string name="lock_symbol">鍵の記号</string>
     <string name="lower_hand">手を下げる (r)</string>
     <string name="marked_as_read">会話%1$sを既読としてマークしました</string>
@@ -521,6 +523,7 @@
     <string name="polls_settings">設定</string>
     <string name="polls_submit_vote">投票</string>
     <string name="polls_voted_hidden_success">投票を送信しました</string>
+    <string name="previously_set">以前の設定</string>
     <string name="raise_hand">挙手 (r)</string>
     <string name="reactions_tab_all">すべて</string>
     <string name="read_storage_no_permission">ストレージからのファイル共有は権限がなければ不可能です</string>
@@ -539,6 +542,7 @@
     <string name="recording_settings_title">記録中</string>
     <string name="removed_from_favorites">会話%1$sをお気に入りから削除済みです</string>
     <string name="renamed_conversation">%1$s会話が名前変更されました</string>
+    <string name="reset_status">ステータスをリセット</string>
     <string name="restrict_join_other_room_while_call">通話中に他の部屋に参加することはできません</string>
     <string name="save">保存</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
