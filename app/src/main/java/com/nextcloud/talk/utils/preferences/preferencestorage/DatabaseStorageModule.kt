@@ -6,237 +6,239 @@
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.utils.preferences.preferencestorage;
+package com.nextcloud.talk.utils.preferences.preferencestorage
 
-import android.text.TextUtils;
-import android.util.Log;
+import android.text.TextUtils
+import android.util.Log
+import autodagger.AutoInjector
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.data.storage.model.ArbitraryStorage
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
+import com.nextcloud.talk.utils.ApiUtils.getCredentials
+import com.nextcloud.talk.utils.ApiUtils.getUrlForMessageExpiration
+import com.nextcloud.talk.utils.ApiUtils.getUrlForRoomNotificationCalls
+import com.nextcloud.talk.utils.ApiUtils.getUrlForRoomNotificationLevel
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
-import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager;
-import com.nextcloud.talk.data.storage.model.ArbitraryStorage;
-import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.models.json.generic.GenericOverall;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.SpreedFeatures;
-import com.nextcloud.talk.utils.UserIdUtils;
-import com.nextcloud.talk.utils.CapabilitiesUtil;
-
-import javax.inject.Inject;
-
-import autodagger.AutoInjector;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-@AutoInjector(NextcloudTalkApplication.class)
-public class DatabaseStorageModule {
-    private static final String TAG = "DatabaseStorageModule";
+@AutoInjector(NextcloudTalkApplication::class)
+class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
+    @JvmField
     @Inject
-    ArbitraryStorageManager arbitraryStorageManager;
+    var arbitraryStorageManager: ArbitraryStorageManager? = null
 
+    @JvmField
     @Inject
-    NcApi ncApi;
+    var ncApi: NcApi? = null
 
-    private int messageExpiration;
-    private final User conversationUser;
-    private final String conversationToken;
-    private final long accountIdentifier;
+    private var messageExpiration = 0
+    private val conversationUser: User
+    private val conversationToken: String
+    private val accountIdentifier: Long
 
-    private boolean lobbyValue;
+    private var lobbyValue = false
 
-    private String messageNotificationLevel;
+    private var messageNotificationLevel: String? = null
 
-    public DatabaseStorageModule(User conversationUser, String conversationToken) {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+    init {
+        sharedApplication!!.componentApplication.inject(this)
 
-        this.conversationUser = conversationUser;
-        this.accountIdentifier = UserIdUtils.INSTANCE.getIdForUser(conversationUser);
-        this.conversationToken = conversationToken;
+        this.conversationUser = conversationUser
+        this.accountIdentifier = getIdForUser(conversationUser)
+        this.conversationToken = conversationToken
     }
 
-    public void saveBoolean(String key, boolean value) {
-        if ("call_notifications_switch".equals(key)) {
-            int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
-            ncApi.notificationCalls(ApiUtils.getCredentials(conversationUser.getUsername(),
-                                                            conversationUser.getToken()),
-                                    ApiUtils.getUrlForRoomNotificationCalls(apiVersion,
-                                                                            conversationUser.getBaseUrl(),
-                                                                            conversationToken),
-                                    value ? 1 : 0)
+    fun saveBoolean(key: String, value: Boolean) {
+        if ("call_notifications_switch" == key) {
+            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
+            ncApi!!.notificationCalls(
+                getCredentials(
+                    conversationUser.username,
+                    conversationUser.token
+                ),
+                getUrlForRoomNotificationCalls(
+                    apiVersion,
+                    conversationUser.baseUrl,
+                    conversationToken
+                ),
+                if (value) 1 else 0
+            )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                               @Override
-                               public void onSubscribe(@NonNull Disposable d) {
-                                   // unused atm
-                               }
+                .subscribe(
+                    object : Observer<GenericOverall> {
+                        override fun onSubscribe(d: Disposable) {
+                            // unused atm
+                        }
 
-                               @Override
-                               public void onNext(@NonNull GenericOverall genericOverall) {
-                                   Log.d(TAG, "Toggled notification calls");
-                               }
+                        override fun onNext(genericOverall: GenericOverall) {
+                            Log.d(TAG, "Toggled notification calls")
+                        }
 
-                               @Override
-                               public void onError(@NonNull Throwable e) {
-                                   Log.e(TAG, "Error when trying to toggle notification calls", e);
-                               }
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Error when trying to toggle notification calls", e)
+                        }
 
-                               @Override
-                               public void onComplete() {
-                                   // unused atm
-                               }
-                           }
-                          );
+                        override fun onComplete() {
+                            // unused atm
+                        }
+                    }
+                )
         }
 
-        if (!"lobby_switch".equals(key)) {
-            arbitraryStorageManager.storeStorageSetting(accountIdentifier,
-                                                        key,
-                                                        Boolean.toString(value),
-                                                        conversationToken);
+        if ("lobby_switch" != key) {
+            arbitraryStorageManager!!.storeStorageSetting(
+                accountIdentifier,
+                key,
+                value.toString(),
+                conversationToken
+            )
         } else {
-            lobbyValue = value;
+            lobbyValue = value
         }
     }
 
-    public void saveString(String key, String value) {
-        if ("conversation_settings_dropdown".equals(key)) {
-            int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{4});
+    fun saveString(key: String, value: String) {
+        if ("conversation_settings_dropdown" == key) {
+            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
 
-            String trimmedValue = value.replace("expire_", "");
-            int valueInt = Integer.parseInt(trimmedValue);
+            val trimmedValue = value.replace("expire_", "")
+            val valueInt = trimmedValue.toInt()
 
-            ncApi.setMessageExpiration(
-                    ApiUtils.getCredentials(
-                        conversationUser.getUsername(),
-                        conversationUser.getToken()),
-                    ApiUtils.getUrlForMessageExpiration(
-                        apiVersion,
-                        conversationUser.getBaseUrl(),
-                        conversationToken),
-                    valueInt)
+            ncApi!!.setMessageExpiration(
+                getCredentials(
+                    conversationUser.username,
+                    conversationUser.token
+                ),
+                getUrlForMessageExpiration(
+                    apiVersion,
+                    conversationUser.baseUrl,
+                    conversationToken
+                ),
+                valueInt
+            )
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<GenericOverall>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
+                .subscribe(object : Observer<GenericOverall> {
+                    override fun onSubscribe(d: Disposable) {
                         // unused atm
                     }
 
-                    @Override
-                    public void onNext(@NonNull GenericOverall genericOverall) {
-                        messageExpiration = valueInt;
+                    override fun onNext(genericOverall: GenericOverall) {
+                        messageExpiration = valueInt
                     }
 
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Log.e(TAG, "Error when trying to set message expiration", e);
+                    override fun onError(e: Throwable) {
+                        Log.e(TAG, "Error when trying to set message expiration", e)
                     }
 
-                    @Override
-                    public void onComplete() {
+                    override fun onComplete() {
                         // unused atm
                     }
-                });
-
-        } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(
-                conversationUser.getCapabilities().getSpreedCapability(),
-                SpreedFeatures.NOTIFICATION_LEVELS)
+                })
+        } else if ("conversation_info_message_notifications_dropdown" == key) {
+            if (hasSpreedFeatureCapability(
+                    conversationUser.capabilities!!.spreedCapability!!,
+                    SpreedFeatures.NOTIFICATION_LEVELS
+                )
             ) {
-                if (TextUtils.isEmpty(messageNotificationLevel) || !messageNotificationLevel.equals(value)) {
-                    int intValue;
-                    switch (value) {
-                        case "never":
-                            intValue = 3;
-                            break;
-                        case "mention":
-                            intValue = 2;
-                            break;
-                        case "always":
-                            intValue = 1;
-                            break;
-                        default:
-                            intValue = 0;
+                if (TextUtils.isEmpty(messageNotificationLevel) || messageNotificationLevel != value) {
+                    val intValue = when (value) {
+                        "never" -> 3
+                        "mention" -> 2
+                        "always" -> 1
+                        else -> 0
                     }
 
-                    int apiVersion = ApiUtils.getConversationApiVersion(conversationUser, new int[]{ApiUtils.API_V4, 1});
+                    val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
-                    ncApi.setNotificationLevel(ApiUtils.getCredentials(conversationUser.getUsername(),
-                                                                       conversationUser.getToken()),
-                                               ApiUtils.getUrlForRoomNotificationLevel(apiVersion,
-                                                                                       conversationUser.getBaseUrl(),
-                                                                                       conversationToken),
-                                               intValue)
+                    ncApi!!.setNotificationLevel(
+                        getCredentials(
+                            conversationUser.username,
+                            conversationUser.token
+                        ),
+                        getUrlForRoomNotificationLevel(
+                            apiVersion,
+                            conversationUser.baseUrl,
+                            conversationToken
+                        ),
+                        intValue
+                    )
                         .subscribeOn(Schedulers.io())
-                        .subscribe(new Observer<GenericOverall>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
+                        .subscribe(object : Observer<GenericOverall?> {
+                            override fun onSubscribe(d: Disposable) {
                                 // unused atm
                             }
 
-                            @Override
-                            public void onNext(GenericOverall genericOverall) {messageNotificationLevel = value;}
+                            override fun onNext(p0: GenericOverall) {
+                                messageNotificationLevel = value
+                            }
 
-                            @Override
-                            public void onError(Throwable e) {
+                            override fun onError(e: Throwable) {
                                 // unused atm
                             }
 
-                            @Override
-                            public void onComplete() {
+                            override fun onComplete() {
                                 // unused atm
                             }
-                        });
+                        })
                 } else {
-                    messageNotificationLevel = value;
+                    messageNotificationLevel = value
                 }
             }
         } else {
-            arbitraryStorageManager.storeStorageSetting(accountIdentifier, key, value, conversationToken);
-        }
-    }
-    public boolean getBoolean(String key, boolean defaultVal) {
-        if ("lobby_switch".equals(key)) {
-            return lobbyValue;
-        } else {
-            return arbitraryStorageManager
-                .getStorageSetting(accountIdentifier, key, conversationToken)
-                .map(arbitraryStorage -> Boolean.parseBoolean(arbitraryStorage.getValue()))
-                .blockingGet(defaultVal);
+            arbitraryStorageManager!!.storeStorageSetting(accountIdentifier, key, value, conversationToken)
         }
     }
 
-    public String getString(String key, String defaultVal) {
-        if ("conversation_settings_dropdown".equals(key)) {
-            switch (messageExpiration) {
-                case 2419200:
-                    return "expire_2419200";
-                case 604800:
-                    return "expire_604800";
-                case 86400:
-                    return "expire_86400";
-                case 28800:
-                    return "expire_28800";
-                case 3600:
-                    return "expire_3600";
-                default:
-                    return "expire_0";
+    fun getBoolean(key: String, defaultVal: Boolean): Boolean {
+        return if ("lobby_switch" == key) {
+            lobbyValue
+        } else {
+            arbitraryStorageManager!!
+                .getStorageSetting(accountIdentifier, key, conversationToken)
+                .map { arbitraryStorage: ArbitraryStorage -> arbitraryStorage.value.toBoolean() }
+                .blockingGet(defaultVal)
+        }
+    }
+
+    fun getString(key: String, defaultVal: String): String? {
+        return if ("conversation_settings_dropdown" == key) {
+            when (messageExpiration) {
+                2419200 -> "expire_2419200"
+                604800 -> "expire_604800"
+                86400 -> "expire_86400"
+                28800 -> "expire_28800"
+                3600 -> "expire_3600"
+                else -> "expire_0"
             }
-        } else if ("conversation_info_message_notifications_dropdown".equals(key)) {
-            return messageNotificationLevel;
+        } else if ("conversation_info_message_notifications_dropdown" == key) {
+            messageNotificationLevel
         } else {
-            return arbitraryStorageManager
+            arbitraryStorageManager!!
                 .getStorageSetting(accountIdentifier, key, conversationToken)
-                .map(ArbitraryStorage::getValue)
-                .blockingGet(defaultVal);
+                .map(ArbitraryStorage::value)
+                .blockingGet(defaultVal)
         }
     }
 
-    public void setMessageExpiration(int messageExpiration) {
-        this.messageExpiration = messageExpiration;
+    fun setMessageExpiration(messageExpiration: Int) {
+        this.messageExpiration = messageExpiration
+    }
+
+    companion object {
+        private const val TAG = "DatabaseStorageModule"
     }
 }
