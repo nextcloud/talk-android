@@ -36,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Verbindung verloren - Gesendete Nachrichten werden der Warteschlange hinzugefügt</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
     <string name="conversation_is_read_only">Unterhaltung ist schreibgeschützt</string>
+    <string name="conversation_read_only_failed">Unterhaltung konnte nicht auf schreibgeschützt gesetzt werden</string>
     <string name="conversations">Unterhaltungen</string>
     <string name="create_conversation">Unterhaltung erstellen</string>
     <string name="create_issue">Fehler melden</string>
@@ -607,6 +608,7 @@
     <string name="startCallForbidden">Sie dürfen keinen Anruf zu tätigen</string>
     <string name="started_a_call">hat einen Anruf begonnen</string>
     <string name="status_message">Statusnachricht</string>
+    <string name="status_reverted">Status zurückgesetzt</string>
     <string name="switch_to_breakout_room">Zu Gruppenraum wechseln</string>
     <string name="switch_to_main_room">Zu Hauptraum wechseln</string>
     <string name="take_photo">Ein Foto aufnehmen</string>
