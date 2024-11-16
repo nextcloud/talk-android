@@ -8,6 +8,7 @@
     <string name="audio_output_phone">Телефон</string>
     <string name="audio_output_speaker">Високоговорител </string>
     <string name="audio_output_wired_headset">Слушалки с кабел</string>
+    <string name="automatic_status_set">Състоянието ви беше зададено автоматично</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
     <string name="calendar">Kалендар</string>
@@ -39,6 +40,7 @@
     <string name="invisible">Невидим</string>
     <string name="leave_call">Напускане на обаждането</string>
     <string name="load_more_results">Зареждане на още резултати</string>
+    <string name="lock_conversation">Заключване на разговор</string>
     <string name="lock_symbol">Символ за заключване</string>
     <string name="lower_hand">Сваляне на ръка</string>
     <string name="menu_item_sort_by_date_newest_first">Първо най-новият</string>
@@ -424,6 +426,7 @@
     <string name="polls_settings">Настройки</string>
     <string name="polls_submit_vote">Глас</string>
     <string name="polls_voted_hidden_success">Гласуването е изпратено</string>
+    <string name="previously_set">Предишно зададени</string>
     <string name="raise_hand">Вдигане на ръка</string>
     <string name="reactions_tab_all">Всички</string>
     <string name="read_storage_no_permission">Споделянето на файлове от хранилище не е възможно без права</string>
@@ -436,6 +439,7 @@
     <string name="record_stop_description">Спиране на записването</string>
     <string name="record_stopping">Спиране на записването ...</string>
     <string name="recording_settings_title">Записване</string>
+    <string name="reset_status">Възстановяване на състоянието</string>
     <string name="restrict_join_other_room_while_call">Не е възможно присъединяването към други стаи, докато сте в обаждане.</string>
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>

@@ -36,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Perdeuse a conexión – As mensaxes enviadas póñense en cola</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversation_is_read_only">A conversa é só de lectura</string>
+    <string name="conversation_read_only_failed">Produciuse un fallo ao definir a conversa como de só lectura</string>
     <string name="conversations">Conversas</string>
     <string name="create_conversation">Crear conversa</string>
     <string name="create_issue">Crear unha incidencia</string>
@@ -607,6 +608,7 @@
     <string name="startCallForbidden">Non ten permiso para iniciar unha chamada</string>
     <string name="started_a_call">iniciar unha chamada</string>
     <string name="status_message">Mensaxe de estado</string>
+    <string name="status_reverted">Estado revertido</string>
     <string name="switch_to_breakout_room">Cambiar á sala parcial</string>
     <string name="switch_to_main_room">Cambiar á sala principal</string>
     <string name="take_photo">Tirar unha foto</string>
