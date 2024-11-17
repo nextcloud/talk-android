@@ -60,8 +60,12 @@
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
     <string name="nc_call_button_content_description_advanced">Išplėstinės skambučio parinktys</string>
+    <string name="nc_call_button_content_description_audio_output">Keisti garso išvestį</string>
+    <string name="nc_call_button_content_description_camera">Perjungti kamerą</string>
     <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
+    <string name="nc_call_button_content_description_microphone">Perjungti mikrofoną</string>
     <string name="nc_call_name">Pokalbio pavadinimas</string>
+    <string name="nc_call_raised_hand">%1$s pakėlė ranką</string>
     <string name="nc_call_reconnecting">Jungiamasi iš naujo…</string>
     <string name="nc_call_timeout">Per 45 sekundes jokio atsakymo, bakstelėkite norėdami bandyti dar kartą</string>
     <string name="nc_call_unknown">%s skambutis</string>
@@ -117,6 +121,7 @@
     <string name="nc_diagnose_app_version_title">Programėlės versija</string>
     <string name="nc_diagnose_battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="nc_diagnose_device_name_title">Įrenginys</string>
+    <string name="nc_diagnose_meta_category_title">Metainformacija</string>
     <string name="nc_diagnose_phone_category_title">Telefonas</string>
     <string name="nc_diagnose_server_version">Serverio versija</string>
     <string name="nc_diagnose_signaling_mode_extern">Išorinė</string>
@@ -149,6 +154,7 @@
     <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
     <string name="nc_guest_access_password_title">Apsauga slaptažodžiu</string>
     <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
+    <string name="nc_guest_access_resend_invitations">Siųsti pakvietimus iš naujo</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
     <string name="nc_join_open_conversations">Prisijungti prie atvirų pokalbių</string>
@@ -158,6 +164,8 @@
     <string name="nc_license_title">Licencija</string>
     <string name="nc_limit_hit">Pasiekta %s simbolių riba</string>
     <string name="nc_lobby">Laukimo salė</string>
+    <string name="nc_lobby_start_date">Šis susitikimas yra suplanuotas %1$s</string>
+    <string name="nc_lobby_start_soon">Susitikimas netrukus prasidės</string>
     <string name="nc_lobby_waiting">Šiuo metu laukiate laukimo salėje.</string>
     <string name="nc_locked_tap_to_unlock">Bakstelėkite, norėdami atrakinti</string>
     <string name="nc_manual">Nenustatyta</string>

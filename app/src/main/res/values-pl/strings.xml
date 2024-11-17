@@ -122,7 +122,7 @@
     <string name="nc_certificate_error">Twoje ustawienia SSL uniemożliwiają połaczenie</string>
     <string name="nc_change_cert_auth">Zmień certyfikat uwierzytelnienia</string>
     <string name="nc_change_password">Zmień hasło</string>
-    <string name="nc_check_your_internet">Proszę sprawdzić swoje połączenie z internetem</string>
+    <string name="nc_check_your_internet">Sprawdź swoje połączenie z internetem</string>
     <string name="nc_clear_edit_button">Wyczyść przycisk Edytuj</string>
     <string name="nc_clear_edit_message">Wyczyść Edytuj wiadomość</string>
     <string name="nc_clear_history">Usuń wszystkie wiadomości</string>
