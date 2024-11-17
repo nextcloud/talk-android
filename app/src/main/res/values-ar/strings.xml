@@ -36,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">انقطع الاتصال - الرسالة المطلوب إرسالها تمّ تحضيرها للإرسال في قائمة بحسب الأولوية</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
+    <string name="conversation_read_only_failed">تعذّر تمييز المحادثة \"للقراءة فقط\"</string>
     <string name="conversations">محادثات</string>
     <string name="create_conversation">انشاء محادثة</string>
     <string name="create_issue">تكوين إشكالية </string>
@@ -607,6 +608,7 @@
     <string name="startCallForbidden">لا يُمكنُك إجراءُ مكالمة</string>
     <string name="started_a_call">بدأت مكالمةً</string>
     <string name="status_message">رسالة الحالة</string>
+    <string name="status_reverted">تمّ إرجاع الحالة</string>
     <string name="switch_to_breakout_room">تبديل إلى غرفة جانبية</string>
     <string name="switch_to_main_room">تبديل إلى الغرفة الرئيسية</string>
     <string name="take_photo">خُذ صورة</string>
