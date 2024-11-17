@@ -390,6 +390,12 @@ public interface NcApi {
                                                     @Field("level") int level);
 
     @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setConversationReadOnly(@Header("Authorization") String authorization,
+                                                @Url String url,
+                                                @Field("state") int state);
+
+    @FormUrlEncoded
     @POST
     Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization,
                                                  @Url String url,
@@ -571,12 +577,6 @@ public interface NcApi {
     @DELETE
     Observable<PollOverall> closePoll(@Header("Authorization") String authorization,
                                       @Url String url);
-
-    @FormUrlEncoded
-    @POST
-    Observable<GenericOverall> setMessageExpiration(@Header("Authorization") String authorization,
-                                                    @Url String url,
-                                                    @Field("seconds") Integer seconds);
 
     @GET
     Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization,
