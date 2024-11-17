@@ -468,6 +468,9 @@ public interface NcApi {
                                                  @Url String url,
                                                  @Field("level") Integer level);
 
+    @DELETE
+    Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
+
     @GET
     Observable<HoverCardOverall> hoverCard(@Header("Authorization") String authorization, @Url String url);
 
