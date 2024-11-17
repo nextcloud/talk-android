@@ -35,6 +35,7 @@
     <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
     <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
+    <string name="conversation_read_only_failed">Kunde inte sätta konversationen skrivskyddad</string>
     <string name="conversations">Konversationer</string>
     <string name="create_conversation">Skapa konversation</string>
     <string name="create_issue">Skapa ärende</string>
@@ -602,6 +603,7 @@
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
     <string name="started_a_call">startade ett samtal</string>
     <string name="status_message">Statusmeddelande</string>
+    <string name="status_reverted">Status återställd</string>
     <string name="switch_to_breakout_room">Byt till grupprum</string>
     <string name="switch_to_main_room">Byt till huvudrum</string>
     <string name="take_photo">Ta en bild</string>
