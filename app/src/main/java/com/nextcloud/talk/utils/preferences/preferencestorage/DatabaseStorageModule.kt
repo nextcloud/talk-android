@@ -12,6 +12,7 @@ import android.text.TextUtils
 import android.util.Log
 import autodagger.AutoInjector
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
@@ -31,10 +32,13 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
+
     @JvmField
     @Inject
     var arbitraryStorageManager: ArbitraryStorageManager? = null
@@ -42,6 +46,10 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
     @JvmField
     @Inject
     var ncApi: NcApi? = null
+
+    @JvmField
+    @Inject
+    var ncApiCoroutines: NcApiCoroutines?= null
 
     private var messageExpiration = 0
     private val conversationUser: User
@@ -60,42 +68,20 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         this.conversationToken = conversationToken
     }
 
-    fun saveBoolean(key: String, value: Boolean) {
+    suspend fun saveBoolean(key: String, value: Boolean) {
         if ("call_notifications_switch" == key) {
             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
-            ncApi!!.notificationCalls(
-                getCredentials(
-                    conversationUser.username,
-                    conversationUser.token
-                ),
-                getUrlForRoomNotificationCalls(
-                    apiVersion,
-                    conversationUser.baseUrl,
-                    conversationToken
-                ),
-                if (value) 1 else 0
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    object : Observer<GenericOverall> {
-                        override fun onSubscribe(d: Disposable) {
-                            // unused atm
-                        }
-
-                        override fun onNext(genericOverall: GenericOverall) {
-                            Log.d(TAG, "Toggled notification calls")
-                        }
-
-                        override fun onError(e: Throwable) {
-                            Log.e(TAG, "Error when trying to toggle notification calls", e)
-                        }
-
-                        override fun onComplete() {
-                            // unused atm
-                        }
-                    }
-                )
+            val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl,conversationToken)
+            val credentials = getCredentials(conversationUser.username,conversationUser.token)
+            val notificationLevel = if(value) 1 else 0
+            withContext(Dispatchers.IO) {
+                try {
+                    ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
+                    Log.d(TAG, "Toggled notification calls")
+                } catch (e: Throwable) {
+                    Log.e(TAG, "Error when trying to toggle notification calls", e)
+                }
+            }
         }
 
         if ("lobby_switch" != key) {

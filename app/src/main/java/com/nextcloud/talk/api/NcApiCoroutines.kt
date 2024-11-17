@@ -131,6 +131,14 @@ interface NcApiCoroutines {
         @Url url: String
     ): GenericOverall
 
+    @FormUrlEncoded
+    @POST
+    suspend fun notificationCalls(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("level") level: Int
+    ): GenericOverall
+
     @POST
     suspend fun setReadStatusPrivacy(
         @Header("Authorization") authorization: String,
