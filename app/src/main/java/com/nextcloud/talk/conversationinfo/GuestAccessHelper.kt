@@ -76,10 +76,10 @@ class GuestAccessHelper(
                         }
                     }
                     is ConversationInfoViewModel.AllowGuestsUIState.Error -> {
-                        val exception = uiState.message
+                        val exception = uiState.exception
                         val message = context.getString(R.string.nc_guest_access_allow_failed)
                         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                        Log.e(TAG, exception)
+                        Log.e(TAG, message, exception)
                     }
                     ConversationInfoViewModel.AllowGuestsUIState.None -> {
                     }
@@ -111,10 +111,10 @@ class GuestAccessHelper(
                     // unused atm
                 }
                 is ConversationInfoViewModel.PasswordUiState.Error -> {
-                    val exception = uiState.message
+                    val exception = uiState.exception
                     val message = context.getString(R.string.nc_guest_access_password_failed)
                     Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG).show()
-                    Log.e(TAG, exception)
+                    Log.e(TAG, message, exception)
                 }
                 is ConversationInfoViewModel.PasswordUiState.None -> {
                     // unused atm

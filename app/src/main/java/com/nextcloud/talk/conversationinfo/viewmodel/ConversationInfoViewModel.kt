@@ -18,11 +18,9 @@ import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
-import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -249,14 +247,10 @@ class ConversationInfoViewModel @Inject constructor(
     fun allowGuests(token: String, allow: Boolean) {
         viewModelScope.launch {
             try {
-                val allowGuestsResult = conversationsRepository.allowGuests(token, allow)
-                val statusCode: GenericMeta? = allowGuestsResult.ocs?.meta
-                val result = statusCode?.statusCode == STATUS_CODE_OK
-                if (result) {
-                    _allowGuestsViewState.value = AllowGuestsUIState.Success(allow)
-                }
+                conversationsRepository.allowGuests(token, allow)
+                _allowGuestsViewState.value = AllowGuestsUIState.Success(allow)
             } catch (exception: Exception) {
-                _allowGuestsViewState.value = AllowGuestsUIState.Error(exception.message ?: "")
+                _allowGuestsViewState.value = AllowGuestsUIState.Error(exception)
             }
         }
     }
@@ -265,14 +259,10 @@ class ConversationInfoViewModel @Inject constructor(
     fun setPassword(password: String, token: String) {
         viewModelScope.launch {
             try {
-                val setPasswordResult = conversationsRepository.setPassword(password, token)
-                val statusCode: GenericMeta? = setPasswordResult.ocs?.meta
-                val result = statusCode?.statusCode == STATUS_CODE_OK
-                if (result) {
-                    _passwordViewState.value = PasswordUiState.Success(result)
-                }
+                conversationsRepository.setPassword(password, token)
+                _passwordViewState.value = PasswordUiState.Success
             } catch (exception: Exception) {
-                _passwordViewState.value = PasswordUiState.Error(exception.message ?: "")
+                _passwordViewState.value = PasswordUiState.Error(exception)
             }
         }
     }
@@ -315,12 +305,12 @@ class ConversationInfoViewModel @Inject constructor(
     sealed class AllowGuestsUIState {
         data object None : AllowGuestsUIState()
         data class Success(val allow: Boolean) : AllowGuestsUIState()
-        data class Error(val message: String) : AllowGuestsUIState()
+        data class Error(val exception: Exception) : AllowGuestsUIState()
     }
 
     sealed class PasswordUiState {
         data object None : PasswordUiState()
-        data class Success(val result: Boolean) : PasswordUiState()
-        data class Error(val message: String) : PasswordUiState()
+        data object Success : PasswordUiState()
+        data class Error(val exception: Exception) : PasswordUiState()
     }
 }
