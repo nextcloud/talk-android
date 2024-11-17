@@ -835,7 +835,7 @@ class ConversationInfoActivity :
             binding.lockConversation.setOnClickListener {
                 val isLocked = binding.lockConversationSwitch.isChecked
                 binding.lockConversationSwitch.isChecked = !isLocked
-                lifecycleScope.launch{
+                lifecycleScope.launch {
                     databaseStorageModule!!.saveBoolean("lock_switch", !isLocked)
                 }
                 val state = if (isLocked) 0 else 1
@@ -1016,7 +1016,9 @@ class ConversationInfoActivity :
                 .setSimpleItems(resources.getStringArray(R.array.message_expiring_descriptions))
             binding.conversationSettingsDropdown.setOnItemClickListener { _, _, position, _ ->
                 val v: String = resources.getStringArray(R.array.message_expiring_values)[position]
-                databaseStorageModule!!.saveString("conversation_settings_dropdown", v)
+                lifecycleScope.launch {
+                    databaseStorageModule!!.saveString("conversation_settings_dropdown", v)
+                }
             }
             binding.messageExpirationSettings.visibility = VISIBLE
         } else {
@@ -1518,15 +1520,14 @@ class ConversationInfoActivity :
         binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
             val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
             binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
-            lifecycleScope.launch{
+            lifecycleScope.launch {
                 module.saveBoolean("important_conversation_switch", !isChecked)
             }
-
         }
         binding.notificationSettingsView.notificationSettingsCallNotifications.setOnClickListener {
             val isChecked = binding.notificationSettingsView.callNotificationsSwitch.isChecked
             binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
-            lifecycleScope.launch{
+            lifecycleScope.launch {
                 module.saveBoolean("call_notifications_switch", !isChecked)
             }
         }
@@ -1534,7 +1535,9 @@ class ConversationInfoActivity :
             .setOnItemClickListener { _, _, position, _ ->
                 val value = resources.getStringArray(R.array.message_notification_levels_entry_values)[position]
                 Log.i(TAG, "saved $value to module from $position")
-                module.saveString("conversation_info_message_notifications_dropdown", value)
+                lifecycleScope.launch {
+                    module.saveString("conversation_info_message_notifications_dropdown", value)
+                }
             }
 
         binding.notificationSettingsView.importantConversationSwitch.isChecked = module

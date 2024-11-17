@@ -18,7 +18,6 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
@@ -28,10 +27,6 @@ import com.nextcloud.talk.utils.ApiUtils.getUrlForRoomNotificationLevel
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils.getIdForUser
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -49,7 +44,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
 
     @JvmField
     @Inject
-    var ncApiCoroutines: NcApiCoroutines?= null
+    var ncApiCoroutines: NcApiCoroutines? = null
 
     private var messageExpiration = 0
     private val conversationUser: User
@@ -71,9 +66,9 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
     suspend fun saveBoolean(key: String, value: Boolean) {
         if ("call_notifications_switch" == key) {
             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
-            val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl,conversationToken)
-            val credentials = getCredentials(conversationUser.username,conversationUser.token)
-            val notificationLevel = if(value) 1 else 0
+            val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl, conversationToken)
+            val credentials = getCredentials(conversationUser.username, conversationUser.token)
+            val notificationLevel = if (value) 1 else 0
             withContext(Dispatchers.IO) {
                 try {
                     ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
@@ -83,7 +78,6 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                 }
             }
         }
-
         if ("lobby_switch" != key) {
             arbitraryStorageManager!!.storeStorageSetting(
                 accountIdentifier,
@@ -96,96 +90,70 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         }
     }
 
-    fun saveString(key: String, value: String) {
-        if ("conversation_settings_dropdown" == key) {
-            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
-
-            val trimmedValue = value.replace("expire_", "")
-            val valueInt = trimmedValue.toInt()
-
-            ncApi!!.setMessageExpiration(
-                getCredentials(
-                    conversationUser.username,
-                    conversationUser.token
-                ),
-                getUrlForMessageExpiration(
-                    apiVersion,
-                    conversationUser.baseUrl,
-                    conversationToken
-                ),
-                valueInt
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<GenericOverall> {
-                    override fun onSubscribe(d: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onNext(genericOverall: GenericOverall) {
+    suspend fun saveString(key: String, value: String) {
+        when (key) {
+            "conversation_settings_dropdown" -> {
+                try {
+                    val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
+                    val trimmedValue = value.replace("expire_", "")
+                    val valueInt = trimmedValue.toInt()
+                    withContext(Dispatchers.IO) {
+                        ncApiCoroutines!!.setMessageExpiration(
+                            getCredentials(conversationUser.username, conversationUser.token)!!,
+                            getUrlForMessageExpiration(
+                                apiVersion,
+                                conversationUser.baseUrl,
+                                conversationToken
+                            ),
+                            valueInt
+                        )
                         messageExpiration = valueInt
                     }
-
-                    override fun onError(e: Throwable) {
-                        Log.e(TAG, "Error when trying to set message expiration", e)
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-                })
-        } else if ("conversation_info_message_notifications_dropdown" == key) {
-            if (hasSpreedFeatureCapability(
-                    conversationUser.capabilities!!.spreedCapability!!,
-                    SpreedFeatures.NOTIFICATION_LEVELS
-                )
-            ) {
-                if (TextUtils.isEmpty(messageNotificationLevel) || messageNotificationLevel != value) {
-                    val intValue = when (value) {
-                        "never" -> 3
-                        "mention" -> 2
-                        "always" -> 1
-                        else -> 0
-                    }
-
-                    val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
-
-                    ncApi!!.setNotificationLevel(
-                        getCredentials(
-                            conversationUser.username,
-                            conversationUser.token
-                        ),
-                        getUrlForRoomNotificationLevel(
-                            apiVersion,
-                            conversationUser.baseUrl,
-                            conversationToken
-                        ),
-                        intValue
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .subscribe(object : Observer<GenericOverall?> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
-                            }
-
-                            override fun onNext(p0: GenericOverall) {
-                                messageNotificationLevel = value
-                            }
-
-                            override fun onError(e: Throwable) {
-                                // unused atm
-                            }
-
-                            override fun onComplete() {
-                                // unused atm
-                            }
-                        })
-                } else {
-                    messageNotificationLevel = value
+                } catch (exception: Exception) {
+                    Log.e(TAG, "Error when trying to set message expiration", exception)
                 }
             }
-        } else {
-            arbitraryStorageManager!!.storeStorageSetting(accountIdentifier, key, value, conversationToken)
+            "conversation_info_message_notifications_dropdown" -> {
+                try {
+                    if (hasSpreedFeatureCapability(
+                            conversationUser.capabilities!!.spreedCapability!!,
+                            SpreedFeatures.NOTIFICATION_LEVELS
+                        )
+                    ) {
+                        if (TextUtils.isEmpty(messageNotificationLevel) || messageNotificationLevel != value) {
+                            val intValue = when (value) {
+                                "never" -> 3
+                                "mention" -> 2
+                                "always" -> 1
+                                else -> 0
+                            }
+                            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
+                            withContext(Dispatchers.IO) {
+                                ncApiCoroutines!!.setNotificationLevel(
+                                    getCredentials(
+                                        conversationUser.username,
+                                        conversationUser.token
+                                    )!!,
+                                    getUrlForRoomNotificationLevel(
+                                        apiVersion,
+                                        conversationUser.baseUrl,
+                                        conversationToken
+                                    ),
+                                    intValue
+                                )
+                                messageNotificationLevel = value
+                            }
+                        } else {
+                            messageNotificationLevel = value
+                        }
+                    }
+                } catch (exception: Exception) {
+                    Log.e(TAG, "Error trying to set notification level", exception)
+                }
+            }
+            else -> {
+                arbitraryStorageManager!!.storeStorageSetting(accountIdentifier, key, value, conversationToken)
+            }
         }
     }
 

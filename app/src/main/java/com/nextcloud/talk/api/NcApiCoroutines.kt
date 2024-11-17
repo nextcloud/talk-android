@@ -163,4 +163,20 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("state") state: Int
     ): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setNotificationLevel(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("level") level: Int
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setMessageExpiration(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("seconds") seconds: Int
+    ): GenericOverall
 }
