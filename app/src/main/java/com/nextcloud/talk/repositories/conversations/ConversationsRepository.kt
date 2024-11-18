@@ -35,6 +35,7 @@ interface ConversationsRepository {
     ): TalkBan
 
     suspend fun listBans(credentials: String, url: String): List<TalkBan>
+    suspend fun unbanActor(credentials: String, url: String): GenericOverall
 
     suspend fun setPassword(password: String, token: String): GenericOverall
 

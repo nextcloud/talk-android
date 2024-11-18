@@ -132,10 +132,10 @@ interface NcApiCoroutines {
     ): TalkBan
 
     @GET
-    suspend fun listBans(
-        @Header("Authorization") authorization: String,
-        @Url url: String
-    ): TalkBanOverall
+    suspend fun listBans(@Header("Authorization") authorization: String, @Url url: String): TalkBanOverall
+
+    @DELETE
+    suspend fun unbanActor(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @POST
     suspend fun addConversationToFavorites(

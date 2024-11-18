@@ -178,8 +178,4 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
     override fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage> {
         return ncApi.editChatMessage(credentials, url, text).map { it }
     }
-
-    override fun unbanActor(credentials: String, url: String): Observable<GenericOverall> {
-        return ncApi.unbanActor(credentials, url)
-    }
 }
