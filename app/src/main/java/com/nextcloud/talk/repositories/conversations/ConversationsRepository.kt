@@ -34,6 +34,8 @@ interface ConversationsRepository {
         internalNote: String
     ): TalkBan
 
+    suspend fun listBans(credentials: String, url: String): List<TalkBan>
+
     suspend fun setPassword(password: String, token: String): GenericOverall
 
     suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall

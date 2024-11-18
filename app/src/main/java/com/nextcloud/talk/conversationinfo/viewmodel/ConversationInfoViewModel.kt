@@ -153,26 +153,15 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun listBans(user: User, token: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatNetworkDataSource.listBans(user.getCredentials(), url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<List<TalkBan>> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused atm
-                }
+        viewModelScope.launch{
+            try{
+                val listBans = conversationsRepository.listBans(user.getCredentials(), url)
+                _getTalkBanState.value = ListBansSuccessState(listBans)
+            }catch(exception:Exception){
+                _getTalkBanState.value = ListBansErrorState
+            }
 
-                override fun onError(e: Throwable) {
-                    _getTalkBanState.value = ListBansErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(talkBans: List<TalkBan>) {
-                    _getTalkBanState.value = ListBansSuccessState(talkBans)
-                }
-            })
+        }
     }
 
     fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {

@@ -12,6 +12,8 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.participants.TalkBanOverall
+import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -129,6 +131,12 @@ interface NcApiCoroutines {
         @Field("actorId") actorId: String,
         @Field("internalNote") internalNote: String
     ): TalkBan
+
+    @GET
+    suspend fun listBans(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): TalkBanOverall
 
     @POST
     suspend fun addConversationToFavorites(

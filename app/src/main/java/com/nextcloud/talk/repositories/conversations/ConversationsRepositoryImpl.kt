@@ -111,6 +111,11 @@ class ConversationsRepositoryImpl(
         return coroutineApi.banActor(credentials, url, actorType, actorId, internalNote)
     }
 
+    override suspend fun listBans(credentials: String, url: String): List<TalkBan> {
+       val talkBanOverall =  coroutineApi.listBans(credentials, url)
+      return talkBanOverall.ocs?.data!!
+    }
+
     private fun apiVersion(): Int {
         return ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4))
     }

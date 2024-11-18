@@ -64,6 +64,5 @@ interface ChatNetworkDataSource {
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage>
-    fun listBans(credentials: String, url: String): Observable<List<TalkBan>>
     fun unbanActor(credentials: String, url: String): Observable<GenericOverall>
 }
