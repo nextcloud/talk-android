@@ -4,6 +4,7 @@
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
+    <string name="archive_conversation">Zaarchivovat konverzaci</string>
     <string name="archived">Archivováno</string>
     <string name="audio_call">Hlasový hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -34,11 +35,13 @@
     <string name="connection_lost_sent_messages_are_queued">Spojení ztraceno – odeslané zprávy jsou zařazené do fronty</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversation_is_read_only">Konverzace je pouze pro čtení</string>
+    <string name="conversation_read_only_failed">Nepodařilo se nastavit konverzaci na pouze pro čtení</string>
     <string name="conversations">Konverzace</string>
     <string name="create_conversation">Vytvořit konverzaci</string>
     <string name="create_issue">Nahlásit problém</string>
     <string name="custom">Uživatelsky určený</string>
     <string name="danger_zone">Nebezpečná zóna</string>
+    <string name="deck_card_description">%1$s v %2$s</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
     <string name="deleted_conversation">Konverzace %1$s smazána</string>
     <string name="dnd">Nerušit</string>
@@ -397,6 +400,8 @@
     <string name="nc_sent_an_audio_you">Odeslali jste zvuk.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázek.</string>
     <string name="nc_sent_an_image_you">Odeslali jste obrázek.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s poslal(a) kartu aplikace Deck</string>
+    <string name="nc_sent_deck_card_you">Odeslali jste kartu aplikace Deck</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal(a) umístění</string>
     <string name="nc_sent_location_you">Odeslali jste umístění.</string>
     <string name="nc_sent_poll" formatted="true">%1$s odeslal(a) anketu.</string>
@@ -602,6 +607,7 @@
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
     <string name="started_a_call">zahájen hovor</string>
     <string name="status_message">Stavová zpráva</string>
+    <string name="status_reverted">Stav vrácen na původní</string>
     <string name="switch_to_breakout_room">Přepnout na přestávkovou místnost</string>
     <string name="switch_to_main_room">Přepnout na hlavní místnost</string>
     <string name="take_photo">Vyfotit</string>
@@ -632,6 +638,8 @@
     <string name="typing_are_typing">píší…</string>
     <string name="typing_is_typing">píše…</string>
     <string name="typing_x_others">a %1$s ostatní píší…</string>
+    <string name="unarchive_conversation">Zrušit archivaci konverzace</string>
+    <string name="unarchive_hint">Jakmile je zrušeno archivování konverzace, znovu bude zobrazováná už ve výchozí stavu.</string>
     <string name="unban">Zrušit vyloučení</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>

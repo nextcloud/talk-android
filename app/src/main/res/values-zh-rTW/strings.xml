@@ -5,7 +5,6 @@
     <string name="added_to_favorites">已新增對話 %1$s 至最愛</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
     <string name="archive_conversation">封存對話</string>
-    <string name="archive_hint">對話封存後，預設會隱藏。選取篩選條件「已封存」可檢視已封存的對話。仍會收到直接提及。</string>
     <string name="archived">已封存</string>
     <string name="audio_call">音訊通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
@@ -36,6 +35,7 @@
     <string name="connection_lost_sent_messages_are_queued">連線中斷 -傳送的訊息已排入佇列</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製語音訊息</string>
     <string name="conversation_is_read_only">對話為唯讀</string>
+    <string name="conversation_read_only_failed">設定對話唯讀失敗</string>
     <string name="conversations">對話</string>
     <string name="create_conversation">建立對話</string>
     <string name="create_issue">建立問題</string>
@@ -607,6 +607,7 @@
     <string name="startCallForbidden">您不被允許開始通話</string>
     <string name="started_a_call">開始通話</string>
     <string name="status_message">狀態訊息</string>
+    <string name="status_reverted">狀態已還原</string>
     <string name="switch_to_breakout_room">切換至分組討論室</string>
     <string name="switch_to_main_room">切換至主要聊天室</string>
     <string name="take_photo">拍照</string>
