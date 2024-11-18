@@ -655,14 +655,6 @@ public interface NcApi {
     Observable<TalkBanOverall> listBans(@Header("Authorization") String authorization,
                                         @Url String url);
 
-    @FormUrlEncoded
-    @POST
-    Observable<TalkBan> banActor(@Header("Authorization") String authorization,
-                                 @Url String url,
-                                 @Field("actorType") String actorType,
-                                 @Field("actorId") String actorId,
-                                 @Field("internalNote") String internalNote);
-
     @DELETE
     Observable<GenericOverall> unbanActor(@Header("Authorization") String authorization,
                                           @Url String url);
