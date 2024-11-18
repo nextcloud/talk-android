@@ -649,8 +649,4 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
                                                 @Url String url);
-
-    @DELETE
-    Observable<GenericOverall> unbanActor(@Header("Authorization") String authorization,
-                                          @Url String url);
 }
