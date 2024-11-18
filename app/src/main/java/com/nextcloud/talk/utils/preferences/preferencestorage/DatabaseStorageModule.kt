@@ -8,6 +8,7 @@
  */
 package com.nextcloud.talk.utils.preferences.preferencestorage
 
+import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
 import autodagger.AutoInjector
@@ -63,6 +64,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         this.conversationToken = conversationToken
     }
 
+    @SuppressLint("TooGenericExceptionCaught")
     suspend fun saveBoolean(key: String, value: Boolean) {
         if ("call_notifications_switch" == key) {
             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
@@ -73,7 +75,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                 try {
                     ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
                     Log.d(TAG, "Toggled notification calls")
-                } catch (e: Throwable) {
+                } catch (e: Exception) {
                     Log.e(TAG, "Error when trying to toggle notification calls", e)
                 }
             }
@@ -90,11 +92,12 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         }
     }
 
+    @SuppressLint("TooGenericExceptionCaught")
     suspend fun saveString(key: String, value: String) {
         when (key) {
             "conversation_settings_dropdown" -> {
                 try {
-                    val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
+                    val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(API_VERSION_4))
                     val trimmedValue = value.replace("expire_", "")
                     val valueInt = trimmedValue.toInt()
                     withContext(Dispatchers.IO) {
@@ -202,5 +205,6 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         private const val NOTIFICATION_NEVER = 3
         private const val NOTIFICATION_MENTION = 2
         private const val NOTIFICATION_ALWAYS = 1
+        private const val API_VERSION_4 = 4
     }
 }
