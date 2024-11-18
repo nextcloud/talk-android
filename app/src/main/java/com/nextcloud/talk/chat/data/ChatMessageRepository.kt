@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -64,6 +65,11 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Gets a individual message.
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
+
+    /**
+     * TODO
+     */
+    suspend fun updateDBAfterPushNotification(message: ChatMessageEntity)
 
     /**
      * Destroys unused resources.

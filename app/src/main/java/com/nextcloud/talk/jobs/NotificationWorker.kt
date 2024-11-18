@@ -49,7 +49,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.callnotification.CallNotificationActivity
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationlist.data.network.OfflineFirstConversationsRepository
 import com.nextcloud.talk.models.SignatureVerification
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
@@ -96,6 +98,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -130,6 +135,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var chatMessageRepository: ChatMessageRepository
+
+    @Inject
+    lateinit var conversationsRepository: OfflineFirstConversationsRepository
 
     @JvmField
     @Inject
@@ -202,6 +213,16 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             getNcDataAndShowNotification(mainActivityIntent)
         } else {
             showNotification(mainActivityIntent, null)
+        }
+
+        loadMessageToDB()
+    }
+
+    private fun loadMessageToDB() {
+        val token = pushMessage.id
+
+        CoroutineScope(Dispatchers.Default).launch {
+            // TODO
         }
     }
 

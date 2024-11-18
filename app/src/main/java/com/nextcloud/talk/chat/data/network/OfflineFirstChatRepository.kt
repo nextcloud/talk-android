@@ -391,6 +391,10 @@ class OfflineFirstChatRepository @Inject constructor(
             .map(ChatMessageEntity::asModel)
     }
 
+    override suspend fun updateDBAfterPushNotification(message: ChatMessageEntity) {
+        // TODO Figure this out
+    }
+
     @Suppress("UNCHECKED_CAST", "MagicNumber")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
