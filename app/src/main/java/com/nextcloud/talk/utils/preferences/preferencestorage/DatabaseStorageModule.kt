@@ -122,9 +122,9 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                     ) {
                         if (TextUtils.isEmpty(messageNotificationLevel) || messageNotificationLevel != value) {
                             val intValue = when (value) {
-                                "never" -> 3
-                                "mention" -> 2
-                                "always" -> 1
+                                "never" -> NOTIFICATION_NEVER
+                                "mention" -> NOTIFICATION_MENTION
+                                "always" -> NOTIFICATION_ALWAYS
                                 else -> 0
                             }
                             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
@@ -171,11 +171,11 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
     fun getString(key: String, defaultVal: String): String? {
         return if ("conversation_settings_dropdown" == key) {
             when (messageExpiration) {
-                2419200 -> "expire_2419200"
-                604800 -> "expire_604800"
-                86400 -> "expire_86400"
-                28800 -> "expire_28800"
-                3600 -> "expire_3600"
+                EXPIRE_4_WEEKS -> "expire_2419200"
+                EXPIRE_7_DAYS -> "expire_604800"
+                EXPIRE_1_DAY -> "expire_86400"
+                EXPIRE_8_HOURS -> "expire_28800"
+                EXPIRE_1_HOUR -> "expire_3600"
                 else -> "expire_0"
             }
         } else if ("conversation_info_message_notifications_dropdown" == key) {
@@ -194,5 +194,13 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
 
     companion object {
         private const val TAG = "DatabaseStorageModule"
+        private const val EXPIRE_1_HOUR = 3600
+        private const val EXPIRE_8_HOURS = 28800
+        private const val EXPIRE_1_DAY = 86400
+        private const val EXPIRE_7_DAYS = 604800
+        private const val EXPIRE_4_WEEKS = 2419200
+        private const val NOTIFICATION_NEVER = 3
+        private const val NOTIFICATION_MENTION = 2
+        private const val NOTIFICATION_ALWAYS = 1
     }
 }
