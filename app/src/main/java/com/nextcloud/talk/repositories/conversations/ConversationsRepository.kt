@@ -14,12 +14,6 @@ interface ConversationsRepository {
 
     suspend fun allowGuests(token: String, allow: Boolean): GenericOverall
 
-    data class PasswordResult(
-        val passwordSet: Boolean,
-        val passwordIsWeak: Boolean,
-        val message: String
-    )
-
     data class ResendInvitationsResult(
         val successful: Boolean
     )
