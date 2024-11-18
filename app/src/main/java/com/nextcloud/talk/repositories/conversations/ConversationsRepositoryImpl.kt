@@ -11,6 +11,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -98,6 +99,16 @@ class ConversationsRepositoryImpl(
             credentials,
             ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
         )
+    }
+
+    override suspend fun banActor(
+        credentials: String,
+        url: String,
+        actorType: String,
+        actorId: String,
+        internalNote: String
+    ): TalkBan {
+        return coroutineApi.banActor(credentials, url, actorType, actorId, internalNote)
     }
 
     private fun apiVersion(): Int {

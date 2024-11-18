@@ -184,16 +184,6 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
         return ncApi.listBans(credentials, url).map { it.ocs?.data }
     }
 
-    override fun banActor(
-        credentials: String,
-        url: String,
-        actorType: String,
-        actorId: String,
-        internalNote: String
-    ): Observable<TalkBan> {
-        return ncApi.banActor(credentials, url, actorType, actorId, internalNote)
-    }
-
     override fun unbanActor(credentials: String, url: String): Observable<GenericOverall> {
         return ncApi.unbanActor(credentials, url)
     }

@@ -177,26 +177,20 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatNetworkDataSource.banActor(user.getCredentials(), url, actorType, actorId, internalNote)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<TalkBan> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    _getBanActorState.value = BanActorErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(talkBan: TalkBan) {
-                    _getBanActorState.value = BanActorSuccessState(talkBan)
-                }
-            })
+        viewModelScope.launch {
+            try {
+                val talkBan = conversationsRepository.banActor(
+                    user.getCredentials(),
+                    url,
+                    actorType,
+                    actorId,
+                    internalNote
+                )
+                _getBanActorState.value = BanActorSuccessState(talkBan)
+            } catch (exception: Exception) {
+                _getBanActorState.value = BanActorErrorState
+            }
+        }
     }
 
     fun setConversationReadOnly(roomToken: String, state: Int) {

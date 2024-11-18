@@ -11,6 +11,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
+import com.nextcloud.talk.models.json.participants.TalkBan
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -118,6 +119,16 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun banActor(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("actorType") actorType: String,
+        @Field("actorId") actorId: String,
+        @Field("internalNote") internalNote: String
+    ): TalkBan
 
     @POST
     suspend fun addConversationToFavorites(
