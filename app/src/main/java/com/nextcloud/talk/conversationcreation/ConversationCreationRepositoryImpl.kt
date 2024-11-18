@@ -168,16 +168,15 @@ class ConversationCreationRepositoryImpl(
 
         val result: GenericOverall = if (allow) {
             ncApiCoroutines.makeRoomPublic(
-                credentials,
+                credentials!!,
                 url
             )
         } else {
             ncApiCoroutines.makeRoomPrivate(
-                credentials,
+                credentials!!,
                 url
             )
         }
-
         return result
     }
 }

@@ -195,18 +195,6 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> removeSelfFromRoom(@Header("Authorization") String authorization, @Url String url);
 
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @POST
-    Observable<GenericOverall> makeRoomPublic(@Header("Authorization") String authorization, @Url String url);
-
-    /*
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/public
-    */
-    @DELETE
-    Observable<GenericOverall> makeRoomPrivate(@Header("Authorization") String authorization, @Url String url);
-
     @DELETE
     Observable<GenericOverall> deleteRoom(@Header("Authorization") String authorization, @Url String url);
 
@@ -340,18 +328,6 @@ public interface NcApi {
     @DELETE
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
                                                                @QueryMap Map<String, String> fields);
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setPassword(@Header("Authorization") String authorization,
-                                           @Url String url,
-                                           @Field("password") String password);
-
-    @FormUrlEncoded
-    @PUT
-    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
-                                                      @Url String url,
-                                                      @Field("password") String password);
 
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);

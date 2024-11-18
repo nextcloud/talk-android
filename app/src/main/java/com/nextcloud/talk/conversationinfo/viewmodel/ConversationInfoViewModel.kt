@@ -6,12 +6,14 @@
  */
 package com.nextcloud.talk.conversationinfo.viewmodel
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -24,6 +26,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationInfoViewModel @Inject constructor(
@@ -94,6 +97,14 @@ class ConversationInfoViewModel @Inject constructor(
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
     open class GetCapabilitiesSuccessState(val spreedCapabilities: SpreedCapability) : ViewState
+
+    private val _allowGuestsViewState = MutableLiveData<AllowGuestsUIState>(AllowGuestsUIState.None)
+    val allowGuestsViewState: LiveData<AllowGuestsUIState>
+        get() = _allowGuestsViewState
+
+    private val _passwordViewState = MutableLiveData<PasswordUiState>(PasswordUiState.None)
+    val passwordViewState: LiveData<PasswordUiState>
+        get() = _passwordViewState
 
     private val _getCapabilitiesViewState: MutableLiveData<ViewState> = MutableLiveData(GetCapabilitiesStartState)
     val getCapabilitiesViewState: LiveData<ViewState>
@@ -233,6 +244,29 @@ class ConversationInfoViewModel @Inject constructor(
             })
     }
 
+    fun allowGuests(token: String, allow: Boolean) {
+        viewModelScope.launch {
+            try {
+                conversationsRepository.allowGuests(token, allow)
+                _allowGuestsViewState.value = AllowGuestsUIState.Success(allow)
+            } catch (exception: Exception) {
+                _allowGuestsViewState.value = AllowGuestsUIState.Error(exception)
+            }
+        }
+    }
+
+    @SuppressLint("SuspiciousIndentation")
+    fun setPassword(password: String, token: String) {
+        viewModelScope.launch {
+            try {
+                conversationsRepository.setPassword(password, token)
+                _passwordViewState.value = PasswordUiState.Success
+            } catch (exception: Exception) {
+                _passwordViewState.value = PasswordUiState.Error(exception)
+            }
+        }
+    }
+
     suspend fun archiveConversation(user: User, token: String) {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForArchive(apiVersion, user.baseUrl, token)
@@ -266,5 +300,17 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.simpleName
+    }
+
+    sealed class AllowGuestsUIState {
+        data object None : AllowGuestsUIState()
+        data class Success(val allow: Boolean) : AllowGuestsUIState()
+        data class Error(val exception: Exception) : AllowGuestsUIState()
+    }
+
+    sealed class PasswordUiState {
+        data object None : PasswordUiState()
+        data object Success : PasswordUiState()
+        data class Error(val exception: Exception) : PasswordUiState()
     }
 }
