@@ -5,7 +5,6 @@
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
     <string name="archive_conversation">Arxiva la conversa</string>
-    <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

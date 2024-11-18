@@ -5,7 +5,6 @@
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
     <string name="archive_conversation">Archive Conversation</string>
-    <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \'Archived\' to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

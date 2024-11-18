@@ -5,7 +5,6 @@
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde arama</string>
     <string name="archive_conversation">Görüşmeyi arşivle</string>
-    <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \'Arşivlenmiş\' süzgecini seçin. Doğrudan anmalar yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
     <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

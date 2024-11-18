@@ -5,7 +5,6 @@
     <string name="added_to_favorites">Lade till konversationen %1$s till favoriter</string>
     <string name="appbar_search_in">Sök i %s</string>
     <string name="archive_conversation">Arkivera konversation</string>
-    <string name="archive_hint">När en konversation väl har arkiverats döljs den som standard. Välj filtret \"Arkiverad\" för att se arkiverade konversationer. Direkta omnämnanden kommer fortfarande att tas emot.</string>
     <string name="archived">Arkiverad</string>
     <string name="audio_call">Ljudsamtal</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

@@ -5,7 +5,6 @@
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
     <string name="archive_conversation">أرشفة المحادثة</string>
-    <string name="archive_hint">بمجرد أرشفة المحادثة، ستكون مخفية بشكل تلقائي. إختَر فلترة \"المؤرشف\" لعرض المحادثات المؤرشفة. سوف تظل الإشارات المباشرة متاحة.  </string>
     <string name="archived">مؤرشفة</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>

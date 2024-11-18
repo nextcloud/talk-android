@@ -5,7 +5,6 @@
     <string name="added_to_favorites">添加了對話 %1$s 至最愛</string>
     <string name="appbar_search_in">%s內搜尋</string>
     <string name="archive_conversation">封存對話</string>
-    <string name="archive_hint">一旦對話被封存，將默認隱藏。選取篩選條件「已封存」可檢視已封存的對話。您仍會收到直接提及的通知。</string>
     <string name="archived">已封存</string>
     <string name="audio_call">音頻通話</string>
     <string name="audio_output_bluetooth">藍牙</string>

@@ -5,7 +5,6 @@
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archive_conversation">Arquivar a conversa</string>
-    <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
     <string name="archived">Arquivado</string>
     <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -132,7 +131,7 @@
     <string name="nc_cancel">Cancelar</string>
     <string name="nc_capabilities_failed">Produciuse un fallo ao recuperar as funcionalidades. Interrompendo.</string>
     <string name="nc_caption">Lenda</string>
-    <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido dende %3$s ata %4$s?</string>
+    <string name="nc_certificate_dialog_text">Quere confiar nun certificado SSL descoñecido, emitido por %1$s para %2$s, válido desde %3$s ata %4$s?</string>
     <string name="nc_certificate_dialog_title">Verificar o certificado</string>
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
@@ -250,7 +249,7 @@
     <string name="nc_external_server_failed">Produciuse un fallo ao recuperar os axustes da sinalización</string>
     <string name="nc_federation_invitation_accept">Aceptar</string>
     <string name="nc_federation_invitation_reject">Rexeitar</string>
-    <string name="nc_federation_invited_to_room">dende %1$s ata %2$s</string>
+    <string name="nc_federation_invited_to_room">desde %1$s ata %2$s</string>
     <string name="nc_federation_no_invitations">Non hai convites pendentes</string>
     <string name="nc_federation_pending_invitation_hint">Vde. ten convites pendentes</string>
     <string name="nc_file_browser_back">Atrás</string>
@@ -413,9 +412,9 @@
     <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
     <string name="nc_server_helper_text">A ligazón á súa interface web %1$s cando a abre no navegador.</string>
-    <string name="nc_server_import_account">Importar unha conta dende a aplicación %1$s</string>
+    <string name="nc_server_import_account">Importar unha conta desde a aplicación %1$s</string>
     <string name="nc_server_import_account_plain">Importar unha conta</string>
-    <string name="nc_server_import_accounts">Importar contas dende a aplicación%1$s</string>
+    <string name="nc_server_import_accounts">Importar contas desde a aplicación%1$s</string>
     <string name="nc_server_import_accounts_plain">Importar contas</string>
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
@@ -506,8 +505,8 @@
     <string name="nc_upload_failed">Desculpe, produciuse un fallo no envío</string>
     <string name="nc_upload_failed_notification_text">Produciuse un fallo ao enviar %1$s</string>
     <string name="nc_upload_failed_notification_title">Produciuse un fallo</string>
-    <string name="nc_upload_from_cloud">Compartir dende %1$s</string>
-    <string name="nc_upload_from_device">Enviar dende o dispositivo</string>
+    <string name="nc_upload_from_cloud">Compartir desde %1$s</string>
+    <string name="nc_upload_from_device">Enviar desde o dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_upload_notification_text">%1$s a %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">Tirar unha foto</string>
@@ -549,7 +548,7 @@
     <string name="previously_set">Estabelecido previamente</string>
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
-    <string name="read_storage_no_permission">Non é posible compartir ficheiros dende o almacenamento sen permisos</string>
+    <string name="read_storage_no_permission">Non é posible compartir ficheiros desde o almacenamento sen permisos</string>
     <string name="record_active_info">Estase a gravar a chamada</string>
     <string name="record_cancel_start">Cancelar o inicio da gravación</string>
     <string name="record_failed_info">Produciuse un fallo na gravación. Póñase en contacto coa administración desta instancia.</string>
@@ -590,7 +589,7 @@
     <string name="send_to_three_dots">Enviar a…</string>
     <string name="send_without_notification">Enviar sen notificación</string>
     <string name="set">Definir</string>
-    <string name="set_avatar_from_camera">Definir o avatar dende a cámara</string>
+    <string name="set_avatar_from_camera">Definir o avatar desde a cámara</string>
     <string name="set_status">Definir o estado</string>
     <string name="set_status_message">Definir a mensaxe de estado</string>
     <string name="share">Compartir</string>
@@ -633,7 +632,7 @@
     <string name="translation_device_settings">Axustes do dispositivo</string>
     <string name="translation_error_message">Non foi posíbel detectar o idioma</string>
     <string name="translation_error_title">Produciuse un fallo na tradución</string>
-    <string name="translation_from">Dende:</string>
+    <string name="translation_from">Desde:</string>
     <string name="translation_to">Para</string>
     <string name="typing_1_other">e 1 máis está a escribir…</string>
     <string name="typing_are_typing">están a escribiren…</string>
@@ -643,7 +642,7 @@
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
     <string name="unban">Retirar a expulsión</string>
     <string name="unread">Sen ler</string>
-    <string name="upload_new_avatar_from_device">Enviar un novo avatar dende o dispositivo</string>
+    <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
     <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>

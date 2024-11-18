@@ -5,7 +5,6 @@
     <string name="added_to_favorites">ياقتۇرىدىغانلارغا% 1 $ s پاراڭ قوشۇلدى</string>
     <string name="appbar_search_in">% S دىن ئىزدەڭ</string>
     <string name="archive_conversation">ئارخىپ سۆھبەت</string>
-    <string name="archive_hint">سۆھبەت ئارخىپلاشتۇرۇلغاندىن كېيىن ، سۈكۈتتىكى ھالەتتە يوشۇرۇن بولىدۇ. ئارخىپ پاراڭلىرىنى كۆرۈش ئۈچۈن سۈزگۈچ ئارخىپ نى تاللاڭ. بىۋاسىتە تىلغا ئېلىنىدۇ.</string>
     <string name="archived">ئارخىپلاشتۇرۇلغان</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">كۆك چىش</string>
