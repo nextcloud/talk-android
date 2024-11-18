@@ -159,6 +159,7 @@ class ConversationInfoViewModel @Inject constructor(
                 _getTalkBanState.value = ListBansSuccessState(listBans)
             } catch (exception: Exception) {
                 _getTalkBanState.value = ListBansErrorState
+                Log.e(TAG, "Error while getting list of banned participants", exception)
             }
         }
     }
@@ -177,6 +178,7 @@ class ConversationInfoViewModel @Inject constructor(
                 _getBanActorState.value = BanActorSuccessState(talkBan)
             } catch (exception: Exception) {
                 _getBanActorState.value = BanActorErrorState
+                Log.e(TAG, "Error banning a participant", exception)
             }
         }
     }
@@ -200,6 +202,7 @@ class ConversationInfoViewModel @Inject constructor(
                 _getUnBanActorState.value = UnBanActorSuccessState
             } catch (exception: Exception) {
                 _getUnBanActorState.value = UnBanActorErrorState
+                Log.e(TAG, "Error while unbanning a participant", exception)
             }
         }
     }
