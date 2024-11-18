@@ -650,10 +650,6 @@ public interface NcApi {
     Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
                                                 @Url String url);
 
-    @GET
-    Observable<TalkBanOverall> listBans(@Header("Authorization") String authorization,
-                                        @Url String url);
-
     @DELETE
     Observable<GenericOverall> unbanActor(@Header("Authorization") String authorization,
                                           @Url String url);

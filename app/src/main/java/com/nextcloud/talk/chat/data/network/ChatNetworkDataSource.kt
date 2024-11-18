@@ -13,7 +13,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observable
 import retrofit2.Response
