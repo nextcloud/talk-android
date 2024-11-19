@@ -206,7 +206,13 @@ class ParticipantItem(
             }
 
             Participant.ActorType.EMAILS -> {
-                holder.binding.avatarView.loadMailAvatar(viewThemeUtils)
+                model.displayName?.let {
+                    if (TextUtils.isEmpty(it)) {
+                        holder.binding.avatarView.loadMailAvatar(viewThemeUtils)
+                    } else {
+                        holder.binding.avatarView.loadGuestAvatar(user, it, false)
+                    }
+                }
             }
 
             Participant.ActorType.USERS -> {
