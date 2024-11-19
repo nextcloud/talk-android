@@ -159,9 +159,10 @@ class RepositoryModule {
     @Provides
     fun provideConversationInfoEditRepository(
         ncApi: NcApi,
+        ncApiCoroutines: NcApiCoroutines,
         userProvider: CurrentUserProviderNew
     ): ConversationInfoEditRepository {
-        return ConversationInfoEditRepositoryImpl(ncApi, userProvider)
+        return ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
     }
 
     @Provides

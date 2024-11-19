@@ -120,26 +120,6 @@ public interface NcApi {
 
     /*
         QueryMap items are as follows:
-            - "roomName" : "newName"
-
-        Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken
-     */
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> renameRoom(@Header("Authorization") String authorization,
-                                          @Url String url,
-                                          @Field("roomName") String roomName);
-
-
-    @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setConversationDescription(@Header("Authorization") String authorization,
-                                                          @Url String url,
-                                                          @Field("description") String description);
-
-    /*
-        QueryMap items are as follows:
             - "newParticipant" : "user"
 
         Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /room/roomToken/participants
@@ -414,12 +394,6 @@ public interface NcApi {
                                                     @Field("level") int level);
 
     @FormUrlEncoded
-    @PUT
-    Observable<GenericOverall> setConversationReadOnly(@Header("Authorization") String authorization,
-                                                @Url String url,
-                                                @Field("state") int state);
-
-    @FormUrlEncoded
     @POST
     Observable<GenericOverall> createRemoteShare(@Nullable @Header("Authorization") String authorization,
                                                  @Url String url,
@@ -491,9 +465,6 @@ public interface NcApi {
                                             @Field("objectType") String objectType,
                                             @Field("objectId") String objectId,
                                             @Field("metaData") String metaData);
-
-    @DELETE
-    Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
 
     @FormUrlEncoded
     @POST

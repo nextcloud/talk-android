@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
 import com.nextcloud.talk.data.user.model.User
@@ -18,6 +19,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -42,6 +44,15 @@ class ConversationInfoEditViewModel @Inject constructor(
     val viewState: LiveData<ViewState>
         get() = _viewState
 
+    private val _renameRoomUiState = MutableLiveData<RenameRoomUiState>(RenameRoomUiState.None)
+    val renameRoomUiState: LiveData<RenameRoomUiState>
+        get() = _renameRoomUiState
+
+    private val _setConversationDescriptionUiState =
+        MutableLiveData<SetConversationDescriptionUiState>(SetConversationDescriptionUiState.None)
+    val setConversationDescriptionUiState: LiveData<SetConversationDescriptionUiState>
+        get() = _setConversationDescriptionUiState
+
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
         repository.getRoom(user, token)
@@ -62,6 +73,32 @@ class ConversationInfoEditViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(DeleteConversationAvatarObserver())
+    }
+
+    fun renameRoom(roomToken: String, newRoomName: String) {
+        viewModelScope.launch {
+            try {
+                conversationInfoEditRepository.renameConversation(roomToken, newRoomName)
+                _renameRoomUiState.value = RenameRoomUiState.Success
+            } catch (exception: Exception) {
+                _renameRoomUiState.value = RenameRoomUiState.Error(exception)
+            }
+        }
+    }
+
+    fun setConversationDescription(roomToken: String, conversationDescription: String?) {
+        viewModelScope.launch {
+            try {
+                conversationInfoEditRepository.setConversationDescription(
+                    roomToken,
+                    conversationDescription
+                )
+
+                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Success
+            } catch (exception: Exception) {
+                _setConversationDescriptionUiState.value = SetConversationDescriptionUiState.Error(exception)
+            }
+        }
     }
 
     inner class GetRoomObserver : Observer<ConversationModel> {
@@ -123,5 +160,17 @@ class ConversationInfoEditViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoEditViewModel::class.simpleName
+    }
+
+    sealed class RenameRoomUiState {
+        data object None : RenameRoomUiState()
+        data object Success : RenameRoomUiState()
+        data class Error(val exception: Exception) : RenameRoomUiState()
+    }
+
+    sealed class SetConversationDescriptionUiState {
+        data object None : SetConversationDescriptionUiState()
+        data object Success : SetConversationDescriptionUiState()
+        data class Error(val exception: Exception) : SetConversationDescriptionUiState()
     }
 }

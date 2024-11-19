@@ -74,8 +74,10 @@ class ConversationsRepositoryImpl(
         return coroutineApi.unarchiveConversation(credentials, url)
     }
 
-    override fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall> {
-        return api.setConversationReadOnly(credentials, url, state)
+    override suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall {
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
+        val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, roomToken)
+        return coroutineApi.setConversationReadOnly(credentials, url, state)
     }
 
     override suspend fun setPassword(password: String, token: String): GenericOverall {
@@ -89,6 +91,13 @@ class ConversationsRepositoryImpl(
             password
         )
         return result
+    }
+
+    override suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall {
+        return coroutineApi.clearChatHistory(
+            credentials,
+            ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
+        )
     }
 
     private fun apiVersion(): Int {

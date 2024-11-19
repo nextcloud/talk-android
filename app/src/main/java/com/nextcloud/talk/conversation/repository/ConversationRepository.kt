@@ -8,12 +8,9 @@ package com.nextcloud.talk.conversation.repository
 
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.generic.GenericOverall
 import io.reactivex.Observable
 
 interface ConversationRepository {
-
-    fun renameConversation(roomToken: String, roomNameNew: String): Observable<GenericOverall>
 
     fun createConversation(
         roomName: String,

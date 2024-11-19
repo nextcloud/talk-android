@@ -27,7 +27,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.conversation.viewmodel.RenameConversationViewModel
+import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.databinding.DialogRenameConversationBinding
 import com.nextcloud.talk.events.ConversationsListFetchDataEvent
@@ -49,7 +49,7 @@ class RenameConversationDialogFragment : DialogFragment() {
     lateinit var eventBus: EventBus
 
     private lateinit var binding: DialogRenameConversationBinding
-    private lateinit var viewModel: RenameConversationViewModel
+    private lateinit var viewModel: ConversationInfoEditViewModel
 
     private var emojiPopup: EmojiPopup? = null
 
@@ -61,7 +61,7 @@ class RenameConversationDialogFragment : DialogFragment() {
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        viewModel = ViewModelProvider(this, viewModelFactory)[RenameConversationViewModel::class.java]
+        viewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoEditViewModel::class.java]
         roomToken = arguments?.getString(KEY_ROOM_TOKEN)!!
         initialName = arguments?.getString(INITIAL_NAME)!!
     }
@@ -102,7 +102,7 @@ class RenameConversationDialogFragment : DialogFragment() {
         val positiveButton = (dialog as AlertDialog).getButton(AlertDialog.BUTTON_POSITIVE)
         positiveButton.isEnabled = false
         positiveButton.setOnClickListener {
-            viewModel.renameConversation(roomToken, binding.textEdit.text.toString())
+            viewModel.renameRoom(roomToken, binding.textEdit.text.toString())
         }
 
         themeDialog()
@@ -169,17 +169,21 @@ class RenameConversationDialogFragment : DialogFragment() {
     }
 
     private fun setupStateObserver() {
-        viewModel.viewState.observe(viewLifecycleOwner) { state ->
+        viewModel.renameRoomUiState.observe(viewLifecycleOwner) { state ->
             when (state) {
-                is RenameConversationViewModel.InitialState -> {}
-                is RenameConversationViewModel.RenamingState -> {}
-                is RenameConversationViewModel.RenamingSuccessState -> handleSuccess()
-                is RenameConversationViewModel.RenamingFailedState -> showError()
-                else -> {}
+                is ConversationInfoEditViewModel.RenameRoomUiState.None -> {
+                }
+                is ConversationInfoEditViewModel.RenameRoomUiState.Success -> {
+                    handleSuccess()
+                }
+                is ConversationInfoEditViewModel.RenameRoomUiState.Error -> {
+                    showError()
+                }
             }
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun handleSuccess() {
         eventBus.post(ConversationsListFetchDataEvent())
 
