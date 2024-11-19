@@ -176,7 +176,7 @@ object DisplayUtils {
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
         if (!isCallOrGroup) {
             var url = getUrlForAvatar(conversationUser.baseUrl, id, false)
-            if ("guests" == type || "guest" == type) {
+            if ("guests" == type || "guest" == type || "email" == type) {
                 url = getUrlForGuestAvatar(
                     conversationUser.baseUrl, label.toString(), true
                 )
