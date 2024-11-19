@@ -1,8 +1,9 @@
 # SPDX-FileCopyrightText: 2021-2024 Nextcloud GmbH and Nextcloud contributors
-# SPDX-FileCopyrightText: 2022 Álvaro Brey <alvaro.brey@nextcloud.com>
-# SPDX-FileCopyrightText: 2021 Joas Schilling <coding@schilljs.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 contact_links:
-    -   name: Community Support and Help
-        url: https://help.nextcloud.com/
-        about: For questions and general help
+    - name: 🗺️ Feature request for the full Nextcloud Talk suite
+      url: https://github.com/nextcloud/spreed/issues/new/choose
+      about: Suggest an idea for Nextcloud Talk for all users, client and server
+    - name: ❓ Community Support and Help
+      url: https://help.nextcloud.com/
+      about: Configuration, webserver/proxy or performance issues and other questions

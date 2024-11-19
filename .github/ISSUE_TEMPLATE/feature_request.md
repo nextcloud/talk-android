@@ -1,5 +1,5 @@
 ---
-name: Feature request
+name: 🚀 Feature request specifically for Nextcloud Talk Android
 about: Suggest an idea for Nextcloud Talk Android
 title: ''
 labels: 0. Needs triage, enhancement
