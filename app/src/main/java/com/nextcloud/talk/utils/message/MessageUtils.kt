@@ -107,7 +107,7 @@ class MessageUtils(val context: Context) {
             val individualHashMap = message.messageParameters!![key]
             if (individualHashMap != null) {
                 when (individualHashMap["type"]) {
-                    "user", "guest", "call", "user-group" -> {
+                    "user", "guest", "call", "user-group", "email" -> {
                         val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
                             R.xml.chip_you
                         } else {
