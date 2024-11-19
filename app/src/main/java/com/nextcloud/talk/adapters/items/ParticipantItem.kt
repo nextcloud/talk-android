@@ -26,11 +26,13 @@ import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadMailAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.InCallFlags
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DisplayUtils.convertDpToPixel
 import eu.davidea.flexibleadapter.FlexibleAdapter
@@ -45,7 +47,7 @@ class ParticipantItem(
     val model: Participant,
     private val user: User,
     private val viewThemeUtils: ViewThemeUtils,
-    private val roomToken: String
+    private val conversation: ConversationModel
 ) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
     var isOnline = true
     override fun equals(o: Any?): Boolean {
@@ -128,7 +130,13 @@ class ParticipantItem(
             Participant.ParticipantType.GUEST -> {
                 userType = sharedApplication!!.getString(R.string.nc_guest)
                 if (model.calculatedActorType == Participant.ActorType.EMAILS) {
-                    userType = sharedApplication!!.getString(R.string.nc_email)
+                    userType = sharedApplication!!.getString(R.string.nc_guest)
+                }
+
+                if (model.invitedActorId?.isNotEmpty() == true &&
+                    ConversationUtils.isParticipantOwnerOrModerator(conversation)) {
+                    holder.binding.conversationInfoStatusMessage.text = model.invitedActorId
+                    alignUsernameVertical(holder, 0f)
                 }
             }
 
@@ -218,7 +226,7 @@ class ParticipantItem(
                 holder.binding.avatarView.loadFederatedUserAvatar(
                     user,
                     user.baseUrl!!,
-                    roomToken,
+                    conversation.token,
                     model.actorId!!,
                     darkTheme,
                     true,
