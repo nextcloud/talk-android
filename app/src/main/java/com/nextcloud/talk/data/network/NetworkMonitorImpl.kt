@@ -66,9 +66,9 @@ class NetworkMonitorImpl @Inject constructor(
             connectivityManager.unregisterNetworkCallback(networkCallback)
         }
     }
-    .distinctUntilChanged()
-    .flowOn(Dispatchers.IO)
-    .conflate()
+        .distinctUntilChanged()
+        .flowOn(Dispatchers.IO)
+        .conflate()
 
     private fun ConnectivityManager.isCurrentlyConnected() =
         activeNetwork
