@@ -109,7 +109,6 @@ class MentionAutocompleteItem(
             )
         } else {
             holder.binding.nameText.text = displayName
-            holder.binding.secondaryText.text = "@$objectId"
         }
         var avatarId = objectId
         when (source) {
