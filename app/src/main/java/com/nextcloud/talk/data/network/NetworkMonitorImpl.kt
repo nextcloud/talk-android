@@ -11,10 +11,10 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkCapabilities
-import android.net.NetworkRequest
 import android.net.NetworkRequest.Builder
 import androidx.core.content.getSystemService
-import androidx.core.os.trace
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -29,54 +29,46 @@ import javax.inject.Singleton
 class NetworkMonitorImpl @Inject constructor(
     private val context: Context
 ) : NetworkMonitor {
+    override val isOnlineLiveData: LiveData<Boolean>
+        get() = isOnline.asLiveData()
+
     override val isOnline: Flow<Boolean> = callbackFlow {
-        trace("NetworkMonitorImpl.callbackFlow") {
-            val connectivityManager = context.getSystemService<ConnectivityManager>()
-            if (connectivityManager == null) {
-                channel.trySend(false)
-                channel.close()
-                return@callbackFlow
+        val connectivityManager = context.getSystemService<ConnectivityManager>()
+        if (connectivityManager == null) {
+            channel.trySend(false)
+            channel.close()
+            return@callbackFlow
+        }
+
+        val networkRequest = Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+
+        val networkCallback = object : ConnectivityManager.NetworkCallback() {
+            private val networks = mutableSetOf<Network>()
+
+            override fun onAvailable(network: Network) {
+                networks += network
+                channel.trySend(true)
             }
 
-            /**
-             * The callback's methods are invoked on changes to *any* network matching the [NetworkRequest],
-             * not just the active network. So we can simply track the presence (or absence) of such [Network].
-             */
-            val callback = object : ConnectivityManager.NetworkCallback() {
-
-                private val networks = mutableSetOf<Network>()
-
-                override fun onAvailable(network: Network) {
-                    networks += network
-                    channel.trySend(true)
-                }
-
-                override fun onLost(network: Network) {
-                    networks -= network
-                    channel.trySend(networks.isNotEmpty())
-                }
-            }
-
-            trace("NetworkMonitorImpl.registerNetworkCallback") {
-                val request = Builder()
-                    .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                    .build()
-                connectivityManager.registerNetworkCallback(request, callback)
-            }
-
-            /**
-             * Sends the latest connectivity status to the underlying channel.
-             */
-            channel.trySend(connectivityManager.isCurrentlyConnected())
-
-            awaitClose {
-                connectivityManager.unregisterNetworkCallback(callback)
+            override fun onLost(network: Network) {
+                networks -= network
+                channel.trySend(networks.isNotEmpty())
             }
         }
+
+        connectivityManager.registerNetworkCallback(networkRequest, networkCallback)
+
+        channel.trySend(connectivityManager.isCurrentlyConnected())
+
+        awaitClose {
+            connectivityManager.unregisterNetworkCallback(networkCallback)
+        }
     }
-        .distinctUntilChanged()
-        .flowOn(Dispatchers.IO)
-        .conflate()
+    .distinctUntilChanged()
+    .flowOn(Dispatchers.IO)
+    .conflate()
 
     private fun ConnectivityManager.isCurrentlyConnected() =
         activeNetwork

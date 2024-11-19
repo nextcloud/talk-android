@@ -10,11 +10,7 @@ package com.nextcloud.talk.ui.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +24,7 @@ import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.conversationlist.ConversationsListActivity;
+import com.nextcloud.talk.data.network.NetworkMonitor;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
 import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
@@ -87,6 +84,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Inject
     InvitationsRepository invitationsRepository;
 
+    @Inject
+    NetworkMonitor networkMonitor;
+
     private DialogChooseAccountBinding binding;
     private View dialogView;
 
@@ -115,7 +115,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         setupCurrentUser(user);
         setupListeners();
         setupAdapter();
-        prepareViews();
+        networkMonitor.isOnlineLiveData().observe(this, this::prepareViews);
     }
 
     private void setupCurrentUser(User user) {
@@ -265,29 +265,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.dialog.colorDialogMenuText(binding.manageSettings);
     }
 
-    // Would have preferred to use NetworkMonitor but java with kotlin flows is ugly
-    public static boolean isNetworkAvailable(Context context) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager == null) {
-            return false;
-        }
-
-        Network network = connectivityManager.getActiveNetwork();
-        if (network == null) {
-            return false;
-        }
-
-        NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-        if (capabilities == null) {
-            return false;
-        }
-
-        return capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) ||
-            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
-    }
-
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
@@ -336,7 +313,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         }
     }
 
-    private void prepareViews() {
+    private void prepareViews(Boolean isOnline) {
         if (getActivity() != null) {
             LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
             binding.accountsList.setLayoutManager(layoutManager);
@@ -344,7 +321,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         binding.accountsList.setHasFixedSize(true);
         binding.accountsList.setAdapter(adapter);
 
-        if (!isNetworkAvailable(getContext())) {
+        if (!isOnline) {
             binding.addAccount.setVisibility(View.GONE);
         }
     }
