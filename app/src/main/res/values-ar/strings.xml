@@ -5,6 +5,7 @@
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
     <string name="archive_conversation">أرشفة المحادثة</string>
+    <string name="archive_hint">رد أرشفة محادثة، سيتم إخفاؤها افتراضياً. حدِّد الفلتر \"مُؤرشَفة\" لعرض المحادثات المؤرشفة. الإشارات المباشرة ستظل قابلة ليُشار إليها حتى بعد الأرشفة.</string>
     <string name="archived">مؤرشفة</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
@@ -422,7 +423,7 @@
     <string name="nc_server_unsupported">الخادم ليس فيه تطبيق Talk مدعوم </string>
     <string name="nc_server_url">عنوان الخادم https://…</string>
     <string name="nc_server_version">%1$s يعمل فقط مع %2$s 13 وأكثر</string>
-    <string name="nc_set_new_password">عَيِّن كلمة مرور جديدة</string>
+    <string name="nc_set_new_password">تعيين كلمة مرور جديدة</string>
     <string name="nc_set_password">تعيين كلمة المرور</string>
     <string name="nc_settings">الإعدادات</string>
     <string name="nc_settings_account_updated">تم تحديث حسابك الموجود بالفعل، بدلاً من إضافة حساب جديد</string>

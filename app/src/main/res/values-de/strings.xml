@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
     <string name="archive_conversation">Unterhaltung archivieren</string>
+    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter „Archiviert“, um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
     <string name="archived">Archiviert</string>
     <string name="audio_call">Audioanruf</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
