@@ -16,10 +16,6 @@ object VibrationUtils {
 
     fun vibrateShort(context: Context) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            vibrator.vibrate(SHORT_VIBRATE)
-        }
+        vibrator.vibrate(VibrationEffect.createOneShot(SHORT_VIBRATE, VibrationEffect.DEFAULT_AMPLITUDE))
     }
 }

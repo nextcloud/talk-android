@@ -15,8 +15,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -66,13 +64,11 @@ import com.nextcloud.talk.receivers.ShareRecordingToChatReceiver
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
-import com.nextcloud.talk.utils.DoNotDisturbUtils.shouldPlaySound
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelAllNotificationsForAccount
 import com.nextcloud.talk.utils.NotificationUtils.cancelNotification
 import com.nextcloud.talk.utils.NotificationUtils.findNotificationForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
-import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.loadAvatarSync
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.PushUtils
@@ -90,7 +86,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -99,7 +94,6 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.JavaNetCookieJar
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import java.io.IOException
 import java.net.CookieManager
 import java.security.InvalidKeyException
 import java.security.NoSuchAlgorithmException
@@ -541,7 +535,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         notificationBuilder.setExtras(notificationInfoBundle)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (pushMessage.type) {
                 TYPE_CHAT,
                 TYPE_ROOM,
@@ -554,10 +547,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     )
                 }
             }
-        } else {
-            // red color for the lights
-            notificationBuilder.setLights(-0x10000, 200, 200)
-        }
 
         notificationBuilder.setContentIntent(pendingIntent)
         val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
@@ -847,35 +836,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
         notificationManager.notify(notificationId, notification)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            // On devices with Android 8.0 (Oreo) or later, notification sound will be handled by the system
-            // if notifications have not been disabled by the user.
-            return
-        }
-        if (Notification.CATEGORY_CALL != notification.category || !muteCall) {
-            val soundUri = getMessageRingtoneUri(context!!, appPreferences)
-            if (soundUri != null && !ApplicationWideCurrentRoomHolder.getInstance().isInCall &&
-                (shouldPlaySound() || importantConversation)
-            ) {
-                val audioAttributesBuilder =
-                    AudioAttributes.Builder().setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
-                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_INSTANT)
-                } else {
-                    audioAttributesBuilder.setUsage(AudioAttributes.USAGE_NOTIFICATION_COMMUNICATION_REQUEST)
-                }
-                val mediaPlayer = MediaPlayer()
-                try {
-                    mediaPlayer.setDataSource(context!!, soundUri)
-                    mediaPlayer.setAudioAttributes(audioAttributesBuilder.build())
-                    mediaPlayer.setOnPreparedListener { mediaPlayer.start() }
-                    mediaPlayer.setOnCompletionListener { obj: MediaPlayer -> obj.release() }
-                    mediaPlayer.prepareAsync()
-                } catch (e: IOException) {
-                    Log.e(TAG, "Failed to set data source")
-                }
-            }
-        }
+        // On devices with Android 8.0 (Oreo) or later, notification sound will be handled by the system
+        // if notifications have not been disabled by the user.
+        return
     }
 
     private fun removeNotification(notificationId: Int) {
@@ -1049,6 +1012,5 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
-        private const val GET_ROOM_RETRY_COUNT: Long = 3
     }
 }

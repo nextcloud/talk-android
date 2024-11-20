@@ -8,7 +8,6 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
@@ -42,7 +41,7 @@ class ImageEmojiEditText : EmojiEditText {
             InputConnectionCompat.OnCommitContentListener { inputContentInfo, flags, _ ->
 
                 val lacksPermission = (flags and InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION) != 0
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1 && lacksPermission) {
+                if (lacksPermission) {
                     try {
                         inputContentInfo.requestPermission()
                     } catch (e: Exception) {

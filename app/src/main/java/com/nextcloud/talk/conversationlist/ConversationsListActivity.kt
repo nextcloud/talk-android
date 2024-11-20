@@ -551,7 +551,7 @@ class ConversationsListActivity :
             searchView!!.maxWidth = Int.MAX_VALUE
             searchView!!.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences.isKeyboardIncognito) {
+            if (appPreferences.isKeyboardIncognito) {
                 imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
             searchView!!.imeOptions = imeOptions

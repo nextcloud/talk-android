@@ -21,7 +21,6 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.net.Uri
-import android.os.Build
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -346,12 +345,10 @@ object DisplayUtils {
         if (window != null) {
             val decor = window.decorView
             if (isLightTheme) {
-                val systemUiFlagLightStatusBar: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val systemUiFlagLightStatusBar: Int =
                     View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or
                         View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
-                } else {
-                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-                }
+
                 decor.systemUiVisibility = systemUiFlagLightStatusBar
             } else {
                 decor.systemUiVisibility = 0

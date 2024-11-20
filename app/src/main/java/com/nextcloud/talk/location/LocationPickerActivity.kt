@@ -17,7 +17,6 @@ import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
-import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -217,7 +216,7 @@ class LocationPickerActivity :
             searchView?.maxWidth = Int.MAX_VALUE
             searchView?.inputType = InputType.TYPE_TEXT_VARIATION_FILTER
             var imeOptions = EditorInfo.IME_ACTION_DONE or EditorInfo.IME_FLAG_NO_FULLSCREEN
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && appPreferences!!.isKeyboardIncognito) {
+            if (appPreferences!!.isKeyboardIncognito) {
                 imeOptions = imeOptions or EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
             }
             searchView?.imeOptions = imeOptions

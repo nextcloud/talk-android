@@ -8,7 +8,6 @@
  */
 package com.nextcloud.talk.adapters.items
 
-import android.os.Build
 import android.text.TextUtils
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -136,9 +135,9 @@ class ContactItem(
         if (model.calculatedActorType == Participant.ActorType.GROUPS ||
             model.calculatedActorType == Participant.ActorType.CIRCLES
         ) {
-            setGenericAvatar(holder!!, R.drawable.ic_avatar_group, R.drawable.ic_circular_group)
+            setGenericAvatar(holder!!, R.drawable.ic_avatar_group)
         } else if (model.calculatedActorType == Participant.ActorType.EMAILS) {
-            setGenericAvatar(holder!!, R.drawable.ic_avatar_mail, R.drawable.ic_circular_mail)
+            setGenericAvatar(holder!!, R.drawable.ic_avatar_mail)
         } else if (model.calculatedActorType == Participant.ActorType.GUESTS ||
             model.type == Participant.ParticipantType.GUEST || model.type == Participant.ParticipantType.GUEST_MODERATOR
         ) {
@@ -169,17 +168,13 @@ class ContactItem(
 
     private fun setGenericAvatar(
         holder: ContactItemViewHolder,
-        roundPlaceholderDrawable: Int,
-        fallbackImageResource: Int
+        roundPlaceholderDrawable: Int
     ) {
-        val avatar = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val avatar =
             viewThemeUtils.talk.themePlaceholderAvatar(
                 holder.binding.avatarView,
                 roundPlaceholderDrawable
             )
-        } else {
-            fallbackImageResource
-        }
 
         holder.binding.avatarView.loadUserAvatar(avatar)
     }
