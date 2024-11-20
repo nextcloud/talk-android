@@ -21,10 +21,10 @@ import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHold
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
+import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
-import com.nextcloud.talk.extensions.loadMailAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.participants.Participant
@@ -173,6 +173,7 @@ class ParticipantItem(
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun showCallIcons(holder: ParticipantItemViewHolder) {
         val resources = sharedApplication!!.resources
         val inCallFlag = model.inCall
@@ -205,26 +206,16 @@ class ParticipantItem(
                 holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
             }
 
-            Participant.ActorType.EMAILS -> {
-                model.displayName?.let {
-                    if (TextUtils.isEmpty(it)) {
-                        holder.binding.avatarView.loadMailAvatar(viewThemeUtils)
-                    } else {
-                        holder.binding.avatarView.loadGuestAvatar(user, it, false)
-                    }
-                }
-            }
-
             Participant.ActorType.USERS -> {
                 holder.binding.avatarView.loadUserAvatar(user, model.calculatedActorId!!, true, false)
             }
 
-            Participant.ActorType.GUESTS -> {
-                var displayName: String? = sharedApplication!!.resources.getString(R.string.nc_guest)
-                if (!TextUtils.isEmpty(model.displayName)) {
-                    displayName = model.displayName
+            Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
+                if (model.displayName.isNullOrEmpty()) {
+                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
+                } else {
+                    holder.binding.avatarView.loadGuestAvatar(user, model.displayName!!, false)
                 }
-                holder.binding.avatarView.loadGuestAvatar(user, displayName!!, false)
             }
 
             Participant.ActorType.FEDERATED -> {
