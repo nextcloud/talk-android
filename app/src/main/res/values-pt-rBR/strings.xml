@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Conversa adicionada %1$s para favoritos</string>
     <string name="appbar_search_in">Pesquisar em %s</string>
     <string name="archive_conversation">Arquive conversa</string>
+    <string name="archive_hint">Quando uma conversa for arquivada, ela ficará oculta por padrão. Selecione o filtro \"Arquivado\" para visualizar as conversas arquivadas. As menções diretas ainda serão recebidas.</string>
     <string name="archived">Arquivado</string>
     <string name="audio_call">Chamada de áudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas estão na fila</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>
+    <string name="conversation_read_only_failed">Falha ao definir a conversa Somente leitura</string>
     <string name="conversations">Conversas</string>
     <string name="create_conversation">Criando conversa</string>
     <string name="create_issue">Criar problema</string>
@@ -606,6 +608,7 @@
     <string name="startCallForbidden">Você não tem permissão para iniciar uma ligação</string>
     <string name="started_a_call">iniciou uma chamada</string>
     <string name="status_message">Mensagem de status</string>
+    <string name="status_reverted">status revertido</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Tirar uma fotos</string>
