@@ -26,9 +26,9 @@ import coil.result
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -89,7 +89,7 @@ fun ImageView.loadConversationAvatar(
                 ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
 
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-                ContextCompat.getDrawable(context, R.drawable.ic_circular_link)
+                ContextCompat.getDrawable(context, R.drawable.ic_conv_public)
 
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
