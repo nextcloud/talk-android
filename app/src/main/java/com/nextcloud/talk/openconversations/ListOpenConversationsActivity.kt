@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
@@ -23,6 +24,7 @@ import com.nextcloud.talk.openconversations.adapters.OpenConversationsAdapter
 import com.nextcloud.talk.openconversations.data.OpenConversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.vanniktech.ui.showKeyboardAndFocus
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -40,6 +42,8 @@ class ListOpenConversationsActivity : BaseActivity() {
 
     lateinit var adapter: OpenConversationsAdapter
 
+    var searching = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -52,13 +56,32 @@ class ListOpenConversationsActivity : BaseActivity() {
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
+        viewThemeUtils.platform.colorEditText(binding.searchEdit)
 
         val user = currentUserProvider.currentUser.blockingGet()
 
         adapter = OpenConversationsAdapter(user) { conversation -> adapterOnClick(conversation) }
         binding.openConversationsRecyclerView.adapter = adapter
+        binding.searchOpenConversations.setOnClickListener {
+            searching = !searching
+            handleSearchUI(searching)
+        }
+        binding.searchEdit.doOnTextChanged { text, _, _, count ->
+            adapter.filter(text.toString())
+        }
 
         initObservers()
+    }
+
+    private fun handleSearchUI(show: Boolean) {
+        if (show) {
+            binding.searchOpenConversations.visibility = View.GONE
+            binding.searchEdit.visibility = View.VISIBLE
+            binding.searchEdit.showKeyboardAndFocus()
+        } else {
+            binding.searchOpenConversations.visibility = View.VISIBLE
+            binding.searchEdit.visibility = View.GONE
+        }
     }
 
     private fun adapterOnClick(conversation: OpenConversation) {
@@ -105,7 +128,12 @@ class ListOpenConversationsActivity : BaseActivity() {
     private fun setupActionBar() {
         setSupportActionBar(binding.openConversationsToolbar)
         binding.openConversationsToolbar.setNavigationOnClickListener {
-            onBackPressedDispatcher.onBackPressed()
+            if (searching) {
+                handleSearchUI(false)
+                searching = false
+            } else {
+                onBackPressedDispatcher.onBackPressed()
+            }
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
