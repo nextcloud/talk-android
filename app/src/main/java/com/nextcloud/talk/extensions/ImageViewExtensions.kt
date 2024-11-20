@@ -206,11 +206,10 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
         .target(this)
         .transformations(CircleCropTransformation())
 
-
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-        requestBuilder.placeholder(LayerDrawable(layers))
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
+    requestBuilder.placeholder(LayerDrawable(layers))
 
     if (url.startsWith(user.baseUrl!!) &&
         (url.contains("index.php/core/preview") || url.contains("/avatar/"))
@@ -271,12 +270,11 @@ fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
-
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-        val layerDrawable = LayerDrawable(layers)
-        val data: Any  = layerDrawable
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {
@@ -286,13 +284,11 @@ fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
-
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
-        val layerDrawable = LayerDrawable(layers)
-         val data: Any = layerDrawable
-
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {
@@ -306,12 +302,11 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ColorDrawable(context.getColor(R.color.black))
-        layers[1] = TextDrawable(context, ">")
-        val layerDrawable = LayerDrawable(layers)
-        val data: Any  = layerDrawable
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ColorDrawable(context.getColor(R.color.black))
+    layers[1] = TextDrawable(context, ">")
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {

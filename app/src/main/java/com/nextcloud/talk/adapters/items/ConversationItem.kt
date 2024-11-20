@@ -194,12 +194,12 @@ class ConversationItem(
             }
 
             ConversationEnums.ObjectType.FILE -> {
-                    holder.binding.dialogAvatar.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.dialogAvatar,
-                            R.drawable.ic_avatar_document
-                        )
+                holder.binding.dialogAvatar.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.dialogAvatar,
+                        R.drawable.ic_avatar_document
                     )
+                )
 
                 false
             }

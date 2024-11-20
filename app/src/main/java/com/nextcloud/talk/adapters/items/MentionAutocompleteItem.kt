@@ -116,22 +116,22 @@ class MentionAutocompleteItem(
             SOURCE_CALLS -> {
                 run {}
                 run {
-                        holder.binding.avatarView.loadUserAvatar(
-                            viewThemeUtils.talk.themePlaceholderAvatar(
-                                holder.binding.avatarView,
-                                R.drawable.ic_avatar_group
-                            )
-                        )
-                }
-            }
-
-            SOURCE_GROUPS -> {
                     holder.binding.avatarView.loadUserAvatar(
                         viewThemeUtils.talk.themePlaceholderAvatar(
                             holder.binding.avatarView,
                             R.drawable.ic_avatar_group
                         )
                     )
+                }
+            }
+
+            SOURCE_GROUPS -> {
+                holder.binding.avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.avatarView,
+                        R.drawable.ic_avatar_group
+                    )
+                )
             }
 
             SOURCE_FEDERATION -> {

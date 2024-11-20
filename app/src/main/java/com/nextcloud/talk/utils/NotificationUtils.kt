@@ -54,7 +54,6 @@ object NotificationUtils {
     const val KEY_UPLOAD_GROUP = "com.nextcloud.talk.utils.KEY_UPLOAD_GROUP"
     const val GROUP_SUMMARY_NOTIFICATION_ID = -1
 
-
     private fun createNotificationChannel(
         context: Context,
         notificationChannel: Channel,
@@ -151,29 +150,26 @@ object NotificationUtils {
     }
 
     fun removeOldNotificationChannels(context: Context) {
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        // Current version does not use notification channel groups - delete all groups
+        for (channelGroup in notificationManager.notificationChannelGroups) {
+            notificationManager.deleteNotificationChannelGroup(channelGroup.id)
+        }
 
-            // Current version does not use notification channel groups - delete all groups
-            for (channelGroup in notificationManager.notificationChannelGroups) {
-                notificationManager.deleteNotificationChannelGroup(channelGroup.id)
+        val channelsToKeep = NotificationChannels.values().map { it.name }
+
+        // Delete all notification channels created by previous versions
+        for (channel in notificationManager.notificationChannels) {
+            if (!channelsToKeep.contains(channel.id)) {
+                notificationManager.deleteNotificationChannel(channel.id)
             }
-
-            val channelsToKeep = NotificationChannels.values().map { it.name }
-
-            // Delete all notification channels created by previous versions
-            for (channel in notificationManager.notificationChannels) {
-                if (!channelsToKeep.contains(channel.id)) {
-                    notificationManager.deleteNotificationChannel(channel.id)
-                }
-            }
-
+        }
     }
 
-
     private fun getNotificationChannel(context: Context, channelId: String): NotificationChannel? {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            return notificationManager.getNotificationChannel(channelId)
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager.getNotificationChannel(channelId)
     }
 
     private inline fun scanNotifications(
@@ -283,13 +279,12 @@ object NotificationUtils {
         defaultRingtoneUri: String,
         channelId: String
     ): Uri? {
-
-            val channel = getNotificationChannel(context, channelId)
-            if (channel != null) {
-                return channel.sound
-            }
-            // Notification channel will not be available when starting the application for the first time.
-            // Ringtone uris are required to register the notification channels -> get uri from preferences.
+        val channel = getNotificationChannel(context, channelId)
+        if (channel != null) {
+            return channel.sound
+        }
+        // Notification channel will not be available when starting the application for the first time.
+        // Ringtone uris are required to register the notification channels -> get uri from preferences.
 
         return if (TextUtils.isEmpty(ringtonePreferencesString)) {
             Uri.parse(defaultRingtoneUri)

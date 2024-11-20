@@ -256,8 +256,8 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
     private fun setupNotificationSettings() {
         binding.settingsNotificationsTitle.text = resources!!.getString(
-                R.string.nc_settings_notification_sounds_post_oreo
-            )
+            R.string.nc_settings_notification_sounds_post_oreo
+        )
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
     }
@@ -359,26 +359,25 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
         }
 
-            binding.settingsCallSound.setOnClickListener {
-                val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                intent.putExtra(
-                    Settings.EXTRA_CHANNEL_ID,
-                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
-                )
+        binding.settingsCallSound.setOnClickListener {
+            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+            intent.putExtra(
+                Settings.EXTRA_CHANNEL_ID,
+                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
+            )
 
-                startActivity(intent)
-            }
-            binding.settingsMessageSound.setOnClickListener {
-                val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
-                intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
-                intent.putExtra(
-                    Settings.EXTRA_CHANNEL_ID,
-                    NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-                )
-                startActivity(intent)
-            }
-
+            startActivity(intent)
+        }
+        binding.settingsMessageSound.setOnClickListener {
+            val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+            intent.putExtra(
+                Settings.EXTRA_CHANNEL_ID,
+                NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+            )
+            startActivity(intent)
+        }
     }
 
     private fun setTroubleshootingClickListenersIfNecessary() {
@@ -860,9 +859,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private fun setupCheckables() {
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
 
-
-            binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
-
+        binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
 
         if (CapabilitiesUtil.isReadStatusAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
             binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)

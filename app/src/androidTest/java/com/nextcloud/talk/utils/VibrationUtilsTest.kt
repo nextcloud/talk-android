@@ -33,13 +33,13 @@ class VibrationUtilsTest {
     @Test
     fun testVibrateShort() {
         VibrationUtils.vibrateShort(mockContext)
-            Mockito.verify(mockVibrator)
-                .vibrate(
-                    VibrationEffect
-                        .createOneShot(
-                            VibrationUtils.SHORT_VIBRATE,
-                            VibrationEffect.DEFAULT_AMPLITUDE
-                        )
-                )
+        Mockito.verify(mockVibrator)
+            .vibrate(
+                VibrationEffect
+                    .createOneShot(
+                        VibrationUtils.SHORT_VIBRATE,
+                        VibrationEffect.DEFAULT_AMPLITUDE
+                    )
+            )
     }
 }
