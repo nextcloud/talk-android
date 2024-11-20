@@ -17,6 +17,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
+import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.status.StatusType
@@ -146,9 +147,9 @@ class MentionAutocompleteItem(
                 )
             }
 
-            SOURCE_GUESTS -> {
-                run { avatarId = displayName }
-                run { holder.binding.avatarView.loadUserAvatar(currentUser, avatarId!!, true, false) }
+            SOURCE_GUESTS, SOURCE_EMAILS -> {
+                avatarId = displayName
+                holder.binding.avatarView.loadGuestAvatar(currentUser, avatarId!!, false)
             }
 
             else -> {
@@ -217,6 +218,7 @@ class MentionAutocompleteItem(
         const val SOURCE_CALLS = "calls"
         const val SOURCE_GUESTS = "guests"
         const val SOURCE_GROUPS = "groups"
+        const val SOURCE_EMAILS = "emails"
         const val SOURCE_FEDERATION = "federated_users"
     }
 }
