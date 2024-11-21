@@ -251,7 +251,7 @@
         app:tint="@color/white"
         app:backgroundTint="@color/colorPrimary"/>
 
-    <com.nextcloud.ui.popupbubble.PopupBubble
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/newMentionPopupBubble"
         android:theme="@style/Button.Primary"
         android:layout_width="wrap_content"
@@ -265,6 +265,7 @@
         android:text="@string/nc_new_mention"
         app:background="@color/colorPrimary"
         app:cornerRadius="@dimen/button_corner_radius"
-        app:icon="@drawable/ic_baseline_arrow_downward_24px" />
+        app:icon="@drawable/ic_baseline_arrow_downward_24px"
+        style="@style/Widget.AppTheme.Button.ElevatedButton"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
