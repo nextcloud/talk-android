@@ -242,17 +242,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         }
     }
 
-    private fun showAvatarOnChatMessage(message: ChatMessage) {
-        binding.messageUserAvatar.visibility = View.VISIBLE
-        if (message.actorType == "guests") {
-            // do nothing, avatar is set
-        } else if (message.actorType == "bots" && message.actorId == "changelog") {
-            binding.messageUserAvatar.loadChangelogBotAvatar()
-        } else if (message.actorType == "bots") {
-            binding.messageUserAvatar.loadBotsAvatar()
-        }
-    }
-
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
         this.commonMessageInterface = commonMessageInterface
     }
