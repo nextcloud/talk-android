@@ -54,7 +54,7 @@ public abstract class CallBaseActivity extends BaseActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        if (isGreaterEqualOreo() && isPipModePossible()) {
+        if (isPipModePossible()) {
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
         }
 
@@ -118,7 +118,7 @@ public abstract class CallBaseActivity extends BaseActivity {
 
     void enterPipMode() {
         enableKeyguard();
-        if (isGreaterEqualOreo() && isPipModePossible()) {
+        if (isPipModePossible()) {
             Rational pipRatio = new Rational(300, 500);
             mPictureInPictureParamsBuilder.setAspectRatio(pipRatio);
             enterPictureInPictureMode(mPictureInPictureParamsBuilder.build());
@@ -131,7 +131,6 @@ public abstract class CallBaseActivity extends BaseActivity {
     }
 
     boolean isPipModePossible() {
-        if (isGreaterEqualOreo()) {
             boolean deviceHasPipFeature = getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
 
             AppOpsManager appOpsManager = (AppOpsManager) getSystemService(Context.APP_OPS_SERVICE);
@@ -140,12 +139,6 @@ public abstract class CallBaseActivity extends BaseActivity {
                 android.os.Process.myUid(),
                 BuildConfig.APPLICATION_ID) == AppOpsManager.MODE_ALLOWED;
             return deviceHasPipFeature && isPipFeatureGranted;
-        }
-        return false;
-    }
-
-    boolean isGreaterEqualOreo(){
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     }
 
     public abstract void updateUiForPipMode();

@@ -8,7 +8,6 @@
 package com.nextcloud.talk.ui.theme
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.PorterDuff
@@ -16,7 +15,6 @@ import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.text.Spannable
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -203,7 +201,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     fun themePlaceholderAvatar(avatar: View, @DrawableRes foreground: Int): Drawable? {
         var drawable: LayerDrawable? = null
         withScheme(avatar) { scheme ->

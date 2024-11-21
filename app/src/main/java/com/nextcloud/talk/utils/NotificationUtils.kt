@@ -7,7 +7,6 @@
  */
 package com.nextcloud.talk.utils
 
-import android.annotation.TargetApi
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,11 +14,9 @@ import android.content.Context
 import android.graphics.drawable.BitmapDrawable
 import android.media.AudioAttributes
 import android.net.Uri
-import android.os.Build
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import coil.executeBlocking
 import coil.imageLoader
@@ -57,7 +54,6 @@ object NotificationUtils {
     const val KEY_UPLOAD_GROUP = "com.nextcloud.talk.utils.KEY_UPLOAD_GROUP"
     const val GROUP_SUMMARY_NOTIFICATION_ID = -1
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel(
         context: Context,
         notificationChannel: Channel,
@@ -67,7 +63,6 @@ object NotificationUtils {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.O &&
             notificationManager.getNotificationChannel(notificationChannel.id) == null
         ) {
             val importance = if (notificationChannel.isImportant) {
@@ -154,34 +149,27 @@ object NotificationUtils {
         createUploadsNotificationChannel(context)
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     fun removeOldNotificationChannels(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-            // Current version does not use notification channel groups - delete all groups
-            for (channelGroup in notificationManager.notificationChannelGroups) {
-                notificationManager.deleteNotificationChannelGroup(channelGroup.id)
-            }
+        // Current version does not use notification channel groups - delete all groups
+        for (channelGroup in notificationManager.notificationChannelGroups) {
+            notificationManager.deleteNotificationChannelGroup(channelGroup.id)
+        }
 
-            val channelsToKeep = NotificationChannels.values().map { it.name }
+        val channelsToKeep = NotificationChannels.values().map { it.name }
 
-            // Delete all notification channels created by previous versions
-            for (channel in notificationManager.notificationChannels) {
-                if (!channelsToKeep.contains(channel.id)) {
-                    notificationManager.deleteNotificationChannel(channel.id)
-                }
+        // Delete all notification channels created by previous versions
+        for (channel in notificationManager.notificationChannels) {
+            if (!channelsToKeep.contains(channel.id)) {
+                notificationManager.deleteNotificationChannel(channel.id)
             }
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.O)
     private fun getNotificationChannel(context: Context, channelId: String): NotificationChannel? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            return notificationManager.getNotificationChannel(channelId)
-        }
-        return null
+        val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager.getNotificationChannel(channelId)
     }
 
     private inline fun scanNotifications(
@@ -268,7 +256,7 @@ object NotificationUtils {
     fun isCallsNotificationChannelEnabled(context: Context): Boolean {
         val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
         if (channel != null) {
-            return isNotificationChannelEnabled(context, channel)
+            return isNotificationChannelEnabled(channel)
         }
         return false
     }
@@ -276,17 +264,13 @@ object NotificationUtils {
     fun isMessagesNotificationChannelEnabled(context: Context): Boolean {
         val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
         if (channel != null) {
-            return isNotificationChannelEnabled(context, channel)
+            return isNotificationChannelEnabled(channel)
         }
         return false
     }
 
-    private fun isNotificationChannelEnabled(context: Context, channel: NotificationChannel): Boolean {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel.importance != NotificationManager.IMPORTANCE_NONE
-        } else {
-            NotificationManagerCompat.from(context).areNotificationsEnabled()
-        }
+    private fun isNotificationChannelEnabled(channel: NotificationChannel): Boolean {
+        return channel.importance != NotificationManager.IMPORTANCE_NONE
     }
 
     private fun getRingtoneUri(
@@ -295,14 +279,13 @@ object NotificationUtils {
         defaultRingtoneUri: String,
         channelId: String
     ): Uri? {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = getNotificationChannel(context, channelId)
-            if (channel != null) {
-                return channel.sound
-            }
-            // Notification channel will not be available when starting the application for the first time.
-            // Ringtone uris are required to register the notification channels -> get uri from preferences.
+        val channel = getNotificationChannel(context, channelId)
+        if (channel != null) {
+            return channel.sound
         }
+        // Notification channel will not be available when starting the application for the first time.
+        // Ringtone uris are required to register the notification channels -> get uri from preferences.
+
         return if (TextUtils.isEmpty(ringtonePreferencesString)) {
             Uri.parse(defaultRingtoneUri)
         } else {

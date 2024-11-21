@@ -13,7 +13,6 @@ package com.nextcloud.talk.extensions
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
-import android.os.Build
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
@@ -27,9 +26,9 @@ import coil.result
 import coil.transform.CircleCropTransformation
 import coil.transform.RoundedCornersTransformation
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -207,14 +206,10 @@ fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.D
         .target(this)
         .transformations(CircleCropTransformation())
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-        requestBuilder.placeholder(LayerDrawable(layers))
-    } else {
-        requestBuilder.placeholder(R.mipmap.ic_launcher)
-    }
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
+    requestBuilder.placeholder(LayerDrawable(layers))
 
     if (url.startsWith(user.baseUrl!!) &&
         (url.contains("index.php/core/preview") || url.contains("/avatar/"))
@@ -275,15 +270,11 @@ fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-        val layerDrawable = LayerDrawable(layers)
-        layerDrawable
-    } else {
-        R.mipmap.ic_launcher
-    }
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {
@@ -293,15 +284,11 @@ fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-        layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
-        val layerDrawable = LayerDrawable(layers)
-        layerDrawable
-    } else {
-        R.mipmap.ic_launcher
-    }
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {
@@ -315,15 +302,11 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val layers = arrayOfNulls<Drawable>(2)
-        layers[0] = ColorDrawable(context.getColor(R.color.black))
-        layers[1] = TextDrawable(context, ">")
-        val layerDrawable = LayerDrawable(layers)
-        layerDrawable
-    } else {
-        R.mipmap.ic_launcher
-    }
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ColorDrawable(context.getColor(R.color.black))
+    layers[1] = TextDrawable(context, ">")
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
 
     return DisposableWrapper(
         load(data) {
@@ -333,29 +316,17 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
-    } else {
-        R.drawable.ic_circular_group
-    }
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
     return loadUserAvatar(data)
 }
 
 fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
-    } else {
-        R.drawable.ic_circular_link
-    }
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
     return loadUserAvatar(data)
 }
 
 fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_mail) as Any
-    } else {
-        R.drawable.ic_circular_mail
-    }
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_mail) as Any
     return loadUserAvatar(data)
 }
 

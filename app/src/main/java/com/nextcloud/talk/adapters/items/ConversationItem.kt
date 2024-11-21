@@ -13,7 +13,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
-import android.os.Build
 import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
@@ -195,18 +194,13 @@ class ConversationItem(
             }
 
             ConversationEnums.ObjectType.FILE -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    holder.binding.dialogAvatar.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.dialogAvatar,
-                            R.drawable.ic_avatar_document
-                        )
+                holder.binding.dialogAvatar.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.dialogAvatar,
+                        R.drawable.ic_avatar_document
                     )
-                } else {
-                    holder.binding.dialogAvatar.loadUserAvatar(
-                        R.drawable.ic_circular_document
-                    )
-                }
+                )
+
                 false
             }
 

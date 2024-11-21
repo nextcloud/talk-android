@@ -10,13 +10,11 @@ package com.nextcloud.talk.callnotification
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationManagerCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
@@ -215,7 +213,6 @@ class CallNotificationActivity : CallBaseActivity() {
         super.onDestroy()
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
         isInPipMode = isInPictureInPictureMode

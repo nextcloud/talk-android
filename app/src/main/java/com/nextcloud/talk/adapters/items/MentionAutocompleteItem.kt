@@ -10,7 +10,6 @@ package com.nextcloud.talk.adapters.items
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
@@ -117,30 +116,22 @@ class MentionAutocompleteItem(
             SOURCE_CALLS -> {
                 run {}
                 run {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        holder.binding.avatarView.loadUserAvatar(
-                            viewThemeUtils.talk.themePlaceholderAvatar(
-                                holder.binding.avatarView,
-                                R.drawable.ic_avatar_group
-                            )
-                        )
-                    } else {
-                        holder.binding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
-                    }
-                }
-            }
-
-            SOURCE_GROUPS -> {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     holder.binding.avatarView.loadUserAvatar(
                         viewThemeUtils.talk.themePlaceholderAvatar(
                             holder.binding.avatarView,
                             R.drawable.ic_avatar_group
                         )
                     )
-                } else {
-                    holder.binding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
                 }
+            }
+
+            SOURCE_GROUPS -> {
+                holder.binding.avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.avatarView,
+                        R.drawable.ic_avatar_group
+                    )
+                )
             }
 
             SOURCE_FEDERATION -> {
