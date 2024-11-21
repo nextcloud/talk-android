@@ -172,6 +172,10 @@ public class ParticipantDisplayItem {
         return raisedHand;
     }
 
+    public Participant.ActorType getActorType() {
+        return actorType;
+    }
+
     public void addObserver(Observer observer) {
         participantDisplayItemNotifier.addObserver(observer);
     }
