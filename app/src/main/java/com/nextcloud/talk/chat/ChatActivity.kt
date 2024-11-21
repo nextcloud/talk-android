@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2024 Parneet Singh <gurayaparneet@gmail.com>
  * SPDX-FileCopyrightText: 2024 Giacomo Pacini <giacomo@paciosoft.com>
  * SPDX-FileCopyrightText: 2023 Ezhil Shanmugham <ezhil56x.contact@gmail.com>
@@ -136,6 +137,8 @@ import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.translate.ui.TranslateActivity
+import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.DateTimePickerFragment
@@ -205,6 +208,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
+import kotlin.String
 import kotlin.collections.set
 import kotlin.math.roundToInt
 
@@ -357,6 +361,19 @@ class ChatActivity :
     private var voiceMessageToRestoreAudioPosition = 0
     private var voiceMessageToRestoreWasPlaying = false
 
+    private val playbackSpeedPreferencesObserver: (Map<String, PlaybackSpeed>) -> Unit = { speedPreferenceLiveData ->
+        mediaPlayer?.let { mediaPlayer ->
+            (mediaPlayer.isPlaying == true).also {
+                currentlyPlayedVoiceMessage?.let { message ->
+                    mediaPlayer.playbackParams.let { params ->
+                        params.setSpeed(chatViewModel.getPlaybackSpeedPreference(message).value)
+                        mediaPlayer.playbackParams = params
+                    }
+                }
+            }
+        }
+    }
+
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
@@ -433,6 +450,10 @@ class ChatActivity :
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        appPreferences.readVoiceMessagePlaybackSpeedPreferences().let { playbackSpeedPreferences ->
+            chatViewModel.applyPlaybackSpeedPreferences(playbackSpeedPreferences)
+        }
 
         initObservers()
 
@@ -1045,6 +1066,8 @@ class ChatActivity :
 
         setupSwipeToReply()
 
+        chatViewModel.voiceMessagePlaybackSpeedPreferences.observe(this, playbackSpeedPreferencesObserver)
+
         binding.unreadMessagesPopup.setOnClickListener {
             binding.messagesListView.smoothScrollToPosition(0)
             binding.unreadMessagesPopup.visibility = View.GONE
@@ -1131,6 +1154,7 @@ class ChatActivity :
         adapter?.setLoadMoreListener(this)
         adapter?.setDateHeadersFormatter { format(it) }
         adapter?.setOnMessageViewLongClickListener { view, message -> onMessageViewLongClick(view, message) }
+
         adapter?.registerViewClickListener(
             R.id.playPauseBtn
         ) { _, message ->
@@ -1152,6 +1176,15 @@ class ChatActivity :
                 downloadFileToCache(message, true) {
                     setUpWaveform(message)
                 }
+            }
+        }
+
+        adapter?.registerViewClickListener(R.id.playbackSpeedControlBtn) { button, message ->
+            val nextSpeed = (button as PlaybackSpeedControl).getSpeed().next()
+            HashMap(appPreferences.readVoiceMessagePlaybackSpeedPreferences()).let { playbackSpeedPreferences ->
+                playbackSpeedPreferences[message.user.id] = nextSpeed
+                chatViewModel.applyPlaybackSpeedPreferences(playbackSpeedPreferences)
+                appPreferences.saveVoiceMessagePlaybackSpeedPreferences(playbackSpeedPreferences)
             }
         }
     }
@@ -1579,6 +1612,9 @@ class ChatActivity :
         mediaPlayer?.let {
             if (!it.isPlaying && doPlay) {
                 chatViewModel.audioRequest(true) {
+                    it.playbackParams = it.playbackParams.apply {
+                        setSpeed(chatViewModel.getPlaybackSpeedPreference(message).value)
+                    }
                     it.start()
                 }
             }
@@ -1699,6 +1735,20 @@ class ChatActivity :
         if (mediaPlayer != null) {
             if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
                 mediaPlayer!!.seekTo(progress)
+            }
+        }
+    }
+
+    override fun registerMessageToObservePlaybackSpeedPreferences(
+        userId: String,
+        listener: (speed: PlaybackSpeed) -> Unit
+    ) {
+        chatViewModel.voiceMessagePlaybackSpeedPreferences.let { liveData ->
+            liveData.observe(this) { playbackSpeedPreferences ->
+                listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
+            }
+            liveData.value?.let { playbackSpeedPreferences ->
+                listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
             }
         }
     }
@@ -2372,6 +2422,8 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        chatViewModel.voiceMessagePlaybackSpeedPreferences.removeObserver(playbackSpeedPreferencesObserver)
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations

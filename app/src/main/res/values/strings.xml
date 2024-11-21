@@ -572,6 +572,7 @@ How to translate with transifex:
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
+    <string name="playback_speed_control">Playback speed control</string>
 
     <!-- Phonebook Integration -->
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>

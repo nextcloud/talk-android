@@ -38,7 +38,7 @@ class MessageInputViewModel @Inject constructor(
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val dataStore: AppPreferences
+    private val appPreferences: AppPreferences
 ) : ViewModel(), DefaultLifecycleObserver {
     enum class LifeCycleFlag {
         PAUSED,
@@ -147,9 +147,9 @@ class MessageInputViewModel @Inject constructor(
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
-            messageQueue = dataStore.getMessageQueue(internalId)
+            messageQueue = appPreferences.getMessageQueue(internalId)
             messageQueue.add(qMsg)
-            dataStore.saveMessageQueue(internalId, messageQueue)
+            appPreferences.saveMessageQueue(internalId, messageQueue)
             _messageQueueSizeFlow.update { messageQueue.size }
             _messageQueueFlow.postValue(listOf(qMsg))
             return
@@ -260,8 +260,8 @@ class MessageInputViewModel @Inject constructor(
         if (isQueueing) return
         messageQueue.clear()
 
-        val queue = dataStore.getMessageQueue(internalId)
-        dataStore.saveMessageQueue(internalId, null) // empties the queue
+        val queue = appPreferences.getMessageQueue(internalId)
+        appPreferences.saveMessageQueue(internalId, null) // empties the queue
         while (queue.size > 0) {
             val msg = queue.removeAt(0)
             sendChatMessage(
@@ -279,7 +279,7 @@ class MessageInputViewModel @Inject constructor(
     }
 
     fun getTempMessagesFromMessageQueue(internalId: String) {
-        val queue = dataStore.getMessageQueue(internalId)
+        val queue = appPreferences.getMessageQueue(internalId)
         val list = mutableListOf<QueuedMessage>()
         for (msg in queue) {
             list.add(msg)
@@ -292,31 +292,31 @@ class MessageInputViewModel @Inject constructor(
     }
 
     fun restoreMessageQueue(internalId: String) {
-        messageQueue = dataStore.getMessageQueue(internalId)
+        messageQueue = appPreferences.getMessageQueue(internalId)
         _messageQueueSizeFlow.tryEmit(messageQueue.size)
     }
 
     fun removeFromQueue(internalId: String, id: Int) {
-        val queue = dataStore.getMessageQueue(internalId)
+        val queue = appPreferences.getMessageQueue(internalId)
         for (qMsg in queue) {
             if (qMsg.id == id) {
                 queue.remove(qMsg)
                 break
             }
         }
-        dataStore.saveMessageQueue(internalId, queue)
+        appPreferences.saveMessageQueue(internalId, queue)
         _messageQueueSizeFlow.tryEmit(queue.size)
     }
 
     fun editQueuedMessage(internalId: String, id: Int, newMessage: String) {
-        val queue = dataStore.getMessageQueue(internalId)
+        val queue = appPreferences.getMessageQueue(internalId)
         for (qMsg in queue) {
             if (qMsg.id == id) {
                 qMsg.message = newMessage
                 break
             }
         }
-        dataStore.saveMessageQueue(internalId, queue)
+        appPreferences.saveMessageQueue(internalId, queue)
     }
 
     fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {

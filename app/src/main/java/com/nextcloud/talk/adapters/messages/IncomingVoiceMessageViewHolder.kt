@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2021 Tim Krüger <t@timkrueger.me>
  * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
@@ -68,10 +69,16 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
 
     lateinit var voiceMessageInterface: VoiceMessageInterface
     lateinit var commonMessageInterface: CommonMessageInterface
+    private var isBound = false
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        if (isBound) {
+            handleIsPlayingVoiceMessageState(message)
+            return
+        }
+
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
 
@@ -99,25 +106,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
-
-        if (message.isPlayingVoiceMessage) {
-            showPlayButton()
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_pause_voice_message_24
-            )
-            val d = message.voiceMessageDuration.toLong()
-            val t = message.voiceMessagePlayedSeconds.toLong()
-            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
-            binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.progress = message.voiceMessageSeekbarProgress
-        } else {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-        }
 
         if (message.isDownloadingVoiceMessage) {
             showVoiceMessageLoading()
@@ -158,6 +146,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             }
         })
 
+        voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
+            binding.playbackSpeedControlBtn.setSpeed(speed)
+        }
+
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -167,6 +159,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             false,
             viewThemeUtils
         )
+
+        isBound = true
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -175,6 +169,29 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
 
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
+    }
+
+    private fun handleIsPlayingVoiceMessageState(message: ChatMessage) {
+        if (message.isPlayingVoiceMessage) {
+            showPlayButton()
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_pause_voice_message_24
+            )
+
+            val d = message.voiceMessageDuration.toLong()
+            val t = message.voiceMessagePlayedSeconds.toLong()
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
+            binding.voiceMessageDuration.visibility = View.VISIBLE
+            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
+            binding.seekbar.progress = message.voiceMessageSeekbarProgress
+        } else {
+            binding.playPauseBtn.visibility = View.VISIBLE
+            binding.playPauseBtn.icon = ContextCompat.getDrawable(
+                context!!,
+                R.drawable.ic_baseline_play_arrow_voice_message_24
+            )
+        }
     }
 
     private fun updateDownloadState(message: ChatMessage) {

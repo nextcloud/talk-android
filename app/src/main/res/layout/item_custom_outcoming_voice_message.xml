@@ -2,6 +2,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
   ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
   ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -69,6 +70,17 @@
                 android:thumb="@drawable/voice_message_outgoing_seek_bar_slider"
                 tools:progress="50"
                 android:layout_weight="1" />
+
+            <com.nextcloud.talk.ui.PlaybackSpeedControl
+                android:id="@+id/playbackSpeedControlBtn"
+                style="@style/Widget.AppTheme.Button.IconButton"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:contentDescription="@string/playback_speed_control"
+                android:textColor="@color/black"
+                app:cornerRadius="@dimen/button_corner_radius"
+                app:rippleColor="#1FFFFFFF" />
 
         </LinearLayout>
 
