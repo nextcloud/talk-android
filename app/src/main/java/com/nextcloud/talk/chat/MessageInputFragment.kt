@@ -280,17 +280,15 @@ class MessageInputFragment : Fragment() {
                 })
             }
 
-            binding.fragmentMessageInputView.attachmentButton.isEnabled = true
-            binding.fragmentMessageInputView.recordAudioButton.isEnabled = true
-            binding.fragmentMessageInputView.messageInput.isEnabled = true
+            binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
         } else {
+            binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
+            binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
             binding.fragmentConnectionLost.clearAnimation()
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
-            // binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
             binding.fragmentConnectionLost.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.attachmentButton.isEnabled = false
-            binding.fragmentMessageInputView.recordAudioButton.isEnabled = false
         }
     }
 

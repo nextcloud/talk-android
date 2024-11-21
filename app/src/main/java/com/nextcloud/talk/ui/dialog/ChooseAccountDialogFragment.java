@@ -24,6 +24,7 @@ import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.conversationlist.ConversationsListActivity;
+import com.nextcloud.talk.data.network.NetworkMonitor;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
 import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
@@ -83,6 +84,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     @Inject
     InvitationsRepository invitationsRepository;
 
+    @Inject
+    NetworkMonitor networkMonitor;
+
     private DialogChooseAccountBinding binding;
     private View dialogView;
 
@@ -111,7 +115,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         setupCurrentUser(user);
         setupListeners();
         setupAdapter();
-        prepareViews();
+        networkMonitor.isOnlineLiveData().observe(this, this::prepareViews);
     }
 
     private void setupCurrentUser(User user) {
@@ -309,13 +313,17 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         }
     }
 
-    private void prepareViews() {
+    private void prepareViews(Boolean isOnline) {
         if (getActivity() != null) {
             LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
             binding.accountsList.setLayoutManager(layoutManager);
         }
         binding.accountsList.setHasFixedSize(true);
         binding.accountsList.setAdapter(adapter);
+
+        if (!isOnline) {
+            binding.addAccount.setVisibility(View.GONE);
+        }
     }
 
     public static ChooseAccountDialogFragment newInstance() {
