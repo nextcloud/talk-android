@@ -6,11 +6,13 @@
  */
 package com.nextcloud.talk.ui.dialog
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -21,6 +23,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -42,6 +45,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -55,6 +61,9 @@ class ConversationsListBottomDialog(
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -193,84 +202,56 @@ class ConversationsListBottomDialog(
         }
     }
 
+    @SuppressLint("StringFormatInvalid", "TooGenericExceptionCaught")
     private fun addConversationToFavorites() {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        ncApi.addConversationToFavorites(
-            credentials,
-            ApiUtils.getUrlForRoomFavorite(
-                apiVersion,
-                currentUser.baseUrl!!,
-                conversation.token
-            )
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl!!, conversation.token)
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    ncApiCoroutines.addConversationToFavorites(credentials, url)
                 }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    activity.fetchRooms()
-                    activity.showSnackbar(
-                        String.format(
-                            context.resources.getString(R.string.added_to_favorites),
-                            conversation.displayName
-                        )
+                activity.fetchRooms()
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.added_to_favorites),
+                        conversation.displayName
                     )
-                    dismiss()
-                }
-
-                override fun onError(e: Throwable) {
+                )
+                dismiss()
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
                     activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
                     dismiss()
                 }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+            }
+        }
     }
 
+    @SuppressLint("StringFormatInvalid", "TooGenericExceptionCaught")
     private fun removeConversationFromFavorites() {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        ncApi.removeConversationFromFavorites(
-            credentials,
-            ApiUtils.getUrlForRoomFavorite(
-                apiVersion,
-                currentUser.baseUrl!!,
-                conversation.token
-            )
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .retry(1)
-            .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
+        val url = ApiUtils.getUrlForRoomFavorite(apiVersion, currentUser.baseUrl!!, conversation.token)
+        lifecycleScope.launch {
+            try {
+                withContext(Dispatchers.IO) {
+                    ncApiCoroutines.removeConversationFromFavorites(credentials, url)
                 }
-
-                override fun onNext(genericOverall: GenericOverall) {
-                    activity.fetchRooms()
-                    activity.showSnackbar(
-                        String.format(
-                            context.resources.getString(R.string.removed_from_favorites),
-                            conversation.displayName
-                        )
+                activity.fetchRooms()
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.removed_from_favorites),
+                        conversation.displayName
                     )
-                    dismiss()
-                }
-
-                override fun onError(e: Throwable) {
+                )
+                dismiss()
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
                     activity.showSnackbar(context.resources.getString(R.string.nc_common_error_sorry))
                     dismiss()
                 }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+            }
+        }
     }
 
     private fun markConversationAsUnread() {
@@ -290,6 +271,7 @@ class ConversationsListBottomDialog(
                     // unused atm
                 }
 
+                @SuppressLint("StringFormatInvalid")
                 override fun onNext(genericOverall: GenericOverall) {
                     activity.fetchRooms()
                     activity.showSnackbar(
@@ -336,6 +318,7 @@ class ConversationsListBottomDialog(
                     // unused atm
                 }
 
+                @SuppressLint("StringFormatInvalid")
                 override fun onNext(genericOverall: GenericOverall) {
                     activity.fetchRooms()
                     activity.showSnackbar(
@@ -372,6 +355,7 @@ class ConversationsListBottomDialog(
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun leaveConversation() {
         val dataBuilder = Data.Builder()
         dataBuilder.putString(KEY_ROOM_TOKEN, conversation.token)

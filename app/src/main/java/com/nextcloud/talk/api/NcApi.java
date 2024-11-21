@@ -309,6 +309,12 @@ public interface NcApi {
     Observable<Void> unregisterDeviceForNotificationsWithProxy(@Url String url,
                                                                @QueryMap Map<String, String> fields);
 
+    @FormUrlEncoded
+    @PUT
+    Observable<Response<GenericOverall>> setPassword2(@Header("Authorization") String authorization,
+                                                      @Url String url,
+                                                      @Field("password") String password);
+
     @GET
     Observable<CapabilitiesOverall> getCapabilities(@Header("Authorization") String authorization, @Url String url);
 
@@ -373,16 +379,6 @@ public interface NcApi {
                                                                  @Nullable @Query("limit") Integer limit,
                                                                  @QueryMap Map<String, String> fields);
 
-    // Url is: /api/{apiVersion}/room/{token}/pin
-    @POST
-    Observable<GenericOverall> addConversationToFavorites(@Header("Authorization") String authorization,
-                                                          @Url String url);
-
-    // Url is: /api/{apiVersion}/room/{token}/favorites
-    @DELETE
-    Observable<GenericOverall> removeConversationFromFavorites(@Header("Authorization") String authorization,
-                                                               @Url String url);
-
     @GET
     Observable<NotificationOverall> getNcNotification(@Header("Authorization") String authorization,
                                                       @Url String url);
@@ -392,6 +388,12 @@ public interface NcApi {
     Observable<GenericOverall> setNotificationLevel(@Header("Authorization") String authorization,
                                                     @Url String url,
                                                     @Field("level") int level);
+
+    @FormUrlEncoded
+    @PUT
+    Observable<GenericOverall> setConversationReadOnly(@Header("Authorization") String authorization,
+                                                @Url String url,
+                                                @Field("state") int state);
 
     @FormUrlEncoded
     @POST
@@ -471,6 +473,9 @@ public interface NcApi {
     Observable<GenericOverall> notificationCalls(@Header("Authorization") String authorization,
                                                  @Url String url,
                                                  @Field("level") Integer level);
+
+    @DELETE
+    Observable<GenericOverall> clearChatHistory(@Header("Authorization") String authorization, @Url String url);
 
     @GET
     Observable<HoverCardOverall> hoverCard(@Header("Authorization") String authorization, @Url String url);
@@ -572,12 +577,6 @@ public interface NcApi {
     @DELETE
     Observable<PollOverall> closePoll(@Header("Authorization") String authorization,
                                       @Url String url);
-
-    @FormUrlEncoded
-    @POST
-    Observable<GenericOverall> setMessageExpiration(@Header("Authorization") String authorization,
-                                                    @Url String url,
-                                                    @Field("seconds") Integer seconds);
 
     @GET
     Observable<OpenGraphOverall> getOpenGraph(@Header("Authorization") String authorization,

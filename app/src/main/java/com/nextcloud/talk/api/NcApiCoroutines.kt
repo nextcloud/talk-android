@@ -120,6 +120,26 @@ interface NcApiCoroutines {
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @POST
+    suspend fun addConversationToFavorites(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
+
+    @DELETE
+    suspend fun removeConversationFromFavorites(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun notificationCalls(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("level") level: Int
+    ): GenericOverall
+
+    @POST
     suspend fun setReadStatusPrivacy(
         @Header("Authorization") authorization: String,
         @Url url: String,
@@ -142,5 +162,21 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Field("state") state: Int
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setNotificationLevel(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("level") level: Int
+    ): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setMessageExpiration(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("seconds") seconds: Int
     ): GenericOverall
 }
