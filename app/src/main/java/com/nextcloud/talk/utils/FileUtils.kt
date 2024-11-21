@@ -98,12 +98,7 @@ object FileUtils {
     fun copyFileToCache(context: Context, sourceFileUri: Uri, filename: String): File? {
         val cachedFile = File(context.cacheDir, filename)
 
-        val aboveOrEqualAPI26Check =
-            !cachedFile.toPath().normalize().startsWith(context.cacheDir.toPath())
-
-        val isOutsideCacheDir = aboveOrEqualAPI26Check
-
-        if (isOutsideCacheDir) {
+        if (!cachedFile.toPath().normalize().startsWith(context.cacheDir.toPath())) {
             Log.w(TAG, "cachedFile was not created in cacheDir. Aborting for security reasons.")
             cachedFile.delete()
             return null
