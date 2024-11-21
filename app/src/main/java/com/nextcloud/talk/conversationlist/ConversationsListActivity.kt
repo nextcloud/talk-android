@@ -148,6 +148,7 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListActivity :
     BaseActivity(),
@@ -1035,8 +1036,8 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
-        binding.newMentionPopupBubble.hide()
-        binding.newMentionPopupBubble.setPopupBubbleListener {
+        binding.newMentionPopupBubble.visibility = View.GONE
+        binding.newMentionPopupBubble.setOnClickListener {
             val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
             layoutManager?.scrollToPositionWithOffset(
                 nextUnreadConversationScrollPosition,
@@ -1058,7 +1059,7 @@ class ConversationsListActivity :
         searchBehaviorSubject.subscribe { value ->
             if (value) {
                 nextUnreadConversationScrollPosition = 0
-                binding.newMentionPopupBubble.hide()
+                binding.newMentionPopupBubble.visibility = View.GONE
             } else {
                 try {
                     val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
@@ -1068,13 +1069,13 @@ class ConversationsListActivity :
                         if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
                             if (!binding.newMentionPopupBubble.isShown) {
-                                binding.newMentionPopupBubble.show()
+                                binding.newMentionPopupBubble.visibility = View.VISIBLE
                             }
                             return@subscribe
                         }
                     }
                     nextUnreadConversationScrollPosition = 0
-                    binding.newMentionPopupBubble.hide()
+                    binding.newMentionPopupBubble.visibility = View.GONE
                 } catch (e: NullPointerException) {
                     Log.d(
                         TAG,
