@@ -14,6 +14,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -56,6 +57,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
+        viewThemeUtils.platform.colorImageView(binding.searchOpenConversations, ColorRole.ON_SURFACE)
         viewThemeUtils.platform.colorEditText(binding.searchEdit)
 
         val user = currentUserProvider.currentUser.blockingGet()
