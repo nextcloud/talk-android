@@ -81,7 +81,7 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
         isFiltering = true
         val newList = mutableListOf<OpenConversation>()
         for (conversation in originalList) {
-            if (conversation.displayName.contains(text)) {
+            if (conversation.displayName.contains(text, true) || conversation.description!!.contains(text, true)) {
                 newList.add(conversation)
             }
         }
