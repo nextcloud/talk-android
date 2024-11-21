@@ -24,7 +24,7 @@ import com.nextcloud.talk.databinding.RvItemConversationInfoParticipantBinding
 import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
-import com.nextcloud.talk.extensions.loadGuestAvatar
+import com.nextcloud.talk.extensions.loadFirstLetterAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.participants.Participant
@@ -214,7 +214,9 @@ class ParticipantItem(
                 if (model.displayName.isNullOrEmpty()) {
                     holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
                 } else {
-                    holder.binding.avatarView.loadGuestAvatar(user, model.displayName!!, false)
+                    holder.binding.avatarView.loadFirstLetterAvatar(
+                        model.displayName!!.first().toString()
+                    )
                 }
             }
 
