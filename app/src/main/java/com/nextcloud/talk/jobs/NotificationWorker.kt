@@ -836,8 +836,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
         notificationManager.notify(notificationId, notification)
 
-        // On devices with Android 8.0 (Oreo) or later, notification sound will be handled by the system
-        // if notifications have not been disabled by the user.
         return
     }
 
