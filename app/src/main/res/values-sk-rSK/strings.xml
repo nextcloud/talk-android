@@ -613,6 +613,7 @@
     <string name="typing_are_typing">píšu...</string>
     <string name="typing_is_typing">píše...</string>
     <string name="typing_x_others">a %1$s ďalších píšu...</string>
+    <string name="unban">Zrušiť zákaz</string>
     <string name="unread">Neprečítané</string>
     <string name="upload_new_avatar_from_device">Nahrať nového avatara zo zariadenia</string>
     <string name="user_avatar">Avatar užívateľa</string>
