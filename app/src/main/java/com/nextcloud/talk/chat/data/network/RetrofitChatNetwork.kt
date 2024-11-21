@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
@@ -178,23 +177,5 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
 
     override fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage> {
         return ncApi.editChatMessage(credentials, url, text).map { it }
-    }
-
-    override fun listBans(credentials: String, url: String): Observable<List<TalkBan>> {
-        return ncApi.listBans(credentials, url).map { it.ocs?.data }
-    }
-
-    override fun banActor(
-        credentials: String,
-        url: String,
-        actorType: String,
-        actorId: String,
-        internalNote: String
-    ): Observable<TalkBan> {
-        return ncApi.banActor(credentials, url, actorType, actorId, internalNote)
-    }
-
-    override fun unbanActor(credentials: String, url: String): Observable<GenericOverall> {
-        return ncApi.unbanActor(credentials, url)
     }
 }

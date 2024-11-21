@@ -11,6 +11,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -74,6 +75,10 @@ class ConversationsRepositoryImpl(
         return coroutineApi.unarchiveConversation(credentials, url)
     }
 
+    override fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall> {
+        return api.setConversationReadOnly(credentials, url, state)
+    }
+
     override suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
         val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, roomToken)
@@ -98,6 +103,25 @@ class ConversationsRepositoryImpl(
             credentials,
             ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
         )
+    }
+
+    override suspend fun banActor(
+        credentials: String,
+        url: String,
+        actorType: String,
+        actorId: String,
+        internalNote: String
+    ): TalkBan {
+        return coroutineApi.banActor(credentials, url, actorType, actorId, internalNote)
+    }
+
+    override suspend fun listBans(credentials: String, url: String): List<TalkBan> {
+        val talkBanOverall = coroutineApi.listBans(credentials, url)
+        return talkBanOverall.ocs?.data!!
+    }
+
+    override suspend fun unbanActor(credentials: String, url: String): GenericOverall {
+        return coroutineApi.unbanActor(credentials, url)
     }
 
     private fun apiVersion(): Int {

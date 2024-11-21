@@ -13,7 +13,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.reminder.Reminder
 import io.reactivex.Observable
 import retrofit2.Response
@@ -64,14 +63,4 @@ interface ChatNetworkDataSource {
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage>
-    fun listBans(credentials: String, url: String): Observable<List<TalkBan>>
-    fun banActor(
-        credentials: String,
-        url: String,
-        actorType: String,
-        actorId: String,
-        internalNote: String
-    ): Observable<TalkBan>
-
-    fun unbanActor(credentials: String, url: String): Observable<GenericOverall>
 }

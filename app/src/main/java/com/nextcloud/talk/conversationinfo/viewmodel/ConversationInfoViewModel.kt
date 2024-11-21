@@ -153,50 +153,34 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun listBans(user: User, token: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatNetworkDataSource.listBans(user.getCredentials(), url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<List<TalkBan>> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    _getTalkBanState.value = ListBansErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(talkBans: List<TalkBan>) {
-                    _getTalkBanState.value = ListBansSuccessState(talkBans)
-                }
-            })
+        viewModelScope.launch {
+            try {
+                val listBans = conversationsRepository.listBans(user.getCredentials(), url)
+                _getTalkBanState.value = ListBansSuccessState(listBans)
+            } catch (exception: Exception) {
+                _getTalkBanState.value = ListBansErrorState
+                Log.e(TAG, "Error while getting list of banned participants", exception)
+            }
+        }
     }
 
     fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
-        chatNetworkDataSource.banActor(user.getCredentials(), url, actorType, actorId, internalNote)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<TalkBan> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    _getBanActorState.value = BanActorErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(talkBan: TalkBan) {
-                    _getBanActorState.value = BanActorSuccessState(talkBan)
-                }
-            })
+        viewModelScope.launch {
+            try {
+                val talkBan = conversationsRepository.banActor(
+                    user.getCredentials(),
+                    url,
+                    actorType,
+                    actorId,
+                    internalNote
+                )
+                _getBanActorState.value = BanActorSuccessState(talkBan)
+            } catch (exception: Exception) {
+                _getBanActorState.value = BanActorErrorState
+                Log.e(TAG, "Error banning a participant", exception)
+            }
+        }
     }
 
     fun setConversationReadOnly(roomToken: String, state: Int) {
@@ -212,26 +196,15 @@ class ConversationInfoViewModel @Inject constructor(
 
     fun unbanActor(user: User, token: String, banId: Int) {
         val url = ApiUtils.getUrlForUnban(user.baseUrl!!, token, banId)
-        chatNetworkDataSource.unbanActor(user.getCredentials(), url)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(p0: Disposable) {
-                    // unused atm
-                }
-
-                override fun onError(p0: Throwable) {
-                    _getUnBanActorState.value = UnBanActorErrorState
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(p0: GenericOverall) {
-                    _getUnBanActorState.value = UnBanActorSuccessState
-                }
-            })
+        viewModelScope.launch {
+            try {
+                conversationsRepository.unbanActor(user.getCredentials(), url)
+                _getUnBanActorState.value = UnBanActorSuccessState
+            } catch (exception: Exception) {
+                _getUnBanActorState.value = UnBanActorErrorState
+                Log.e(TAG, "Error while unbanning a participant", exception)
+            }
+        }
     }
 
     fun allowGuests(token: String, allow: Boolean) {
