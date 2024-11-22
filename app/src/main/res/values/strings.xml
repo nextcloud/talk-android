@@ -181,6 +181,8 @@ How to translate with transifex:
 
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Do not optimize</string>
+    <string name="nc_show_ignore_battery_optimization_hint_title">Show battery optimization hint</string>
+    <string name="nc_show_ignore_battery_optimization_hint_description">When the battery optimization is not ignored, show a hint</string>
 
     <string name="nc_diagnose_meta_category_title">Meta information</string>
     <string name="nc_diagnose_meta_system_report_date">Generation of system report</string>

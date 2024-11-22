@@ -663,6 +663,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
+                settingsShowIgnoreBatteryOptimizationHintSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
@@ -858,6 +859,19 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun setupCheckables() {
+        binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked =
+            appPreferences.showIgnoreBatteryOptimizationHint
+
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+            binding.settingsShowIgnoreBatteryOptimizationHint.setOnClickListener {
+                val isChecked = binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked
+                binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked = !isChecked
+                appPreferences.setShowIgnoreBatteryOptimizationHint(!isChecked)
+            }
+        } else {
+            binding.settingsShowIgnoreBatteryOptimizationHint.visibility = View.GONE
+        }
+
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
