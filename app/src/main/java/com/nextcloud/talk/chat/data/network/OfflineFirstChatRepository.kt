@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import android.util.Log
+import androidx.core.os.bundleOf
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -289,6 +290,24 @@ class OfflineFirstChatRepository @Inject constructor(
             showMessagesBefore(internalConversationId, beforeMessageId, DEFAULT_MESSAGES_LIMIT)
             updateUiForLastCommonRead()
         }
+
+    override fun updateRoomMessages(roomToken: String, limit: Int) {
+        scope.launch {
+            Log.d(TAG, "---- updateRoomMessages ------------")
+            val fieldMap = getFieldMap(
+                lookIntoFuture = false,
+                timeout = 0,
+                includeLastKnown = false,
+                setReadMarker = true,
+                lastKnown = null,
+                limit = limit
+            )
+
+            val networkParams = bundleOf()
+            networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+            sync(networkParams)
+        }
+    }
 
     override fun initMessagePolling(initialMessageId: Long): Job =
         scope.launch {
