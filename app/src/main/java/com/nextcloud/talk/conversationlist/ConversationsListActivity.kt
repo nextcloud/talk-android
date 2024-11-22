@@ -283,7 +283,7 @@ class ConversationsListActivity :
         if (adapter == null) {
             adapter = FlexibleAdapter(conversationItems, this, true)
         } else {
-            binding.loadingContent?.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
         }
         adapter!!.addListener(this)
         prepareViews()
@@ -458,6 +458,9 @@ class ConversationsListActivity :
     }
 
     private fun setConversationList(list: List<ConversationModel>) {
+        // Refreshes conversation messages in the background asynchronously
+        conversationsListViewModel.updateRoomMessages(credentials!!, conversationItems, list)
+
         // Update Conversations
         conversationItems.clear()
         conversationItemsWithHeader.clear()
@@ -772,7 +775,7 @@ class ConversationsListActivity :
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    binding.swipeRefreshLayoutView?.isEnabled = false
+                    binding.swipeRefreshLayoutView.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
                 }
@@ -786,9 +789,9 @@ class ConversationsListActivity :
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
                     }
-                    binding.swipeRefreshLayoutView?.isRefreshing = false
+                    binding.swipeRefreshLayoutView.isRefreshing = false
                     searchBehaviorSubject.onNext(false)
-                    binding.swipeRefreshLayoutView?.isEnabled = true
+                    binding.swipeRefreshLayoutView.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
                     binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -801,7 +804,7 @@ class ConversationsListActivity :
                         viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
                     }
 
-                    val layoutManager = binding.recyclerView?.layoutManager as SmoothScrollLinearLayoutManager?
+                    val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
@@ -894,18 +897,18 @@ class ConversationsListActivity :
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
         if (isConversationListNotEmpty) {
-            if (binding.emptyLayout?.visibility != View.GONE) {
-                binding.emptyLayout?.visibility = View.GONE
+            if (binding.emptyLayout.visibility != View.GONE) {
+                binding.emptyLayout.visibility = View.GONE
             }
-            if (binding.swipeRefreshLayoutView?.visibility != View.VISIBLE) {
-                binding.swipeRefreshLayoutView?.visibility = View.VISIBLE
+            if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
+                binding.swipeRefreshLayoutView.visibility = View.VISIBLE
             }
         } else {
-            if (binding.emptyLayout?.visibility != View.VISIBLE) {
-                binding.emptyLayout?.visibility = View.VISIBLE
+            if (binding.emptyLayout.visibility != View.VISIBLE) {
+                binding.emptyLayout.visibility = View.VISIBLE
             }
-            if (binding.swipeRefreshLayoutView?.visibility != View.GONE) {
-                binding.swipeRefreshLayoutView?.visibility = View.GONE
+            if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
+                binding.swipeRefreshLayoutView.visibility = View.GONE
             }
         }
     }
@@ -1090,24 +1093,24 @@ class ConversationsListActivity :
                 }
             }
         })
-        binding.recyclerView?.setOnTouchListener { v: View, _: MotionEvent? ->
+        binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
         }
-        binding.swipeRefreshLayoutView?.setOnRefreshListener {
+        binding.swipeRefreshLayoutView.setOnRefreshListener {
             fetchRooms()
             fetchPendingInvitations()
         }
-        binding.swipeRefreshLayoutView?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-        binding.emptyLayout?.setOnClickListener { showNewConversationsScreen() }
-        binding.floatingActionButton?.setOnClickListener {
+        binding.swipeRefreshLayoutView.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
+        binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
+        binding.floatingActionButton.setOnClickListener {
             run(context)
             showNewConversationsScreen()
         }
-        binding.floatingActionButton?.let { viewThemeUtils.material.themeFAB(it) }
+        binding.floatingActionButton.let { viewThemeUtils.material.themeFAB(it) }
 
         binding.switchAccountButton.setOnClickListener {
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
@@ -1282,7 +1285,7 @@ class ConversationsListActivity :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        binding.swipeRefreshLayoutView?.isRefreshing = true
+        binding.swipeRefreshLayoutView.isRefreshing = true
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -1537,8 +1540,8 @@ class ConversationsListActivity :
             filesToShare?.forEach {
                 UploadAndShareFilesWorker.upload(
                     it,
-                    selectedConversation!!.token!!,
-                    selectedConversation!!.displayName!!,
+                    selectedConversation!!.token,
+                    selectedConversation!!.displayName,
                     null
                 )
             }
@@ -2014,12 +2017,12 @@ class ConversationsListActivity :
                 binding.recyclerView?.scrollToPosition(0)
             }
         }
-        binding.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView.isRefreshing = false
     }
 
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        binding.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView.isRefreshing = false
         showErrorDialog()
     }
 
