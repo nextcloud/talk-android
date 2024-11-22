@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
     <string name="archive_conversation">Archive Conversation</string>
+    <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
+    <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="conversations">Conversations</string>
     <string name="create_conversation">Create conversation</string>
     <string name="create_issue">Create issue</string>
@@ -70,6 +72,7 @@
     <string name="leave_call">Leave call</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
+    <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
     <string name="marked_as_read">Marked conversation %1$s as read</string>
@@ -605,6 +608,7 @@
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="started_a_call">started a call</string>
     <string name="status_message">Status message</string>
+    <string name="status_reverted">Status Reverted</string>
     <string name="switch_to_breakout_room">Switch to breakout room</string>
     <string name="switch_to_main_room">Switch to main room</string>
     <string name="take_photo">Take a photo</string>
