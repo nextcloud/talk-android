@@ -149,6 +149,22 @@ class MessageInputViewModel @Inject constructor(
         val referenceId = SendMessageUtils().generateReferenceId()
         Log.d(TAG, "Random SHA-256 Hash: $referenceId")
 
+        viewModelScope.launch {
+            chatRepository.addTemporaryMessage(
+                message,
+                displayName,
+                replyTo,
+                referenceId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "bbbb")
+                } else {
+                    Log.d(TAG, "xxxx")
+                }
+            }
+        }
+
+
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
