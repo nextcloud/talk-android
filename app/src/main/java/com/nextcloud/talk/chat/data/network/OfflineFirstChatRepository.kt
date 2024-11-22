@@ -798,6 +798,75 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
+    override suspend fun addTemporaryMessage(
+        message: CharSequence,
+        displayName: String,
+        replyTo: Int,
+        referenceId: String
+    ): Flow<Result<ChatOverallSingleMessage>> =
+        flow {
+            try {
+                val tempChatMessageEntity = createChatMessageEntity(internalConversationId, message.toString())
+                // accessing internalConversationId creates UninitializedPropertyException because ChatViewModel and
+                // MessageInputViewModel use different instances of ChatRepository for now
+
+
+                chatDao.upsertChatMessage(tempChatMessageEntity)
+
+                val tempChatMessageModel = tempChatMessageEntity.asModel()
+
+                // emit(Result.success(response))
+
+                val triple = Triple(false, false, listOf(tempChatMessageModel))
+                _messageFlow.emit(triple)
+
+            } catch (e: Exception) {
+                Log.e(TAG, "Something went wrong when adding temporary message", e)
+                emit(Result.failure(e))
+            }
+        }
+
+    private fun createChatMessageEntity(internalConversationId: String, message: String): ChatMessageEntity {
+        // val id = chatMessageCounter++
+
+        val emoji1 = "\uD83D\uDE00" // 😀
+        val emoji2 = "\uD83D\uDE1C" // 😜
+        val reactions = LinkedHashMap<String, Int>()
+        reactions[emoji1] = 3
+        reactions[emoji2] = 4
+
+        val reactionsSelf = ArrayList<String>()
+        reactionsSelf.add(emoji1)
+
+        val entity = ChatMessageEntity(
+            internalId = internalConversationId + "_temp1",
+            internalConversationId = internalConversationId,
+            id = 111111111,
+            message = message,
+            reactions = reactions,
+            reactionsSelf = reactionsSelf,
+            deleted = false,
+            token = "",
+            actorId = "",
+            actorType = "",
+            accountId = 1,
+            messageParameters = null,
+            messageType = "",
+            parentMessageId = null,
+            systemMessageType = ChatMessage.SystemMessageType.DUMMY,
+            replyable = false,
+            timestamp = 0,
+            expirationTimestamp = 0,
+            actorDisplayName = "",
+            lastEditActorType = null,
+            lastEditTimestamp = null,
+            renderMarkdown = true,
+            lastEditActorId = "",
+            lastEditActorDisplayName = ""
+        )
+        return entity
+    }
+
     companion object {
         val TAG = OfflineFirstChatRepository::class.simpleName
         private const val HTTP_CODE_OK: Int = 200
