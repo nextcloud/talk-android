@@ -37,6 +37,18 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/chat_list_battery_optimization_ignored_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/nc_warning"
+            android:gravity="center"
+            android:minHeight="40dp"
+            android:text="@string/nc_diagnose_battery_optimization_not_ignored"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"

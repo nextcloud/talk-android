@@ -178,6 +178,9 @@ public interface AppPreferences {
 
     void deleteAllMessageQueuesFor(String userId);
 
+    boolean getShowIgnoreBatteryOptimizationHint();
+
+    void setShowIgnoreBatteryOptimizationHint(boolean showIgnoreBatteryOptimizationHint);
 
     void clear();
 }

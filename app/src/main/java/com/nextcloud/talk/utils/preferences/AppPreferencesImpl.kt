@@ -544,6 +544,19 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }
     }
 
+    override fun getShowIgnoreBatteryOptimizationHint(): Boolean {
+        return runBlocking { async {
+            readBoolean(SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT, true).first()
+        } }.getCompleted()
+    }
+
+    override fun setShowIgnoreBatteryOptimizationHint(showIgnoreBatteryOptimizationHint: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT, showIgnoreBatteryOptimizationHint)
+            }
+        }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =
@@ -628,6 +641,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
+        const val SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT = "show_ignore_battery_optimization_hint"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()

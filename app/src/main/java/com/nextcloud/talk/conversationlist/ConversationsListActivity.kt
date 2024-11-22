@@ -273,6 +273,12 @@ class ConversationsListActivity :
         adapter!!.addListener(this)
         prepareViews()
 
+        if (shouldShowIgnoreBatteryOptimizationHint()) {
+            showIgnoreBatteryOptimizationHint()
+        } else {
+            binding.chatListBatteryOptimizationIgnoredHint.visibility = View.GONE
+        }
+
         showShareToScreen = hasActivityActionSendIntent()
 
         if (!eventBus.isRegistered(this)) {
@@ -1453,32 +1459,8 @@ class ConversationsListActivity :
             }
 
             REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
-                // whenever user allowed notifications, also check to ignore battery optimization
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (!PowerManagerUtils().isIgnoringBatteryOptimizations() &&
-                        ClosedInterfaceImpl().isGooglePlayServicesAvailable
-                    ) {
-                        val dialogText = String.format(
-                            context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
-                            context.resources.getString(R.string.nc_app_name)
-                        )
-
-                        val dialogBuilder = MaterialAlertDialogBuilder(this)
-                            .setTitle(R.string.nc_ignore_battery_optimization_dialog_title)
-                            .setMessage(dialogText)
-                            .setPositiveButton(R.string.nc_ok) { _, _ ->
-                                startActivity(
-                                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
-                                )
-                            }
-                            .setNegativeButton(R.string.nc_common_dismiss, null)
-                        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
-                        val dialog = dialogBuilder.show()
-                        viewThemeUtils.platform.colorTextButtons(
-                            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                        )
-                    }
+                    Log.d(TAG, "Notification permission was granted")
                 } else {
                     Log.d(
                         TAG,
@@ -1488,6 +1470,41 @@ class ConversationsListActivity :
                 }
             }
         }
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    private fun showIgnoreBatteryOptimizationHint() {
+        binding.chatListBatteryOptimizationIgnoredHint.visibility = View.VISIBLE
+
+        val dialogText = String.format(
+            context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
+            context.resources.getString(R.string.nc_app_name)
+        )
+
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
+            .setTitle(R.string.nc_ignore_battery_optimization_dialog_title)
+            .setMessage(dialogText)
+            .setPositiveButton(R.string.nc_ok) { _, _ ->
+                startActivity(
+                    Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
+                )
+            }
+            .setNegativeButton(R.string.nc_common_dismiss, null)
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+
+        binding.chatListBatteryOptimizationIgnoredHint.setOnClickListener {
+            val dialog = dialogBuilder.show()
+            viewThemeUtils.platform.colorTextButtons(
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+            )
+        }
+    }
+
+    private fun shouldShowIgnoreBatteryOptimizationHint() : Boolean {
+        return !PowerManagerUtils().isIgnoringBatteryOptimizations() &&
+            ClosedInterfaceImpl().isGooglePlayServicesAvailable &&
+            appPreferences.getShowIgnoreBatteryOptimizationHint()
     }
 
     private fun openConversation(textToPaste: String? = "") {
