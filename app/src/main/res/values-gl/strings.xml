@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archive_conversation">Arquivar a conversa</string>
+    <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
     <string name="archived">Arquivado</string>
     <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
