@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
     <string name="archive_conversation">Comhrá Cartlainne</string>
+    <string name="archive_hint">Nuair a bheidh comhrá curtha i gcartlann, cuirfear i bhfolach é de réir réamhshocraithe. Roghnaigh an scagaire \"Cartlannaithe\" chun féachaint ar chomhráite cartlainne. Gheofar tagairtí díreacha fós.</string>
     <string name="archived">Cartlannaithe</string>
     <string name="audio_call">Glao Fuaime</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
