@@ -236,6 +236,8 @@
     <string name="nc_sent_an_audio_you">Jūs išsiuntėte garso įrašą.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s išsiuntė paveikslą.</string>
     <string name="nc_sent_an_image_you">Jūs išsiuntėte paveikslą.</string>
+    <string name="nc_sent_voice" formatted="true">%1$s išsiuntė balso žinutę.</string>
+    <string name="nc_sent_voice_you">Jūs išsiuntėte balso žinutę.</string>
     <string name="nc_server_connect">Prisijunkite prie serverio</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
@@ -343,7 +345,6 @@
     <string name="shared_items_media">Medija</string>
     <string name="shared_items_other">Kita</string>
     <string name="shared_items_poll">Apklausa</string>
-    <string name="shared_items_voice">Balso pašto</string>
     <string name="starred">Mėgstamas</string>
     <string name="status_message">Būsenos žinutė</string>
     <string name="take_photo">Fotografuoti</string>
