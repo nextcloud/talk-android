@@ -89,7 +89,7 @@ fun ImageView.loadConversationAvatar(
                 ContextCompat.getDrawable(context, R.drawable.ic_circular_group)
 
             ConversationEnums.ConversationType.ROOM_PUBLIC_CALL ->
-                ContextCompat.getDrawable(context, R.drawable.baseline_link_24)
+                ContextCompat.getDrawable(context, R.drawable.icon_conversation_public)
 
             else -> ContextCompat.getDrawable(context, R.drawable.account_circle_96dp)
         }
