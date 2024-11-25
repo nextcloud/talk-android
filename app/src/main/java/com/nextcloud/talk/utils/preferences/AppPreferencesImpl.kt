@@ -544,16 +544,16 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }
     }
 
-    override fun getShowIgnoreBatteryOptimizationHint(): Boolean {
+    override fun getShowNotificationWarning(): Boolean {
         return runBlocking { async {
-            readBoolean(SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT, true).first()
+            readBoolean(SHOW_NOTIFICATION_WARNING, true).first()
         } }.getCompleted()
     }
 
-    override fun setShowIgnoreBatteryOptimizationHint(showIgnoreBatteryOptimizationHint: Boolean) =
+    override fun setShowNotificationWarning(showNotificationWarning: Boolean) =
         runBlocking<Unit> {
             async {
-                writeBoolean(SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT, showIgnoreBatteryOptimizationHint)
+                writeBoolean(SHOW_NOTIFICATION_WARNING, showNotificationWarning)
             }
         }
 
@@ -641,7 +641,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
-        const val SHOW_IGNORE_BATTERY_OPTIMIZATION_HINT = "show_ignore_battery_optimization_hint"
+        const val SHOW_NOTIFICATION_WARNING = "show_notification_warning"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()
