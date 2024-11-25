@@ -284,6 +284,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private fun setupNotificationSettings() {
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
+        setupServerNotificationAppCheck()
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -473,6 +474,24 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             }
         } else if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
             binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
+        }
+    }
+
+    private fun setupServerNotificationAppCheck() {
+        val serverNotificationAppInstalled =
+            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+        if (!serverNotificationAppInstalled) {
+            binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
+
+            val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
+                userManager.currentUser.blockingGet().baseUrl!!
+
+            binding.settingsServerNotificationAppDescription.text = description
+            if (openedByNotificationWarning) {
+                blinkRipple(binding.settingsServerNotificationAppWrapper.background)
+            }
+        } else {
+            binding.settingsServerNotificationAppWrapper.visibility = View.GONE
         }
     }
 
@@ -1421,6 +1440,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
+        private const val LINEBREAK = "\n"
         const val HTTP_CODE_OK: Int = 200
         const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
     }

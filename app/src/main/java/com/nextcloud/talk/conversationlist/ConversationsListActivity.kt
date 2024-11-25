@@ -1522,8 +1522,11 @@ class ConversationsListActivity :
         val messagesChannelNotEnabled = !NotificationUtils.isMessagesNotificationChannelEnabled(this)
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
+        val serverNotificationAppInstalled =
+            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+
         val settingsOfUserAreWrong = notificationPermissionNotGranted || batteryOptimizationNotIgnored ||
-                messagesChannelNotEnabled || callsChannelNotEnabled
+                messagesChannelNotEnabled || callsChannelNotEnabled || !serverNotificationAppInstalled
 
         val userWantsToBeNotifiedAboutWrongSettings = appPreferences.getShowNotificationWarning()
 
