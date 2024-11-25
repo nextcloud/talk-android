@@ -177,17 +177,19 @@ class SetStatusDialogFragment :
                 override fun onNext(statusOverall: StatusOverall) {
                     if (statusOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
                         backupStatus = statusOverall.ocs?.data!!
-                        isBackupStatusAvailable = true
-                        val backupPredefinedStatus = PredefinedStatus(
-                            backupStatus.userId!!,
-                            backupStatus.icon,
-                            backupStatus.message!!,
-                            ClearAt(type = "period", time = backupStatus.clearAt.toString())
-                        )
-                        binding.automaticStatus.visibility = View.VISIBLE
-                        adapter.isBackupStatusAvailable = true
-                        predefinedStatusesList.add(0, backupPredefinedStatus)
-                        adapter.notifyDataSetChanged()
+                        if(backupStatus.message!= null){
+                            isBackupStatusAvailable = true
+                            val backupPredefinedStatus = PredefinedStatus(
+                                backupStatus.userId!!,
+                                backupStatus.icon,
+                                backupStatus.message!!,
+                                ClearAt(type = "period", time = backupStatus.clearAt.toString())
+                            )
+                            binding.automaticStatus.visibility = View.VISIBLE
+                            adapter.isBackupStatusAvailable = true
+                            predefinedStatusesList.add(0, backupPredefinedStatus)
+                            adapter.notifyDataSetChanged()
+                        }
                     }
                 }
 
