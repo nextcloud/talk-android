@@ -321,7 +321,7 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
 }
 
 fun ImageView.loadDefaultPublicCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_link) as Any
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.icon_conversation_public) as Any
     return loadUserAvatar(data)
 }
 
