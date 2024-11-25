@@ -388,6 +388,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
             )
             binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+
+            if (openedByNotificationWarning){
+                blinkRipple(binding.settingsCallSound.background)
+            }
         }
 
         if (NotificationUtils.isMessagesNotificationChannelEnabled(this)) {
@@ -399,6 +403,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
             )
             binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+
+            if (openedByNotificationWarning){
+                blinkRipple(binding.settingsMessageSound.background)
+            }
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
