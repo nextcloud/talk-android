@@ -110,6 +110,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
@@ -1518,7 +1519,12 @@ class ConversationsListActivity :
             !platformPermissionUtil.isPostNotificationsPermissionGranted()
         val batteryOptimizationNotIgnored = !PowerManagerUtils().isIgnoringBatteryOptimizations()
 
-        val settingsOfUserAreWrong = notificationPermissionNotGranted || batteryOptimizationNotIgnored
+        val messagesChannelNotEnabled = !NotificationUtils.isMessagesNotificationChannelEnabled(this)
+        val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
+
+        val settingsOfUserAreWrong = notificationPermissionNotGranted || batteryOptimizationNotIgnored ||
+                messagesChannelNotEnabled || callsChannelNotEnabled
+
         val userWantsToBeNotifiedAboutWrongSettings = appPreferences.getShowNotificationWarning()
 
         return settingsOfUserAreWrong &&
