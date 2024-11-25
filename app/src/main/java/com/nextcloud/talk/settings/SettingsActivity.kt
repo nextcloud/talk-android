@@ -1101,16 +1101,14 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
             ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.nc_settings_notifications_declined_hint),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    Log.d(
-                        TAG,
-                        "Notification permission is denied. Either because user denied it when being asked. " +
-                            "Or permission is already denied and android decided to not offer the dialog."
-                    )
+                    try {
+                        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to open notification settings as fallback", e)
+                    }
                 }
             }
         }
