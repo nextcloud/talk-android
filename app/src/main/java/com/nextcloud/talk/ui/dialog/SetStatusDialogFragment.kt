@@ -177,7 +177,7 @@ class SetStatusDialogFragment :
                 override fun onNext(statusOverall: StatusOverall) {
                     if (statusOverall.ocs?.meta?.statusCode == HTTP_STATUS_CODE_OK) {
                         backupStatus = statusOverall.ocs?.data!!
-                        if(backupStatus.message!= null){
+                        if (backupStatus.message != null) {
                             isBackupStatusAvailable = true
                             val backupPredefinedStatus = PredefinedStatus(
                                 backupStatus.userId!!,
