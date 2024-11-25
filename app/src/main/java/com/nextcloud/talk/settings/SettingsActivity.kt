@@ -333,12 +333,22 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.high_emphasis_text, null)
                     )
+                    binding.settingsCallSound.isEnabled = true
+                    binding.settingsCallSound.alpha = ENABLED_ALPHA
+                    binding.settingsMessageSound.isEnabled = true
+                    binding.settingsMessageSound.alpha = ENABLED_ALPHA
                 } else {
                     binding.ncDiagnoseNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_declined)
                     binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.nc_darkRed, null)
                     )
+
+                    binding.settingsCallSound.isEnabled = false
+                    binding.settingsCallSound.alpha = DISABLED_ALPHA
+                    binding.settingsMessageSound.isEnabled = false
+                    binding.settingsMessageSound.alpha = DISABLED_ALPHA
+
                     binding.settingsNotificationsPermissionWrapper.setOnClickListener {
                         requestPermissions(
                             arrayOf(Manifest.permission.POST_NOTIFICATIONS),
