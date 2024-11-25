@@ -245,26 +245,49 @@
                             android:clickable="false"
                             android:gravity="center_vertical"/>
                     </LinearLayout>
-                </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/settings_notifications_permission_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="vertical"
-                    android:padding="@dimen/standard_padding">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/settings_notifications_permission_wrapper"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_notification_permission"
-                        android:textSize="@dimen/headline_text_size" />
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_padding">
 
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/nc_diagnose_notification_permission_subtitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_diagnose_notification_permission"
+                            android:textSize="@dimen/headline_text_size" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/nc_diagnose_notification_permission_subtitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_battery_optimization_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_padding">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_diagnose_battery_optimization_title"
+                            android:textSize="@dimen/headline_text_size" />
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/battery_optimization_ignored"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
+                    </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -328,27 +351,6 @@
                         android:layout_marginBottom="@dimen/standard_margin"
                         android:text="@string/nc_settings_default_ringtone"
                         android:textSize="@dimen/supporting_text_text_size"/>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/settings_battery_optimization_wrapper"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="?android:attr/selectableItemBackground"
-                    android:orientation="vertical"
-                    android:padding="@dimen/standard_padding">
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_battery_optimization_title"
-                        android:textSize="@dimen/headline_text_size" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:id="@+id/battery_optimization_ignored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
                 </LinearLayout>
 
             </LinearLayout>
