@@ -21,6 +21,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -87,6 +89,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -123,7 +126,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private lateinit var phoneBookIntegrationFlow: Flow<Boolean>
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
-    private var scrollToNotificationCategory: Boolean? = false
+    private var openedByNotificationWarning: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -163,7 +166,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
-        scrollToNotificationCategory = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY)
+        openedByNotificationWarning = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY) ?: false
     }
 
     override fun onResume() {
@@ -215,11 +218,12 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         themeTitles()
         themeSwitchPreferences()
 
-        if (scrollToNotificationCategory == true) {
+        if (openedByNotificationWarning) {
             scrollToNotificationCategory()
         }
     }
 
+    @Suppress("MagicNumber")
     private fun scrollToNotificationCategory() {
         binding.scrollView.post {
             val scrollViewLocation = IntArray(2)
@@ -227,7 +231,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             binding.scrollView.getLocationOnScreen(scrollViewLocation)
             binding.settingsNotificationsCategory.getLocationOnScreen(targetLocation)
             val offset = targetLocation[1] - scrollViewLocation[1]
-            binding.scrollView.smoothScrollBy(0, offset)
+            binding.scrollView.scrollBy(0, offset)
         }
     }
 
@@ -301,6 +305,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
 
+                if (openedByNotificationWarning){
+                    blinkRipple(binding.settingsBatteryOptimizationWrapper.background)
+                }
+
                 binding.settingsBatteryOptimizationWrapper.setOnClickListener {
                     val dialogText = String.format(
                         context.resources.getString(R.string.nc_ignore_battery_optimization_dialog_text),
@@ -343,6 +351,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.nc_darkRed, null)
                     )
+
+                    if (openedByNotificationWarning){
+                        blinkRipple(binding.settingsNotificationsPermissionWrapper.background)
+                    }
 
                     binding.settingsCallSound.isEnabled = false
                     binding.settingsCallSound.alpha = DISABLED_ALPHA
@@ -1387,6 +1399,21 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                                 // unused atm
                             }
                         })
+                }
+            }
+        }
+    }
+
+    @Suppress("MagicNumber")
+    private fun blinkRipple(rippleView: Drawable) {
+        (rippleView as RippleDrawable).let { rippleDrawable ->
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(1000L) // Wait 2 seconds before starting
+                repeat(3) {
+                    rippleDrawable.state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+                    delay(250L) // Ripple active duration
+                    rippleDrawable.state = intArrayOf() // Reset state
+                    delay(250L) // Time between blinks
                 }
             }
         }
