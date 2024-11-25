@@ -75,6 +75,7 @@ import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
@@ -122,6 +123,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private lateinit var phoneBookIntegrationFlow: Flow<Boolean>
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
+    private var scrollToNotificationCategory: Boolean? = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -135,6 +137,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
         getCurrentUser()
+        handleIntent(intent)
 
         setupLicenceSetting()
 
@@ -156,6 +159,11 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         setupPhoneBookIntegration()
 
         setupClientCertView()
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val extras: Bundle? = intent.extras
+        scrollToNotificationCategory = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY)
     }
 
     override fun onResume() {
@@ -206,6 +214,21 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
         themeTitles()
         themeSwitchPreferences()
+
+        if (scrollToNotificationCategory == true) {
+            scrollToNotificationCategory()
+        }
+    }
+
+    private fun scrollToNotificationCategory() {
+        binding.scrollView.post {
+            val scrollViewLocation = IntArray(2)
+            val targetLocation = IntArray(2)
+            binding.scrollView.getLocationOnScreen(scrollViewLocation)
+            binding.settingsNotificationsCategory.getLocationOnScreen(targetLocation)
+            val offset = targetLocation[1] - scrollViewLocation[1]
+            binding.scrollView.smoothScrollBy(0, offset)
+        }
     }
 
     private fun loadCapabilitiesAndUpdateSettings() {
@@ -663,7 +686,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
-                settingsShowIgnoreBatteryOptimizationHintSwitch,
+                settingsShowNotificationWarningSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
@@ -859,17 +882,17 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun setupCheckables() {
-        binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked =
-            appPreferences.showIgnoreBatteryOptimizationHint
+        binding.settingsShowNotificationWarningSwitch.isChecked =
+            appPreferences.showNotificationWarning
 
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-            binding.settingsShowIgnoreBatteryOptimizationHint.setOnClickListener {
-                val isChecked = binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked
-                binding.settingsShowIgnoreBatteryOptimizationHintSwitch.isChecked = !isChecked
-                appPreferences.setShowIgnoreBatteryOptimizationHint(!isChecked)
+            binding.settingsShowNotificationWarning.setOnClickListener {
+                val isChecked = binding.settingsShowNotificationWarningSwitch.isChecked
+                binding.settingsShowNotificationWarningSwitch.isChecked = !isChecked
+                appPreferences.setShowNotificationWarning(!isChecked)
             }
         } else {
-            binding.settingsShowIgnoreBatteryOptimizationHint.visibility = View.GONE
+            binding.settingsShowNotificationWarning.visibility = View.GONE
         }
 
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured

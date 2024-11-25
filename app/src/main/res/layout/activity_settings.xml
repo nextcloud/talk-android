@@ -201,7 +201,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/standard_margin"
-                    android:text="@string/nc_settings_notification_sounds"
+                    android:text="@string/nc_settings_notification_sounds_post_oreo"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold"/>
 
@@ -210,6 +210,42 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
+
+                    <LinearLayout
+                        android:id="@+id/settings_show_notification_warning"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/standard_padding">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/nc_show_notification_warning_title"
+                                android:textSize="@dimen/headline_text_size"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/settings_show_notification_warning_summary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/nc_show_notification_warning_description"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/settings_show_notification_warning_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+                </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/settings_notifications_permission_wrapper"
@@ -251,42 +287,6 @@
                             android:layout_height="wrap_content"
                             tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/settings_show_ignore_battery_optimization_hint"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/standard_padding">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/nc_show_ignore_battery_optimization_hint_title"
-                                android:textSize="@dimen/headline_text_size"/>
-
-                            <com.google.android.material.textview.MaterialTextView
-                                android:id="@+id/settings_show_ignore_battery_optimization_hint_summary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/nc_show_ignore_battery_optimization_hint_description"/>
-                        </LinearLayout>
-
-                        <com.google.android.material.materialswitch.MaterialSwitch
-                            android:id="@+id/settings_show_ignore_battery_optimization_hint_switch"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:clickable="false"
-                            android:gravity="center_vertical"/>
-                    </LinearLayout>
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/settings_gplay_not_available"

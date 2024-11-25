@@ -80,4 +80,5 @@ object BundleKeys {
     const val KEY_CREDENTIALS: String = "KEY_CREDENTIALS"
     const val KEY_FIELD_MAP: String = "KEY_FIELD_MAP"
     const val KEY_CHAT_URL: String = "KEY_CHAT_URL"
+    const val KEY_SCROLL_TO_NOTIFICATION_CATEGORY: String = "KEY_SCROLL_TO_NOTIFICATION_CATEGORY"
 }

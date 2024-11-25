@@ -178,9 +178,9 @@ public interface AppPreferences {
 
     void deleteAllMessageQueuesFor(String userId);
 
-    boolean getShowIgnoreBatteryOptimizationHint();
+    boolean getShowNotificationWarning();
 
-    void setShowIgnoreBatteryOptimizationHint(boolean showIgnoreBatteryOptimizationHint);
+    void setShowNotificationWarning(boolean showNotificationWarning);
 
     void clear();
 }

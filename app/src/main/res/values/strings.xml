@@ -101,7 +101,6 @@ How to translate with transifex:
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_account_updated">Your already existing account was updated, instead of adding a new one</string>
     <string name="nc_account_scheduled_for_deletion">The account is scheduled for deletion, and cannot be changed</string>
-    <string name="nc_settings_notification_sounds">Notification sounds</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
     <string name="nc_settings_call_ringtone">Calls</string>
     <string name="nc_settings_call_ringtone_key" translatable="false">call_ringtone</string>
@@ -181,8 +180,9 @@ How to translate with transifex:
 
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Do not optimize</string>
-    <string name="nc_show_ignore_battery_optimization_hint_title">Show battery optimization hint</string>
-    <string name="nc_show_ignore_battery_optimization_hint_description">When the battery optimization is not ignored, show a hint</string>
+    <string name="nc_show_notification_warning_title">Show notification warning</string>
+    <string name="nc_show_notification_warning_description">When notifications are not set up correctly, show a warning</string>
+    <string name="nc_notification_warning">Notifications are not set up correctly</string>
 
     <string name="nc_diagnose_meta_category_title">Meta information</string>
     <string name="nc_diagnose_meta_system_report_date">Generation of system report</string>
