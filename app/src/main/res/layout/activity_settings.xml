@@ -311,12 +311,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_settings_call_ringtone"
                         android:textSize="@dimen/headline_text_size"/>
 
@@ -324,8 +324,6 @@
                         android:id="@+id/calls_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/standard_margin"
-                        android:layout_marginBottom="@dimen/standard_margin"
                         android:text="@string/nc_settings_default_ringtone"
                         android:textSize="@dimen/supporting_text_text_size"/>
                 </LinearLayout>
@@ -335,12 +333,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="?android:attr/selectableItemBackground"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_settings_other_notifications_ringtone"
                         android:textSize="@dimen/headline_text_size"/>
 
@@ -348,10 +346,31 @@
                         android:id="@+id/messages_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/standard_margin"
-                        android:layout_marginBottom="@dimen/standard_margin"
                         android:text="@string/nc_settings_default_ringtone"
                         android:textSize="@dimen/supporting_text_text_size"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/settings_server_notification_app_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/nc_settings_server_notification_app_not_installed_title"
+                        android:textSize="@dimen/headline_text_size"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/settings_server_notification_app_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/nc_darkRed"
+                        android:textSize="@dimen/supporting_text_text_size"
+                        tools:text="Please contact the admin of www.example.com"/>
                 </LinearLayout>
 
             </LinearLayout>
