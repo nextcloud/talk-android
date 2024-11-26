@@ -110,6 +110,7 @@ import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
 import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.UserIdUtils
@@ -121,6 +122,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
@@ -273,6 +275,8 @@ class ConversationsListActivity :
         adapter!!.addListener(this)
         prepareViews()
 
+        updateNotificationWarning()
+
         showShareToScreen = hasActivityActionSendIntent()
 
         if (!eventBus.isRegistered(this)) {
@@ -301,6 +305,14 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
+    }
+
+    private fun updateNotificationWarning() {
+        if (shouldShowNotificationWarning()) {
+            showNotificationWarning()
+        } else {
+            binding.chatListNotificationWarning.visibility = View.GONE
+        }
     }
 
     private fun initObservers() {
@@ -763,9 +775,8 @@ class ConversationsListActivity :
         )
     }
 
-    private fun hasActivityActionSendIntent(): Boolean {
-        return Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
-    }
+    private fun hasActivityActionSendIntent(): Boolean =
+        Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     private fun showSearchView(searchView: SearchView?, searchItem: MenuItem?) {
         binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -1274,10 +1285,9 @@ class ConversationsListActivity :
             !participantPermissions.canIgnoreLobby()
     }
 
-    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean {
-        return conversation.conversationReadOnlyState ===
+    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean =
+        conversation.conversationReadOnlyState ===
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
-    }
 
     private fun handleSharedData() {
         collectDataFromIntent()
@@ -1453,8 +1463,9 @@ class ConversationsListActivity :
             }
 
             REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
-                // whenever user allowed notifications, also check to ignore battery optimization
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG, "Notification permission was granted")
+
                     if (!PowerManagerUtils().isIgnoringBatteryOptimizations() &&
                         ClosedInterfaceImpl().isGooglePlayServicesAvailable
                     ) {
@@ -1488,6 +1499,41 @@ class ConversationsListActivity :
                 }
             }
         }
+    }
+
+    private fun showNotificationWarning() {
+        binding.chatListNotificationWarning.visibility = View.VISIBLE
+        binding.chatListNotificationWarning.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
+            val settingsIntent = Intent(context, SettingsActivity::class.java)
+            settingsIntent.putExtras(bundle)
+            startActivity(settingsIntent)
+        }
+    }
+
+    private fun shouldShowNotificationWarning(): Boolean {
+        val notificationPermissionNotGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            !platformPermissionUtil.isPostNotificationsPermissionGranted()
+        val batteryOptimizationNotIgnored = !PowerManagerUtils().isIgnoringBatteryOptimizations()
+
+        val messagesChannelNotEnabled = !NotificationUtils.isMessagesNotificationChannelEnabled(this)
+        val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
+
+        val serverNotificationAppInstalled =
+            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+
+        val settingsOfUserAreWrong = notificationPermissionNotGranted ||
+            batteryOptimizationNotIgnored ||
+            messagesChannelNotEnabled ||
+            callsChannelNotEnabled ||
+            !serverNotificationAppInstalled
+
+        val userWantsToBeNotifiedAboutWrongSettings = appPreferences.getShowNotificationWarning()
+
+        return settingsOfUserAreWrong &&
+            userWantsToBeNotifiedAboutWrongSettings &&
+            ClosedInterfaceImpl().isGooglePlayServicesAvailable
     }
 
     private fun openConversation(textToPaste: String? = "") {

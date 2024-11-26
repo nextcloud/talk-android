@@ -71,12 +71,14 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.NotificationUtils.getMessageRingtoneUri
 import com.nextcloud.talk.utils.SecurityUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
@@ -101,7 +103,9 @@ import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
+class SettingsActivity :
+    BaseActivity(),
+    SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
     private lateinit var binding: ActivitySettingsBinding
 
     @Inject
@@ -129,6 +133,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private lateinit var phoneBookIntegrationFlow: Flow<Boolean>
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
+    private var openedByNotificationWarning: Boolean = false
 
     @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,6 +148,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
         getCurrentUser()
+        handleIntent(intent)
 
         setupLicenceSetting()
 
@@ -160,6 +166,11 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         setupPhoneBookIntegration()
 
         setupClientCertView()
+    }
+
+    private fun handleIntent(intent: Intent) {
+        val extras: Bundle? = intent.extras
+        openedByNotificationWarning = extras?.getBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY) ?: false
     }
 
     override fun onResume() {
@@ -210,6 +221,22 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
         themeTitles()
         themeSwitchPreferences()
+
+        if (openedByNotificationWarning) {
+            scrollToNotificationCategory()
+        }
+    }
+
+    @Suppress("MagicNumber")
+    private fun scrollToNotificationCategory() {
+        binding.scrollView.post {
+            val scrollViewLocation = IntArray(2)
+            val targetLocation = IntArray(2)
+            binding.scrollView.getLocationOnScreen(scrollViewLocation)
+            binding.settingsNotificationsCategory.getLocationOnScreen(targetLocation)
+            val offset = targetLocation[1] - scrollViewLocation[1]
+            binding.scrollView.scrollBy(0, offset)
+        }
     }
 
     private fun loadCapabilitiesAndUpdateSettings() {
@@ -255,11 +282,9 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun setupNotificationSettings() {
-        binding.settingsNotificationsTitle.text = resources!!.getString(
-            R.string.nc_settings_notification_sounds_post_oreo
-        )
         setupNotificationSoundsSettings()
         setupNotificationPermissionSettings()
+        setupServerNotificationAppCheck()
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -280,6 +305,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 binding.batteryOptimizationIgnored.text =
                     resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
+
+                if (openedByNotificationWarning) {
+                    DrawableUtils.blinkDrawable(binding.settingsBatteryOptimizationWrapper.background)
+                }
 
                 binding.settingsBatteryOptimizationWrapper.setOnClickListener {
                     val dialogText = String.format(
@@ -313,12 +342,26 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.high_emphasis_text, null)
                     )
+                    binding.settingsCallSound.isEnabled = true
+                    binding.settingsCallSound.alpha = ENABLED_ALPHA
+                    binding.settingsMessageSound.isEnabled = true
+                    binding.settingsMessageSound.alpha = ENABLED_ALPHA
                 } else {
                     binding.ncDiagnoseNotificationPermissionSubtitle.text =
                         resources.getString(R.string.nc_settings_notifications_declined)
                     binding.ncDiagnoseNotificationPermissionSubtitle.setTextColor(
                         resources.getColor(R.color.nc_darkRed, null)
                     )
+
+                    if (openedByNotificationWarning) {
+                        DrawableUtils.blinkDrawable(binding.settingsNotificationsPermissionWrapper.background)
+                    }
+
+                    binding.settingsCallSound.isEnabled = false
+                    binding.settingsCallSound.alpha = DISABLED_ALPHA
+                    binding.settingsMessageSound.isEnabled = false
+                    binding.settingsMessageSound.alpha = DISABLED_ALPHA
+
                     binding.settingsNotificationsPermissionWrapper.setOnClickListener {
                         requestPermissions(
                             arrayOf(Manifest.permission.POST_NOTIFICATIONS),
@@ -346,6 +389,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
             )
             binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+
+            if (openedByNotificationWarning) {
+                DrawableUtils.blinkDrawable(binding.settingsCallSound.background)
+            }
         }
 
         if (NotificationUtils.isMessagesNotificationChannelEnabled(this)) {
@@ -357,6 +404,10 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                 ResourcesCompat.getColor(context.resources, R.color.nc_darkRed, null)
             )
             binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
+
+            if (openedByNotificationWarning) {
+                DrawableUtils.blinkDrawable(binding.settingsMessageSound.background)
+            }
         }
 
         binding.settingsCallSound.setOnClickListener {
@@ -423,6 +474,24 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             }
         } else if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
             binding.settingsBatteryOptimizationWrapper.setOnClickListener { click() }
+        }
+    }
+
+    private fun setupServerNotificationAppCheck() {
+        val serverNotificationAppInstalled =
+            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+        if (!serverNotificationAppInstalled) {
+            binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
+
+            val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
+                userManager.currentUser.blockingGet().baseUrl!!
+
+            binding.settingsServerNotificationAppDescription.text = description
+            if (openedByNotificationWarning) {
+                DrawableUtils.blinkDrawable(binding.settingsServerNotificationAppWrapper.background)
+            }
+        } else {
+            binding.settingsServerNotificationAppWrapper.visibility = View.GONE
         }
     }
 
@@ -646,8 +715,8 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         startActivity(intent)
     }
 
-    private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String {
-        return if (ringtoneUri == null) {
+    private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String =
+        if (ringtoneUri == null) {
             resources!!.getString(R.string.nc_settings_no_ringtone)
         } else if ((NotificationUtils.DEFAULT_CALL_RINGTONE_URI == ringtoneUri.toString()) ||
             (NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI == ringtoneUri.toString())
@@ -657,11 +726,11 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             val r = RingtoneManager.getRingtone(context, ringtoneUri)
             r.getTitle(context)
         }
-    }
 
     private fun themeSwitchPreferences() {
         binding.run {
             listOf(
+                settingsShowNotificationWarningSwitch,
                 settingsScreenLockSwitch,
                 settingsScreenSecuritySwitch,
                 settingsIncognitoKeyboardSwitch,
@@ -857,6 +926,19 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun setupCheckables() {
+        binding.settingsShowNotificationWarningSwitch.isChecked =
+            appPreferences.showNotificationWarning
+
+        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+            binding.settingsShowNotificationWarning.setOnClickListener {
+                val isChecked = binding.settingsShowNotificationWarningSwitch.isChecked
+                binding.settingsShowNotificationWarningSwitch.isChecked = !isChecked
+                appPreferences.setShowNotificationWarning(!isChecked)
+            }
+        } else {
+            binding.settingsShowNotificationWarning.visibility = View.GONE
+        }
+
         binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
 
         binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
@@ -1067,16 +1149,14 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
             ConversationsListActivity.REQUEST_POST_NOTIFICATIONS_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_DENIED) {
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.nc_settings_notifications_declined_hint),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                    Log.d(
-                        TAG,
-                        "Notification permission is denied. Either because user denied it when being asked. " +
-                            "Or permission is already denied and android decided to not offer the dialog."
-                    )
+                    try {
+                        val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        intent.putExtra(Settings.EXTRA_APP_PACKAGE, BuildConfig.APPLICATION_ID)
+                        startActivity(intent)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Failed to open notification settings as fallback", e)
+                    }
                 }
             }
         }
@@ -1344,6 +1424,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         private const val START_DELAY: Long = 5000
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
+        private const val LINEBREAK = "\n"
         const val HTTP_CODE_OK: Int = 200
         const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
     }

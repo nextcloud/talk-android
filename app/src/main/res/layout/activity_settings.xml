@@ -185,7 +185,6 @@
                         android:text=""
                         tools:ignore="SpeakableTextPresentCheck" />
 
-
                 </com.google.android.material.textfield.TextInputLayout>
 
             </LinearLayout>
@@ -201,7 +200,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/standard_margin"
-                    android:text="@string/nc_settings_notification_sounds"
+                    android:text="@string/nc_settings_notification_sounds_post_oreo"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold"/>
 
@@ -212,18 +211,76 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:id="@+id/settings_notifications_permission_wrapper"
+                        android:id="@+id/settings_show_notification_warning"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="horizontal"
+                        android:padding="@dimen/standard_padding">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/nc_show_notification_warning_title"
+                                android:textSize="@dimen/headline_text_size"/>
+
+                            <com.google.android.material.textview.MaterialTextView
+                                android:id="@+id/settings_show_notification_warning_summary"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/nc_show_notification_warning_description"/>
+                        </LinearLayout>
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/settings_show_notification_warning_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:clickable="false"
+                            android:gravity="center_vertical"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_server_notification_app_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
                         android:orientation="vertical"
-                        android:padding="@dimen/standard_padding"
-                        android:background="?android:attr/selectableItemBackground">
+                        android:padding="@dimen/standard_padding">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_diagnose_notification_permission" />
+                            android:text="@string/nc_settings_server_notification_app_not_installed_title"
+                            android:textSize="@dimen/headline_text_size"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_server_notification_app_description"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/nc_darkRed"
+                            android:textSize="@dimen/supporting_text_text_size"
+                            tools:text="Please contact the admin of www.example.com"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/settings_notifications_permission_wrapper"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:orientation="vertical"
+                        android:padding="@dimen/standard_padding">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_diagnose_notification_permission"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/nc_diagnose_notification_permission_subtitle"
@@ -235,15 +292,15 @@
                         android:id="@+id/settings_battery_optimization_wrapper"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:background="?android:attr/selectableItemBackground"
                         android:orientation="vertical"
-                        android:padding="@dimen/standard_padding"
-                        android:background="?android:attr/selectableItemBackground">
+                        android:padding="@dimen/standard_padding">
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textSize="@dimen/headline_text_size"
-                            android:text="@string/nc_diagnose_battery_optimization_title" />
+                            android:text="@string/nc_diagnose_battery_optimization_title"
+                            android:textSize="@dimen/headline_text_size" />
 
                         <com.google.android.material.textview.MaterialTextView
                             android:id="@+id/battery_optimization_ignored"
@@ -251,6 +308,7 @@
                             android:layout_height="wrap_content"
                             tools:text="@string/nc_diagnose_battery_optimization_ignored"/>
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -273,12 +331,13 @@
                     android:id="@+id/settings_call_sound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_settings_call_ringtone"
                         android:textSize="@dimen/headline_text_size"/>
 
@@ -286,8 +345,6 @@
                         android:id="@+id/calls_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/standard_margin"
-                        android:layout_marginBottom="@dimen/standard_margin"
                         android:text="@string/nc_settings_default_ringtone"
                         android:textSize="@dimen/supporting_text_text_size"/>
                 </LinearLayout>
@@ -296,13 +353,13 @@
                     android:id="@+id/settings_message_sound"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="vertical"
-                    android:background="?android:attr/selectableItemBackground">
+                    android:padding="@dimen/standard_padding">
 
                     <com.google.android.material.textview.MaterialTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_settings_other_notifications_ringtone"
                         android:textSize="@dimen/headline_text_size"/>
 
@@ -310,13 +367,9 @@
                         android:id="@+id/messages_ringtone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/standard_margin"
-                        android:layout_marginBottom="@dimen/standard_margin"
                         android:text="@string/nc_settings_default_ringtone"
                         android:textSize="@dimen/supporting_text_text_size"/>
-
                 </LinearLayout>
-
             </LinearLayout>
 
             <LinearLayout

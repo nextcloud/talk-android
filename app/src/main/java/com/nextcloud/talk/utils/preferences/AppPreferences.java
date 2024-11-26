@@ -178,6 +178,9 @@ public interface AppPreferences {
 
     void deleteAllMessageQueuesFor(String userId);
 
+    boolean getShowNotificationWarning();
+
+    void setShowNotificationWarning(boolean showNotificationWarning);
 
     void clear();
 }
