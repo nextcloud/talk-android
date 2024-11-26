@@ -21,6 +21,8 @@ import com.nextcloud.talk.openconversations.data.OpenConversation
 
 class OpenConversationsAdapter(val user: User, private val onClick: (OpenConversation) -> Unit) :
     ListAdapter<OpenConversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
+    private var originalList: List<OpenConversation> = emptyList()
+    private var isFiltering = false
 
     inner class OpenConversationsViewHolder(val itemBinding: RvItemOpenConversationBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -67,6 +69,36 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
     override fun onBindViewHolder(holder: OpenConversationsViewHolder, position: Int) {
         val conversation = getItem(position)
         holder.bindItem(conversation)
+    }
+
+    fun filter(text: String) {
+        if (text == "") {
+            submitList(originalList)
+            isFiltering = false
+            return
+        }
+
+        isFiltering = true
+        val newList = mutableListOf<OpenConversation>()
+        for (conversation in originalList) {
+            if (conversation.displayName.contains(text, true) || conversation.description!!.contains(text, true)) {
+                newList.add(conversation)
+            }
+        }
+
+        if (newList.isNotEmpty()) {
+            submitList(newList)
+        }
+    }
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<OpenConversation>,
+        currentList: MutableList<OpenConversation>
+    ) {
+        if (!isFiltering) {
+            originalList = currentList
+        }
+        super.onCurrentListChanged(previousList, currentList)
     }
 }
 
