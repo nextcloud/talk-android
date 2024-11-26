@@ -10,12 +10,19 @@
 
 package com.nextcloud.talk.extensions
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.load
@@ -35,6 +42,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextDrawable
+import java.util.Locale
 
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
@@ -297,6 +305,21 @@ fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
+fun ImageView.loadFirstLetterAvatar(letter: String): io.reactivex.disposables.Disposable {
+    val layers = arrayOfNulls<Drawable>(2)
+    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
+    layers[1] = createTextDrawable(context, letter.uppercase(Locale.ROOT))
+
+    val layerDrawable = LayerDrawable(layers)
+    val data: Any = layerDrawable
+
+    return DisposableWrapper(
+        load(data) {
+            transformations(CircleCropTransformation())
+        }
+    )
+}
+
 fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
     return loadSystemAvatar()
 }
@@ -317,6 +340,11 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
 
 fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
+    return loadUserAvatar(data)
+}
+
+fun ImageView.loadDefaultAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.account_circle_96dp) as Any
     return loadUserAvatar(data)
 }
 
@@ -348,6 +376,32 @@ fun ImageView.loadGuestAvatar(baseUrl: String, name: String, big: Boolean): io.r
             })
         }
     )
+}
+
+@Suppress("MagicNumber")
+private fun createTextDrawable(context: Context, letter: String): Drawable {
+    val size = 100
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+
+    val paint = Paint().apply {
+        color = ResourcesCompat.getColor(context.resources, R.color.grey_600, null)
+        style = Paint.Style.FILL
+    }
+    canvas.drawRect(0f, 0f, size.toFloat(), size.toFloat(), paint)
+
+    val textPaint = Paint().apply {
+        color = Color.WHITE
+        textSize = size / 2f
+        isAntiAlias = true
+        textAlign = Paint.Align.CENTER
+    }
+
+    val xPos = size / 2f
+    val yPos = (canvas.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
+    canvas.drawText(letter.take(1), xPos, yPos, textPaint)
+
+    return BitmapDrawable(context.resources, bitmap)
 }
 
 private class DisposableWrapper(private val disposable: coil.request.Disposable) : io.reactivex.disposables

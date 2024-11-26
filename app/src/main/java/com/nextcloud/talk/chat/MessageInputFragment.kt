@@ -856,7 +856,8 @@ class MessageInputFragment : Fragment() {
                 val shouldQuote = mentionId.contains(" ") ||
                     mentionId.contains("@") ||
                     mentionId.startsWith("guest/") ||
-                    mentionId.startsWith("group/")
+                    mentionId.startsWith("group/") ||
+                    mentionId.startsWith("email/")
                 if (shouldQuote) {
                     mentionId = "\"" + mentionId + "\""
                 }

@@ -72,6 +72,9 @@ data class Participant(
     @JsonField(name = ["statusMessage"])
     var statusMessage: String? = null,
 
+    @JsonField(name = ["invitedActorId"])
+    var invitedActorId: String? = null,
+
     var selected: Boolean = false
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'

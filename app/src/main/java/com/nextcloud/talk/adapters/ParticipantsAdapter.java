@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.activities.CallActivity;
 import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
+import com.nextcloud.talk.models.json.participants.Participant;
 
 import org.webrtc.MediaStream;
 import org.webrtc.MediaStreamTrack;
@@ -143,7 +144,15 @@ public class ParticipantsAdapter extends BaseAdapter {
                 nickTextView.setVisibility(View.VISIBLE);
                 nickTextView.setText(participantDisplayItem.getNick());
             }
-            ImageViewExtensionsKt.loadAvatarWithUrl(imageView,null, participantDisplayItem.getUrlForAvatar());
+            if (participantDisplayItem.getActorType() == Participant.ActorType.GUESTS ||
+                participantDisplayItem.getActorType() == Participant.ActorType.EMAILS) {
+                ImageViewExtensionsKt.loadFirstLetterAvatar(
+                    imageView,
+                    String.valueOf(participantDisplayItem.getNick().charAt(0))
+                );
+            } else {
+                ImageViewExtensionsKt.loadAvatarWithUrl(imageView,null, participantDisplayItem.getUrlForAvatar());
+            }
         }
 
         ImageView audioOffView = convertView.findViewById(R.id.remote_audio_off);

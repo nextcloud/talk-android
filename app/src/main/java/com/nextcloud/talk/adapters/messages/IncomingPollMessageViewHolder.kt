@@ -28,6 +28,7 @@ import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.polls.ui.PollMainDialogFragment
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ChatMessageUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -153,7 +154,7 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
         }
 
         if (!message.isGrouped && !message.isOneToOneConversation && !message.isFormerOneToOneConversation) {
-            setAvatarOnMessage(message)
+            ChatMessageUtils().setAvatarOnMessage(binding.messageUserAvatar, message, viewThemeUtils)
         } else {
             if (message.isOneToOneConversation || message.isFormerOneToOneConversation) {
                 binding.messageUserAvatar.visibility = View.GONE
@@ -161,19 +162,6 @@ class IncomingPollMessageViewHolder(incomingView: View, payload: Any) :
                 binding.messageUserAvatar.visibility = View.INVISIBLE
             }
             binding.messageAuthor.visibility = View.GONE
-        }
-    }
-
-    private fun setAvatarOnMessage(message: ChatMessage) {
-        binding.messageUserAvatar.visibility = View.VISIBLE
-        if (message.actorType == "guests") {
-            // do nothing, avatar is set
-        } else if (message.actorType == "bots" && message.actorId == "changelog") {
-            binding.messageUserAvatar.loadChangelogBotAvatar()
-        } else if (message.actorType == "bots") {
-            binding.messageUserAvatar.loadBotsAvatar()
-        } else if (message.actorType == "federated_users") {
-            binding.messageUserAvatar.loadFederatedUserAvatar(message)
         }
     }
 
