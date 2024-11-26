@@ -36,6 +36,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
+import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
@@ -49,6 +50,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -88,8 +90,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.HttpException
 import java.net.URI
 import java.net.URISyntaxException
 import java.util.Locale
@@ -102,6 +106,9 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
     @Inject
     lateinit var ncApi: NcApi
+
+    @Inject
+    lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
     lateinit var userManager: UserManager
@@ -123,6 +130,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
 
+    @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -260,6 +268,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         setupNotificationPermissionSettings()
     }
 
+    @SuppressLint("StringFormatInvalid")
     @Suppress("LongMethod")
     private fun setupNotificationPermissionSettings() {
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
@@ -603,7 +612,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         }
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "StringFormatInvalid")
     private fun removeCurrentAccount() {
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
@@ -1271,77 +1280,73 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
     }
 
     private fun observeReadPrivacy() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             var state = appPreferences.readPrivacy
             readPrivacyFlow.collect { newBoolean ->
                 if (state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
-                    ncApi.setReadStatusPrivacy(
-                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                        json.toRequestBody("application/json".toMediaTypeOrNull())
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<GenericOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
+                    withContext(Dispatchers.IO) {
+                        try {
+                            credentials?.let { credentials ->
+                                ncApiCoroutines.setReadStatusPrivacy(
+                                    credentials,
+                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                    json.toRequestBody("application/json".toMediaTypeOrNull())
+                                )
+                                Log.i(TAG, "reading status set")
                             }
-
-                            override fun onNext(genericOverall: GenericOverall) {
-                                // unused atm
-                            }
-
-                            override fun onError(e: Throwable) {
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
                                 appPreferences.setReadPrivacy(!newBoolean)
                                 binding.settingsReadPrivacySwitch.isChecked = !newBoolean
                             }
-
-                            override fun onComplete() {
-                                // unused atm
+                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                                Log.e(TAG, "read_status_privacy : Key or value is invalid")
+                            } else {
+                                Log.e(TAG, "Error setting read status", e)
                             }
-                        })
+                        }
+                    }
                 }
             }
         }
     }
 
     private fun observeTypingStatus() {
-        CoroutineScope(Dispatchers.Main).launch {
+        lifecycleScope.launch {
             var state = appPreferences.typingStatus
             typingStatusFlow.collect { newBoolean ->
                 if (state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
-                    ncApi.setTypingStatusPrivacy(
-                        ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token),
-                        ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
-                        json.toRequestBody("application/json".toMediaTypeOrNull())
-                    )
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<GenericOverall> {
-                            override fun onSubscribe(d: Disposable) {
-                                // unused atm
+                    withContext(Dispatchers.IO) {
+                        try {
+                            credentials?.let { credentials ->
+                                ncApiCoroutines.setTypingStatusPrivacy(
+                                    credentials,
+                                    ApiUtils.getUrlForUserSettings(currentUser!!.baseUrl!!),
+                                    json.toRequestBody("application/json".toMediaTypeOrNull())
+                                )
                             }
-
-                            override fun onNext(genericOverall: GenericOverall) {
+                            withContext(Dispatchers.Main) {
                                 loadCapabilitiesAndUpdateSettings()
-                                Log.i(TAG, "onNext called typing status set")
+                                Log.i(TAG, "typing status set")
                             }
-
-                            override fun onError(e: Throwable) {
+                        } catch (e: Exception) {
+                            withContext(Dispatchers.Main) {
                                 appPreferences.typingStatus = !newBoolean
                                 binding.settingsTypingStatusSwitch.isChecked = !newBoolean
                             }
-
-                            override fun onComplete() {
-                                // unused atm
+                            if (e is HttpException && e.code() == HTTP_ERROR_CODE_BAD_REQUEST) {
+                                Log.e(TAG, "typing_privacy : Key or value is invalid")
+                            } else {
+                                Log.e(TAG, "Error setting typing status", e)
                             }
-                        })
+                        }
+                    }
                 }
             }
         }
@@ -1354,5 +1359,6 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         private const val DISABLED_ALPHA: Float = 0.38f
         private const val ENABLED_ALPHA: Float = 1.0f
         const val HTTP_CODE_OK: Int = 200
+        const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
     }
 }
