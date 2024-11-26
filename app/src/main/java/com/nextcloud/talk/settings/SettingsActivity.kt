@@ -21,8 +21,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.RippleDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -73,6 +71,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.DrawableUtils
 import com.nextcloud.talk.utils.LoggingUtils.sendMailWithAttachment
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
@@ -91,7 +90,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -306,8 +304,8 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     resources!!.getString(R.string.nc_diagnose_battery_optimization_not_ignored)
                 binding.batteryOptimizationIgnored.setTextColor(resources.getColor(R.color.nc_darkRed, null))
 
-                if (openedByNotificationWarning){
-                    blinkRipple(binding.settingsBatteryOptimizationWrapper.background)
+                if (openedByNotificationWarning) {
+                    DrawableUtils.blinkDrawable(binding.settingsBatteryOptimizationWrapper.background)
                 }
 
                 binding.settingsBatteryOptimizationWrapper.setOnClickListener {
@@ -354,7 +352,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                     )
 
                     if (openedByNotificationWarning){
-                        blinkRipple(binding.settingsNotificationsPermissionWrapper.background)
+                        DrawableUtils.blinkDrawable(binding.settingsNotificationsPermissionWrapper.background)
                     }
 
                     binding.settingsCallSound.isEnabled = false
@@ -391,7 +389,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
 
             if (openedByNotificationWarning){
-                blinkRipple(binding.settingsCallSound.background)
+                DrawableUtils.blinkDrawable(binding.settingsCallSound.background)
             }
         }
 
@@ -406,7 +404,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
 
             if (openedByNotificationWarning){
-                blinkRipple(binding.settingsMessageSound.background)
+                DrawableUtils.blinkDrawable(binding.settingsMessageSound.background)
             }
         }
 
@@ -488,7 +486,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {
-                blinkRipple(binding.settingsServerNotificationAppWrapper.background)
+                DrawableUtils.blinkDrawable(binding.settingsServerNotificationAppWrapper.background)
             }
         } else {
             binding.settingsServerNotificationAppWrapper.visibility = View.GONE
@@ -1414,21 +1412,6 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                             }
                         }
                     }
-                }
-            }
-        }
-    }
-
-    @Suppress("MagicNumber")
-    private fun blinkRipple(rippleView: Drawable) {
-        (rippleView as RippleDrawable).let { rippleDrawable ->
-            CoroutineScope(Dispatchers.Main).launch {
-                delay(1000L) // Wait 2 seconds before starting
-                repeat(3) {
-                    rippleDrawable.state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
-                    delay(250L) // Ripple active duration
-                    rippleDrawable.state = intArrayOf() // Reset state
-                    delay(250L) // Time between blinks
                 }
             }
         }
