@@ -99,7 +99,9 @@ import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
-class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
+class SettingsActivity :
+    BaseActivity(),
+    SetPhoneNumberDialogFragment.SetPhoneNumberDialogClickListener {
     private lateinit var binding: ActivitySettingsBinding
 
     @Inject
@@ -351,7 +353,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
                         resources.getColor(R.color.nc_darkRed, null)
                     )
 
-                    if (openedByNotificationWarning){
+                    if (openedByNotificationWarning) {
                         DrawableUtils.blinkDrawable(binding.settingsNotificationsPermissionWrapper.background)
                     }
 
@@ -388,7 +390,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             )
             binding.callsRingtone.text = resources!!.getString(R.string.nc_common_disabled)
 
-            if (openedByNotificationWarning){
+            if (openedByNotificationWarning) {
                 DrawableUtils.blinkDrawable(binding.settingsCallSound.background)
             }
         }
@@ -403,7 +405,7 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             )
             binding.messagesRingtone.text = resources!!.getString(R.string.nc_common_disabled)
 
-            if (openedByNotificationWarning){
+            if (openedByNotificationWarning) {
                 DrawableUtils.blinkDrawable(binding.settingsMessageSound.background)
             }
         }
@@ -717,8 +719,8 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
         startActivity(intent)
     }
 
-    private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String {
-        return if (ringtoneUri == null) {
+    private fun getRingtoneName(context: Context, ringtoneUri: Uri?): String =
+        if (ringtoneUri == null) {
             resources!!.getString(R.string.nc_settings_no_ringtone)
         } else if ((NotificationUtils.DEFAULT_CALL_RINGTONE_URI == ringtoneUri.toString()) ||
             (NotificationUtils.DEFAULT_MESSAGE_RINGTONE_URI == ringtoneUri.toString())
@@ -728,7 +730,6 @@ class SettingsActivity : BaseActivity(), SetPhoneNumberDialogFragment.SetPhoneNu
             val r = RingtoneManager.getRingtone(context, ringtoneUri)
             r.getTitle(context)
         }
-    }
 
     private fun themeSwitchPreferences() {
         binding.run {

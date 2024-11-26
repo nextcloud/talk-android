@@ -162,7 +162,7 @@ object DrawableUtils {
         }
     }
 
-    @Suppress("MagicNumber")
+    @Suppress("MagicNumber", "TooGenericExceptionCaught")
     fun blinkDrawable(rippleView: Drawable) {
         try {
             (rippleView as RippleDrawable).let { rippleDrawable ->
@@ -176,7 +176,7 @@ object DrawableUtils {
                     }
                 }
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(TAG, "Failed to blink Drawable", e)
         }
     }
