@@ -775,9 +775,8 @@ class ConversationsListActivity :
         )
     }
 
-    private fun hasActivityActionSendIntent(): Boolean {
-        return Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
-    }
+    private fun hasActivityActionSendIntent(): Boolean =
+        Intent.ACTION_SEND == intent.action || Intent.ACTION_SEND_MULTIPLE == intent.action
 
     private fun showSearchView(searchView: SearchView?, searchItem: MenuItem?) {
         binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -1286,10 +1285,9 @@ class ConversationsListActivity :
             !participantPermissions.canIgnoreLobby()
     }
 
-    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean {
-        return conversation.conversationReadOnlyState ===
+    private fun isReadOnlyConversation(conversation: ConversationModel): Boolean =
+        conversation.conversationReadOnlyState ===
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
-    }
 
     private fun handleSharedData() {
         collectDataFromIntent()
@@ -1514,7 +1512,7 @@ class ConversationsListActivity :
         }
     }
 
-    private fun shouldShowNotificationWarning() : Boolean {
+    private fun shouldShowNotificationWarning(): Boolean {
         val notificationPermissionNotGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted()
         val batteryOptimizationNotIgnored = !PowerManagerUtils().isIgnoringBatteryOptimizations()
@@ -1525,8 +1523,11 @@ class ConversationsListActivity :
         val serverNotificationAppInstalled =
             userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
 
-        val settingsOfUserAreWrong = notificationPermissionNotGranted || batteryOptimizationNotIgnored ||
-                messagesChannelNotEnabled || callsChannelNotEnabled || !serverNotificationAppInstalled
+        val settingsOfUserAreWrong = notificationPermissionNotGranted ||
+            batteryOptimizationNotIgnored ||
+            messagesChannelNotEnabled ||
+            callsChannelNotEnabled ||
+            !serverNotificationAppInstalled
 
         val userWantsToBeNotifiedAboutWrongSettings = appPreferences.getShowNotificationWarning()
 
