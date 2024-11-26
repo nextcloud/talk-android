@@ -6,14 +6,22 @@
  */
 package com.nextcloud.talk.utils
 
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
+import android.util.Log
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.Mimetype.AUDIO_PREFIX
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PREFIX
 import com.nextcloud.talk.utils.Mimetype.TEXT_PREFIX
 import com.nextcloud.talk.utils.Mimetype.VIDEO_PREFIX
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 object DrawableUtils {
+    private val TAG = DrawableUtils::class.java.simpleName
 
     @Suppress("Detekt.LongMethod")
     fun getDrawableResourceIdForMimeType(mimetype: String?): Int {
@@ -151,6 +159,25 @@ object DrawableUtils {
             R.drawable.ic_mimetype_audio
         } else {
             drawableMap["unknown"]!!
+        }
+    }
+
+    @Suppress("MagicNumber")
+    fun blinkDrawable(rippleView: Drawable) {
+        try {
+            (rippleView as RippleDrawable).let { rippleDrawable ->
+                CoroutineScope(Dispatchers.Main).launch {
+                    delay(1000L) // Wait 2 seconds before starting
+                    repeat(3) {
+                        rippleDrawable.state = intArrayOf(android.R.attr.state_pressed, android.R.attr.state_enabled)
+                        delay(250L) // Ripple active duration
+                        rippleDrawable.state = intArrayOf() // Reset state
+                        delay(250L) // Time between blinks
+                    }
+                }
+            }
+        } catch (e: Exception){
+            Log.e(TAG, "Failed to blink Drawable", e)
         }
     }
 }
