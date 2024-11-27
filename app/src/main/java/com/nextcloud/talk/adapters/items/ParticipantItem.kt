@@ -85,6 +85,10 @@ class ParticipantItem(
         setOnlineStateColor(holder)
         holder.binding.nameText.text = model.displayName
 
+        if (model.type == Participant.ParticipantType.GUEST && model.displayName.isNullOrBlank()) {
+            holder.binding.nameText.text = sharedApplication!!.getString(R.string.nc_guest)
+        }
+
         if (adapter!!.hasFilter()) {
             viewThemeUtils.talk.themeAndHighlightText(
                 holder.binding.nameText,
