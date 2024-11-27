@@ -211,12 +211,11 @@ class ParticipantItem(
             }
 
             Participant.ActorType.GUESTS, Participant.ActorType.EMAILS -> {
-                if (model.displayName.isNullOrEmpty()) {
-                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
+                val actorName = model.displayName
+                if (!actorName.isNullOrBlank()) {
+                    holder.binding.avatarView.loadFirstLetterAvatar(actorName)
                 } else {
-                    holder.binding.avatarView.loadFirstLetterAvatar(
-                        model.displayName!!.first().toString()
-                    )
+                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
                 }
             }
 
