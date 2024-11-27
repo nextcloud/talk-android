@@ -21,23 +21,11 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
 
     val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
-    override fun fetchConversations(): Observable<OpenConversationsModel> {
-        return ncApi.getOpenConversations(
+    override fun fetchConversations(): Observable<List<Conversation>> {
+        val roomOverall = ncApi.getOpenConversations(
             credentials,
             ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
-        ).map { mapToOpenConversationsModel(it.ocs?.data!!) }
-    }
-
-    private fun mapToOpenConversationsModel(conversations: List<Conversation>): OpenConversationsModel {
-        return OpenConversationsModel(
-            conversations.map { conversation ->
-                OpenConversation(
-                    // conversation.roomId!!,
-                    conversation.token!!,
-                    conversation.name!!,
-                    conversation.description ?: ""
-                )
-            }
         )
+        return roomOverall.map { it.ocs?.data!! }
     }
 }
