@@ -21,15 +21,15 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ActivityOpenConversationsBinding
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.adapters.OpenConversationsAdapter
-import com.nextcloud.talk.openconversations.data.OpenConversation
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.vanniktech.ui.showKeyboardAndFocus
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ListOpenConversationsActivity : BaseActivity() {
+class  ListOpenConversationsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityOpenConversationsBinding
 
@@ -62,7 +62,7 @@ class ListOpenConversationsActivity : BaseActivity() {
 
         val user = currentUserProvider.currentUser.blockingGet()
 
-        adapter = OpenConversationsAdapter(user) { conversation -> adapterOnClick(conversation) }
+        adapter = OpenConversationsAdapter(user, viewThemeUtils) { conversation -> adapterOnClick(conversation) }
         binding.openConversationsRecyclerView.adapter = adapter
         binding.searchOpenConversations.setOnClickListener {
             searching = !searching
@@ -86,9 +86,9 @@ class ListOpenConversationsActivity : BaseActivity() {
         }
     }
 
-    private fun adapterOnClick(conversation: OpenConversation) {
+    private fun adapterOnClick(conversation: Conversation) {
         val bundle = Bundle()
-        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.roomToken)
+        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation.token)
 
         val chatIntent = Intent(context, ChatActivity::class.java)
         chatIntent.putExtras(bundle)
@@ -143,3 +143,6 @@ class ListOpenConversationsActivity : BaseActivity() {
         viewThemeUtils.material.themeToolbar(binding.openConversationsToolbar)
     }
 }
+
+
+
