@@ -55,14 +55,12 @@ class OpenConversationsAdapter(
                 itemBinding.descriptionText.text = conversation.description
             }
 
-            // load avatar from server when https://github.com/nextcloud/spreed/issues/9600 is solved
             itemBinding.avatarView.loadConversationAvatar(
                 user,
                 currentConversationModel,
                 false,
                 viewThemeUtils
             )
-            // itemBinding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
         }
     }
 
