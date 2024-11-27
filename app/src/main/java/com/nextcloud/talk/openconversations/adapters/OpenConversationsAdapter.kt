@@ -20,9 +20,11 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
-class OpenConversationsAdapter(val user: User,
+class OpenConversationsAdapter(
+    val user: User,
     val viewThemeUtils: ViewThemeUtils,
-    private val onClick: (Conversation) -> Unit) :
+    private val onClick: (Conversation) -> Unit
+) :
     ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
     private var originalList: List<Conversation> = emptyList()
     private var isFiltering = false
@@ -53,7 +55,6 @@ class OpenConversationsAdapter(val user: User,
                 itemBinding.descriptionText.text = conversation.description
             }
 
-
             // load avatar from server when https://github.com/nextcloud/spreed/issues/9600 is solved
             itemBinding.avatarView.loadConversationAvatar(
                 user,
@@ -61,7 +62,7 @@ class OpenConversationsAdapter(val user: User,
                 false,
                 viewThemeUtils
             )
-            //itemBinding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
+            // itemBinding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
         }
     }
 
@@ -100,10 +101,7 @@ class OpenConversationsAdapter(val user: User,
         }
     }
 
-    override fun onCurrentListChanged(
-        previousList: MutableList<Conversation>,
-        currentList: MutableList<Conversation>
-    ) {
+    override fun onCurrentListChanged(previousList: MutableList<Conversation>, currentList: MutableList<Conversation>) {
         if (!isFiltering) {
             originalList = currentList
         }

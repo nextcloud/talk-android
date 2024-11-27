@@ -29,7 +29,7 @@ import com.vanniktech.ui.showKeyboardAndFocus
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class  ListOpenConversationsActivity : BaseActivity() {
+class ListOpenConversationsActivity : BaseActivity() {
 
     private lateinit var binding: ActivityOpenConversationsBinding
 
@@ -143,6 +143,3 @@ class  ListOpenConversationsActivity : BaseActivity() {
         viewThemeUtils.material.themeToolbar(binding.openConversationsToolbar)
     }
 }
-
-
-
