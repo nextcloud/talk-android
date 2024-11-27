@@ -118,6 +118,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
         )
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun showDeckCard(message: ChatMessage) {
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
