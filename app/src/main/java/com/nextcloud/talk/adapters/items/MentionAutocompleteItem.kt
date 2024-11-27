@@ -16,6 +16,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
@@ -56,7 +57,15 @@ class MentionAutocompleteItem(
     init {
         mentionId = mention.mentionId
         objectId = mention.id
-        displayName = mention.label
+
+        displayName = if (!mention.label.isNullOrBlank()) {
+            mention.label
+        } else if ("guests" == mention.source || "emails" == mention.source) {
+            context.resources.getString(R.string.nc_guest)
+        } else {
+            ""
+        }
+
         source = mention.source
         status = mention.status
         statusIcon = mention.statusIcon
@@ -149,7 +158,11 @@ class MentionAutocompleteItem(
 
             SOURCE_GUESTS, SOURCE_EMAILS -> {
                 avatarId = displayName
-                holder.binding.avatarView.loadGuestAvatar(currentUser, avatarId!!, false)
+                if (displayName.equals(context.resources.getString(R.string.nc_guest))) {
+                    holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
+                } else {
+                    holder.binding.avatarView.loadGuestAvatar(currentUser, avatarId!!, false)
+                }
             }
 
             else -> {
