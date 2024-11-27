@@ -190,7 +190,6 @@
     <string name="nc_diagnose_app_users_amount">Kayıtlı kullanıcılar</string>
     <string name="nc_diagnose_app_version_title">Uygulama sürümü</string>
     <string name="nc_diagnose_battery_optimization_ignored">Pil iyileştirmesi yok sayılmış. Her şey yolunda</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Pil iyileştirmesi yok sayılmamış. Bu durum değiştirilmeli!</string>
     <string name="nc_diagnose_battery_optimization_title">Pil ayarları</string>
     <string name="nc_diagnose_device_name_title">Aygıt</string>
     <string name="nc_diagnose_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>

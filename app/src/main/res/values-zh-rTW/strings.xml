@@ -192,7 +192,6 @@
     <string name="nc_diagnose_app_users_amount">已註冊的使用者</string>
     <string name="nc_diagnose_app_version_title">應用程式版本</string>
     <string name="nc_diagnose_battery_optimization_ignored">已忽略電池最佳化，一切都好</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">電池最佳化不被忽略。這應該要變更！</string>
     <string name="nc_diagnose_battery_optimization_title">電池設定</string>
     <string name="nc_diagnose_device_name_title">裝置</string>
     <string name="nc_diagnose_dialog_open_checklist">開啟疑難排解檢查表</string>

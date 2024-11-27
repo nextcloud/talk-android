@@ -176,7 +176,6 @@
     <string name="nc_diagnose_app_users_amount">Registrovaní používatelia</string>
     <string name="nc_diagnose_app_version_title">Verzia aplikácie</string>
     <string name="nc_diagnose_battery_optimization_ignored">Optimalizácia batérie je ignorovaná, všetko v poriadku</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Optimalizácia batérie nie je ignorovaná. Toto by sa malo zmeniť!</string>
     <string name="nc_diagnose_battery_optimization_title">Nastavenia batérie.</string>
     <string name="nc_diagnose_device_name_title">Zariadenie</string>
     <string name="nc_diagnose_dialog_open_checklist">Otvoriť kontrolný zoznam na riešenie problémov</string>
