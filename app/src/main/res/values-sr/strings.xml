@@ -190,7 +190,6 @@
     <string name="nc_diagnose_app_users_amount">Регистровани корисници</string>
     <string name="nc_diagnose_app_version_title">Верзија апликације</string>
     <string name="nc_diagnose_battery_optimization_ignored">Игнорише се оптимизација батерије, све је у реду</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Оптимизација батерије се не игнорише. Ово би требало да се промени!</string>
     <string name="nc_diagnose_battery_optimization_title">Подешавања батерије</string>
     <string name="nc_diagnose_device_name_title">Уређај</string>
     <string name="nc_diagnose_dialog_open_checklist">Отвори контролну листу за отклањање проблема</string>

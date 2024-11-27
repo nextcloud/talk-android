@@ -192,7 +192,6 @@
     <string name="nc_diagnose_app_users_amount">Registrovaní uživatelé</string>
     <string name="nc_diagnose_app_version_title">Verze aplikace</string>
     <string name="nc_diagnose_battery_optimization_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru je ignorována, všechno v pořádku</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru není ignorována. Toto by mělo být změněno!</string>
     <string name="nc_diagnose_battery_optimization_title">Nastavení správy napájení</string>
     <string name="nc_diagnose_device_name_title">Zařízení</string>
     <string name="nc_diagnose_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>

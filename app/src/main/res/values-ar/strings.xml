@@ -192,7 +192,6 @@
     <string name="nc_diagnose_app_users_amount">المستخدمون المسجلون</string>
     <string name="nc_diagnose_app_version_title">رقم إصدار التطبيق</string>
     <string name="nc_diagnose_battery_optimization_ignored">تمّ تجاهل توفير البطارية، و كل شيء على ما يرُام</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">لم يتم تجاهل توفير البطارية. يتوجب تغيير ذلك!</string>
     <string name="nc_diagnose_battery_optimization_title">إعدادات البطارية</string>
     <string name="nc_diagnose_device_name_title">الجهاز</string>
     <string name="nc_diagnose_dialog_open_checklist">فتح قائمة التحقق لاكتشاف الأعطال و إصلاحها</string>

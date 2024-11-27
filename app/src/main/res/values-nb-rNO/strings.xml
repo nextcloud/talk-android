@@ -187,7 +187,6 @@
     <string name="nc_diagnose_app_users_amount">Registrerte brukere</string>
     <string name="nc_diagnose_app_version_title">App-versjon</string>
     <string name="nc_diagnose_battery_optimization_ignored">Batterioptimalisering ignoreres, alt er bra</string>
-    <string name="nc_diagnose_battery_optimization_not_ignored">Batterioptimalisering ignoreres ikke. Dette bør endres!</string>
     <string name="nc_diagnose_battery_optimization_title">Batteri innstillinger</string>
     <string name="nc_diagnose_device_name_title">Enhet</string>
     <string name="nc_diagnose_dialog_open_checklist">Åpne sjekkliste for feilsøking</string>
