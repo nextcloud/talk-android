@@ -190,6 +190,7 @@
     <string name="nc_diagnose_app_users_amount">Registrerade användare</string>
     <string name="nc_diagnose_app_version_title">Appversion</string>
     <string name="nc_diagnose_battery_optimization_ignored">Batterioptimering ignoreras, allt är bra</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Batterioptimering är aktiverad vilket kan orsaka problem. Du bör inaktivera batterioptimering!</string>
     <string name="nc_diagnose_battery_optimization_title">Batteriinställningar</string>
     <string name="nc_diagnose_device_name_title">Enhet</string>
     <string name="nc_diagnose_dialog_open_checklist">Öppna checklista för felsökning</string>
@@ -330,6 +331,7 @@
     <string name="nc_notification_channel_uploads">Uppladdningar</string>
     <string name="nc_notification_channel_uploads_description">Avisera om uppladdningsförlopp</string>
     <string name="nc_notification_settings">Meddelandeinställningar</string>
+    <string name="nc_notification_warning">Aviseringar är inte korrekt inställda</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Aviseringsbehörighet och batteriinställningar är korrekt inställda för att ta emot aviseringar. Om du ändå har problem med att ta emot aviseringar, kontrollera om aviseringskanalerna för samtal och meddelanden är aktiverade. Ytterligare hjälp kan hittas på DontKillMyApp.com eller på checklistan för felsökning. Om detta inte hjälper, gå till diagnosskärmen och skicka en felrapport.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Felsökning aviseringar</string>
     <string name="nc_notify_me_always">Meddela alltid</string>
@@ -426,6 +428,7 @@
     <string name="nc_settings_advanced_title">Avancerat</string>
     <string name="nc_settings_appearance">Utseende</string>
     <string name="nc_settings_call_ringtone">Samtal</string>
+    <string name="nc_settings_contact_admin_of">Kontakta administratören av</string>
     <string name="nc_settings_diagnose_subtitle">Öppna diagnosskärmen för att kontrollera inställningarna eller skapa en felrapport</string>
     <string name="nc_settings_diagnose_title">Diagnos</string>
     <string name="nc_settings_incognito_keyboard_desc">Instruerar tangentbordet att inaktivera personlig inlärning (utan garantier)</string>
@@ -466,6 +469,7 @@
     <string name="nc_settings_server_almost_eol">Serverversionen är mycket gammal och kommer inte att stödjas i nästa version!</string>
     <string name="nc_settings_server_eol">Serverversionen är för gammal eller ej stödd av den här versionen av Andriod-appen</string>
     <string name="nc_settings_server_eol_title">Serverversion stöds inte</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Aviseringsappen är inte installerad på servern</string>
     <string name="nc_settings_theme_battery_saver">Satt av batterisparare</string>
     <string name="nc_settings_theme_dark">Mörk</string>
     <string name="nc_settings_theme_follow_system">Använd systemets standard</string>
@@ -491,6 +495,8 @@
     <string name="nc_shared_items_empty">Inga delade objekt</string>
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_shared_location">Delad plats</string>
+    <string name="nc_show_notification_warning_description">Visa en varning när aviseringar inte är korrekt inställda</string>
+    <string name="nc_show_notification_warning_title">Visa varning för avisering</string>
     <string name="nc_sort_by">Sortera efter</string>
     <string name="nc_start_time">Starttid</string>
     <string name="nc_switch_account">Växla konto</string>

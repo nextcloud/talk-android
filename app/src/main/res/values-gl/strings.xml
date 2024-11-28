@@ -183,7 +183,7 @@
     <string name="nc_description_send_message_button">Enviar a mensaxe</string>
     <string name="nc_diagnose_account_category_title">Conta actual</string>
     <string name="nc_diagnose_account_server">Servidor</string>
-    <string name="nc_diagnose_account_server_notification_app">A aplicación de notificación do servidor está instalada?</string>
+    <string name="nc_diagnose_account_server_notification_app">A aplicación de notificacións do servidor está instalada?</string>
     <string name="nc_diagnose_account_user_name">Usuario</string>
     <string name="nc_diagnose_account_user_status_enabled">O estado de usuario está activado?</string>
     <string name="nc_diagnose_android_version_title">Versión Android</string>
@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Usuarios rexistrados</string>
     <string name="nc_diagnose_app_version_title">Versión da aplicación</string>
     <string name="nc_diagnose_battery_optimization_ignored">Ignorase a optimización da batería, todo ben</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">A optimización da batería está activada, o que pode causar problemas. Debería desactivar a optimización da batería!</string>
     <string name="nc_diagnose_battery_optimization_title">Axustes da batería</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
     <string name="nc_diagnose_dialog_open_checklist">Abrir a lista de comprobación de solución de problemas</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">Envíos</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progreso do envío</string>
     <string name="nc_notification_settings">Axustes de notificación</string>
+    <string name="nc_notification_warning">As notificacións non están configuradas correctamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">O permiso de notificación e os axustes da batería están configurados correctamente para recibir notificacións. Se ten problemas para recibir notificacións de todos os xeitos, comprobe se as canles de notificación para chamadas e mensaxes están activadas. Pódese atopar máis axuda en DontKillMyApp.com ou na lista de comprobación de solución de problemas. Se isto non lle é de axuda, vaia á pantalla de diagnóstico e envíe un informe de fallo.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Resolución de problemas de notificación</string>
     <string name="nc_notify_me_always">Notificar sempre</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Aparencia</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
+    <string name="nc_settings_contact_admin_of">Póñase en contacto coa administración de</string>
     <string name="nc_settings_diagnose_subtitle">Abrir a pantalla de diagnóstico para comprobar os axustes ou crear un informe de fallos</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">A versión do servidor é moi antiga e non será compatíbel coa próxima publicación.</string>
     <string name="nc_settings_server_eol">A versión do servidor é demasiado antiga e non é compatíbel con esta versión da aplicación para Android</string>
     <string name="nc_settings_server_eol_title">Servidor non admitido</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">A aplicación de notificacións do servidor non está instalada</string>
     <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o predeterminado do sistema</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">Non hai elementos compartidos</string>
     <string name="nc_shared_items_location">Localización</string>
     <string name="nc_shared_location">Localización compartida</string>
+    <string name="nc_show_notification_warning_description">Cando as notificacións non estean configuradas correctamente, amosa unha advertencia</string>
+    <string name="nc_show_notification_warning_title">Amosar a advertencia de notificacións</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
