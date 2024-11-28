@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Registered users</string>
     <string name="nc_diagnose_app_version_title">App version</string>
     <string name="nc_diagnose_battery_optimization_ignored">Battery optimization is ignored, all fine</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
     <string name="nc_diagnose_device_name_title">Device</string>
     <string name="nc_diagnose_dialog_open_checklist">Open troubleshooting checklist</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Notify about upload progress</string>
     <string name="nc_notification_settings">Notification settings</string>
+    <string name="nc_notification_warning">Notifications are not set up correctly</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Notification permission and battery settings are correctly set up to receive notifications. If you have problems to receive notifications anyway, please check if the notification channels for calls and messages are enabled. Further help can be found at DontKillMyApp.com or at the troubleshooting checklist. If this does not help, please go to diagnosis screen and send a bug report.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>
     <string name="nc_notify_me_always">Always notify</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">Advanced</string>
     <string name="nc_settings_appearance">Appearance</string>
     <string name="nc_settings_call_ringtone">Calls</string>
+    <string name="nc_settings_contact_admin_of">Please contact the administrator of</string>
     <string name="nc_settings_diagnose_subtitle">Open diagnosis screen to check settings or create bug report</string>
     <string name="nc_settings_diagnose_title">Diagnosis</string>
     <string name="nc_settings_incognito_keyboard_desc">Instructs keyboard to disable personalized learning (without guarantees)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">The server version is very old and will not be supported in the next release!</string>
     <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
     <string name="nc_settings_server_eol_title">Unsupported server</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Server notifications app not installed</string>
     <string name="nc_settings_theme_battery_saver">Set by Battery Saver</string>
     <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_theme_follow_system">Use system default</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">No shared items</string>
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_location">Shared location</string>
+    <string name="nc_show_notification_warning_description">When notifications are not set up correctly, show a warning</string>
+    <string name="nc_show_notification_warning_title">Show notification warning</string>
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
