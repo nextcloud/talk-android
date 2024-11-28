@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Registrierte Benutzer</string>
     <string name="nc_diagnose_app_version_title">App-Version</string>
     <string name="nc_diagnose_battery_optimization_ignored">Batterieoptimierung wird ignoriert, alles in Ordnung</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Die Batterieoptimierung ist aktiviert und könnte Probleme verursachen. Dies sollte geändert werden!</string>
     <string name="nc_diagnose_battery_optimization_title">Batterie-Einstellungen</string>
     <string name="nc_diagnose_device_name_title">Gerät</string>
     <string name="nc_diagnose_dialog_open_checklist">Checkliste zur Fehlerbehebung öffnen</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">Uploads</string>
     <string name="nc_notification_channel_uploads_description">Über den Hochlade-Fortschritt benachrichtigen</string>
     <string name="nc_notification_settings">Benachrichtigungseinstellungen</string>
+    <string name="nc_notification_warning">Benachrichtigungen sind nicht korrekt konfiguriert</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Benachrichtigungsberechtigung und Akkueinstellungen sind korrekt eingerichtet, um Benachrichtigungen zu erhalten. Sollten Sie trotzdem Probleme mit den Benachrichtigungen haben, prüfen Sie bitte, ob die Benachrichtigungskanäle für Anrufe und Nachrichten aktiviert sind. Weitere Hilfe finden Sie unter DontKillMyApp.com oder in der Checkliste zur Fehlerbehebung. Wenn dies nicht hilft, gehen Sie bitte zur Diagnoseseite und senden Sie einen Fehlerbericht.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fehlerbehebung bei Benachrichtigungen</string>
     <string name="nc_notify_me_always">Immer benachrichtigen</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">Erweitert</string>
     <string name="nc_settings_appearance">Aussehen</string>
     <string name="nc_settings_call_ringtone">Anrufe</string>
+    <string name="nc_settings_contact_admin_of">Bitte kontaktieren Sie den Administrator von</string>
     <string name="nc_settings_diagnose_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">Die Serverversion ist sehr alt und wird ab dem nächsten Update nicht mehr unterstützt</string>
     <string name="nc_settings_server_eol">Die Serverversion ist zu alt und wird von dieser Version der Android-App nicht unterstützt</string>
     <string name="nc_settings_server_eol_title">Nicht unterstützter Server</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Server Benachrichtigungs App ist nicht installiert</string>
     <string name="nc_settings_theme_battery_saver">Durch Energiesparmodus gesetzt</string>
     <string name="nc_settings_theme_dark">Dunkel</string>
     <string name="nc_settings_theme_follow_system">Systemstandard verwenden</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">Keine geteilten Elemente</string>
     <string name="nc_shared_items_location">Ort</string>
     <string name="nc_shared_location">Geteilter Ort</string>
+    <string name="nc_show_notification_warning_description">Wenn Benachrichtigungen nicht korrekt konfiguriert sind, zeige eine Warnung</string>
+    <string name="nc_show_notification_warning_title">Zeige Benachrichtigungs Warnung</string>
     <string name="nc_sort_by">Sortiere nach</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_switch_account">Konto wechseln</string>
