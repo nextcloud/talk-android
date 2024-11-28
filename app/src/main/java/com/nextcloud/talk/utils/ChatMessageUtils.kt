@@ -21,8 +21,9 @@ class ChatMessageUtils {
     fun setAvatarOnMessage(view: ImageView, message: ChatMessage, viewThemeUtils : ViewThemeUtils) {
         view.visibility = View.VISIBLE
         if (message.actorType == "guests" || message.actorType == "emails") {
-            if (message.actorDisplayName?.isNotEmpty() == true) {
-                view.loadFirstLetterAvatar(message.actorDisplayName?.first().toString())
+            val actorName = message.actorDisplayName
+            if (!actorName.isNullOrBlank()) {
+                view.loadFirstLetterAvatar(actorName)
             } else {
                 view.loadDefaultAvatar(viewThemeUtils)
             }

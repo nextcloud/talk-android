@@ -35,6 +35,7 @@ import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ChatMessageUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.message.MessageUtils
@@ -119,10 +120,10 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
-        val author: String = message.actorDisplayName!!
-        if (!TextUtils.isEmpty(author)) {
+        val actorName = message.actorDisplayName
+        if (!actorName.isNullOrBlank()) {
             binding.messageAuthor.visibility = View.VISIBLE
-            binding.messageAuthor.text = author
+            binding.messageAuthor.text = actorName
             binding.messageUserAvatar.setOnClickListener {
                 (payload as? MessagePayload)?.profileBottomSheet?.showFor(message, itemView.context)
             }
@@ -131,16 +132,7 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
         }
 
         if (!message.isGrouped && !message.isOneToOneConversation && !message.isFormerOneToOneConversation) {
-            binding.messageUserAvatar.visibility = View.VISIBLE
-            if (message.actorType == "guests") {
-                // do nothing, avatar is set
-            } else if (message.actorType == "bots" && message.actorId == "changelog") {
-                binding.messageUserAvatar.loadChangelogBotAvatar()
-            } else if (message.actorType == "bots") {
-                binding.messageUserAvatar.loadBotsAvatar()
-            } else if (message.actorType == "federated_users") {
-                binding.messageUserAvatar.loadFederatedUserAvatar(message)
-            }
+            ChatMessageUtils().setAvatarOnMessage(binding.messageUserAvatar, message, viewThemeUtils)
         } else {
             if (message.isOneToOneConversation || message.isFormerOneToOneConversation) {
                 binding.messageUserAvatar.visibility = View.GONE
