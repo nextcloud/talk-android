@@ -20,6 +20,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
+import com.nextcloud.talk.adapters.messages.MessagePayload
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage.MessageType
 import com.nextcloud.talk.data.database.mappers.asModel
@@ -249,14 +250,15 @@ class ConversationItem(
         } else if (model.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             lastMessageDisplayText
         } else {
-            val authorDisplayName =
-                if (!TextUtils.isEmpty(chatMessage?.actorDisplayName)) {
-                    chatMessage?.actorDisplayName
-                } else if ("guests" == chatMessage?.actorType) {
-                    appContext.getString(R.string.nc_guest)
-                } else {
-                    ""
-                }
+            val actorName = chatMessage?.actorDisplayName
+            val authorDisplayName = if (!actorName.isNullOrBlank()) {
+                actorName
+            } else if ("guests" == chatMessage?.actorType || "emails" == chatMessage?.actorType) {
+                appContext.getString(R.string.nc_guest)
+            } else {
+                ""
+            }
+
             String.format(
                 appContext.getString(R.string.nc_formatted_message),
                 authorDisplayName,

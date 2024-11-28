@@ -148,7 +148,7 @@ public class ParticipantsAdapter extends BaseAdapter {
                 participantDisplayItem.getActorType() == Participant.ActorType.EMAILS) {
                 ImageViewExtensionsKt.loadFirstLetterAvatar(
                     imageView,
-                    String.valueOf(participantDisplayItem.getNick().charAt(0))
+                    String.valueOf(participantDisplayItem.getNick())
                 );
             } else {
                 ImageViewExtensionsKt.loadAvatarWithUrl(imageView,null, participantDisplayItem.getUrlForAvatar());

@@ -238,10 +238,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun setAvatarAndAuthorOnMessageItem(message: ChatMessage) {
-        val author: String = message.actorDisplayName!!
-        if (!TextUtils.isEmpty(author)) {
+        val actorName = message.actorDisplayName
+        if (!actorName.isNullOrBlank()) {
             binding.messageAuthor.visibility = View.VISIBLE
-            binding.messageAuthor.text = author
+            binding.messageAuthor.text = actorName
             binding.messageUserAvatar.setOnClickListener {
                 (payload as? MessagePayload)?.profileBottomSheet?.showFor(message, itemView.context)
             }

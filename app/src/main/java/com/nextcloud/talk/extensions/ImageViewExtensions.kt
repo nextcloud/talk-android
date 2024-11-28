@@ -305,10 +305,10 @@ fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
-fun ImageView.loadFirstLetterAvatar(letter: String): io.reactivex.disposables.Disposable {
+fun ImageView.loadFirstLetterAvatar(name: String): io.reactivex.disposables.Disposable {
     val layers = arrayOfNulls<Drawable>(2)
     layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-    layers[1] = createTextDrawable(context, letter.uppercase(Locale.ROOT))
+    layers[1] = createTextDrawable(context, name.trimStart().uppercase(Locale.ROOT))
 
     val layerDrawable = LayerDrawable(layers)
     val data: Any = layerDrawable
