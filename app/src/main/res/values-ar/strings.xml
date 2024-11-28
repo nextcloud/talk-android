@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">المستخدمون المسجلون</string>
     <string name="nc_diagnose_app_version_title">رقم إصدار التطبيق</string>
     <string name="nc_diagnose_battery_optimization_ignored">تمّ تجاهل توفير البطارية، و كل شيء على ما يرُام</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">تحسين البطارية تمّ تمكينه؛ الأمر الذي قد يتسبب في مشكلات. يجب عليك تعطيل تحسين البطارية!</string>
     <string name="nc_diagnose_battery_optimization_title">إعدادات البطارية</string>
     <string name="nc_diagnose_device_name_title">الجهاز</string>
     <string name="nc_diagnose_dialog_open_checklist">فتح قائمة التحقق لاكتشاف الأعطال و إصلاحها</string>
@@ -333,7 +334,8 @@
     <string name="nc_notification_channel_uploads">الملفات المرفوعة</string>
     <string name="nc_notification_channel_uploads_description">الإخطار بنتيجة الرفع</string>
     <string name="nc_notification_settings">إعدادات الإشعار</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">تم ضبط إذونات الإشعارات و إعدادات البطارية بالشكل الصحيح لتلقي الإشعارات. إذا كانت لديك مشاكل في تلقي الإشعارات بالرغم من ذلك، فيرجى التحقق من تمكين قنوات الإشعارات للمكالمات و الرسائل. يمكن العثور على مزيد من المساعدة على DontKillMyApp.com أو في قائمة التحقق لاستكشاف الأخطاء و إصلاحها. إذا لم يكن ذلك ناجعاً، يرجى الانتقال إلى شاشة فحص الأعطال و إرسال تقرير بالحالة.</string>
+    <string name="nc_notification_warning">الإشعارات لم يتم إعدادها بالشكل الصحيح</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">تم ضبط إذونات الإشعارات و إعدادات البطارية بالشكل الصحيح لتلقي الإشعارات. إذا كانت لديك مشاكل في تلقي الإشعارات بالرغم من ذلك، يرجى التحقق من تمكين قنوات الإشعارات للمكالمات و الرسائل. يمكن العثور على مزيد من المساعدة على DontKillMyApp.com أو في قائمة التحقق لاستكشاف الأخطاء و إصلاحها. إذا لم يكن ذلك ناجعاً، يرجى الانتقال إلى شاشة فحص الأعطال و إرسال تقرير بالحالة.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">فحص و حل أعطال الإشعارات</string>
     <string name="nc_notify_me_always">أخبرني دومًا </string>
     <string name="nc_notify_me_mention">أخطرني عند الإشارة إليَّ</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">متقدمة</string>
     <string name="nc_settings_appearance">المظهر</string>
     <string name="nc_settings_call_ringtone">المكالمات</string>
+    <string name="nc_settings_contact_admin_of">رجاءً، تواصل مع المشرف</string>
     <string name="nc_settings_diagnose_subtitle">فتح شاشة فحص الأعطال لاختبار الإعدادات أو تكوين تقرير بالعطل</string>
     <string name="nc_settings_diagnose_title">فحوصات</string>
     <string name="nc_settings_incognito_keyboard_desc">توجيه لوحة المفاتيح لتعطيل التعلم المخصص (بدون ضمانات)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">نسخة الخادوم قديمةٌ جداً ولن يتم توفير الدعم لها في الإصدارت القادمة!</string>
     <string name="nc_settings_server_eol">نسخة الخادوم قديمةٌ جداً وغير مدعومة من هذه النسخة من تطبيق الأندرويد</string>
     <string name="nc_settings_server_eol_title">خادم غير مدعوم</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">تطبيق الإشعارات غير مُثبَّت على الخادوم</string>
     <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">موقع مُشارَك</string>
+    <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مُهيّأةً بالشكل الصحيح، أظهِِر تحذيراً</string>
+    <string name="nc_show_notification_warning_title">أظهِر تحذيراً بشأن الإشعارات</string>
     <string name="nc_sort_by">رتِّب حسب</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>

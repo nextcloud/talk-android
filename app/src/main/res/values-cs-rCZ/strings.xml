@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Registrovaní uživatelé</string>
     <string name="nc_diagnose_app_version_title">Verze aplikace</string>
     <string name="nc_diagnose_battery_optimization_ignored">Optimalizace pro nízkou spotřebu energie z akumulátoru je ignorována, všechno v pořádku</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Šetření energií z akumulátoru může způsobovat problémy. Měli byste ho vypnout!</string>
     <string name="nc_diagnose_battery_optimization_title">Nastavení správy napájení</string>
     <string name="nc_diagnose_device_name_title">Zařízení</string>
     <string name="nc_diagnose_dialog_open_checklist">Otevřít kontrolní seznam řešení problémů</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">Nahrané</string>
     <string name="nc_notification_channel_uploads_description">Upozorňovat ohledně postupu při nahrávání</string>
     <string name="nc_notification_settings">Nastavení upozorňování</string>
+    <string name="nc_notification_warning">Notifikace nejsou správně nastavené</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Oprávnění k upozorňování a nastavení ohledně spotřeby energie z akumulátoru jsou nastavené správně pro dostávání upozornění. Pokud i tak máte problémy s dostáváním notifikací, zkontrolujte zda jsou zapnuté kanály upozorňování na hovory a zprávy. Další pomoc je možné nalézt na DontKillMyApp.com nebo v kontrolním seznamu řešení problémů. Pokud toto nepomůže, přejděte na diagnostickou obrazovku a zašlete hlášení chyby.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Řešení problémů s upozorňováním</string>
     <string name="nc_notify_me_always">Vždy upozorňovat</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">Pokročilé</string>
     <string name="nc_settings_appearance">Vzhled</string>
     <string name="nc_settings_call_ringtone">Volání</string>
+    <string name="nc_settings_contact_admin_of">Obraťte se na správce</string>
     <string name="nc_settings_diagnose_subtitle">Otevřít diagnostickou obrazovku pro kontrolu nastavení nebo vytvoření hlášení chyby</string>
     <string name="nc_settings_diagnose_title">Diagnostika</string>
     <string name="nc_settings_incognito_keyboard_desc">Dát klávesnici pokyn, že má vypnout přizpůsobené učení se (bez záruky)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">Verze serveru je příliš stará a v příštím vydání této aplikace už nebude podporována!</string>
     <string name="nc_settings_server_eol">Verze serveru je příliš stará a nepodporovaná touto verzí aplikace pro Android</string>
     <string name="nc_settings_server_eol_title">Nepodporovaný server</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Serverová aplikace pro notifikace není nainstalovaná</string>
     <string name="nc_settings_theme_battery_saver">Nastaveno úsporou akumulátoru</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_theme_follow_system">Použít systémový výchozí</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit varování</string>
+    <string name="nc_show_notification_warning_title">Zobrazit varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>

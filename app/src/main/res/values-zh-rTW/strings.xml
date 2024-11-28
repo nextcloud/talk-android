@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">已註冊的使用者</string>
     <string name="nc_diagnose_app_version_title">應用程式版本</string>
     <string name="nc_diagnose_battery_optimization_ignored">已忽略電池最佳化，一切都好</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">電池最佳化已啟用，這可能會造成問題。您應該停用電池最佳化！</string>
     <string name="nc_diagnose_battery_optimization_title">電池設定</string>
     <string name="nc_diagnose_device_name_title">裝置</string>
     <string name="nc_diagnose_dialog_open_checklist">開啟疑難排解檢查表</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">上傳</string>
     <string name="nc_notification_channel_uploads_description">上傳進度通知</string>
     <string name="nc_notification_settings">通知設定</string>
+    <string name="nc_notification_warning">通知設定不正確</string>
     <string name="nc_notifications_troubleshooting_dialog_text">通知權限與電池設定已正確設定以接收通知。若您仍然無法接收通知，請檢查是否已啟用通話與訊息的通知頻道。您可以在 DontKillMyApp.com 或疑難排解檢查表中找到進一步的說明。如果這些方法無法解決問題，請到診斷畫面並傳送錯誤回報。</string>
     <string name="nc_notifications_troubleshooting_dialog_title">通知疑難排解</string>
     <string name="nc_notify_me_always">總是通知</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">進階</string>
     <string name="nc_settings_appearance">外觀</string>
     <string name="nc_settings_call_ringtone">通話</string>
+    <string name="nc_settings_contact_admin_of">請聯絡以下服務的管理員：</string>
     <string name="nc_settings_diagnose_subtitle">開啟診斷畫面以檢查設定或建立錯誤回報</string>
     <string name="nc_settings_diagnose_title">診斷</string>
     <string name="nc_settings_incognito_keyboard_desc">指示鍵盤停用個人化學習（不保證鍵盤會照做）</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">伺服器版本非常舊，下一個版本將不支援！</string>
     <string name="nc_settings_server_eol">伺服器版本太舊了，此版本的 Android 應用程式不支援</string>
     <string name="nc_settings_server_eol_title">不支援的伺服器</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">伺服器通知應用程式未安裝</string>
     <string name="nc_settings_theme_battery_saver">由省電模式設定</string>
     <string name="nc_settings_theme_dark">暗色</string>
     <string name="nc_settings_theme_follow_system">使用系統預設值</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
+    <string name="nc_show_notification_warning_description">通知未正確設定時，顯示警告</string>
+    <string name="nc_show_notification_warning_title">顯示通知警告</string>
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>

@@ -192,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Úsáideoirí cláraithe</string>
     <string name="nc_diagnose_app_version_title">Leagan aip</string>
     <string name="nc_diagnose_battery_optimization_ignored">Déantar neamhaird de bharrfheabhsú ceallraí, go breá</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Tá optamú ceallraí cumasaithe rud a d\'fhéadfadh fadhbanna a chruthú. Ba cheart duit leas iomlán a bhaint as ceallraí a dhíchumasú!</string>
     <string name="nc_diagnose_battery_optimization_title">Socruithe ceallraí</string>
     <string name="nc_diagnose_device_name_title">Gléas</string>
     <string name="nc_diagnose_dialog_open_checklist">Oscail seicliosta fabhtcheartaithe</string>
@@ -333,6 +334,7 @@
     <string name="nc_notification_channel_uploads">uaslódálacha</string>
     <string name="nc_notification_channel_uploads_description">Fógra faoi dhul chun cinn an uaslódála</string>
     <string name="nc_notification_settings">Socruithe fógra</string>
+    <string name="nc_notification_warning">Níl fógraí socraithe i gceart</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Tá cead fógartha agus socruithe ceallraí socraithe i gceart chun fógraí a fháil. Má tá fadhbanna agat fógraí a fháil ar aon nós, seiceáil le do thoil an bhfuil na bealaí fógra le haghaidh glaonna agus teachtaireachtaí cumasaithe. Is féidir tuilleadh cabhrach a fháil ag DontKillMyApp.com nó ag an seicliosta fabhtcheartaithe. Mura gcabhraíonn sé seo, téigh chuig an scáileán diagnóise agus seol tuairisc ar fhabht le do thoil.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Fabhtcheartú fógraí</string>
     <string name="nc_notify_me_always">Cuir in iúl i gcónaí</string>
@@ -429,6 +431,7 @@
     <string name="nc_settings_advanced_title">Casta</string>
     <string name="nc_settings_appearance">Dealramh</string>
     <string name="nc_settings_call_ringtone">Glaonna</string>
+    <string name="nc_settings_contact_admin_of">Déan teagmháil le riarthóir na</string>
     <string name="nc_settings_diagnose_subtitle">Oscail scáileán diagnóis chun socruithe a sheiceáil nó chun tuairisc fhabht a chruthú</string>
     <string name="nc_settings_diagnose_title">Diagnóis</string>
     <string name="nc_settings_incognito_keyboard_desc">Tugann sé treoir don mhéarchlár foghlaim phearsantaithe a dhíchumasú (gan ráthaíochtaí)</string>
@@ -469,6 +472,7 @@
     <string name="nc_settings_server_almost_eol">Tá leagan an fhreastalaí an-sean agus ní thacófar leis sa chéad eisiúint eile!</string>
     <string name="nc_settings_server_eol">Tá leagan an fhreastalaí ró-shean agus ní thacaíonn an leagan seo den aip Android leis</string>
     <string name="nc_settings_server_eol_title">Freastalaí nach dtacaítear leis</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Níl aip fógraí freastalaí suiteáilte</string>
     <string name="nc_settings_theme_battery_saver">Socraithe ag Scáileán Battery</string>
     <string name="nc_settings_theme_dark">Dorcha</string>
     <string name="nc_settings_theme_follow_system">Úsáid réamhshocraithe an chórais</string>
@@ -494,6 +498,8 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
+    <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh</string>
+    <string name="nc_show_notification_warning_title">Taispeáin foláireamh fógartha</string>
     <string name="nc_sort_by">Sórtáil de réir</string>
     <string name="nc_start_time">Am tosaithe</string>
     <string name="nc_switch_account">Athraigh cuntas</string>
