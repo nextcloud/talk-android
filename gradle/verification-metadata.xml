@@ -144,7 +144,10 @@
          <trusted-key id="6F7E5ACBCD02DB60DFD232E45E1F79A7C298661E" group="com.google.auto" name="auto-parent" version="6"/>
          <trusted-key id="720746177725A89207A7075BFD5DEA07FCB690A8" group="org.codehaus.mojo" name="mojo-parent" version="50"/>
          <trusted-key id="7616EB882DAF57A11477AAF559A252FB1199D873" group="com.google.code.findbugs" name="jsr305" version="3.0.2"/>
-         <trusted-key id="77A45740C23880C7F81B9D4D5C504E1210E49773" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.5"/>
+         <trusted-key id="77A45740C23880C7F81B9D4D5C504E1210E49773">
+            <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.5"/>
+            <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.8"/>
+         </trusted-key>
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7E22D50A7EBD9D2CD269B2D4056ACA74D46000BF" group="io.netty"/>
          <trusted-key id="7F36E793AE3252E5D9E9B98FEE9E7DC9D92FC896" group="com.google.errorprone"/>
