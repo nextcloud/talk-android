@@ -274,7 +274,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 if (!monitor.isOnline.first() || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
-                    // sync database with server (This is a long blocking call because long polling (lookIntoFuture) is set)
+                    // sync database with server
+                    // (This is a long blocking call because long polling (lookIntoFuture) is set)
                     networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
                     Log.d(TAG, "Starting online request for long polling")
