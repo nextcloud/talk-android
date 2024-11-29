@@ -438,7 +438,6 @@
     <string name="nc_settings_incognito_keyboard_title">Méarchlár incognito</string>
     <string name="nc_settings_no_ringtone">Gan fuaim</string>
     <string name="nc_settings_no_talk_installed">Níl aip Talk suiteáilte ar an bhfreastalaí a ndearna tú iarracht fíordheimhniú ina aghaidh</string>
-    <string name="nc_settings_notification_sounds">Fuaimeanna fógra</string>
     <string name="nc_settings_notification_sounds_post_oreo">Fógraí</string>
     <string name="nc_settings_notifications_declined">Diúltaítear d’fhógraí</string>
     <string name="nc_settings_notifications_declined_hint">Diúltaítear d’fhógraí. Ceadaigh fógraí i socruithe Android le do thoil</string>

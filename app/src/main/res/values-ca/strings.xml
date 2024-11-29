@@ -423,7 +423,6 @@
     <string name="nc_settings_incognito_keyboard_title">Teclat d\'incògnit</string>
     <string name="nc_settings_no_ringtone">Sense so</string>
     <string name="nc_settings_no_talk_installed">L\'aplicació Talk no està instal·lada al servidor amb el qual heu intentat autenticar-vos</string>
-    <string name="nc_settings_notification_sounds">So de les notificacions</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificacions</string>
     <string name="nc_settings_notifications_declined">Les notificacions s\'han rebutjat</string>
     <string name="nc_settings_notifications_declined_hint">S\'han rebutjat les notificacions. Permeteu les notificacions a la configuració d\'Android.</string>

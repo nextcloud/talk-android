@@ -280,7 +280,6 @@
     <string name="nc_settings_incognito_keyboard_title">Anonimna tipkovnica</string>
     <string name="nc_settings_no_ringtone">Bez zvuka</string>
     <string name="nc_settings_no_talk_installed">Aplikacija Talk nije instalirana na poslužitelju s kojim ste se pokušali autentificirati</string>
-    <string name="nc_settings_notification_sounds">Zvukovi obavijesti</string>
     <string name="nc_settings_notification_sounds_post_oreo">Obavijesti</string>
     <string name="nc_settings_other_notifications_ringtone">Poruke</string>
     <string name="nc_settings_phone_book_integration_desc">Izvršite podudaranje kontakata na temelju telefonskog broja radi integracije prečaca aplikacije Talk u aplikaciju sustava za kontakte</string>

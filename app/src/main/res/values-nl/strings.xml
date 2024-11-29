@@ -304,7 +304,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_incognito_keyboard_title">Incognito keyboard</string>
     <string name="nc_settings_no_ringtone">Geen geluid</string>
     <string name="nc_settings_no_talk_installed">De Talk-app is niet geïnstalleerd op de server waartegen je probeert te authenticeren</string>
-    <string name="nc_settings_notification_sounds">Meldingengeluiden</string>
     <string name="nc_settings_notification_sounds_post_oreo">Meldingen</string>
     <string name="nc_settings_other_notifications_ringtone">Berichten</string>
     <string name="nc_settings_phone_book_integration_desc">Match contactpersonen op telefoonnummer om Talk-snelkoppelingen te integreren in je telefoonboek</string>

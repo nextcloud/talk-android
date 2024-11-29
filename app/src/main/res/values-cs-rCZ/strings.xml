@@ -438,7 +438,6 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito klávesnice</string>
     <string name="nc_settings_no_ringtone">Žádný zvuk</string>
     <string name="nc_settings_no_talk_installed">Aplikace Talk není na serveru, vůči kterému jste se pokusili ověřit, vůbec nainstalována</string>
-    <string name="nc_settings_notification_sounds">Zvuky upozornění</string>
     <string name="nc_settings_notification_sounds_post_oreo">Upozornění</string>
     <string name="nc_settings_notifications_declined">Upozorňování jsou odmítnuta</string>
     <string name="nc_settings_notifications_declined_hint">Upozorňování jsou odmítána. Povolte je v nastavení systému Android</string>

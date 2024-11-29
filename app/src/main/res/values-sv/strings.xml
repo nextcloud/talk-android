@@ -435,7 +435,6 @@
     <string name="nc_settings_incognito_keyboard_title">Inkognito-tangentbord</string>
     <string name="nc_settings_no_ringtone">Inget ljud</string>
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
-    <string name="nc_settings_notification_sounds">Notifieringsljud</string>
     <string name="nc_settings_notification_sounds_post_oreo">Aviseringar</string>
     <string name="nc_settings_notifications_declined">Aviseringar avvisas</string>
     <string name="nc_settings_notifications_declined_hint">Aviseringar avvisas. Tillåt aviseringar i Android-inställningarna</string>
