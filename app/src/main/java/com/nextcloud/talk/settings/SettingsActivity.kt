@@ -54,6 +54,7 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.diagnose.DiagnoseActivity
@@ -927,13 +928,16 @@ class SettingsActivity :
 
     private fun setupCheckables() {
         binding.settingsShowNotificationWarningSwitch.isChecked =
-            appPreferences.showNotificationWarning
+            appPreferences.showRegularNotificationWarning
 
         if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
             binding.settingsShowNotificationWarning.setOnClickListener {
                 val isChecked = binding.settingsShowNotificationWarningSwitch.isChecked
                 binding.settingsShowNotificationWarningSwitch.isChecked = !isChecked
-                appPreferences.setShowNotificationWarning(!isChecked)
+                appPreferences.setShowRegularNotificationWarning(!isChecked)
+                if (!isChecked) {
+                    appPreferences.setNotificationWarningLastPostponedDate(NOTIFICATION_WARNING_DATE_NOT_SET)
+                }
             }
         } else {
             binding.settingsShowNotificationWarning.visibility = View.GONE
@@ -1427,5 +1431,6 @@ class SettingsActivity :
         private const val LINEBREAK = "\n"
         const val HTTP_CODE_OK: Int = 200
         const val HTTP_ERROR_CODE_BAD_REQUEST: Int = 400
+        const val NO_NOTIFICATION_REMINDER_WANTED = 0L
     }
 }
