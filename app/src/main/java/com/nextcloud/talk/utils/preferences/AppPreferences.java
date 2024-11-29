@@ -178,9 +178,13 @@ public interface AppPreferences {
 
     void deleteAllMessageQueuesFor(String userId);
 
-    boolean getShowNotificationWarning();
+    Long getNotificationWarningLastPostponedDate();
 
-    void setShowNotificationWarning(boolean showNotificationWarning);
+    void setNotificationWarningLastPostponedDate(Long showNotificationWarning);
+
+    Boolean getShowRegularNotificationWarning();
+
+    void setShowRegularNotificationWarning(boolean value);
 
     void clear();
 }
