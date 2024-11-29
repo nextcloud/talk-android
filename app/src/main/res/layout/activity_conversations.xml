@@ -37,18 +37,6 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/chat_list_notification_warning"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/nc_warning"
-            android:gravity="center"
-            android:minHeight="40dp"
-            android:text="@string/nc_notification_warning"
-            android:textColor="@color/white"
-            android:visibility="gone"
-            tools:visibility="visible" />
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
@@ -237,6 +225,10 @@
             <include
                 android:id="@+id/conversation_list_hint_include"
                 layout="@layout/federated_invitation_hint" />
+
+            <include
+                android:id="@+id/conversation_list_notification_warning"
+                layout="@layout/notifications_warning" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"

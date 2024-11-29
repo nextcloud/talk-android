@@ -275,7 +275,7 @@ class ConversationsListActivity :
         adapter!!.addListener(this)
         prepareViews()
 
-        updateNotificationWarning()
+        showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
 
@@ -296,6 +296,11 @@ class ConversationsListActivity :
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
             viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
+            viewThemeUtils.material.themeCardView(binding.conversationListNotificationWarning.hintLayoutCardview)
+            viewThemeUtils.material.colorMaterialButtonText(binding.conversationListNotificationWarning.notNowButton)
+            viewThemeUtils.material.colorMaterialButtonText(
+                binding.conversationListNotificationWarning.showSettingsButton
+            )
             searchBehaviorSubject.onNext(false)
             fetchRooms()
             fetchPendingInvitations()
@@ -305,14 +310,6 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
-    }
-
-    private fun updateNotificationWarning() {
-        if (shouldShowNotificationWarning()) {
-            showNotificationWarning()
-        } else {
-            binding.chatListNotificationWarning.visibility = View.GONE
-        }
     }
 
     private fun initObservers() {
@@ -1502,17 +1499,46 @@ class ConversationsListActivity :
     }
 
     private fun showNotificationWarning() {
-        binding.chatListNotificationWarning.visibility = View.VISIBLE
-        binding.chatListNotificationWarning.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
-            val settingsIntent = Intent(context, SettingsActivity::class.java)
-            settingsIntent.putExtras(bundle)
-            startActivity(settingsIntent)
+        if (shouldShowNotificationWarning()) {
+            binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.VISIBLE
+            binding.conversationListNotificationWarning.notNowButton.setOnClickListener {
+                binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.GONE
+                val lastWarningDate = System.currentTimeMillis()
+                appPreferences.setNotificationWarningLastPostponedDate(lastWarningDate)
+            }
+            binding.conversationListNotificationWarning.showSettingsButton.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putBoolean(KEY_SCROLL_TO_NOTIFICATION_CATEGORY, true)
+                val settingsIntent = Intent(context, SettingsActivity::class.java)
+                settingsIntent.putExtras(bundle)
+                startActivity(settingsIntent)
+            }
+        } else {
+            binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.GONE
         }
     }
 
     private fun shouldShowNotificationWarning(): Boolean {
+        fun shouldShowWarningIfDateTooOld(date1: Long): Boolean {
+            val currentTimeMillis = System.currentTimeMillis()
+            val differenceMillis = currentTimeMillis - date1
+            val daysForWarningInMillis = TimeUnit.DAYS.toMillis(DAYS_FOR_NOTIFICATION_WARNING)
+            return differenceMillis > daysForWarningInMillis
+        }
+
+        fun shouldShowNotificationWarningByUserChoice(): Boolean {
+            if (appPreferences.showRegularNotificationWarning) {
+                val lastWarningDate = appPreferences.getNotificationWarningLastPostponedDate()
+                return if (lastWarningDate == NOTIFICATION_WARNING_DATE_NOT_SET) {
+                    true
+                } else {
+                    shouldShowWarningIfDateTooOld(lastWarningDate)
+                }
+            } else {
+                return false
+            }
+        }
+
         val notificationPermissionNotGranted = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             !platformPermissionUtil.isPostNotificationsPermissionGranted()
         val batteryOptimizationNotIgnored = !PowerManagerUtils().isIgnoringBatteryOptimizations()
@@ -1529,10 +1555,8 @@ class ConversationsListActivity :
             callsChannelNotEnabled ||
             !serverNotificationAppInstalled
 
-        val userWantsToBeNotifiedAboutWrongSettings = appPreferences.getShowNotificationWarning()
-
         return settingsOfUserAreWrong &&
-            userWantsToBeNotifiedAboutWrongSettings &&
+            shouldShowNotificationWarningByUserChoice() &&
             ClosedInterfaceImpl().isGooglePlayServicesAvailable
     }
 
@@ -1927,5 +1951,7 @@ class ConversationsListActivity :
         const val MAINTENANCE_MODE_HEADER_KEY = "X-Nextcloud-Maintenance-Mode"
         const val REQUEST_POST_NOTIFICATIONS_PERMISSION = 111
         const val BADGE_OFFSET = 35
+        const val DAYS_FOR_NOTIFICATION_WARNING = 5L
+        const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
     }
 }

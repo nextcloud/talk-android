@@ -392,6 +392,17 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getShowRegularNotificationWarning (): Boolean {
+        return runBlocking { async { readBoolean(SHOW_REGULAR_NOTIFICATION_WARNING, true).first() } }.getCompleted()
+    }
+
+    override fun setShowRegularNotificationWarning(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SHOW_REGULAR_NOTIFICATION_WARNING, value)
+            }
+        }
+
     override fun setPhoneBookIntegrationLastRun(currentTimeMillis: Long) =
         runBlocking<Unit> {
             async {
@@ -550,10 +561,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         } }.getCompleted()
     }
 
-    override fun setShowNotificationWarning(showNotificationWarning: Boolean) =
+    override fun setNotificationWarningLastPostponedDate(showNotificationWarning: Long) =
         runBlocking<Unit> {
             async {
-                writeBoolean(SHOW_NOTIFICATION_WARNING, showNotificationWarning)
+                writeLong(LAST_NOTIFICATION_WARNING, showNotificationWarning)
             }
         }
 
@@ -641,7 +652,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
-        const val SHOW_NOTIFICATION_WARNING = "show_notification_warning"
+        const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
+        const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()
