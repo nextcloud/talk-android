@@ -545,9 +545,11 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
     }
 
     override fun getShowNotificationWarning(): Boolean {
-        return runBlocking { async {
-            readBoolean(SHOW_NOTIFICATION_WARNING, true).first()
-        } }.getCompleted()
+        return runBlocking {
+            async {
+                readBoolean(SHOW_NOTIFICATION_WARNING, true).first()
+            }
+        }.getCompleted()
     }
 
     override fun setShowNotificationWarning(showNotificationWarning: Boolean) =
