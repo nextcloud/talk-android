@@ -320,7 +320,6 @@
     <string name="nc_settings_incognito_keyboard_title">시크릿 키보드</string>
     <string name="nc_settings_no_ringtone">무음</string>
     <string name="nc_settings_no_talk_installed">인증하려는 서버에 토크 앱이 설치되어 있지 않습니다.</string>
-    <string name="nc_settings_notification_sounds">알림 소리</string>
     <string name="nc_settings_notification_sounds_post_oreo">알림</string>
     <string name="nc_settings_other_notifications_ringtone">메시지</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">전화번호를 설정하여 다른 사용자가 당신을 찾도록 할 수 있습니다.</string>

@@ -415,7 +415,6 @@
     <string name="nc_settings_incognito_keyboard_title">Súkromná klávesnica</string>
     <string name="nc_settings_no_ringtone">Žiadny zvuk</string>
     <string name="nc_settings_no_talk_installed">Aplikácia Rozhovor nie je na serveri, voči ktorému ste sa chceli overiť nainštalovaná.</string>
-    <string name="nc_settings_notification_sounds">Zvuky upozornení</string>
     <string name="nc_settings_notification_sounds_post_oreo">Upozornenia</string>
     <string name="nc_settings_notifications_declined">Upozornenia sú odmietnuté</string>
     <string name="nc_settings_notifications_declined_hint">Upozornenia sú odmietnuté. Povoľte upozornenia v nastaveniach systému Android</string>

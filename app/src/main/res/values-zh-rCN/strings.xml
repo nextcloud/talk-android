@@ -359,7 +359,6 @@
     <string name="nc_settings_incognito_keyboard_title">无痕键盘</string>
     <string name="nc_settings_no_ringtone">无声音</string>
     <string name="nc_settings_no_talk_installed">您进行身份验证的服务器上未安装通话应用</string>
-    <string name="nc_settings_notification_sounds">通知声音</string>
     <string name="nc_settings_notification_sounds_post_oreo">通知</string>
     <string name="nc_settings_other_notifications_ringtone">消息</string>
     <string name="nc_settings_phone_book_integration_desc">根据电话号码匹配联系人，以集成通话应用快捷方式到系统联系人应用</string>

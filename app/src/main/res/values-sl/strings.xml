@@ -335,7 +335,6 @@
     <string name="nc_settings_incognito_keyboard_title">Skrito tipkanje</string>
     <string name="nc_settings_no_ringtone">Brez zvoka</string>
     <string name="nc_settings_no_talk_installed">Program Talk na strežniku, s katerim ga skušate overiti, ni nameščen.</string>
-    <string name="nc_settings_notification_sounds">Obvestilni zvoki</string>
     <string name="nc_settings_notification_sounds_post_oreo">Obvestila</string>
     <string name="nc_settings_other_notifications_ringtone">Sporočila</string>
     <string name="nc_settings_phone_book_integration_desc">Uskladi stike po telefonski številki za povezavo imenika stikov s programom Talk.</string>
