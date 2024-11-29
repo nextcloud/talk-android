@@ -79,6 +79,7 @@ object DisplayUtils {
     private const val HTTP_MIN_LENGTH: Int = 7
     private const val HTTPS_MIN_LENGTH: Int = 7
     private const val DATE_TIME_PARTS_SIZE = 2
+    private const val ONE_MINUTE_IN_MILLIS: Int = 60000
     fun isDarkModeOn(context: Context): Boolean {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
@@ -490,7 +491,7 @@ object DisplayUtils {
         }
         // < 60 seconds -> seconds ago
         val diff = System.currentTimeMillis() - time
-        dateString = if (diff > 0 && diff < 60 * 1000 && minResolution == DateUtils.SECOND_IN_MILLIS) {
+        dateString = if (diff in 1..<ONE_MINUTE_IN_MILLIS && minResolution == DateUtils.SECOND_IN_MILLIS) {
             return c.getString(R.string.secondsAgo)
         } else {
             DateUtils.getRelativeDateTimeString(c, time, minResolution, transitionResolution, flags)
