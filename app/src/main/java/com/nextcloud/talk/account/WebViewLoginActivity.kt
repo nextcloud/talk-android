@@ -97,8 +97,8 @@ class WebViewLoginActivity : BaseActivity() {
     }
     private val webLoginUserAgent: String
         get() = (
-            Build.MANUFACTURER.substring(0, 1).toUpperCase(Locale.getDefault()) +
-                Build.MANUFACTURER.substring(1).toLowerCase(Locale.getDefault()) +
+            Build.MANUFACTURER.substring(0, 1).uppercase(Locale.getDefault()) +
+                Build.MANUFACTURER.substring(1).uppercase(Locale.getDefault()) +
                 " " +
                 Build.MODEL +
                 " (" +
