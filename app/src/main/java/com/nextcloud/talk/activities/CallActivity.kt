@@ -63,6 +63,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.call.CallParticipant
 import com.nextcloud.talk.call.CallParticipantList
 import com.nextcloud.talk.call.CallParticipantModel
+import com.nextcloud.talk.call.LocalStateBroadcaster
 import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
@@ -248,6 +249,7 @@ class CallActivity : CallBaseActivity() {
     private var signalingMessageSender: SignalingMessageSender? = null
     private var messageSender: MessageSender? = null
     private val localCallParticipantModel: MutableLocalCallParticipantModel = MutableLocalCallParticipantModel()
+    private var localStateBroadcaster: LocalStateBroadcaster? = null
     private val offerAnswerNickProviders: MutableMap<String?, OfferAnswerNickProvider?> = HashMap()
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
@@ -1142,7 +1144,6 @@ class CallActivity : CallBaseActivity() {
     @SuppressLint("MissingPermission")
     private fun startMicInputDetection() {
         if (permissionUtil!!.isMicrophonePermissionGranted() && micInputAudioRecordThread == null) {
-            var isSpeakingLongTerm = false
             micInputAudioRecorder = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 SAMPLE_RATE,
@@ -1159,30 +1160,13 @@ class CallActivity : CallBaseActivity() {
                         micInputAudioRecorder.read(byteArr, 0, byteArr.size)
                         val isCurrentlySpeaking = abs(byteArr[0].toDouble()) > MICROPHONE_VALUE_THRESHOLD
 
-                        if (microphoneOn && isCurrentlySpeaking && !isSpeakingLongTerm) {
-                            isSpeakingLongTerm = true
-                            localCallParticipantModel.isSpeaking = true
-                            sendIsSpeakingMessage(true)
-                        } else if (!isCurrentlySpeaking && isSpeakingLongTerm) {
-                            isSpeakingLongTerm = false
-                            localCallParticipantModel.isSpeaking = false
-                            sendIsSpeakingMessage(false)
-                        }
+                        localCallParticipantModel.isSpeaking = isCurrentlySpeaking
+
                         Thread.sleep(MICROPHONE_VALUE_SLEEP)
                     }
                 }
             )
             micInputAudioRecordThread!!.start()
-        }
-    }
-
-    @Suppress("Detekt.NestedBlockDepth")
-    private fun sendIsSpeakingMessage(isSpeaking: Boolean) {
-        val isSpeakingMessage: String =
-            if (isSpeaking) SIGNALING_MESSAGE_SPEAKING_STARTED else SIGNALING_MESSAGE_SPEAKING_STOPPED
-
-        if (isConnectionEstablished && othersInCall) {
-            messageSender!!.sendToAll(DataChannelMessage(isSpeakingMessage))
         }
     }
 
@@ -1329,12 +1313,9 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun toggleMedia(enable: Boolean, video: Boolean) {
-        var message: String
         if (video) {
-            message = SIGNALING_MESSAGE_VIDEO_OFF
             if (enable) {
                 binding!!.cameraButton.alpha = OPACITY_ENABLED
-                message = SIGNALING_MESSAGE_VIDEO_ON
                 startVideoCapture()
             } else {
                 binding!!.cameraButton.alpha = OPACITY_DISABLED
@@ -1356,9 +1337,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.selfVideoRenderer.visibility = View.INVISIBLE
             }
         } else {
-            message = SIGNALING_MESSAGE_AUDIO_OFF
             if (enable) {
-                message = SIGNALING_MESSAGE_AUDIO_ON
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
             } else {
                 binding!!.microphoneButton.alpha = OPACITY_DISABLED
@@ -1367,9 +1346,6 @@ class CallActivity : CallBaseActivity() {
                 localStream!!.audioTracks[0].setEnabled(enable)
                 localCallParticipantModel.isAudioEnabled = enable
             }
-        }
-        if (isConnectionEstablished) {
-            messageSender!!.sendToAll(DataChannelMessage(message))
         }
     }
 
@@ -1752,6 +1728,8 @@ class CallActivity : CallBaseActivity() {
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
 
+        localStateBroadcaster = LocalStateBroadcaster(localCallParticipantModel, messageSender)
+
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         ncApi!!.joinCall(
             credentials,
@@ -2104,6 +2082,9 @@ class CallActivity : CallBaseActivity() {
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
+        if (localStateBroadcaster != null) {
+            localStateBroadcaster!!.destroy()
+        }
         if (callParticipantList != null) {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
@@ -3290,12 +3271,5 @@ class CallActivity : CallBaseActivity() {
         private const val Y_POS_NO_CALL_INFO: Float = 20f
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
-
-        private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
-        private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"
-        private const val SIGNALING_MESSAGE_VIDEO_ON = "videoOn"
-        private const val SIGNALING_MESSAGE_VIDEO_OFF = "videoOff"
-        private const val SIGNALING_MESSAGE_AUDIO_ON = "audioOn"
-        private const val SIGNALING_MESSAGE_AUDIO_OFF = "audioOff"
     }
 }
