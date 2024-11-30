@@ -5,6 +5,7 @@
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
     <string name="archive_conversation">Conversation Archiver</string>
+    <string name="archive_hint">Lorsqu\'une conversation est archivée, elle est cachée par défaut. Choisissez le filtre \"Archivés\" pour voir les conversations archivées. Les mentions directes seront toujours bien reçues.</string>
     <string name="archived">Archivé</string>
     <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
+    <string name="conversation_read_only_failed">Impossible de passer la conversation en lecture seule</string>
     <string name="conversations">Discussions</string>
     <string name="create_conversation">Créer la conversation</string>
     <string name="create_issue">Signaler un problème</string>
@@ -190,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Utilisateurs enregistrés</string>
     <string name="nc_diagnose_app_version_title">Version de l\'app</string>
     <string name="nc_diagnose_battery_optimization_ignored">Optimisation de la batterie ignorée, tout va bien</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">L\'optimisation de la batterie est activée ce qui peut causer des problèmes. Vous devriez désactiver l\'optimisation de la batterie !</string>
     <string name="nc_diagnose_battery_optimization_title">Paramètres pour la batterie</string>
     <string name="nc_diagnose_device_name_title">Appareil</string>
     <string name="nc_diagnose_dialog_open_checklist">Ouvrir la liste de vérifications des erreurs communes</string>
@@ -331,6 +334,7 @@
     <string name="nc_notification_channel_uploads">Envois</string>
     <string name="nc_notification_channel_uploads_description">Notifier la progression du téléversement</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
+    <string name="nc_notification_warning">Les notifications ne sont pas configurées correctement</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Les permissions de notification et les paramètres de la batterie sont correctement configurés pour recevoir les notifications. Si vous avez néanmoins  des problèmes pour recevoir les notifications, merci de vérifier que les canaux de notification pour appels et messages sont activés.
 De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la liste des vérifications des erreurs communes. Si cela ne fonctionne toujours pas, merci d\'aller sur l\'écran de diagnostic et envoyer un rapport de bug.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Erreurs communes au sujet de la notification</string>
@@ -428,6 +432,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_settings_advanced_title">Avancé</string>
     <string name="nc_settings_appearance">Apparence</string>
     <string name="nc_settings_call_ringtone">Appels</string>
+    <string name="nc_settings_contact_admin_of">Merci de contacter l\'administrateur de</string>
     <string name="nc_settings_diagnose_subtitle">Ouvrir l\'écran de diagnostic pour vérifier les réglages ou créer un rapport de bug</string>
     <string name="nc_settings_diagnose_title">Diagnostic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indique au clavier de désactiver l\'apprentissage personnalisé (sans garantie)</string>
@@ -467,6 +472,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_settings_server_almost_eol">La version du serveur est très ancienne et ne sera plus prise en charge dans la prochaine version  !</string>
     <string name="nc_settings_server_eol">La version du serveur est trop ancienne et n\'est pas supporté par cette version de l\'application android</string>
     <string name="nc_settings_server_eol_title">Serveur non pris en charge</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">L\'application de notifications n\'est pas installée sur le serveur</string>
     <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>
@@ -492,6 +498,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
+    <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas configurée correctement, montrer un avertissement</string>
+    <string name="nc_show_notification_warning_title">Montrer l\'avertissement de notification</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
@@ -605,6 +613,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à lancer un appel</string>
     <string name="started_a_call">a lancé un appel</string>
     <string name="status_message">Message d\'état</string>
+    <string name="status_reverted">Statut rétabli</string>
     <string name="switch_to_breakout_room">Basculer vers la salle de sous-groupe</string>
     <string name="switch_to_main_room">Basculer vers la salle principale</string>
     <string name="take_photo">Prendre une photo</string>
