@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2023 Julius Linus <julius.linus@nextcloud.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -17,12 +18,16 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.SerializationException
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @ExperimentalCoroutinesApi
 @Suppress("TooManyFunctions", "DeferredResultUnused", "EmptyFunctionBlock")
@@ -565,6 +570,26 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }
     }
 
+    override fun saveVoiceMessagePlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
+        Json.encodeToString(speeds).let {
+            runBlocking<Unit> { async { writeString(VOICE_MESSAGE_PLAYBACK_SPEEDS, it) } }
+        }
+    }
+
+    override fun readVoiceMessagePlaybackSpeedPreferences(): Map<String, PlaybackSpeed> {
+        return runBlocking {
+            async { readString(VOICE_MESSAGE_PLAYBACK_SPEEDS, "{}").first() }
+        }.getCompleted().let {
+            try {
+                Json.decodeFromString<HashMap<String, String>>(it)
+                    .map { entry -> entry.key to PlaybackSpeed.byName(entry.value) }.toMap()
+            } catch (e: SerializationException) {
+                Log.e(TAG, "ignoring invalid json format in voice message playback speed preferences", e)
+                emptyMap()
+            }
+        }
+    }
+
     override fun getNotificationWarningLastPostponedDate(): Long =
         runBlocking {
             async { readLong(LAST_NOTIFICATION_WARNING).first() }
@@ -661,6 +686,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
+        const val VOICE_MESSAGE_PLAYBACK_SPEEDS = "voice_message_playback_speeds"
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         private fun String.convertStringToArray(): Array<Float> {

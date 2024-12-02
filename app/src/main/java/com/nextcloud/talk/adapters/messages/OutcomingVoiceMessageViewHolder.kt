@@ -74,10 +74,16 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
     lateinit var voiceMessageInterface: VoiceMessageInterface
     lateinit var commonMessageInterface: CommonMessageInterface
+    private var isBound = false
 
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        if (isBound) {
+            handleIsPlayingVoiceMessageState(message)
+            return
+        }
+
         this.message = message
         sharedApplication!!.componentApplication.inject(this)
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
@@ -102,11 +108,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
-
-        handleIsPlayingVoiceMessageState(message)
 
         handleIsDownloadingVoiceMessageState(message)
 
@@ -149,6 +152,10 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
 
+        voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
+            binding.playbackSpeedControlBtn.setSpeed(speed)
+        }
+
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -158,6 +165,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             true,
             viewThemeUtils
         )
+        isBound = true
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -207,6 +215,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
+            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             binding.playPauseBtn.visibility = View.VISIBLE

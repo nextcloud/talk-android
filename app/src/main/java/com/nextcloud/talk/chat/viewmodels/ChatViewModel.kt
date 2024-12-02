@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
@@ -33,6 +34,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
+import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -106,6 +108,10 @@ class ChatViewModel @Inject constructor(
     private val _getVoiceRecordingLocked: MutableLiveData<Boolean> = MutableLiveData()
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
+
+    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
+    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
+        get() = _voiceMessagePlaybackSpeedPreferences
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -643,6 +649,13 @@ class ChatViewModel @Inject constructor(
             val message = chatRepository.getMessage(messageId, bundle)
             emit(message.first())
         }
+
+    fun applyPlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
+        _voiceMessagePlaybackSpeedPreferences.postValue(speeds)
+    }
+
+    fun getPlaybackSpeedPreference(message: ChatMessage) =
+        _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
 
 // inner class GetRoomObserver : Observer<ConversationModel> {
 //     override fun onSubscribe(d: Disposable) {

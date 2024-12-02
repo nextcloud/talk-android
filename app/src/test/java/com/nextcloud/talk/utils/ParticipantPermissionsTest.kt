@@ -21,7 +21,34 @@ class ParticipantPermissionsTest : TestCase() {
     @Test
     fun test_areFlagsSet() {
         val spreedCapability = SpreedCapability()
-        val conversation = Conversation(
+        val conversation = createConversation()
+
+        conversation.permissions = ParticipantPermissions.PUBLISH_SCREEN or
+            ParticipantPermissions.JOIN_CALL or
+            ParticipantPermissions.DEFAULT
+
+        val user = User()
+        user.id = 1
+
+        val attendeePermissions =
+            ParticipantPermissions(
+                spreedCapability,
+                ConversationModel.mapToConversationModel(conversation, user)
+            )
+
+        assert(attendeePermissions.canPublishScreen)
+        assert(attendeePermissions.canJoinCall)
+        assert(attendeePermissions.isDefault)
+
+        assertFalse(attendeePermissions.isCustom)
+        assertFalse(attendeePermissions.canStartCall())
+        assertFalse(attendeePermissions.canIgnoreLobby())
+        assertTrue(attendeePermissions.canPublishAudio())
+        assertTrue(attendeePermissions.canPublishVideo())
+    }
+
+    private fun createConversation(): Conversation {
+        return Conversation(
             token = "test",
             name = "test",
             displayName = "test",
@@ -67,28 +94,5 @@ class ParticipantPermissionsTest : TestCase() {
             remoteServer = "",
             remoteToken = ""
         )
-
-        conversation.permissions = ParticipantPermissions.PUBLISH_SCREEN or
-            ParticipantPermissions.JOIN_CALL or
-            ParticipantPermissions.DEFAULT
-
-        val user = User()
-        user.id = 1
-
-        val attendeePermissions =
-            ParticipantPermissions(
-                spreedCapability,
-                ConversationModel.mapToConversationModel(conversation, user)
-            )
-
-        assert(attendeePermissions.canPublishScreen)
-        assert(attendeePermissions.canJoinCall)
-        assert(attendeePermissions.isDefault)
-
-        assertFalse(attendeePermissions.isCustom)
-        assertFalse(attendeePermissions.canStartCall())
-        assertFalse(attendeePermissions.canIgnoreLobby())
-        assertTrue(attendeePermissions.canPublishAudio())
-        assertTrue(attendeePermissions.canPublishVideo())
     }
 }

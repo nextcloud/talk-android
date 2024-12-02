@@ -50,6 +50,7 @@
             tools:progress="50"
             tools:progressTint="@color/hwSecurityRed"
             tools:progressBackgroundTint="@color/blue"/>
+
     </LinearLayout>
 
     <Chronometer

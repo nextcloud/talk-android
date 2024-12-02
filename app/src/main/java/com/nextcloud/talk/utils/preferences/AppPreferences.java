@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
  * SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2021 Tim Krüger <t@timkrueger.me>
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
@@ -11,8 +12,10 @@ package com.nextcloud.talk.utils.preferences;
 import android.annotation.SuppressLint;
 
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel;
+import com.nextcloud.talk.ui.PlaybackSpeed;
 
 import java.util.List;
+import java.util.Map;
 
 @SuppressLint("NonConstantResourceId")
 public interface AppPreferences {
@@ -177,6 +180,10 @@ public interface AppPreferences {
     List<MessageInputViewModel.QueuedMessage> getMessageQueue(String internalConversationId);
 
     void deleteAllMessageQueuesFor(String userId);
+
+    void saveVoiceMessagePlaybackSpeedPreferences(Map<String, PlaybackSpeed> speeds);
+
+    Map<String, PlaybackSpeed> readVoiceMessagePlaybackSpeedPreferences();
 
     Long getNotificationWarningLastPostponedDate();
 
