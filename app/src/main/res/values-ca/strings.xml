@@ -316,6 +316,7 @@
     <string name="nc_no_proxy">Sense proxy</string>
     <string name="nc_not_allowed_to_activate_audio">No teniu permís per activar l\'àudio</string>
     <string name="nc_not_allowed_to_activate_video">No teniu permís per activar el vídeo</string>
+    <string name="nc_not_now">Ara no</string>
     <string name="nc_notification_channel">%1$s a %2$s canal de notificació </string>
     <string name="nc_notification_channel_calls">Trucades</string>
     <string name="nc_notification_channel_calls_description">Notifica les trucades entrants</string>
