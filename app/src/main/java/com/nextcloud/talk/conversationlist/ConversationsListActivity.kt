@@ -296,7 +296,9 @@ class ConversationsListActivity :
             loadUserAvatar(binding.switchAccountButton)
             viewThemeUtils.material.colorMaterialTextButton(binding.switchAccountButton)
             viewThemeUtils.material.themeCardView(binding.conversationListHintInclude.hintLayoutCardview)
-            viewThemeUtils.material.themeCardView(binding.conversationListNotificationWarning.hintLayoutCardview)
+            viewThemeUtils.material.themeCardView(
+                binding.conversationListNotificationWarning.notificationWarningCardview
+            )
             viewThemeUtils.material.colorMaterialButtonText(binding.conversationListNotificationWarning.notNowButton)
             viewThemeUtils.material.colorMaterialButtonText(
                 binding.conversationListNotificationWarning.showSettingsButton
@@ -323,14 +325,17 @@ class ConversationsListActivity :
         conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetFederationInvitationsStartState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
+                    binding.conversationListHintInclude.conversationListHintLayout.visibility =
+                        View.GONE
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsSuccessState -> {
                     if (state.showInvitationsHint) {
-                        binding.conversationListHintInclude.conversationListHintLayout.visibility = View.VISIBLE
+                        binding.conversationListHintInclude.conversationListHintLayout.visibility =
+                            View.VISIBLE
                     } else {
-                        binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
+                        binding.conversationListHintInclude.conversationListHintLayout.visibility =
+                            View.GONE
                     }
                 }
 
@@ -1500,9 +1505,11 @@ class ConversationsListActivity :
 
     private fun showNotificationWarning() {
         if (shouldShowNotificationWarning()) {
-            binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.VISIBLE
+            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
+                View.VISIBLE
             binding.conversationListNotificationWarning.notNowButton.setOnClickListener {
-                binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.GONE
+                binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility =
+                    View.GONE
                 val lastWarningDate = System.currentTimeMillis()
                 appPreferences.setNotificationWarningLastPostponedDate(lastWarningDate)
             }
@@ -1514,7 +1521,7 @@ class ConversationsListActivity :
                 startActivity(settingsIntent)
             }
         } else {
-            binding.conversationListNotificationWarning.conversationListHintLayout.visibility = View.GONE
+            binding.conversationListNotificationWarning.conversationListNotificationWarningLayout.visibility = View.GONE
         }
     }
 
