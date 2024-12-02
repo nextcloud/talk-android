@@ -109,9 +109,9 @@ class ChatViewModel @Inject constructor(
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
 
-    private val _voiceMessagePlaybackSpeeds: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
+    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
-        get() = _voiceMessagePlaybackSpeeds
+        get() = _voiceMessagePlaybackSpeedPreferences
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -651,11 +651,11 @@ class ChatViewModel @Inject constructor(
         }
 
     fun applyPlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
-        _voiceMessagePlaybackSpeeds.postValue(speeds)
+        _voiceMessagePlaybackSpeedPreferences.postValue(speeds)
     }
 
     fun getPlaybackSpeedPreference(message: ChatMessage) =
-        _voiceMessagePlaybackSpeeds.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
+        _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
 
 // inner class GetRoomObserver : Observer<ConversationModel> {
 //     override fun onSubscribe(d: Disposable) {
