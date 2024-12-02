@@ -2,21 +2,20 @@
   ~ Nextcloud Talk - Android Client
   ~
   ~ SPDX-FileCopyrightText: 2018-2024 Google LLC
-  ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-FileCopyrightText: 2021-2024 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-License-Identifier: Apache-2.0
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="24dp"
     android:height="24dp"
-    android:autoMirrored="true"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
         android:fillColor="#DBDBDB"
         android:fillType="nonZero"
-        android:pathData="M12,0C5.4168,0 0,5.4168 0,12C0,18.5832 5.4168,24 12,24C18.5832,24 24,18.5832 24,12C24,5.4168 18.5832,0 12,0Z" />
+        android:pathData="M12,0C5.417,0 0,5.417 0,12C0,18.583 5.417,24 12,24C18.583,24 24,18.583 24,12C24,5.417 18.583,0 12,0Z" />
     <path
         android:fillColor="#ffffff"
         android:fillType="nonZero"
-        android:pathData="M6.6675,8.25C6.2985,8.25 6,8.55 6,8.9175L6,15.0825C6,15.4522 6.3,15.75 6.6675,15.75L17.3325,15.75C17.7015,15.75 18,15.45 18,15.0825L18,8.9175C18,8.5485 17.7,8.25 17.3325,8.25L6.6675,8.25ZM7.23,9.021L11.7922,13.5825L12.1875,13.5825L16.7708,9.021L17.229,9.4792L14.4998,12.249L16.5623,14.3527L16.104,14.811L14.0002,12.7072L12.48,14.2485L11.5215,14.2485L10.0013,12.7072L7.8975,14.8312L7.4385,14.352L9.522,12.2483L6.7725,9.4785L7.23,9.021Z" />
+        android:pathData="M7.2,16.3C6.87,16.3 6.587,16.182 6.353,15.948C6.118,15.713 6,15.43 6,15.1L6,7.9C6,7.57 6.118,7.287 6.353,7.052C6.587,6.818 6.87,6.7 7.2,6.7L16.8,6.7C17.13,6.7 17.413,6.818 17.648,7.052C17.882,7.287 18,7.57 18,7.9L18,15.1C18,15.43 17.882,15.713 17.648,15.948C17.413,16.182 17.13,16.3 16.8,16.3L7.2,16.3ZM12,12.1L16.8,9.1L16.8,7.9L12,10.9L7.2,7.9L7.2,9.1L12,12.1Z" />
 </vector>
