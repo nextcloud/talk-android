@@ -291,6 +291,7 @@ How to translate with transifex:
     <string name="nc_call_ringing">RINGING</string>
     <string name="nc_connecting_call">Connecting …</string>
     <string name="nc_nick_guest">Guest</string>
+    <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_public_call">New public conversation</string>
     <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
     <string name="nc_call_timeout">No response in 45 seconds, tap to try again</string>

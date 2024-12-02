@@ -46,6 +46,17 @@
             android:layout_gravity="bottom|end"
             android:contentDescription="@string/nc_account_chooser_active_user"
             tools:src="@drawable/emoji_one_category_smileysandpeople"/>
+
+        <ImageView
+            android:id="@+id/public_call_badge"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="bottom|end"
+            android:background="@drawable/cutout_circle"
+            android:contentDescription="@string/nc_public_call_status"
+            android:padding="1dp"
+            android:src="@drawable/ic_avatar_link"
+            app:tint="@color/no_emphasis_text" />
     </FrameLayout>
 
     <RelativeLayout
