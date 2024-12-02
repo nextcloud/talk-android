@@ -152,6 +152,7 @@
     <string name="nc_edit_message">Modifica</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 ore</string>
+    <string name="nc_expire_message_four_weeks">4 settimane</string>
     <string name="nc_expire_message_off">Spenta</string>
     <string name="nc_expire_message_one_day">1 giorno</string>
     <string name="nc_expire_message_one_hour">1 ora</string>
