@@ -326,6 +326,7 @@
     <string name="nc_no_proxy">Gan seachfhreastalaí</string>
     <string name="nc_not_allowed_to_activate_audio">Níl cead agat an fhuaim a ghníomhachtú!</string>
     <string name="nc_not_allowed_to_activate_video">Níl cead agat físeáin a ghníomhachtú!</string>
+    <string name="nc_not_now">Ní anois</string>
     <string name="nc_notification_channel">%1$s ar chainéal fógra %2$s</string>
     <string name="nc_notification_channel_calls">Glaonna</string>
     <string name="nc_notification_channel_calls_description">Fógra a thabhairt faoi ghlaonna isteach</string>
@@ -497,8 +498,6 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
-    <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh</string>
-    <string name="nc_show_notification_warning_title">Taispeáin foláireamh fógartha</string>
     <string name="nc_sort_by">Sórtáil de réir</string>
     <string name="nc_start_time">Am tosaithe</string>
     <string name="nc_switch_account">Athraigh cuntas</string>

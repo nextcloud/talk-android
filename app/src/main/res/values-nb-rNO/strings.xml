@@ -320,6 +320,7 @@
     <string name="nc_no_proxy">Ingen mellomserver</string>
     <string name="nc_not_allowed_to_activate_audio">Du har ikke lov til å aktivere lyd!</string>
     <string name="nc_not_allowed_to_activate_video">Du har ikke lov til å aktivere video!</string>
+    <string name="nc_not_now">Ikke nå</string>
     <string name="nc_notification_channel">%1$s på %2$s merknadskanal</string>
     <string name="nc_notification_channel_calls">Samtaler</string>
     <string name="nc_notification_channel_calls_description">Varsle om innkommende anrop</string>

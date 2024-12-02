@@ -308,6 +308,7 @@
     <string name="nc_no_proxy">プロキシを利用しない</string>
     <string name="nc_not_allowed_to_activate_audio">オーディオを有効にすることはできません。</string>
     <string name="nc_not_allowed_to_activate_video">ビデオを有効にすることはできません。</string>
+    <string name="nc_not_now">あとで</string>
     <string name="nc_notification_channel">%2$s通知チャンネルの%1$s</string>
     <string name="nc_notification_channel_calls">呼び出し</string>
     <string name="nc_notification_channel_calls_description">着信について通知</string>

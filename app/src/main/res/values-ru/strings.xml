@@ -286,6 +286,7 @@
     <string name="nc_no_proxy">Не использовать прокси-сервер</string>
     <string name="nc_not_allowed_to_activate_audio">Вам запрещено активировать аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Вам запрещено активировать видео!</string>
+    <string name="nc_not_now">Не сейчас</string>
     <string name="nc_notification_channel">канал уведомлений %1$s на %2$s</string>
     <string name="nc_notification_channel_calls">Звонки</string>
     <string name="nc_notification_channel_calls_description">Уведомление о входящих вызовах</string>

@@ -179,6 +179,7 @@
     <string name="nc_nick_guest">Svečias</string>
     <string name="nc_no">Ne</string>
     <string name="nc_no_proxy">Be įgaliotojo serverio</string>
+    <string name="nc_not_now">Ne dabar</string>
     <string name="nc_notification_channel_calls">Skambučiai</string>
     <string name="nc_notification_channel_messages">Žinutės</string>
     <string name="nc_notification_channel_uploads">Įkėlimai</string>

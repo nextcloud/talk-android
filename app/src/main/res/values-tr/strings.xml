@@ -323,6 +323,7 @@
     <string name="nc_no_proxy">Vekil sunucu yok</string>
     <string name="nc_not_allowed_to_activate_audio">Sesi açma izniniz yok!</string>
     <string name="nc_not_allowed_to_activate_video">Görüntüyü açma izniniz yok!</string>
+    <string name="nc_not_now">Şimdi değil</string>
     <string name="nc_notification_channel">%1$s %2$s bildiri kanalında</string>
     <string name="nc_notification_channel_calls">Çağrılar</string>
     <string name="nc_notification_channel_calls_description">Gelen çağrılar bildirilsin</string>

@@ -323,6 +323,7 @@
     <string name="nc_no_proxy">Без посредника</string>
     <string name="nc_not_allowed_to_activate_audio">Није вам дозвољено да активирате аудио!</string>
     <string name="nc_not_allowed_to_activate_video">Није вам дозвољено да активирате видео!</string>
+    <string name="nc_not_now">Не сад</string>
     <string name="nc_notification_channel">%1$s на каналу за обавештење о %2$s</string>
     <string name="nc_notification_channel_calls">Позиви</string>
     <string name="nc_notification_channel_calls_description">Обавести ме о долазним позивима</string>

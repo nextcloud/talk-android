@@ -184,6 +184,7 @@
     <string name="nc_no_open_conversations_headline">Nun hai nenguna conversación abierta</string>
     <string name="nc_not_allowed_to_activate_audio">¡Nun tienes permisu p\'activar l\'audiu!</string>
     <string name="nc_not_allowed_to_activate_video">¡Nun tienes permisu p\'activar el videu!</string>
+    <string name="nc_not_now">Agora non</string>
     <string name="nc_notification_channel_calls">Llamaes</string>
     <string name="nc_notification_channel_messages">Mensaxes</string>
     <string name="nc_notification_channel_uploads">Xubes</string>

@@ -271,6 +271,7 @@
     <string name="nc_no_proxy">Proxyrik ez</string>
     <string name="nc_not_allowed_to_activate_audio">Ez duzu baimenik audioa gaitzeko!</string>
     <string name="nc_not_allowed_to_activate_video">Ez duzu baimenik bideoa gaitzeko!</string>
+    <string name="nc_not_now">Orain ez</string>
     <string name="nc_notification_channel">%1$s %2$s jakinarazpen kanalean</string>
     <string name="nc_notification_channel_calls">Deiak</string>
     <string name="nc_notification_channel_calls_description">Jakinarazi sarrera-deiei buruz</string>

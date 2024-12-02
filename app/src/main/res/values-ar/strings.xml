@@ -326,6 +326,7 @@
     <string name="nc_no_proxy">بدون بروكسي</string>
     <string name="nc_not_allowed_to_activate_audio">أنت لست مُخوّلاً لتنشيط الصوت!</string>
     <string name="nc_not_allowed_to_activate_video">أنت لست مُخوّلاً بتنشيط الفيديو!</string>
+    <string name="nc_not_now">ليس الآن</string>
     <string name="nc_notification_channel">قناة إشعار %1$s في %2$s </string>
     <string name="nc_notification_channel_calls">مكالمات</string>
     <string name="nc_notification_channel_calls_description">الإخطار بالمكالمات الواردة</string>
@@ -497,8 +498,6 @@
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">موقع مُشارَك</string>
-    <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مُهيّأةً بالشكل الصحيح، أظهِِر تحذيراً</string>
-    <string name="nc_show_notification_warning_title">أظهِر تحذيراً بشأن الإشعارات</string>
     <string name="nc_sort_by">رتِّب حسب</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>

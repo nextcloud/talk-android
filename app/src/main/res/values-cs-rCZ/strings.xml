@@ -326,6 +326,7 @@
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nemáte oprávnění aktivovat zvuk!</string>
     <string name="nc_not_allowed_to_activate_video">Nemáte oprávnění aktivovat video!</string>
+    <string name="nc_not_now">Teď ne</string>
     <string name="nc_notification_channel">%1$s v %2$s kanálu upozornění</string>
     <string name="nc_notification_channel_calls">Volání</string>
     <string name="nc_notification_channel_calls_description">Oznámit příchozí volání</string>
@@ -497,8 +498,6 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
-    <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit varování</string>
-    <string name="nc_show_notification_warning_title">Zobrazit varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>
