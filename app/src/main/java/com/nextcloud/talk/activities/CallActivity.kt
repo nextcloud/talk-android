@@ -2121,7 +2121,7 @@ class CallActivity : CallBaseActivity() {
 
     private fun startVideoCapture() {
         if (videoCapturer != null) {
-            videoCapturer!!.startCapture(1280, 720, 30)
+            videoCapturer!!.startCapture(WIDTH, HEIGHT, FRAME_RATE)
         }
     }
 
@@ -3209,6 +3209,10 @@ class CallActivity : CallBaseActivity() {
         private const val SAMPLE_RATE = 8000
         private const val MICROPHONE_VALUE_THRESHOLD = 20
         private const val MICROPHONE_VALUE_SLEEP: Long = 1000
+
+        private const val FRAME_RATE: Int = 30
+        private const val WIDTH: Int = 1280
+        private const val HEIGHT: Int = 720
 
         private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
         private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"

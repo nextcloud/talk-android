@@ -18,7 +18,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
 class ChatMessageUtils {
 
-    fun setAvatarOnMessage(view: ImageView, message: ChatMessage, viewThemeUtils : ViewThemeUtils) {
+    fun setAvatarOnMessage(view: ImageView, message: ChatMessage, viewThemeUtils: ViewThemeUtils) {
         view.visibility = View.VISIBLE
         if (message.actorType == "guests" || message.actorType == "emails") {
             val actorName = message.actorDisplayName

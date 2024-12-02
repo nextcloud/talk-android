@@ -131,10 +131,14 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
                         ).first()
                     }
 
-                    parentChatMessage!!.activeUser = message.activeUser
+                    parentChatMessage.activeUser = message.activeUser
                     parentChatMessage.imageUrl?.let {
                         binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
-                        val placeholder = context.resources.getDrawable(R.drawable.ic_mimetype_image)
+                        val placeholder = ResourcesCompat.getDrawable(
+                            context.resources,
+                            R.drawable.ic_mimetype_image,
+                            null
+                        )
                         binding.messageQuote.quotedMessageImage.setImageDrawable(placeholder)
                         binding.messageQuote.quotedMessageImage.load(it) {
                             addHeader(
