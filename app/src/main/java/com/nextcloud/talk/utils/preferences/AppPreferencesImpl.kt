@@ -28,11 +28,10 @@ import kotlinx.coroutines.runBlocking
 @Suppress("TooManyFunctions", "DeferredResultUnused", "EmptyFunctionBlock")
 class AppPreferencesImpl(val context: Context) : AppPreferences {
 
-    override fun getProxyType(): String {
-        return runBlocking {
+    override fun getProxyType(): String =
+        runBlocking {
             async { readString(PROXY_TYPE, context.resources.getString(R.string.nc_no_proxy)).first() }
         }.getCompleted()
-    }
 
     override fun setProxyType(proxyType: String?) =
         runBlocking<Unit> {
@@ -47,9 +46,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         proxyType = ""
     }
 
-    override fun getProxyHost(): String {
-        return runBlocking { async { readString(PROXY_HOST).first() } }.getCompleted()
-    }
+    override fun getProxyHost(): String = runBlocking { async { readString(PROXY_HOST).first() } }.getCompleted()
 
     override fun setProxyHost(proxyHost: String?) =
         runBlocking<Unit> {
@@ -64,9 +61,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         proxyHost = ""
     }
 
-    override fun getProxyPort(): String {
-        return runBlocking { async { readString(PROXY_PORT).first() } }.getCompleted()
-    }
+    override fun getProxyPort(): String = runBlocking { async { readString(PROXY_PORT).first() } }.getCompleted()
 
     override fun setProxyPort(proxyPort: String?) =
         runBlocking<Unit> {
@@ -81,9 +76,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         proxyPort = ""
     }
 
-    override fun getProxyCredentials(): Boolean {
-        return runBlocking { async { readBoolean(PROXY_CRED).first() } }.getCompleted()
-    }
+    override fun getProxyCredentials(): Boolean =
+        runBlocking {
+            async { readBoolean(PROXY_CRED).first() }
+        }.getCompleted()
 
     override fun setProxyNeedsCredentials(proxyNeedsCredentials: Boolean) =
         runBlocking<Unit> {
@@ -96,9 +92,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setProxyNeedsCredentials(false)
     }
 
-    override fun getProxyUsername(): String {
-        return runBlocking { async { readString(PROXY_USERNAME).first() } }.getCompleted()
-    }
+    override fun getProxyUsername(): String =
+        runBlocking {
+            async { readString(PROXY_USERNAME).first() }
+        }.getCompleted()
 
     override fun setProxyUsername(proxyUsername: String?) =
         runBlocking<Unit> {
@@ -113,9 +110,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         proxyUsername = ""
     }
 
-    override fun getProxyPassword(): String {
-        return runBlocking { async { readString(PROXY_PASSWORD).first() } }.getCompleted()
-    }
+    override fun getProxyPassword(): String =
+        runBlocking {
+            async { readString(PROXY_PASSWORD).first() }
+        }.getCompleted()
 
     override fun setProxyPassword(proxyPassword: String?) =
         runBlocking<Unit> {
@@ -130,9 +128,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         proxyPassword = ""
     }
 
-    override fun getPushToken(): String {
-        return runBlocking { async { readString(PUSH_TOKEN).first() } }.getCompleted()
-    }
+    override fun getPushToken(): String = runBlocking { async { readString(PUSH_TOKEN).first() } }.getCompleted()
 
     override fun setPushToken(pushToken: String?) =
         runBlocking<Unit> {
@@ -147,9 +143,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         pushToken = ""
     }
 
-    override fun getPushTokenLatestGeneration(): Long {
-        return runBlocking { async { readLong(PUSH_TOKEN_LATEST_GENERATION).first() } }.getCompleted()
-    }
+    override fun getPushTokenLatestGeneration(): Long =
+        runBlocking {
+            async { readLong(PUSH_TOKEN_LATEST_GENERATION).first() }
+        }.getCompleted()
 
     override fun setPushTokenLatestGeneration(date: Long) =
         runBlocking<Unit> {
@@ -158,9 +155,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
-    override fun getPushTokenLatestFetch(): Long {
-        return runBlocking { async { readLong(PUSH_TOKEN_LATEST_FETCH).first() } }.getCompleted()
-    }
+    override fun getPushTokenLatestFetch(): Long =
+        runBlocking {
+            async { readLong(PUSH_TOKEN_LATEST_FETCH).first() }
+        }.getCompleted()
 
     override fun setPushTokenLatestFetch(date: Long) =
         runBlocking<Unit> {
@@ -169,9 +167,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
-    override fun getTemporaryClientCertAlias(): String {
-        return runBlocking { async { readString(TEMP_CLIENT_CERT_ALIAS).first() } }.getCompleted()
-    }
+    override fun getTemporaryClientCertAlias(): String =
+        runBlocking {
+            async { readString(TEMP_CLIENT_CERT_ALIAS).first() }
+        }.getCompleted()
 
     override fun setTemporaryClientCertAlias(alias: String?) =
         runBlocking<Unit> {
@@ -186,9 +185,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         temporaryClientCertAlias = ""
     }
 
-    override fun getPushToTalkIntroShown(): Boolean {
-        return runBlocking { async { readBoolean(PUSH_TO_TALK_INTRO_SHOWN).first() } }.getCompleted()
-    }
+    override fun getPushToTalkIntroShown(): Boolean =
+        runBlocking {
+            async { readBoolean(PUSH_TO_TALK_INTRO_SHOWN).first() }
+        }.getCompleted()
 
     override fun setPushToTalkIntroShown(shown: Boolean) =
         runBlocking<Unit> {
@@ -201,9 +201,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         pushToTalkIntroShown = false
     }
 
-    override fun getCallRingtoneUri(): String {
-        return runBlocking { async { readString(CALL_RINGTONE).first() } }.getCompleted()
-    }
+    override fun getCallRingtoneUri(): String =
+        runBlocking {
+            async { readString(CALL_RINGTONE).first() }
+        }.getCompleted()
 
     override fun setCallRingtoneUri(value: String?) =
         runBlocking<Unit> {
@@ -218,9 +219,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         callRingtoneUri = ""
     }
 
-    override fun getMessageRingtoneUri(): String {
-        return runBlocking { async { readString(MESSAGE_RINGTONE).first() } }.getCompleted()
-    }
+    override fun getMessageRingtoneUri(): String =
+        runBlocking {
+            async { readString(MESSAGE_RINGTONE).first() }
+        }.getCompleted()
 
     override fun setMessageRingtoneUri(value: String?) =
         runBlocking<Unit> {
@@ -235,9 +237,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         messageRingtoneUri = ""
     }
 
-    override fun getIsNotificationChannelUpgradedToV2(): Boolean {
-        return runBlocking { async { readBoolean(NOTIFY_UPGRADE_V2).first() } }.getCompleted()
-    }
+    override fun getIsNotificationChannelUpgradedToV2(): Boolean =
+        runBlocking {
+            async { readBoolean(NOTIFY_UPGRADE_V2).first() }
+        }.getCompleted()
 
     override fun setNotificationChannelIsUpgradedToV2(value: Boolean) =
         runBlocking<Unit> {
@@ -250,9 +253,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setNotificationChannelIsUpgradedToV2(false)
     }
 
-    override fun getIsNotificationChannelUpgradedToV3(): Boolean {
-        return runBlocking { async { readBoolean(NOTIFY_UPGRADE_V3).first() } }.getCompleted()
-    }
+    override fun getIsNotificationChannelUpgradedToV3(): Boolean =
+        runBlocking {
+            async { readBoolean(NOTIFY_UPGRADE_V3).first() }
+        }.getCompleted()
 
     override fun setNotificationChannelIsUpgradedToV3(value: Boolean) =
         runBlocking<Unit> {
@@ -265,9 +269,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setNotificationChannelIsUpgradedToV3(false)
     }
 
-    override fun getIsScreenSecured(): Boolean {
-        return runBlocking { async { readBoolean(SCREEN_SECURITY).first() } }.getCompleted()
-    }
+    override fun getIsScreenSecured(): Boolean =
+        runBlocking {
+            async { readBoolean(SCREEN_SECURITY).first() }
+        }.getCompleted()
 
     override fun setScreenSecurity(value: Boolean) =
         runBlocking<Unit> {
@@ -280,9 +285,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setScreenSecurity(false)
     }
 
-    override fun getIsScreenLocked(): Boolean {
-        return runBlocking { async { readBoolean(SCREEN_LOCK).first() } }.getCompleted()
-    }
+    override fun getIsScreenLocked(): Boolean =
+        runBlocking {
+            async { readBoolean(SCREEN_LOCK).first() }
+        }.getCompleted()
 
     override fun setScreenLock(value: Boolean) =
         runBlocking<Unit> {
@@ -311,9 +317,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setIncognitoKeyboard(false)
     }
 
-    override fun isPhoneBookIntegrationEnabled(): Boolean {
-        return runBlocking { async { readBoolean(PHONE_BOOK_INTEGRATION).first() } }.getCompleted()
-    }
+    override fun isPhoneBookIntegrationEnabled(): Boolean =
+        runBlocking {
+            async { readBoolean(PHONE_BOOK_INTEGRATION).first() }
+        }.getCompleted()
 
     override fun setPhoneBookIntegration(value: Boolean) =
         runBlocking<Unit> {
@@ -381,14 +388,27 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
-    override fun getIsDbRoomMigrated(): Boolean {
-        return runBlocking { async { readBoolean(DB_ROOM_MIGRATED).first() } }.getCompleted()
-    }
+    override fun getIsDbRoomMigrated(): Boolean =
+        runBlocking {
+            async { readBoolean(DB_ROOM_MIGRATED).first() }
+        }.getCompleted()
 
     override fun setIsDbRoomMigrated(value: Boolean) =
         runBlocking<Unit> {
             async {
                 writeBoolean(DB_ROOM_MIGRATED, value)
+            }
+        }
+
+    override fun getShowRegularNotificationWarning(): Boolean =
+        runBlocking {
+            async { readBoolean(SHOW_REGULAR_NOTIFICATION_WARNING, true).first() }
+        }.getCompleted()
+
+    override fun setShowRegularNotificationWarning(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(SHOW_REGULAR_NOTIFICATION_WARNING, value)
             }
         }
 
@@ -429,9 +449,10 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
-    override fun getTypingStatus(): Boolean {
-        return runBlocking { async { readBoolean(TYPING_STATUS).first() } }.getCompleted()
-    }
+    override fun getTypingStatus(): Boolean =
+        runBlocking {
+            async { readBoolean(TYPING_STATUS).first() }
+        }.getCompleted()
 
     override fun setSorting(value: String?) =
         runBlocking<Unit> {
@@ -544,18 +565,15 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }
     }
 
-    override fun getShowNotificationWarning(): Boolean {
-        return runBlocking {
-            async {
-                readBoolean(SHOW_NOTIFICATION_WARNING, true).first()
-            }
+    override fun getNotificationWarningLastPostponedDate(): Long =
+        runBlocking {
+            async { readLong(LAST_NOTIFICATION_WARNING).first() }
         }.getCompleted()
-    }
 
-    override fun setShowNotificationWarning(showNotificationWarning: Boolean) =
+    override fun setNotificationWarningLastPostponedDate(showNotificationWarning: Long) =
         runBlocking<Unit> {
             async {
-                writeBoolean(SHOW_NOTIFICATION_WARNING, showNotificationWarning)
+                writeLong(LAST_NOTIFICATION_WARNING, showNotificationWarning)
             }
         }
 
@@ -643,7 +661,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
         const val MESSAGE_QUEUE = "@message_queue"
-        const val SHOW_NOTIFICATION_WARNING = "show_notification_warning"
+        const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
+        const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()
