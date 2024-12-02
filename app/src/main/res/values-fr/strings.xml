@@ -499,6 +499,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_shared_items_empty">Pas d\'éléments partagés</string>
     <string name="nc_shared_items_location">Position</string>
     <string name="nc_shared_location">Position partagée</string>
+    <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas correctement configurées, afficher un avertissement régulier</string>
+    <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
     <string name="nc_sort_by">Trier par</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>

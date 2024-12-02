@@ -310,6 +310,7 @@
     <string name="nc_no_proxy">Sin proxy</string>
     <string name="nc_not_allowed_to_activate_audio">¡No tiene permiso para habilitar el audio!</string>
     <string name="nc_not_allowed_to_activate_video">¡No tiene permiso para habilitar el video!</string>
+    <string name="nc_not_now">Ahora no</string>
     <string name="nc_notification_channel">%1$s en el canal de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Llamadas</string>
     <string name="nc_notification_channel_calls_description">Notificar llamadas entrantes</string>
@@ -475,6 +476,8 @@
     <string name="nc_shared_items_empty">No hay elementos compartidos</string>
     <string name="nc_shared_items_location">Ubicación</string>
     <string name="nc_shared_location">Ubicación compartida</string>
+    <string name="nc_show_notification_warning_description">Cuando las notificaciones no están configuradas correctamente, mostrar un aviso periódico</string>
+    <string name="nc_show_notification_warning_title">Mostrar aviso periódico sobre notificaciones</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_switch_account">Cambiar cuenta</string>
