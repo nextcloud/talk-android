@@ -138,7 +138,8 @@ class ParticipantItem(
                 }
 
                 if (model.invitedActorId?.isNotEmpty() == true &&
-                    ConversationUtils.isParticipantOwnerOrModerator(conversation)) {
+                    ConversationUtils.isParticipantOwnerOrModerator(conversation)
+                ) {
                     holder.binding.conversationInfoStatusMessage.text = model.invitedActorId
                     alignUsernameVertical(holder, 0f)
                 }
