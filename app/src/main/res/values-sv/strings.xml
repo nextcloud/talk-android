@@ -323,6 +323,7 @@
     <string name="nc_no_proxy">Ingen proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Du får inte aktivera ljud!</string>
     <string name="nc_not_allowed_to_activate_video">Du får inte aktivera video!</string>
+    <string name="nc_not_now">Inte nu</string>
     <string name="nc_notification_channel">%1$s på %2$s aviseringskanal</string>
     <string name="nc_notification_channel_calls">Samtal</string>
     <string name="nc_notification_channel_calls_description">Avisera vid inkommande samtal</string>
@@ -494,8 +495,6 @@
     <string name="nc_shared_items_empty">Inga delade objekt</string>
     <string name="nc_shared_items_location">Plats</string>
     <string name="nc_shared_location">Delad plats</string>
-    <string name="nc_show_notification_warning_description">Visa en varning när aviseringar inte är korrekt inställda</string>
-    <string name="nc_show_notification_warning_title">Visa varning för avisering</string>
     <string name="nc_sort_by">Sortera efter</string>
     <string name="nc_start_time">Starttid</string>
     <string name="nc_switch_account">Växla konto</string>

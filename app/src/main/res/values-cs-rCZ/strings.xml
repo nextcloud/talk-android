@@ -497,8 +497,6 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
-    <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit varování</string>
-    <string name="nc_show_notification_warning_title">Zobrazit varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>

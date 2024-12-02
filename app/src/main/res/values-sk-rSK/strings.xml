@@ -309,6 +309,7 @@
     <string name="nc_no_proxy">Bez proxy</string>
     <string name="nc_not_allowed_to_activate_audio">Nemáte oprávnenie povoliť zvuk!</string>
     <string name="nc_not_allowed_to_activate_video">Nemáte oprávnenie povoliť video!</string>
+    <string name="nc_not_now">Teraz nie</string>
     <string name="nc_notification_channel">%1$s na %2$s notifikačný kanál</string>
     <string name="nc_notification_channel_calls">Hovory</string>
     <string name="nc_notification_channel_calls_description">Upozorniť na príchodzie hovory</string>

@@ -198,6 +198,7 @@
     <string name="nc_nick_guest">Vieras</string>
     <string name="nc_no">Ei</string>
     <string name="nc_no_proxy">Ei välityspalvelinta</string>
+    <string name="nc_not_now">Ei nyt</string>
     <string name="nc_notification_channel_calls">Puhelut</string>
     <string name="nc_notification_channel_calls_description">Ilmoita saapuvista puheluista</string>
     <string name="nc_notification_channel_messages">Viestit</string>

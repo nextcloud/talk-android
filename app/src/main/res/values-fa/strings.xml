@@ -205,6 +205,7 @@
     <string name="nc_no_open_conversations_headline">گفتگوی بازی وجود ندارد</string>
     <string name="nc_no_proxy">پروکسی نیست</string>
     <string name="nc_not_allowed_to_activate_video">مجاز به فعال کردن ویدئو نیستید!</string>
+    <string name="nc_not_now">Not now</string>
     <string name="nc_notification_channel">کانال اعلان %1$s روی %2$s</string>
     <string name="nc_notification_channel_calls">تماس‌ها</string>
     <string name="nc_notification_channel_messages">پیام‌ها</string>

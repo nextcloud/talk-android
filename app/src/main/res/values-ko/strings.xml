@@ -225,6 +225,7 @@
     <string name="nc_no_proxy">프록시 없음</string>
     <string name="nc_not_allowed_to_activate_audio">오디오를 활성화 할 수 없습니다!</string>
     <string name="nc_not_allowed_to_activate_video">영상을 활성화할 수 없습니다!</string>
+    <string name="nc_not_now">지금은 하지 않음</string>
     <string name="nc_notification_channel">%2$s 알림 채널의 %1$s</string>
     <string name="nc_notification_channel_calls">통화</string>
     <string name="nc_notification_channel_calls_description">수신 통화 알림</string>

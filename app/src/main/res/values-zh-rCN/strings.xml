@@ -259,6 +259,7 @@
     <string name="nc_no_proxy">无代理</string>
     <string name="nc_not_allowed_to_activate_audio">您没有开启语音的权限！</string>
     <string name="nc_not_allowed_to_activate_video">您没有开启视频的权限！</string>
+    <string name="nc_not_now">以后再说</string>
     <string name="nc_notification_channel">%1$s在%2$s通知频道中</string>
     <string name="nc_notification_channel_calls">通话</string>
     <string name="nc_notification_channel_calls_description">来电通知</string>

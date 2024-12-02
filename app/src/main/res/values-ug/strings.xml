@@ -323,6 +323,7 @@
     <string name="nc_no_proxy">ۋاكالەتچى يوق</string>
     <string name="nc_not_allowed_to_activate_audio">ئاۋازنى قوزغىتىشىڭىزغا رۇخسەت قىلىنمايدۇ!</string>
     <string name="nc_not_allowed_to_activate_video">سىننى ئاكتىپلىشىڭىزغا رۇخسەت قىلىنمايدۇ!</string>
+    <string name="nc_not_now">ھازىر ئەمەس</string>
     <string name="nc_notification_channel">% 2 $ s ئۇقتۇرۇش قانىلىدا% 1 $ s</string>
     <string name="nc_notification_channel_calls">تېلېفون قىلىدۇ</string>
     <string name="nc_notification_channel_calls_description">كەلگەن تېلېفونلار ھەققىدە خەۋەر قىلىڭ</string>

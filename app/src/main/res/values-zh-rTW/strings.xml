@@ -326,6 +326,7 @@
     <string name="nc_no_proxy">無proxy代理</string>
     <string name="nc_not_allowed_to_activate_audio">您無權啟動語音！</string>
     <string name="nc_not_allowed_to_activate_video">您無權啟動視訊！</string>
+    <string name="nc_not_now">現在不要</string>
     <string name="nc_notification_channel">%1$s在%2$s的通知頻道</string>
     <string name="nc_notification_channel_calls">通話</string>
     <string name="nc_notification_channel_calls_description">來電通知</string>
@@ -497,8 +498,6 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
-    <string name="nc_show_notification_warning_description">通知未正確設定時，顯示警告</string>
-    <string name="nc_show_notification_warning_title">顯示通知警告</string>
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>

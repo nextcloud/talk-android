@@ -212,6 +212,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_nick_guest">Gast</string>
     <string name="nc_no">Nee</string>
     <string name="nc_no_proxy">geen proxy</string>
+    <string name="nc_not_now">Niet nu</string>
     <string name="nc_notification_channel">%1$s op het %2$s notificatiekanaal</string>
     <string name="nc_notification_channel_calls">Gesprekken</string>
     <string name="nc_notification_channel_calls_description">Melden inkomende gesprekken</string>

@@ -238,6 +238,7 @@
     <string name="nc_no_proxy">Brez posredniškega strežnika</string>
     <string name="nc_not_allowed_to_activate_audio">Ni ustreznih dovoljenj za omogočanje zvoka</string>
     <string name="nc_not_allowed_to_activate_video">Ni ustreznih dovoljenj za omogočanje slike</string>
+    <string name="nc_not_now">Ne zdaj</string>
     <string name="nc_notification_channel">%1$s na kanalu za obveščanje %2$s</string>
     <string name="nc_notification_channel_calls">Klici</string>
     <string name="nc_notification_channel_calls_description">Obvesti o prejetih klicih</string>
