@@ -131,6 +131,8 @@ class ChatViewModel @Inject constructor(
             _getRoomViewState.value = GetRoomErrorState
         }
 
+    val getGeneralUIFlow = chatRepository.generalUIFlow
+
     sealed interface ViewState
 
     object GetReminderStartState : ViewState
