@@ -12,7 +12,7 @@ buildscript {
 
     ext {
       kotlinVersion = '2.1.0'
-        hilt_version = '2.44'
+        hilt_version = '2.53'
     }
 
     repositories {
