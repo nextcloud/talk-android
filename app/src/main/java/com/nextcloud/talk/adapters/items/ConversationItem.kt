@@ -127,6 +127,15 @@ class ConversationItem(
         } else {
             holder.binding.favoriteConversationImageView.visibility = View.GONE
         }
+        if (ConversationEnums.ConversationType.ROOM_PUBLIC_CALL == model.type) {
+            holder.binding.publicCallBadge.setImageResource(R.drawable.ic_avatar_link)
+            holder.binding.publicCallBadge.visibility = View.VISIBLE
+        } else if (model.remoteServer?.isNotEmpty() == true) {
+            holder.binding.publicCallBadge.setImageResource(R.drawable.ic_avatar_federation)
+            holder.binding.publicCallBadge.visibility = View.VISIBLE
+        } else {
+            holder.binding.publicCallBadge.visibility = View.GONE
+        }
         if (ConversationEnums.ConversationType.ROOM_SYSTEM !== model.type) {
             val size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, appContext)
             holder.binding.userStatusImage.visibility = View.VISIBLE
