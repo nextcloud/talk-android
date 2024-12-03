@@ -55,7 +55,8 @@
     <string name="nc_action_open_main_menu">Atverti pagrindinį meniu</string>
     <string name="nc_add_attachment">Pridėti priedą</string>
     <string name="nc_add_emojis">Pridėti šypsenėlių</string>
-    <string name="nc_add_participants">Pridėti dalyvius</string>
+    <string name="nc_add_file">Pridėti į pokalbį</string>
+    <string name="nc_add_participants">Pridėti dalyvių</string>
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
@@ -81,7 +82,7 @@
     <string name="nc_client_cert_change">Keisti kliento programėlės liudijimą</string>
     <string name="nc_client_cert_setup">Nustatyti kliento programėlės liudijimą</string>
     <string name="nc_common_and">ir</string>
-    <string name="nc_common_copy">Kopija</string>
+    <string name="nc_common_copy">Kopijuoti</string>
     <string name="nc_common_copy_success">Nukopijuota į iškarpinę</string>
     <string name="nc_common_create">Sukurti</string>
     <string name="nc_common_disabled">Išjungta</string>
@@ -109,6 +110,7 @@
     <string name="nc_delete">Ištrinti</string>
     <string name="nc_delete_all">Ištrinti visus</string>
     <string name="nc_delete_call">Ištrinti pokalbį</string>
+    <string name="nc_delete_conversation_more">Jei ištrinsite pokalbį, jis taip pat bus ištrintas visiems kitiems dalyviams.</string>
     <string name="nc_delete_message">Ištrinti</string>
     <string name="nc_demote">Pažeminti iš moderatorių</string>
     <string name="nc_description_send_message_button">Siųsti žinutę</string>
@@ -121,6 +123,9 @@
     <string name="nc_diagnose_app_version_title">Programėlės versija</string>
     <string name="nc_diagnose_battery_optimization_title">Akumuliatoriaus nustatymai</string>
     <string name="nc_diagnose_device_name_title">Įrenginys</string>
+    <string name="nc_diagnose_gplay_available_no">„Google Play“ paslaugos neprieinamos. Pranešimai nepalaikomi</string>
+    <string name="nc_diagnose_gplay_available_title">„Google Play“ paslaugos</string>
+    <string name="nc_diagnose_gplay_available_yes">„Google Play“ paslaugos yra prieinamos</string>
     <string name="nc_diagnose_meta_category_title">Metainformacija</string>
     <string name="nc_diagnose_phone_category_title">Telefonas</string>
     <string name="nc_diagnose_server_version">Serverio versija</string>
