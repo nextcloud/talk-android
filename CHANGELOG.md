@@ -9,6 +9,94 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [20.1.0] - 2024-12-03
+
+### Added
+- Archive conversations
+- Show regular warning if notification settings are not set up correctly (can be disabled)
+- Identify guests invited via email address
+- Long press options for end call button (leave or end call for all)
+- Textsearch in "Join open conversations" screen
+
+### Changed
+- Call started indicator is now at bottom of chat
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/86?closed=1
+
+## [20.0.6] - 2024-11-28
+
+### Added
+- Permanent warning if notification settings are not set up correctly (can be disabled)
+
+Minimum: NC 17 Server, Android 7.0 Nougat
+
+## [20.0.5] - 2024-11-18
+
+### Fixed
+- Fix a crash when opening chat
+
+Minimum: NC 17 Server, Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/91?closed=1
+
+## [20.0.4] - 2024-11-14
+
+### Fixed
+- Emojis to react in call are missing (now with horizontal scrolling)
+- Fix crashes
+
+Minimum: NC 17 Server, Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/90?closed=1
+
+## [20.0.3] - 2024-11-11
+
+### Added
+- Improvements to offline support ("offline first")
+- Queuing and editing of offline written messages
+- New "unread messages marker" behavior
+- Align grouping of chat messages with server behavior
+- Set full screen width for messages in 'Note To Self' (@arkascha)
+
+### Fixed
+- Sometimes offline messages need to be re-downloaded
+- Unread messages marker is shown multiple times
+- Deck cards are shown as {object}
+- Minor bugs
+
+Minimum: NC 17 Server, Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/89?closed=1
+
+## [20.0.2] - 2024-09-26
+
+### Added
+- Improvements for conversation creation
+
+### Fixed
+- Conversation list + chat does not load for very old server versions
+- TextInput field is shown when user has no permission to write
+- Call buttons sometimes disappear after 30 sec for federated rooms
+- Avoid crashes that could happen when entering chat
+
+Minimum: NC 17 Server, Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/88?closed=1
+
+## [20.0.1] - 2024-09-17
+
+### Fixed
+- Chat does not load for older server versions
+- Status icons are not shown
+- Account is missing in account switcher dialog
+- Error for federated invitation is shown although server does not support them
+
+Minimum: Android 7.0 Nougat
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/87?closed=1
+
 ## [20.0.0] - 2024-09-14
 
 ### Added
