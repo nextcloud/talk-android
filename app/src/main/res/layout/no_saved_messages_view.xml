@@ -7,15 +7,15 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/lobby_view"
+    android:id="@+id/offline_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/lobby_image_view"
+        android:id="@+id/offline_image_view"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_above="@id/lobby_text_view"
+        android:layout_above="@id/offline_text_view"
         android:layout_centerHorizontal="true"
         android:layout_margin="@dimen/margin_between_elements"
         android:contentDescription="@string/nc_lobby"
@@ -23,7 +23,7 @@
         app:tint="@color/grey_600" />
 
     <TextView
-        android:id="@+id/lobby_text_view"
+        android:id="@+id/offline_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
