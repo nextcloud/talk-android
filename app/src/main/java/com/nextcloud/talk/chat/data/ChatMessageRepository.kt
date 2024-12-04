@@ -85,14 +85,14 @@ interface ChatMessageRepository : LifecycleAwareManager {
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Flow<Result<ChatOverallSingleMessage>>
+    ): Flow<Result<ChatMessage?>>
 
     suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
         replyTo: Int,
         referenceId: String
-    ): Flow<Result<ChatOverallSingleMessage>>
+    ): Flow<Result<ChatMessage?>>
 
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 }

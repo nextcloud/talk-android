@@ -157,9 +157,11 @@ class MessageInputViewModel @Inject constructor(
                 referenceId
             ).collect { result ->
                 if (result.isSuccess) {
-                    Log.d(TAG, "bbbb")
+                    Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
+
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                 } else {
-                    Log.d(TAG, "xxxx")
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
                 }
             }
         }
@@ -187,7 +189,7 @@ class MessageInputViewModel @Inject constructor(
                 referenceId
             ).collect { result ->
                 if (result.isSuccess) {
-                    Log.d(TAG, "received ref id: " + (result.getOrNull()?.ocs?.data?.referenceId ?: "none"))
+                    Log.d(TAG, "received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
 
                     _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
                 } else {

@@ -65,6 +65,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
+import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
@@ -152,6 +153,7 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
 
+    @Singleton
     @Provides
     fun provideOfflineFirstChatRepository(
         chatMessagesDao: ChatMessagesDao,
