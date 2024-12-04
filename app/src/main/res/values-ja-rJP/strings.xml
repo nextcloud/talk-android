@@ -344,6 +344,7 @@
     <string name="nc_promote">モデレータに昇格</string>
     <string name="nc_public_call">新規公開会話</string>
     <string name="nc_public_call_explanation">会話を公開にすると、特別なリンクを介して外部からユーザーを招待できます。</string>
+    <string name="nc_public_call_status">公開会話</string>
     <string name="nc_push_disabled">プッシュ通知が無効になっています</string>
     <string name="nc_push_to_talk">プッシュトゥートーク</string>
     <string name="nc_push_to_talk_desc">マイクを無効にして、プッシュツートークを使用する場合は &amp; ホールド</string>

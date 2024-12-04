@@ -326,6 +326,7 @@
     <string name="nc_no_proxy">No proxy</string>
     <string name="nc_not_allowed_to_activate_audio">You are not allowed to activate audio!</string>
     <string name="nc_not_allowed_to_activate_video">You are not allowed to activate video!</string>
+    <string name="nc_not_now">Not now</string>
     <string name="nc_notification_channel">%1$s on %2$s notification channel</string>
     <string name="nc_notification_channel_calls">Calls</string>
     <string name="nc_notification_channel_calls_description">Notify about incoming calls</string>
@@ -363,6 +364,7 @@
     <string name="nc_promote">Promote to moderator</string>
     <string name="nc_public_call">New public conversation</string>
     <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
+    <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_push_disabled">Push notifications disabled</string>
     <string name="nc_push_to_talk">Press-to-transmit</string>
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
@@ -497,6 +499,8 @@
     <string name="nc_shared_items_empty">No shared items</string>
     <string name="nc_shared_items_location">Location</string>
     <string name="nc_shared_location">Shared location</string>
+    <string name="nc_show_notification_warning_description">When notifications are not set up correctly, show a regular warning</string>
+    <string name="nc_show_notification_warning_title">Show regular notification warning</string>
     <string name="nc_sort_by">Sort by</string>
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
@@ -532,6 +536,7 @@
     <string name="openConversations">Open conversations</string>
     <string name="open_in_files_app">Open in Files app</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
+    <string name="playback_speed_control">Playback speed control</string>
     <string name="polls_add_option">Add option</string>
     <string name="polls_edit_vote">Edit vote</string>
     <string name="polls_end_poll">End poll</string>

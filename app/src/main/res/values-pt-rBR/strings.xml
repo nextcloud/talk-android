@@ -362,6 +362,7 @@
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">As conversas públicas permitem que você convide pessoas de fora por meio de um link especialmente criado.</string>
+    <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Notificações push desativadas</string>
     <string name="nc_push_to_talk">Pressione-para-falar</string>
     <string name="nc_push_to_talk_desc">Com o microfone desativado, clique&amp; para usar Pressione-para-falar</string>

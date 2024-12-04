@@ -364,6 +364,7 @@
     <string name="nc_promote">授予主持人資格</string>
     <string name="nc_public_call">新的公開對話</string>
     <string name="nc_public_call_explanation">公開對話可讓您透過特製的連結邀請外部夥伴。</string>
+    <string name="nc_public_call_status">公開對話</string>
     <string name="nc_push_disabled">取消推送通知</string>
     <string name="nc_push_to_talk">按住以說話</string>
     <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
@@ -498,6 +499,8 @@
     <string name="nc_shared_items_empty">無已分享項目</string>
     <string name="nc_shared_items_location">路徑</string>
     <string name="nc_shared_location">共享的位置</string>
+    <string name="nc_show_notification_warning_description">通知未正確設定時，顯示一般警告</string>
+    <string name="nc_show_notification_warning_title">顯示一般通知警告</string>
     <string name="nc_sort_by">排序</string>
     <string name="nc_start_time">開始時間</string>
     <string name="nc_switch_account">切換帳號</string>
@@ -533,6 +536,7 @@
     <string name="openConversations">開啟對話</string>
     <string name="open_in_files_app">在「檔案」應用程式中開啟</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
+    <string name="playback_speed_control">播放速度控制</string>
     <string name="polls_add_option">新增選項</string>
     <string name="polls_edit_vote">編輯投票</string>
     <string name="polls_end_poll">結束投票</string>

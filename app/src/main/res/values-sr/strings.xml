@@ -360,6 +360,7 @@
     <string name="nc_promote">Унапреди у модератора</string>
     <string name="nc_public_call">Нови јавни разговор</string>
     <string name="nc_public_call_explanation">Јавни разговори омогућавају да позовете људе споља кроз посебно направљену везу за њих.</string>
+    <string name="nc_public_call_status">Јавни разговор</string>
     <string name="nc_push_disabled">Брза обавештења су искључена</string>
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>

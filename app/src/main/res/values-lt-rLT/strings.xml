@@ -207,6 +207,7 @@
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
     <string name="nc_public_call">Naujas viešas pokalbis</string>
+    <string name="nc_public_call_status">Viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
     <string name="nc_refresh">Įkelti iš naujo</string>
     <string name="nc_remind">Priminti vėliau</string>

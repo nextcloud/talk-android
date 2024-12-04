@@ -356,6 +356,7 @@
     <string name="nc_promote">Gi moderatorstatus</string>
     <string name="nc_public_call">Ny offentlig samtale</string>
     <string name="nc_public_call_explanation">Offentlige samtaler lar deg invitere folk utenfra gjennom en spesiallaget lenke.</string>
+    <string name="nc_public_call_status">Offentlig samtale</string>
     <string name="nc_push_disabled">Push notifisering deaktivert</string>
     <string name="nc_push_to_talk">Trykk-for-å-snakke</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen avslått, klikk &amp; hold for å bruke klikk-for-å-snakke</string>

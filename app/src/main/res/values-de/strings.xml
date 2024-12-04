@@ -364,6 +364,7 @@
     <string name="nc_promote">Zum Moderator ernennen</string>
     <string name="nc_public_call">Neue öffentliche Unterhaltung</string>
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>
+    <string name="nc_public_call_status">Öffentliche Unterhaltung</string>
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>

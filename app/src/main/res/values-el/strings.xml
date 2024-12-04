@@ -190,6 +190,7 @@
     <string name="nc_nick_guest">Επισκέπτης</string>
     <string name="nc_no">Όχι</string>
     <string name="nc_no_proxy">Κανένας διαμεσολαβητής</string>
+    <string name="nc_not_now">Όχι τώρα</string>
     <string name="nc_notification_channel">%1$s από %2$s κανάλι ειδοποίησης</string>
     <string name="nc_notification_channel_calls">Kλήσεις</string>
     <string name="nc_notification_channel_calls_description">Ειδοποίηση για εισερχόμενες κλήσεις</string>

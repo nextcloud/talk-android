@@ -202,7 +202,7 @@
     <string name="nc_federation_no_invitations">Ez duzu gonbidapenik zain</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
-    <string name="nc_filter">Filtratu elkarrizketa</string>
+    <string name="nc_filter">Iragazi elkarrizketa</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
@@ -567,6 +567,7 @@
     <string name="typing_are_typing">idazten ari dira ...</string>
     <string name="typing_is_typing">idazten ari da ...</string>
     <string name="typing_x_others">eta beste %1$s idazten ari dira ...</string>
+    <string name="unarchive_hint">Behin elkarrizketa bat desartxibatuta, modu lehenetsian erakutsiko da berriro.</string>
     <string name="unban">Debekua kendu</string>
     <string name="unread">Irakurri gabe</string>
     <string name="upload_new_avatar_from_device">Igo avatar berria gailutik</string>

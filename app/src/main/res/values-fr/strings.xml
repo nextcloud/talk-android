@@ -365,6 +365,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_promote">Promouvoir comme modérateur</string>
     <string name="nc_public_call">Nouvelle conversation publique</string>
     <string name="nc_public_call_explanation">Les conversations publiques vous permettent d\'inviter des personnes extérieures grâce à un lien spécialement créé.</string>
+    <string name="nc_public_call_status">Conversation publique</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
     <string name="nc_push_to_talk">Talkie-walkie</string>
     <string name="nc_push_to_talk_desc">Avec le micro désactivé, cliquez &amp; maintenez pour utiliser la fonction Talkie-walkie.</string>
