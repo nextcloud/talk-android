@@ -22,6 +22,7 @@ interface ChatMessagesDao {
         SELECT MAX(id) as max_items
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
         """
     )
     fun getNewestMessageId(internalConversationId: String): Long
@@ -35,6 +36,17 @@ interface ChatMessagesDao {
         """
     )
     fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 1
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
@@ -58,6 +70,16 @@ interface ChatMessagesDao {
         """
     )
     fun deleteChatMessages(messageIds: List<Int>)
+
+    @Query(
+        value = """
+            DELETE FROM ChatMessages
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId in (:referenceIds)
+            AND isTemporary = 1
+        """
+    )
+    fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>)
 
     @Update
     fun updateChatMessage(message: ChatMessageEntity)
