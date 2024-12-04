@@ -150,7 +150,8 @@ class PushUtils {
         val result = StringBuilder()
         for (individualByte in bytes) {
             result.append(
-                Integer.toString((individualByte.toInt() and 0xff) + 0x100, 16)
+                ((individualByte.toInt() and BYTES_TO_HEX_SUFFIX) + BYTES_TO_HEX_SUFFIX_SUFFIX)
+                    .toString(BYTES_TO_HEX_RADIX)
                     .substring(1)
             )
         }
@@ -403,6 +404,9 @@ class PushUtils {
         private const val RETURN_CODE_KEY_GENERATION_SUCCESSFUL: Int = 0
         private const val RETURN_CODE_KEY_ALREADY_EXISTS: Int = -1
         private const val RETURN_CODE_KEY_GENERATION_FAILED: Int = -2
+        private const val BYTES_TO_HEX_RADIX: Int = 16
+        private const val BYTES_TO_HEX_SUFFIX = 0xff
+        private const val BYTES_TO_HEX_SUFFIX_SUFFIX = 0x100
         const val LATEST_PUSH_REGISTRATION_AT_SERVER: String = "LATEST_PUSH_REGISTRATION_AT_SERVER"
         const val LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY: String = "LATEST_PUSH_REGISTRATION_AT_PUSH_PROXY"
     }

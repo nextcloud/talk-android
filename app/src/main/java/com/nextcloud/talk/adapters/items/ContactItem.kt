@@ -97,7 +97,7 @@ class ContactItem(
                     null
                 )
             )
-            holder?.binding?.avatarView?.alpha = 0.38f
+            holder?.binding?.avatarView?.alpha = SEMI_TRANSPARENT
         } else {
             holder?.binding?.nameText?.setTextColor(
                 ResourcesCompat.getColor(
@@ -106,7 +106,7 @@ class ContactItem(
                     null
                 )
             )
-            holder?.binding?.avatarView?.alpha = 1.0f
+            holder?.binding?.avatarView?.alpha = FULLY_OPAQUE
         }
 
         holder?.binding?.nameText?.text = model.displayName
@@ -187,5 +187,10 @@ class ContactItem(
     class ContactItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
         var binding: RvItemContactBinding =
             RvItemContactBinding.bind(view!!)
+    }
+
+    companion object {
+        private const val FULLY_OPAQUE: Float = 1.0f
+        private const val SEMI_TRANSPARENT: Float = 0.38f
     }
 }
