@@ -67,7 +67,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
     @SuppressLint("TooGenericExceptionCaught")
     suspend fun saveBoolean(key: String, value: Boolean) {
         if ("call_notifications_switch" == key) {
-            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
+            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4))
             val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl, conversationToken)
             val credentials = getCredentials(conversationUser.username, conversationUser.token)
             val notificationLevel = if (value) 1 else 0
