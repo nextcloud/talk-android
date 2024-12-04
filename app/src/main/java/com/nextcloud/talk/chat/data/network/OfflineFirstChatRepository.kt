@@ -73,8 +73,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 >
             > = MutableSharedFlow()
 
-    override val updateMessageFlow:
-        Flow<ChatMessage>
+    override val updateMessageFlow: Flow<ChatMessage>
         get() = _updateMessageFlow
 
     private val _updateMessageFlow:
@@ -87,8 +86,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _lastCommonReadFlow:
         MutableSharedFlow<Int> = MutableSharedFlow()
 
-    override val lastReadMessageFlow:
-        Flow<Int>
+    override val lastReadMessageFlow: Flow<Int>
         get() = _lastReadMessageFlow
 
     private val _lastReadMessageFlow:
@@ -98,6 +96,12 @@ class OfflineFirstChatRepository @Inject constructor(
         get() = _generalUIFlow
 
     private val _generalUIFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
+    override val removeMessageFlow: Flow<ChatMessage>
+        get() = _removeMessageFlow
+
+    private val _removeMessageFlow:
+        MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
@@ -173,6 +177,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
             if (newestMessageIdFromDb.toInt() != 0) {
                 val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
+
+                // TODO: somewhere here also handle temp messages.   updateUiMessages(chatMessages, showUnreadMessagesMarker)
+
 
                 showMessagesBeforeAndEqual(
                     internalConversationId,
@@ -295,8 +302,7 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        val triple = Triple(true, showUnreadMessagesMarker, chatMessages)
-                        _messageFlow.emit(triple)
+                        updateUiMessages(chatMessages, showUnreadMessagesMarker)
                     } else {
                         Log.d(TAG, "resultsFromSync are null or empty")
                     }
@@ -318,6 +324,33 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
             }
         }
+
+    private suspend fun updateUiMessages(chatMessages : List<ChatMessage>, showUnreadMessagesMarker: Boolean) {
+        val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
+            .first()
+            .map(ChatMessageEntity::asModel)
+
+        oldTempMessages.forEach { _removeMessageFlow.emit(it) }
+
+        val tripleChatMessages = Triple(true, showUnreadMessagesMarker, chatMessages)
+        _messageFlow.emit(tripleChatMessages)
+
+
+        val chatMessagesReferenceIds = chatMessages.mapTo(HashSet(chatMessages.size)) { it.referenceId }
+        val tempChatMessagesThatCanBeReplaced = oldTempMessages.filter { it.referenceId in chatMessagesReferenceIds }
+
+        chatDao.deleteTempChatMessages(
+            internalConversationId,
+            tempChatMessagesThatCanBeReplaced.map { it.referenceId!! }
+        )
+
+        val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
+            .first()
+            .map(ChatMessageEntity::asModel)
+
+        val triple = Triple(true, false, remainingTempMessages)
+        _messageFlow.emit(triple)
+    }
 
     private suspend fun hasToLoadPreviousMessagesFromServer(beforeMessageId: Long): Boolean {
         val loadFromServer: Boolean
@@ -810,7 +843,11 @@ class OfflineFirstChatRepository @Inject constructor(
     ): Flow<Result<ChatMessage?>> =
         flow {
             try {
-                val tempChatMessageEntity = createChatMessageEntity(internalConversationId, message.toString())
+                val tempChatMessageEntity = createChatMessageEntity(
+                    internalConversationId,
+                    message.toString(),
+                    referenceId
+                )
                 // accessing internalConversationId creates UninitializedPropertyException because ChatViewModel and
                 // MessageInputViewModel use different instances of ChatRepository for now
 
@@ -832,43 +869,35 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    private fun createChatMessageEntity(internalConversationId: String, message: String): ChatMessageEntity {
-        // val id = chatMessageCounter++
+    private fun createChatMessageEntity(
+        internalConversationId: String,
+        message: String,
+        referenceId: String
+    ): ChatMessageEntity {
 
-        val emoji1 = "\uD83D\uDE00" // 😀
-        val emoji2 = "\uD83D\uDE1C" // 😜
-        val reactions = LinkedHashMap<String, Int>()
-        reactions[emoji1] = 3
-        reactions[emoji2] = 4
-
-        val reactionsSelf = ArrayList<String>()
-        reactionsSelf.add(emoji1)
+        val currentTimeMillies = System.currentTimeMillis()
 
         val entity = ChatMessageEntity(
-            internalId = internalConversationId + "_temp1",
+            internalId = internalConversationId + "@_temp_" + currentTimeMillies,
             internalConversationId = internalConversationId,
-            id = 111111111,
-            message = message,
-            reactions = reactions,
-            reactionsSelf = reactionsSelf,
+            id = currentTimeMillies,
+            message = message + " (temp)",
             deleted = false,
-            token = "",
-            actorId = "",
-            actorType = "",
-            accountId = 1,
+            token = conversationModel.token,
+            actorId = currentUser.userId!!,
+            actorType = "users",
+            accountId = currentUser.id!!,
             messageParameters = null,
-            messageType = "",
+            messageType = "comment",
             parentMessageId = null,
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             replyable = false,
-            timestamp = System.currentTimeMillis(),
+            timestamp = System.currentTimeMillis() / MILLIES,
             expirationTimestamp = 0,
-            actorDisplayName = "test",
-            lastEditActorType = null,
-            lastEditTimestamp = 0L,
-            renderMarkdown = true,
-            lastEditActorId = "",
-            lastEditActorDisplayName = ""
+            actorDisplayName = currentUser.displayName!!,
+            referenceId = referenceId,
+            isTemporary = true,
+            sendingFailed = false
         )
         return entity
     }
@@ -881,5 +910,6 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val HALF_SECOND = 500L
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
         private const val DEFAULT_MESSAGES_LIMIT = 100
+        private const val MILLIES = 1000
     }
 }

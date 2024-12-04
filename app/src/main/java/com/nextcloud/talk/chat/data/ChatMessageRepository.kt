@@ -42,6 +42,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     val generalUIFlow: Flow<String>
 
+    val removeMessageFlow: Flow<ChatMessage>
+
     fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String)
 
     fun loadInitialMessages(withNetworkParams: Bundle): Job
