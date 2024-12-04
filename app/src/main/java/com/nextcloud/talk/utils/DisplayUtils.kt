@@ -197,7 +197,9 @@ object DisplayUtils {
                 .crossfade(true)
                 .transformations(CircleCropTransformation())
                 .target(object : Target {
-                    override fun onStart(placeholder: Drawable?) {}
+                    override fun onStart(placeholder: Drawable?) {
+                        // unused atm
+                    }
                     override fun onError(error: Drawable?) {
                         chip.chipIcon = error
                     }
