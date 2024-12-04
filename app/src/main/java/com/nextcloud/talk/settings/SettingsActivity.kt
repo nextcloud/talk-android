@@ -1130,6 +1130,7 @@ class SettingsActivity :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -1349,6 +1350,7 @@ class SettingsActivity :
             })
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun observeReadPrivacy() {
         lifecycleScope.launch {
             var state = appPreferences.readPrivacy
@@ -1384,6 +1386,7 @@ class SettingsActivity :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun observeTypingStatus() {
         lifecycleScope.launch {
             var state = appPreferences.typingStatus

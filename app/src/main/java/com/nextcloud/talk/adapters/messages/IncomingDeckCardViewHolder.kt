@@ -180,6 +180,7 @@ class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHold
         viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {

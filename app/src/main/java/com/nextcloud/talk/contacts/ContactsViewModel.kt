@@ -69,6 +69,7 @@ class ContactsViewModel @Inject constructor(
         _isAddParticipantsView.value = value
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getContactsFromSearchParams() {
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
@@ -84,6 +85,8 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
         viewModelScope.launch {
             try {
