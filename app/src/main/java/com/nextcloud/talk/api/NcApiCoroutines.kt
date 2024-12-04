@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
+import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -197,4 +198,12 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("seconds") seconds: Int
     ): GenericOverall
+
+    @GET
+    suspend fun getOutOfOfficeStatusForUser(
+        @Header("Authorization") authorization:String,
+        @Url url:String
+    ): UserAbsenceOverall
+
+
 }
