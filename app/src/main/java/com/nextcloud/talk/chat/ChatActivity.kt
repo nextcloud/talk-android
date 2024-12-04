@@ -616,7 +616,8 @@ class ChatActivity :
                         urlForChatting
                     )
 
-                    if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL){
+                    if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                        currentConversation?.status == "dnd"){
                         conversationUser?.let{ user ->
                             chatViewModel.outOfOfficeStatusOfUser(credentials, user.baseUrl!!, currentConversation!!.displayName)
                         }
