@@ -616,6 +616,12 @@ class ChatActivity :
                         urlForChatting
                     )
 
+                    if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL){
+                        conversationUser?.let{ user ->
+                            chatViewModel.outOfOfficeStatusOfUser(credentials, user.baseUrl!!, currentConversation!!.displayName)
+                        }
+                    }
+
                     logConversationInfos("GetRoomSuccessState")
 
                     if (adapter == null) {
@@ -687,6 +693,14 @@ class ChatActivity :
 
                         checkShowCallButtons()
                         checkLobbyState()
+                        if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL){
+                            conversationUser?.let{ user ->
+                                val credentials = ApiUtils.getCredentials(user.username, user.token)
+                                chatViewModel.outOfOfficeStatusOfUser(credentials!!, user.baseUrl!!,
+                                    currentConversation!!.displayName)
+                            }
+                        }
+
                         updateRoomTimerHandler()
 
                         val urlForChatting =
@@ -1052,6 +1066,31 @@ class ChatActivity :
 
         chatViewModel.recordTouchObserver.observe(this) { y ->
             binding.voiceRecordingLock.y -= y
+        }
+
+        chatViewModel.outOfOfficeViewState.observe(this){uiState ->
+            when(uiState){
+                is ChatViewModel.OutOfOfficeUIState.Error -> {
+                    Log.e(TAG, "Error in outOfOfficeState",uiState.exception)
+
+                }
+                ChatViewModel.OutOfOfficeUIState.None -> {
+
+                }
+                is ChatViewModel.OutOfOfficeUIState.Success -> {
+                    binding.outOfOfficeContainer.visibility = View.VISIBLE
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.status).text = String.format(
+                        context.resources.getString(R.string.user_absence),
+                        uiState.userAbsence.userId
+                    )
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement).text = String.format(
+                        context.resources.getString(R.string.user_absence_replacement),
+                        uiState.userAbsence.replacementUserDisplayName
+                    )
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.message).text = uiState.userAbsence.message
+                }
+            }
+
         }
     }
 
@@ -3108,7 +3147,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_DELETED
+            .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3118,7 +3157,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_EDITED
+            .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -3413,7 +3452,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)
@@ -3875,3 +3914,4 @@ class ChatActivity :
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
     }
 }
+
