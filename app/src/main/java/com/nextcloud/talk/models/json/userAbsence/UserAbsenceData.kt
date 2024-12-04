@@ -16,15 +16,15 @@ import kotlinx.parcelize.Parcelize
 @JsonObject
 data class UserAbsenceData(
     @JsonField(name = ["id"])
-    var id: Int,
+    var id: String,
     @JsonField(name = ["userId"])
     var userId: String,
-    @JsonField(name = ["firstDay"])
-    var firstDay: String,
-    @JsonField(name = ["lastDay"])
-    var lastDay: String,
-    @JsonField(name = ["status"])
-    var status: String,
+    @JsonField(name = ["startDate"])
+    var startDate: Int,
+    @JsonField(name = ["endDate"])
+    var endDate: Int,
+    @JsonField(name = ["shortMessage"])
+    var shortMessage: String,
     @JsonField(name = ["message"])
     var message: String,
     @JsonField(name = ["replacementUserId"])
@@ -34,5 +34,5 @@ data class UserAbsenceData(
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() :
-        this(0, "", "", "", "", "", null, null)
+        this("", "", 0, 0, "", "", null, null)
 }
