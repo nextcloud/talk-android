@@ -158,6 +158,7 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {

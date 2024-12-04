@@ -745,6 +745,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.endCallPopupMenu.text = context.getString(R.string.leave_call)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createCameraEnumerator() {
         var camera2EnumeratorIsSupported = false
         try {

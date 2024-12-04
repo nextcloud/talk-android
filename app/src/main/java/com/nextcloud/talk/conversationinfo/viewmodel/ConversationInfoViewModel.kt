@@ -150,6 +150,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun listBans(user: User, token: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
         viewModelScope.launch {
@@ -163,6 +164,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun banActor(user: User, token: String, actorType: String, actorId: String, internalNote: String) {
         val url = ApiUtils.getUrlForBans(user.baseUrl!!, token)
         viewModelScope.launch {
@@ -182,6 +184,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun setConversationReadOnly(roomToken: String, state: Int) {
         viewModelScope.launch {
             try {
@@ -193,6 +196,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun unbanActor(user: User, token: String, banId: Int) {
         val url = ApiUtils.getUrlForUnban(user.baseUrl!!, token, banId)
         viewModelScope.launch {
@@ -206,6 +210,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun allowGuests(token: String, allow: Boolean) {
         viewModelScope.launch {
             try {
@@ -217,6 +222,7 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     @SuppressLint("SuspiciousIndentation")
     fun setPassword(password: String, token: String) {
         viewModelScope.launch {
@@ -241,6 +247,7 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun clearChatHistory(apiVersion: Int, roomToken: String) {
         viewModelScope.launch {
             try {

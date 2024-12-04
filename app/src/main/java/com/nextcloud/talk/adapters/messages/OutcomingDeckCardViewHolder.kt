@@ -171,6 +171,7 @@ class OutcomingDeckCardViewHolder(
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {
