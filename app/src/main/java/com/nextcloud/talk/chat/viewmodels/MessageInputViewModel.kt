@@ -34,7 +34,6 @@ import java.lang.Thread.sleep
 import javax.inject.Inject
 
 class MessageInputViewModel @Inject constructor(
-    private val chatRepository: ChatMessageRepository,
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
@@ -45,8 +44,14 @@ class MessageInputViewModel @Inject constructor(
         RESUMED,
         STOPPED
     }
+
+    lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+
+    fun setData(chatMessageRepository: ChatMessageRepository){
+        chatRepository = chatMessageRepository
+    }
 
     data class QueuedMessage(
         val id: Int,

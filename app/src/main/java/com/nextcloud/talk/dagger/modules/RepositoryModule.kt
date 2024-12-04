@@ -153,7 +153,6 @@ class RepositoryModule {
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
 
-    @Singleton
     @Provides
     fun provideOfflineFirstChatRepository(
         chatMessagesDao: ChatMessagesDao,

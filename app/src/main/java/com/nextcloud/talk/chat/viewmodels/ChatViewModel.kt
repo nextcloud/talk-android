@@ -70,6 +70,10 @@ class ChatViewModel @Inject constructor(
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
+    fun getChatRepository(): ChatMessageRepository {
+        return chatRepository
+    }
+
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
@@ -118,6 +122,8 @@ class ChatViewModel @Inject constructor(
         }.catch {
             _chatMessageViewState.value = ChatMessageErrorState
         }
+
+    val getRemoveMessageFlow = chatRepository.removeMessageFlow
 
     val getUpdateMessageFlow = chatRepository.updateMessageFlow
 

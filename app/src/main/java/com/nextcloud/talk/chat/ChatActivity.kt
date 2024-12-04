@@ -424,6 +424,7 @@ class ChatActivity :
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
+        messageInputViewModel.setData(chatViewModel.getChatRepository())
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
@@ -889,6 +890,15 @@ class ChatActivity :
                     processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
+                }
+                .collect()
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getRemoveMessageFlow
+                .onEach {
+                    adapter!!.delete(it)
+                    adapter!!.notifyDataSetChanged()
                 }
                 .collect()
         }
