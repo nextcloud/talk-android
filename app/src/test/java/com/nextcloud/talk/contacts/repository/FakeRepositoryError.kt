@@ -12,10 +12,12 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 class FakeRepositoryError : ContactsRepository {
+    @Suppress("Detekt.TooGenericExceptionThrown")
     override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
         throw Exception("unable to fetch contacts")
     }
 
+    @Suppress("Detekt.TooGenericExceptionThrown")
     override suspend fun createRoom(
         roomType: String,
         sourceType: String,
