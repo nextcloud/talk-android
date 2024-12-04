@@ -762,7 +762,7 @@ class OfflineFirstChatRepository @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Flow<Result<ChatOverallSingleMessage>> =
+    ): Flow<Result<ChatMessage?>> =
         flow {
             try {
                 val response = network.sendChatMessage(
@@ -774,8 +774,12 @@ class OfflineFirstChatRepository @Inject constructor(
                     sendWithoutNotification,
                     referenceId
                 )
-                emit(Result.success(response))
+
+                val chatMessageModel = response.ocs?.data?.asModel()
+
+                emit(Result.success(chatMessageModel))
             } catch (e: Exception) {
+                Log.e(TAG, "Error when sending message", e)
                 emit(Result.failure(e))
             }
         }
@@ -803,7 +807,7 @@ class OfflineFirstChatRepository @Inject constructor(
         displayName: String,
         replyTo: Int,
         referenceId: String
-    ): Flow<Result<ChatOverallSingleMessage>> =
+    ): Flow<Result<ChatMessage?>> =
         flow {
             try {
                 val tempChatMessageEntity = createChatMessageEntity(internalConversationId, message.toString())
@@ -815,10 +819,12 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 val tempChatMessageModel = tempChatMessageEntity.asModel()
 
-                // emit(Result.success(response))
+                emit(Result.success(tempChatMessageModel))
 
-                val triple = Triple(false, false, listOf(tempChatMessageModel))
+                val triple = Triple(true, false, listOf(tempChatMessageModel))
                 _messageFlow.emit(triple)
+
+                // emit()
 
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
@@ -855,11 +861,11 @@ class OfflineFirstChatRepository @Inject constructor(
             parentMessageId = null,
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             replyable = false,
-            timestamp = 0,
+            timestamp = System.currentTimeMillis(),
             expirationTimestamp = 0,
-            actorDisplayName = "",
+            actorDisplayName = "test",
             lastEditActorType = null,
-            lastEditTimestamp = null,
+            lastEditTimestamp = 0L,
             renderMarkdown = true,
             lastEditActorId = "",
             lastEditActorDisplayName = ""
