@@ -360,6 +360,7 @@
     <string name="nc_promote">رىياسەتچىگە تەشۋىق قىلىڭ</string>
     <string name="nc_public_call">يېڭى ئاممىۋى سۆھبەت</string>
     <string name="nc_public_call_explanation">ئاممىۋى پاراڭلار سىزنى ئالاھىدە ياسالغان ئۇلىنىش ئارقىلىق سىرتتىن كىشىلەرنى تەكلىپ قىلالايدۇ.</string>
+    <string name="nc_public_call_status">ئاممىۋى سۆھبەت</string>
     <string name="nc_push_disabled">ئىتتىرىش ئۇقتۇرۇشى چەكلەنگەن</string>
     <string name="nc_push_to_talk">پاراڭلىشىش</string>
     <string name="nc_push_to_talk_desc">مىكروفون چەكلەنگەندىن كېيىن «چېكىش» ئارقىلىق «Push-to-talk» نى ئىشلىتىڭ</string>

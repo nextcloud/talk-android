@@ -346,6 +346,7 @@
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_public_call">Nová verejná konverzácia</string>
     <string name="nc_public_call_explanation">Verejné konverzácia vám umožňujú pozvať ľudí z vonku cez špeciálne vytvorený odkaz.</string>
+    <string name="nc_public_call_status">Verejný rozhovor</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, kliknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>

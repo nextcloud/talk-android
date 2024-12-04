@@ -269,6 +269,7 @@
     <string name="nc_promote">Povišaj v vlogo moderatorja</string>
     <string name="nc_public_call">Nov javni pogovor</string>
     <string name="nc_public_call_explanation">Javni pogovori omogočajo pogovor z vsemi, ki poznajo ustvarjeno enkratno povezavo.</string>
+    <string name="nc_public_call_status">Javni pogovor</string>
     <string name="nc_push_disabled">Potisno obveščanje je onemogočeno</string>
     <string name="nc_push_to_talk">Možnost »push-to-talk«</string>
     <string name="nc_push_to_talk_desc">Pri onemogočenem mikrofonu lahko za začetek govora kliknete in zadržite gumb</string>

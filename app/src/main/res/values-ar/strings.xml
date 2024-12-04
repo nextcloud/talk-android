@@ -498,6 +498,8 @@
     <string name="nc_shared_items_empty">لا توجد عناصر مُشارَكة</string>
     <string name="nc_shared_items_location">الموقع</string>
     <string name="nc_shared_location">موقع مُشارَك</string>
+    <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مهيأة بالصورة الصحيحة، أظهِر التحذيرات الاعتيادية.</string>
+    <string name="nc_show_notification_warning_title">أظِهر تحذيراً بالإشعارات الاعتيادية</string>
     <string name="nc_sort_by">رتِّب حسب</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
@@ -533,6 +535,7 @@
     <string name="openConversations">فتح المحادثات</string>
     <string name="open_in_files_app">فتح في تطبيق الملفات Files</string>
     <string name="play_pause_voice_message">تشغيل/تجميد رسالة صوتية</string>
+    <string name="playback_speed_control">التحكم في سرعة التشغيل</string>
     <string name="polls_add_option">إضِف خِياراً</string>
     <string name="polls_edit_vote">تعديل التصويت vote</string>
     <string name="polls_end_poll">نهاية الاستبيان poll</string>

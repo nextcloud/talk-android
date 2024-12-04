@@ -364,7 +364,8 @@
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fóra mediante unha ligazón creada especialmente.</string>
-    <string name="nc_push_disabled">Desactivadas as notificacións automáticas</string>
+    <string name="nc_public_call_status">Conversa pública</string>
+    <string name="nc_push_disabled">Desactivadas as notificacións emerxentes</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
     <string name="nc_refresh">Actualizar</string>
@@ -498,6 +499,8 @@
     <string name="nc_shared_items_empty">Non hai elementos compartidos</string>
     <string name="nc_shared_items_location">Localización</string>
     <string name="nc_shared_location">Localización compartida</string>
+    <string name="nc_show_notification_warning_description">Cando as notificacións non estean configuradas correctamente, amosa unha advertencia periódica</string>
+    <string name="nc_show_notification_warning_title">Amosar a advertencia de notificación periódica</string>
     <string name="nc_sort_by">Ordenar por</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
@@ -533,6 +536,7 @@
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir na aplicación de Ficheiros</string>
     <string name="play_pause_voice_message">Reproducir/poñer en pausa a mensaxe de voz</string>
+    <string name="playback_speed_control">Control da velocidade de reprodución</string>
     <string name="polls_add_option">Engadir unha opción</string>
     <string name="polls_edit_vote">Editar o voto</string>
     <string name="polls_end_poll">Finalizar a enquisa</string>

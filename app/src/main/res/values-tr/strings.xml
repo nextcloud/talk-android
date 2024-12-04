@@ -360,6 +360,7 @@
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call">Herkese açık görüşme ekle</string>
     <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı ile davet edilebilir.</string>
+    <string name="nc_public_call_status">Herkese açık görüşme</string>
     <string name="nc_push_disabled">Anında bildirimler kullanımdan kaldırılmış</string>
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon kullanımdan kaldırılmışken, Bas-konuş üzerine tıklayıp basılı tutun</string>

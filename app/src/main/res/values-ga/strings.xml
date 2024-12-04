@@ -364,6 +364,7 @@
     <string name="nc_promote">Cur chun cinn chuig modhnóir</string>
     <string name="nc_public_call">Comhrá poiblí nua</string>
     <string name="nc_public_call_explanation">Ligeann comhráite poiblí duit cuireadh a thabhairt do dhaoine ón taobh amuigh trí nasc atá saindeartha.</string>
+    <string name="nc_public_call_status">Comhrá poiblí</string>
     <string name="nc_push_disabled">Díchumasaíodh fógraí brúigh</string>
     <string name="nc_push_to_talk">Brú-chun-caint</string>
     <string name="nc_push_to_talk_desc">Agus an micreafón díchumasaithe, cliceáil agus coinneáil chun Brúigh chun Caint a úsáid</string>
