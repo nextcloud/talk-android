@@ -93,4 +93,7 @@
     <color name="badge_color">#EF3B02</color>
     <color name="secondary_button_background">#DBE2E9</color>
 
+    <color name="scrollview_out_of_office_background">#cee5fd</color>
+    <color name="scrollview_out_of_office_text">#08486e</color>
+
 </resources>
