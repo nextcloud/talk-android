@@ -529,6 +529,7 @@
     <string name="nc_yes">是</string>
     <string name="new_conversation_creation_icon">新對話建立圖示</string>
     <string name="next_week">下週</string>
+    <string name="no_offline_messages_saved">未儲存離線訊息</string>
     <string name="no_phone_book_integration_due_to_permissions">因為缺少權限而無法整合電話號碼</string>
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>

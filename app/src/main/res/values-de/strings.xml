@@ -529,6 +529,7 @@
     <string name="nc_yes">Ja</string>
     <string name="new_conversation_creation_icon">Neue Unterhaltung erstellen-Symbol</string>
     <string name="next_week">Nächste Woche</string>
+    <string name="no_offline_messages_saved">Keine Offlinenachrichten gespeichert</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="oneHour">1 Stunde</string>
     <string name="online">Online</string>
@@ -536,6 +537,7 @@
     <string name="openConversations">Offene Unterhaltungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
+    <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
     <string name="polls_add_option">Option hinzufügen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>
