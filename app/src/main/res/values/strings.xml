@@ -841,5 +841,6 @@ How to translate with transifex:
     <string name="automatic_status_set">Your status was set automatically</string>
 
     <string name="user_absence">%1$s is out of office and might not respond</string>
+    <string name="user_absence_for_one_day">%1$s is out of office today</string>
     <string name="user_absence_replacement">Replacement: %1$s</string>
 </resources>

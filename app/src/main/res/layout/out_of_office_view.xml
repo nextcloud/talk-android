@@ -18,7 +18,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="8dp"
-        android:layout_margin="8dp"
         android:elevation="4dp"
         app:cornerRadius="8dp">
 
@@ -26,27 +25,32 @@
             android:id="@+id/userAbsenceShortMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/scrollview_out_of_office_text"
             android:textSize="16sp"
             android:textStyle="bold"
+            android:layout_marginTop ="8dp"
             tools:text="Jane is out of office"/>
+
+        <TextView
+            android:id="@+id/userAbsencePeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop ="8dp"
+            android:textSize="14sp"
+            tools:text="Dec 5, 2024 - Dec 15, 2024"/>
 
         <TextView
             android:id="@+id/absenceReplacement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="@color/scrollview_out_of_office_text"
             android:textSize="14sp"
-            android:textStyle="bold"
             tools:text="Replacement: Bob"/>
 
         <TextView
             android:id="@+id/userAbsenceLongMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/scrollview_out_of_office_text"
+            android:layout_marginTop ="8dp"
             android:textSize="14sp"
             tools:text="Hi, I am out of office this week. Please contact ....., ..........write very very very very very very very very very very very very very very very long message..................................................................................................................................if you have any issues."/>
     </LinearLayout>
