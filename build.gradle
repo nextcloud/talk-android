@@ -12,7 +12,6 @@ buildscript {
 
     ext {
       kotlinVersion = '2.1.0'
-        hilt_version = '2.44'
     }
 
     repositories {
@@ -28,8 +27,6 @@ buildscript {
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.0.26'
         classpath "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.7"
         classpath "org.jlleitschuh.gradle:ktlint-gradle:12.1.2"
-        classpath "com.google.dagger:hilt-android-gradle-plugin:$hilt_version"
-
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
