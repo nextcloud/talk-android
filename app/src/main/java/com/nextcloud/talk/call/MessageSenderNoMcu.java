@@ -20,6 +20,19 @@ public class MessageSenderNoMcu extends MessageSender {
         super(peerConnectionWrappers);
     }
 
+    /**
+     * Sends the given data channel message to the given signaling session ID.
+     *
+     * @param dataChannelMessage the message to send
+     * @param sessionId the signaling session ID of the participant to send the message to
+     */
+    public void send(DataChannelMessage dataChannelMessage, String sessionId) {
+        PeerConnectionWrapper peerConnectionWrapper = getPeerConnectionWrapper(sessionId);
+        if (peerConnectionWrapper != null) {
+            peerConnectionWrapper.send(dataChannelMessage);
+        }
+    }
+
     public void sendToAll(DataChannelMessage dataChannelMessage) {
         for (PeerConnectionWrapper peerConnectionWrapper: peerConnectionWrappers) {
             if ("video".equals(peerConnectionWrapper.getVideoStreamType())){

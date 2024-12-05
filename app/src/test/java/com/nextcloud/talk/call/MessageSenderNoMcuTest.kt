@@ -51,6 +51,39 @@ class MessageSenderNoMcuTest {
     }
 
     @Test
+    fun testSendDataChannelMessage() {
+        val message = DataChannelMessage()
+        messageSender!!.send(message, "theSessionId2")
+
+        Mockito.verify(peerConnectionWrapper2!!).send(message)
+        Mockito.verify(peerConnectionWrapper1!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper2Screen!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper4Screen!!, never()).send(message)
+    }
+
+    @Test
+    fun testSendDataChannelMessageIfScreenPeerConnection() {
+        val message = DataChannelMessage()
+        messageSender!!.send(message, "theSessionId4")
+
+        Mockito.verify(peerConnectionWrapper1!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper2!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper2Screen!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper4Screen!!, never()).send(message)
+    }
+
+    @Test
+    fun testSendDataChannelMessageIfNoPeerConnection() {
+        val message = DataChannelMessage()
+        messageSender!!.send(message, "theSessionId3")
+
+        Mockito.verify(peerConnectionWrapper1!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper2!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper2Screen!!, never()).send(message)
+        Mockito.verify(peerConnectionWrapper4Screen!!, never()).send(message)
+    }
+
+    @Test
     fun testSendDataChannelMessageToAll() {
         val message = DataChannelMessage()
         messageSender!!.sendToAll(message)
