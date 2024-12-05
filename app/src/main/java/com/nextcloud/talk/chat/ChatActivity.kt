@@ -46,7 +46,6 @@ import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.PopupMenu
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
