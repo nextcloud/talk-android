@@ -206,6 +206,7 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -569,7 +570,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
@@ -1081,10 +1082,40 @@ class ChatActivity :
                 }
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
-                        context.resources.getString(R.string.user_absence),
-                        uiState.userAbsence.userId
-                    )
+
+
+                    val startDateTimestamp:Long = uiState.userAbsence.startDate.toLong()
+                    val endDateTimestamp:Long = uiState.userAbsence.endDate.toLong()
+
+                        val startDate = Date(startDateTimestamp * 1000)
+                        val endDate = Date(endDateTimestamp * 1000)
+
+                        val date1 = Calendar.getInstance().apply{time = startDate}
+                        val date2 = Calendar.getInstance().apply{time = endDate}
+
+                        val isSameDay = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+                            date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
+
+                        if (isSameDay) {
+                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                                context.resources.getString(R.string.user_absence_for_one_day),
+                                uiState.userAbsence.userId
+                            )
+                          binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
+                              View.GONE
+                        } else {
+                            val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                            val startDateString = dateFormatter.format(startDate)
+                            val endDateString = dateFormatter.format(endDate)
+                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                                context.resources.getString(R.string.user_absence),
+                                uiState.userAbsence.userId
+                            )
+
+                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text = "$startDateString - $endDateString"
+                        }
+
+
                     if(uiState.userAbsence.replacementUserDisplayName != null){
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
                             context.resources.getString(R.string.user_absence_replacement),
