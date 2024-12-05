@@ -201,9 +201,7 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getOutOfOfficeStatusForUser(
-        @Header("Authorization") authorization:String,
-        @Url url:String
+        @Header("Authorization") authorization: String,
+        @Url url: String
     ): UserAbsenceOverall
-
-
 }

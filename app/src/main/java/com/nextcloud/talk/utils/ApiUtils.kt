@@ -602,7 +602,7 @@ object ApiUtils {
         return "${getUrlForRoom(version, baseUrl, token)}/archive"
     }
 
-    fun getUrlForOutOfOffice(baseUrl:String, userId:String):String{
+    fun getUrlForOutOfOffice(baseUrl: String, userId: String): String  {
         return "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
     }
 }
