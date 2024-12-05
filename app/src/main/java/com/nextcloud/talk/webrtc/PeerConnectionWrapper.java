@@ -379,7 +379,7 @@ public class PeerConnectionWrapper {
         @Override
         public void onMessage(DataChannel.Buffer buffer) {
             if (buffer.binary) {
-                Log.d(TAG, "Received binary msg over " + TAG + " " + sessionId);
+                Log.d(TAG, "Received binary data channel message over " + TAG + " " + sessionId);
                 return;
             }
 
@@ -387,7 +387,7 @@ public class PeerConnectionWrapper {
             final byte[] bytes = new byte[data.capacity()];
             data.get(bytes);
             String strData = new String(bytes);
-            Log.d(TAG, "Got msg: " + strData + " over " + TAG + " " + sessionId);
+            Log.d(TAG, "Received data channel message (" + strData + ") over " + TAG + " " + sessionId);
 
             DataChannelMessage dataChannelMessage;
             try {
