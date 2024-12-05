@@ -14,10 +14,13 @@ import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListene
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatcher
 import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.argThat
 import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mockito
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.never
 import org.webrtc.DataChannel
 import org.webrtc.MediaConstraints
 import org.webrtc.PeerConnection
@@ -33,6 +36,19 @@ class PeerConnectionWrapperTest {
     private var mockedSignalingMessageReceiver: SignalingMessageReceiver? = null
     private var mockedSignalingMessageSender: SignalingMessageSender? = null
 
+    /**
+     * Helper matcher for DataChannelMessages.
+     */
+    private inner class MatchesDataChannelMessage(
+        private val expectedDataChannelMessage: DataChannelMessage
+    ) : ArgumentMatcher<DataChannel.Buffer> {
+        override fun matches(buffer: DataChannel.Buffer): Boolean {
+            // DataChannel.Buffer does not implement "equals", so the comparison needs to be done on the ByteBuffer
+            // instead.
+            return dataChannelMessageToBuffer(expectedDataChannelMessage).data.equals(buffer.data)
+        }
+    }
+
     private fun dataChannelMessageToBuffer(dataChannelMessage: DataChannelMessage): DataChannel.Buffer {
         return DataChannel.Buffer(
             ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).toByteArray()),
@@ -46,6 +62,87 @@ class PeerConnectionWrapperTest {
         mockedPeerConnectionFactory = Mockito.mock(PeerConnectionFactory::class.java)
         mockedSignalingMessageReceiver = Mockito.mock(SignalingMessageReceiver::class.java)
         mockedSignalingMessageSender = Mockito.mock(SignalingMessageSender::class.java)
+    }
+
+    @Test
+    fun testSendDataChannelMessage() {
+        Mockito.`when`(
+            mockedPeerConnectionFactory!!.createPeerConnection(
+                any(PeerConnection.RTCConfiguration::class.java),
+                any(PeerConnection.Observer::class.java)
+            )
+        ).thenReturn(mockedPeerConnection)
+
+        val mockedStatusDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedStatusDataChannel.label()).thenReturn("status")
+        Mockito.`when`(mockedStatusDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        Mockito.`when`(mockedPeerConnection!!.createDataChannel(eq("status"), any()))
+            .thenReturn(mockedStatusDataChannel)
+
+        peerConnectionWrapper = PeerConnectionWrapper(
+            mockedPeerConnectionFactory,
+            ArrayList<PeerConnection.IceServer>(),
+            MediaConstraints(),
+            "the-session-id",
+            "the-local-session-id",
+            null,
+            true,
+            true,
+            "video",
+            mockedSignalingMessageReceiver,
+            mockedSignalingMessageSender
+        )
+
+        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
+
+        Mockito.verify(mockedStatusDataChannel).send(
+            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+        )
+    }
+
+    @Test
+    fun testSendDataChannelMessageWithOpenRemoteDataChannel() {
+        val peerConnectionObserverArgumentCaptor: ArgumentCaptor<PeerConnection.Observer> =
+            ArgumentCaptor.forClass(PeerConnection.Observer::class.java)
+
+        Mockito.`when`(
+            mockedPeerConnectionFactory!!.createPeerConnection(
+                any(PeerConnection.RTCConfiguration::class.java),
+                peerConnectionObserverArgumentCaptor.capture()
+            )
+        ).thenReturn(mockedPeerConnection)
+
+        val mockedStatusDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedStatusDataChannel.label()).thenReturn("status")
+        Mockito.`when`(mockedStatusDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        Mockito.`when`(mockedPeerConnection!!.createDataChannel(eq("status"), any()))
+            .thenReturn(mockedStatusDataChannel)
+
+        peerConnectionWrapper = PeerConnectionWrapper(
+            mockedPeerConnectionFactory,
+            ArrayList<PeerConnection.IceServer>(),
+            MediaConstraints(),
+            "the-session-id",
+            "the-local-session-id",
+            null,
+            true,
+            true,
+            "video",
+            mockedSignalingMessageReceiver,
+            mockedSignalingMessageSender
+        )
+
+        val mockedRandomIdDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedRandomIdDataChannel.label()).thenReturn("random-id")
+        Mockito.`when`(mockedRandomIdDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        peerConnectionObserverArgumentCaptor.value.onDataChannel(mockedRandomIdDataChannel)
+
+        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
+
+        Mockito.verify(mockedStatusDataChannel).send(
+            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+        )
+        Mockito.verify(mockedRandomIdDataChannel, never()).send(any())
     }
 
     @Test

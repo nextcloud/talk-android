@@ -57,7 +57,7 @@ public class PeerConnectionWrapper {
     private PeerConnection peerConnection;
     private String sessionId;
     private final MediaConstraints mediaConstraints;
-    private DataChannel dataChannel;
+    private DataChannel statusDataChannel;
     private final SdpObserver sdpObserver;
 
     private final boolean hasInitiated;
@@ -144,8 +144,8 @@ public class PeerConnectionWrapper {
             if (hasMCU || hasInitiated) {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
-                dataChannel = peerConnection.createDataChannel("status", init);
-                dataChannel.registerObserver(new DataChannelObserver(dataChannel));
+                statusDataChannel = peerConnection.createDataChannel("status", init);
+                statusDataChannel.registerObserver(new DataChannelObserver(statusDataChannel));
                 if (isMCUPublisher) {
                     peerConnection.createOffer(sdpObserver, mediaConstraints);
                 } else if (hasMCU && "video".equals(this.videoStreamType)) {
@@ -233,9 +233,9 @@ public class PeerConnectionWrapper {
     public void removePeerConnection() {
         signalingMessageReceiver.removeListener(webRtcMessageListener);
 
-        if (dataChannel != null) {
-            dataChannel.dispose();
-            dataChannel = null;
+        if (statusDataChannel != null) {
+            statusDataChannel.dispose();
+            statusDataChannel = null;
             Log.d(TAG, "Disposed DataChannel");
         } else {
             Log.d(TAG, "DataChannel is null.");
@@ -269,12 +269,24 @@ public class PeerConnectionWrapper {
         }
     }
 
+    /**
+     * Sends a data channel message.
+     * <p>
+     * Data channel messages are always sent on the "status" data channel locally opened. However, if Janus is used,
+     * messages can be sent only on publisher connections, even if subscriber connections have a "status" data channel;
+     * messages sent on subscriber connections will be simply ignored. Moreover, even if the message is sent on the
+     * "status" data channel subscriber connections will receive it on a data channel with a different label, as
+     * Janus opens its own data channel on subscriber connections and "multiplexes" all the received data channel
+     * messages on it, independently of on which data channel they were originally sent.
+     *
+     * @param dataChannelMessage the message to send
+     */
     public void send(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
-        if (dataChannel != null && dataChannelMessage != null) {
+        if (statusDataChannel != null && dataChannelMessage != null) {
             try {
                 buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                dataChannel.send(new DataChannel.Buffer(buffer, false));
+                statusDataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (Exception e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
             }
@@ -513,12 +525,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            if (PeerConnectionWrapper.this.dataChannel != null) {
-                Log.w(TAG, "Data channel with label " + PeerConnectionWrapper.this.dataChannel.label()
-                    + " exists, but received onDataChannel event for DataChannel with label " + dataChannel.label());
-            }
-            PeerConnectionWrapper.this.dataChannel = dataChannel;
-            PeerConnectionWrapper.this.dataChannel.registerObserver(new DataChannelObserver(dataChannel));
+            dataChannel.registerObserver(new DataChannelObserver(dataChannel));
         }
 
         @Override
