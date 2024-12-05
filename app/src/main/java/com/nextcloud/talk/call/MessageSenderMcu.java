@@ -13,6 +13,9 @@ import java.util.List;
 
 /**
  * Helper class to send messages to participants in a call when an MCU is used.
+ * <p>
+ * Note that when Janus is used it is not possible to send a data channel message to a specific participant. Any data
+ * channel message will be broadcast to all the subscribers of the publisher peer connection (the own peer connection).
  */
 public class MessageSenderMcu extends MessageSender {
 
