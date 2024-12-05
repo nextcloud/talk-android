@@ -61,4 +61,7 @@
 
     <color name="icon_on_bg_default">#99FFFFFF</color>
 
+    <color name="scrollview_out_of_office_background">#cee7fe</color>
+    <color name="scrollview_out_of_office_text">#5e95b4</color>
+
 </resources>

@@ -11,7 +11,7 @@
     android:layout_height="150dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/out_of_office_view"
-    android:background="#333399">
+    style="@style/ScrollViewStyle">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +26,7 @@
             android:id="@+id/userAbsenceShortMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/scrollview_out_of_office_text"
             android:textSize="16sp"
             android:textStyle="bold"
             tools:text="Jane is out of office"/>
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/scrollview_out_of_office_text"
             android:textSize="14sp"
             android:textStyle="bold"
             tools:text="Replacement: Bob"/>
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/scrollview_out_of_office_text"
             android:textSize="14sp"
             tools:text="Hi, I am out of office this week. Please contact ....., ..........write very very very very very very very very very very very very very very very long message..................................................................................................................................if you have any issues."/>
     </LinearLayout>
