@@ -1080,15 +1080,16 @@ class ChatActivity :
                 }
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.status).text = String.format(
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
                         context.resources.getString(R.string.user_absence),
                         uiState.userAbsence.userId
                     )
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement).text = String.format(
-                        context.resources.getString(R.string.user_absence_replacement),
-                        uiState.userAbsence.replacementUserDisplayName
-                    )
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.message).text = uiState.userAbsence.message
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
+                            context.resources.getString(R.string.user_absence_replacement),
+                            uiState.userAbsence.replacementUserDisplayName
+                        )
+
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
                 }
             }
 

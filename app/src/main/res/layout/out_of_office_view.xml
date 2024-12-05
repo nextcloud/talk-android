@@ -23,7 +23,7 @@
         app:cornerRadius="8dp">
 
         <TextView
-            android:id="@+id/status"
+            android:id="@+id/userAbsenceShortMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
@@ -32,7 +32,7 @@
             tools:text="Jane is out of office"/>
 
         <TextView
-            android:id="@+id/replacement"
+            android:id="@+id/absenceReplacement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -42,7 +42,7 @@
             tools:text="Replacement: Bob"/>
 
         <TextView
-            android:id="@+id/message"
+            android:id="@+id/userAbsenceLongMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
