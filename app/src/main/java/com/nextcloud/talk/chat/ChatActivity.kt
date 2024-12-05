@@ -1084,11 +1084,14 @@ class ChatActivity :
                         context.resources.getString(R.string.user_absence),
                         uiState.userAbsence.userId
                     )
+                    if(uiState.userAbsence.replacementUserDisplayName != null){
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
                             context.resources.getString(R.string.user_absence_replacement),
                             uiState.userAbsence.replacementUserDisplayName
                         )
-
+                    }else{
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
+                    }
                     binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
                 }
             }
