@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import androidx.annotation.Nullable;
 
@@ -144,7 +145,7 @@ public class PeerConnectionWrapper {
                 DataChannel.Init init = new DataChannel.Init();
                 init.negotiated = false;
                 dataChannel = peerConnection.createDataChannel("status", init);
-                dataChannel.registerObserver(new DataChannelObserver());
+                dataChannel.registerObserver(new DataChannelObserver(dataChannel));
                 if (isMCUPublisher) {
                     peerConnection.createOffer(sdpObserver, mediaConstraints);
                 } else if (hasMCU && "video".equals(this.videoStreamType)) {
@@ -363,6 +364,12 @@ public class PeerConnectionWrapper {
 
     private class DataChannelObserver implements DataChannel.Observer {
 
+        private final DataChannel dataChannel;
+
+        public DataChannelObserver(DataChannel dataChannel) {
+            this.dataChannel = Objects.requireNonNull(dataChannel);
+        }
+
         @Override
         public void onBufferedAmountChange(long l) {
 
@@ -370,8 +377,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (dataChannel != null &&
-                dataChannel.state() == DataChannel.State.OPEN) {
+            if (dataChannel.state() == DataChannel.State.OPEN) {
                 sendInitialMediaStatus();
             }
         }
@@ -379,7 +385,7 @@ public class PeerConnectionWrapper {
         @Override
         public void onMessage(DataChannel.Buffer buffer) {
             if (buffer.binary) {
-                Log.d(TAG, "Received binary data channel message over " + TAG + " " + sessionId);
+                Log.d(TAG, "Received binary data channel message over " + dataChannel.label() + " " + sessionId);
                 return;
             }
 
@@ -387,7 +393,7 @@ public class PeerConnectionWrapper {
             final byte[] bytes = new byte[data.capacity()];
             data.get(bytes);
             String strData = new String(bytes);
-            Log.d(TAG, "Received data channel message (" + strData + ") over " + TAG + " " + sessionId);
+            Log.d(TAG, "Received data channel message (" + strData + ") over " + dataChannel.label() + " " + sessionId);
 
             DataChannelMessage dataChannelMessage;
             try {
@@ -512,7 +518,7 @@ public class PeerConnectionWrapper {
                     + " exists, but received onDataChannel event for DataChannel with label " + dataChannel.label());
             }
             PeerConnectionWrapper.this.dataChannel = dataChannel;
-            PeerConnectionWrapper.this.dataChannel.registerObserver(new DataChannelObserver());
+            PeerConnectionWrapper.this.dataChannel.registerObserver(new DataChannelObserver(dataChannel));
         }
 
         @Override
