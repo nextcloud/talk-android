@@ -71,6 +71,9 @@ public class PeerConnectionWrapper {
     /**
      * Listener for data channel messages.
      * <p>
+     * Messages might have been received on any data channel, independently of its label or whether it was open by the
+     * local or the remote peer.
+     * <p>
      * The messages are bound to a specific peer connection, so each listener is expected to handle messages only for
      * a single peer connection.
      * <p>
