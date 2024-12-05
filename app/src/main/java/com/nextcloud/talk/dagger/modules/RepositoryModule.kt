@@ -148,7 +148,7 @@ class RepositoryModule {
 
     @Provides
     fun provideChatNetworkDataSource(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): ChatNetworkDataSource {
-        return RetrofitChatNetwork(ncApi,ncApiCoroutines)
+        return RetrofitChatNetwork(ncApi, ncApiCoroutines)
     }
 
     @Provides
