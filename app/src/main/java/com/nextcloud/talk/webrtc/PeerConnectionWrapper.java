@@ -7,11 +7,9 @@
  */
 package com.nextcloud.talk.webrtc;
 
-import android.content.Context;
 import android.util.Log;
 
 import com.bluelinelabs.logansquare.LoganSquare;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCIceCandidate;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
@@ -38,18 +36,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import javax.inject.Inject;
 
 import androidx.annotation.Nullable;
-import autodagger.AutoInjector;
 
-@AutoInjector(NextcloudTalkApplication.class)
 public class PeerConnectionWrapper {
-
-    @Inject
-    Context context;
 
     private static final String TAG = PeerConnectionWrapper.class.getCanonicalName();
 
@@ -117,9 +107,6 @@ public class PeerConnectionWrapper {
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
                                  SignalingMessageReceiver signalingMessageReceiver,
                                  SignalingMessageSender signalingMessageSender) {
-
-        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
-
         this.localStream = localStream;
         this.videoStreamType = videoStreamType;
 
