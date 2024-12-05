@@ -617,10 +617,15 @@ class ChatActivity :
                         urlForChatting
                     )
 
-                    if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                        currentConversation?.status == "dnd"){
-                        conversationUser?.let{ user ->
-                            chatViewModel.outOfOfficeStatusOfUser(credentials, user.baseUrl!!, currentConversation!!.name)
+                    if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                        currentConversation?.status == "dnd"
+                    ) {
+                        conversationUser?.let { user ->
+                            chatViewModel.outOfOfficeStatusOfUser(
+                                credentials,
+                                user.baseUrl!!,
+                                currentConversation!!.name
+                            )
                         }
                     }
 
@@ -695,11 +700,14 @@ class ChatActivity :
 
                         checkShowCallButtons()
                         checkLobbyState()
-                        if(currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL){
-                            conversationUser?.let{ user ->
+                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                            conversationUser?.let { user ->
                                 val credentials = ApiUtils.getCredentials(user.username, user.token)
-                                chatViewModel.outOfOfficeStatusOfUser(credentials!!, user.baseUrl!!,
-                                    currentConversation!!.displayName)
+                                chatViewModel.outOfOfficeStatusOfUser(
+                                    credentials!!,
+                                    user.baseUrl!!,
+                                    currentConversation!!.displayName
+                                )
                             }
                         }
 
@@ -1070,63 +1078,58 @@ class ChatActivity :
             binding.voiceRecordingLock.y -= y
         }
 
-        chatViewModel.outOfOfficeViewState.observe(this){uiState ->
-            when(uiState){
+        chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
+            when (uiState) {
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
-                    Log.e(TAG, "Error in outOfOfficeState",uiState.exception)
-
+                    Log.e(TAG, "Error in outOfOfficeState", uiState.exception)
                 }
                 ChatViewModel.OutOfOfficeUIState.None -> {
-
                 }
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
 
+                    val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
+                    val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
 
-                    val startDateTimestamp:Long = uiState.userAbsence.startDate.toLong()
-                    val endDateTimestamp:Long = uiState.userAbsence.endDate.toLong()
+                    val startDate = Date(startDateTimestamp * 1000)
+                    val endDate = Date(endDateTimestamp * 1000)
 
-                        val startDate = Date(startDateTimestamp * 1000)
-                        val endDate = Date(endDateTimestamp * 1000)
+                    val date1 = Calendar.getInstance().apply { time = startDate }
+                    val date2 = Calendar.getInstance().apply { time = endDate }
 
-                        val date1 = Calendar.getInstance().apply{time = startDate}
-                        val date2 = Calendar.getInstance().apply{time = endDate}
+                    val isSameDay = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+                        date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
 
-                        val isSameDay = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
-                            date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
+                    if (isSameDay) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                            context.resources.getString(R.string.user_absence_for_one_day),
+                            uiState.userAbsence.userId
+                        )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
+                            View.GONE
+                    } else {
+                        val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                        val startDateString = dateFormatter.format(startDate)
+                        val endDateString = dateFormatter.format(endDate)
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                            context.resources.getString(R.string.user_absence),
+                            uiState.userAbsence.userId
+                        )
 
-                        if (isSameDay) {
-                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
-                                context.resources.getString(R.string.user_absence_for_one_day),
-                                uiState.userAbsence.userId
-                            )
-                          binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
-                              View.GONE
-                        } else {
-                            val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
-                            val startDateString = dateFormatter.format(startDate)
-                            val endDateString = dateFormatter.format(endDate)
-                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
-                                context.resources.getString(R.string.user_absence),
-                                uiState.userAbsence.userId
-                            )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text = "$startDateString - $endDateString"
+                    }
 
-                            binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text = "$startDateString - $endDateString"
-                        }
-
-
-                    if(uiState.userAbsence.replacementUserDisplayName != null){
+                    if (uiState.userAbsence.replacementUserDisplayName != null) {
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
                             context.resources.getString(R.string.user_absence_replacement),
                             uiState.userAbsence.replacementUserDisplayName
                         )
-                    }else{
+                    } else {
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
                     }
                     binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
                 }
             }
-
         }
     }
 
@@ -3183,7 +3186,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
+                .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3193,7 +3196,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
+                .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -3488,7 +3491,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)
@@ -3950,4 +3953,3 @@ class ChatActivity :
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
     }
 }
-

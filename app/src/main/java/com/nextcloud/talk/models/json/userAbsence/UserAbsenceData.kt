@@ -30,7 +30,7 @@ data class UserAbsenceData(
     @JsonField(name = ["replacementUserId"])
     var replacementUserId: String?,
     @JsonField(name = ["replacementUserDisplayName"])
-    var replacementUserDisplayName: String?,
+    var replacementUserDisplayName: String?
 ) : Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() :

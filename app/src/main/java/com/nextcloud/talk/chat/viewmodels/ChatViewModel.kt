@@ -771,7 +771,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun outOfOfficeStatusOfUser(credentials:String, baseUrl: String, userId: String) {
+    fun outOfOfficeStatusOfUser(credentials: String, baseUrl: String, userId: String) {
         viewModelScope.launch {
             try {
                 val response = chatNetworkDataSource.getOutOfOfficeStatusForUser(credentials, baseUrl, userId)
@@ -786,7 +786,6 @@ class ChatViewModel @Inject constructor(
         private val TAG = ChatViewModel::class.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
     }
-
 
     sealed class OutOfOfficeUIState {
         data object None : OutOfOfficeUIState()
