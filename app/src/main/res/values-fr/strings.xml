@@ -530,6 +530,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_yes">Oui</string>
     <string name="new_conversation_creation_icon">Icône de création d\'une nouvelle conversation</string>
     <string name="next_week">Semaine suivante</string>
+    <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="oneHour">1 heure</string>
     <string name="online">En ligne</string>
@@ -537,6 +538,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="openConversations">Discussions en cours</string>
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
+    <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="polls_add_option">Ajouter une option</string>
     <string name="polls_edit_vote">Modifier le vote</string>
     <string name="polls_end_poll">Fin du sondage</string>
