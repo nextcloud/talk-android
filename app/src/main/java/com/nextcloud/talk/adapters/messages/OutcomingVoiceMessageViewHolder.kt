@@ -283,6 +283,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         binding.progressBar.visibility = View.VISIBLE
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {

@@ -202,6 +202,7 @@ class ConversationsListBottomDialog(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     @SuppressLint("StringFormatInvalid", "TooGenericExceptionCaught")
     private fun addConversationToFavorites() {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
@@ -228,6 +229,7 @@ class ConversationsListBottomDialog(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     @SuppressLint("StringFormatInvalid", "TooGenericExceptionCaught")
     private fun removeConversationFromFavorites() {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))

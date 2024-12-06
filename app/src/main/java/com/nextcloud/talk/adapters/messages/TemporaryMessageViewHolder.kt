@@ -112,6 +112,7 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
         ViewCompat.setBackground(bubble, bubbleDrawable)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun processParentMessage(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {

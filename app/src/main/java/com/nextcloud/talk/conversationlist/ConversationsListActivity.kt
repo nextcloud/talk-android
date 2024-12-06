@@ -1042,7 +1042,7 @@ class ConversationsListActivity :
             val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
             layoutManager?.scrollToPositionWithOffset(
                 nextUnreadConversationScrollPosition,
-                binding.recyclerView.height / 3
+                binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
             )
         }
         binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
@@ -1960,5 +1960,6 @@ class ConversationsListActivity :
         const val BADGE_OFFSET = 35
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
+        const val OFFSET_HEIGHT_DIVIDER: Int = 3
     }
 }

@@ -75,6 +75,7 @@ class ConversationInfoEditViewModel @Inject constructor(
             ?.subscribe(DeleteConversationAvatarObserver())
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun renameRoom(roomToken: String, newRoomName: String) {
         viewModelScope.launch {
             try {
@@ -86,6 +87,7 @@ class ConversationInfoEditViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun setConversationDescription(roomToken: String, conversationDescription: String?) {
         viewModelScope.launch {
             try {

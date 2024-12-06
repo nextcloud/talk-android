@@ -62,9 +62,11 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<GenericOverall?> {
                     override fun onSubscribe(d: Disposable) {
+                        // unused atm
                     }
 
                     override fun onNext(p0: GenericOverall) {
+                        // unused atm
                     }
 
                     override fun onError(e: Throwable) {

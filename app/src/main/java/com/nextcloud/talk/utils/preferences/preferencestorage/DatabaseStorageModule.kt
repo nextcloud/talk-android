@@ -8,7 +8,6 @@
  */
 package com.nextcloud.talk.utils.preferences.preferencestorage
 
-import android.annotation.SuppressLint
 import android.text.TextUtils
 import android.util.Log
 import autodagger.AutoInjector
@@ -64,10 +63,10 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         this.conversationToken = conversationToken
     }
 
-    @SuppressLint("TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun saveBoolean(key: String, value: Boolean) {
         if ("call_notifications_switch" == key) {
-            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(4))
+            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4))
             val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl, conversationToken)
             val credentials = getCredentials(conversationUser.username, conversationUser.token)
             val notificationLevel = if (value) 1 else 0
@@ -92,7 +91,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         }
     }
 
-    @SuppressLint("TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun saveString(key: String, value: String) {
         when (key) {
             "conversation_settings_dropdown" -> {

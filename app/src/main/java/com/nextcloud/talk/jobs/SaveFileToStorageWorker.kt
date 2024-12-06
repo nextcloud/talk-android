@@ -36,6 +36,7 @@ import java.net.URLConnection
 class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerParameters) :
     Worker(context, workerParameters) {
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun doWork(): Result {
         try {
             val sourceFilePath = inputData.getString(KEY_SOURCE_FILE_PATH)

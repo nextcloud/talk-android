@@ -105,6 +105,9 @@ class MessageInputFragment : Fragment() {
         private const val VOICE_RECORD_LOCK_THRESHOLD: Float = 100f
         private const val INCREMENT = 8f
         private const val CURSOR_KEY = "_cursor"
+        private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
+        private const val FULLY_OPAQUE: Float = 1.0f
+        private const val FULLY_TRANSPARENT: Float = 0.0f
     }
 
     @Inject
@@ -256,8 +259,8 @@ class MessageInputFragment : Fragment() {
     private fun handleUI(isOnline: Boolean, connectionGained: Boolean) {
         if (isOnline) {
             if (connectionGained) {
-                val animation: Animation = AlphaAnimation(1.0f, 0.0f)
-                animation.duration = 3000
+                val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
+                animation.duration = CONNECTION_ESTABLISHED_ANIM_DURATION
                 animation.interpolator = LinearInterpolator()
                 binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityGreen))
                 binding.fragmentConnectionLost.text = getString(R.string.connection_established)
@@ -649,7 +652,7 @@ class MessageInputFragment : Fragment() {
 
     private fun showRecordAudioUi(show: Boolean) {
         if (show) {
-            val animation: Animation = AlphaAnimation(1.0f, 0.0f)
+            val animation: Animation = AlphaAnimation(FULLY_OPAQUE, FULLY_TRANSPARENT)
             animation.duration = ANIMATION_DURATION
             animation.interpolator = LinearInterpolator()
             animation.repeatCount = Animation.INFINITE
