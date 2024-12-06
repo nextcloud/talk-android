@@ -59,6 +59,7 @@ public class PeerConnectionWrapper {
     private String sessionId;
     private final MediaConstraints mediaConstraints;
     private final Map<String, DataChannel> dataChannels = new HashMap<>();
+    private final List<DataChannelMessage> pendingDataChannelMessages = new ArrayList<>();
     private final SdpObserver sdpObserver;
 
     private final boolean hasInitiated;
@@ -281,6 +282,13 @@ public class PeerConnectionWrapper {
      * "status" data channel subscriber connections will receive it on a data channel with a different label, as
      * Janus opens its own data channel on subscriber connections and "multiplexes" all the received data channel
      * messages on it, independently of on which data channel they were originally sent.
+     * <p>
+     * Data channel messages can be sent at any time; if the "status" data channel is not open yet the messages will be
+     * queued and sent once it is opened. Nevertheless, if Janus is used, it is not guaranteed that the messages will
+     * be received by other participants, as it is only known when the data channel of the publisher was opened, but
+     * not if the data channel of the subscribers was. However, in general this should be a concern only during the
+     * first seconds after a participant joins; after some time the subscriber connections should be established and
+     * their data channels open.
      *
      * @param dataChannelMessage the message to send
      */
@@ -290,7 +298,9 @@ public class PeerConnectionWrapper {
         }
 
         DataChannel statusDataChannel = dataChannels.get("status");
-        if (statusDataChannel == null) {
+        if (statusDataChannel == null || statusDataChannel.state() != DataChannel.State.OPEN) {
+            pendingDataChannelMessages.add(dataChannelMessage);
+
             return;
         }
 
@@ -398,6 +408,13 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
+            if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannel.label())) {
+                for (DataChannelMessage dataChannelMessage: pendingDataChannelMessages) {
+                    send(dataChannelMessage);
+                }
+                pendingDataChannelMessages.clear();
+            }
+
             if (dataChannel.state() == DataChannel.State.OPEN) {
                 sendInitialMediaStatus();
             }
