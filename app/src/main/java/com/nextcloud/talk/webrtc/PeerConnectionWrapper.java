@@ -285,8 +285,12 @@ public class PeerConnectionWrapper {
      * @param dataChannelMessage the message to send
      */
     public void send(DataChannelMessage dataChannelMessage) {
+        if (dataChannelMessage == null) {
+            return;
+        }
+
         DataChannel statusDataChannel = dataChannels.get("status");
-        if (statusDataChannel == null || dataChannelMessage == null) {
+        if (statusDataChannel == null) {
             return;
         }
 
