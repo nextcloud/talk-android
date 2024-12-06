@@ -286,13 +286,15 @@ public class PeerConnectionWrapper {
      */
     public void send(DataChannelMessage dataChannelMessage) {
         DataChannel statusDataChannel = dataChannels.get("status");
-        if (statusDataChannel != null && dataChannelMessage != null) {
-            try {
-                ByteBuffer buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
-                statusDataChannel.send(new DataChannel.Buffer(buffer, false));
-            } catch (Exception e) {
-                Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
-            }
+        if (statusDataChannel == null || dataChannelMessage == null) {
+            return;
+        }
+
+        try {
+            ByteBuffer buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
+            statusDataChannel.send(new DataChannel.Buffer(buffer, false));
+        } catch (Exception e) {
+            Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
         }
     }
 
