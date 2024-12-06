@@ -9,14 +9,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:maxHeight="150dp"
-    android:padding="12dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/out_of_office_view"
-    style="@style/ScrollViewStyle">
+    android:id="@+id/out_of_office_view">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+        android:layout_width="6dp"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimary"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
         android:orientation="vertical">
 
         <TextView
@@ -25,7 +34,6 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginTop ="8dp"
             tools:text="Jane is out of office"/>
 
         <TextView
@@ -51,5 +59,6 @@
             android:layout_marginTop ="8dp"
             android:textSize="14sp"
             tools:text="Hi, I am out of office this week. Please contact ....., ..........write very very very very very very very very very very very very very very very long message..................................................................................................................................if you have any issues."/>
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>

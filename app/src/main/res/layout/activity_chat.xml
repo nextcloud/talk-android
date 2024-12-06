@@ -127,15 +127,18 @@
 
         </LinearLayout>
 
-        <FrameLayout
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/out_of_office_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible">
+            tools:visibility="visible"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="12dp">
 
-            <include layout="@layout/out_of_office_view" />
-        </FrameLayout>
+
+        <include layout="@layout/out_of_office_view" />
+    </com.google.android.material.card.MaterialCardView>
 
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesListView"
@@ -144,7 +147,7 @@
             android:clipToPadding="false"
             android:paddingBottom="20dp"
             android:visibility="gone"
-            android:layout_below="@id/out_of_office_container"
+            android:layout_below= "@id/out_of_office_container"
             app:dateHeaderTextSize="13sp"
             app:incomingBubblePaddingBottom="@dimen/message_bubble_corners_vertical_padding"
             app:incomingBubblePaddingLeft="@dimen/message_bubble_corners_horizontal_padding"
@@ -193,7 +196,9 @@
             android:visibility="gone"
             tools:visibility="visible"
             app:background="@color/colorPrimary"
+            android:clipToPadding="false"
             app:cornerRadius="@dimen/button_corner_radius"
+
             app:icon="@drawable/ic_baseline_arrow_downward_24px" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
