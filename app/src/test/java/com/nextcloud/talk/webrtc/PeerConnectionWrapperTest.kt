@@ -146,6 +146,56 @@ class PeerConnectionWrapperTest {
     }
 
     @Test
+    fun testSendDataChannelMessageBeforeOpeningDataChannel() {
+        Mockito.`when`(
+            mockedPeerConnectionFactory!!.createPeerConnection(
+                any(PeerConnection.RTCConfiguration::class.java),
+                any(PeerConnection.Observer::class.java)
+            )
+        ).thenReturn(mockedPeerConnection)
+
+        val mockedStatusDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedStatusDataChannel.label()).thenReturn("status")
+        Mockito.`when`(mockedStatusDataChannel.state()).thenReturn(DataChannel.State.CONNECTING)
+        Mockito.`when`(mockedPeerConnection!!.createDataChannel(eq("status"), any()))
+            .thenReturn(mockedStatusDataChannel)
+
+        val statusDataChannelObserverArgumentCaptor: ArgumentCaptor<DataChannel.Observer> =
+            ArgumentCaptor.forClass(DataChannel.Observer::class.java)
+
+        doNothing().`when`(mockedStatusDataChannel).registerObserver(statusDataChannelObserverArgumentCaptor.capture())
+
+        peerConnectionWrapper = PeerConnectionWrapper(
+            mockedPeerConnectionFactory,
+            ArrayList<PeerConnection.IceServer>(),
+            MediaConstraints(),
+            "the-session-id",
+            "the-local-session-id",
+            null,
+            true,
+            true,
+            "video",
+            mockedSignalingMessageReceiver,
+            mockedSignalingMessageSender
+        )
+
+        peerConnectionWrapper!!.send(DataChannelMessage("the-message-type"))
+        peerConnectionWrapper!!.send(DataChannelMessage("another-message-type"))
+
+        Mockito.verify(mockedStatusDataChannel, never()).send(any())
+
+        Mockito.`when`(mockedStatusDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        statusDataChannelObserverArgumentCaptor.value.onStateChange()
+
+        Mockito.verify(mockedStatusDataChannel).send(
+            argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type")))
+        )
+        Mockito.verify(mockedStatusDataChannel).send(
+            argThat(MatchesDataChannelMessage(DataChannelMessage("another-message-type")))
+        )
+    }
+
+    @Test
     fun testReceiveDataChannelMessage() {
         Mockito.`when`(
             mockedPeerConnectionFactory!!.createPeerConnection(
