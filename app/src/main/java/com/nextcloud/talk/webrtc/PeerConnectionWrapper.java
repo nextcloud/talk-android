@@ -285,11 +285,10 @@ public class PeerConnectionWrapper {
      * @param dataChannelMessage the message to send
      */
     public void send(DataChannelMessage dataChannelMessage) {
-        ByteBuffer buffer;
         DataChannel statusDataChannel = dataChannels.get("status");
         if (statusDataChannel != null && dataChannelMessage != null) {
             try {
-                buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
+                ByteBuffer buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
                 statusDataChannel.send(new DataChannel.Buffer(buffer, false));
             } catch (Exception e) {
                 Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
