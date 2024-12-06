@@ -288,4 +288,47 @@ class PeerConnectionWrapperTest {
         Mockito.verify(mockedDataChannelMessageListener).onAudioOff()
         Mockito.verifyNoMoreInteractions(mockedDataChannelMessageListener)
     }
+
+    @Test
+    fun testRemovePeerConnectionWithOpenRemoteDataChannel() {
+        val peerConnectionObserverArgumentCaptor: ArgumentCaptor<PeerConnection.Observer> =
+            ArgumentCaptor.forClass(PeerConnection.Observer::class.java)
+
+        Mockito.`when`(
+            mockedPeerConnectionFactory!!.createPeerConnection(
+                any(PeerConnection.RTCConfiguration::class.java),
+                peerConnectionObserverArgumentCaptor.capture()
+            )
+        ).thenReturn(mockedPeerConnection)
+
+        val mockedStatusDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedStatusDataChannel.label()).thenReturn("status")
+        Mockito.`when`(mockedStatusDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        Mockito.`when`(mockedPeerConnection!!.createDataChannel(eq("status"), any()))
+            .thenReturn(mockedStatusDataChannel)
+
+        peerConnectionWrapper = PeerConnectionWrapper(
+            mockedPeerConnectionFactory,
+            ArrayList<PeerConnection.IceServer>(),
+            MediaConstraints(),
+            "the-session-id",
+            "the-local-session-id",
+            null,
+            true,
+            true,
+            "video",
+            mockedSignalingMessageReceiver,
+            mockedSignalingMessageSender
+        )
+
+        val mockedRandomIdDataChannel = Mockito.mock(DataChannel::class.java)
+        Mockito.`when`(mockedRandomIdDataChannel.label()).thenReturn("random-id")
+        Mockito.`when`(mockedRandomIdDataChannel.state()).thenReturn(DataChannel.State.OPEN)
+        peerConnectionObserverArgumentCaptor.value.onDataChannel(mockedRandomIdDataChannel)
+
+        peerConnectionWrapper!!.removePeerConnection()
+
+        Mockito.verify(mockedStatusDataChannel).dispose()
+        Mockito.verify(mockedRandomIdDataChannel).dispose()
+    }
 }
