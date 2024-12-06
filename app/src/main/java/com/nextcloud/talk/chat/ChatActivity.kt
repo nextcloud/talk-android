@@ -51,9 +51,11 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
@@ -569,7 +571,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
-    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
@@ -1087,6 +1089,9 @@ class ChatActivity :
                 }
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
+                    val backgroundColor = ContextCompat.getColor(this, R.color.colorPrimary)
+                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.2f * 255).toInt())
+                    binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
 
                     val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
                     val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
