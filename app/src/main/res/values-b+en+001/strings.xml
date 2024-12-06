@@ -529,6 +529,7 @@
     <string name="nc_yes">Yes</string>
     <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
     <string name="next_week">Next week</string>
+    <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">1 hour</string>
     <string name="online">Online</string>
