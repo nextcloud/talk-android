@@ -299,16 +299,20 @@ public class PeerConnectionWrapper {
 
         DataChannel statusDataChannel = dataChannels.get("status");
         if (statusDataChannel == null || statusDataChannel.state() != DataChannel.State.OPEN) {
+            Log.d(TAG, "Queuing data channel message (" + dataChannelMessage + ") " + sessionId);
+
             pendingDataChannelMessages.add(dataChannelMessage);
 
             return;
         }
 
         try {
+            Log.d(TAG, "Sending data channel message (" + dataChannelMessage + ") " + sessionId);
+
             ByteBuffer buffer = ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).getBytes());
             statusDataChannel.send(new DataChannel.Buffer(buffer, false));
         } catch (Exception e) {
-            Log.d(TAG, "Failed to send channel data, attempting regular " + dataChannelMessage);
+            Log.w(TAG, "Failed to send data channel message");
         }
     }
 
