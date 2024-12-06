@@ -476,7 +476,7 @@ class CallActivity : CallBaseActivity() {
         initClickListeners(isModerator, isOneToOneConversation)
         binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
         pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
-            .setDuration(310)
+            .setDuration(PULSE_ANIMATION_DURATION)
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE)
         basicInitialization()
@@ -745,6 +745,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.endCallPopupMenu.text = context.getString(R.string.leave_call)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createCameraEnumerator() {
         var camera2EnumeratorIsSupported = false
         try {
@@ -931,17 +932,17 @@ class CallActivity : CallBaseActivity() {
             resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
         ) {
             if (participantsInGrid > 2) {
-                2
+                GRID_MAX_COLUMN_COUNT_PORTRAIT
             } else {
-                1
+                GRID_MIN_COLUMN_COUNT_PORTRAIT
             }
         } else {
             if (participantsInGrid > 2) {
-                3
+                GRID_MAX_COLUMN_COUNT_LANDSCAPE
             } else if (participantsInGrid > 1) {
-                2
+                GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE
             } else {
-                1
+                GRID_MIN_COLUMN_COUNT_LANDSCAPE
             }
         }
         binding!!.gridview.numColumns = columns
@@ -1264,18 +1265,18 @@ class CallActivity : CallBaseActivity() {
 
     private fun getSpotlightView(): SpotlightView? {
         val builder = SpotlightView.Builder(this)
-            .introAnimationDuration(300)
+            .introAnimationDuration(INTRO_ANIMATION_DURATION)
             .enableRevealAnimation(true)
             .performClick(false)
-            .fadeinTextDuration(400)
-            .headingTvSize(20)
+            .fadeinTextDuration(FADE_IN_ANIMATION_DURATION)
+            .headingTvSize(SPOTLIGHT_HEADING_SIZE)
             .headingTvText(resources.getString(R.string.nc_push_to_talk))
             .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
-            .subHeadingTvSize(16)
+            .subHeadingTvSize(SPOTLIGHT_SUBHEADING_SIZE)
             .subHeadingTvText(resources.getString(R.string.nc_push_to_talk_desc))
             .maskColor(Color.parseColor("#dc000000"))
             .target(binding!!.microphoneButton)
-            .lineAnimDuration(400)
+            .lineAnimDuration(FADE_IN_ANIMATION_DURATION)
             .enableDismissAfterShown(true)
             .dismissOnBackPress(true)
             .usageId("pushToTalk")
@@ -1396,7 +1397,7 @@ class CallActivity : CallBaseActivity() {
                 callInfosHandler.removeCallbacksAndMessages(null)
                 cameraSwitchHandler.removeCallbacksAndMessages(null)
                 alpha = OPACITY_ENABLED
-                duration = SECOND_IN_MILLIES
+                duration = SECOND_IN_MILLIS
                 if (binding!!.callControls.visibility != View.VISIBLE) {
                     binding!!.callControls.alpha = OPACITY_INVISIBLE
                     binding!!.callControls.visibility = View.VISIBLE
@@ -1407,12 +1408,12 @@ class CallActivity : CallBaseActivity() {
                         binding!!.switchSelfVideoButton.visibility = View.VISIBLE
                     }
                 } else {
-                    callControlHandler.postDelayed({ animateCallControls(false, 0) }, 5000)
+                    callControlHandler.postDelayed({ animateCallControls(false, 0) }, FIVE_SECONDS)
                     return
                 }
             } else {
                 alpha = OPACITY_INVISIBLE
-                duration = SECOND_IN_MILLIES
+                duration = SECOND_IN_MILLIS
             }
             binding!!.callControls.isEnabled = false
             binding!!.callControls.animate()
@@ -1433,7 +1434,7 @@ class CallActivity : CallBaseActivity() {
                                 if (!isPushToTalkActive) {
                                     animateCallControls(false, 0)
                                 }
-                            }, 7500)
+                            }, CALL_CONTROLLS_ANIMATION_DELAY)
                         }
                         binding!!.callControls.isEnabled = true
                     }
@@ -1454,7 +1455,7 @@ class CallActivity : CallBaseActivity() {
                                 if (!isPushToTalkActive) {
                                     animateCallControls(false, 0)
                                 }
-                            }, 7500)
+                            }, CALL_CONTROLLS_ANIMATION_DELAY)
                         }
                         binding!!.callInfosLinearLayout.isEnabled = true
                     }
@@ -1799,7 +1800,7 @@ class CallActivity : CallBaseActivity() {
             )
         ) {
             binding!!.callDuration.visibility = View.VISIBLE
-            val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIES
+            val currentTimeInSec = System.currentTimeMillis() / SECOND_IN_MILLIS
             elapsedSeconds = currentTimeInSec - callStartTime
 
             val callTimeTask: Runnable = object : Runnable {
@@ -1857,7 +1858,7 @@ class CallActivity : CallBaseActivity() {
                     }
                     if (delayOnError.get() == 0) {
                         delayOnError.set(1)
-                    } else if (delayOnError.get() < 16) {
+                    } else if (delayOnError.get() < DELAY_ON_ERROR_STOP_THRESHOLD) {
                         delayOnError.set(delayOnError.get() * 2)
                     }
                     Observable.timer(delayOnError.get().toLong(), TimeUnit.SECONDS)
@@ -2157,7 +2158,7 @@ class CallActivity : CallBaseActivity() {
                 Log.d(
                     TAG,
                     "   inCallFlag of participant " +
-                        participant.sessionId!!.substring(0, 4) +
+                        participant.sessionId!!.substring(0, SESSION_ID_PREFFIX_END) +
                         " : " +
                         inCallFlag
                 )
@@ -2494,20 +2495,26 @@ class CallActivity : CallBaseActivity() {
             val screenWidthDp = DisplayUtils.convertPixelToDp(screenWidthPx.toFloat(), applicationContext).toInt()
             var newXafterRotate = 0f
             val newYafterRotate: Float = if (binding!!.callInfosLinearLayout.visibility == View.VISIBLE) {
-                250f
+                Y_POS_CALL_INFO
             } else {
-                20f
+                Y_POS_NO_CALL_INFO
             }
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 layoutParams.height = resources.getDimension(R.dimen.call_self_video_short_side_length).toInt()
                 layoutParams.width = resources.getDimension(R.dimen.call_self_video_long_side_length).toInt()
                 newXafterRotate =
-                    (screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) * 0.8).toFloat()
+                    (
+                        screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) *
+                            BY_80_PERCENT
+                        ).toFloat()
             } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 layoutParams.height = resources.getDimension(R.dimen.call_self_video_long_side_length).toInt()
                 layoutParams.width = resources.getDimension(R.dimen.call_self_video_short_side_length).toInt()
                 newXafterRotate =
-                    (screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) * 0.5).toFloat()
+                    (
+                        screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) *
+                            BY_50_PERCENT
+                        ).toFloat()
             }
             binding!!.selfVideoRenderer.layoutParams = layoutParams
             val newXafterRotatePx = DisplayUtils.convertDpToPixel(newXafterRotate, applicationContext).toInt()
@@ -2674,7 +2681,7 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 CallStatus.JOINED -> {
-                    handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, 45000)
+                    handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, CALLING_TIMEOUT)
                     handler!!.post {
                         binding!!.callModeTextView.text = descriptionForCallType
                         if (isIncomingCallFromNotification) {
@@ -2704,7 +2711,7 @@ class CallActivity : CallBaseActivity() {
                         binding!!.callInfosLinearLayout.visibility = View.GONE
                     }
                     if (!isPushToTalkActive) {
-                        animateCallControls(false, 5000)
+                        animateCallControls(false, FIVE_SECONDS)
                     }
                     if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
                         binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
@@ -3032,7 +3039,7 @@ class CallActivity : CallBaseActivity() {
                 binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
                 pulseAnimation!!.stop()
                 toggleMedia(false, false)
-                animateCallControls(false, 5000)
+                animateCallControls(false, FIVE_SECONDS)
             }
             return true
         }
@@ -3198,7 +3205,7 @@ class CallActivity : CallBaseActivity() {
         const val OPACITY_DISABLED = 0.7f
         const val OPACITY_INVISIBLE = 0.0f
 
-        const val SECOND_IN_MILLIES: Long = 1000
+        const val SECOND_IN_MILLIS: Long = 1000
         const val CALL_TIME_COUNTER_DELAY: Long = 1000
         const val CALL_TIME_ONE_HOUR = 3600
         const val CALL_DURATION_EMPTY = "--:--"
@@ -3213,6 +3220,32 @@ class CallActivity : CallBaseActivity() {
         private const val FRAME_RATE: Int = 30
         private const val WIDTH: Int = 1280
         private const val HEIGHT: Int = 720
+
+        private const val FIVE_SECONDS: Long = 5000
+        private const val CALLING_TIMEOUT: Long = 45000
+        private const val INTRO_ANIMATION_DURATION: Long = 300
+        private const val FADE_IN_ANIMATION_DURATION: Long = 400
+        private const val PULSE_ANIMATION_DURATION: Int = 310
+        private const val CALL_CONTROLLS_ANIMATION_DELAY: Long = 7500
+
+        private const val SPOTLIGHT_HEADING_SIZE: Int = 20
+        private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
+
+        private const val GRID_MAX_COLUMN_COUNT_PORTRAIT: Int = 2
+        private const val GRID_MIN_COLUMN_COUNT_PORTRAIT: Int = 1
+        private const val GRID_MAX_COLUMN_COUNT_LANDSCAPE: Int = 3
+        private const val GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE: Int = 2
+        private const val GRID_MIN_COLUMN_COUNT_LANDSCAPE: Int = 1
+
+        private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
+
+        private const val BY_50_PERCENT = 0.5
+        private const val BY_80_PERCENT = 0.8
+
+        private const val Y_POS_CALL_INFO: Float = 250f
+        private const val Y_POS_NO_CALL_INFO: Float = 20f
+
+        private const val SESSION_ID_PREFFIX_END: Int = 4
 
         private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
         private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"

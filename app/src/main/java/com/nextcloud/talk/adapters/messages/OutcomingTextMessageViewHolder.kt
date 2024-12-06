@@ -157,6 +157,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun processParentMessage(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {

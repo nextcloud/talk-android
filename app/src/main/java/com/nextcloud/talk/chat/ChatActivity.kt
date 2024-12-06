@@ -555,9 +555,9 @@ class ChatActivity :
         messageInputViewModel.messageQueueFlow.observe(this) { list ->
             list.forEachIndexed { _, qMsg ->
                 val temporaryChatMessage = ChatMessage()
-                temporaryChatMessage.jsonMessageId = -3
+                temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
                 temporaryChatMessage.actorId = "-3"
-                temporaryChatMessage.timestamp = System.currentTimeMillis() / 1000
+                temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
                 temporaryChatMessage.message = qMsg.message.toString()
                 temporaryChatMessage.tempMessageId = qMsg.id
                 temporaryChatMessage.isTempMessage = true
@@ -571,11 +571,11 @@ class ChatActivity :
         messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
             if (size == 0) {
                 var i = 0
-                var pos = adapter?.getMessagePositionById("-3")
+                var pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
                 while (pos != null && pos > -1) {
                     adapter?.items?.removeAt(pos)
                     i++
-                    pos = adapter?.getMessagePositionById("-3")
+                    pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
                 }
                 adapter?.notifyDataSetChanged()
             }
@@ -1618,7 +1618,7 @@ class ChatActivity :
                             }
                         }
                     }
-                    mediaPlayerHandler?.postDelayed(this, MILISEC_15)
+                    mediaPlayerHandler?.postDelayed(this, MILLISEC_15)
                 }
             })
 
@@ -2817,7 +2817,7 @@ class ChatActivity :
             currentlyPlayedVoiceMessage = pair?.first
             val voiceMessagePosition = pair?.second!!
 
-            lastRecordMediaPosition = voiceMessageToRestoreAudioPosition * 1000
+            lastRecordMediaPosition = voiceMessageToRestoreAudioPosition * ONE_SECOND_IN_MILLIS
             Log.d(RESUME_AUDIO_TAG, "trying to resume audio")
             binding.messagesListView.scrollToPosition(voiceMessagePosition)
             // WORKAROUND TO FETCH FILE INFO:
@@ -3799,13 +3799,15 @@ class ChatActivity :
         private const val TYPING_INDICATOR_MAX_NAME_LENGTH = 14
         private const val TYPING_INDICATOR_POSITION_VISIBLE = -18f
         private const val TYPING_INDICATOR_POSITION_HIDDEN = -1f
-        private const val MILISEC_15: Long = 15
+        private const val MILLISEC_15: Long = 15
         private const val CURRENT_AUDIO_MESSAGE_KEY = "CURRENT_AUDIO_MESSAGE"
         private const val CURRENT_AUDIO_POSITION_KEY = "CURRENT_AUDIO_POSITION"
         private const val CURRENT_AUDIO_WAS_PLAYING_KEY = "CURRENT_AUDIO_PLAYING"
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
+        private const val TEMPORARY_MESSAGE_ID_INT: Int = -3
+        private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
     }

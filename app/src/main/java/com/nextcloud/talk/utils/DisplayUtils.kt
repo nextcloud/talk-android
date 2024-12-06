@@ -72,6 +72,7 @@ import java.util.regex.Pattern
 object DisplayUtils {
     private val TAG = DisplayUtils::class.java.getSimpleName()
     private const val INDEX_LUMINATION = 2
+    private const val HSL_SIZE = 3
     private const val MAX_LIGHTNESS = 0.92
     private const val TWITTER_HANDLE_PREFIX = "@"
     private const val HTTP_PROTOCOL = "http://"
@@ -80,6 +81,7 @@ object DisplayUtils {
     private const val HTTPS_MIN_LENGTH: Int = 7
     private const val DATE_TIME_PARTS_SIZE = 2
     private const val ONE_MINUTE_IN_MILLIS: Int = 60000
+    private const val ROUND_UP_BUMP: Float = 0.5f
     fun isDarkModeOn(context: Context): Boolean {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
@@ -126,7 +128,7 @@ object DisplayUtils {
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP, dp,
                 context.resources.displayMetrics
-            ) + 0.5f
+            ) + ROUND_UP_BUMP
         ).toFloat()
     }
 
@@ -195,7 +197,9 @@ object DisplayUtils {
                 .crossfade(true)
                 .transformations(CircleCropTransformation())
                 .target(object : Target {
-                    override fun onStart(placeholder: Drawable?) {}
+                    override fun onStart(placeholder: Drawable?) {
+                        // unused atm
+                    }
                     override fun onError(error: Drawable?) {
                         chip.chipIcon = error
                     }
@@ -374,7 +378,7 @@ object DisplayUtils {
     }
 
     private fun colorToHSL(color: Int): FloatArray {
-        val hsl = FloatArray(3)
+        val hsl = FloatArray(HSL_SIZE)
         ColorUtils.RGBToHSL(Color.red(color), Color.green(color), Color.blue(color), hsl)
         return hsl
     }

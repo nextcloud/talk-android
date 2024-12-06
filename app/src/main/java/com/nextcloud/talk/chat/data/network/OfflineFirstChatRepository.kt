@@ -399,7 +399,7 @@ class OfflineFirstChatRepository @Inject constructor(
             .map(ChatMessageEntity::asModel)
     }
 
-    @Suppress("UNCHECKED_CAST", "MagicNumber")
+    @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
 

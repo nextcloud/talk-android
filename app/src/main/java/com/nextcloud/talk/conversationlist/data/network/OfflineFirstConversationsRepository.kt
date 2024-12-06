@@ -102,6 +102,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 

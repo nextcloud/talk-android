@@ -188,7 +188,7 @@ class MentionAutocompleteItem(
             alignUsernameVertical(holder, 0f)
         } else {
             holder.binding.conversationInfoStatusMessage.text = ""
-            alignUsernameVertical(holder, 10f)
+            alignUsernameVertical(holder, NO_USER_STATUS_DP_FROM_TOP)
         }
         if (!statusIcon.isNullOrEmpty()) {
             holder.binding.participantStatusEmoji.setText(statusIcon)
@@ -228,6 +228,7 @@ class MentionAutocompleteItem(
     companion object {
         private const val STATUS_SIZE_IN_DP = 9f
         private const val NO_ICON = ""
+        private const val NO_USER_STATUS_DP_FROM_TOP: Float = 10f
         const val SOURCE_CALLS = "calls"
         const val SOURCE_GUESTS = "guests"
         const val SOURCE_GROUPS = "groups"
