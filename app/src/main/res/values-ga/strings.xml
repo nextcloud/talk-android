@@ -499,6 +499,8 @@
     <string name="nc_shared_items_empty">Níl aon mhír roinnte</string>
     <string name="nc_shared_items_location">Suíomh</string>
     <string name="nc_shared_location">Suíomh roinnte</string>
+    <string name="nc_show_notification_warning_description">Nuair nach bhfuil fógraí socraithe i gceart, taispeáin rabhadh rialta</string>
+    <string name="nc_show_notification_warning_title">Taispeáin rabhadh fógra rialta</string>
     <string name="nc_sort_by">Sórtáil de réir</string>
     <string name="nc_start_time">Am tosaithe</string>
     <string name="nc_switch_account">Athraigh cuntas</string>
@@ -527,6 +529,7 @@
     <string name="nc_yes">Tá</string>
     <string name="new_conversation_creation_icon">Deilbhín Cruthaithe Comhrá Nua</string>
     <string name="next_week">An tseachtain seo chugainn</string>
+    <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
     <string name="no_phone_book_integration_due_to_permissions">Níl aon chomhtháthú uimhir theileafóin mar gheall ar cheadanna in easnamh</string>
     <string name="oneHour">1 uair</string>
     <string name="online">Ar líne</string>
@@ -534,6 +537,7 @@
     <string name="openConversations">Oscail comhráite</string>
     <string name="open_in_files_app">Oscail san aip Comhaid</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
+    <string name="playback_speed_control">Rialú luas athsheinm</string>
     <string name="polls_add_option">Cuir rogha leis</string>
     <string name="polls_edit_vote">Cuir vóta in eagar</string>
     <string name="polls_end_poll">Deireadh vótaíocht</string>
