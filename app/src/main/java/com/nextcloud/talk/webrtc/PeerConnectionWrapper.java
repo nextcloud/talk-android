@@ -269,7 +269,7 @@ public class PeerConnectionWrapper {
         }
     }
 
-    public void sendChannelData(DataChannelMessage dataChannelMessage) {
+    public void send(DataChannelMessage dataChannelMessage) {
         ByteBuffer buffer;
         if (dataChannel != null && dataChannelMessage != null) {
             try {
@@ -292,15 +292,15 @@ public class PeerConnectionWrapper {
     private void sendInitialMediaStatus() {
         if (localStream != null) {
             if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
-                sendChannelData(new DataChannelMessage("videoOn"));
+                send(new DataChannelMessage("videoOn"));
             } else {
-                sendChannelData(new DataChannelMessage("videoOff"));
+                send(new DataChannelMessage("videoOff"));
             }
 
             if (localStream.audioTracks.size() == 1 && localStream.audioTracks.get(0).enabled()) {
-                sendChannelData(new DataChannelMessage("audioOn"));
+                send(new DataChannelMessage("audioOn"));
             } else {
-                sendChannelData(new DataChannelMessage("audioOff"));
+                send(new DataChannelMessage("audioOff"));
             }
         }
     }
