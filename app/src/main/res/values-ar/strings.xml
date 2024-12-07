@@ -364,6 +364,7 @@
     <string name="nc_promote">ترقية لمشرف</string>
     <string name="nc_public_call">محادثة عمومية جديدة</string>
     <string name="nc_public_call_explanation">المحادثات العامة تُمكّنُك من إضافة أشخاصٍ من الخارج عبر رابطٍ مُخصّصٍ.</string>
+    <string name="nc_public_call_status">محادثة عمومية</string>
     <string name="nc_push_disabled">الإشعارات معطلة</string>
     <string name="nc_push_to_talk">اضغط للتحدث</string>
     <string name="nc_push_to_talk_desc">في وضعية تعطل المايكرفون، علق على الزر &amp; لاستخدام اضغط للتحدث</string>
@@ -528,6 +529,7 @@
     <string name="nc_yes">نعم</string>
     <string name="new_conversation_creation_icon">أيقونة إنشاء محادثة جديدة</string>
     <string name="next_week">الأسبوع القادم</string>
+    <string name="no_offline_messages_saved">لم يتم حفظ أي رسائل غير متصلة بالإنترنت</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
     <string name="oneHour">1 ساعة</string>
     <string name="online">مُتّصلٌ</string>

@@ -522,6 +522,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun getMessageQueue(internalConversationId: String): MutableList<MessageInputViewModel.QueuedMessage> {
         val queueStr =
             runBlocking { async { readString(internalConversationId + MESSAGE_QUEUE).first() } }.getCompleted()

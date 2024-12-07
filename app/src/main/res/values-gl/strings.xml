@@ -529,6 +529,7 @@
     <string name="nc_yes">Si</string>
     <string name="new_conversation_creation_icon">conversaNew Conversation Creation IconNova icona de Icona «Creación de nova conversa»</string>
     <string name="next_week">Semana seguinte</string>
+    <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En liña</string>

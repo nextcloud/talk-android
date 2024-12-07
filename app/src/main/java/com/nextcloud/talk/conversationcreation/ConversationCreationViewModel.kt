@@ -75,6 +75,7 @@ class ConversationCreationViewModel @Inject constructor(
         _conversationDescription.value = conversationDescription
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants(
         roomType: String,
         conversationName: String,
@@ -142,6 +143,7 @@ class ConversationCreationViewModel @Inject constructor(
         return repository.getImageUri(avatarId, requestBigSize)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoom(roomType: String, conversationName: String?) {
         viewModelScope.launch {
             try {

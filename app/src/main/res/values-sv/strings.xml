@@ -525,6 +525,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Nästa vecka</string>
+    <string name="no_offline_messages_saved">Inga offlinemeddelanden sparade</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrering på grund av saknade behörigheter</string>
     <string name="oneHour">1 timme</string>
     <string name="online">Online</string>
@@ -532,6 +533,7 @@
     <string name="openConversations">Öppna konversationer</string>
     <string name="open_in_files_app">Öppna i appen Filer</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
+    <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_edit_vote">Redigera röst</string>
     <string name="polls_end_poll">Avsluta omröstning</string>

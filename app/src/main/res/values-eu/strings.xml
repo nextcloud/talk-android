@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Aldatu</string>
+    <string name="add_to_notes">Gehitu oharretara</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
+    <string name="archive_conversation">Artxibatu elkarrizketa</string>
     <string name="archived">Artxibatuta</string>
     <string name="audio_call">Audio deia</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -28,6 +30,7 @@
     <string name="continuous_voice_message_recording">Blokeatu grabazioa ahots-mezua etengabe grabatzeko</string>
     <string name="conversations">Elkarrizketak</string>
     <string name="create_conversation">Sortu elkarrizketa</string>
+    <string name="create_issue">Sortu arazoa</string>
     <string name="custom">Pertsonalizatua</string>
     <string name="danger_zone">Arrisku eremua</string>
     <string name="delete_avatar">Ezabatu avatarra</string>
@@ -166,12 +169,17 @@
     <string name="nc_diagnose_app_category_title">Aplikazioa</string>
     <string name="nc_diagnose_app_name_title">Aplikazioaren izena</string>
     <string name="nc_diagnose_app_users_amount">Erregistratutako erabiltzaileak</string>
+    <string name="nc_diagnose_app_version_title">Aplikazioaren bertsioa</string>
     <string name="nc_diagnose_battery_optimization_title">Bateria ezarpenak</string>
     <string name="nc_diagnose_device_name_title">Gailua</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Ireki dontkillmyapp.com</string>
+    <string name="nc_diagnose_meta_category_title">Meta informazioa</string>
+    <string name="nc_diagnose_notification_permission">Jakinarazpen baimenak</string>
     <string name="nc_diagnose_phone_category_title">Telefonoa</string>
     <string name="nc_diagnose_server_version">Zerbitzariaren bertsioa</string>
     <string name="nc_diagnose_signaling_mode_extern">Kanpokoa</string>
     <string name="nc_diagnose_signaling_mode_intern">Barnekoa</string>
+    <string name="nc_diagnose_signaling_mode_title">Seinalizazio modua</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
     <string name="nc_dialog_maintenance_mode">Mantentze modua</string>
     <string name="nc_dialog_maintenance_mode_description">Zerbitzaria mantentze moduan dago.</string>
@@ -186,6 +194,7 @@
     <string name="nc_dialog_save_to_storage_yes">Bai</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
+    <string name="nc_edit_icon">Editatu ikonoa</string>
     <string name="nc_edit_message">Aldatu</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 ordu</string>
@@ -306,6 +315,7 @@
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
     <string name="nc_public_call">Elkarrizketa publiko berria</string>
     <string name="nc_public_call_explanation">Elkarrizketa publikoek kanpoko jendea gonbidatzen uzten dizute bereziki sortutako esteka baten bidez.</string>
+    <string name="nc_public_call_status">Elkarrizketa publikoa</string>
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>

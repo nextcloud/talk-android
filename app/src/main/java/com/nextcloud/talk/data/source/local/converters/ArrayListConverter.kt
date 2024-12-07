@@ -13,6 +13,7 @@ import com.bluelinelabs.logansquare.LoganSquare
 
 class ArrayListConverter {
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     @TypeConverter
     fun arrayListToString(list: ArrayList<String>?): String? {
         return if (list == null) {
