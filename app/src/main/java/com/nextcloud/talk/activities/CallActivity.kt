@@ -632,17 +632,7 @@ class CallActivity : CallBaseActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initClickListeners(isModerator: Boolean, isOneToOneConversation: Boolean) {
-        binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
-
-        binding!!.audioOutputButton.setOnClickListener {
-            audioOutputDialog = AudioOutputDialog(this)
-            audioOutputDialog!!.show()
-        }
-
-        binding!!.moreCallActions.setOnClickListener {
-            moreCallActionsDialog = MoreCallActionsDialog(this)
-            moreCallActionsDialog!!.show()
-        }
+        initCallActionClickListeners(isModerator, isOneToOneConversation)
 
         if (canPublishAudioStream) {
             binding!!.microphoneButton.setOnClickListener { onMicrophoneClick() }
@@ -662,11 +652,7 @@ class CallActivity : CallBaseActivity() {
             }
         } else {
             binding!!.microphoneButton.setOnClickListener {
-                Snackbar.make(
-                    binding!!.root,
-                    R.string.nc_not_allowed_to_activate_audio,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                Snackbar.make(binding!!.root, R.string.nc_not_allowed_to_activate_audio, Snackbar.LENGTH_SHORT).show()
             }
         }
 
@@ -674,58 +660,14 @@ class CallActivity : CallBaseActivity() {
             binding!!.cameraButton.setOnClickListener { onCameraClick() }
         } else {
             binding!!.cameraButton.setOnClickListener {
-                Snackbar.make(
-                    binding!!.root,
-                    R.string.nc_not_allowed_to_activate_video,
-                    Snackbar.LENGTH_SHORT
-                ).show()
+                Snackbar.make(binding!!.root, R.string.nc_not_allowed_to_activate_video, Snackbar.LENGTH_SHORT).show()
             }
         }
 
-        if (isOneToOneConversation) {
-            binding!!.hangupButton.setOnLongClickListener {
-                showLeaveCallPopupMenu()
-                true
-            }
-            binding!!.hangupButton.setOnClickListener {
-                hangup(true, true)
-            }
-        } else {
-            if (isModerator) {
-                binding!!.hangupButton.setOnLongClickListener {
-                    showEndCallForAllPopupMenu()
-                    true
-                }
-            }
-            binding!!.hangupButton.setOnClickListener {
-                hangup(true, false)
-            }
-        }
-
-        if (!isOneToOneConversation) {
-            binding!!.endCallPopupMenu.setOnClickListener {
-                hangup(true, true)
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-        } else {
-            binding!!.endCallPopupMenu.setOnClickListener {
-                hangup(true, false)
-                binding!!.endCallPopupMenu.visibility = View.GONE
-            }
-        }
-
-        binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
-        binding!!.gridview.onItemClickListener =
-            AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
-                animateCallControls(
-                    true,
-                    0
-                )
-            }
         binding!!.callStates.callStateRelativeLayout.setOnClickListener {
             if (currentCallStatus === CallStatus.CALLING_TIMEOUT) {
                 setCallState(CallStatus.RECONNECTING)
-                hangupNetworkCalls(false, false)
+                hangupNetworkCalls(shutDownView = false, endCallForAll = false)
             }
         }
         binding!!.callRecordingIndicator.setOnClickListener {
@@ -746,7 +688,54 @@ class CallActivity : CallBaseActivity() {
                 ).show()
             }
         }
+    }
+
+    private fun initCallActionClickListeners(isModerator: Boolean, isOneToOneConversation: Boolean) {
+        binding!!.audioOutputButton.setOnClickListener {
+            audioOutputDialog = AudioOutputDialog(this)
+            audioOutputDialog!!.show()
+        }
+
+        binding!!.moreCallActions.setOnClickListener {
+            moreCallActionsDialog = MoreCallActionsDialog(this)
+            moreCallActionsDialog!!.show()
+        }
+
+        if (isOneToOneConversation) {
+            binding!!.hangupButton.setOnLongClickListener {
+                showLeaveCallPopupMenu()
+                true
+            }
+            binding!!.hangupButton.setOnClickListener {
+                hangup(shutDownView = true, endCallForAll = true)
+            }
+            binding!!.endCallPopupMenu.setOnClickListener {
+                hangup(shutDownView = true, endCallForAll = true)
+                binding!!.endCallPopupMenu.visibility = View.GONE
+            }
+        } else {
+            if (isModerator) {
+                binding!!.hangupButton.setOnLongClickListener {
+                    showEndCallForAllPopupMenu()
+                    true
+                }
+            }
+            binding!!.hangupButton.setOnClickListener {
+                hangup(shutDownView = true, endCallForAll = false)
+            }
+            binding!!.endCallPopupMenu.setOnClickListener {
+                hangup(shutDownView = true, endCallForAll = false)
+                binding!!.endCallPopupMenu.visibility = View.GONE
+            }
+        }
+
+        binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
+        binding!!.gridview.onItemClickListener =
+            AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
+                animateCallControls(true, 0)
+            }
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
+        binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
     }
 
     private fun showEndCallForAllPopupMenu() {
@@ -2027,62 +2016,61 @@ class CallActivity : CallBaseActivity() {
         dispose(null)
 
         if (shutDownView) {
-            if (videoCapturer != null) {
-                try {
-                    videoCapturer!!.stopCapture()
-                } catch (e: InterruptedException) {
-                    Log.e(TAG, "Failed to stop capturing while hanging up")
-                }
-                videoCapturer!!.dispose()
-                videoCapturer = null
-            }
-            binding!!.selfVideoRenderer.release()
-            if (audioSource != null) {
-                audioSource!!.dispose()
-                audioSource = null
-            }
-            runOnUiThread {
-                if (audioManager != null) {
-                    audioManager!!.stop()
-                    audioManager = null
-                }
-            }
-            if (videoSource != null) {
-                videoSource = null
-            }
-            if (peerConnectionFactory != null) {
-                peerConnectionFactory = null
-            }
-            localAudioTrack = null
-            localVideoTrack = null
-            if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
-                WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
-            }
+            terminateAudioVideo()
         }
 
         val peerConnectionIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
-
         for (wrapper in peerConnectionWrapperList) {
             peerConnectionIdsToEnd.add(wrapper.sessionId)
         }
-
         for (sessionId in peerConnectionIdsToEnd) {
             endPeerConnection(sessionId, "video")
             endPeerConnection(sessionId, "screen")
         }
-
         val callParticipantIdsToEnd: MutableList<String> = ArrayList(peerConnectionWrapperList.size)
         for (callParticipant in callParticipants.values) {
             callParticipantIdsToEnd.add(callParticipant!!.callParticipantModel.sessionId)
         }
-
         for (sessionId in callParticipantIdsToEnd) {
             removeCallParticipant(sessionId)
         }
-
         ApplicationWideCurrentRoomHolder.getInstance().isInCall = false
         ApplicationWideCurrentRoomHolder.getInstance().isDialing = false
         hangupNetworkCalls(shutDownView, endCallForAll)
+    }
+
+    private fun terminateAudioVideo() {
+        if (videoCapturer != null) {
+            try {
+                videoCapturer!!.stopCapture()
+            } catch (e: InterruptedException) {
+                Log.e(TAG, "Failed to stop capturing while hanging up")
+            }
+            videoCapturer!!.dispose()
+            videoCapturer = null
+        }
+        binding!!.selfVideoRenderer.release()
+        if (audioSource != null) {
+            audioSource!!.dispose()
+            audioSource = null
+        }
+        runOnUiThread {
+            if (audioManager != null) {
+                audioManager!!.stop()
+                audioManager = null
+            }
+        }
+        if (videoSource != null) {
+            videoSource = null
+        }
+        if (peerConnectionFactory != null) {
+            peerConnectionFactory = null
+        }
+        localAudioTrack = null
+        localVideoTrack = null
+        if (TextUtils.isEmpty(credentials) && hasExternalSignalingServer) {
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(-1)
+        }
     }
 
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
@@ -2184,22 +2172,16 @@ class CallActivity : CallBaseActivity() {
         }
 
         if (!isSelfInCall &&
-            currentCallStatus !== CallStatus.LEAVING &&
-            ApplicationWideCurrentRoomHolder.getInstance().isInCall
+            currentCallStatus !== CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall
         ) {
             Log.d(TAG, "Most probably a moderator ended the call for all.")
-            hangup(true, false)
+            hangup(shutDownView = true, endCallForAll = false)
             return
         }
 
         if (!isSelfInCall) {
             Log.d(TAG, "Self not in call, disconnecting from all other sessions")
-            for ((_, _, _, _, _, _, _, _, _, _, sessionId) in participantsInCall) {
-                Log.d(TAG, "   session that will be removed is: $sessionId")
-                endPeerConnection(sessionId, "video")
-                endPeerConnection(sessionId, "screen")
-                removeCallParticipant(sessionId)
-            }
+            removeSessions(participantsInCall)
             return
         }
         if (currentCallStatus === CallStatus.LEAVING) {
@@ -2213,6 +2195,28 @@ class CallActivity : CallBaseActivity() {
                 true
             )
         }
+        handleJoinedCallParticipantsChanged(selfParticipant, joined, currentSessionId)
+
+        if (othersInCall && currentCallStatus !== CallStatus.IN_CONVERSATION) {
+            setCallState(CallStatus.IN_CONVERSATION)
+        }
+        removeSessions(left)
+    }
+
+    private fun removeSessions(sessions: Collection<Participant>) {
+        for ((_, _, _, _, _, _, _, _, _, _, session) in sessions) {
+            Log.d(TAG, "   session that will be removed is: $session")
+            endPeerConnection(session, "video")
+            endPeerConnection(session, "screen")
+            removeCallParticipant(session)
+        }
+    }
+
+    private fun handleJoinedCallParticipantsChanged(
+        selfParticipant: Participant?,
+        joined: Collection<Participant>,
+        currentSessionId: String?
+    ) {
         var selfJoined = false
         val selfParticipantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(selfParticipant)
         for (participant in joined) {
@@ -2270,20 +2274,9 @@ class CallActivity : CallBaseActivity() {
         } else {
             joined.isNotEmpty()
         }
-
-        if (othersInCall && currentCallStatus !== CallStatus.IN_CONVERSATION) {
-            setCallState(CallStatus.IN_CONVERSATION)
-        }
-        for ((_, _, _, _, _, _, _, _, _, _, sessionId) in left) {
-            Log.d(TAG, "   oldSession that will be removed is: $sessionId")
-            endPeerConnection(sessionId, "video")
-            endPeerConnection(sessionId, "screen")
-            removeCallParticipant(sessionId)
-        }
     }
 
-    private fun hasMCUAndAudioVideo(participantHasAudioOrVideo: Boolean): Boolean =
-        hasMCU && participantHasAudioOrVideo
+    private fun hasMCUAndAudioVideo(participantHasAudioOrVideo: Boolean): Boolean = hasMCU && participantHasAudioOrVideo
 
     private fun hasNoMCUAndAudioVideo(
         participantHasAudioOrVideo: Boolean,
@@ -2316,8 +2309,7 @@ class CallActivity : CallBaseActivity() {
         type: String,
         publisher: Boolean
     ): PeerConnectionWrapper? {
-        var peerConnectionWrapper: PeerConnectionWrapper?
-        peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type)
+        var peerConnectionWrapper = getPeerConnectionWrapperForSessionIdAndType(sessionId, type)
 
         return if (peerConnectionWrapper != null) {
             peerConnectionWrapper
@@ -2329,68 +2321,10 @@ class CallActivity : CallBaseActivity() {
                     context.resources.getString(R.string.nc_common_error_sorry),
                     Snackbar.LENGTH_LONG
                 ).show()
-                hangup(true, false)
+                hangup(shutDownView = true, endCallForAll = false)
                 return null
             }
-            peerConnectionWrapper = if (hasMCU && publisher) {
-                PeerConnectionWrapper(
-                    peerConnectionFactory,
-                    iceServers,
-                    sdpConstraintsForMCU,
-                    sessionId,
-                    callSession,
-                    localStream,
-                    true,
-                    true,
-                    type,
-                    signalingMessageReceiver,
-                    signalingMessageSender
-                )
-            } else if (hasMCU) {
-                PeerConnectionWrapper(
-                    peerConnectionFactory,
-                    iceServers,
-                    sdpConstraints,
-                    sessionId,
-                    callSession,
-                    null,
-                    false,
-                    true,
-                    type,
-                    signalingMessageReceiver,
-                    signalingMessageSender
-                )
-            } else {
-                if ("screen" != type) {
-                    PeerConnectionWrapper(
-                        peerConnectionFactory,
-                        iceServers,
-                        sdpConstraints,
-                        sessionId,
-                        callSession,
-                        localStream,
-                        false,
-                        false,
-                        type,
-                        signalingMessageReceiver,
-                        signalingMessageSender
-                    )
-                } else {
-                    PeerConnectionWrapper(
-                        peerConnectionFactory,
-                        iceServers,
-                        sdpConstraints,
-                        sessionId,
-                        callSession,
-                        null,
-                        false,
-                        false,
-                        type,
-                        signalingMessageReceiver,
-                        signalingMessageSender
-                    )
-                }
-            }
+            peerConnectionWrapper = createPeerConnectionWrapperForSessionIdAndType(publisher, sessionId, type)
             peerConnectionWrapperList.add(peerConnectionWrapper)
             if (!publisher) {
                 var callParticipant = callParticipants[sessionId]
@@ -2409,6 +2343,47 @@ class CallActivity : CallBaseActivity() {
             }
             peerConnectionWrapper
         }
+    }
+
+    private fun createPeerConnectionWrapperForSessionIdAndType(
+        publisher: Boolean,
+        sessionId: String?,
+        type: String
+    ): PeerConnectionWrapper {
+        val tempIsMCUPublisher: Boolean
+        val tempHasMCU: Boolean
+        val tempLocalStream: MediaStream?
+        if (hasMCU && publisher) {
+            tempIsMCUPublisher = true
+            tempHasMCU = true
+            tempLocalStream = localStream
+        } else if (hasMCU) {
+            tempIsMCUPublisher = false
+            tempHasMCU = true
+            tempLocalStream = null
+        } else {
+            tempIsMCUPublisher = false
+            tempHasMCU = false
+            tempLocalStream = if ("screen" != type) {
+                localStream
+            } else {
+                null
+            }
+        }
+
+        return PeerConnectionWrapper(
+            peerConnectionFactory,
+            iceServers,
+            sdpConstraintsForMCU,
+            sessionId,
+            callSession,
+            tempLocalStream,
+            tempIsMCUPublisher,
+            tempHasMCU,
+            type,
+            signalingMessageReceiver,
+            signalingMessageSender
+        )
     }
 
     private fun addCallParticipant(sessionId: String?): CallParticipant {
@@ -2632,161 +2607,170 @@ class CallActivity : CallBaseActivity() {
                 handler!!.removeCallbacksAndMessages(null)
             }
             when (callState) {
-                CallStatus.CONNECTING -> handler!!.post {
-                    playCallingSound()
-                    if (isIncomingCallFromNotification) {
-                        binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
-                    } else {
-                        binding!!.callStates.callStateTextView.setText(R.string.nc_call_ringing)
-                    }
-                    binding!!.callConversationNameTextView.text = conversationName
-                    binding!!.callModeTextView.text = descriptionForCallType
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                    }
-                    if (binding!!.gridview.visibility != View.INVISIBLE) {
-                        binding!!.gridview.visibility = View.INVISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
-                    }
-                    if (binding!!.callStates.errorImageView.visibility != View.GONE) {
-                        binding!!.callStates.errorImageView.visibility = View.GONE
-                    }
-                }
-
-                CallStatus.CALLING_TIMEOUT -> handler!!.post {
-                    hangup(false, false)
-                    binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
-                    binding!!.callModeTextView.text = descriptionForCallType
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.GONE
-                    }
-                    if (binding!!.gridview.visibility != View.INVISIBLE) {
-                        binding!!.gridview.visibility = View.INVISIBLE
-                    }
-                    binding!!.callStates.errorImageView.setImageResource(R.drawable.ic_av_timer_timer_24dp)
-                    if (binding!!.callStates.errorImageView.visibility != View.VISIBLE) {
-                        binding!!.callStates.errorImageView.visibility = View.VISIBLE
-                    }
-                }
-
-                CallStatus.PUBLISHER_FAILED -> handler!!.post {
-                    // No calling sound when the publisher failed
-                    binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
-                    binding!!.callModeTextView.text = descriptionForCallType
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                    }
-                    if (binding!!.gridview.visibility != View.INVISIBLE) {
-                        binding!!.gridview.visibility = View.INVISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
-                    }
-                    if (binding!!.callStates.errorImageView.visibility != View.GONE) {
-                        binding!!.callStates.errorImageView.visibility = View.GONE
-                    }
-                }
-
-                CallStatus.RECONNECTING -> handler!!.post {
-                    playCallingSound()
-                    binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
-                    binding!!.callModeTextView.text = descriptionForCallType
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                    }
-                    if (binding!!.gridview.visibility != View.INVISIBLE) {
-                        binding!!.gridview.visibility = View.INVISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
-                    }
-                    if (binding!!.callStates.errorImageView.visibility != View.GONE) {
-                        binding!!.callStates.errorImageView.visibility = View.GONE
-                    }
-                }
-
+                CallStatus.CONNECTING -> handler!!.post { handleCallStateConnected() }
+                CallStatus.CALLING_TIMEOUT -> handler!!.post { handleCallStateCallingTimeout() }
+                CallStatus.PUBLISHER_FAILED -> handler!!.post { handleCallStatePublisherFailed() }
+                CallStatus.RECONNECTING -> handler!!.post { handleCallStateReconnecting() }
                 CallStatus.JOINED -> {
                     handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, CALLING_TIMEOUT)
-                    handler!!.post {
-                        binding!!.callModeTextView.text = descriptionForCallType
-                        if (isIncomingCallFromNotification) {
-                            binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
-                        } else {
-                            binding!!.callStates.callStateTextView.setText(R.string.nc_call_ringing)
-                        }
-                        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                        }
-                        if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
-                            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
-                        }
-                        if (binding!!.gridview.visibility != View.INVISIBLE) {
-                            binding!!.gridview.visibility = View.INVISIBLE
-                        }
-                        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
-                            binding!!.callStates.errorImageView.visibility = View.GONE
-                        }
-                    }
+                    handler!!.post { handleCallStateJoined() }
                 }
-
-                CallStatus.IN_CONVERSATION -> handler!!.post {
-                    stopCallingSound()
-                    binding!!.callModeTextView.text = descriptionForCallType
-                    if (!isVoiceOnlyCall) {
-                        binding!!.callInfosLinearLayout.visibility = View.GONE
-                    }
-                    if (!isPushToTalkActive) {
-                        animateCallControls(false, FIVE_SECONDS)
-                    }
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.GONE
-                    }
-                    if (binding!!.gridview.visibility != View.VISIBLE) {
-                        binding!!.gridview.visibility = View.VISIBLE
-                    }
-                    if (binding!!.callStates.errorImageView.visibility != View.GONE) {
-                        binding!!.callStates.errorImageView.visibility = View.GONE
-                    }
-                }
-
-                CallStatus.OFFLINE -> handler!!.post {
-                    stopCallingSound()
-                    binding!!.callStates.callStateTextView.setText(R.string.nc_offline)
-                    if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                    }
-                    if (binding!!.gridview.visibility != View.INVISIBLE) {
-                        binding!!.gridview.visibility = View.INVISIBLE
-                    }
-                    if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
-                        binding!!.callStates.callStateProgressBar.visibility = View.GONE
-                    }
-                    binding!!.callStates.errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp)
-                    if (binding!!.callStates.errorImageView.visibility != View.VISIBLE) {
-                        binding!!.callStates.errorImageView.visibility = View.VISIBLE
-                    }
-                }
-
-                CallStatus.LEAVING -> handler!!.post {
-                    if (!isDestroyed) {
-                        stopCallingSound()
-                        binding!!.callModeTextView.text = descriptionForCallType
-                        binding!!.callStates.callStateTextView.setText(R.string.nc_leaving_call)
-                        binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-                        binding!!.gridview.visibility = View.INVISIBLE
-                        binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
-                        binding!!.callStates.errorImageView.visibility = View.GONE
-                    }
-                }
+                CallStatus.IN_CONVERSATION -> handler!!.post { handleCallStateInConversation() }
+                CallStatus.OFFLINE -> handler!!.post { handleCallStateOffline() }
+                CallStatus.LEAVING -> handler!!.post { handleCallStateLeaving() }
             }
+        }
+    }
+
+    private fun handleCallStateLeaving() {
+        if (!isDestroyed) {
+            stopCallingSound()
+            binding!!.callModeTextView.text = descriptionForCallType
+            binding!!.callStates.callStateTextView.setText(R.string.nc_leaving_call)
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+            binding!!.gridview.visibility = View.INVISIBLE
+            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
+            binding!!.callStates.errorImageView.visibility = View.GONE
+        }
+    }
+
+    private fun handleCallStateOffline() {
+        stopCallingSound()
+        binding!!.callStates.callStateTextView.setText(R.string.nc_offline)
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.GONE
+        }
+        binding!!.callStates.errorImageView.setImageResource(R.drawable.ic_signal_wifi_off_white_24dp)
+        if (binding!!.callStates.errorImageView.visibility != View.VISIBLE) {
+            binding!!.callStates.errorImageView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun handleCallStateInConversation() {
+        stopCallingSound()
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (!isVoiceOnlyCall) {
+            binding!!.callInfosLinearLayout.visibility = View.GONE
+        }
+        if (!isPushToTalkActive) {
+            animateCallControls(false, FIVE_SECONDS)
+        }
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.GONE
+        }
+        if (binding!!.gridview.visibility != View.VISIBLE) {
+            binding!!.gridview.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
+            binding!!.callStates.errorImageView.visibility = View.GONE
+        }
+    }
+
+    private fun handleCallStateJoined() {
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (isIncomingCallFromNotification) {
+            binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
+        } else {
+            binding!!.callStates.callStateTextView.setText(R.string.nc_call_ringing)
+        }
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
+            binding!!.callStates.errorImageView.visibility = View.GONE
+        }
+    }
+
+    private fun handleCallStateReconnecting() {
+        playCallingSound()
+        binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
+            binding!!.callStates.errorImageView.visibility = View.GONE
+        }
+    }
+
+    private fun handleCallStatePublisherFailed() {
+        // No calling sound when the publisher failed
+        binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
+            binding!!.callStates.errorImageView.visibility = View.GONE
+        }
+    }
+
+    private fun handleCallStateCallingTimeout() {
+        hangup(shutDownView = false, endCallForAll = false)
+        binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.GONE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        binding!!.callStates.errorImageView.setImageResource(R.drawable.ic_av_timer_timer_24dp)
+        if (binding!!.callStates.errorImageView.visibility != View.VISIBLE) {
+            binding!!.callStates.errorImageView.visibility = View.VISIBLE
+        }
+    }
+
+    private fun handleCallStateConnected() {
+        playCallingSound()
+        if (isIncomingCallFromNotification) {
+            binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
+        } else {
+            binding!!.callStates.callStateTextView.setText(R.string.nc_call_ringing)
+        }
+        binding!!.callConversationNameTextView.text = conversationName
+        binding!!.callModeTextView.text = descriptionForCallType
+        if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
+        }
+        if (binding!!.gridview.visibility != View.INVISIBLE) {
+            binding!!.gridview.visibility = View.INVISIBLE
+        }
+        if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
+            binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
+        }
+        if (binding!!.callStates.errorImageView.visibility != View.GONE) {
+            binding!!.callStates.errorImageView.visibility = View.GONE
         }
     }
 

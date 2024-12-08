@@ -69,58 +69,11 @@ class ConversationConversionTest(
 
         // check if default values are set for the fields when API_V1 is used
         if (apiVersion == 1) {
-            // default values for API_V2 fields
-            assertEquals(false, conversationEntity.canDeleteConversation)
-            assertEquals(true, conversationEntity.canLeaveConversation)
-
-            // default values for API_V3 fields
-            assertEquals("", conversationEntity.description)
-            assertEquals("", conversationEntity.actorType)
-            assertEquals("", conversationEntity.actorId)
-            assertEquals(0, conversationEntity.callFlag)
-            assertEquals(0, conversationEntity.lastCommonReadMessage)
-
-            // default values for API_V4 fields
-            assertEquals("", conversationEntity.avatarVersion)
-            assertEquals(0, conversationEntity.callStartTime)
-            assertEquals(0, conversationEntity.callRecording)
-            assertEquals(false, conversationEntity.unreadMentionDirect)
-            assertEquals("", conversationEntity.status)
-            assertEquals("", conversationEntity.statusIcon)
-            assertEquals("", conversationEntity.statusMessage)
-            assertEquals(null, conversationEntity.statusClearAt)
-            assertEquals("", conversationEntity.avatarVersion)
-            assertEquals(0, conversationEntity.callStartTime)
-            assertEquals(0, conversationEntity.callRecording)
+            checkConversationEntityV1(conversationEntity)
         }
 
         if (apiVersion >= 1) {
-            assertEquals("juwd77g6", conversationEntity.token)
-            assertEquals(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, conversationEntity.type)
-            assertEquals("marcel", conversationEntity.name)
-            assertEquals("Marcel", conversationEntity.displayName)
-            assertEquals(Participant.ParticipantType.OWNER, conversationEntity.participantType)
-            assertEquals(
-                ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
-                conversationEntity.conversationReadOnlyState
-            )
-            assertEquals(1727185155, conversationEntity.lastPing)
-            assertEquals("0", conversationEntity.sessionId)
-            assertEquals(false, conversationEntity.hasPassword)
-            assertEquals(false, conversationEntity.hasCall)
-            assertEquals(true, conversationEntity.canStartCall)
-            assertEquals(1727098966, conversationEntity.lastActivity)
-            assertEquals(false, conversationEntity.favorite)
-            assertEquals(ConversationEnums.NotificationLevel.ALWAYS, conversationEntity.notificationLevel)
-            assertEquals(ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS, conversationEntity.lobbyState)
-            assertEquals(0, conversationEntity.lobbyTimer)
-            assertEquals(0, conversationEntity.unreadMessages)
-            assertEquals(false, conversationEntity.unreadMention)
-            assertEquals(92320, conversationEntity.lastReadMessage)
-            assertNotNull(conversationEntity.lastMessage)
-            assertTrue(conversationEntity.lastMessage is String)
-            assertTrue(conversationEntity.lastMessage!!.contains("token"))
-            assertEquals(ConversationEnums.ObjectType.DEFAULT, conversationEntity.objectType)
+            checkConversationEntityLargerThanV1(conversationEntity)
         }
 
         if (apiVersion >= 2) {
@@ -143,23 +96,82 @@ class ConversationConversionTest(
         }
 
         if (apiVersion >= 4) {
-            assertEquals("143a9df3", conversationEntity.avatarVersion)
-            assertEquals(0, conversationEntity.callStartTime)
-            assertEquals(0, conversationEntity.callRecording)
-            assertEquals(false, conversationEntity.unreadMentionDirect)
-            // assertEquals(, conversationEntity.breakoutRoomMode)     // Not implemented
-            // assertEquals(, conversationEntity.breakoutRoomStatus)     // Not implemented
-            assertEquals("away", conversationEntity.status)
-            assertEquals("👻", conversationEntity.statusIcon)
-            assertEquals("buuuuh", conversationEntity.statusMessage)
-            assertEquals(null, conversationEntity.statusClearAt)
-            assertEquals("143a9df3", conversationEntity.avatarVersion)
-            // assertEquals("", conversationEntity.isCustomAvatar)     // Not implemented
-            assertEquals(0, conversationEntity.callStartTime)
-            assertEquals(0, conversationEntity.callRecording)
-            // assertEquals("", conversationEntity.recordingConsent)     // Not implemented
-            // assertEquals("", conversationEntity.mentionPermissions)     // Not implemented
-            // assertEquals("", conversationEntity.isArchived)     // Not implemented
+            checkConversationEntityV4(conversationEntity)
         }
+    }
+
+    private fun checkConversationEntityLargerThanV1(conversationEntity: ConversationEntity) {
+        assertEquals("juwd77g6", conversationEntity.token)
+        assertEquals(ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL, conversationEntity.type)
+        assertEquals("marcel", conversationEntity.name)
+        assertEquals("Marcel", conversationEntity.displayName)
+        assertEquals(Participant.ParticipantType.OWNER, conversationEntity.participantType)
+        assertEquals(
+            ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_WRITE,
+            conversationEntity.conversationReadOnlyState
+        )
+        assertEquals(1727185155, conversationEntity.lastPing)
+        assertEquals("0", conversationEntity.sessionId)
+        assertEquals(false, conversationEntity.hasPassword)
+        assertEquals(false, conversationEntity.hasCall)
+        assertEquals(true, conversationEntity.canStartCall)
+        assertEquals(1727098966, conversationEntity.lastActivity)
+        assertEquals(false, conversationEntity.favorite)
+        assertEquals(ConversationEnums.NotificationLevel.ALWAYS, conversationEntity.notificationLevel)
+        assertEquals(ConversationEnums.LobbyState.LOBBY_STATE_ALL_PARTICIPANTS, conversationEntity.lobbyState)
+        assertEquals(0, conversationEntity.lobbyTimer)
+        assertEquals(0, conversationEntity.unreadMessages)
+        assertEquals(false, conversationEntity.unreadMention)
+        assertEquals(92320, conversationEntity.lastReadMessage)
+        assertNotNull(conversationEntity.lastMessage)
+        assertTrue(conversationEntity.lastMessage is String)
+        assertTrue(conversationEntity.lastMessage!!.contains("token"))
+        assertEquals(ConversationEnums.ObjectType.DEFAULT, conversationEntity.objectType)
+    }
+
+    private fun checkConversationEntityV4(conversationEntity: ConversationEntity) {
+        assertEquals("143a9df3", conversationEntity.avatarVersion)
+        assertEquals(0, conversationEntity.callStartTime)
+        assertEquals(0, conversationEntity.callRecording)
+        assertEquals(false, conversationEntity.unreadMentionDirect)
+        // assertEquals(, conversationEntity.breakoutRoomMode)     // Not implemented
+        // assertEquals(, conversationEntity.breakoutRoomStatus)     // Not implemented
+        assertEquals("away", conversationEntity.status)
+        assertEquals("👻", conversationEntity.statusIcon)
+        assertEquals("buuuuh", conversationEntity.statusMessage)
+        assertEquals(null, conversationEntity.statusClearAt)
+        assertEquals("143a9df3", conversationEntity.avatarVersion)
+        // assertEquals("", conversationEntity.isCustomAvatar)     // Not implemented
+        assertEquals(0, conversationEntity.callStartTime)
+        assertEquals(0, conversationEntity.callRecording)
+        // assertEquals("", conversationEntity.recordingConsent)     // Not implemented
+        // assertEquals("", conversationEntity.mentionPermissions)     // Not implemented
+        // assertEquals("", conversationEntity.isArchived)     // Not implemented
+    }
+
+    private fun checkConversationEntityV1(conversationEntity: ConversationEntity) {
+        // default values for API_V2 fields
+        assertEquals(false, conversationEntity.canDeleteConversation)
+        assertEquals(true, conversationEntity.canLeaveConversation)
+
+        // default values for API_V3 fields
+        assertEquals("", conversationEntity.description)
+        assertEquals("", conversationEntity.actorType)
+        assertEquals("", conversationEntity.actorId)
+        assertEquals(0, conversationEntity.callFlag)
+        assertEquals(0, conversationEntity.lastCommonReadMessage)
+
+        // default values for API_V4 fields
+        assertEquals("", conversationEntity.avatarVersion)
+        assertEquals(0, conversationEntity.callStartTime)
+        assertEquals(0, conversationEntity.callRecording)
+        assertEquals(false, conversationEntity.unreadMentionDirect)
+        assertEquals("", conversationEntity.status)
+        assertEquals("", conversationEntity.statusIcon)
+        assertEquals("", conversationEntity.statusMessage)
+        assertEquals(null, conversationEntity.statusClearAt)
+        assertEquals("", conversationEntity.avatarVersion)
+        assertEquals(0, conversationEntity.callStartTime)
+        assertEquals(0, conversationEntity.callRecording)
     }
 }

@@ -239,41 +239,13 @@ class ServerSelectionActivity : BaseActivity() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ status: Status ->
-                val productName = resources!!.getString(R.string.nc_server_product_name)
                 val versionString: String = status.version!!.substring(0, status.version!!.indexOf("."))
                 val version: Int = versionString.toInt()
 
                 if (isServerStatusQueryable(status) && version >= MIN_SERVER_MAJOR_VERSION) {
                     findServerTalkApp(url)
-                } else if (!status.installed) {
-                    setErrorText(
-                        String.format(
-                            resources!!.getString(R.string.nc_server_not_installed),
-                            productName
-                        )
-                    )
-                } else if (status.needsUpgrade) {
-                    setErrorText(
-                        String.format(
-                            resources!!.getString(R.string.nc_server_db_upgrade_needed),
-                            productName
-                        )
-                    )
-                } else if (status.maintenance) {
-                    setErrorText(
-                        String.format(
-                            resources!!.getString(R.string.nc_server_maintenance),
-                            productName
-                        )
-                    )
-                } else if (!status.version!!.startsWith("13.")) {
-                    setErrorText(
-                        String.format(
-                            resources!!.getString(R.string.nc_server_version),
-                            resources!!.getString(R.string.nc_app_product_name),
-                            productName
-                        )
-                    )
+                } else {
+                    showErrorTextForStatus(status)
                 }
             }, { throwable: Throwable ->
                 if (checkForcedHttps) {
@@ -301,6 +273,39 @@ class ServerSelectionActivity : BaseActivity() {
                 }
                 dispose()
             }
+    }
+
+    private fun showErrorTextForStatus(status: Status) {
+        if (!status.installed) {
+            setErrorText(
+                String.format(
+                    resources!!.getString(R.string.nc_server_not_installed),
+                    resources!!.getString(R.string.nc_server_product_name)
+                )
+            )
+        } else if (status.needsUpgrade) {
+            setErrorText(
+                String.format(
+                    resources!!.getString(R.string.nc_server_db_upgrade_needed),
+                    resources!!.getString(R.string.nc_server_product_name)
+                )
+            )
+        } else if (status.maintenance) {
+            setErrorText(
+                String.format(
+                    resources!!.getString(R.string.nc_server_maintenance),
+                    resources!!.getString(R.string.nc_server_product_name)
+                )
+            )
+        } else if (!status.version!!.startsWith("13.")) {
+            setErrorText(
+                String.format(
+                    resources!!.getString(R.string.nc_server_version),
+                    resources!!.getString(R.string.nc_app_product_name),
+                    resources!!.getString(R.string.nc_server_product_name)
+                )
+            )
+        }
     }
 
     private fun findServerTalkApp(queryUrl: String) {
@@ -364,7 +369,7 @@ class ServerSelectionActivity : BaseActivity() {
         return status.installed && !status.maintenance && !status.needsUpgrade
     }
 
-    private fun setErrorText(text: String) {
+    private fun setErrorText(text: String?) {
         binding.errorWrapper.visibility = View.VISIBLE
         binding.errorText.text = text
         hideserverEntryProgressBar()
