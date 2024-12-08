@@ -371,27 +371,11 @@ class CallActivity : CallBaseActivity() {
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
-        conversationUser = currentUserProvider.currentUser.blockingGet()
-        val extras = intent.extras
-        roomId = extras!!.getString(KEY_ROOM_ID, "")
-        roomToken = extras.getString(KEY_ROOM_TOKEN, "")
-        conversationPassword = extras.getString(KEY_CONVERSATION_PASSWORD, "")
-        conversationName = extras.getString(KEY_CONVERSATION_NAME, "")
-        isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false)
-        isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false)
-        canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
-        canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
-        isModerator = extras.getBoolean(KEY_IS_MODERATOR, false)
-        isOneToOneConversation = extras.getBoolean(KEY_ROOM_ONE_TO_ONE, false)
+        processExtras(intent.extras!!)
 
-        if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
-            isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
-        }
-        if (extras.containsKey(KEY_IS_BREAKOUT_ROOM)) {
-            isBreakoutRoom = extras.getBoolean(KEY_IS_BREAKOUT_ROOM)
-        }
+        conversationUser = currentUserProvider.currentUser.blockingGet()
+
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-        baseUrl = extras.getString(KEY_MODIFIED_BASE_URL, "")
         if (TextUtils.isEmpty(baseUrl)) {
             baseUrl = conversationUser!!.baseUrl
         }
@@ -399,28 +383,30 @@ class CallActivity : CallBaseActivity() {
 
         setCallState(CallStatus.CONNECTING)
 
-        raiseHandViewModel = ViewModelProvider(this, viewModelFactory).get(RaiseHandViewModel::class.java)
-        raiseHandViewModel!!.setData(roomToken!!, isBreakoutRoom)
-        raiseHandViewModel!!.viewState.observe(this) { viewState: RaiseHandViewModel.ViewState? ->
-            var raised = false
-            if (viewState is RaisedHandState) {
-                binding!!.lowerHandButton.visibility = View.VISIBLE
-                raised = true
-            } else if (viewState is LoweredHandState) {
-                binding!!.lowerHandButton.visibility = View.GONE
-                raised = false
-            }
-            if (isConnectionEstablished) {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.raiseHand(raised)
-                }
-            }
-        }
+        initRaiseHandViewModel()
+        initCallRecordingViewModel(intent.extras!!.getInt(KEY_RECORDING_STATE))
+        initClickListeners(isModerator, isOneToOneConversation)
+        binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
+        pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
+            .setDuration(PULSE_ANIMATION_DURATION)
+            .setRepeatCount(PulseAnimation.INFINITE)
+            .setRepeatMode(PulseAnimation.REVERSE)
+        basicInitialization()
+        callParticipants = HashMap()
+        participantDisplayItems = HashMap()
+        initViews()
+        updateSelfVideoViewPosition()
+        reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
+
+        checkRecordingConsentAndInitiateCall()
+    }
+
+    private fun initCallRecordingViewModel(recordingState: Int) {
         callRecordingViewModel = ViewModelProvider(this, viewModelFactory).get(
             CallRecordingViewModel::class.java
         )
         callRecordingViewModel!!.setData(roomToken!!)
-        callRecordingViewModel!!.setRecordingState(extras.getInt(KEY_RECORDING_STATE))
+        callRecordingViewModel!!.setRecordingState(recordingState)
         callRecordingViewModel!!.viewState.observe(this) { viewState: CallRecordingViewModel.ViewState? ->
             if (viewState is RecordingStartedState) {
                 binding!!.callRecordingIndicator.setImageResource(R.drawable.record_stop)
@@ -473,20 +459,48 @@ class CallActivity : CallBaseActivity() {
                 binding!!.callRecordingIndicator.visibility = View.GONE
             }
         }
-        initClickListeners(isModerator, isOneToOneConversation)
-        binding!!.microphoneButton.setOnTouchListener(MicrophoneButtonTouchListener())
-        pulseAnimation = PulseAnimation.create().with(binding!!.microphoneButton)
-            .setDuration(PULSE_ANIMATION_DURATION)
-            .setRepeatCount(PulseAnimation.INFINITE)
-            .setRepeatMode(PulseAnimation.REVERSE)
-        basicInitialization()
-        callParticipants = HashMap()
-        participantDisplayItems = HashMap()
-        initViews()
-        updateSelfVideoViewPosition()
-        reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
+    }
 
-        checkRecordingConsentAndInitiateCall()
+    private fun initRaiseHandViewModel() {
+        raiseHandViewModel = ViewModelProvider(this, viewModelFactory).get(RaiseHandViewModel::class.java)
+        raiseHandViewModel!!.setData(roomToken!!, isBreakoutRoom)
+        raiseHandViewModel!!.viewState.observe(this) { viewState: RaiseHandViewModel.ViewState? ->
+            var raised = false
+            if (viewState is RaisedHandState) {
+                binding!!.lowerHandButton.visibility = View.VISIBLE
+                raised = true
+            } else if (viewState is LoweredHandState) {
+                binding!!.lowerHandButton.visibility = View.GONE
+                raised = false
+            }
+            if (isConnectionEstablished) {
+                for (peerConnectionWrapper in peerConnectionWrapperList) {
+                    peerConnectionWrapper.raiseHand(raised)
+                }
+            }
+        }
+    }
+
+    private fun processExtras(extras: Bundle) {
+        roomId = extras.getString(KEY_ROOM_ID, "")
+        roomToken = extras.getString(KEY_ROOM_TOKEN, "")
+        conversationPassword = extras.getString(KEY_CONVERSATION_PASSWORD, "")
+        conversationName = extras.getString(KEY_CONVERSATION_NAME, "")
+        isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false)
+        isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false)
+        canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
+        canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
+        isModerator = extras.getBoolean(KEY_IS_MODERATOR, false)
+        isOneToOneConversation = extras.getBoolean(KEY_ROOM_ONE_TO_ONE, false)
+
+        if (extras.containsKey(KEY_FROM_NOTIFICATION_START_CALL)) {
+            isIncomingCallFromNotification = extras.getBoolean(KEY_FROM_NOTIFICATION_START_CALL)
+        }
+        if (extras.containsKey(KEY_IS_BREAKOUT_ROOM)) {
+            isBreakoutRoom = extras.getBoolean(KEY_IS_BREAKOUT_ROOM)
+        }
+
+        baseUrl = extras.getString(KEY_MODIFIED_BASE_URL, "")
     }
 
     private fun checkRecordingConsentAndInitiateCall() {
@@ -2240,11 +2254,13 @@ class CallActivity : CallBaseActivity() {
             // remote session ID. However, if the other participant does not have audio nor video that participant
             // will not send an offer, so no connection is actually established when the remote participant has a
             // higher session ID but is not publishing media.
-            if (hasMCU &&
-                participantHasAudioOrVideo ||
-                !hasMCU &&
-                selfParticipantHasAudioOrVideo &&
-                (!participantHasAudioOrVideo || sessionId < currentSessionId!!)
+            if (hasMCUAndAudioVideo(participantHasAudioOrVideo) ||
+                hasNoMCUAndAudioVideo(
+                    participantHasAudioOrVideo,
+                    selfParticipantHasAudioOrVideo,
+                    sessionId,
+                    currentSessionId!!
+                )
             ) {
                 getOrCreatePeerConnectionWrapperForSessionIdAndType(sessionId, VIDEO_STREAM_TYPE_VIDEO, false)
             }
@@ -2265,6 +2281,17 @@ class CallActivity : CallBaseActivity() {
             removeCallParticipant(sessionId)
         }
     }
+
+    private fun hasMCUAndAudioVideo(participantHasAudioOrVideo: Boolean): Boolean =
+        hasMCU && participantHasAudioOrVideo
+
+    private fun hasNoMCUAndAudioVideo(
+        participantHasAudioOrVideo: Boolean,
+        selfParticipantHasAudioOrVideo: Boolean,
+        sessionId: String,
+        currentSessionId: String
+    ): Boolean =
+        !hasMCU && selfParticipantHasAudioOrVideo && (!participantHasAudioOrVideo || sessionId < currentSessionId)
 
     private fun participantInCallFlagsHaveAudioOrVideo(participant: Participant?): Boolean =
         if (participant == null) {
@@ -2530,7 +2557,7 @@ class CallActivity : CallBaseActivity() {
                 ProximitySensorEvent.ProximitySensorEventType.SENSOR_FAR &&
                 videoOn
             if (permissionUtil!!.isCameraPermissionGranted() &&
-                (currentCallStatus === CallStatus.CONNECTING || isConnectionEstablished) &&
+                isConnectingOrEstablished() &&
                 videoOn &&
                 enableVideo != localVideoTrack!!.enabled()
             ) {
@@ -2538,6 +2565,9 @@ class CallActivity : CallBaseActivity() {
             }
         }
     }
+
+    private fun isConnectingOrEstablished(): Boolean =
+        currentCallStatus === CallStatus.CONNECTING || isConnectionEstablished
 
     private fun startSendingNick() {
         val dataChannelMessage = DataChannelMessage()
