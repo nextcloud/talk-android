@@ -77,6 +77,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REM
 *
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
+    @Suppress("Detekt.LongMethod")
     override fun getFromString(string: String): ChatMessage.SystemMessageType {
         return when (string) {
             "conversation_created" -> CONVERSATION_CREATED
@@ -144,7 +145,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
         }
     }
 
-    @Suppress("Detekt.ComplexMethod")
+    @Suppress("Detekt.ComplexMethod", "Detekt.LongMethod")
     override fun convertToString(`object`: ChatMessage.SystemMessageType?): String {
         return when (`object`) {
             null -> ""

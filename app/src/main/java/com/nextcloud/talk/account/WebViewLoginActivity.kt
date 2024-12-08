@@ -220,11 +220,11 @@ class WebViewLoginActivity : BaseActivity() {
             }
 
             override fun onReceivedClientCertRequest(view: WebView, request: ClientCertRequest) {
-                val user = userManager.currentUser.blockingGet()
                 var alias: String? = null
                 if (!reauthorizeAccount) {
                     alias = appPreferences.temporaryClientCertAlias
                 }
+                val user = userManager.currentUser.blockingGet()
                 if (TextUtils.isEmpty(alias) && user != null) {
                     alias = user.clientCertificate
                 }

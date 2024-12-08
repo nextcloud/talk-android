@@ -238,67 +238,71 @@ class DiagnoseActivity : BaseActivity() {
         addValue(BuildConfig.FLAVOR)
 
         if (isGooglePlayServicesAvailable) {
-            addKey(context.resources.getString(R.string.nc_diagnose_battery_optimization_title))
-
-            if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
-                addValue(context.resources.getString(R.string.nc_diagnose_battery_optimization_ignored))
-            } else {
-                addValue(context.resources.getString(R.string.nc_diagnose_battery_optimization_not_ignored))
-            }
-
-            // handle notification permission on API level >= 33
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                addKey(context.resources.getString(R.string.nc_diagnose_notification_permission))
-                if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
-                    addValue(context.resources.getString(R.string.nc_settings_notifications_granted))
-                } else {
-                    addValue(context.resources.getString(R.string.nc_settings_notifications_declined))
-                }
-            }
-
-            addKey(context.resources.getString(R.string.nc_diagnose_notification_calls_channel_permission))
-            addValue(
-                translateBoolean(
-                    NotificationUtils.isCallsNotificationChannelEnabled(this)
-                )
-            )
-
-            addKey(context.resources.getString(R.string.nc_diagnose_notification_messages_channel_permission))
-            addValue(
-                translateBoolean(
-                    NotificationUtils.isMessagesNotificationChannelEnabled(this)
-                )
-            )
-
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_title))
-            if (appPreferences.pushToken.isNullOrEmpty()) {
-                addValue(context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing))
-            } else {
-                addValue("${appPreferences.pushToken.substring(0, 5)}...")
-            }
-
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated))
-            if (appPreferences.pushTokenLatestGeneration != null && appPreferences.pushTokenLatestGeneration != 0L) {
-                addValue(
-                    DisplayUtils.unixTimeToHumanReadable(
-                        appPreferences
-                            .pushTokenLatestGeneration
-                    )
-                )
-            } else {
-                addValue(context.resources.getString(R.string.nc_common_unknown))
-            }
-
-            addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_fetch))
-            if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
-                addValue(DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch))
-            } else {
-                addValue(context.resources.getString(R.string.nc_common_unknown))
-            }
+            setupAppValuesForGooglePlayServices()
         }
 
         addKey(context.resources.getString(R.string.nc_diagnose_app_users_amount))
         addValue(userManager.users.blockingGet().size.toString())
+    }
+
+    private fun setupAppValuesForGooglePlayServices() {
+        addKey(context.resources.getString(R.string.nc_diagnose_battery_optimization_title))
+
+        if (PowerManagerUtils().isIgnoringBatteryOptimizations()) {
+            addValue(context.resources.getString(R.string.nc_diagnose_battery_optimization_ignored))
+        } else {
+            addValue(context.resources.getString(R.string.nc_diagnose_battery_optimization_not_ignored))
+        }
+
+        // handle notification permission on API level >= 33
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            addKey(context.resources.getString(R.string.nc_diagnose_notification_permission))
+            if (platformPermissionUtil.isPostNotificationsPermissionGranted()) {
+                addValue(context.resources.getString(R.string.nc_settings_notifications_granted))
+            } else {
+                addValue(context.resources.getString(R.string.nc_settings_notifications_declined))
+            }
+        }
+
+        addKey(context.resources.getString(R.string.nc_diagnose_notification_calls_channel_permission))
+        addValue(
+            translateBoolean(
+                NotificationUtils.isCallsNotificationChannelEnabled(this)
+            )
+        )
+
+        addKey(context.resources.getString(R.string.nc_diagnose_notification_messages_channel_permission))
+        addValue(
+            translateBoolean(
+                NotificationUtils.isMessagesNotificationChannelEnabled(this)
+            )
+        )
+
+        addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_title))
+        if (appPreferences.pushToken.isNullOrEmpty()) {
+            addValue(context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing))
+        } else {
+            addValue("${appPreferences.pushToken.substring(0, 5)}...")
+        }
+
+        addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated))
+        if (appPreferences.pushTokenLatestGeneration != null && appPreferences.pushTokenLatestGeneration != 0L) {
+            addValue(
+                DisplayUtils.unixTimeToHumanReadable(
+                    appPreferences
+                        .pushTokenLatestGeneration
+                )
+            )
+        } else {
+            addValue(context.resources.getString(R.string.nc_common_unknown))
+        }
+
+        addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_fetch))
+        if (appPreferences.pushTokenLatestFetch != null && appPreferences.pushTokenLatestFetch != 0L) {
+            addValue(DisplayUtils.unixTimeToHumanReadable(appPreferences.pushTokenLatestFetch))
+        } else {
+            addValue(context.resources.getString(R.string.nc_common_unknown))
+        }
     }
 
     private fun setupAccountValues() {

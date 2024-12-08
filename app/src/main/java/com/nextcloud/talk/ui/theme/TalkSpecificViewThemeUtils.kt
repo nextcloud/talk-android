@@ -24,6 +24,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.SearchView
@@ -42,6 +43,7 @@ import com.nextcloud.android.common.ui.theme.ViewThemeUtilsBase
 import com.nextcloud.android.common.ui.theme.utils.AndroidXViewThemeUtils
 import com.nextcloud.android.common.ui.util.buildColorStateList
 import com.nextcloud.talk.R
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.MicInputCloud
 import com.nextcloud.talk.ui.StatusDrawable
@@ -364,6 +366,21 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                     message,
                     dynamicColor.onSurfaceVariant().getArgb(scheme)
                 )
+            }
+        }
+    }
+
+    fun themeParentMessage(
+        parentChatMessage: ChatMessage,
+        message: ChatMessage,
+        quoteColoredView: View,
+        @ColorRes quoteColorNonSelf: Int = R.color.textColorMaxContrast
+    ) {
+        withScheme(quoteColoredView) { scheme ->
+            if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
+                quoteColoredView.setBackgroundColor(dynamicColor.primary().getArgb(scheme))
+            } else {
+                quoteColoredView.setBackgroundResource(quoteColorNonSelf)
             }
         }
     }
