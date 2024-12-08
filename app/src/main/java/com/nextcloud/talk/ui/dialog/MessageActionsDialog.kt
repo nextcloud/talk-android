@@ -147,6 +147,10 @@ class MessageActionsDialog(
             }
         }
 
+        initMenuItems()
+    }
+
+    private fun initMenuItems() {
         this.lifecycleScope.launch {
             initMenuItemTranslate(
                 !message.isDeleted &&

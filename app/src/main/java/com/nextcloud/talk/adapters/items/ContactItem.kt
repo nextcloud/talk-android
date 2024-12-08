@@ -132,6 +132,10 @@ class ContactItem(
             holder?.binding?.nameText?.text = sharedApplication!!.getString(R.string.nc_guest)
         }
 
+        setAvatar(holder)
+    }
+
+    private fun setAvatar(holder: ContactItemViewHolder?) {
         if (model.calculatedActorType == Participant.ActorType.GROUPS ||
             model.calculatedActorType == Participant.ActorType.CIRCLES
         ) {

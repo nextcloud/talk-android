@@ -119,15 +119,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         }
 
         if (message.resetVoiceMessage) {
-            binding.playPauseBtn.visibility = View.VISIBLE
-            binding.playPauseBtn.icon = ContextCompat.getDrawable(
-                context!!,
-                R.drawable.ic_baseline_play_arrow_voice_message_24
-            )
-            binding.seekbar.progress = SEEKBAR_START
-            message.resetVoiceMessage = false
-            message.voiceMessagePlayedSeconds = 0
-            binding.voiceMessageDuration.visibility = View.INVISIBLE
+            resetVoiceMessage(message)
         }
 
         binding.seekbar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
@@ -161,6 +153,18 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         )
 
         isBound = true
+    }
+
+    private fun resetVoiceMessage(chatMessage: ChatMessage) {
+        binding.playPauseBtn.visibility = View.VISIBLE
+        binding.playPauseBtn.icon = ContextCompat.getDrawable(
+            context!!,
+            R.drawable.ic_baseline_play_arrow_voice_message_24
+        )
+        binding.seekbar.progress = SEEKBAR_START
+        chatMessage.resetVoiceMessage = false
+        chatMessage.voiceMessagePlayedSeconds = 0
+        binding.voiceMessageDuration.visibility = View.INVISIBLE
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -322,14 +326,11 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
                     binding.messageQuote.quotedMessageAuthor
                         .setTextColor(ContextCompat.getColor(context!!, R.color.textColorMaxContrast))
 
-                    if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                        viewThemeUtils.platform.colorViewBackground(
-                            binding.messageQuote.quoteColoredView,
-                            ColorRole.PRIMARY
-                        )
-                    } else {
-                        binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
-                    }
+                    viewThemeUtils.talk.themeParentMessage(
+                        parentChatMessage,
+                        message,
+                        binding.messageQuote.quoteColoredView
+                    )
 
                     binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
                 } catch (e: Exception) {

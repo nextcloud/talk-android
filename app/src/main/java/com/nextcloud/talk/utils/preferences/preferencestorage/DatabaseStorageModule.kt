@@ -102,11 +102,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                     withContext(Dispatchers.IO) {
                         ncApiCoroutines!!.setMessageExpiration(
                             getCredentials(conversationUser.username, conversationUser.token)!!,
-                            getUrlForMessageExpiration(
-                                apiVersion,
-                                conversationUser.baseUrl,
-                                conversationToken
-                            ),
+                            getUrlForMessageExpiration(apiVersion, conversationUser.baseUrl, conversationToken),
                             valueInt
                         )
                         messageExpiration = valueInt
@@ -132,10 +128,7 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                             val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
                             withContext(Dispatchers.IO) {
                                 ncApiCoroutines!!.setNotificationLevel(
-                                    getCredentials(
-                                        conversationUser.username,
-                                        conversationUser.token
-                                    )!!,
+                                    getCredentials(conversationUser.username, conversationUser.token)!!,
                                     getUrlForRoomNotificationLevel(
                                         apiVersion,
                                         conversationUser.baseUrl,

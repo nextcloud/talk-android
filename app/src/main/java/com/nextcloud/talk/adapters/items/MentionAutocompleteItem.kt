@@ -120,7 +120,11 @@ class MentionAutocompleteItem(
         } else {
             holder.binding.nameText.text = displayName
         }
-        var avatarId = objectId
+        setAvatar(holder, objectId)
+        drawStatus(holder)
+    }
+
+    private fun setAvatar(holder: ParticipantItemViewHolder, objectId: String?) {
         when (source) {
             SOURCE_CALLS -> {
                 run {}
@@ -136,10 +140,7 @@ class MentionAutocompleteItem(
 
             SOURCE_GROUPS -> {
                 holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(
-                        holder.binding.avatarView,
-                        R.drawable.ic_avatar_group
-                    )
+                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable.ic_avatar_group)
                 )
             }
 
@@ -149,27 +150,30 @@ class MentionAutocompleteItem(
                     currentUser,
                     currentUser.baseUrl!!,
                     roomToken,
-                    avatarId!!,
+                    objectId!!,
                     darkTheme,
-                    true,
-                    false
+                    requestBigSize = true,
+                    ignoreCache = false
                 )
             }
 
             SOURCE_GUESTS, SOURCE_EMAILS -> {
-                avatarId = displayName
                 if (displayName.equals(context.resources.getString(R.string.nc_guest))) {
                     holder.binding.avatarView.loadDefaultAvatar(viewThemeUtils)
                 } else {
-                    holder.binding.avatarView.loadGuestAvatar(currentUser, avatarId!!, false)
+                    holder.binding.avatarView.loadGuestAvatar(currentUser, displayName!!, false)
                 }
             }
 
             else -> {
-                holder.binding.avatarView.loadUserAvatar(currentUser, avatarId!!, true, false)
+                holder.binding.avatarView.loadUserAvatar(
+                    currentUser,
+                    objectId!!,
+                    requestBigSize = true,
+                    ignoreCache = false
+                )
             }
         }
-        drawStatus(holder)
     }
 
     private fun drawStatus(holder: ParticipantItemViewHolder) {
