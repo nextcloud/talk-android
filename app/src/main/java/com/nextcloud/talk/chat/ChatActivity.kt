@@ -205,6 +205,7 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
@@ -568,7 +569,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
@@ -615,6 +616,18 @@ class ChatActivity :
                         credentials!!,
                         urlForChatting
                     )
+
+                    if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                        currentConversation?.status == "dnd"
+                    ) {
+                        conversationUser?.let { user ->
+                            chatViewModel.outOfOfficeStatusOfUser(
+                                credentials,
+                                user.baseUrl!!,
+                                currentConversation!!.name
+                            )
+                        }
+                    }
 
                     logConversationInfos("GetRoomSuccessState")
 
@@ -687,6 +700,17 @@ class ChatActivity :
 
                         checkShowCallButtons()
                         checkLobbyState()
+                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                            conversationUser?.let { user ->
+                                val credentials = ApiUtils.getCredentials(user.username, user.token)
+                                chatViewModel.outOfOfficeStatusOfUser(
+                                    credentials!!,
+                                    user.baseUrl!!,
+                                    currentConversation!!.displayName
+                                )
+                            }
+                        }
+
                         updateRoomTimerHandler()
 
                         val urlForChatting =
@@ -1052,6 +1076,60 @@ class ChatActivity :
 
         chatViewModel.recordTouchObserver.observe(this) { y ->
             binding.voiceRecordingLock.y -= y
+        }
+
+        chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.OutOfOfficeUIState.Error -> {
+                    Log.e(TAG, "Error in outOfOfficeState", uiState.exception)
+                }
+                ChatViewModel.OutOfOfficeUIState.None -> {
+                }
+                is ChatViewModel.OutOfOfficeUIState.Success -> {
+                    binding.outOfOfficeContainer.visibility = View.VISIBLE
+
+                    val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
+                    val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
+
+                    val startDate = Date(startDateTimestamp * 1000)
+                    val endDate = Date(endDateTimestamp * 1000)
+
+                    val date1 = Calendar.getInstance().apply { time = startDate }
+                    val date2 = Calendar.getInstance().apply { time = endDate }
+
+                    val isSameDay = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+                        date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
+
+                    if (isSameDay) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                            context.resources.getString(R.string.user_absence_for_one_day),
+                            uiState.userAbsence.userId
+                        )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
+                            View.GONE
+                    } else {
+                        val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                        val startDateString = dateFormatter.format(startDate)
+                        val endDateString = dateFormatter.format(endDate)
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
+                            context.resources.getString(R.string.user_absence),
+                            uiState.userAbsence.userId
+                        )
+
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text = "$startDateString - $endDateString"
+                    }
+
+                    if (uiState.userAbsence.replacementUserDisplayName != null) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
+                            context.resources.getString(R.string.user_absence_replacement),
+                            uiState.userAbsence.replacementUserDisplayName
+                        )
+                    } else {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
+                    }
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
+                }
+            }
         }
     }
 

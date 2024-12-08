@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:maxHeight="150dp"
+    android:padding="12dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/out_of_office_view"
+    style="@style/ScrollViewStyle">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/userAbsenceShortMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginTop ="8dp"
+            tools:text="Jane is out of office"/>
+
+        <TextView
+            android:id="@+id/userAbsencePeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop ="8dp"
+            android:textSize="14sp"
+            tools:text="Dec 5, 2024 - Dec 15, 2024"/>
+
+        <TextView
+            android:id="@+id/absenceReplacement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            tools:text="Replacement: Bob"/>
+
+        <TextView
+            android:id="@+id/userAbsenceLongMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop ="8dp"
+            android:textSize="14sp"
+            tools:text="Hi, I am out of office this week. Please contact ....., ..........write very very very very very very very very very very very very very very very long message..................................................................................................................................if you have any issues."/>
+    </LinearLayout>
+</ScrollView>
