@@ -235,7 +235,7 @@ public class PeerConnectionWrapper {
         return stream;
     }
 
-    public void removePeerConnection() {
+    public synchronized void removePeerConnection() {
         signalingMessageReceiver.removeListener(webRtcMessageListener);
 
         for (DataChannel dataChannel: dataChannels.values()) {
@@ -292,7 +292,7 @@ public class PeerConnectionWrapper {
      *
      * @param dataChannelMessage the message to send
      */
-    public void send(DataChannelMessage dataChannelMessage) {
+    public synchronized void send(DataChannelMessage dataChannelMessage) {
         if (dataChannelMessage == null) {
             return;
         }
@@ -414,20 +414,38 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannelLabel)) {
-                for (DataChannelMessage dataChannelMessage: pendingDataChannelMessages) {
-                    send(dataChannelMessage);
+            synchronized (PeerConnectionWrapper.this) {
+                // The PeerConnection could have been removed in parallel even with the synchronization (as just after
+                // "onStateChange" was called "removePeerConnection" could have acquired the lock).
+                if (peerConnection == null) {
+                    return;
                 }
-                pendingDataChannelMessages.clear();
-            }
 
-            if (dataChannel.state() == DataChannel.State.OPEN) {
-                sendInitialMediaStatus();
+                if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannelLabel)) {
+                    for (DataChannelMessage dataChannelMessage : pendingDataChannelMessages) {
+                        send(dataChannelMessage);
+                    }
+                    pendingDataChannelMessages.clear();
+                }
+
+                if (dataChannel.state() == DataChannel.State.OPEN) {
+                    sendInitialMediaStatus();
+                }
             }
         }
 
         @Override
         public void onMessage(DataChannel.Buffer buffer) {
+            synchronized (PeerConnectionWrapper.this) {
+                // It is assumed that, even if its data channel was disposed, its buffers can be used while there is
+                // a reference to them, so it would not be necessary to check this from a thread-safety point of view.
+                // Nevertheless, if the remote peer connection was removed it would not make sense to notify the
+                // listeners anyway.
+                if (peerConnection == null) {
+                    return;
+                }
+            }
+
             if (buffer.binary) {
                 Log.d(TAG, "Received binary data channel message over " + dataChannelLabel + " " + sessionId);
                 return;
@@ -557,23 +575,45 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onDataChannel(DataChannel dataChannel) {
-            // Another data channel with the same label, no matter if the same instance or a different one, should not
-            // be added, but just in case.
-            DataChannel oldDataChannel = dataChannels.get(dataChannel.label());
-            if (oldDataChannel == dataChannel) {
-                Log.w(TAG, "Data channel with label " + dataChannel.label() + " added again");
+            synchronized (PeerConnectionWrapper.this) {
+                // Another data channel with the same label, no matter if the same instance or a different one, should
+                // not be added, but this is handled just in case.
+                // Moreover, if it were possible that an already added data channel was added again there would be a
+                // potential race condition with "removePeerConnection", even with the synchronization, as it would
+                // be possible that "onDataChannel" was called, then "removePeerConnection" disposed the data
+                // channel, and then "onDataChannel" continued in the synchronized statements and tried to get the
+                // label, which would throw an exception due to the data channel having been disposed already.
+                String dataChannelLabel;
+                try {
+                    dataChannelLabel = dataChannel.label();
+                } catch (IllegalStateException e) {
+                    // The data channel was disposed already, nothing to do.
+                    return;
+                }
 
-                return;
+                DataChannel oldDataChannel = dataChannels.get(dataChannelLabel);
+                if (oldDataChannel == dataChannel) {
+                    Log.w(TAG, "Data channel with label " + dataChannel.label() + " added again");
+
+                    return;
+                }
+
+                if (oldDataChannel != null) {
+                    Log.w(TAG, "Data channel with label " + dataChannel.label() + " exists");
+
+                    oldDataChannel.dispose();
+                }
+
+                // If the peer connection was removed in parallel dispose the data channel instead of adding it.
+                if (peerConnection == null) {
+                    dataChannel.dispose();
+
+                    return;
+                }
+
+                dataChannel.registerObserver(new DataChannelObserver(dataChannel));
+                dataChannels.put(dataChannel.label(), dataChannel);
             }
-
-            if (oldDataChannel != null) {
-                Log.w(TAG, "Data channel with label " + dataChannel.label() + " exists");
-
-                oldDataChannel.dispose();
-            }
-
-            dataChannel.registerObserver(new DataChannelObserver(dataChannel));
-            dataChannels.put(dataChannel.label(), dataChannel);
         }
 
         @Override
