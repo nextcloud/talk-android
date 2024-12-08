@@ -6,9 +6,10 @@
  */
 package com.nextcloud.talk.openconversations.data
 
+import com.nextcloud.talk.models.json.conversations.Conversation
 import io.reactivex.Observable
 
 interface OpenConversationsRepository {
 
-    fun fetchConversations(): Observable<OpenConversationsModel>
+    fun fetchConversations(): Observable<List<Conversation>>
 }
