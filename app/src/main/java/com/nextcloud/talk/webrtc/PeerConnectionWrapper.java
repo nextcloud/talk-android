@@ -298,7 +298,8 @@ public class PeerConnectionWrapper {
         }
 
         DataChannel statusDataChannel = dataChannels.get("status");
-        if (statusDataChannel == null || statusDataChannel.state() != DataChannel.State.OPEN) {
+        if (statusDataChannel == null || statusDataChannel.state() != DataChannel.State.OPEN ||
+            !pendingDataChannelMessages.isEmpty()) {
             Log.d(TAG, "Queuing data channel message (" + dataChannelMessage + ") " + sessionId);
 
             pendingDataChannelMessages.add(dataChannelMessage);
@@ -306,6 +307,10 @@ public class PeerConnectionWrapper {
             return;
         }
 
+        sendWithoutQueuing(statusDataChannel, dataChannelMessage);
+    }
+
+    private void sendWithoutQueuing(DataChannel statusDataChannel, DataChannelMessage dataChannelMessage) {
         try {
             Log.d(TAG, "Sending data channel message (" + dataChannelMessage + ") " + sessionId);
 
@@ -423,7 +428,7 @@ public class PeerConnectionWrapper {
 
                 if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannelLabel)) {
                     for (DataChannelMessage dataChannelMessage : pendingDataChannelMessages) {
-                        send(dataChannelMessage);
+                        sendWithoutQueuing(dataChannel, dataChannelMessage);
                     }
                     pendingDataChannelMessages.clear();
                 }
