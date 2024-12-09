@@ -10,10 +10,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -24,6 +27,7 @@ import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
+    private val chatRepository: ChatMessageRepository,
     var userManager: UserManager
 ) :
     ViewModel() {
@@ -82,6 +86,12 @@ class ConversationsListViewModel @Inject constructor(
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         repository.getRooms()
+    }
+
+    fun updateRoomMessages(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
+        val urlForChatting = ApiUtils.getUrlForChat(1, baseUrl, model.token) // FIXME v1?
+        chatRepository.setData(model, credentials, urlForChatting)
+        chatRepository.updateRoomMessages(model.token, limit)
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
