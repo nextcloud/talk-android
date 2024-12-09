@@ -373,6 +373,12 @@ object ApiUtils {
     }
 
     @JvmStatic
+    fun getUrlForAvatarDarkTheme(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
+        val avatarSize = if (requestBigSize) AVATAR_SIZE_BIG else AVATAR_SIZE_SMALL
+        return baseUrl + "/index.php/avatar/" + Uri.encode(name) + "/" + avatarSize + "/dark"
+    }
+
+    @JvmStatic
     fun getUrlForFederatedAvatar(
         baseUrl: String,
         token: String,
