@@ -72,6 +72,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
+import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
@@ -1125,10 +1126,24 @@ class ChatActivity :
                     }
 
                     if (uiState.userAbsence.replacementUserDisplayName != null) {
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = String.format(
-                            context.resources.getString(R.string.user_absence_replacement),
+                        var imageUri = Uri.parse(ApiUtils.getUrlForAvatar(conversationUser?.baseUrl, uiState.userAbsence
+                            .replacementUserId, false))
+                        if (DisplayUtils.isDarkModeOn(context)) {
+                            imageUri = Uri.parse(ApiUtils.getUrlForAvatarDarkTheme(conversationUser?.baseUrl, uiState
+                                .userAbsence
+                                .replacementUserId, false))
+                        }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = context.resources.getString(R.string.user_absence_replacement)
+                        binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
+                            .load(imageUri){
+                                transformations(CircleCropTransformation())
+                                placeholder(R.drawable.account_circle_96dp)
+                                error(R.drawable.account_circle_96dp)
+                                crossfade(true)
+                            }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
                             uiState.userAbsence.replacementUserDisplayName
-                        )
+
                     } else {
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
                     }
