@@ -136,7 +136,6 @@
             android:layout_margin="8dp"
             app:cardCornerRadius="12dp">
 
-
         <include layout="@layout/out_of_office_view" />
     </com.google.android.material.card.MaterialCardView>
 

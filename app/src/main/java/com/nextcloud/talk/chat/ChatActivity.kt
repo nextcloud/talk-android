@@ -52,7 +52,6 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -79,6 +78,7 @@ import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -242,6 +242,9 @@ class ChatActivity :
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var colorUtil: ColorUtil
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -1078,8 +1081,13 @@ class ChatActivity :
                 }
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
-                    val backgroundColor = ContextCompat.getColor(this, R.color.colorPrimary)
-                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.2f * 255).toInt())
+
+
+                    val backgroundColor = colorUtil.getNullSafeColorWithFallbackRes(conversationUser!!.capabilities
+                        !!.themingCapability!!.color, R.color.colorPrimary)
+
+                    binding.outOfOfficeContainer.findViewById<View>(R.id.verticalLine).setBackgroundColor(backgroundColor)
+                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.3f * 255).toInt())
                     binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
 
                     val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
