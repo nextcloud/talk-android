@@ -51,6 +51,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
@@ -1126,16 +1127,28 @@ class ChatActivity :
                     }
 
                     if (uiState.userAbsence.replacementUserDisplayName != null) {
-                        var imageUri = Uri.parse(ApiUtils.getUrlForAvatar(conversationUser?.baseUrl, uiState.userAbsence
-                            .replacementUserId, false))
+                        var imageUri = Uri.parse(
+                            ApiUtils.getUrlForAvatar(
+                                conversationUser?.baseUrl,
+                                uiState.userAbsence
+                                    .replacementUserId,
+                                false
+                            )
+                        )
                         if (DisplayUtils.isDarkModeOn(context)) {
-                            imageUri = Uri.parse(ApiUtils.getUrlForAvatarDarkTheme(conversationUser?.baseUrl, uiState
-                                .userAbsence
-                                .replacementUserId, false))
+                            imageUri = Uri.parse(
+                                ApiUtils.getUrlForAvatarDarkTheme(
+                                    conversationUser?.baseUrl,
+                                    uiState
+                                        .userAbsence
+                                        .replacementUserId,
+                                    false
+                                )
+                            )
                         }
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = context.resources.getString(R.string.user_absence_replacement)
                         binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
-                            .load(imageUri){
+                            .load(imageUri) {
                                 transformations(CircleCropTransformation())
                                 placeholder(R.drawable.account_circle_96dp)
                                 error(R.drawable.account_circle_96dp)
@@ -1143,11 +1156,13 @@ class ChatActivity :
                             }
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
                             uiState.userAbsence.replacementUserDisplayName
-
                     } else {
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
                     }
                     binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
+                    binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
+                        joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                    }
                 }
             }
         }
@@ -3915,6 +3930,24 @@ class ChatActivity :
         }
         val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share))
         startActivity(shareIntent)
+    }
+
+    fun joinOneToOneConversation(userId: String) {
+        val apiVersion =
+            ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            apiVersion,
+            conversationUser?.baseUrl!!,
+            "1",
+            "users",
+            userId,
+            null
+        )
+        chatViewModel.createRoom(
+            credentials!!,
+            retrofitBucket.url!!,
+            retrofitBucket.queryMap!!
+        )
     }
 
     companion object {
