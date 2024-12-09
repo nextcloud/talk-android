@@ -209,12 +209,10 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.String
 import kotlin.collections.set
 import kotlin.math.roundToInt
 
@@ -621,18 +619,6 @@ class ChatActivity :
                         urlForChatting
                     )
 
-                    if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                        currentConversation?.status == "dnd"
-                    ) {
-                        conversationUser?.let { user ->
-                            chatViewModel.outOfOfficeStatusOfUser(
-                                credentials,
-                                user.baseUrl!!,
-                                currentConversation!!.name
-                            )
-                        }
-                    }
-
                     logConversationInfos("GetRoomSuccessState")
 
                     if (adapter == null) {
@@ -701,16 +687,17 @@ class ChatActivity :
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
                         setActionBarTitle()
-
                         checkShowCallButtons()
                         checkLobbyState()
-                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                            currentConversation?.status == "dnd"
+                        ) {
                             conversationUser?.let { user ->
                                 val credentials = ApiUtils.getCredentials(user.username, user.token)
                                 chatViewModel.outOfOfficeStatusOfUser(
                                     credentials!!,
                                     user.baseUrl!!,
-                                    currentConversation!!.displayName
+                                    currentConversation!!.name
                                 )
                             }
                         }
@@ -1101,29 +1088,26 @@ class ChatActivity :
                     val startDate = Date(startDateTimestamp * 1000)
                     val endDate = Date(endDateTimestamp * 1000)
 
-                    val date1 = Calendar.getInstance().apply { time = startDate }
-                    val date2 = Calendar.getInstance().apply { time = endDate }
-
-                    val isSameDay = date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
-                        date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
-
-                    if (isSameDay) {
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
-                            context.resources.getString(R.string.user_absence_for_one_day),
-                            uiState.userAbsence.userId
-                        )
+                    if (dateUtils.isSameDate(startDate, endDate)) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence_for_one_day),
+                                uiState.userAbsence.userId
+                            )
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
                             View.GONE
                     } else {
                         val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
                         val startDateString = dateFormatter.format(startDate)
                         val endDateString = dateFormatter.format(endDate)
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text = String.format(
-                            context.resources.getString(R.string.user_absence),
-                            uiState.userAbsence.userId
-                        )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence),
+                                uiState.userAbsence.userId
+                            )
 
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text = "$startDateString - $endDateString"
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text =
+                            "$startDateString - $endDateString"
                     }
 
                     if (uiState.userAbsence.replacementUserDisplayName != null) {
@@ -1146,7 +1130,8 @@ class ChatActivity :
                                 )
                             )
                         }
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text = context.resources.getString(R.string.user_absence_replacement)
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
+                            context.resources.getString(R.string.user_absence_replacement)
                         binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
                             .load(imageUri) {
                                 transformations(CircleCropTransformation())
@@ -1157,9 +1142,11 @@ class ChatActivity :
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
                             uiState.userAbsence.replacementUserDisplayName
                     } else {
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility = View.GONE
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility =
+                            View.GONE
                     }
-                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text = uiState.userAbsence.message
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text =
+                        uiState.userAbsence.message
                     binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
                     }

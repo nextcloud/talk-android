@@ -51,6 +51,14 @@ class DateUtils(val context: Context) {
         return formatTime.format(Date(timestampSeconds * DateConstants.SECOND_DIVIDER))
     }
 
+    fun isSameDate(date1: Date, date2: Date): Boolean {
+        val startDateCalendar = Calendar.getInstance().apply { time = date1 }
+        val endDateCalendar = Calendar.getInstance().apply { time = date2 }
+        val isSameDay = startDateCalendar.get(Calendar.YEAR) == endDateCalendar.get(Calendar.YEAR) &&
+            startDateCalendar.get(Calendar.DAY_OF_YEAR) == endDateCalendar.get(Calendar.DAY_OF_YEAR)
+        return isSameDay
+    }
+
     fun getTimeDifferenceInSeconds(time2: Long, time1: Long): Long {
         val difference = (time2 - time1)
         return abs(difference)
