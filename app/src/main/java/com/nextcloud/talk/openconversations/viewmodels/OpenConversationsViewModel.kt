@@ -10,8 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.openconversations.data.OpenConversation
-import com.nextcloud.talk.openconversations.data.OpenConversationsModel
+import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -27,7 +26,7 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
     object FetchConversationsStartState : ViewState
     object FetchConversationsEmptyState : ViewState
     object FetchConversationsErrorState : ViewState
-    open class FetchConversationsSuccessState(val conversations: List<OpenConversation>) : ViewState
+    open class FetchConversationsSuccessState(val conversations: List<Conversation>) : ViewState
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(FetchConversationsStartState)
     val viewState: LiveData<ViewState>
@@ -41,16 +40,16 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
             ?.subscribe(FetchConversationsObserver())
     }
 
-    inner class FetchConversationsObserver : Observer<OpenConversationsModel> {
+    inner class FetchConversationsObserver : Observer<List<Conversation>> {
         override fun onSubscribe(d: Disposable) {
             // unused atm
         }
 
-        override fun onNext(model: OpenConversationsModel) {
-            if (model.conversations.isEmpty()) {
+        override fun onNext(conversations: List<Conversation>) {
+            if (conversations.isEmpty()) {
                 _viewState.value = FetchConversationsEmptyState
             } else {
-                _viewState.value = FetchConversationsSuccessState(model.conversations)
+                _viewState.value = FetchConversationsSuccessState(conversations)
             }
         }
 

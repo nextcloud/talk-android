@@ -13,21 +13,26 @@ import android.widget.RelativeLayout
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.nextcloud.talk.R
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.RvItemOpenConversationBinding
-import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.openconversations.data.OpenConversation
+import com.nextcloud.talk.extensions.loadConversationAvatar
+import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 
-class OpenConversationsAdapter(val user: User, private val onClick: (OpenConversation) -> Unit) :
-    ListAdapter<OpenConversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
-    private var originalList: List<OpenConversation> = emptyList()
+class OpenConversationsAdapter(
+    val user: User,
+    val viewThemeUtils: ViewThemeUtils,
+    private val onClick: (Conversation) -> Unit
+) :
+    ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
+    private var originalList: List<Conversation> = emptyList()
     private var isFiltering = false
 
     inner class OpenConversationsViewHolder(val itemBinding: RvItemOpenConversationBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
 
-        var currentConversation: OpenConversation? = null
+        var currentConversation: Conversation? = null
 
         init {
             itemBinding.root.setOnClickListener {
@@ -37,11 +42,11 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
             }
         }
 
-        fun bindItem(conversation: OpenConversation) {
+        fun bindItem(conversation: Conversation) {
             val nameTextLayoutParams: RelativeLayout.LayoutParams = itemBinding.nameText.layoutParams as
                 RelativeLayout.LayoutParams
-
             currentConversation = conversation
+            val currentConversationModel = ConversationModel.mapToConversationModel(conversation, user)
             itemBinding.nameText.text = conversation.displayName
             if (conversation.description == "") {
                 itemBinding.descriptionText.visibility = View.GONE
@@ -50,9 +55,12 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
                 itemBinding.descriptionText.text = conversation.description
             }
 
-            // load avatar from server when https://github.com/nextcloud/spreed/issues/9600 is solved
-            // itemBinding.avatarView.loadUserAvatar(user, conversation.displayName, true, false)
-            itemBinding.avatarView.loadUserAvatar(R.drawable.ic_circular_group)
+            itemBinding.avatarView.loadConversationAvatar(
+                user,
+                currentConversationModel,
+                false,
+                viewThemeUtils
+            )
         }
     }
 
@@ -79,7 +87,7 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
         }
 
         isFiltering = true
-        val newList = mutableListOf<OpenConversation>()
+        val newList = mutableListOf<Conversation>()
         for (conversation in originalList) {
             if (conversation.displayName.contains(text, true) || conversation.description!!.contains(text, true)) {
                 newList.add(conversation)
@@ -91,10 +99,7 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
         }
     }
 
-    override fun onCurrentListChanged(
-        previousList: MutableList<OpenConversation>,
-        currentList: MutableList<OpenConversation>
-    ) {
+    override fun onCurrentListChanged(previousList: MutableList<Conversation>, currentList: MutableList<Conversation>) {
         if (!isFiltering) {
             originalList = currentList
         }
@@ -102,12 +107,12 @@ class OpenConversationsAdapter(val user: User, private val onClick: (OpenConvers
     }
 }
 
-object ConversationsCallback : DiffUtil.ItemCallback<OpenConversation>() {
-    override fun areItemsTheSame(oldItem: OpenConversation, newItem: OpenConversation): Boolean {
+object ConversationsCallback : DiffUtil.ItemCallback<Conversation>() {
+    override fun areItemsTheSame(oldItem: Conversation, newItem: Conversation): Boolean {
         return oldItem == newItem
     }
 
-    override fun areContentsTheSame(oldItem: OpenConversation, newItem: OpenConversation): Boolean {
-        return oldItem.roomToken == newItem.roomToken
+    override fun areContentsTheSame(oldItem: Conversation, newItem: Conversation): Boolean {
+        return oldItem.token == newItem.token
     }
 }
