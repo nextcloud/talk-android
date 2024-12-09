@@ -400,9 +400,11 @@ public class PeerConnectionWrapper {
     private class DataChannelObserver implements DataChannel.Observer {
 
         private final DataChannel dataChannel;
+        private final String dataChannelLabel;
 
         public DataChannelObserver(DataChannel dataChannel) {
             this.dataChannel = Objects.requireNonNull(dataChannel);
+            this.dataChannelLabel = dataChannel.label();
         }
 
         @Override
@@ -412,7 +414,7 @@ public class PeerConnectionWrapper {
 
         @Override
         public void onStateChange() {
-            if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannel.label())) {
+            if (dataChannel.state() == DataChannel.State.OPEN && "status".equals(dataChannelLabel)) {
                 for (DataChannelMessage dataChannelMessage: pendingDataChannelMessages) {
                     send(dataChannelMessage);
                 }
@@ -427,7 +429,7 @@ public class PeerConnectionWrapper {
         @Override
         public void onMessage(DataChannel.Buffer buffer) {
             if (buffer.binary) {
-                Log.d(TAG, "Received binary data channel message over " + dataChannel.label() + " " + sessionId);
+                Log.d(TAG, "Received binary data channel message over " + dataChannelLabel + " " + sessionId);
                 return;
             }
 
@@ -435,7 +437,7 @@ public class PeerConnectionWrapper {
             final byte[] bytes = new byte[data.capacity()];
             data.get(bytes);
             String strData = new String(bytes);
-            Log.d(TAG, "Received data channel message (" + strData + ") over " + dataChannel.label() + " " + sessionId);
+            Log.d(TAG, "Received data channel message (" + strData + ") over " + dataChannelLabel + " " + sessionId);
 
             DataChannelMessage dataChannelMessage;
             try {
