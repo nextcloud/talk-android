@@ -39,16 +39,13 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
     @Suppress("Detekt.TooGenericExceptionCaught")
     override fun doWork(): Result {
         try {
-            val sourceFilePath = inputData.getString(KEY_SOURCE_FILE_PATH)
-            val cacheFile = File(sourceFilePath!!)
-
+            val cacheFile = File(inputData.getString(KEY_SOURCE_FILE_PATH)!!)
             val contentResolver = context.contentResolver
             val mimeType = URLConnection.guessContentTypeFromName(cacheFile.name)
 
-            val appName = applicationContext.resources!!.getString(R.string.nc_app_product_name)
-
             val values = ContentValues().apply {
                 if (mimeType.startsWith(IMAGE_PREFIX) || mimeType.startsWith(VIDEO_PREFIX)) {
+                    val appName = applicationContext.resources!!.getString(R.string.nc_app_product_name)
                     put(FileColumns.RELATIVE_PATH, Environment.DIRECTORY_DCIM + "/" + appName)
                 }
                 put(FileColumns.DISPLAY_NAME, cacheFile.name)
@@ -58,11 +55,7 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
                 }
             }
 
-            val collectionUri = getUriByType(mimeType)
-
-            val uri = contentResolver.insert(collectionUri, values)
-
-            uri?.let { fileUri ->
+            contentResolver.insert(getUriByType(mimeType), values)?.let { fileUri ->
                 try {
                     val outputStream: OutputStream? = contentResolver.openOutputStream(fileUri)
                     outputStream.use { output ->

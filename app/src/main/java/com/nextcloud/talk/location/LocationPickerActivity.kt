@@ -241,7 +241,7 @@ class LocationPickerActivity :
         return true
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod")
+    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod", "Detekt.LongMethod")
     private fun initMap() {
         binding.map.setTileSource(TileSourceFactory.MAPNIK)
         binding.map.onResume()

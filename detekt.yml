@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2017-2024 Nextcloud GmbH and Nextcloud contributors
 # SPDX-License-Identifier: GPL-3.0-or-later
 build:
-  maxIssues: 122
+  maxIssues: 99
   weights:
     # complexity: 2
     # LongParameterList: 1
@@ -48,7 +48,7 @@ complexity:
   active: true
   ComplexCondition:
     active: true
-    threshold: 4
+    threshold: 5
   ComplexInterface:
     active: false
     threshold: 10

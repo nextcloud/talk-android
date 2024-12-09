@@ -22,7 +22,6 @@ import android.webkit.WebViewClient
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.material.snackbar.Snackbar
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -187,14 +186,11 @@ class IncomingLocationMessageViewHolder(incomingView: View, payload: Any) :
                     binding.messageQuote.quotedMessageAuthor
                         .setTextColor(context.resources.getColor(R.color.textColorMaxContrast, null))
 
-                    if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                        viewThemeUtils.platform.colorViewBackground(
-                            binding.messageQuote.quoteColoredView,
-                            ColorRole.PRIMARY
-                        )
-                    } else {
-                        binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
-                    }
+                    viewThemeUtils.talk.themeParentMessage(
+                        parentChatMessage,
+                        message,
+                        binding.messageQuote.quoteColoredView
+                    )
 
                     binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
                 } catch (e: Exception) {
