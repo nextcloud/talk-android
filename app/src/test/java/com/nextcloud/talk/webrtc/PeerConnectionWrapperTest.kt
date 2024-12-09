@@ -23,6 +23,7 @@ import org.mockito.Mockito.atLeast
 import org.mockito.Mockito.atMostOnce
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.doNothing
+import org.mockito.Mockito.inOrder
 import org.mockito.Mockito.never
 import org.mockito.invocation.InvocationOnMock
 import org.mockito.stubbing.Answer
@@ -288,8 +289,10 @@ class PeerConnectionWrapperTest {
                 throw exceptionOnStateChange!!
             }
 
+            val inOrder = inOrder(mockedStatusDataChannel)
+
             for (j in 1..dataChannelMessageCount) {
-                Mockito.verify(mockedStatusDataChannel).send(
+                inOrder.verify(mockedStatusDataChannel).send(
                     argThat(MatchesDataChannelMessage(DataChannelMessage("the-message-type-$j")))
                 )
             }
