@@ -200,7 +200,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -442,6 +441,7 @@ class ChatActivity :
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
+        messageInputViewModel.setData(chatViewModel.getChatRepository())
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
@@ -791,18 +791,18 @@ class ChatActivity :
                 }
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
-                    if (state.e is HttpException) {
-                        val code = state.e.code()
-                        if (code.toString().startsWith("2")) {
-                            myFirstMessage = state.message
-
-                            if (binding.unreadMessagesPopup.isShown) {
-                                binding.unreadMessagesPopup.visibility = View.GONE
-                            }
-
-                            binding.messagesListView.smoothScrollToPosition(0)
-                        }
-                    }
+                    // if (state.e is HttpException) {
+                    //     val code = state.e.code()
+                    //     if (code.toString().startsWith("2")) {
+                    //         myFirstMessage = state.message
+                    //
+                    //         if (binding.unreadMessagesPopup.isShown) {
+                    //             binding.unreadMessagesPopup.visibility = View.GONE
+                    //         }
+                    //
+                    //         binding.messagesListView.smoothScrollToPosition(0)
+                    //     }
+                    // }
                 }
 
                 else -> {}
@@ -911,6 +911,14 @@ class ChatActivity :
                     processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
+                }
+                .collect()
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getRemoveMessageFlow
+                .onEach {
+                    removeMessageById(it.id)
                 }
                 .collect()
         }
@@ -1056,9 +1064,15 @@ class ChatActivity :
     }
 
     private fun removeUnreadMessagesMarker() {
-        val index = adapter?.getMessagePositionById(UNREAD_MESSAGES_MARKER_ID.toString())
+        removeMessageById(UNREAD_MESSAGES_MARKER_ID.toString())
+    }
+
+    // do not use adapter.deleteById() as it seems to contain a bug! Use this method instead!
+    private fun removeMessageById(idToDelete: String) {
+        val index = adapter?.getMessagePositionById(idToDelete)
         if (index != null && index != -1) {
             adapter?.items?.removeAt(index)
+            adapter?.notifyItemRemoved(index)
         }
     }
 

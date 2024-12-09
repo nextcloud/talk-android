@@ -15,38 +15,45 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.commons.models.IMessage
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.lang.Thread.sleep
 import javax.inject.Inject
 
 class MessageInputViewModel @Inject constructor(
-    private val chatNetworkDataSource: ChatNetworkDataSource,
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val appPreferences: AppPreferences
-) : ViewModel(), DefaultLifecycleObserver {
+) : ViewModel(),
+    DefaultLifecycleObserver {
+
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
         STOPPED
     }
+
+    lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+
+    fun setData(chatMessageRepository: ChatMessageRepository){
+        chatRepository = chatMessageRepository
+    }
 
     data class QueuedMessage(
         val id: Int,
@@ -106,7 +113,7 @@ class MessageInputViewModel @Inject constructor(
     sealed interface ViewState
     object SendChatMessageStartState : ViewState
     class SendChatMessageSuccessState(val message: CharSequence) : ViewState
-    class SendChatMessageErrorState(val e: Throwable, val message: CharSequence) : ViewState
+    class SendChatMessageErrorState(val message: CharSequence) : ViewState
     private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
@@ -144,6 +151,26 @@ class MessageInputViewModel @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Random SHA-256 Hash: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.addTemporaryMessage(
+                message,
+                displayName,
+                replyTo,
+                referenceId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
+
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                }
+            }
+        }
+
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
             val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
@@ -155,56 +182,41 @@ class MessageInputViewModel @Inject constructor(
             return
         }
 
-        chatNetworkDataSource.sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification
-        ).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
+        viewModelScope.launch {
+            chatRepository.sendChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
 
-                override fun onError(e: Throwable) {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(e, message)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: GenericOverall) {
                     _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
                 }
-            })
+            }
+        }
     }
 
     fun editChatMessage(credentials: String, url: String, text: String) {
-        chatNetworkDataSource.editChatMessage(credentials, url, text)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to edit message", e)
+        viewModelScope.launch {
+            chatRepository.editChatMessage(
+                credentials,
+                url,
+                text
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _editMessageViewState.value = EditMessageSuccessState(result.getOrNull()!!)
+                } else {
                     _editMessageViewState.value = EditMessageErrorState
                 }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(messageEdited: ChatOverallSingleMessage) {
-                    _editMessageViewState.value = EditMessageSuccessState(messageEdited)
-                }
-            })
+            }
+        }
     }
 
     fun reply(message: IMessage?) {
