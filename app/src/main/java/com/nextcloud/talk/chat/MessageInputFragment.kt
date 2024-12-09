@@ -284,7 +284,8 @@ class MessageInputFragment : Fragment() {
             }
 
             binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.recordAudioButton.visibility =
+                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
         } else {
             binding.fragmentMessageInputView.attachmentButton.visibility = View.INVISIBLE
             binding.fragmentMessageInputView.recordAudioButton.visibility = View.INVISIBLE
@@ -562,7 +563,7 @@ class MessageInputFragment : Fragment() {
                     } else {
                         chatActivity.chatViewModel.stopAndSendAudioRecording(
                             chatActivity.roomToken,
-                            chatActivity.currentConversation!!.displayName!!,
+                            chatActivity.currentConversation!!.displayName,
                             VOICE_MESSAGE_META_DATA
                         )
                     }
@@ -841,7 +842,7 @@ class MessageInputFragment : Fragment() {
 
         if (token == "") room = chatActivity.roomToken else room = token
 
-        chatActivity.chatViewModel.uploadFile(fileUri, room, chatActivity.currentConversation!!.displayName!!, metaData)
+        chatActivity.chatViewModel.uploadFile(fileUri, room, chatActivity.currentConversation!!.displayName, metaData)
     }
 
     private fun submitMessage(sendWithoutNotification: Boolean) {
