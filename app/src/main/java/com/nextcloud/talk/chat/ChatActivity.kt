@@ -51,9 +51,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
@@ -70,6 +73,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
+import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
@@ -209,7 +213,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.String
 import kotlin.collections.set
 import kotlin.math.roundToInt
 
@@ -568,7 +571,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
@@ -684,9 +687,21 @@ class ChatActivity :
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
                         setActionBarTitle()
-
                         checkShowCallButtons()
                         checkLobbyState()
+                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                            currentConversation?.status == "dnd"
+                        ) {
+                            conversationUser?.let { user ->
+                                val credentials = ApiUtils.getCredentials(user.username, user.token)
+                                chatViewModel.outOfOfficeStatusOfUser(
+                                    credentials!!,
+                                    user.baseUrl!!,
+                                    currentConversation!!.name
+                                )
+                            }
+                        }
+
                         updateRoomTimerHandler()
 
                         val urlForChatting =
@@ -1052,6 +1067,91 @@ class ChatActivity :
 
         chatViewModel.recordTouchObserver.observe(this) { y ->
             binding.voiceRecordingLock.y -= y
+        }
+
+        chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.OutOfOfficeUIState.Error -> {
+                    Log.e(TAG, "Error in outOfOfficeState", uiState.exception)
+                }
+                ChatViewModel.OutOfOfficeUIState.None -> {
+                }
+                is ChatViewModel.OutOfOfficeUIState.Success -> {
+                    binding.outOfOfficeContainer.visibility = View.VISIBLE
+                    val backgroundColor = ContextCompat.getColor(this, R.color.colorPrimary)
+                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.2f * 255).toInt())
+                    binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
+
+                    val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
+                    val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
+
+                    val startDate = Date(startDateTimestamp * 1000)
+                    val endDate = Date(endDateTimestamp * 1000)
+
+                    if (dateUtils.isSameDate(startDate, endDate)) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence_for_one_day),
+                                uiState.userAbsence.userId
+                            )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
+                            View.GONE
+                    } else {
+                        val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                        val startDateString = dateFormatter.format(startDate)
+                        val endDateString = dateFormatter.format(endDate)
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence),
+                                uiState.userAbsence.userId
+                            )
+
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text =
+                            "$startDateString - $endDateString"
+                    }
+
+                    if (uiState.userAbsence.replacementUserDisplayName != null) {
+                        var imageUri = Uri.parse(
+                            ApiUtils.getUrlForAvatar(
+                                conversationUser?.baseUrl,
+                                uiState.userAbsence
+                                    .replacementUserId,
+                                false
+                            )
+                        )
+                        if (DisplayUtils.isDarkModeOn(context)) {
+                            imageUri = Uri.parse(
+                                ApiUtils.getUrlForAvatarDarkTheme(
+                                    conversationUser?.baseUrl,
+                                    uiState
+                                        .userAbsence
+                                        .replacementUserId,
+                                    false
+                                )
+                            )
+                        }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
+                            context.resources.getString(R.string.user_absence_replacement)
+                        binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
+                            .load(imageUri) {
+                                transformations(CircleCropTransformation())
+                                placeholder(R.drawable.account_circle_96dp)
+                                error(R.drawable.account_circle_96dp)
+                                crossfade(true)
+                            }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
+                            uiState.userAbsence.replacementUserDisplayName
+                    } else {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility =
+                            View.GONE
+                    }
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text =
+                        uiState.userAbsence.message
+                    binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
+                        joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                    }
+                }
+            }
         }
     }
 
@@ -3806,6 +3906,24 @@ class ChatActivity :
         }
         val shareIntent = Intent.createChooser(sendIntent, getString(R.string.share))
         startActivity(shareIntent)
+    }
+
+    fun joinOneToOneConversation(userId: String) {
+        val apiVersion =
+            ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            apiVersion,
+            conversationUser?.baseUrl!!,
+            "1",
+            "users",
+            userId,
+            null
+        )
+        chatViewModel.createRoom(
+            credentials!!,
+            retrofitBucket.url!!,
+            retrofitBucket.queryMap!!
+        )
     }
 
     companion object {
