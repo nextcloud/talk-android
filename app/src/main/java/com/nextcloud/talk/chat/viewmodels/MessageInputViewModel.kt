@@ -151,8 +151,6 @@ class MessageInputViewModel @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
-        // TODO: add temporary message with ref id
-
         val referenceId = SendMessageUtils().generateReferenceId()
         Log.d(TAG, "Random SHA-256 Hash: $referenceId")
 
@@ -172,7 +170,6 @@ class MessageInputViewModel @Inject constructor(
                 }
             }
         }
-
 
         if (isQueueing) {
             val tempID = System.currentTimeMillis().toInt()
