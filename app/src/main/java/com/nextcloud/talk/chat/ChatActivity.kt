@@ -897,8 +897,7 @@ class ChatActivity :
         this.lifecycleScope.launch {
             chatViewModel.getRemoveMessageFlow
                 .onEach {
-                    adapter!!.delete(it)
-                    adapter!!.notifyDataSetChanged()
+                    removeMessageById(it.id)
                 }
                 .collect()
         }
@@ -1044,9 +1043,15 @@ class ChatActivity :
     }
 
     private fun removeUnreadMessagesMarker() {
-        val index = adapter?.getMessagePositionById(UNREAD_MESSAGES_MARKER_ID.toString())
+        removeMessageById(UNREAD_MESSAGES_MARKER_ID.toString())
+    }
+
+    // do not use adapter.deleteById() as it seems to contain a bug! Use this method instead!
+    private fun removeMessageById(idToDelete: String) {
+        val index = adapter?.getMessagePositionById(idToDelete)
         if (index != null && index != -1) {
             adapter?.items?.removeAt(index)
+            adapter?.notifyItemRemoved(index)
         }
     }
 

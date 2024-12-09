@@ -99,6 +99,7 @@ interface ChatMessagesDao {
         SELECT * 
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId AND id >= :messageId 
+        AND isTemporary = 0
         ORDER BY timestamp ASC, id ASC
         """
     )
@@ -109,6 +110,7 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id < :messageId
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
@@ -125,6 +127,7 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id <= :messageId
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
@@ -141,6 +144,7 @@ interface ChatMessagesDao {
         SELECT COUNT(*) 
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id BETWEEN :newestMessageId AND :oldestMessageId
         """
     )

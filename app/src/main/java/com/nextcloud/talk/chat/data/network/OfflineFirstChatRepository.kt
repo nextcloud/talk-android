@@ -178,14 +178,19 @@ class OfflineFirstChatRepository @Inject constructor(
             if (newestMessageIdFromDb.toInt() != 0) {
                 val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
 
-                // TODO: somewhere here also handle temp messages.   updateUiMessages(chatMessages, showUnreadMessagesMarker)
 
-
-                showMessagesBeforeAndEqual(
-                    internalConversationId,
+                val list = getMessagesBeforeAndEqual(
                     newestMessageIdFromDb,
+                    internalConversationId,
                     limit
                 )
+                if (list.isNotEmpty()) {
+                    updateUiMessages(
+                        chatMessages = list,
+                        lookIntoFuture = false,
+                        showUnreadMessagesMarker = false
+                    )
+                }
 
                 // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
                 // with them (otherwise there is a race condition).
@@ -302,7 +307,11 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        updateUiMessages(chatMessages, showUnreadMessagesMarker)
+                        updateUiMessages(
+                            chatMessages = chatMessages,
+                            lookIntoFuture = true,
+                            showUnreadMessagesMarker = showUnreadMessagesMarker
+                        )
                     } else {
                         Log.d(TAG, "resultsFromSync are null or empty")
                     }
@@ -325,25 +334,30 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    private suspend fun updateUiMessages(chatMessages : List<ChatMessage>, showUnreadMessagesMarker: Boolean) {
+    private suspend fun updateUiMessages(
+        chatMessages : List<ChatMessage>,
+        lookIntoFuture: Boolean,
+        showUnreadMessagesMarker: Boolean
+    ) {
+        // remove all temp messages from UI
         val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
             .map(ChatMessageEntity::asModel)
-
         oldTempMessages.forEach { _removeMessageFlow.emit(it) }
 
-        val tripleChatMessages = Triple(true, showUnreadMessagesMarker, chatMessages)
+        // add new messages to UI
+        val tripleChatMessages = Triple(lookIntoFuture, showUnreadMessagesMarker, chatMessages)
         _messageFlow.emit(tripleChatMessages)
 
-
+        // remove temp messages from DB that are now found in the new messages
         val chatMessagesReferenceIds = chatMessages.mapTo(HashSet(chatMessages.size)) { it.referenceId }
         val tempChatMessagesThatCanBeReplaced = oldTempMessages.filter { it.referenceId in chatMessagesReferenceIds }
-
         chatDao.deleteTempChatMessages(
             internalConversationId,
             tempChatMessagesThatCanBeReplaced.map { it.referenceId!! }
         )
 
+        // add the remaining temp messages to UI again
         val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
             .map(ChatMessageEntity::asModel)
@@ -719,31 +733,19 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    private suspend fun showMessagesBeforeAndEqual(internalConversationId: String, messageId: Long, limit: Int) {
-        suspend fun getMessagesBeforeAndEqual(
-            messageId: Long,
-            internalConversationId: String,
-            messageLimit: Int
-        ): List<ChatMessage> =
-            chatDao.getMessagesForConversationBeforeAndEqual(
-                internalConversationId,
-                messageId,
-                messageLimit
-            ).map {
-                it.map(ChatMessageEntity::asModel)
-            }.first()
-
-        val list = getMessagesBeforeAndEqual(
-            messageId,
+    suspend fun getMessagesBeforeAndEqual(
+        messageId: Long,
+        internalConversationId: String,
+        messageLimit: Int
+    ): List<ChatMessage> =
+        chatDao.getMessagesForConversationBeforeAndEqual(
             internalConversationId,
-            limit
-        )
+            messageId,
+            messageLimit
+        ).map {
+            it.map(ChatMessageEntity::asModel)
+        }.first()
 
-        if (list.isNotEmpty()) {
-            val triple = Triple(false, false, list)
-            _messageFlow.emit(triple)
-        }
-    }
 
     private suspend fun showMessagesBefore(internalConversationId: String, messageId: Long, limit: Int) {
         suspend fun getMessagesBefore(
@@ -848,9 +850,6 @@ class OfflineFirstChatRepository @Inject constructor(
                     message.toString(),
                     referenceId
                 )
-                // accessing internalConversationId creates UninitializedPropertyException because ChatViewModel and
-                // MessageInputViewModel use different instances of ChatRepository for now
-
 
                 chatDao.upsertChatMessage(tempChatMessageEntity)
 
@@ -860,9 +859,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 val triple = Triple(true, false, listOf(tempChatMessageModel))
                 _messageFlow.emit(triple)
-
-                // emit()
-
             } catch (e: Exception) {
                 Log.e(TAG, "Something went wrong when adding temporary message", e)
                 emit(Result.failure(e))
