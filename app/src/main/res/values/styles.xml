@@ -288,8 +288,4 @@
         <item name="cornerSize">50%</item>
     </style>
 
-        <style name="ScrollViewStyle">
-            <item name="android:background">@color/scrollview_out_of_office_background</item>
-        </style>
-
 </resources>
