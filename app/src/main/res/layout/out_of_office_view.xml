@@ -7,8 +7,8 @@
   -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:maxHeight="150dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="150dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/out_of_office_view">
 
@@ -44,13 +44,53 @@
             android:textSize="14sp"
             tools:text="Dec 5, 2024 - Dec 15, 2024"/>
 
-        <TextView
-            android:id="@+id/absenceReplacement"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:textSize="14sp"
-            tools:text="Replacement: Bob"/>
+            android:orientation="horizontal"
+            android:layout_marginTop ="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/absenceReplacement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="Replacement: "/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/avatar_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="16dp"
+                android:layout_gravity="center_vertical"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding = "4dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/replacement_user_avatar"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="4dp"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:id="@+id/replacement_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        tools:text="Bob" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
 
         <TextView
             android:id="@+id/userAbsenceLongMessage"
