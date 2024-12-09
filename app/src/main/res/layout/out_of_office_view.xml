@@ -18,9 +18,9 @@
         android:orientation="horizontal">
 
         <View
-        android:layout_width="6dp"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"/>
+            android:id="@+id/verticalLine"
+            android:layout_width="6dp"
+            android:layout_height="match_parent" />
 
     <LinearLayout
         android:layout_width="match_parent"
