@@ -26,7 +26,6 @@ apply plugin: 'com.github.spotbugs'
 apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
-apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdk 34
@@ -46,7 +45,6 @@ android {
         flavorDimensions "default"
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
-        javaCompileOptions.annotationProcessorOptions.arguments['dagger.hilt.disableModulesHaveInstallInCheck'] = 'true'
 
         productFlavors {
             // used for f-droid
@@ -354,9 +352,6 @@ dependencies {
 
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
     implementation("io.coil-kt:coil-compose:2.7.0")
-
-    implementation "com.google.dagger:hilt-android:$hilt_version"
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     androidTestImplementation(platform("androidx.compose:compose-bom:2024.11.00"))
