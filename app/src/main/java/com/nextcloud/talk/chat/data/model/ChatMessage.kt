@@ -115,11 +115,13 @@ data class ChatMessage(
 
     var openWhenDownloaded: Boolean = true,
 
-    var isTempMessage: Boolean = false,
+    var isTempMessage: Boolean = false, // TODO: replace logic from message drafts with logic from temp message sending
 
-    var tempMessageId: Int = -1,
+    var tempMessageId: Int = -1, // TODO: replace logic from message drafts with logic from temp message sending
 
-    var referenceId: String? = null
+    var referenceId: String? = null,
+
+    var sendingFailed: Boolean = true
 
 ) : MessageContentType,
     MessageContentType.Image {

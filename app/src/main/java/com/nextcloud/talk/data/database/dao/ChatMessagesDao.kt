@@ -48,6 +48,18 @@ interface ChatMessagesDao {
     )
     fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
 
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND referenceId = :referenceId
+        AND isTemporary = 1
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempMessageForConversation(internalConversationId: String, referenceId: String): Flow<ChatMessageEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
 

@@ -84,6 +84,32 @@
             app:layout_alignSelf="center"
             app:tint="@color/high_emphasis_text" />
 
+        <ImageView
+            android:id="@+id/sending_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/sending_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:indicatorColor="@color/colorPrimary"
+            app:indicatorSize="14dp"
+            app:trackColor="@color/colorPrimary"
+            app:trackThickness="2dp"
+            tools:visibility="visible"
+            />
+
         <include
             android:id="@+id/reactions"
             layout="@layout/reactions_inside_message" />
