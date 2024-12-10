@@ -13,10 +13,8 @@ import android.content.Context
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
-import androidx.core.content.ContextCompat
 import autodagger.AutoInjector
 import coil.load
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -212,19 +210,12 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                             viewThemeUtils
                         )
 
-                    if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                        viewThemeUtils.platform.colorViewBackground(
-                            binding.messageQuote.quoteColoredView,
-                            ColorRole.PRIMARY
-                        )
-                    } else {
-                        binding.messageQuote.quoteColoredView.setBackgroundColor(
-                            ContextCompat.getColor(
-                                binding.messageQuote.quoteColoredView.context,
-                                R.color.high_emphasis_text
-                            )
-                        )
-                    }
+                    viewThemeUtils.talk.themeParentMessage(
+                        parentChatMessage,
+                        message,
+                        binding.messageQuote.quoteColoredView,
+                        R.color.high_emphasis_text
+                    )
 
                     binding.messageQuote.quotedChatMessageView.setOnClickListener {
                         val chatActivity = commonMessageInterface as ChatActivity

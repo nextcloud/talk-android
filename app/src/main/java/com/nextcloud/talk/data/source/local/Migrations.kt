@@ -127,6 +127,7 @@ object Migrations {
         db.execSQL("ALTER TABLE ArbitraryStorage_dualPK RENAME TO ArbitraryStorage")
     }
 
+    @Suppress("Detekt.LongMethod")
     fun migrateToOfflineSupport(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE IF NOT EXISTS Conversations (" +

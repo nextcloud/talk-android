@@ -943,10 +943,6 @@ class SettingsActivity :
             binding.settingsShowNotificationWarning.visibility = View.GONE
         }
 
-        binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
-
-        binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
-
         if (CapabilitiesUtil.isReadStatusAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
             binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)
         } else {
@@ -954,15 +950,7 @@ class SettingsActivity :
         }
 
         setupTypingStatusSetting()
-
-        binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
-
-        binding.settingsProxyUseCredentialsSwitch.isChecked = appPreferences.proxyCredentials
-        binding.settingsProxyUseCredentials.setOnClickListener {
-            val isChecked = binding.settingsProxyUseCredentialsSwitch.isChecked
-            binding.settingsProxyUseCredentialsSwitch.isChecked = !isChecked
-            appPreferences.setProxyNeedsCredentials(!isChecked)
-        }
+        setupProxyUseSetting()
 
         binding.settingsScreenLockSwitch.isChecked = appPreferences.isScreenLocked
         binding.settingsScreenLock.setOnClickListener {
@@ -977,12 +965,31 @@ class SettingsActivity :
             appPreferences.setReadPrivacy(!isChecked)
         }
 
+        binding.settingsIncognitoKeyboardSwitch.isChecked = appPreferences.isKeyboardIncognito
         binding.settingsIncognitoKeyboard.setOnClickListener {
             val isChecked = binding.settingsIncognitoKeyboardSwitch.isChecked
             binding.settingsIncognitoKeyboardSwitch.isChecked = !isChecked
             appPreferences.setIncognitoKeyboard(!isChecked)
         }
 
+        setupPhoneBookIntegrationSetting()
+
+        binding.settingsScreenSecuritySwitch.isChecked = appPreferences.isScreenSecured
+        binding.settingsScreenSecurity.setOnClickListener {
+            val isChecked = binding.settingsScreenSecuritySwitch.isChecked
+            binding.settingsScreenSecuritySwitch.isChecked = !isChecked
+            appPreferences.setScreenSecurity(!isChecked)
+        }
+
+        binding.settingsTypingStatus.setOnClickListener {
+            val isChecked = binding.settingsTypingStatusSwitch.isChecked
+            binding.settingsTypingStatusSwitch.isChecked = !isChecked
+            appPreferences.setTypingStatus(!isChecked)
+        }
+    }
+
+    private fun setupPhoneBookIntegrationSetting() {
+        binding.settingsPhoneBookIntegrationSwitch.isChecked = appPreferences.isPhoneBookIntegrationEnabled
         binding.settingsPhoneBookIntegration.setOnClickListener {
             val isChecked = binding.settingsPhoneBookIntegrationSwitch.isChecked
             binding.settingsPhoneBookIntegrationSwitch.isChecked = !isChecked
@@ -995,17 +1002,14 @@ class SettingsActivity :
                 deleteAll()
             }
         }
+    }
 
-        binding.settingsScreenSecurity.setOnClickListener {
-            val isChecked = binding.settingsScreenSecuritySwitch.isChecked
-            binding.settingsScreenSecuritySwitch.isChecked = !isChecked
-            appPreferences.setScreenSecurity(!isChecked)
-        }
-
-        binding.settingsTypingStatus.setOnClickListener {
-            val isChecked = binding.settingsTypingStatusSwitch.isChecked
-            binding.settingsTypingStatusSwitch.isChecked = !isChecked
-            appPreferences.setTypingStatus(!isChecked)
+    private fun setupProxyUseSetting() {
+        binding.settingsProxyUseCredentialsSwitch.isChecked = appPreferences.proxyCredentials
+        binding.settingsProxyUseCredentials.setOnClickListener {
+            val isChecked = binding.settingsProxyUseCredentialsSwitch.isChecked
+            binding.settingsProxyUseCredentialsSwitch.isChecked = !isChecked
+            appPreferences.setProxyNeedsCredentials(!isChecked)
         }
     }
 
