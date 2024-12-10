@@ -62,7 +62,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
         withNetworkParams: Bundle
     ): Job
 
-    fun updateRoomMessages(roomToken: String, limit: Int)
+    suspend fun updateRoomMessages(internalConversationId: String, limit: Int)
 
     /**
      * Long polls the server for any updates to the chat, if found, it synchronizes

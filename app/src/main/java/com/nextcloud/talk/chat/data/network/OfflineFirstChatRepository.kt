@@ -291,22 +291,21 @@ class OfflineFirstChatRepository @Inject constructor(
             updateUiForLastCommonRead()
         }
 
-    override fun updateRoomMessages(roomToken: String, limit: Int) {
-        scope.launch {
-            Log.d(TAG, "---- updateRoomMessages ------------")
-            val fieldMap = getFieldMap(
-                lookIntoFuture = false,
-                timeout = 0,
-                includeLastKnown = false,
-                setReadMarker = true,
-                lastKnown = null,
-                limit = limit
-            )
+    override suspend fun updateRoomMessages(internalConversationId: String, limit: Int) {
+        val lastKnown = chatDao.getNewestMessageId(internalConversationId)
 
-            val networkParams = bundleOf()
-            networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
-            sync(networkParams)
-        }
+        Log.d(TAG, "---- updateRoomMessages ------------ with lastKnown: $lastKnown")
+        val fieldMap = getFieldMap(
+            lookIntoFuture = true,
+            timeout = 0,
+            includeLastKnown = false,
+            setReadMarker = true,
+            lastKnown = lastKnown.toInt(),
+        )
+
+        val networkParams = bundleOf()
+        networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+        sync(networkParams)
     }
 
     override fun initMessagePolling(initialMessageId: Long): Job =

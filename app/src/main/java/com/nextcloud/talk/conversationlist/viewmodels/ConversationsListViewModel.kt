@@ -10,6 +10,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.invitation.data.InvitationsModel
@@ -17,12 +19,15 @@ import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
@@ -88,10 +93,41 @@ class ConversationsListViewModel @Inject constructor(
         repository.getRooms()
     }
 
-    fun updateRoomMessages(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
+    fun updateRoomMessages(credentials: String, oldList: MutableList<AbstractFlexibleItem<*>>, list: List<ConversationModel>) {
+        val previous = oldList.associate {
+            (it as ConversationItem)
+            val unreadMessages = it.model.unreadMessages
+            val roomToken = it.model.token
+            Pair(roomToken, unreadMessages)
+        }
+
+        val current = list.associateWith { model ->
+            val unreadMessages = model.unreadMessages
+            unreadMessages
+        }
+
+        val result = current.map { (model, unreadMessages) ->
+            val previousUnreadMessages = previous[model.token] // Check if this conversation exists in last list
+            previousUnreadMessages?.let {
+                Pair(model, unreadMessages - previousUnreadMessages)
+            }
+        }.filterNotNull()
+        val baseUrl = userManager.currentUser.blockingGet().baseUrl!!
+
+        viewModelScope.launch(Dispatchers.IO) {
+            for (pair in result) {
+                if (pair.second > 0) {
+                    updateRoomMessage(pair.first, pair.second, credentials, baseUrl)
+                }
+            }
+        }
+
+    }
+
+    private suspend fun updateRoomMessage(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
         val urlForChatting = ApiUtils.getUrlForChat(1, baseUrl, model.token) // FIXME v1?
         chatRepository.setData(model, credentials, urlForChatting)
-        chatRepository.updateRoomMessages(model.token, limit)
+        chatRepository.updateRoomMessages(model.internalId, limit)
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
