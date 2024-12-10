@@ -215,14 +215,11 @@ class OutcomingDeckCardViewHolder(
                     binding.messageQuote.quotedMessageAuthor
                         .setTextColor(ContextCompat.getColor(context, R.color.textColorMaxContrast))
 
-                    if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                        viewThemeUtils.platform.colorViewBackground(
-                            binding.messageQuote.quoteColoredView,
-                            ColorRole.PRIMARY
-                        )
-                    } else {
-                        binding.messageQuote.quoteColoredView.setBackgroundResource(R.color.textColorMaxContrast)
-                    }
+                    viewThemeUtils.talk.themeParentMessage(
+                        parentChatMessage,
+                        message,
+                        binding.messageQuote.quoteColoredView
+                    )
 
                     binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
                 } catch (e: Exception) {
