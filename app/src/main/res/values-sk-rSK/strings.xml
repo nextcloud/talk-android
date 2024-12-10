@@ -4,6 +4,7 @@
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
+    <string name="archive_conversation">Archivovať Konverzáciu</string>
     <string name="archived">Archivované</string>
     <string name="audio_call">Audio hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -14,6 +15,10 @@
     <string name="automatic_status_set">Váš status bol nastavený automaticky</string>
     <string name="avatar">Avatar</string>
     <string name="away">Preč</string>
+    <string name="back_button">Tlačítko späť</string>
+    <string name="ban">Ban</string>
+    <string name="ban_participant">Udeliť účastníkovy ban</string>
+    <string name="bans_list">Zoznam banov</string>
     <string name="calendar">Kalendár</string>
     <string name="call_more_actions_dialog_headline">Pokročilé možnosti hovoru</string>
     <string name="call_running_since_one_hour">Hovor už trvá viac ako jednu hodinu.</string>
@@ -23,7 +28,10 @@
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>
     <string name="close">Zatvoriť</string>
+    <string name="close_icon">Ikona Zavrieť</string>
     <string name="connection_established">Pripojenie vytvorené</string>
+    <string name="connection_lost">Pripojenie bolo stratené</string>
+    <string name="connection_lost_queued">Pripojenie bolo stratené - %1$d čaká v rade</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
     <string name="conversation_is_read_only">Konverzácia je len na čítanie</string>
     <string name="conversations">Konverzácie</string>
@@ -50,6 +58,7 @@
     <string name="fourHours">4 hodiny</string>
     <string name="get_invitations_error">Nepodarilo sa načítať čakajúce pozvánky</string>
     <string name="hint_edited_message">(editované)</string>
+    <string name="internal_note">Interná poznámka</string>
     <string name="invisible">Neviditeľný</string>
     <string name="languages_error_message">Jazyky sa nedali získať</string>
     <string name="languages_error_title">Získanie zlyhalo</string>
@@ -356,6 +365,7 @@
     <string name="nc_remove_from_favorites">Odstrániť z obľúbených</string>
     <string name="nc_remove_group_and_members">Odobrať skupinu a členov</string>
     <string name="nc_remove_participant">Odobrať účastníka</string>
+    <string name="nc_remove_password">Odobrať heslo</string>
     <string name="nc_remove_team_and_members">Odstrániť tím a členov.</string>
     <string name="nc_rename">Premenovať konverzáciu</string>
     <string name="nc_rename_confirm">Premenovať</string>
@@ -385,6 +395,8 @@
     <string name="nc_sent_an_audio_you">Odoslali ste zvuk.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s poslal(a) obrázok.</string>
     <string name="nc_sent_an_image_you">Odoslali ste obrázok.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s poslal kartu deck</string>
+    <string name="nc_sent_deck_card_you">Poslali ste kartu deck</string>
     <string name="nc_sent_location" formatted="true">%1$s poslal umiestnenie.</string>
     <string name="nc_sent_location_you">Odoslali ste súčasnú polohu.</string>
     <string name="nc_sent_poll" formatted="true">%1$s odoslal/a anketu.</string>
@@ -406,6 +418,7 @@
     <string name="nc_server_url">Adresa servera https://…</string>
     <string name="nc_server_version">%1$spracuje iba s %2$s13 a vyššie</string>
     <string name="nc_set_new_password">Vytvoriť nové heslo</string>
+    <string name="nc_set_password">Nastaviť Heslo</string>
     <string name="nc_settings">Nastavenia</string>
     <string name="nc_settings_account_updated">Namiesto pridania nového účtu, bol aktualizovaný existujúci účet</string>
     <string name="nc_settings_advanced_title">Rozšírené</string>
@@ -559,6 +572,7 @@
     <string name="scope_toggle">Prepnúť prehľad</string>
     <string name="scope_toggle_description">Zmeniť úroveň súkromia pre %1$s</string>
     <string name="scroll_to_bottom">Posuňte sa nadol</string>
+    <string name="search_icon">Ikona vyhľadávania</string>
     <string name="secondsAgo">sekúnd dozadu</string>
     <string name="see_similar_system_messages">Zobraziť %1$s podobné správy</string>
     <string name="selected_list_item">Vybrané</string>
@@ -579,6 +593,7 @@
     <string name="shared_items_poll">Anketa</string>
     <string name="shared_items_recording">Nahrávanie hovoru</string>
     <string name="shared_items_voice">Odkazová schránka</string>
+    <string name="show_ban_reason">Zobraziť dovod ban-u</string>
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
     <string name="started_a_call">začal(a) hovor</string>
