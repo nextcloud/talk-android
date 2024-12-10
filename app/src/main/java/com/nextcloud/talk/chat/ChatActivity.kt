@@ -556,7 +556,7 @@ class ChatActivity :
             list.forEachIndexed { _, qMsg ->
                 val temporaryChatMessage = ChatMessage()
                 temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
-                temporaryChatMessage.actorId = "-3"
+                temporaryChatMessage.actorId = TEMPORARY_MESSAGE_ID_STRING
                 temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
                 temporaryChatMessage.message = qMsg.message.toString()
                 temporaryChatMessage.tempMessageId = qMsg.id
@@ -770,6 +770,8 @@ class ChatActivity :
                 }
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
+                    binding.messagesListView.smoothScrollToPosition(0)
+
                     // if (state.e is HttpException) {
                     //     val code = state.e.code()
                     //     if (code.toString().startsWith("2")) {
@@ -2671,7 +2673,11 @@ class ChatActivity :
         if (message.item is ChatMessage) {
             val chatMessage = message.item as ChatMessage
 
-            if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
+            if (chatMessage.sendingFailed) {
+                chatMessage.readStatus = ReadStatus.FAILED
+            } else if (chatMessage.isTempMessage) {
+                chatMessage.readStatus = ReadStatus.SENDING
+            } else if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
                 chatMessage.readStatus = ReadStatus.READ
             } else {
                 chatMessage.readStatus = ReadStatus.SENT
@@ -3177,7 +3183,7 @@ class ChatActivity :
         val message = iMessage as ChatMessage
         if (hasVisibleItems(message) &&
             !isSystemMessage(message) &&
-            message.id != "-3"
+            message.id != TEMPORARY_MESSAGE_ID_STRING
         ) {
             MessageActionsDialog(
                 this,
@@ -3592,7 +3598,7 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            CONTENT_TYPE_TEMP -> message.id == "-3"
+            CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false
