@@ -388,7 +388,7 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     // Refreshes conversation messages in the background asynchronously
-                    list.refreshMessages()
+                    conversationsListViewModel.updateRoomMessages(credentials!!, conversationItems, list)
 
                     // Update Conversations
                     conversationItems.clear()
@@ -461,34 +461,6 @@ class ConversationsListActivity :
         setFilterableItems(newItems)
 
         updateFilterConversationButtonColor()
-    }
-
-    private fun List<ConversationModel>.refreshMessages() {
-        val previous = conversationItems.associate {
-            (it as ConversationItem)
-            val unreadMessages = it.model.unreadMessages
-            val roomToken = it.model.token
-            Pair(roomToken, unreadMessages)
-        }
-
-        val current = this.associateWith { model ->
-            val unreadMessages = model.unreadMessages
-            unreadMessages
-        }
-
-        val result = current.map { (model, unreadMessages) ->
-            val previousUnreadMessages = previous[model.token] // Check if this conversation exists in last list
-            previousUnreadMessages?.let {
-                Pair(model, unreadMessages - previousUnreadMessages)
-            }
-        }.filterNotNull()
-
-        val baseUrl = userManager.currentUser.blockingGet().baseUrl!!
-        for (pair in result) {
-            if (pair.second > 0) {
-                conversationsListViewModel.updateRoomMessages(pair.first, pair.second, credentials!!, baseUrl)
-            }
-        }
     }
 
     private fun filter(conversation: ConversationModel): Boolean {
