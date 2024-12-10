@@ -1082,11 +1082,14 @@ class ChatActivity :
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
 
+                    val backgroundColor = colorUtil.getNullSafeColorWithFallbackRes(
+                        conversationUser!!.capabilities!!.themingCapability!!.color,
+                        R.color.colorPrimary
+                    )
 
-                    val backgroundColor = colorUtil.getNullSafeColorWithFallbackRes(conversationUser!!.capabilities
-                        !!.themingCapability!!.color, R.color.colorPrimary)
-
-                    binding.outOfOfficeContainer.findViewById<View>(R.id.verticalLine).setBackgroundColor(backgroundColor)
+                    binding.outOfOfficeContainer.findViewById<View>(
+                        R.id.verticalLine
+                    ).setBackgroundColor(backgroundColor)
                     val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.3f * 255).toInt())
                     binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
 
