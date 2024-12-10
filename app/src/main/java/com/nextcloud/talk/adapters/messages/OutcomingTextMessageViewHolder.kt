@@ -115,26 +115,19 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-        val readStatusDrawableInt = when (message.readStatus) {
-            ReadStatus.READ -> R.drawable.ic_check_all
-            ReadStatus.SENT -> R.drawable.ic_check
+
+        when (message.readStatus) {
+            ReadStatus.READ -> updateReadStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
+            ReadStatus.SENT -> updateReadStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
+            ReadStatus.SENDING -> updateSendingStatus()
+            ReadStatus.FAILED -> updateReadStatus(
+                R.drawable.ic_baseline_close_24,
+                "failed"
+            )
             else -> null
         }
 
-        val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context.resources?.getString(R.string.nc_message_sent)
-            else -> null
-        }
 
-        readStatusDrawableInt?.let { drawableInt ->
-            ResourcesCompat.getDrawable(context.resources, drawableInt, null)?.let {
-                binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
-            }
-        }
-
-        binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
@@ -148,6 +141,27 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             viewThemeUtils
         )
     }
+
+    private fun updateReadStatus(readStatusDrawableInt: Int, description: String?) {
+        binding.sendingProgress.visibility = View.GONE
+        binding.checkMark.visibility = View.VISIBLE
+        readStatusDrawableInt.let { drawableInt ->
+            ResourcesCompat.getDrawable(context.resources, drawableInt, null)?.let {
+                binding.checkMark.setImageDrawable(it)
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
+            }
+        }
+        binding.checkMark.contentDescription = description
+    }
+
+    private fun updateSendingStatus() {
+        binding.sendingProgress.visibility = View.VISIBLE
+        binding.checkMark.visibility = View.GONE
+
+        viewThemeUtils.material.colorProgressBar(binding.sendingProgress)
+    }
+
+
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
         commonMessageInterface.onLongClickReactions(chatMessage)
