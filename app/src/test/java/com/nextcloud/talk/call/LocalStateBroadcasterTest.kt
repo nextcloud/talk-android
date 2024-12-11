@@ -13,6 +13,18 @@ import org.mockito.Mockito
 
 class LocalStateBroadcasterTest {
 
+    private class LocalStateBroadcaster(
+        localCallParticipantModel: LocalCallParticipantModel?,
+        messageSender: MessageSender?
+    ) : com.nextcloud.talk.call.LocalStateBroadcaster(localCallParticipantModel, messageSender) {
+
+        override fun handleCallParticipantAdded(callParticipantModel: CallParticipantModel) {
+        }
+
+        override fun handleCallParticipantRemoved(callParticipantModel: CallParticipantModel) {
+        }
+    }
+
     private var localCallParticipantModel: MutableLocalCallParticipantModel? = null
     private var mockedMessageSender: MessageSender? = null
 
