@@ -17,8 +17,12 @@ import java.util.Objects;
  * all the participants in the call. Note that the LocalStateBroadcaster does not check whether the local participant
  * is actually in the call or not; it is expected that the LocalStateBroadcaster will be created and destroyed when the
  * local participant joins and leaves the call.
+ * <p>
+ * The LocalStateBroadcaster also sends the current state to remote participants when they join (which implicitly
+ * sends it to all remote participants when the local participant joins the call) so they can set an initial state
+ * for the local participant.
  */
-public class LocalStateBroadcaster {
+public abstract class LocalStateBroadcaster {
 
     private final LocalCallParticipantModel localCallParticipantModel;
 
@@ -73,7 +77,10 @@ public class LocalStateBroadcaster {
         this.localCallParticipantModel.removeObserver(localCallParticipantModelObserver);
     }
 
-    private DataChannelMessage getDataChannelMessageForAudioState() {
+    public abstract void handleCallParticipantAdded(CallParticipantModel callParticipantModel);
+    public abstract void handleCallParticipantRemoved(CallParticipantModel callParticipantModel);
+
+    protected DataChannelMessage getDataChannelMessageForAudioState() {
         String type = "audioOff";
         if (localCallParticipantModel.isAudioEnabled() != null && localCallParticipantModel.isAudioEnabled()) {
             type = "audioOn";
@@ -82,7 +89,7 @@ public class LocalStateBroadcaster {
         return new DataChannelMessage(type);
     }
 
-    private DataChannelMessage getDataChannelMessageForSpeakingState() {
+    protected DataChannelMessage getDataChannelMessageForSpeakingState() {
         String type = "stoppedSpeaking";
         if (localCallParticipantModel.isSpeaking() != null && localCallParticipantModel.isSpeaking()) {
             type = "speaking";
@@ -91,7 +98,7 @@ public class LocalStateBroadcaster {
         return new DataChannelMessage(type);
     }
 
-    private DataChannelMessage getDataChannelMessageForVideoState() {
+    protected DataChannelMessage getDataChannelMessageForVideoState() {
         String type = "videoOff";
         if (localCallParticipantModel.isVideoEnabled() != null && localCallParticipantModel.isVideoEnabled()) {
             type = "videoOn";
