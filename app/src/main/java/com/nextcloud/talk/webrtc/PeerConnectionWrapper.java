@@ -329,22 +329,6 @@ public class PeerConnectionWrapper {
         return sessionId;
     }
 
-    private void sendInitialMediaStatus() {
-        if (localStream != null) {
-            if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
-                send(new DataChannelMessage("videoOn"));
-            } else {
-                send(new DataChannelMessage("videoOff"));
-            }
-
-            if (localStream.audioTracks.size() == 1 && localStream.audioTracks.get(0).enabled()) {
-                send(new DataChannelMessage("audioOn"));
-            } else {
-                send(new DataChannelMessage("audioOff"));
-            }
-        }
-    }
-
     public boolean isMCUPublisher() {
         return isMCUPublisher;
     }
@@ -431,10 +415,6 @@ public class PeerConnectionWrapper {
                         sendWithoutQueuing(dataChannel, dataChannelMessage);
                     }
                     pendingDataChannelMessages.clear();
-                }
-
-                if (dataChannel.state() == DataChannel.State.OPEN) {
-                    sendInitialMediaStatus();
                 }
             }
         }
@@ -523,11 +503,6 @@ public class PeerConnectionWrapper {
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
-            if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
-                if (hasInitiated) {
-                    sendInitialMediaStatus();
-                }
-            }
 
             peerConnectionNotifier.notifyIceConnectionStateChanged(iceConnectionState);
         }

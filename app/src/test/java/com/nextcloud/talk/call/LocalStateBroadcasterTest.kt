@@ -14,6 +14,20 @@ import org.mockito.Mockito
 @Suppress("TooManyFunctions")
 class LocalStateBroadcasterTest {
 
+    private class LocalStateBroadcaster(
+        localCallParticipantModel: LocalCallParticipantModel?,
+        messageSender: MessageSender?
+    ) : com.nextcloud.talk.call.LocalStateBroadcaster(localCallParticipantModel, messageSender) {
+
+        override fun handleCallParticipantAdded(callParticipantModel: CallParticipantModel) {
+            // Not used in base class tests
+        }
+
+        override fun handleCallParticipantRemoved(callParticipantModel: CallParticipantModel) {
+            // Not used in base class tests
+        }
+    }
+
     private var localCallParticipantModel: MutableLocalCallParticipantModel? = null
     private var mockedMessageSender: MessageSender? = null
 

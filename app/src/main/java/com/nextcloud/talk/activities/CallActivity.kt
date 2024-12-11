@@ -64,6 +64,8 @@ import com.nextcloud.talk.call.CallParticipant
 import com.nextcloud.talk.call.CallParticipantList
 import com.nextcloud.talk.call.CallParticipantModel
 import com.nextcloud.talk.call.LocalStateBroadcaster
+import com.nextcloud.talk.call.LocalStateBroadcasterMcu
+import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
 import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
@@ -1728,7 +1730,14 @@ class CallActivity : CallBaseActivity() {
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
 
-        localStateBroadcaster = LocalStateBroadcaster(localCallParticipantModel, messageSender)
+        if (hasMCU) {
+            localStateBroadcaster = LocalStateBroadcasterMcu(localCallParticipantModel, messageSender)
+        } else {
+            localStateBroadcaster = LocalStateBroadcasterNoMcu(
+                localCallParticipantModel,
+                messageSender as MessageSenderNoMcu
+            )
+        }
 
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         ncApi!!.joinCall(
@@ -2429,6 +2438,9 @@ class CallActivity : CallBaseActivity() {
         callParticipantEventDisplayers[sessionId] = callParticipantEventDisplayer
         callParticipantModel.addObserver(callParticipantEventDisplayer, callParticipantEventDisplayersHandler)
         runOnUiThread { addParticipantDisplayItem(callParticipantModel, "video") }
+
+        localStateBroadcaster!!.handleCallParticipantAdded(callParticipant.callParticipantModel)
+
         return callParticipant
     }
 
@@ -2454,6 +2466,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun removeCallParticipant(sessionId: String?) {
         val callParticipant = callParticipants.remove(sessionId) ?: return
+
+        localStateBroadcaster!!.handleCallParticipantRemoved(callParticipant.callParticipantModel)
+
         val screenParticipantDisplayItemManager = screenParticipantDisplayItemManagers.remove(sessionId)
         callParticipant.callParticipantModel.removeObserver(screenParticipantDisplayItemManager)
         val callParticipantEventDisplayer = callParticipantEventDisplayers.remove(sessionId)
