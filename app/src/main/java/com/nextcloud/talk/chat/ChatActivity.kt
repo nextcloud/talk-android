@@ -2934,12 +2934,7 @@ class ChatActivity :
     ) {
         if (message.item is ChatMessage) {
             val chatMessage = message.item as ChatMessage
-
-            if (chatMessage.sendingFailed) {
-                chatMessage.readStatus = ReadStatus.FAILED
-            } else if (chatMessage.isTempMessage) {
-                chatMessage.readStatus = ReadStatus.SENDING
-            } else if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
+            if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
                 chatMessage.readStatus = ReadStatus.READ
             } else {
                 chatMessage.readStatus = ReadStatus.SENT
@@ -3870,6 +3865,7 @@ class ChatActivity :
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
             CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
+            // CONTENT_TYPE_TEMP -> message.readStatus == ReadStatus.FAILED
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false

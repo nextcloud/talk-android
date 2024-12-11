@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -23,6 +24,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -57,6 +59,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
@@ -115,18 +120,25 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
 
 
-        when (message.readStatus) {
-            ReadStatus.READ -> updateReadStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
-            ReadStatus.SENT -> updateReadStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
-            ReadStatus.SENDING -> updateSendingStatus()
-            ReadStatus.FAILED -> updateReadStatus(
-                R.drawable.ic_baseline_close_24,
-                "failed"
-            )
-            else -> null
-        }
-
-
+        // CoroutineScope(Dispatchers.Main).launch {
+            if (message.sendingFailed) {
+                updateStatus(
+                    R.drawable.baseline_report_problem_24,
+                    "failed"
+                )
+            // } else if (message.isTempMessage && !networkMonitor.isOnline.first()) {
+            //     updateStatus(
+            //         R.drawable.ic_signal_wifi_off_white_24dp,
+            //         "offline"
+            //     )
+            } else if (message.isTempMessage) {
+                updateSendingStatus()
+            } else if(message.readStatus == ReadStatus.READ){
+                updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
+            } else if(message.readStatus == ReadStatus.SENT) {
+                updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
+            }
+        // }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
@@ -141,7 +153,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         )
     }
 
-    private fun updateReadStatus(readStatusDrawableInt: Int, description: String?) {
+    private fun updateStatus(readStatusDrawableInt: Int, description: String?) {
         binding.sendingProgress.visibility = View.GONE
         binding.checkMark.visibility = View.VISIBLE
         readStatusDrawableInt.let { drawableInt ->

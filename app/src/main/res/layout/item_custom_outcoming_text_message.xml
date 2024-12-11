@@ -16,6 +16,42 @@
     android:layout_marginRight="16dp"
     android:layout_marginBottom="2dp">
 
+<!--    <LinearLayout-->
+<!--        android:id="@+id/temp_msg_actions"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:orientation="horizontal"-->
+<!--        android:layout_below="@id/bubble"-->
+<!--        android:layout_alignParentEnd="true">-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/temp_msg_edit"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:contentDescription="@null"-->
+<!--            android:src="@drawable/ic_edit"-->
+<!--            android:paddingHorizontal="@dimen/standard_half_padding"-->
+<!--            android:layout_marginEnd="@dimen/standard_quarter_margin" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/temp_msg_delete"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:contentDescription="@null"-->
+<!--            android:src="@drawable/ic_delete"-->
+<!--            android:paddingHorizontal="@dimen/standard_half_padding"-->
+<!--            android:layout_marginStart="@dimen/standard_quarter_margin" />-->
+
+<!--        <ImageView-->
+<!--            android:id="@+id/temp_msg_resend"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:contentDescription="@null"-->
+<!--            android:src="@drawable/baseline_replay_24"-->
+<!--            android:paddingHorizontal="@dimen/standard_half_padding"-->
+<!--            android:layout_marginStart="@dimen/standard_quarter_margin" />-->
+<!--    </LinearLayout>-->
+
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
         android:layout_width="wrap_content"
@@ -43,6 +79,12 @@
             android:textIsSelectable="false"
             tools:text="Talk to you later!" />
 
+<!--        <com.google.android.material.textfield.TextInputEditText-->
+<!--            android:id="@+id/message_edit"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:visibility="gone"-->
+<!--            tools:visibility="visible"/>-->
 
         <TextView
             android:id="@id/messageTime"
@@ -76,13 +118,14 @@
 
         <ImageView
             android:id="@+id/checkMark"
-            android:layout_width="wrap_content"
+            android:layout_width="25dp"
             android:layout_height="@dimen/message_bubble_checkmark_height"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
             android:contentDescription="@null"
             app:layout_alignSelf="center"
-            app:tint="@color/high_emphasis_text" />
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/ic_check_all" />
 
         <ImageView
             android:id="@+id/sending_failed"
@@ -92,14 +135,16 @@
             android:layout_marginStart="8dp"
             android:contentDescription="@null"
             app:layout_alignSelf="center"
-            app:tint="@color/high_emphasis_text" />
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/ic_warning_white"/>
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:id="@+id/sending_progress"
-            android:layout_width="wrap_content"
+            android:layout_width="25dp"
             android:layout_height="@dimen/message_bubble_checkmark_height"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:contentDescription="@null"
             android:indeterminate="true"
             android:visibility="gone"
