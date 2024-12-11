@@ -120,17 +120,17 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
 
 
-        // CoroutineScope(Dispatchers.Main).launch {
+        CoroutineScope(Dispatchers.Main).launch {
             if (message.sendingFailed) {
                 updateStatus(
                     R.drawable.baseline_report_problem_24,
                     "failed"
                 )
-            // } else if (message.isTempMessage && !networkMonitor.isOnline.first()) {
-            //     updateStatus(
-            //         R.drawable.ic_signal_wifi_off_white_24dp,
-            //         "offline"
-            //     )
+            } else if (message.isTempMessage && !networkMonitor.isOnline.first()) {
+                updateStatus(
+                    R.drawable.ic_signal_wifi_off_white_24dp,
+                    "offline"
+                )
             } else if (message.isTempMessage) {
                 updateSendingStatus()
             } else if(message.readStatus == ReadStatus.READ){
@@ -138,7 +138,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             } else if(message.readStatus == ReadStatus.SENT) {
                 updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
             }
-        // }
+        }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
