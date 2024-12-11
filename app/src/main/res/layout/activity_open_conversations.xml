@@ -55,7 +55,7 @@
                     android:id="@+id/editText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Search"
+                    android:hint="@string/nc_search"
                     android:textColorHint="@color/low_emphasis_text"
                     android:textColor = "@color/high_emphasis_text"/>
             </com.google.android.material.textfield.TextInputLayout>
