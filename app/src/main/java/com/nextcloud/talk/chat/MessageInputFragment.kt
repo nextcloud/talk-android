@@ -158,7 +158,6 @@ class MessageInputFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        chatActivity.messageInputViewModel.restoreMessageQueue(conversationInternalId)
     }
 
     override fun onDestroyView() {
@@ -199,7 +198,7 @@ class MessageInputFragment : Fragment() {
                     wasOnline = !binding.fragmentConnectionLost.isShown
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                    handleMessageQueue(isOnline)
+                    // handleMessageQueue(isOnline)
                     handleUI(isOnline, connectionGained)
                 }.collect()
         }
@@ -292,22 +291,22 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun handleMessageQueue(isOnline: Boolean) {
-        if (isOnline) {
-            chatActivity.messageInputViewModel.switchToMessageQueue(false)
-            chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
-                conversationInternalId,
-                chatActivity.conversationUser!!.getCredentials(),
-                ApiUtils.getUrlForChat(
-                    chatActivity.chatApiVersion,
-                    chatActivity.conversationUser!!.baseUrl!!,
-                    chatActivity.roomToken
-                )
-            )
-        } else {
-            chatActivity.messageInputViewModel.switchToMessageQueue(true)
-        }
-    }
+    // private fun handleMessageQueue(isOnline: Boolean) {
+    //     if (isOnline) {
+    //         chatActivity.messageInputViewModel.switchToMessageQueue(false)
+    //         chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
+    //             conversationInternalId,
+    //             chatActivity.conversationUser!!.getCredentials(),
+    //             ApiUtils.getUrlForChat(
+    //                 chatActivity.chatApiVersion,
+    //                 chatActivity.conversationUser!!.baseUrl!!,
+    //                 chatActivity.roomToken
+    //             )
+    //         )
+    //     } else {
+    //         chatActivity.messageInputViewModel.switchToMessageQueue(true)
+    //     }
+    // }
 
     private fun restoreState() {
         if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {

@@ -55,16 +55,16 @@ class MessageInputViewModel @Inject constructor(
         chatRepository = chatMessageRepository
     }
 
-    data class QueuedMessage(
-        val id: Int,
-        var message: CharSequence? = null,
-        val displayName: String? = null,
-        val replyTo: Int? = null,
-        val sendWithoutNotification: Boolean? = null
-    )
+    // data class QueuedMessage(
+    //     val id: Int,
+    //     var message: CharSequence? = null,
+    //     val displayName: String? = null,
+    //     val replyTo: Int? = null,
+    //     val sendWithoutNotification: Boolean? = null
+    // )
 
-    private var isQueueing: Boolean = false
-    private var messageQueue: MutableList<QueuedMessage> = mutableListOf()
+    // private var isQueueing: Boolean = false
+    // private var messageQueue: MutableList<QueuedMessage> = mutableListOf()
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -129,13 +129,13 @@ class MessageInputViewModel @Inject constructor(
     val isVoicePreviewPlaying: LiveData<Boolean>
         get() = _isVoicePreviewPlaying
 
-    private val _messageQueueSizeFlow = MutableStateFlow(messageQueue.size)
+    private val _messageQueueSizeFlow = MutableStateFlow(666)
     val messageQueueSizeFlow: LiveData<Int>
         get() = _messageQueueSizeFlow.asLiveData()
 
-    private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
-    val messageQueueFlow: LiveData<List<QueuedMessage>>
-        get() = _messageQueueFlow
+    // private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
+    // val messageQueueFlow: LiveData<List<QueuedMessage>>
+    //     get() = _messageQueueFlow
 
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
@@ -171,16 +171,16 @@ class MessageInputViewModel @Inject constructor(
             }
         }
 
-        if (isQueueing) {
-            val tempID = System.currentTimeMillis().toInt()
-            val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
-            messageQueue = appPreferences.getMessageQueue(internalId)
-            messageQueue.add(qMsg)
-            appPreferences.saveMessageQueue(internalId, messageQueue)
-            _messageQueueSizeFlow.update { messageQueue.size }
-            _messageQueueFlow.postValue(listOf(qMsg))
-            return
-        }
+        // if (isQueueing) {
+        //     val tempID = System.currentTimeMillis().toInt()
+        //     val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
+        //     messageQueue = appPreferences.getMessageQueue(internalId)
+        //     messageQueue.add(qMsg)
+        //     appPreferences.saveMessageQueue(internalId, messageQueue)
+        //     _messageQueueSizeFlow.update { messageQueue.size }
+        //     _messageQueueFlow.postValue(listOf(qMsg))
+        //     return
+        // }
 
         viewModelScope.launch {
             chatRepository.sendChatMessage(
@@ -268,68 +268,68 @@ class MessageInputViewModel @Inject constructor(
         _getRecordingTime.postValue(time)
     }
 
-    fun sendAndEmptyMessageQueue(internalId: String, credentials: String, url: String) {
-        if (isQueueing) return
-        messageQueue.clear()
-
-        val queue = appPreferences.getMessageQueue(internalId)
-        appPreferences.saveMessageQueue(internalId, null) // empties the queue
-        while (queue.size > 0) {
-            val msg = queue.removeAt(0)
-            sendChatMessage(
-                internalId,
-                credentials,
-                url,
-                msg.message!!,
-                msg.displayName!!,
-                msg.replyTo!!,
-                msg.sendWithoutNotification!!
-            )
-            sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
-        }
-        _messageQueueSizeFlow.tryEmit(0)
-    }
-
-    fun getTempMessagesFromMessageQueue(internalId: String) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        val list = mutableListOf<QueuedMessage>()
-        for (msg in queue) {
-            list.add(msg)
-        }
-        _messageQueueFlow.postValue(list)
-    }
-
-    fun switchToMessageQueue(shouldQueue: Boolean) {
-        isQueueing = shouldQueue
-    }
-
-    fun restoreMessageQueue(internalId: String) {
-        messageQueue = appPreferences.getMessageQueue(internalId)
-        _messageQueueSizeFlow.tryEmit(messageQueue.size)
-    }
-
-    fun removeFromQueue(internalId: String, id: Int) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        for (qMsg in queue) {
-            if (qMsg.id == id) {
-                queue.remove(qMsg)
-                break
-            }
-        }
-        appPreferences.saveMessageQueue(internalId, queue)
-        _messageQueueSizeFlow.tryEmit(queue.size)
-    }
-
-    fun editQueuedMessage(internalId: String, id: Int, newMessage: String) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        for (qMsg in queue) {
-            if (qMsg.id == id) {
-                qMsg.message = newMessage
-                break
-            }
-        }
-        appPreferences.saveMessageQueue(internalId, queue)
-    }
+    // fun sendAndEmptyMessageQueue(internalId: String, credentials: String, url: String) {
+    //     if (isQueueing) return
+    //     messageQueue.clear()
+    //
+    //     val queue = appPreferences.getMessageQueue(internalId)
+    //     appPreferences.saveMessageQueue(internalId, null) // empties the queue
+    //     while (queue.size > 0) {
+    //         val msg = queue.removeAt(0)
+    //         sendChatMessage(
+    //             internalId,
+    //             credentials,
+    //             url,
+    //             msg.message!!,
+    //             msg.displayName!!,
+    //             msg.replyTo!!,
+    //             msg.sendWithoutNotification!!
+    //         )
+    //         sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
+    //     }
+    //     _messageQueueSizeFlow.tryEmit(0)
+    // }
+    //
+    // fun getTempMessagesFromMessageQueue(internalId: String) {
+    //     val queue = appPreferences.getMessageQueue(internalId)
+    //     val list = mutableListOf<QueuedMessage>()
+    //     for (msg in queue) {
+    //         list.add(msg)
+    //     }
+    //     _messageQueueFlow.postValue(list)
+    // }
+    //
+    // fun switchToMessageQueue(shouldQueue: Boolean) {
+    //     isQueueing = shouldQueue
+    // }
+    //
+    // fun restoreMessageQueue(internalId: String) {
+    //     messageQueue = appPreferences.getMessageQueue(internalId)
+    //     _messageQueueSizeFlow.tryEmit(messageQueue.size)
+    // }
+    //
+    // fun removeFromQueue(internalId: String, id: Int) {
+    //     val queue = appPreferences.getMessageQueue(internalId)
+    //     for (qMsg in queue) {
+    //         if (qMsg.id == id) {
+    //             queue.remove(qMsg)
+    //             break
+    //         }
+    //     }
+    //     appPreferences.saveMessageQueue(internalId, queue)
+    //     _messageQueueSizeFlow.tryEmit(queue.size)
+    // }
+    //
+    // fun editQueuedMessage(internalId: String, id: Int, newMessage: String) {
+    //     val queue = appPreferences.getMessageQueue(internalId)
+    //     for (qMsg in queue) {
+    //         if (qMsg.id == id) {
+    //             qMsg.message = newMessage
+    //             break
+    //         }
+    //     }
+    //     appPreferences.saveMessageQueue(internalId, queue)
+    // }
 
     fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {
         _callStartedFlow.postValue(Pair(recent, show))
