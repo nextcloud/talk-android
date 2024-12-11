@@ -583,21 +583,21 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
-        messageInputViewModel.messageQueueFlow.observe(this) { list ->
-            list.forEachIndexed { _, qMsg ->
-                val temporaryChatMessage = ChatMessage()
-                temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
-                temporaryChatMessage.actorId = TEMPORARY_MESSAGE_ID_STRING
-                temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
-                temporaryChatMessage.message = qMsg.message.toString()
-                temporaryChatMessage.tempMessageId = qMsg.id
-                temporaryChatMessage.isTempMessage = true
-                temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
-                val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
-                adapter?.addToStart(temporaryChatMessage, true)
-                adapter?.notifyDataSetChanged()
-            }
-        }
+        // messageInputViewModel.messageQueueFlow.observe(this) { list ->
+        //     list.forEachIndexed { _, qMsg ->
+        //         val temporaryChatMessage = ChatMessage()
+        //         temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
+        //         temporaryChatMessage.actorId = TEMPORARY_MESSAGE_ID_STRING
+        //         temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
+        //         temporaryChatMessage.message = qMsg.message.toString()
+        //         temporaryChatMessage.tempMessageId = qMsg.id
+        //         temporaryChatMessage.isTempMessage = true
+        //         temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
+        //         val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
+        //         adapter?.addToStart(temporaryChatMessage, true)
+        //         adapter?.notifyDataSetChanged()
+        //     }
+        // }
 
         messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
             if (size == 0) {
@@ -719,7 +719,6 @@ class ChatActivity :
                                 withCredentials = credentials!!,
                                 withUrl = urlForChatting
                             )
-                            messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                         }
                     } else {
                         Log.w(
@@ -3864,7 +3863,7 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
+            // CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
             // CONTENT_TYPE_TEMP -> message.readStatus == ReadStatus.FAILED
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
@@ -4013,27 +4012,27 @@ class ChatActivity :
     }
 
     override fun editTemporaryMessage(id: Int, newMessage: String) {
-        messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
-        adapter?.notifyDataSetChanged() // TODO optimize this
+        // messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
+        // adapter?.notifyDataSetChanged() // TODO optimize this
     }
 
     override fun deleteTemporaryMessage(id: Int) {
-        messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
-        var i = 0
-        val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
-        for (item in adapter?.items!!) {
-            if (i > max!! && max < 1) break
-            if (item.item is ChatMessage &&
-                (item.item as ChatMessage).isTempMessage &&
-                (item.item as ChatMessage).tempMessageId == id
-            ) {
-                val index = adapter?.items!!.indexOf(item)
-                adapter?.items!!.removeAt(index)
-                adapter?.notifyItemRemoved(index)
-                break
-            }
-            i++
-        }
+        // messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
+        // var i = 0
+        // val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
+        // for (item in adapter?.items!!) {
+        //     if (i > max!! && max < 1) break
+        //     if (item.item is ChatMessage &&
+        //         (item.item as ChatMessage).isTempMessage &&
+        //         (item.item as ChatMessage).tempMessageId == id
+        //     ) {
+        //         val index = adapter?.items!!.indexOf(item)
+        //         adapter?.items!!.removeAt(index)
+        //         adapter?.notifyItemRemoved(index)
+        //         break
+        //     }
+        //     i++
+        // }
     }
 
     private fun logConversationInfos(methodName: String) {
