@@ -13,6 +13,7 @@ import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -57,6 +58,14 @@ class TemporaryMessageViewHolder(outgoingView: View, payload: Any) :
 
         viewThemeUtils.platform.colorImageView(binding.tempMsgEdit, ColorRole.PRIMARY)
         viewThemeUtils.platform.colorImageView(binding.tempMsgDelete, ColorRole.PRIMARY)
+
+        binding.bubble.setOnClickListener {
+            if (binding.tempMsgActions.isVisible) {
+                binding.tempMsgActions.visibility = View.GONE
+            } else {
+                binding.tempMsgActions.visibility = View.VISIBLE
+            }
+        }
 
         binding.tempMsgEdit.setOnClickListener {
             isEditing = !isEditing
