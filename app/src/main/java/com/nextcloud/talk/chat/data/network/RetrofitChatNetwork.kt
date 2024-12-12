@@ -7,6 +7,7 @@
 package com.nextcloud.talk.chat.data.network
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
@@ -15,11 +16,15 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import retrofit2.Response
 
-class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
+class RetrofitChatNetwork(
+    private val ncApi: NcApi,
+    private val ncApiCoroutines: NcApiCoroutines
+) : ChatNetworkDataSource {
     override fun getRoom(user: User, roomToken: String): Observable<ConversationModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
@@ -177,5 +182,16 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
 
     override fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage> {
         return ncApi.editChatMessage(credentials, url, text).map { it }
+    }
+
+    override suspend fun getOutOfOfficeStatusForUser(
+        credentials: String,
+        baseUrl: String,
+        userId: String
+    ): UserAbsenceOverall {
+        return ncApiCoroutines.getOutOfOfficeStatusForUser(
+            credentials,
+            ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
+        )
     }
 }
