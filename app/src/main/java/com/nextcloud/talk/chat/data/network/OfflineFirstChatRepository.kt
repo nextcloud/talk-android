@@ -300,7 +300,7 @@ class OfflineFirstChatRepository @Inject constructor(
             timeout = 0,
             includeLastKnown = false,
             setReadMarker = true,
-            lastKnown = lastKnown.toInt(),
+            lastKnown = lastKnown.toInt()
         )
 
         val networkParams = bundleOf()
