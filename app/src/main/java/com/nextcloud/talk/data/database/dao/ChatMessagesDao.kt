@@ -22,6 +22,7 @@ interface ChatMessagesDao {
         SELECT MAX(id) as max_items
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
         """
     )
     fun getNewestMessageId(internalConversationId: String): Long
@@ -35,6 +36,29 @@ interface ChatMessagesDao {
         """
     )
     fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 1
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND referenceId = :referenceId
+        AND isTemporary = 1
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempMessageForConversation(internalConversationId: String, referenceId: String): Flow<ChatMessageEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
@@ -59,6 +83,16 @@ interface ChatMessagesDao {
     )
     fun deleteChatMessages(messageIds: List<Int>)
 
+    @Query(
+        value = """
+            DELETE FROM ChatMessages
+            WHERE internalConversationId = :internalConversationId
+            AND referenceId in (:referenceIds)
+            AND isTemporary = 1
+        """
+    )
+    fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>)
+
     @Update
     fun updateChatMessage(message: ChatMessageEntity)
 
@@ -77,6 +111,7 @@ interface ChatMessagesDao {
         SELECT * 
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId AND id >= :messageId 
+        AND isTemporary = 0
         ORDER BY timestamp ASC, id ASC
         """
     )
@@ -87,6 +122,7 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id < :messageId
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
@@ -103,6 +139,7 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id <= :messageId
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
@@ -119,6 +156,7 @@ interface ChatMessagesDao {
         SELECT COUNT(*) 
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId 
+        AND isTemporary = 0
         AND id BETWEEN :newestMessageId AND :oldestMessageId
         """
     )

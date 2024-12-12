@@ -37,7 +37,7 @@ interface ChatNetworkDataSource {
         url: String,
         message: String,
         displayName: String
-    ): Observable<GenericOverall> // last two fields are false
+    ): Observable<ChatOverallSingleMessage>
 
     fun checkForNoteToSelf(credentials: String, url: String, includeStatus: Boolean): Observable<RoomsOverall>
     fun shareLocationToNotes(
@@ -49,18 +49,19 @@ interface ChatNetworkDataSource {
     ): Observable<GenericOverall>
 
     fun leaveRoom(credentials: String, url: String): Observable<GenericOverall>
-    fun sendChatMessage(
+    suspend fun sendChatMessage(
         credentials: String,
         url: String,
         message: CharSequence,
         displayName: String,
         replyTo: Int,
-        sendWithoutNotification: Boolean
-    ): Observable<GenericOverall>
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): ChatOverallSingleMessage
 
     fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
-    fun editChatMessage(credentials: String, url: String, text: String): Observable<ChatOverallSingleMessage>
+    suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
 }
