@@ -506,55 +506,67 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         if (result.second.isNotEmpty()) {
-            val chatMessagesJson = result.second
-
-            handleUpdateMessages(chatMessagesJson)
-
-            chatMessagesFromSync = chatMessagesJson.map {
-                it.asEntity(currentUser.id!!)
-            }
-
-            chatDao.upsertChatMessages(chatMessagesFromSync)
-
-            val oldestIdFromSync = chatMessagesFromSync.minByOrNull { it.id }!!.id
-            val newestIdFromSync = chatMessagesFromSync.maxByOrNull { it.id }!!.id
-            Log.d(TAG, "oldestIdFromSync: $oldestIdFromSync")
-            Log.d(TAG, "newestIdFromSync: $newestIdFromSync")
-
-            var oldestMessageIdForNewChatBlock = oldestIdFromSync
-            var newestMessageIdForNewChatBlock = newestIdFromSync
-
-            if (blockContainingQueriedMessage != null) {
-                if (lookIntoFuture) {
-                    val oldestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.oldestMessageId
-                    Log.d(TAG, "oldestMessageIdFromBlockOfQueriedMessage: $oldestMessageIdFromBlockOfQueriedMessage")
-                    oldestMessageIdForNewChatBlock = oldestMessageIdFromBlockOfQueriedMessage
-                } else {
-                    val newestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.newestMessageId
-                    Log.d(TAG, "newestMessageIdFromBlockOfQueriedMessage: $newestMessageIdFromBlockOfQueriedMessage")
-                    newestMessageIdForNewChatBlock = newestMessageIdFromBlockOfQueriedMessage
-                }
-            }
-
-            Log.d(TAG, "oldestMessageIdForNewChatBlock: $oldestMessageIdForNewChatBlock")
-            Log.d(TAG, "newestMessageIdForNewChatBlock: $newestMessageIdForNewChatBlock")
-
-            val newChatBlock = ChatBlockEntity(
-                internalConversationId = internalConversationId,
-                accountId = conversationModel.accountId,
-                token = conversationModel.token,
-                oldestMessageId = oldestMessageIdForNewChatBlock,
-                newestMessageId = newestMessageIdForNewChatBlock,
-                hasHistory = hasHistory
-            )
-            chatBlocksDao.upsertChatBlock(newChatBlock)
-
-            updateBlocks(newChatBlock)
+            chatMessagesFromSync = updateMessagesData(
+                result.second,
+                blockContainingQueriedMessage,
+                lookIntoFuture,
+                hasHistory)
         } else {
             Log.d(TAG, "no data is updated...")
         }
 
         return chatMessagesFromSync
+    }
+
+    private suspend fun OfflineFirstChatRepository.updateMessagesData(
+        chatMessagesJson: List<ChatMessageJson>,
+        blockContainingQueriedMessage: ChatBlockEntity?,
+        lookIntoFuture: Boolean,
+        hasHistory: Boolean
+    ): List<ChatMessageEntity> {
+        handleUpdateMessages(chatMessagesJson)
+
+        val chatMessagesFromSyncToProcess = chatMessagesJson.map {
+            it.asEntity(currentUser.id!!)
+        }
+
+        chatDao.upsertChatMessages(chatMessagesFromSyncToProcess)
+
+        val oldestIdFromSync = chatMessagesFromSyncToProcess.minByOrNull { it.id }!!.id
+        val newestIdFromSync = chatMessagesFromSyncToProcess.maxByOrNull { it.id }!!.id
+        Log.d(TAG, "oldestIdFromSync: $oldestIdFromSync")
+        Log.d(TAG, "newestIdFromSync: $newestIdFromSync")
+
+        var oldestMessageIdForNewChatBlock = oldestIdFromSync
+        var newestMessageIdForNewChatBlock = newestIdFromSync
+
+        if (blockContainingQueriedMessage != null) {
+            if (lookIntoFuture) {
+                val oldestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.oldestMessageId
+                Log.d(TAG, "oldestMessageIdFromBlockOfQueriedMessage: $oldestMessageIdFromBlockOfQueriedMessage")
+                oldestMessageIdForNewChatBlock = oldestMessageIdFromBlockOfQueriedMessage
+            } else {
+                val newestMessageIdFromBlockOfQueriedMessage = blockContainingQueriedMessage.newestMessageId
+                Log.d(TAG, "newestMessageIdFromBlockOfQueriedMessage: $newestMessageIdFromBlockOfQueriedMessage")
+                newestMessageIdForNewChatBlock = newestMessageIdFromBlockOfQueriedMessage
+            }
+        }
+
+        Log.d(TAG, "oldestMessageIdForNewChatBlock: $oldestMessageIdForNewChatBlock")
+        Log.d(TAG, "newestMessageIdForNewChatBlock: $newestMessageIdForNewChatBlock")
+
+        val newChatBlock = ChatBlockEntity(
+            internalConversationId = internalConversationId,
+            accountId = conversationModel.accountId,
+            token = conversationModel.token,
+            oldestMessageId = oldestMessageIdForNewChatBlock,
+            newestMessageId = newestMessageIdForNewChatBlock,
+            hasHistory = hasHistory
+        )
+        chatBlocksDao.upsertChatBlock(newChatBlock)
+
+        updateBlocks(newChatBlock)
+        return chatMessagesFromSyncToProcess
     }
 
     private suspend fun handleUpdateMessages(messagesJson: List<ChatMessageJson>) {
