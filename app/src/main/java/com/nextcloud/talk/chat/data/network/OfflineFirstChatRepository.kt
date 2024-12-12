@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import android.util.Log
+import androidx.core.os.bundleOf
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -256,6 +257,23 @@ class OfflineFirstChatRepository @Inject constructor(
             showMessagesBefore(internalConversationId, beforeMessageId, DEFAULT_MESSAGES_LIMIT)
             updateUiForLastCommonRead()
         }
+
+    override suspend fun updateRoomMessages(internalConversationId: String, limit: Int) {
+        val lastKnown = chatDao.getNewestMessageId(internalConversationId)
+
+        Log.d(TAG, "---- updateRoomMessages ------------ with lastKnown: $lastKnown")
+        val fieldMap = getFieldMap(
+            lookIntoFuture = true,
+            timeout = 0,
+            includeLastKnown = false,
+            setReadMarker = true,
+            lastKnown = lastKnown.toInt()
+        )
+
+        val networkParams = bundleOf()
+        networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+        sync(networkParams)
+    }
 
     override fun initMessagePolling(initialMessageId: Long): Job =
         scope.launch {
