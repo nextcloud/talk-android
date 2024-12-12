@@ -93,7 +93,11 @@ class ConversationsListViewModel @Inject constructor(
         repository.getRooms()
     }
 
-    fun updateRoomMessages(credentials: String, oldList: MutableList<AbstractFlexibleItem<*>>, list: List<ConversationModel>) {
+    fun updateRoomMessages(
+        credentials: String,
+        oldList: MutableList<AbstractFlexibleItem<*>>,
+        list: List<ConversationModel>
+    ) {
         val previous = oldList.associate {
             (it as ConversationItem)
             val unreadMessages = it.model.unreadMessages
@@ -121,7 +125,6 @@ class ConversationsListViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     private suspend fun updateRoomMessage(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
