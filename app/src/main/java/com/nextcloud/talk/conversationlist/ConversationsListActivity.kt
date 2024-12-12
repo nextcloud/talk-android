@@ -325,18 +325,12 @@ class ConversationsListActivity :
         conversationsListViewModel.getFederationInvitationsViewState.observe(this) { state ->
             when (state) {
                 is ConversationsListViewModel.GetFederationInvitationsStartState -> {
-                    binding.conversationListHintInclude.conversationListHintLayout.visibility =
-                        View.GONE
+                    binding.conversationListHintInclude.conversationListHintLayout.visibility = View.GONE
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsSuccessState -> {
-                    if (state.showInvitationsHint) {
-                        binding.conversationListHintInclude.conversationListHintLayout.visibility =
-                            View.VISIBLE
-                    } else {
-                        binding.conversationListHintInclude.conversationListHintLayout.visibility =
-                            View.GONE
-                    }
+                    binding.conversationListHintInclude.conversationListHintLayout.visibility =
+                        if (state.showInvitationsHint) View.VISIBLE else View.GONE
                 }
 
                 is ConversationsListViewModel.GetFederationInvitationsErrorState -> {
@@ -387,29 +381,33 @@ class ConversationsListActivity :
         lifecycleScope.launch {
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
-                    // Update Conversations
-                    conversationItems.clear()
-                    conversationItemsWithHeader.clear()
-                    for (conversation in list) {
-                        addToConversationItems(conversation)
-                    }
-                    sortConversations(conversationItems)
-                    sortConversations(conversationItemsWithHeader)
-
-                    // Filter Conversations
-                    if (!hasFilterEnabled()) filterableConversationItems = conversationItems
-                    filterConversation()
-                    adapter!!.updateDataSet(filterableConversationItems, false)
-                    Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
-
-                    // Fetch Open Conversations
-                    val apiVersion = ApiUtils.getConversationApiVersion(
-                        currentUser!!,
-                        intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-                    )
-                    fetchOpenConversations(apiVersion)
+                    setConversationList(list)
                 }.collect()
         }
+    }
+
+    private fun setConversationList(list: List<ConversationModel>) {
+        // Update Conversations
+        conversationItems.clear()
+        conversationItemsWithHeader.clear()
+        for (conversation in list) {
+            addToConversationItems(conversation)
+        }
+        sortConversations(conversationItems)
+        sortConversations(conversationItemsWithHeader)
+
+        // Filter Conversations
+        if (!hasFilterEnabled()) filterableConversationItems = conversationItems
+        filterConversation()
+        adapter!!.updateDataSet(filterableConversationItems, false)
+        Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
+
+        // Fetch Open Conversations
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            currentUser!!,
+            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+        )
+        fetchOpenConversations(apiVersion)
     }
 
     private fun hasFilterEnabled(): Boolean {

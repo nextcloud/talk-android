@@ -110,46 +110,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             fileName = FileUtils.getFileName(sourceFileUri, context)
             file = FileUtils.getFileFromUri(context, sourceFileUri)
             val remotePath = getRemotePath(currentUser)
-            val uploadSuccess: Boolean
 
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
-            if (file == null) {
-                uploadSuccess = false
-            } else if (isChunkedUploading) {
-                Log.d(TAG, "starting chunked upload because size is " + file!!.length())
-
-                initNotificationWithPercentage()
-                val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
-
-                chunkedFileUploader = ChunkedFileUploader(
-                    okHttpClient,
-                    currentUser,
-                    roomToken,
-                    metaData,
-                    this
-                )
-
-                uploadSuccess = chunkedFileUploader!!.upload(
-                    file!!,
-                    mimeType,
-                    remotePath
-                )
-            } else {
-                Log.d(TAG, "starting normal upload (not chunked) of $fileName")
-
-                uploadSuccess = FileUploader(
-                    context,
-                    currentUser,
-                    roomToken,
-                    ncApi
-                ).upload(
-                    sourceFileUri,
-                    fileName,
-                    remotePath,
-                    metaData
-                ).blockingFirst()
-            }
+            val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath)
 
             if (uploadSuccess) {
                 cancelNotification()
@@ -169,16 +133,31 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
+    private fun uploadFile(sourceFileUri: Uri, metaData: String?, remotePath: String): Boolean {
+        return if (file == null) {
+            false
+        } else if (isChunkedUploading) {
+            Log.d(TAG, "starting chunked upload because size is " + file!!.length())
+
+            initNotificationWithPercentage()
+            val mimeType = context.contentResolver.getType(sourceFileUri)?.toMediaTypeOrNull()
+
+            chunkedFileUploader = ChunkedFileUploader(okHttpClient, currentUser, roomToken, metaData, this)
+            chunkedFileUploader!!.upload(file!!, mimeType, remotePath)
+        } else {
+            Log.d(TAG, "starting normal upload (not chunked) of $fileName")
+
+            FileUploader(context, currentUser, roomToken, ncApi)
+                .upload(sourceFileUri, fileName, remotePath, metaData)
+                .blockingFirst()
+        }
+    }
+
     private fun getRemotePath(currentUser: User): String {
-        var remotePath = CapabilitiesUtil.getAttachmentFolder(
+        val remotePath = CapabilitiesUtil.getAttachmentFolder(
             currentUser.capabilities!!.spreedCapability!!
         ) + "/" + fileName
-        remotePath = RemoteFileUtils.getNewPathIfFileExists(
-            ncApi,
-            currentUser,
-            remotePath
-        )
-        return remotePath
+        return RemoteFileUtils.getNewPathIfFileExists(ncApi, currentUser, remotePath)
     }
 
     override fun onTransferProgress(percentage: Int) {
