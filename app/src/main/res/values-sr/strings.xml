@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Разговор %1$s је додат у омиљене</string>
     <string name="appbar_search_in">Тражи у %s</string>
     <string name="archive_conversation">Архивирај разговор</string>
+    <string name="archive_hint">Када се разговор архивира, подразумевано ће бити сакривен. Да бисте видели архивиране разговоре, изаберите филтер „Архивирано”. И даље ће се примати директна помињања.</string>
     <string name="archived">Архивирано</string>
     <string name="audio_call">Гласовни позив</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Веза је прекинута - Послате поруке су стављене у ред</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversation_is_read_only">Овај разговор је само-за-читање</string>
+    <string name="conversation_read_only_failed">Разговор није могао да се постави као само-за-читање</string>
     <string name="conversations">Разговори</string>
     <string name="create_conversation">Креирај разговор</string>
     <string name="create_issue">Креирај проблем</string>
@@ -190,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Регистровани корисници</string>
     <string name="nc_diagnose_app_version_title">Верзија апликације</string>
     <string name="nc_diagnose_battery_optimization_ignored">Игнорише се оптимизација батерије, све је у реду</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Укључена је оптимизација батерије и то може да буде узрок проблема. Требало би да искључите оптимизацију батерије.</string>
     <string name="nc_diagnose_battery_optimization_title">Подешавања батерије</string>
     <string name="nc_diagnose_device_name_title">Уређај</string>
     <string name="nc_diagnose_dialog_open_checklist">Отвори контролну листу за отклањање проблема</string>
@@ -332,6 +335,7 @@
     <string name="nc_notification_channel_uploads">Отпремања</string>
     <string name="nc_notification_channel_uploads_description">Обавештавај ме о напретку отпремања</string>
     <string name="nc_notification_settings">Поставке обавештења</string>
+    <string name="nc_notification_warning">Обавештења нису исправно подешена</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Дозволе за обавештења и подешавања батерије су исправно подешени за примање обавештења. Ако ипак имате проблеме са пријемом обавештења, молимо вас да проверите да ли су укључени канали обавештења за позиве и поруке. Више помоћи можете да пронађете на DontKillMyApp.com или у контролној листи за отклањање проблема. Ако ово не помогне, молимо вас да одете на дијагностички екран и пошаљете извештај о багу.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Отклањање проблема у вези са обавештењима</string>
     <string name="nc_notify_me_always">Увек обавести</string>
@@ -429,6 +433,7 @@
     <string name="nc_settings_advanced_title">Напредно</string>
     <string name="nc_settings_appearance">Изглед</string>
     <string name="nc_settings_call_ringtone">Позиви</string>
+    <string name="nc_settings_contact_admin_of">Молимо вас да контактирате администратора</string>
     <string name="nc_settings_diagnose_subtitle">Отвара дијагностички екран да проверите поставке или да креирате извештај о багу</string>
     <string name="nc_settings_diagnose_title">Дијагностика</string>
     <string name="nc_settings_incognito_keyboard_desc">Наложи тастатури да искључи персонализовано учење (без гаранција)</string>
@@ -468,6 +473,7 @@
     <string name="nc_settings_server_almost_eol">Верзија сервера је врло стара и неће бити подржана у наредном издању!</string>
     <string name="nc_settings_server_eol">Верзија сервера је врло стара и није подржана у овој верзији Андроид апликације</string>
     <string name="nc_settings_server_eol_title">Неподржани сервер</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Апликација серверских обавештења није инсталирана</string>
     <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
     <string name="nc_settings_theme_dark">Тамна</string>
     <string name="nc_settings_theme_follow_system">Користи системске подразумеване</string>
@@ -493,6 +499,8 @@
     <string name="nc_shared_items_empty">Нема дељених ставки</string>
     <string name="nc_shared_items_location">Локација</string>
     <string name="nc_shared_location">Дељена локација</string>
+    <string name="nc_show_notification_warning_description">Када обавештења нису исправно подешена, прикажи уобичајено упозорење</string>
+    <string name="nc_show_notification_warning_title">Прикажи уобичајено упозорење о обавештењу</string>
     <string name="nc_sort_by">Разврстај</string>
     <string name="nc_start_time">Време почетка</string>
     <string name="nc_switch_account">Пребаци налог</string>
@@ -521,6 +529,7 @@
     <string name="nc_yes">Да</string>
     <string name="new_conversation_creation_icon">Икона Креирање новог разговора</string>
     <string name="next_week">Наредне недеље</string>
+    <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
     <string name="oneHour">1 сат</string>
     <string name="online">На мрежи</string>
@@ -528,6 +537,7 @@
     <string name="openConversations">Отвори разговор</string>
     <string name="open_in_files_app">Отвори у апликацији Фајлови</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
+    <string name="playback_speed_control">Контрола брзине репродукције</string>
     <string name="polls_add_option">Додај ставку</string>
     <string name="polls_edit_vote">Уреди гласање</string>
     <string name="polls_end_poll">Заврши гласање</string>
@@ -606,6 +616,7 @@
     <string name="startCallForbidden">Није вам дозвољене да започнете позив</string>
     <string name="started_a_call">је започео позив</string>
     <string name="status_message">Порука стања</string>
+    <string name="status_reverted">Враћено је старо стање статуса</string>
     <string name="switch_to_breakout_room">Пређи у сепаре</string>
     <string name="switch_to_main_room">Пређи у главну собу</string>
     <string name="take_photo">Сликај</string>
