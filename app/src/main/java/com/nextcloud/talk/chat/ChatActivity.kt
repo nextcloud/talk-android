@@ -45,6 +45,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
@@ -1153,8 +1154,8 @@ class ChatActivity :
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
                             uiState.userAbsence.replacementUserDisplayName
                     } else {
-                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).visibility =
-                            View.GONE
+                        binding.outOfOfficeContainer.findViewById<LinearLayout>(R.id.userAbsenceReplacement)
+                            .visibility = View.GONE
                     }
                     binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text =
                         uiState.userAbsence.message

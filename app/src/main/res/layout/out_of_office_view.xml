@@ -5,12 +5,19 @@
   ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
   -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_height="150dp"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/out_of_office_view">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    android:id="@+id/out_of_office_view"
+    app:layout_constraintHeight_min="0dp"
+    app:layout_constraintHeight_max="150dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -45,6 +52,7 @@
             tools:text="Dec 5, 2024 - Dec 15, 2024"/>
 
         <LinearLayout
+            android:id="@+id/userAbsenceReplacement"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -102,3 +110,4 @@
     </LinearLayout>
     </LinearLayout>
 </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
