@@ -1366,7 +1366,7 @@ class ConversationInfoActivity :
         return true
     }
 
-    @SuppressLint("CheckResult", "StringFormatInvalid")
+    @SuppressLint("CheckResult")
     private fun launchDefaultActions(participant: Participant, apiVersion: Int) {
         val items = getDefaultActionItems(participant)
 
@@ -1432,6 +1432,7 @@ class ConversationInfoActivity :
         }
     }
 
+    @SuppressLint("StringFormatInvalid")
     private fun getDefaultActionItems(participant: Participant): MutableList<BasicListItemWithImage> {
         val items = mutableListOf(
             BasicListItemWithImage(
