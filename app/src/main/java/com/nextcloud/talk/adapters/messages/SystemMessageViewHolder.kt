@@ -85,34 +85,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
         binding.systemMessageLayout.visibility = View.VISIBLE
         binding.similarMessagesHint.visibility = View.GONE
         if (message.expandableParent) {
-            binding.expandCollapseIcon.visibility = View.VISIBLE
-
-            if (!message.isExpanded) {
-                val similarMessages = String.format(
-                    sharedApplication!!.resources.getString(R.string.see_similar_system_messages),
-                    message.expandableChildrenAmount
-                )
-
-                binding.messageText.text = messageString
-                binding.similarMessagesHint.visibility = View.VISIBLE
-                binding.similarMessagesHint.text = similarMessages
-
-                binding.expandCollapseIcon.setImageDrawable(
-                    ContextCompat.getDrawable(context!!, R.drawable.baseline_unfold_more_24)
-                )
-                binding.systemMessageLayout.setOnClickListener { systemMessageInterface.expandSystemMessage(message) }
-                binding.messageText.setOnClickListener { systemMessageInterface.expandSystemMessage(message) }
-            } else {
-                binding.messageText.text = messageString
-                binding.similarMessagesHint.visibility = View.GONE
-                binding.similarMessagesHint.text = ""
-
-                binding.expandCollapseIcon.setImageDrawable(
-                    ContextCompat.getDrawable(context!!, R.drawable.baseline_unfold_less_24)
-                )
-                binding.systemMessageLayout.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
-                binding.messageText.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
-            }
+            processExpandableParent(message, messageString)
         } else if (message.hiddenByCollapse) {
             binding.systemMessageLayout.visibility = View.GONE
         } else {
@@ -129,6 +102,38 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
 
         binding.messageTime.text = dateUtils!!.getLocalTimeStringFromTimestamp(message.timestamp)
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+    }
+
+    @SuppressLint("SetTextI18n", "StringFormatInvalid")
+    private fun processExpandableParent(message: ChatMessage, messageString: Spannable) {
+        binding.expandCollapseIcon.visibility = View.VISIBLE
+
+        if (!message.isExpanded) {
+            val similarMessages = String.format(
+                sharedApplication!!.resources.getString(R.string.see_similar_system_messages),
+                message.expandableChildrenAmount
+            )
+
+            binding.messageText.text = messageString
+            binding.similarMessagesHint.visibility = View.VISIBLE
+            binding.similarMessagesHint.text = similarMessages
+
+            binding.expandCollapseIcon.setImageDrawable(
+                ContextCompat.getDrawable(context!!, R.drawable.baseline_unfold_more_24)
+            )
+            binding.systemMessageLayout.setOnClickListener { systemMessageInterface.expandSystemMessage(message) }
+            binding.messageText.setOnClickListener { systemMessageInterface.expandSystemMessage(message) }
+        } else {
+            binding.messageText.text = messageString
+            binding.similarMessagesHint.visibility = View.GONE
+            binding.similarMessagesHint.text = ""
+
+            binding.expandCollapseIcon.setImageDrawable(
+                ContextCompat.getDrawable(context!!, R.drawable.baseline_unfold_less_24)
+            )
+            binding.systemMessageLayout.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
+            binding.messageText.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
+        }
     }
 
     fun assignSystemMessageInterface(systemMessageInterface: SystemMessageInterface) {

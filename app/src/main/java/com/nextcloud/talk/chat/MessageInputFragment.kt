@@ -128,7 +128,7 @@ class MessageInputFragment : Fragment() {
     private var mentionAutocomplete: Autocomplete<*>? = null
     private var xcounter = 0f
     private var ycounter = 0f
-    private var isCollapsed = false
+    private var collapsed = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -219,11 +219,7 @@ class MessageInputFragment : Fragment() {
                 binding.fragmentCallStarted.callAuthorChipSecondary.text = message.actorDisplayName
                 val user = userManager.currentUser.blockingGet()
                 val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
-                    ApiUtils.getUrlForGuestAvatar(
-                        user!!.baseUrl!!,
-                        message.actorDisplayName,
-                        true
-                    )
+                    ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, message.actorDisplayName, true)
                 } else {
                     ApiUtils.getUrlForAvatar(user!!.baseUrl!!, message.actorId, false)
                 }
@@ -457,20 +453,12 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentCallStarted.callStartedCloseBtn.setOnClickListener {
-            isCollapsed = !isCollapsed
-            if (isCollapsed) {
-                binding.fragmentCallStarted.callAuthorLayout.visibility = View.GONE
-                binding.fragmentCallStarted.callBtnLayout.visibility = View.GONE
-                binding.fragmentCallStarted.callAuthorChipSecondary.visibility = View.VISIBLE
-                binding.fragmentCallStarted.callStartedSecondaryText.visibility = View.VISIBLE
-            } else {
-                binding.fragmentCallStarted.callAuthorLayout.visibility = View.VISIBLE
-                binding.fragmentCallStarted.callBtnLayout.visibility = View.VISIBLE
-                binding.fragmentCallStarted.callAuthorChipSecondary.visibility = View.GONE
-                binding.fragmentCallStarted.callStartedSecondaryText.visibility = View.GONE
-            }
-
-            setDropDown(isCollapsed)
+            collapsed = !collapsed
+            binding.fragmentCallStarted.callAuthorLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
+            binding.fragmentCallStarted.callBtnLayout.visibility = if (collapsed) View.GONE else View.VISIBLE
+            binding.fragmentCallStarted.callAuthorChipSecondary.visibility = if (collapsed) View.VISIBLE else View.GONE
+            binding.fragmentCallStarted.callStartedSecondaryText.visibility = if (collapsed) View.VISIBLE else View.GONE
+            setDropDown(collapsed)
         }
     }
 

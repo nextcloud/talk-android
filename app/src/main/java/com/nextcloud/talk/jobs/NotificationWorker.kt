@@ -217,8 +217,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private fun handleCallPushMessage() {
         val userBeingCalled = userManager.getUserWithId(signatureVerification.user!!.id!!).blockingGet()
 
-        fun prepareCallNotificationScreen(conversation: ConversationModel) {
-            val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
+        fun createBundle(conversation: ConversationModel): Bundle {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
             bundle.putInt(KEY_NOTIFICATION_TIMESTAMP, pushMessage.timestamp.toInt())
@@ -248,6 +247,12 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 BundleKeys.KEY_IS_MODERATOR,
                 ConversationUtils.isParticipantOwnerOrModerator(conversation)
             )
+            return bundle
+        }
+
+        fun prepareCallNotificationScreen(conversation: ConversationModel) {
+            val fullScreenIntent = Intent(context, CallNotificationActivity::class.java)
+            val bundle = createBundle(conversation)
 
             fullScreenIntent.putExtras(bundle)
             fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
@@ -509,6 +514,42 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
 
+        val notificationBuilder =
+            createNotificationBuilder(category, contentTitle, contentText, baseUrl, pendingIntent, autoCancelOnClick)
+        val activeStatusBarNotification = findNotificationForRoom(
+            context,
+            signatureVerification.user!!,
+            pushMessage.id!!
+        )
+
+        // NOTE - systemNotificationId is an internal ID used on the device only.
+        // It is NOT the same as the notification ID used in communication with the server.
+        val systemNotificationId: Int =
+            activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
+
+        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
+            pushMessage.notificationUser != null
+        ) {
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            addReplyAction(notificationBuilder, systemNotificationId)
+            addMarkAsReadAction(notificationBuilder, systemNotificationId)
+        }
+
+        if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
+            addDismissRecordingAvailableAction(notificationBuilder, systemNotificationId, ncNotification)
+            addShareRecordingToChatAction(notificationBuilder, systemNotificationId, ncNotification)
+        }
+        sendNotification(systemNotificationId, notificationBuilder.build())
+    }
+
+    private fun createNotificationBuilder(
+        category: String,
+        contentTitle: CharSequence?,
+        contentText: CharSequence?,
+        baseUrl: String?,
+        pendingIntent: PendingIntent?,
+        autoCancelOnClick: Boolean
+    ): NotificationCompat.Builder {
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
@@ -551,30 +592,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         notificationBuilder.setContentIntent(pendingIntent)
         val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
         notificationBuilder.setGroup(calculateCRC32(groupName).toString())
-        val activeStatusBarNotification = findNotificationForRoom(
-            context,
-            signatureVerification.user!!,
-            pushMessage.id!!
-        )
-
-        // NOTE - systemNotificationId is an internal ID used on the device only.
-        // It is NOT the same as the notification ID used in communication with the server.
-        val systemNotificationId: Int =
-            activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
-
-        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
-            pushMessage.notificationUser != null
-        ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
-            addReplyAction(notificationBuilder, systemNotificationId)
-            addMarkAsReadAction(notificationBuilder, systemNotificationId)
-        }
-
-        if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
-            addDismissRecordingAvailableAction(notificationBuilder, systemNotificationId, ncNotification)
-            addShareRecordingToChatAction(notificationBuilder, systemNotificationId, ncNotification)
-        }
-        sendNotification(systemNotificationId, notificationBuilder.build())
+        return notificationBuilder
     }
 
     private fun getLargeIcon(): Bitmap {

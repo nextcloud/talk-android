@@ -131,26 +131,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             }
         })
 
-        val readStatusDrawableInt = when (message.readStatus) {
-            ReadStatus.READ -> R.drawable.ic_check_all
-            ReadStatus.SENT -> R.drawable.ic_check
-            else -> null
-        }
-
-        val readStatusContentDescriptionString = when (message.readStatus) {
-            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
-            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
-            else -> null
-        }
-
-        readStatusDrawableInt?.let { drawableInt ->
-            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
-                binding.checkMark.setImageDrawable(it)
-                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
-            }
-        }
-
-        binding.checkMark.contentDescription = readStatusContentDescriptionString
+        setReadStatus(message.readStatus)
 
         voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
             binding.playbackSpeedControlBtn.setSpeed(speed)
@@ -166,6 +147,29 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             viewThemeUtils
         )
         isBound = true
+    }
+
+    private fun setReadStatus(readStatus: Enum<ReadStatus>) {
+        val readStatusDrawableInt = when (readStatus) {
+            ReadStatus.READ -> R.drawable.ic_check_all
+            ReadStatus.SENT -> R.drawable.ic_check
+            else -> null
+        }
+
+        val readStatusContentDescriptionString = when (readStatus) {
+            ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
+            ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
+            else -> null
+        }
+
+        readStatusDrawableInt?.let { drawableInt ->
+            AppCompatResources.getDrawable(context!!, drawableInt)?.let {
+                binding.checkMark.setImageDrawable(it)
+                viewThemeUtils.talk.themeMessageCheckMark(binding.checkMark)
+            }
+        }
+
+        binding.checkMark.contentDescription = readStatusContentDescriptionString
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {

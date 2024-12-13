@@ -82,9 +82,8 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             itemView
         )
 
-        val messageParameters = message.messageParameters
         if (
-            (messageParameters == null || messageParameters.size <= 0) &&
+            (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
             TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
         ) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
@@ -115,13 +114,29 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-        val readStatusDrawableInt = when (message.readStatus) {
+        setReadStatus(message.readStatus)
+
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+
+        Reaction().showReactions(
+            message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
+            binding.reactions,
+            context,
+            true,
+            viewThemeUtils
+        )
+    }
+
+    private fun setReadStatus(readStatus: Enum<ReadStatus>) {
+        val readStatusDrawableInt = when (readStatus) {
             ReadStatus.READ -> R.drawable.ic_check_all
             ReadStatus.SENT -> R.drawable.ic_check
             else -> null
         }
 
-        val readStatusContentDescriptionString = when (message.readStatus) {
+        val readStatusContentDescriptionString = when (readStatus) {
             ReadStatus.READ -> context.resources?.getString(R.string.nc_message_read)
             ReadStatus.SENT -> context.resources?.getString(R.string.nc_message_sent)
             else -> null
@@ -135,18 +150,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
-
-        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
-
-        Reaction().showReactions(
-            message,
-            ::clickOnReaction,
-            ::longClickOnReaction,
-            binding.reactions,
-            context,
-            true,
-            viewThemeUtils
-        )
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {

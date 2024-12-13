@@ -282,7 +282,7 @@ class DiagnoseActivity : BaseActivity() {
         if (appPreferences.pushToken.isNullOrEmpty()) {
             addValue(context.resources.getString(R.string.nc_diagnose_firebase_push_token_missing))
         } else {
-            addValue("${appPreferences.pushToken.substring(0, 5)}...")
+            addValue("${appPreferences.pushToken.substring(0, PUSH_TOKEN_PREFIX_END)}...")
         }
 
         addKey(context.resources.getString(R.string.nc_diagnose_firebase_push_token_latest_generated))
@@ -466,6 +466,7 @@ class DiagnoseActivity : BaseActivity() {
         val TAG = DiagnoseActivity::class.java.simpleName
         private const val MARKDOWN_HEADLINE = "###"
         private const val MARKDOWN_BOLD = "**"
+        private const val PUSH_TOKEN_PREFIX_END: Int = 5
         private const val ORIGINAL_NEXTCLOUD_TALK_APPLICATION_ID = "com.nextcloud.talk2"
     }
 }
