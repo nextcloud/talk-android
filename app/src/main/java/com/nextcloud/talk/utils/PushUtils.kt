@@ -117,14 +117,13 @@ class PushUtils {
     private fun saveKeyToFile(key: Key, path: String): Int {
         val encoded = key.encoded
         try {
-            if (!File(path).exists()) {
-                if (!File(path).createNewFile()) {
-                    return -1
+            return if (!File(path).exists() && !File(path).createNewFile()) {
+                -1
+            } else {
+                FileOutputStream(path).use { keyFileOutputStream ->
+                    keyFileOutputStream.write(encoded)
+                    0
                 }
-            }
-            FileOutputStream(path).use { keyFileOutputStream ->
-                keyFileOutputStream.write(encoded)
-                return 0
             }
         } catch (e: FileNotFoundException) {
             Log.d(TAG, "Failed to save key to file")
