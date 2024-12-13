@@ -1075,7 +1075,7 @@ class ChatActivity :
         chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
             when (uiState) {
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
-                    Log.e(TAG, "Error in outOfOfficeState", uiState.exception)
+                    Log.e(TAG, "Error fetching/ no user absence data", uiState.exception)
                 }
                 ChatViewModel.OutOfOfficeUIState.None -> {
                 }
@@ -3936,8 +3936,8 @@ class ChatActivity :
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
             apiVersion,
             conversationUser?.baseUrl!!,
-            "1",
-            "users",
+            ROOM_TYPE_ONE_TO_ONE,
+            ACTOR_TYPE,
             userId,
             null
         )
@@ -4000,6 +4000,8 @@ class ChatActivity :
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val TEMPORARY_MESSAGE_ID_INT: Int = -3
         private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
+        private const val ROOM_TYPE_ONE_TO_ONE = "1"
+        private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
     }
