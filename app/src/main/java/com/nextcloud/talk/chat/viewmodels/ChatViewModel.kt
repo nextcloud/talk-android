@@ -771,6 +771,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun outOfOfficeStatusOfUser(credentials: String, baseUrl: String, userId: String) {
         viewModelScope.launch {
             try {
