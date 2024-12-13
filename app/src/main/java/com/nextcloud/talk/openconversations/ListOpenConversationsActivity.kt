@@ -58,7 +58,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         setContentView(binding.root)
         setupSystemColors()
         viewThemeUtils.platform.colorImageView(binding.searchOpenConversations, ColorRole.ON_SURFACE)
-        viewThemeUtils.platform.colorEditText(binding.searchEdit)
+        viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
 
         val user = currentUserProvider.currentUser.blockingGet()
 
@@ -68,7 +68,7 @@ class ListOpenConversationsActivity : BaseActivity() {
             searching = !searching
             handleSearchUI(searching)
         }
-        binding.searchEdit.doOnTextChanged { text, _, _, count ->
+        binding.editText.doOnTextChanged { text, _, _, count ->
             adapter.filter(text.toString())
         }
 
@@ -78,11 +78,11 @@ class ListOpenConversationsActivity : BaseActivity() {
     private fun handleSearchUI(show: Boolean) {
         if (show) {
             binding.searchOpenConversations.visibility = View.GONE
-            binding.searchEdit.visibility = View.VISIBLE
-            binding.searchEdit.showKeyboardAndFocus()
+            binding.textInputLayout.visibility = View.VISIBLE
+            binding.editText.showKeyboardAndFocus()
         } else {
             binding.searchOpenConversations.visibility = View.VISIBLE
-            binding.searchEdit.visibility = View.GONE
+            binding.textInputLayout.visibility = View.GONE
         }
     }
 
