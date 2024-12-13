@@ -177,7 +177,6 @@ class MessageActionsDialog(
             initMenuRemindMessage(
                 !message.isDeleted &&
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
-                    currentConversation!!.remoteServer.isNullOrEmpty() &&
                     networkMonitor.isOnline.first()
             )
             initMenuMarkAsUnread(
