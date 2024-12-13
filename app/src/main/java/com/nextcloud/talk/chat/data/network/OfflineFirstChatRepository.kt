@@ -510,7 +510,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 result.second,
                 blockContainingQueriedMessage,
                 lookIntoFuture,
-                hasHistory)
+                hasHistory
+            )
         } else {
             Log.d(TAG, "no data is updated...")
         }

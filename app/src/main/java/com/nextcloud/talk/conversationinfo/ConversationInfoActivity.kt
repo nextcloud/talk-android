@@ -1374,13 +1374,15 @@ class ConversationInfoActivity :
             items.add(BasicListItemWithImage(R.drawable.baseline_block_24, context.getString(R.string.ban_participant)))
         }
 
-            when (participant.type) {
+        when (participant.type) {
             Participant.ParticipantType.MODERATOR, Participant.ParticipantType.GUEST_MODERATOR -> {
                 items.removeAt(1)
             }
+
             Participant.ParticipantType.USER, Participant.ParticipantType.GUEST -> {
                 items.removeAt(2)
             }
+
             else -> {
                 // Self joined users can not be promoted nor demoted
                 items.removeAt(2)
@@ -1457,14 +1459,9 @@ class ConversationInfoActivity :
         participant: Participant,
         apiVersion: Int,
         itemText: String,
-        @DrawableRes itemIcon: Int = R.drawable.ic_delete_grey600_24dp,
+        @DrawableRes itemIcon: Int = R.drawable.ic_delete_grey600_24dp
     ) {
-        val items = mutableListOf(
-            BasicListItemWithImage(
-                itemIcon,
-                itemText
-            )
-        )
+        val items = mutableListOf(BasicListItemWithImage(itemIcon, itemText))
         MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
             cornerRadius(res = R.dimen.corner_radius)
 
@@ -1481,14 +1478,12 @@ class ConversationInfoActivity :
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         val binding = DialogBanParticipantBinding.inflate(layoutInflater)
         val actorTypeConverter = EnumActorTypeConverter()
-        val dialog = MaterialAlertDialogBuilder(context)
-            .setView(binding.root)
-            .create()
+        val dialog = MaterialAlertDialogBuilder(context).setView(binding.root).create()
         binding.avatarImage.loadUserAvatar(
             conversationUser,
             participant.actorId!!,
-            true,
-            false
+            requestBigSize = true,
+            ignoreCache = false
         )
         binding.displayNameText.text = participant.actorId
         binding.buttonBan.setOnClickListener {
