@@ -83,7 +83,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         )
 
         if (
-            (message.messageParameters == null ||  message.messageParameters!!.size <= 0) &&
+            (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
             TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
         ) {
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
