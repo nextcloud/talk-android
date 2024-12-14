@@ -341,7 +341,7 @@
     <string name="nc_notify_me_always">一律通知</string>
     <string name="nc_notify_me_mention">當有人提及你時通知</string>
     <string name="nc_notify_me_never">從不通知</string>
-    <string name="nc_offline">當前離線，請檢查您的連接</string>
+    <string name="nc_offline">目前離線，請檢查您的連接</string>
     <string name="nc_ok">確定</string>
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
