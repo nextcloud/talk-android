@@ -27,10 +27,6 @@ import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.media.AudioFocusRequest
-import android.media.AudioFormat
-import android.media.AudioManager
-import android.media.AudioRecord
 import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
@@ -1637,16 +1633,20 @@ class ChatActivity :
             if(index - i < 0){
                 break
             }
-            if(index - i >= (adapter?.items?.size?: 0) ){
+            if(i == 0 || index - i >= (adapter?.items?.size?: 0) ){
                 continue
             }
-            val curMsg = adapter?.items?.get(index - i)?.item
+            val curMsg = adapter?.items?.getOrNull(index - i)?.item
             if(curMsg is ChatMessage) {
                 if(nextMessage == null && i > 0) {
                     nextMessage = curMsg as ChatMessage
                 }
 
                 if(curMsg.isVoiceMessage){
+                    if(curMsg.selectedIndividualHashMap == null){
+                        // WORKAROUND TO FETCH FILE INFO:
+                        curMsg.getImageUrl()
+                    }
                     val filename = curMsg.selectedIndividualHashMap!!["name"]
                     val file = File(context.cacheDir, filename!!)
                     if (!file.exists()) {
