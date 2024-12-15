@@ -144,7 +144,7 @@ class RetrofitChatNetwork(
     override suspend fun sendChatMessage(
         credentials: String,
         url: String,
-        message: CharSequence,
+        message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,

@@ -14,7 +14,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -73,6 +72,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         layoutParams.isWrapBefore = false
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
         var processedMessageText = messageUtils.enrichChatMessageText(
             binding.messageText.context,
             message,
@@ -121,18 +121,20 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
 
         CoroutineScope(Dispatchers.Main).launch {
-            if (message.sendingFailed) {
-                updateStatus(
-                    R.drawable.baseline_report_problem_24,
-                    "failed"
-                )
-            } else if (message.isTempMessage && !networkMonitor.isOnline.first()) {
+            // if (message.sendingFailed) {
+            //     updateStatus(
+            //         R.drawable.baseline_report_problem_24,
+            //         "failed"
+            //     )
+            // } else
+
+            if (message.isTempMessage && !networkMonitor.isOnline.first()) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
                     "offline"
                 )
             } else if (message.isTempMessage) {
-                updateSendingStatus()
+                showSendingSpinner()
             } else if(message.readStatus == ReadStatus.READ){
                 updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
             } else if(message.readStatus == ReadStatus.SENT) {
@@ -165,7 +167,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.checkMark.contentDescription = description
     }
 
-    private fun updateSendingStatus() {
+    private fun showSendingSpinner() {
         binding.sendingProgress.visibility = View.VISIBLE
         binding.checkMark.visibility = View.GONE
 

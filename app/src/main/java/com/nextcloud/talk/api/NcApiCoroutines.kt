@@ -128,7 +128,7 @@ interface NcApiCoroutines {
     suspend fun sendChatMessage(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Field("message") message: CharSequence,
+        @Field("message") message: String,
         @Field("actorDisplayName") actorDisplayName: String,
         @Field("replyTo") replyTo: Int,
         @Field("silent") sendWithoutNotification: Boolean,
