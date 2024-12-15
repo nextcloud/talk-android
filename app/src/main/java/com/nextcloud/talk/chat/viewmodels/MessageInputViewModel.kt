@@ -146,7 +146,7 @@ class MessageInputViewModel @Inject constructor(
         internalId: String,
         credentials: String,
         url: String,
-        message: CharSequence,
+        message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean

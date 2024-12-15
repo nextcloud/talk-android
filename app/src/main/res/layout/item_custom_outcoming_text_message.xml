@@ -79,13 +79,6 @@
             android:textIsSelectable="false"
             tools:text="Talk to you later!" />
 
-<!--        <com.google.android.material.textfield.TextInputEditText-->
-<!--            android:id="@+id/message_edit"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:visibility="gone"-->
-<!--            tools:visibility="visible"/>-->
-
         <TextView
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
