@@ -1644,6 +1644,11 @@ class ChatActivity :
                                 lastRecordMediaPosition = mediaPlayer!!.currentPosition
                                 message.voiceMessagePlayedSeconds = pos
                                 message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
+                                if(mediaPlayer!!.currentPosition * 20 > mediaPlayer!!.duration){
+                                    // a voice message is marked as played when the mediaplayer position
+                                    // is at least at 5% of its duration
+                                    message.wasPlayedVoiceMessage = true
+                                }
                                 adapter?.update(message)
                             } else {
                                 message.resetVoiceMessage = true

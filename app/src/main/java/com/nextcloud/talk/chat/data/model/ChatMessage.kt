@@ -91,6 +91,8 @@ data class ChatMessage(
 
     var isPlayingVoiceMessage: Boolean = false,
 
+    var wasPlayedVoiceMessage : Boolean = false,
+
     var voiceMessageDuration: Int = 0,
 
     var voiceMessagePlayedSeconds: Int = 0,

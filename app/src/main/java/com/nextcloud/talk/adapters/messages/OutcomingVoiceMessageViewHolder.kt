@@ -342,7 +342,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped, message.isDeleted, message.wasPlayedVoiceMessage)
     }
 
     fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {

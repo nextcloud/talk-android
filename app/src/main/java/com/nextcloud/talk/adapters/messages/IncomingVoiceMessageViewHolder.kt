@@ -279,7 +279,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted, message.wasPlayedVoiceMessage)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
