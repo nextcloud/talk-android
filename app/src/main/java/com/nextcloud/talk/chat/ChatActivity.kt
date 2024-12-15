@@ -1633,13 +1633,16 @@ class ChatActivity :
         val index = adapter?.getMessagePositionById(id) ?: 0
 
         var nextMessage : ChatMessage? = null
-        for (i in 1..5) {
+        for (i in -5..5) {
             if(index - i < 0){
                 break
             }
+            if(index - i >= (adapter?.items?.size?: 0) ){
+                continue
+            }
             val curMsg = adapter?.items?.get(index - i)?.item
             if(curMsg is ChatMessage) {
-                if(nextMessage == null) {
+                if(nextMessage == null && i > 0) {
                     nextMessage = curMsg as ChatMessage
                 }
 
