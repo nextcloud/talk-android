@@ -141,7 +141,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
     override suspend fun sendChatMessage(
         credentials: String,
         url: String,
-        message: CharSequence,
+        message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
