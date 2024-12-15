@@ -180,7 +180,7 @@ configurations.configureEach {
 
 dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.8'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
 
     implementation("androidx.compose.runtime:runtime:1.7.6")
     implementation 'androidx.preference:preference-ktx:1.2.1'
@@ -344,7 +344,7 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.8'
+    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
 
     implementation 'androidx.activity:activity-ktx:1.9.3'
 
