@@ -1639,10 +1639,10 @@ class ChatActivity :
                 override fun run() {
                     if (mediaPlayer != null) {
                         if (message.isPlayingVoiceMessage) {
-                            val pos = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
-                            if (pos < (mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE)) {
+                            val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
+                            if (pos + 0.1 < (mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE)) {
                                 lastRecordMediaPosition = mediaPlayer!!.currentPosition
-                                message.voiceMessagePlayedSeconds = pos
+                                message.voiceMessagePlayedSeconds = pos.toInt()
                                 message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
                                 if(mediaPlayer!!.currentPosition * 20 > mediaPlayer!!.duration){
                                     // a voice message is marked as played when the mediaplayer position
