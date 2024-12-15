@@ -111,6 +111,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
+        showVoiceMessageDuration(message)
+
         handleIsDownloadingVoiceMessageState(message)
 
         handleResetVoiceMessageState(message)
@@ -189,8 +191,17 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             )
             binding.seekbar.progress = SEEKBAR_START
             message.voiceMessagePlayedSeconds = 0
-            binding.voiceMessageDuration.visibility = View.INVISIBLE
+            showVoiceMessageDuration(message)
             message.resetVoiceMessage = false
+        }
+    }
+
+    private fun showVoiceMessageDuration(message: ChatMessage){
+        if (message.voiceMessageDuration > 0) {
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(message.voiceMessageDuration.toLong())
+            binding.voiceMessageDuration.visibility = View.VISIBLE
+        } else {
+            binding.voiceMessageDuration.visibility = View.INVISIBLE
         }
     }
 
