@@ -867,7 +867,7 @@ class MessageInputFragment : Fragment() {
                 .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
 
             sendMessage(
-                editable,
+                editable.toString(),
                 replyMessageId,
                 sendWithoutNotification
             )
@@ -875,7 +875,7 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
+    private fun sendMessage(message: String, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
             conversationInternalId,
             chatActivity.conversationUser!!.getCredentials(),

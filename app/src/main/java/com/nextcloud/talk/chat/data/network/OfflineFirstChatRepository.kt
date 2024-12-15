@@ -13,6 +13,10 @@ import android.util.Log
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.Companion
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.SendChatMessageErrorState
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.SendChatMessageSuccessState
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -185,7 +189,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     limit
                 )
                 if (list.isNotEmpty()) {
-                    updateUiMessages(
+                    handleNewAndTempMessages(
                         receivedChatMessages = list,
                         lookIntoFuture = false,
                         showUnreadMessagesMarker = false
@@ -307,7 +311,7 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        updateUiMessages(
+                        handleNewAndTempMessages(
                             receivedChatMessages = chatMessages,
                             lookIntoFuture = true,
                             showUnreadMessagesMarker = showUnreadMessagesMarker
@@ -334,7 +338,33 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    private suspend fun updateUiMessages(
+    // TODO replace with WorkManager?
+    // private suspend fun tryToSendPendingMessages() {
+    //     val tempMessages = chatDao.getTempMessagesForConversation(internalConversationId).first()
+    //
+    //     tempMessages.forEach {
+    //         Log.d(TAG, "Sending chat message ${it.message} another time!!")
+    //
+    //         sendChatMessage(
+    //             credentials,
+    //             urlForChatting,
+    //             it.message,
+    //             it.actorDisplayName,
+    //             it.parentMessageId?.toInt() ?: 0,
+    //             false,
+    //             it.referenceId ?: ""
+    //         ).collect { result ->
+    //             if (result.isSuccess) {
+    //                 Log.d(TAG, "success. received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
+    //
+    //             } else {
+    //                 Log.d(TAG, "fail.  received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
+    //             }
+    //         }
+    //     }
+    // }
+
+    private suspend fun handleNewAndTempMessages(
         receivedChatMessages : List<ChatMessage>,
         lookIntoFuture: Boolean,
         showUnreadMessagesMarker: Boolean
@@ -792,7 +822,7 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun sendChatMessage(
         credentials: String,
         url: String,
-        message: CharSequence,
+        message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
@@ -820,11 +850,11 @@ class OfflineFirstChatRepository @Inject constructor(
                 failedMessage.sendingFailed = true
                 chatDao.updateChatMessage(failedMessage)
 
-                val failedMessageModel = failedMessage.asModel()
-                _removeMessageFlow.emit(failedMessageModel)
-
-                val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
-                _messageFlow.emit(tripleChatMessages)
+                // val failedMessageModel = failedMessage.asModel()
+                // _removeMessageFlow.emit(failedMessageModel)
+                //
+                // val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
+                // _messageFlow.emit(tripleChatMessages)
 
                 emit(Result.failure(e))
             }
