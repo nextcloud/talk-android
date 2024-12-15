@@ -27,6 +27,11 @@ import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.media.AudioFocusRequest
+import android.media.AudioFormat
+import android.media.AudioManager
+import android.media.AudioRecord
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -1614,15 +1619,69 @@ class ChatActivity :
     }
 
     private fun startPlayback(message: ChatMessage, doPlay: Boolean = true) {
-        if (!active) {
+        //if (!active) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
             // If user returns to chatview, the old chatview instance is not attached anymore
             // and he has to click the play button again (which is considered to be okay)
-            return
-        }
+        //    return
+        //}
 
         initMediaPlayer(message)
+
+        val id = message.id.toString()
+        val index = adapter?.getMessagePositionById(id) ?: 0
+
+        var nextMessage : ChatMessage? = null
+        for (i in 1..5) {
+            if(index - i < 0){
+                break
+            }
+            val curMsg = adapter?.items?.get(index - i)?.item
+            if(curMsg is ChatMessage) {
+                if(nextMessage == null) {
+                    nextMessage = curMsg as ChatMessage
+                }
+
+                if(curMsg.isVoiceMessage){
+                    val filename = curMsg.selectedIndividualHashMap!!["name"]
+                    val file = File(context.cacheDir, filename!!)
+                    if (!file.exists()) {
+                        downloadFileToCache(curMsg as ChatMessage, false) {
+                            curMsg.isDownloadingVoiceMessage = false
+                            curMsg.voiceMessageDuration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+                                val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release() // Always release the retriever to free resources
+                                (durationStr?.toIntOrNull()  ?: 0 )/ 1000 // Convert to int (seconds)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                0
+                            }
+                            adapter?.update(curMsg)
+                        }
+                    }else{
+                        if(curMsg.voiceMessageDuration == 0) {
+                            curMsg.voiceMessageDuration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+                                val durationStr = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release() // Always release the retriever to free resources
+                                (durationStr?.toIntOrNull()  ?: 0 )/ 1000 // Convert to int (seconds)
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                0
+                            }
+                            adapter?.update(curMsg)
+                        }
+                    }
+                }
+            }
+        }
+
+        val hasConsecutiveVoiceMessage = if(nextMessage != null) nextMessage.isVoiceMessage else false
+
 
         mediaPlayer?.let {
             if (!it.isPlaying && doPlay) {
@@ -1656,6 +1715,15 @@ class ChatActivity :
                                 message.voiceMessageSeekbarProgress = 0
                                 adapter?.update(message)
                                 stopMediaPlayer(message)
+                                if(hasConsecutiveVoiceMessage){
+                                    val defaultMediaPlayer = MediaPlayer.create(context, R.raw
+                                        .next_voice_message_doodle)
+                                    defaultMediaPlayer.setOnCompletionListener {
+                                        defaultMediaPlayer.release()
+                                        setUpWaveform(nextMessage as ChatMessage, doPlay)
+                                    }
+                                    defaultMediaPlayer.start()
+                                }
                             }
                         }
                     }

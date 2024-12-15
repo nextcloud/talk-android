@@ -185,6 +185,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun handleIsPlayingVoiceMessageState(message: ChatMessage) {
+        colorizeMessageBubble(message)
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -199,6 +200,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
+            showVoiceMessageDuration(message)
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 context!!,
