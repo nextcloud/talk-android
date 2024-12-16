@@ -74,33 +74,21 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
             MediaScannerConnection.scanFile(context, arrayOf(cacheFile.absolutePath), null, null)
 
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(
-                    context,
-                    context.resources.getString(R.string.nc_save_success),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, R.string.nc_save_success, Toast.LENGTH_SHORT).show()
             }
 
             return Result.success()
         } catch (e: IOException) {
             Log.e(TAG, "Something went wrong when trying to save file to internal storage", e)
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(
-                    context,
-                    context.resources.getString(R.string.nc_common_error_sorry),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
             }
 
             return Result.failure()
         } catch (e: NullPointerException) {
             Log.e(TAG, "Something went wrong when trying to save file to internal storage", e)
             Handler(Looper.getMainLooper()).post {
-                Toast.makeText(
-                    context,
-                    context.resources.getString(R.string.nc_common_error_sorry),
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(context, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
             }
 
             return Result.failure()

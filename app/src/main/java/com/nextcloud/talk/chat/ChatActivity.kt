@@ -3335,8 +3335,6 @@ class ChatActivity :
     }
 
     fun shareToNotes(message: ChatMessage, roomToken: String) {
-        val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-        val type = message.getCalculateMessageType()
         var shareUri: Uri? = null
         val data: HashMap<String?, String?>?
         var metaData: String = ""
@@ -3366,6 +3364,17 @@ class ChatActivity :
                 "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
+        shareToNotes(shareUri, roomToken, message, objectId, metaData)
+    }
+
+    private fun shareToNotes(
+        shareUri: Uri?,
+        roomToken: String,
+        message: ChatMessage,
+        objectId: String,
+        metaData: String
+    ) {
+        val type = message.getCalculateMessageType()
         when (type) {
             ChatMessage.MessageType.VOICE_MESSAGE -> {
                 uploadFile(shareUri.toString(), true, token = roomToken)
@@ -3380,7 +3389,7 @@ class ChatActivity :
                         uploadFile(shareUri.toString(), false, caption!!, roomToken)
                         Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
                     } catch (e: java.lang.Exception) {
-                        Log.w(TAG, "File corresponding to the uri does not exist " + shareUri.toString())
+                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri")
                         downloadFileToCache(message, false) {
                             uploadFile(shareUri.toString(), false, caption!!, roomToken)
                             Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
@@ -3390,6 +3399,7 @@ class ChatActivity :
             }
 
             ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
+                val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                 chatViewModel.shareLocationToNotes(
                     credentials!!,
                     ApiUtils.getUrlToSendLocation(apiVersion, conversationUser!!.baseUrl!!, roomToken),
@@ -3401,6 +3411,7 @@ class ChatActivity :
             }
 
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
+                val apiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                 chatViewModel.shareToNotes(
                     credentials!!,
                     ApiUtils.getUrlForChat(apiVersion, conversationUser!!.baseUrl!!, roomToken),

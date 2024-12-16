@@ -128,13 +128,27 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             }
         })
 
-        val readStatusDrawableInt = when (message.readStatus) {
+        setReadStatus(message.readStatus)
+
+        Reaction().showReactions(
+            message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
+            binding.reactions,
+            binding.messageTime.context,
+            true,
+            viewThemeUtils
+        )
+    }
+
+    private fun setReadStatus(readStatus: Enum<ReadStatus>) {
+        val readStatusDrawableInt = when (readStatus) {
             ReadStatus.READ -> R.drawable.ic_check_all
             ReadStatus.SENT -> R.drawable.ic_check
             else -> null
         }
 
-        val readStatusContentDescriptionString = when (message.readStatus) {
+        val readStatusContentDescriptionString = when (readStatus) {
             ReadStatus.READ -> context?.resources?.getString(R.string.nc_message_read)
             ReadStatus.SENT -> context?.resources?.getString(R.string.nc_message_sent)
             else -> null
@@ -148,16 +162,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         }
 
         binding.checkMark.contentDescription = readStatusContentDescriptionString
-
-        Reaction().showReactions(
-            message,
-            ::clickOnReaction,
-            ::longClickOnReaction,
-            binding.reactions,
-            binding.messageTime.context,
-            true,
-            viewThemeUtils
-        )
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {

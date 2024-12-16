@@ -21,6 +21,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentTransaction
@@ -204,33 +205,7 @@ class ConversationInfoActivity :
     }
 
     private fun initObservers() {
-        viewModel.viewState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.GetRoomSuccessState -> {
-                    conversation = state.conversationModel
-                    viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
-                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
-                        binding.shareConversationButton.visibility = GONE
-                    }
-                    val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
-                    binding.shareConversationButton.setOnClickListener {
-                        ShareUtils.shareConversationLink(
-                            this,
-                            conversationUser.baseUrl,
-                            conversation?.token,
-                            conversation?.name,
-                            canGeneratePrettyURL
-                        )
-                    }
-                }
-
-                is ConversationInfoViewModel.GetRoomErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
-            }
-        }
+        initViewStateObserver()
 
         viewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
@@ -285,6 +260,36 @@ class ConversationInfoActivity :
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", uiState.exception)
                 }
+            }
+        }
+    }
+
+    private fun initViewStateObserver() {
+        viewModel.viewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.GetRoomSuccessState -> {
+                    conversation = state.conversationModel
+                    viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
+                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
+                        binding.shareConversationButton.visibility = GONE
+                    }
+                    val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
+                    binding.shareConversationButton.setOnClickListener {
+                        ShareUtils.shareConversationLink(
+                            this,
+                            conversationUser.baseUrl,
+                            conversation?.token,
+                            conversation?.name,
+                            canGeneratePrettyURL
+                        )
+                    }
+                }
+
+                is ConversationInfoViewModel.GetRoomErrorState -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
             }
         }
     }
@@ -1330,117 +1335,59 @@ class ConversationInfoActivity :
 
         val userItem = adapter?.getItem(position) as ParticipantItem
         val participant = userItem.model
-
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
 
         if (participant.calculatedActorType == USERS && participant.calculatedActorId == conversationUser.userId) {
             if (participant.attendeePin?.isNotEmpty() == true) {
-                val items = mutableListOf(
-                    BasicListItemWithImage(
-                        R.drawable.ic_lock_grey600_24px,
-                        context.getString(R.string.nc_attendee_pin, participant.attendeePin)
-                    )
+                launchRemoveAttendeeFromConversationDialog(
+                    participant,
+                    apiVersion,
+                    context.getString(R.string.nc_attendee_pin, participant.attendeePin),
+                    R.drawable.ic_lock_grey600_24px
                 )
-                MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-                    cornerRadius(res = R.dimen.corner_radius)
-
-                    title(text = participant.displayName)
-                    viewThemeUtils.material.colorBottomSheetBackground(this.view)
-                    listItemsWithImage(items = items) { _, index, _ ->
-                        if (index == 0) {
-                            removeAttendeeFromConversation(apiVersion, participant)
-                        }
-                    }
-                }
             }
-            return true
-        }
-
-        if (participant.type == Participant.ParticipantType.OWNER) {
+        } else if (participant.type == Participant.ParticipantType.OWNER) {
             // Can not moderate owner
-            return true
-        }
-
-        if (participant.calculatedActorType == GROUPS) {
-            val items = mutableListOf(
-                BasicListItemWithImage(
-                    R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_group_and_members)
-                )
+        } else if (participant.calculatedActorType == GROUPS) {
+            launchRemoveAttendeeFromConversationDialog(
+                participant,
+                apiVersion,
+                context.getString(R.string.nc_remove_group_and_members)
             )
-            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-                cornerRadius(res = R.dimen.corner_radius)
-
-                title(text = participant.displayName)
-                listItemsWithImage(items = items) { _, index, _ ->
-                    if (index == 0) {
-                        removeAttendeeFromConversation(apiVersion, participant)
-                    }
-                }
-            }
-            return true
-        }
-
-        if (participant.calculatedActorType == CIRCLES) {
-            val items = mutableListOf(
-                BasicListItemWithImage(
-                    R.drawable.ic_delete_grey600_24dp,
-                    context.getString(R.string.nc_remove_team_and_members)
-                )
+        } else if (participant.calculatedActorType == CIRCLES) {
+            launchRemoveAttendeeFromConversationDialog(
+                participant,
+                apiVersion,
+                context.getString(R.string.nc_remove_team_and_members)
             )
-            MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
-                cornerRadius(res = R.dimen.corner_radius)
-
-                title(text = participant.displayName)
-                listItemsWithImage(items = items) { _, index, _ ->
-                    if (index == 0) {
-                        removeAttendeeFromConversation(apiVersion, participant)
-                    }
-                }
-            }
-            return true
+        } else {
+            launchDefaultActions(participant, apiVersion)
         }
+        return true
+    }
 
-        val items = mutableListOf(
-            BasicListItemWithImage(
-                R.drawable.ic_lock_grey600_24px,
-                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
-            ),
-            BasicListItemWithImage(
-                R.drawable.ic_pencil_grey600_24dp,
-                context.getString(R.string.nc_promote)
-            ),
-            BasicListItemWithImage(
-                R.drawable.ic_pencil_grey600_24dp,
-                context.getString(R.string.nc_demote)
-            ),
-            BasicListItemWithImage(
-                R.drawable.ic_delete_grey600_24dp,
-                context.getString(R.string.nc_remove_participant)
-            )
-        )
+    @SuppressLint("CheckResult")
+    private fun launchDefaultActions(participant: Participant, apiVersion: Int) {
+        val items = getDefaultActionItems(participant)
 
         if (CapabilitiesUtil.isBanningAvailable(conversationUser.capabilities?.spreedCapability!!)) {
-            items.add(
-                BasicListItemWithImage(
-                    R.drawable.baseline_block_24,
-                    context.getString(R.string.ban_participant)
-                )
-            )
+            items.add(BasicListItemWithImage(R.drawable.baseline_block_24, context.getString(R.string.ban_participant)))
         }
 
-        if (participant.type == Participant.ParticipantType.MODERATOR ||
-            participant.type == Participant.ParticipantType.GUEST_MODERATOR
-        ) {
-            items.removeAt(1)
-        } else if (participant.type == Participant.ParticipantType.USER ||
-            participant.type == Participant.ParticipantType.GUEST
-        ) {
-            items.removeAt(2)
-        } else {
-            // Self joined users can not be promoted nor demoted
-            items.removeAt(2)
-            items.removeAt(1)
+        when (participant.type) {
+            Participant.ParticipantType.MODERATOR, Participant.ParticipantType.GUEST_MODERATOR -> {
+                items.removeAt(1)
+            }
+
+            Participant.ParticipantType.USER, Participant.ParticipantType.GUEST -> {
+                items.removeAt(2)
+            }
+
+            else -> {
+                // Self joined users can not be promoted nor demoted
+                items.removeAt(2)
+                items.removeAt(1)
+            }
         }
 
         if (participant.attendeePin == null || participant.attendeePin!!.isEmpty()) {
@@ -1483,21 +1430,61 @@ class ConversationInfoActivity :
                 }
             }
         }
-        return true
+    }
+
+    @SuppressLint("StringFormatInvalid")
+    private fun getDefaultActionItems(participant: Participant): MutableList<BasicListItemWithImage> {
+        val items = mutableListOf(
+            BasicListItemWithImage(
+                R.drawable.ic_lock_grey600_24px,
+                context.getString(R.string.nc_attendee_pin, participant.attendeePin)
+            ),
+            BasicListItemWithImage(
+                R.drawable.ic_pencil_grey600_24dp,
+                context.getString(R.string.nc_promote)
+            ),
+            BasicListItemWithImage(
+                R.drawable.ic_pencil_grey600_24dp,
+                context.getString(R.string.nc_demote)
+            ),
+            BasicListItemWithImage(
+                R.drawable.ic_delete_grey600_24dp,
+                context.getString(R.string.nc_remove_participant)
+            )
+        )
+        return items
+    }
+
+    @SuppressLint("CheckResult")
+    private fun launchRemoveAttendeeFromConversationDialog(
+        participant: Participant,
+        apiVersion: Int,
+        itemText: String,
+        @DrawableRes itemIcon: Int = R.drawable.ic_delete_grey600_24dp
+    ) {
+        val items = mutableListOf(BasicListItemWithImage(itemIcon, itemText))
+        MaterialDialog(this, BottomSheet(WRAP_CONTENT)).show {
+            cornerRadius(res = R.dimen.corner_radius)
+
+            title(text = participant.displayName)
+            listItemsWithImage(items = items) { _, index, _ ->
+                if (index == 0) {
+                    removeAttendeeFromConversation(apiVersion, participant)
+                }
+            }
+        }
     }
 
     private fun MaterialDialog.handleBan(participant: Participant) {
         val apiVersion = ApiUtils.getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         val binding = DialogBanParticipantBinding.inflate(layoutInflater)
         val actorTypeConverter = EnumActorTypeConverter()
-        val dialog = MaterialAlertDialogBuilder(context)
-            .setView(binding.root)
-            .create()
+        val dialog = MaterialAlertDialogBuilder(context).setView(binding.root).create()
         binding.avatarImage.loadUserAvatar(
             conversationUser,
             participant.actorId!!,
-            true,
-            false
+            requestBigSize = true,
+            ignoreCache = false
         )
         binding.displayNameText.text = participant.actorId
         binding.buttonBan.setOnClickListener {
