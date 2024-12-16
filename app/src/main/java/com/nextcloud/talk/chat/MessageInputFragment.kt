@@ -474,7 +474,13 @@ class MessageInputFragment : Fragment() {
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
     private fun initVoiceRecordButton() {
-        binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
+        if (binding.fragmentMessageInputView.messageInput.text.isNullOrBlank()) {
+            binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
+            binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
+        } else {
+            binding.fragmentMessageInputView.messageSendButton.visibility = View.VISIBLE
+            binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
+        }
         binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
