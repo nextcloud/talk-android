@@ -7,7 +7,9 @@
 
 package com.nextcloud.talk.ui.dialog
 
+import android.content.Context
 import android.os.Bundle
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,7 +20,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -26,6 +27,7 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -34,6 +36,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,18 +46,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import java.time.DayOfWeek
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters.nextOrSame
@@ -62,10 +68,15 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class DateTimeCompose(val bundle: Bundle) {
-    private var timeState = mutableStateOf(LocalDateTime.now())
+    private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0,0, ZoneOffset.MIN))
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val user = userManager.currentUser.blockingGet()
+        val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
+        val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+        val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
+        chatViewModel.getReminder(user, roomToken, messageId, apiVersion)
     }
 
     @Inject
@@ -74,35 +85,41 @@ class DateTimeCompose(val bundle: Bundle) {
     @Inject
     lateinit var userManager: UserManager
 
+    @Inject
+    lateinit var viewThemeUtils: ViewThemeUtils
+
     @Composable
-    fun GetDateTimeDialog(shouldDismiss: MutableState<Boolean>) {
+    fun GetDateTimeDialog(shouldDismiss: MutableState<Boolean>, context: Context) {
         if (shouldDismiss.value) {
             return
         }
 
-        Dialog(
-            onDismissRequest = {
-                shouldDismiss.value = true
-            },
-            properties = DialogProperties(
-                dismissOnBackPress = true,
-                dismissOnClickOutside = true
-            )
-        ) {
-             Surface(
-                 shape = RoundedCornerShape(8.dp),
-                 color = Color.White
-             ) {
-                 Column(
-                     modifier = Modifier
-                         .padding(16.dp)
-                         .fillMaxWidth()
+        val colorScheme = viewThemeUtils.getColorScheme(context)
+
+        MaterialTheme(colorScheme = colorScheme) {
+            Dialog(
+                onDismissRequest = {
+                    shouldDismiss.value = true
+                },
+                properties = DialogProperties(
+                    dismissOnBackPress = true,
+                    dismissOnClickOutside = true
+                )
+            ) {
+                 Surface(
+                     shape = RoundedCornerShape(8.dp),
                  ) {
-                     Header()
-                     Body()
-                     CollapsableDateTime(shouldDismiss)
+                     Column(
+                         modifier = Modifier
+                             .padding(16.dp)
+                             .fillMaxWidth()
+                     ) {
+                         Header()
+                         Body()
+                         CollapsableDateTime(shouldDismiss)
+                     }
                  }
-             }
+            }
         }
     }
 
@@ -133,7 +150,9 @@ class DateTimeCompose(val bundle: Bundle) {
                 val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                 val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
                 val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
-                chatViewModel.setReminder(user, roomToken, messageId, timeState.value.nano, apiVersion) // TODO verify
+                val offset = timeState.value.atZone(ZoneOffset.systemDefault()).offset
+                val timeVal = timeState.value.toEpochSecond(offset)
+                chatViewModel.setReminder(user, roomToken, messageId, timeVal.toInt(), apiVersion)
                 shouldDismiss.value = true
             },
                 modifier = Modifier
@@ -153,7 +172,6 @@ class DateTimeCompose(val bundle: Bundle) {
         }
     }
 
-    @Suppress("DEPRECATION")
     @Composable
     private fun Body() {
         val currTime = LocalDateTime.now()
@@ -162,18 +180,21 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(18)
             .withMinute(0)
             .withSecond(0)
+        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
             .withHour(8)
             .withMinute(0)
             .withSecond(0)
+        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
             .withHour(8)
             .withMinute(0)
             .withSecond(0)
+        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
@@ -181,44 +202,42 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(8)
             .withMinute(0)
             .withSecond(0)
+        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
 
         if (currTime < laterToday) {
-            ClickableText(
-                AnnotatedString("Later today"),
-                modifier = Modifier
-                    .padding(8.dp)
-                    .fillMaxWidth()
+            TimeOption(
+                label = "Later Today",
+                timeString = laterTodayStr
             ) {
                 timeState.value = laterToday
             }
         }
 
-        ClickableText(
-            AnnotatedString("Tomorrow"),
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            timeState.value = tomorrow
+        if (tomorrow.dayOfWeek < DayOfWeek.SATURDAY) {
+            TimeOption(
+                label = "Tomorrow",
+                timeString = tomorrowStr
+            ) {
+                timeState.value = tomorrow
+            }
         }
 
-        ClickableText(
-            AnnotatedString("This weekend"),
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-        ) {
-            timeState.value = thisWeekend
+        if (currTime.dayOfWeek < DayOfWeek.SATURDAY) {
+            TimeOption(
+                label = "This weekend",
+                timeString = thisWeekendStr
+            ) {
+                timeState.value = thisWeekend
+            }
         }
 
-        ClickableText(
-            AnnotatedString("Next week"),
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
+        TimeOption(
+            label = "Next weekend",
+            timeString = nextWeekStr
         ) {
             timeState.value = nextWeek
         }
+
         HorizontalDivider()
     }
 
@@ -230,11 +249,22 @@ class DateTimeCompose(val bundle: Bundle) {
         ) {
             Text("Remind Me Later")
             Spacer(modifier = Modifier.width(32.dp))
-            // TODO this needs to get it from the server
-            //  this will be tricky, need to figure this out
 
-            Text(timeState.value.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a")))
+            val reminderState = chatViewModel.getReminderExistState
+                .asFlow()
+                .collectAsState(ChatViewModel.GetReminderStartState)
 
+            when (reminderState.value) {
+                is ChatViewModel.GetReminderExistState -> {
+                    val timeL = (reminderState.value as ChatViewModel.GetReminderExistState).reminder.timestamp!!.toLong()
+                    timeState.value = LocalDateTime.ofInstant(Instant.ofEpochSecond(timeL), ZoneId.systemDefault())
+                }
+                else -> {}
+            }
+
+            if (timeState.value != LocalDateTime.ofEpochSecond(0,0, ZoneOffset.MIN)) {
+                Text(timeState.value.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a")))
+            }
         }
         HorizontalDivider()
     }
@@ -262,7 +292,9 @@ class DateTimeCompose(val bundle: Bundle) {
                 )
 
                 val date = datePickerState.selectedDateMillis?.let {
-                    LocalDateTime.ofEpochSecond(it / 1000, 0, ZoneOffset.UTC)
+                    // FIXME check out the offset logic here
+                    //  it works, i think. Need to test it out. I'm not sure if I'm missing something
+                    LocalDateTime.ofEpochSecond(it / 1000, 0, ZoneOffset.ofTotalSeconds(0))
                 }
                 if (date != null) {
                     val year = date.year
@@ -300,6 +332,23 @@ class DateTimeCompose(val bundle: Bundle) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text = label)
             }
+        }
+    }
+
+    @Composable
+    private fun TimeOption(
+        label: String,
+        timeString: String,
+        onClick: () -> Unit
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .clickable { onClick() }
+        ) {
+            Text(label, modifier = Modifier.weight(0.5f))
+            Text(timeString, modifier = Modifier.weight(0.5f))
         }
     }
 
