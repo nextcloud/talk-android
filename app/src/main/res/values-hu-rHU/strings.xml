@@ -22,10 +22,13 @@
     <string name="clear_status_message">Állapotüzenet törlése</string>
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>
     <string name="close">Bezárás</string>
+    <string name="close_icon">Bezárás ikon</string>
     <string name="connection_established">A kapcsolat létrejött</string>
+    <string name="connection_lost">Kapcsolat elveszett</string>
     <string name="continuous_voice_message_recording">Felvétel zárolása a hangüzenet folyamatos rögzítéséhez</string>
     <string name="conversations">Beszélgetések</string>
     <string name="create_conversation">Beszélgetés létrehozása</string>
+    <string name="create_issue">Hibajegy létrehozása</string>
     <string name="custom">Egyéni</string>
     <string name="danger_zone">Veszély zóna</string>
     <string name="delete_avatar">Profilkép törlése</string>
@@ -33,6 +36,7 @@
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
+    <string name="edit_message_icon_description">Üzenet szerkesztése ikon</string>
     <string name="emoji_backspace">Visszatörlés</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
     <string name="encrypted">Titkosított</string>
@@ -43,6 +47,7 @@
     <string name="file_list_loading">Betöltés…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4 óra </string>
+    <string name="internal_note">Belső jegyzet</string>
     <string name="invisible">Láthatatlan</string>
     <string name="later_today">Mai nap később</string>
     <string name="leave_call">Hívás elhagyása</string>

@@ -364,6 +364,7 @@
     <string name="nc_promote">Povýšit na moderátora</string>
     <string name="nc_public_call">Nová veřejná konverzace</string>
     <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím k tomu vytvořeného odkazu.</string>
+    <string name="nc_public_call_status">Veřejná konverzace</string>
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
     <string name="nc_push_to_talk">Vysílačka</string>
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
@@ -498,6 +499,7 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_show_notification_warning_title">Zobrazovat pravidelné varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>
@@ -526,6 +528,7 @@
     <string name="nc_yes">Ano</string>
     <string name="new_conversation_creation_icon">Ikona vytváření nové konverzace</string>
     <string name="next_week">Příští týden</string>
+    <string name="no_offline_messages_saved">Neuloženy žádné zprávy pro režim bez připojení</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="oneHour">1 hodina</string>
     <string name="online">Online</string>
@@ -533,6 +536,7 @@
     <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
+    <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
     <string name="polls_add_option">Přidat volbu</string>
     <string name="polls_edit_vote">Upravit hlas</string>
     <string name="polls_end_poll">Ukončit anketu</string>
