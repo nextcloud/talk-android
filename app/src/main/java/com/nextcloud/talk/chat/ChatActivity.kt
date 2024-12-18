@@ -3514,7 +3514,7 @@ class ChatActivity :
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
-                DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss)
+                DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
     }
