@@ -81,7 +81,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
 
         val bgBubbleColor = if (deleted) {
             resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
-        } else if (isPlayed){
+        } else if (isPlayed) {
             resources.getColor(R.color.bg_message_list_incoming_bubble_audio_played, null)
         } else {
             resources.getColor(R.color.bg_message_list_incoming_bubble, null)
