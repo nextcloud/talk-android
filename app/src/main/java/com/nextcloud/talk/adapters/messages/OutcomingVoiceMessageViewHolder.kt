@@ -199,7 +199,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     private fun showVoiceMessageDuration(message: ChatMessage) {
         if (message.voiceMessageDuration > 0) {
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(
-                message.voiceMessageDuration.toLong())
+                message.voiceMessageDuration.toLong()
+            )
             binding.voiceMessageDuration.visibility = View.VISIBLE
         } else {
             binding.voiceMessageDuration.visibility = View.INVISIBLE
@@ -356,8 +357,10 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.talk.themeOutgoingMessageBubble(bubble, message.isGrouped,
-            message.isDeleted, message.wasPlayedVoiceMessage)
+        viewThemeUtils.talk.themeOutgoingMessageBubble(
+            bubble, message.isGrouped,
+            message.isDeleted, message.wasPlayedVoiceMessage
+        )
     }
 
     fun assignVoiceMessageInterface(voiceMessageInterface: VoiceMessageInterface) {

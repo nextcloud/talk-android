@@ -99,7 +99,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         withScheme(bubble) { scheme ->
             val bgBubbleColor = if (deleted) {
                 ColorUtils.setAlphaComponent(dynamicColor.surfaceVariant().getArgb(scheme), HALF_ALPHA_INT)
-            } else if(isPlayed){
+            } else if (isPlayed) {
                 ContextCompat.getColor(bubble.context, R.color.bg_message_list_outgoing_bubble_audio_played)
             } else {
                 dynamicColor.surfaceVariant().getArgb(scheme)
