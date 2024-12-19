@@ -28,3 +28,9 @@ path = ["app/src/main/res/raw/librem_by_feandesign_call.ogg", "app/src/main/res/
 precedence = "aggregate"
 SPDX-FileCopyrightText = "Feandesign"
 SPDX-License-Identifier = "CC0-1.0"
+
+[[annotations]]
+path = "app/src/main/res/raw/next_voice_message_doodle.ogg"
+precedence = "aggregate"
+SPDX-FileCopyrightText = "2024 Paciosoft"
+SPDX-License-Identifier = "CC-BY-4.0"

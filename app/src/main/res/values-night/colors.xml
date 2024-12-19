@@ -45,6 +45,8 @@
     <color name="bg_bottom_sheet">#121212</color>
     <color name="bg_message_list_incoming_bubble">#2A2A2A</color>
     <color name="bg_message_list_incoming_bubble_deleted">#14FFFFFF</color>
+    <color name="bg_message_list_incoming_bubble_audio_played">#3F3F73</color>
+    <color name="bg_message_list_outgoing_bubble_audio_played">#313B75</color>
 
     <color name="textColorMaxContrast">#8c8c8c</color>
     

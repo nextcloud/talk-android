@@ -27,6 +27,7 @@ import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -1204,7 +1205,7 @@ class ChatActivity :
         }
     }
 
-    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true) {
+    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         val filename = message.selectedIndividualHashMap!!["name"]
         val file = File(context.cacheDir, filename!!)
         if (file.exists() && message.voiceMessageFloatArray == null) {
@@ -1215,11 +1216,11 @@ class ChatActivity :
                 appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
-                    startPlayback(message, thenPlay)
+                    startPlayback(message, thenPlay, backgroundPlayAllowed)
                 }
             }
         } else {
-            startPlayback(message, thenPlay)
+            startPlayback(message, thenPlay, backgroundPlayAllowed)
         }
     }
 
@@ -1613,8 +1614,9 @@ class ChatActivity :
         }
     }
 
-    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true) {
-        if (!active) {
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
+        if (!active && !backgroundPlayAllowed) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
             // If user returns to chatview, the old chatview instance is not attached anymore
@@ -1623,6 +1625,78 @@ class ChatActivity :
         }
 
         initMediaPlayer(message)
+
+        val id = message.id.toString()
+        val index = adapter?.getMessagePositionById(id) ?: 0
+
+        var nextMessage: ChatMessage? = null
+        for (i in -5..5) {
+            if (index - i < 0) {
+                break
+            }
+            if (i == 0 || index - i >= (adapter?.items?.size ?: 0)) {
+                continue
+            }
+            val curMsg = adapter?.items?.getOrNull(index - i)?.item
+            if (curMsg is ChatMessage) {
+                if (nextMessage == null && i > 0) {
+                    nextMessage = curMsg as ChatMessage
+                }
+
+                if (curMsg.isVoiceMessage) {
+                    if (curMsg.selectedIndividualHashMap == null) {
+                        // WORKAROUND TO FETCH FILE INFO:
+                        curMsg.getImageUrl()
+                    }
+                    val filename = curMsg.selectedIndividualHashMap!!["name"]
+                    val file = File(context.cacheDir, filename!!)
+                    if (!file.exists()) {
+                        downloadFileToCache(curMsg as ChatMessage, false) {
+                            curMsg.isDownloadingVoiceMessage = false
+                            curMsg.voiceMessageDuration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+                                val durationStr =
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release() // Always release the retriever to free resources
+                                (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
+                            } catch (e: RuntimeException) {
+                                Log.e(
+                                    TAG,
+                                    "An exception occurred while computing " +
+                                        "voice message duration for " + filename,
+                                    e
+                                )
+                                0
+                            }
+                            adapter?.update(curMsg)
+                        }
+                    } else {
+                        if (curMsg.voiceMessageDuration == 0) {
+                            curMsg.voiceMessageDuration = try {
+                                val retriever = MediaMetadataRetriever()
+                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+                                val durationStr =
+                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+                                retriever.release() // Always release the retriever to free resources
+                                (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
+                            } catch (e: RuntimeException) {
+                                Log.e(
+                                    TAG,
+                                    "An exception occurred while computing " +
+                                        "voice message duration for " + filename,
+                                    e
+                                )
+                                0
+                            }
+                            adapter?.update(curMsg)
+                        }
+                    }
+                }
+            }
+        }
+
+        val hasConsecutiveVoiceMessage = if (nextMessage != null) nextMessage.isVoiceMessage else false
 
         mediaPlayer?.let {
             if (!it.isPlaying && doPlay) {
@@ -1639,11 +1713,16 @@ class ChatActivity :
                 override fun run() {
                     if (mediaPlayer != null) {
                         if (message.isPlayingVoiceMessage) {
-                            val pos = mediaPlayer!!.currentPosition / VOICE_MESSAGE_SEEKBAR_BASE
-                            if (pos < (mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE)) {
+                            val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
+                            if (pos + 0.1 < (mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE)) {
                                 lastRecordMediaPosition = mediaPlayer!!.currentPosition
-                                message.voiceMessagePlayedSeconds = pos
+                                message.voiceMessagePlayedSeconds = pos.toInt()
                                 message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
+                                if (mediaPlayer!!.currentPosition * 20 > mediaPlayer!!.duration) {
+                                    // a voice message is marked as played when the mediaplayer position
+                                    // is at least at 5% of its duration
+                                    message.wasPlayedVoiceMessage = true
+                                }
                                 adapter?.update(message)
                             } else {
                                 message.resetVoiceMessage = true
@@ -1651,6 +1730,18 @@ class ChatActivity :
                                 message.voiceMessageSeekbarProgress = 0
                                 adapter?.update(message)
                                 stopMediaPlayer(message)
+                                if (hasConsecutiveVoiceMessage) {
+                                    val defaultMediaPlayer = MediaPlayer.create(
+                                        context,
+                                        R.raw
+                                            .next_voice_message_doodle
+                                    )
+                                    defaultMediaPlayer.setOnCompletionListener {
+                                        defaultMediaPlayer.release()
+                                        setUpWaveform(nextMessage as ChatMessage, doPlay, true)
+                                    }
+                                    defaultMediaPlayer.start()
+                                }
                             }
                         }
                     }
@@ -3644,6 +3735,7 @@ class ChatActivity :
                     callStarted = true
                 }
             }
+
             ChatMessage.SystemMessageType.CALL_ENDED,
             ChatMessage.SystemMessageType.CALL_MISSED,
             ChatMessage.SystemMessageType.CALL_TRIED,
@@ -3651,6 +3743,7 @@ class ChatActivity :
                 callStarted = false
                 messageInputViewModel.showCallStartedIndicator(recent, false)
             }
+
             else -> {}
         }
     }
