@@ -11,5 +11,5 @@ import io.reactivex.Observable
 
 interface OpenConversationsRepository {
 
-    fun fetchConversations(searchTerm:String): Observable<List<Conversation>>
+    fun fetchConversations(searchTerm: String): Observable<List<Conversation>>
 }
