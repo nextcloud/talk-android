@@ -1727,7 +1727,7 @@ class ChatActivity :
                                         .next_voice_message_doodle)
                                     defaultMediaPlayer.setOnCompletionListener {
                                         defaultMediaPlayer.release()
-                                        setUpWaveform(nextMessage as ChatMessage, doPlay)
+                                        setUpWaveform(nextMessage as ChatMessage, doPlay, true)
                                     }
                                     defaultMediaPlayer.start()
                                 }
