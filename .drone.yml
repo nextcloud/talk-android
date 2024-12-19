@@ -8,7 +8,7 @@ name: generic
 
 steps:
   - name: generic
-    image: ghcr.io/nextcloud/continuous-integration-android8:3
+    image: ghcr.io/nextcloud/continuous-integration-android8:4
     commands:
       - ./gradlew --console=plain assembleGeneric
 
@@ -27,7 +27,7 @@ name: gplay
 
 steps:
   - name: gplay
-    image: ghcr.io/nextcloud/continuous-integration-android8:3
+    image: ghcr.io/nextcloud/continuous-integration-android8:4
     commands:
       - ./gradlew --console=plain assembleGplay
 
@@ -46,7 +46,7 @@ name: tests
 
 steps:
   - name: all
-    image: ghcr.io/nextcloud/continuous-integration-android8:3
+    image: ghcr.io/nextcloud/continuous-integration-android8:4
     privileged: true
     commands:
       - emulator -avd android -no-snapshot -gpu swiftshader_indirect -no-window -no-audio -skin 500x833 &
