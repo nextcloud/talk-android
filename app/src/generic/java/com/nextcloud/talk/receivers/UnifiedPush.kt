@@ -23,6 +23,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.jobs.NotificationWorker
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.power.PowerManagerUtils
 import org.greenrobot.eventbus.EventBus
 import org.unifiedpush.android.connector.MessagingReceiver
 import org.unifiedpush.android.connector.PREF_MASTER
@@ -126,6 +127,10 @@ class UnifiedPush : MessagingReceiver() {
     }
 
     override fun onMessage(context: Context, message: ByteArray, instance: String) {
+        // get a wake lock to 'help' background job run more promptly since it can take minutes to run if phone is
+        // sleeping/dozing - 60 secs should be well long enough to get the notification and/or call displayed
+        PowerManagerUtils()!!.acquireTimedPartialLock(60 * 1000)
+
         Log.d(TAG, "UP onMessage")
 
         val messageString = message.toString(Charsets.UTF_8)
