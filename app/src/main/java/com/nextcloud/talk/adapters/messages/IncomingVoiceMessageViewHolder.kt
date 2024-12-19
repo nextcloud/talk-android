@@ -155,9 +155,10 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
 
         isBound = true
     }
-    private fun showVoiceMessageDuration(message: ChatMessage){
+    private fun showVoiceMessageDuration(message: ChatMessage) {
         if (message.voiceMessageDuration > 0) {
-            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(message.voiceMessageDuration.toLong())
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(
+                message.voiceMessageDuration.toLong())
             binding.voiceMessageDuration.visibility = View.VISIBLE
         } else {
             binding.voiceMessageDuration.visibility = View.INVISIBLE
@@ -290,7 +291,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted, message.wasPlayedVoiceMessage)
+        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped,
+            message.isDeleted, message.wasPlayedVoiceMessage)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

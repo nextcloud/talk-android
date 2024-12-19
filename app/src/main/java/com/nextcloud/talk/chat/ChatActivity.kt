@@ -1205,7 +1205,8 @@ class ChatActivity :
         }
     }
 
-    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed : Boolean = false) {
+    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true,
+        backgroundPlayAllowed: Boolean = false) {
         val filename = message.selectedIndividualHashMap!!["name"]
         val file = File(context.cacheDir, filename!!)
         if (file.exists() && message.voiceMessageFloatArray == null) {
@@ -1614,7 +1615,8 @@ class ChatActivity :
         }
     }
 
-    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed : Boolean = false) {
+    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true,
+        backgroundPlayAllowed: Boolean = false) {
         if (!active && !backgroundPlayAllowed) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
