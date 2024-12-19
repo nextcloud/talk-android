@@ -3504,8 +3504,6 @@ class ChatActivity :
 
         val chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1, 1))
 
-        // val newFragment: DialogFragment = DateTimePickerFragment.newInstance(roomToken, message!!.id, chatApiVersion)
-        // newFragment.show(supportFragmentManager, DateTimePickerFragment.TAG)
         val bundle = bundleOf()
         bundle.putString(KEY_ROOM_TOKEN, roomToken)
         bundle.putString(BundleKeys.KEY_MESSAGE_ID, message!!.id)

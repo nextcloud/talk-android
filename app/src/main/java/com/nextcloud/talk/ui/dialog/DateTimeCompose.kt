@@ -9,6 +9,7 @@ package com.nextcloud.talk.ui.dialog
 
 import android.content.Context
 import android.os.Bundle
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,20 +38,19 @@ import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -95,6 +95,7 @@ class DateTimeCompose(val bundle: Bundle) {
         }
 
         val colorScheme = viewThemeUtils.getColorScheme(context)
+        val isCollapsed = remember { mutableStateOf(true) }
 
         MaterialTheme(colorScheme = colorScheme) {
             Dialog(
@@ -103,11 +104,13 @@ class DateTimeCompose(val bundle: Bundle) {
                 },
                 properties = DialogProperties(
                     dismissOnBackPress = true,
-                    dismissOnClickOutside = true
+                    dismissOnClickOutside = true,
+                    usePlatformDefaultWidth = isCollapsed.value
                 )
             ) {
                  Surface(
                      shape = RoundedCornerShape(8.dp),
+                     modifier = Modifier.animateContentSize()
                  ) {
                      Column(
                          modifier = Modifier
@@ -116,7 +119,7 @@ class DateTimeCompose(val bundle: Bundle) {
                      ) {
                          Header()
                          Body()
-                         CollapsableDateTime(shouldDismiss)
+                         CollapsableDateTime(shouldDismiss, isCollapsed)
                      }
                  }
             }
@@ -206,7 +209,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
         if (currTime < laterToday) {
             TimeOption(
-                label = "Later Today",
+                label = stringResource(R.string.later_today),
                 timeString = laterTodayStr
             ) {
                 timeState.value = laterToday
@@ -215,7 +218,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
         if (tomorrow.dayOfWeek < DayOfWeek.SATURDAY) {
             TimeOption(
-                label = "Tomorrow",
+                label = stringResource(R.string.tomorrow),
                 timeString = tomorrowStr
             ) {
                 timeState.value = tomorrow
@@ -224,7 +227,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
         if (currTime.dayOfWeek < DayOfWeek.SATURDAY) {
             TimeOption(
-                label = "This weekend",
+                label = stringResource(R.string.this_weekend),
                 timeString = thisWeekendStr
             ) {
                 timeState.value = thisWeekend
@@ -232,7 +235,7 @@ class DateTimeCompose(val bundle: Bundle) {
         }
 
         TimeOption(
-            label = "Next weekend",
+            label = stringResource(R.string.next_week),
             timeString = nextWeekStr
         ) {
             timeState.value = nextWeek
@@ -247,8 +250,8 @@ class DateTimeCompose(val bundle: Bundle) {
             modifier = Modifier
                 .padding(8.dp)
         ) {
-            Text("Remind Me Later")
-            Spacer(modifier = Modifier.width(32.dp))
+            Text("Remind Me Later", modifier = Modifier.weight(1f))
+            // Spacer(modifier = Modifier.width(32.dp))
 
             val reminderState = chatViewModel.getReminderExistState
                 .asFlow()
@@ -271,30 +274,28 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>) {
-        var isCollapsed by remember { mutableStateOf(true) }
-        GeneralIconButton(icon = Icons.Filled.DateRange, label = "Custom") { isCollapsed = !isCollapsed }
+    private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>, isCollapsed: MutableState<Boolean>) {
+        GeneralIconButton(icon = Icons.Filled.DateRange, label = "Custom") { isCollapsed.value = !isCollapsed.value }
         val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier.verticalScroll(scrollState)
         ) {
-            if (!isCollapsed) {
+            if (!isCollapsed.value) {
                 val datePickerState = rememberDatePickerState()
                 val timePickerState = rememberTimePickerState()
+
                 DatePicker(
                     state = datePickerState,
-                    modifier = Modifier.scale(0.9f)
                 )
+
                 TimePicker(
                     state = timePickerState,
-                    modifier = Modifier.scale(0.9f)
                 )
 
                 val date = datePickerState.selectedDateMillis?.let {
-                    // FIXME check out the offset logic here
-                    //  it works, i think. Need to test it out. I'm not sure if I'm missing something
-                    LocalDateTime.ofEpochSecond(it / 1000, 0, ZoneOffset.ofTotalSeconds(0))
+                    val instant = Instant.ofEpochMilli(it)
+                    LocalDateTime.ofInstant(instant, ZoneOffset.UTC) // Google sends time in UTC
                 }
                 if (date != null) {
                     val year = date.year
