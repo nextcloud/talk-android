@@ -5,6 +5,7 @@
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde arama</string>
     <string name="archive_conversation">Görüşmeyi arşivle</string>
+    <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \"Arşivlenmiş\" süzgecini seçin. Doğrudan anmalar yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
     <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,6 +36,7 @@
     <string name="connection_lost_sent_messages_are_queued">Bağlantı kesildi. Gönderilen iletiler kuyruğa alındı</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
+    <string name="conversation_read_only_failed">Görüşme salt okunur olarak ayarlanamadı</string>
     <string name="conversations">Görüşmeler</string>
     <string name="create_conversation">Görüşme oluştur</string>
     <string name="create_issue">Sorun ekle</string>
@@ -190,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Kayıtlı kullanıcılar</string>
     <string name="nc_diagnose_app_version_title">Uygulama sürümü</string>
     <string name="nc_diagnose_battery_optimization_ignored">Pil iyileştirmesi yok sayılmış. Her şey yolunda</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Pil iyileştirmesi açık ve bu sorunlara neden olabilir. Pil iyileştirmesini kapatmalısınız!</string>
     <string name="nc_diagnose_battery_optimization_title">Pil ayarları</string>
     <string name="nc_diagnose_device_name_title">Aygıt</string>
     <string name="nc_diagnose_dialog_open_checklist">Sorun çözme kontrol listesini aç</string>
@@ -332,6 +335,7 @@
     <string name="nc_notification_channel_uploads">Yüklemeler</string>
     <string name="nc_notification_channel_uploads_description">Yükleme ilerlemesi bildirilsin</string>
     <string name="nc_notification_settings">Bildirim ayarları</string>
+    <string name="nc_notification_warning">Bildirimler doğru olarak ayarlanmamış</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Bildirim izni ve pil ayarları, bildirimleri almak için doğru şekilde ayarlanmış. Yine de bildirim almakta sorun yaşıyorsanız lütfen çağrı ve iletiler için bildirim kanallarının kullanıma alınmış olup olmadığını denetleyin. Daha fazla yardım almak için DontKillMyApp.com adresine ya da sorun giderme kontrol listesine bakabilirsiniz. Bunlar işe yaramazsa lütfen tanılama ekranına gidin ve bir hata bildirimi gönderin.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Bildirim sorunlarını çözme</string>
     <string name="nc_notify_me_always">Her zaman bildirilsin</string>
@@ -429,6 +433,7 @@
     <string name="nc_settings_advanced_title">Gelişmiş</string>
     <string name="nc_settings_appearance">Görünüm</string>
     <string name="nc_settings_call_ringtone">Çağrılar</string>
+    <string name="nc_settings_contact_admin_of">Lütfen şuranın yöneticisi ile görüşün</string>
     <string name="nc_settings_diagnose_subtitle">Ayarları denetlemek için tanılama ekranını açın ya da bir hata bildirimi oluşturun</string>
     <string name="nc_settings_diagnose_title">Tanılama</string>
     <string name="nc_settings_incognito_keyboard_desc">Tuş takımında kişisel öğrenmeyi kullanımdan kaldırır (garanti edilmez)</string>
@@ -468,6 +473,7 @@
     <string name="nc_settings_server_almost_eol">Sunucu sürümü çok eski ve gelecek sürümde artık desteklenmeyecek</string>
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Sunucu bildirimleri uygulaması kurulmamış</string>
     <string name="nc_settings_theme_battery_saver">Pil koruyucu tarafından ayarlandı</string>
     <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>
@@ -493,6 +499,8 @@
     <string name="nc_shared_items_empty">Paylaşılmış bir öge yok</string>
     <string name="nc_shared_items_location">Konum</string>
     <string name="nc_shared_location">Paylaşılan konum</string>
+    <string name="nc_show_notification_warning_description">Bildirimler doğru olarak ayarlanmamışsa standart uyarı görüntülensin</string>
+    <string name="nc_show_notification_warning_title">Standart uyarı bildirimi görüntülensin</string>
     <string name="nc_sort_by">Sıralama</string>
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_switch_account">Hesabı değiştir</string>
@@ -521,6 +529,7 @@
     <string name="nc_yes">Evet</string>
     <string name="new_conversation_creation_icon">Yeni görüşme oluştur simgesi</string>
     <string name="next_week">Sonraki hafta</string>
+    <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="oneHour">1 saat</string>
     <string name="online">Çevrim içi</string>
@@ -528,6 +537,7 @@
     <string name="openConversations">Açık görüşmeler</string>
     <string name="open_in_files_app">Dosyalar uygulamasında aç</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
+    <string name="playback_speed_control">Oynatma hızı denetimi</string>
     <string name="polls_add_option">Seçenek ekle</string>
     <string name="polls_edit_vote">Oyu düzenle</string>
     <string name="polls_end_poll">Anleti sonlandır</string>
@@ -606,6 +616,7 @@
     <string name="startCallForbidden">Bir çağrı başlatma izniniz yok</string>
     <string name="started_a_call">bir çağrı başlattı</string>
     <string name="status_message">Durum iletisi</string>
+    <string name="status_reverted">Durum geri alındı</string>
     <string name="switch_to_breakout_room">Çalışma odasına geç</string>
     <string name="switch_to_main_room">Ana odaya geç</string>
     <string name="take_photo">Bir fotoğraf çekin</string>
