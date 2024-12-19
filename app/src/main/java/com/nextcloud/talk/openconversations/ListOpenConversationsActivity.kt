@@ -70,10 +70,11 @@ class ListOpenConversationsActivity : BaseActivity() {
             handleSearchUI(searching)
         }
         binding.editText.doOnTextChanged { text, _, _, count ->
-            openConversationsViewModel.updateSearchTerm(text.toString())
-            openConversationsViewModel.fetchConversations()
+            if (!text.isNullOrBlank()) {
+                openConversationsViewModel.updateSearchTerm(text.toString())
+                openConversationsViewModel.fetchConversations()
+            }
         }
-
         initObservers()
     }
 
