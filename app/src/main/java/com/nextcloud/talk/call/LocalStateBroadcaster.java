@@ -7,6 +7,8 @@
 package com.nextcloud.talk.call;
 
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
 
 import java.util.Objects;
 
@@ -48,6 +50,7 @@ public abstract class LocalStateBroadcaster {
                 audioEnabled = localCallParticipantModel.isAudioEnabled();
 
                 messageSender.sendToAll(getDataChannelMessageForAudioState());
+                messageSender.sendToAll(getSignalingMessageForAudioState());
             }
 
             if (!Objects.equals(speaking, localCallParticipantModel.isSpeaking())) {
@@ -60,6 +63,7 @@ public abstract class LocalStateBroadcaster {
                 videoEnabled = localCallParticipantModel.isVideoEnabled();
 
                 messageSender.sendToAll(getDataChannelMessageForVideoState());
+                messageSender.sendToAll(getSignalingMessageForVideoState());
             }
         }
     }
@@ -105,5 +109,62 @@ public abstract class LocalStateBroadcaster {
         }
 
         return new DataChannelMessage(type);
+    }
+
+    /**
+     * Returns a signaling message with the common fields set (type and room type).
+     *
+     * @param type the type of the signaling message
+     * @return the signaling message
+     */
+    private NCSignalingMessage createBaseSignalingMessage(String type) {
+        NCSignalingMessage ncSignalingMessage = new NCSignalingMessage();
+        // "roomType" is not really relevant without a peer or when referring to the whole participant, but it is
+        // nevertheless expected in the message. As most of the signaling messages currently sent to all participants
+        // are related to audio/video state "video" is used as the room type.
+        ncSignalingMessage.setRoomType("video");
+        ncSignalingMessage.setType(type);
+
+        return ncSignalingMessage;
+    }
+
+    /**
+     * Returns a signaling message to notify current audio state.
+     *
+     * @return the signaling message
+     */
+    protected NCSignalingMessage getSignalingMessageForAudioState() {
+        String type = "mute";
+        if (localCallParticipantModel.isAudioEnabled() != null && localCallParticipantModel.isAudioEnabled()) {
+            type = "unmute";
+        }
+
+        NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
+
+        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        ncMessagePayload.setName("audio");
+        ncSignalingMessage.setPayload(ncMessagePayload);
+
+        return ncSignalingMessage;
+    }
+
+    /**
+     * Returns a signaling message to notify current video state.
+     *
+     * @return the signaling message
+     */
+    protected NCSignalingMessage getSignalingMessageForVideoState() {
+        String type = "mute";
+        if (localCallParticipantModel.isVideoEnabled() != null && localCallParticipantModel.isVideoEnabled()) {
+            type = "unmute";
+        }
+
+        NCSignalingMessage ncSignalingMessage = createBaseSignalingMessage(type);
+
+        NCMessagePayload ncMessagePayload = new NCMessagePayload();
+        ncMessagePayload.setName("video");
+        ncSignalingMessage.setPayload(ncMessagePayload);
+
+        return ncSignalingMessage;
     }
 }
