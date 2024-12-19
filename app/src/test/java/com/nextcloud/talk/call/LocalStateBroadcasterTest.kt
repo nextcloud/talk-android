@@ -7,6 +7,8 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
@@ -46,7 +48,15 @@ class LocalStateBroadcasterTest {
 
         val expectedAudioOn = DataChannelMessage("audioOn")
 
+        val expectedUnmuteAudio = NCSignalingMessage()
+        expectedUnmuteAudio.roomType = "video"
+        expectedUnmuteAudio.type = "unmute"
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedUnmuteAudio.payload = payload
+
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedUnmuteAudio)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
@@ -71,7 +81,15 @@ class LocalStateBroadcasterTest {
 
         val expectedAudioOff = DataChannelMessage("audioOff")
 
+        val expectedMuteAudio = NCSignalingMessage()
+        expectedMuteAudio.roomType = "video"
+        expectedMuteAudio.type = "mute"
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedMuteAudio.payload = payload
+
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedAudioOff)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedMuteAudio)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
@@ -138,10 +156,18 @@ class LocalStateBroadcasterTest {
         val expectedAudioOn = DataChannelMessage("audioOn")
         val expectedSpeaking = DataChannelMessage("speaking")
 
+        val expectedUnmuteAudio = NCSignalingMessage()
+        expectedUnmuteAudio.roomType = "video"
+        expectedUnmuteAudio.type = "unmute"
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedUnmuteAudio.payload = payload
+
         val inOrder = Mockito.inOrder(mockedMessageSender)
 
         inOrder.verify(mockedMessageSender!!).sendToAll(expectedAudioOn)
         inOrder.verify(mockedMessageSender!!).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedUnmuteAudio)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
@@ -184,10 +210,18 @@ class LocalStateBroadcasterTest {
         val expectedStoppedSpeaking = DataChannelMessage("stoppedSpeaking")
         val expectedAudioOff = DataChannelMessage("audioOff")
 
+        val expectedMuteAudio = NCSignalingMessage()
+        expectedMuteAudio.roomType = "video"
+        expectedMuteAudio.type = "mute"
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedMuteAudio.payload = payload
+
         val inOrder = Mockito.inOrder(mockedMessageSender)
 
         inOrder.verify(mockedMessageSender!!).sendToAll(expectedStoppedSpeaking)
         inOrder.verify(mockedMessageSender!!).sendToAll(expectedAudioOff)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedMuteAudio)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
@@ -213,7 +247,15 @@ class LocalStateBroadcasterTest {
 
         val expectedVideoOn = DataChannelMessage("videoOn")
 
+        val expectedUnmuteVideo = NCSignalingMessage()
+        expectedUnmuteVideo.roomType = "video"
+        expectedUnmuteVideo.type = "unmute"
+        val payload = NCMessagePayload()
+        payload.type = "video"
+        expectedUnmuteVideo.payload = payload
+
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedUnmuteVideo)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
@@ -238,7 +280,15 @@ class LocalStateBroadcasterTest {
 
         val expectedVideoOff = DataChannelMessage("videoOff")
 
+        val expectedMuteVideo = NCSignalingMessage()
+        expectedMuteVideo.roomType = "video"
+        expectedMuteVideo.type = "mute"
+        val payload = NCMessagePayload()
+        payload.type = "video"
+        expectedMuteVideo.payload = payload
+
         Mockito.verify(mockedMessageSender!!).sendToAll(expectedVideoOff)
+        Mockito.verify(mockedMessageSender!!).sendToAll(expectedMuteVideo)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 

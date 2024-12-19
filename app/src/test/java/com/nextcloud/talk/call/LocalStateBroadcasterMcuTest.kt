@@ -7,11 +7,14 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
+import com.nextcloud.talk.models.json.signaling.NCMessagePayload
+import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.TestScheduler
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.Mockito.any
 import org.mockito.Mockito.times
 import java.util.concurrent.TimeUnit
 
@@ -29,6 +32,54 @@ class LocalStateBroadcasterMcuTest {
         localCallParticipantModel!!.isSpeaking = true
         localCallParticipantModel!!.isVideoEnabled = true
         mockedMessageSender = Mockito.mock(MessageSender::class.java)
+    }
+
+    private fun getExpectedUnmuteAudio(): NCSignalingMessage {
+        val expectedUnmuteAudio = NCSignalingMessage()
+        expectedUnmuteAudio.roomType = "video"
+        expectedUnmuteAudio.type = "unmute"
+
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedUnmuteAudio.payload = payload
+
+        return expectedUnmuteAudio
+    }
+
+    private fun getExpectedMuteAudio(): NCSignalingMessage {
+        val expectedMuteAudio = NCSignalingMessage()
+        expectedMuteAudio.roomType = "video"
+        expectedMuteAudio.type = "mute"
+
+        val payload = NCMessagePayload()
+        payload.type = "audio"
+        expectedMuteAudio.payload = payload
+
+        return expectedMuteAudio
+    }
+
+    private fun getExpectedUnmuteVideo(): NCSignalingMessage {
+        val expectedUnmuteVideo = NCSignalingMessage()
+        expectedUnmuteVideo.roomType = "video"
+        expectedUnmuteVideo.type = "unmute"
+
+        val payload = NCMessagePayload()
+        payload.type = "video"
+        expectedUnmuteVideo.payload = payload
+
+        return expectedUnmuteVideo
+    }
+
+    private fun getExpectedMuteVideo(): NCSignalingMessage {
+        val expectedMuteVideo = NCSignalingMessage()
+        expectedMuteVideo.roomType = "video"
+        expectedMuteVideo.type = "mute"
+
+        val payload = NCMessagePayload()
+        payload.type = "video"
+        expectedMuteVideo.payload = payload
+
+        return expectedMuteVideo
     }
 
     @Test
@@ -55,12 +106,17 @@ class LocalStateBroadcasterMcuTest {
         val expectedSpeaking = DataChannelMessage("speaking")
         val expectedVideoOn = DataChannelMessage("videoOn")
 
+        val expectedUnmuteAudio = getExpectedUnmuteAudio()
+        val expectedUnmuteVideo = getExpectedUnmuteVideo()
+
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
         var messageCount = 1
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
@@ -69,6 +125,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
@@ -77,6 +135,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
@@ -85,6 +145,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
@@ -93,6 +155,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(16, TimeUnit.SECONDS)
@@ -101,6 +165,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(100, TimeUnit.SECONDS)
@@ -131,11 +197,16 @@ class LocalStateBroadcasterMcuTest {
         val expectedSpeaking = DataChannelMessage("speaking")
         val expectedVideoOn = DataChannelMessage("videoOn")
 
+        val expectedUnmuteAudio = getExpectedUnmuteAudio()
+        val expectedUnmuteVideo = getExpectedUnmuteVideo()
+
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(1)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(1)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localCallParticipantModel!!.isSpeaking = false
@@ -147,28 +218,38 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(2)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedStoppedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(2)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(2)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(2)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localCallParticipantModel!!.isAudioEnabled = false
 
         val expectedAudioOff = DataChannelMessage("audioOff")
 
+        val expectedMuteAudio = getExpectedMuteAudio()
+
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedAudioOff)
         Mockito.verify(mockedMessageSender!!, times(2)).sendToAll(expectedStoppedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(3)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(1)).send(expectedMuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(2)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localCallParticipantModel!!.isVideoEnabled = false
 
         val expectedVideoOff = DataChannelMessage("videoOff")
 
+        val expectedMuteVideo = getExpectedMuteVideo()
+
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
 
         Mockito.verify(mockedMessageSender!!, times(2)).sendToAll(expectedAudioOff)
         Mockito.verify(mockedMessageSender!!, times(3)).sendToAll(expectedStoppedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(1)).sendToAll(expectedVideoOff)
+        Mockito.verify(mockedMessageSender!!, times(2)).send(expectedMuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(1)).send(expectedMuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localCallParticipantModel!!.isVideoEnabled = true
@@ -178,11 +259,13 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(3)).sendToAll(expectedAudioOff)
         Mockito.verify(mockedMessageSender!!, times(4)).sendToAll(expectedStoppedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(4)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(3)).send(expectedMuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(4)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
     @Test
-    fun testStateSentWithExponentialBackoffRestartedWhenAnotherParticipantAdded() {
+    fun testStateSentThroughDataChannelWithExponentialBackoffRestartedWhenAnotherParticipantAdded() {
         val testScheduler = TestScheduler()
         RxJavaPlugins.setIoSchedulerHandler { testScheduler }
 
@@ -205,12 +288,17 @@ class LocalStateBroadcasterMcuTest {
         val expectedSpeaking = DataChannelMessage("speaking")
         val expectedVideoOn = DataChannelMessage("videoOn")
 
+        val expectedUnmuteAudio = getExpectedUnmuteAudio()
+        val expectedUnmuteVideo = getExpectedUnmuteVideo()
+
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
         var messageCount = 1
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
@@ -221,6 +309,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
@@ -229,6 +319,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
@@ -237,6 +329,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         val callParticipantModel2 = MutableCallParticipantModel("theSessionId2")
@@ -249,6 +343,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
@@ -257,6 +355,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
@@ -265,6 +367,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
@@ -273,6 +379,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
@@ -281,6 +391,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(16, TimeUnit.SECONDS)
@@ -289,6 +403,10 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteAudio, "theSessionId2")
+        Mockito.verify(mockedMessageSender!!, any()).send(expectedUnmuteVideo, "theSessionId2")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(100, TimeUnit.SECONDS)
@@ -297,7 +415,7 @@ class LocalStateBroadcasterMcuTest {
     }
 
     @Test
-    fun testStateStillSentWithExponentialBackoffWhenParticipantRemoved() {
+    fun testStateStillSentThroughDataChannelWithExponentialBackoffWhenParticipantRemoved() {
         // For simplicity the exponential backoff is not aborted when the participant that triggered it is removed.
 
         val testScheduler = TestScheduler()
@@ -403,12 +521,17 @@ class LocalStateBroadcasterMcuTest {
         val expectedSpeaking = DataChannelMessage("speaking")
         val expectedVideoOn = DataChannelMessage("videoOn")
 
+        val expectedUnmuteAudio = getExpectedUnmuteAudio()
+        val expectedUnmuteVideo = getExpectedUnmuteVideo()
+
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
         var messageCount = 1
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
@@ -419,6 +542,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
@@ -427,6 +552,8 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
         Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteAudio, "theSessionId")
+        Mockito.verify(mockedMessageSender!!, times(messageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localStateBroadcasterMcu!!.destroy()
