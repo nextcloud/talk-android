@@ -26,6 +26,12 @@ import java.util.Objects;
  * after a temporary disconnection; data channels use a reliable transport by default, so even if the state changes
  * while the connection is temporarily interrupted the normal state update messages should be received by the other
  * participant once the connection is restored.
+ * <p>
+ * Nevertheless, in case of a failed connection and an ICE restart it is unclear whether the data channel messages
+ * would be received or not (as the data channel transport may be the one that failed and needs to be restarted).
+ * However, the state (except the speaking state) is also sent through signaling messages, which need to be
+ * explicitly fetched from the internal signaling server, so even in case of a failed connection they will be
+ * eventually received once the remote participant connects again.
  */
 public class LocalStateBroadcasterNoMcu extends LocalStateBroadcaster {
 
@@ -115,5 +121,8 @@ public class LocalStateBroadcasterNoMcu extends LocalStateBroadcaster {
         messageSender.send(getDataChannelMessageForAudioState(), sessionId);
         messageSender.send(getDataChannelMessageForSpeakingState(), sessionId);
         messageSender.send(getDataChannelMessageForVideoState(), sessionId);
+
+        messageSender.send(getSignalingMessageForAudioState(), sessionId);
+        messageSender.send(getSignalingMessageForVideoState(), sessionId);
     }
 }
