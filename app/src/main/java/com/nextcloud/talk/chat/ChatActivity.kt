@@ -1659,7 +1659,8 @@ class ChatActivity :
                                 retriever.release() // Always release the retriever to free resources
                                 (durationStr?.toIntOrNull()  ?: 0 )/ 1000 // Convert to int (seconds)
                             } catch (e: Exception) {
-                                e.printStackTrace()
+                                Log.e(TAG, "An exception occurred while computing " +
+                                    "voice message duration for " + filename, e)
                                 0
                             }
                             adapter?.update(curMsg)
@@ -1673,7 +1674,8 @@ class ChatActivity :
                                 retriever.release() // Always release the retriever to free resources
                                 (durationStr?.toIntOrNull()  ?: 0 )/ 1000 // Convert to int (seconds)
                             } catch (e: Exception) {
-                                e.printStackTrace()
+                                Log.e(TAG, "An exception occurred while computing " +
+                                    "voice message duration for " + filename, e)
                                 0
                             }
                             adapter?.update(curMsg)
