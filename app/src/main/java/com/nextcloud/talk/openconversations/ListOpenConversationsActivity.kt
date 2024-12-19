@@ -25,6 +25,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.adapters.OpenConversationsAdapter
 import com.nextcloud.talk.openconversations.viewmodels.OpenConversationsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.vanniktech.ui.hideKeyboardAndFocus
 import com.vanniktech.ui.showKeyboardAndFocus
 import javax.inject.Inject
 
@@ -69,7 +70,8 @@ class ListOpenConversationsActivity : BaseActivity() {
             handleSearchUI(searching)
         }
         binding.editText.doOnTextChanged { text, _, _, count ->
-            adapter.filter(text.toString())
+            openConversationsViewModel.updateSearchTerm(text.toString())
+            openConversationsViewModel.fetchConversations()
         }
 
         initObservers()
@@ -83,6 +85,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         } else {
             binding.searchOpenConversations.visibility = View.VISIBLE
             binding.textInputLayout.visibility = View.GONE
+            binding.editText.hideKeyboardAndFocus()
         }
     }
 
