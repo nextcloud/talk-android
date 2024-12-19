@@ -1590,6 +1590,8 @@ class CallActivity : CallBaseActivity() {
                         hasMCU = false
 
                         messageSender = MessageSenderNoMcu(
+                            signalingMessageSender,
+                            callParticipants,
                             peerConnectionWrapperList
                         )
 
@@ -1896,10 +1898,14 @@ class CallActivity : CallBaseActivity() {
             if (hasMCU) {
                 messageSender = MessageSenderMcu(
                     webSocketClient!!.sessionId,
+                    signalingMessageSender,
+                    callParticipants,
                     peerConnectionWrapperList
                 )
             } else {
                 messageSender = MessageSenderNoMcu(
+                    signalingMessageSender,
+                    callParticipants,
                     peerConnectionWrapperList
                 )
             }
@@ -1935,10 +1941,14 @@ class CallActivity : CallBaseActivity() {
                     if (hasMCU) {
                         messageSender = MessageSenderMcu(
                             webSocketClient!!.sessionId,
+                            signalingMessageSender,
+                            callParticipants,
                             peerConnectionWrapperList
                         )
                     } else {
                         messageSender = MessageSenderNoMcu(
+                            signalingMessageSender,
+                            callParticipants,
                             peerConnectionWrapperList
                         )
                     }
