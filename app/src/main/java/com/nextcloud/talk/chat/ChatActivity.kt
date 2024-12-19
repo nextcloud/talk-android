@@ -1205,10 +1205,7 @@ class ChatActivity :
         }
     }
 
-    private fun setUpWaveform(
-        message: ChatMessage, thenPlay: Boolean = true,
-        backgroundPlayAllowed: Boolean = false
-    ) {
+    private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         val filename = message.selectedIndividualHashMap!!["name"]
         val file = File(context.cacheDir, filename!!)
         if (file.exists() && message.voiceMessageFloatArray == null) {
@@ -1617,10 +1614,8 @@ class ChatActivity :
         }
     }
 
-    private fun startPlayback(
-        message: ChatMessage, doPlay: Boolean = true,
-        backgroundPlayAllowed: Boolean = false
-    ) {
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         if (!active && !backgroundPlayAllowed) {
             // don't begin to play voice message if screen is not visible anymore.
             // this situation might happen if file is downloading but user already left the chatview.
@@ -1665,10 +1660,12 @@ class ChatActivity :
                                     retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                                 retriever.release() // Always release the retriever to free resources
                                 (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
-                            } catch (e: Exception) {
+                            } catch (e: RuntimeException) {
                                 Log.e(
-                                    TAG, "An exception occurred while computing " +
-                                        "voice message duration for " + filename, e
+                                    TAG,
+                                    "An exception occurred while computing " +
+                                        "voice message duration for " + filename,
+                                    e
                                 )
                                 0
                             }
@@ -1683,10 +1680,12 @@ class ChatActivity :
                                     retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                                 retriever.release() // Always release the retriever to free resources
                                 (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
-                            } catch (e: Exception) {
+                            } catch (e: RuntimeException) {
                                 Log.e(
-                                    TAG, "An exception occurred while computing " +
-                                        "voice message duration for " + filename, e
+                                    TAG,
+                                    "An exception occurred while computing " +
+                                        "voice message duration for " + filename,
+                                    e
                                 )
                                 0
                             }
@@ -1698,7 +1697,6 @@ class ChatActivity :
         }
 
         val hasConsecutiveVoiceMessage = if (nextMessage != null) nextMessage.isVoiceMessage else false
-
 
         mediaPlayer?.let {
             if (!it.isPlaying && doPlay) {
@@ -1734,7 +1732,8 @@ class ChatActivity :
                                 stopMediaPlayer(message)
                                 if (hasConsecutiveVoiceMessage) {
                                     val defaultMediaPlayer = MediaPlayer.create(
-                                        context, R.raw
+                                        context,
+                                        R.raw
                                             .next_voice_message_doodle
                                     )
                                     defaultMediaPlayer.setOnCompletionListener {
@@ -3200,7 +3199,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
+                .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3210,7 +3209,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
+                .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -3505,7 +3504,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)
