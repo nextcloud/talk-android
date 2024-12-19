@@ -91,6 +91,8 @@ data class ChatMessage(
 
     var isPlayingVoiceMessage: Boolean = false,
 
+    var wasPlayedVoiceMessage: Boolean = false,
+
     var voiceMessageDuration: Int = 0,
 
     var voiceMessagePlayedSeconds: Int = 0,
@@ -294,9 +296,11 @@ data class ChatMessage(
                     activeUser == null -> {
                         null
                     }
+
                     actorType == "users" -> {
                         ApiUtils.getUrlForAvatar(activeUser!!.baseUrl!!, actorId, true)
                     }
+
                     actorType == "bridged" -> {
                         ApiUtils.getUrlForAvatar(
                             activeUser!!.baseUrl!!,
@@ -304,6 +308,7 @@ data class ChatMessage(
                             true
                         )
                     }
+
                     else -> {
                         var apiId: String? = sharedApplication!!.getString(R.string.nc_guest)
                         if (!TextUtils.isEmpty(actorDisplayName)) {

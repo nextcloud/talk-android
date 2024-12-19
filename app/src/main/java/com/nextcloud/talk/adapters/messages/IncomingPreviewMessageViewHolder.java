@@ -50,7 +50,8 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
                     message,
                     true,
                     viewThemeUtils);
-                viewThemeUtils.talk.themeIncomingMessageBubble(binding.incomingPreviewMessageBubble, true, false);
+                viewThemeUtils.talk.themeIncomingMessageBubble(binding.incomingPreviewMessageBubble, true, false,
+                                                               false);
             }
 
             if (processedMessageText != null) {
