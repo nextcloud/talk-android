@@ -7,6 +7,7 @@
 package com.nextcloud.talk.call
 
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
+import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import org.junit.Before
 import org.junit.Test
@@ -25,6 +26,10 @@ class MessageSenderNoMcuTest {
 
     @Before
     fun setUp() {
+        val signalingMessageSender = Mockito.mock(SignalingMessageSender::class.java)
+
+        val callParticipants = HashMap<String, CallParticipant>()
+
         peerConnectionWrappers = ArrayList()
 
         peerConnectionWrapper1 = Mockito.mock(PeerConnectionWrapper::class.java)
@@ -47,7 +52,7 @@ class MessageSenderNoMcuTest {
         Mockito.`when`(peerConnectionWrapper4Screen!!.videoStreamType).thenReturn("screen")
         peerConnectionWrappers!!.add(peerConnectionWrapper4Screen)
 
-        messageSender = MessageSenderNoMcu(peerConnectionWrappers)
+        messageSender = MessageSenderNoMcu(signalingMessageSender, callParticipants.keys, peerConnectionWrappers)
     }
 
     @Test
