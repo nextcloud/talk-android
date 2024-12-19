@@ -7,17 +7,21 @@
 package com.nextcloud.talk.call;
 
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
+import com.nextcloud.talk.signaling.SignalingMessageSender;
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Helper class to send messages to participants in a call when an MCU is not used.
  */
 public class MessageSenderNoMcu extends MessageSender {
 
-    public MessageSenderNoMcu(List<PeerConnectionWrapper> peerConnectionWrappers) {
-        super(peerConnectionWrappers);
+    public MessageSenderNoMcu(SignalingMessageSender signalingMessageSender,
+                              Set<String> callParticipantSessionIds,
+                              List<PeerConnectionWrapper> peerConnectionWrappers) {
+        super(signalingMessageSender, callParticipantSessionIds, peerConnectionWrappers);
     }
 
     /**
