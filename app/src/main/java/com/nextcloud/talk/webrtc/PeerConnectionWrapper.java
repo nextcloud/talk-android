@@ -62,9 +62,6 @@ public class PeerConnectionWrapper {
     private final List<DataChannelMessage> pendingDataChannelMessages = new ArrayList<>();
     private final SdpObserver sdpObserver;
 
-    private final boolean hasInitiated;
-
-    private final MediaStream localStream;
     private final boolean isMCUPublisher;
     private final String videoStreamType;
 
@@ -113,14 +110,13 @@ public class PeerConnectionWrapper {
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
                                  SignalingMessageReceiver signalingMessageReceiver,
                                  SignalingMessageSender signalingMessageSender) {
-        this.localStream = localStream;
         this.videoStreamType = videoStreamType;
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
 
         sdpObserver = new SdpObserver();
-        hasInitiated = sessionId.compareTo(localSession) < 0;
+        boolean hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
 
         PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
@@ -133,12 +129,12 @@ public class PeerConnectionWrapper {
         this.signalingMessageSender = signalingMessageSender;
 
         if (peerConnection != null) {
-            if (this.localStream != null) {
-                List<String> localStreamIds = Collections.singletonList(this.localStream.getId());
-                for(AudioTrack track : this.localStream.audioTracks) {
+            if (localStream != null) {
+                List<String> localStreamIds = Collections.singletonList(localStream.getId());
+                for(AudioTrack track : localStream.audioTracks) {
                     peerConnection.addTrack(track, localStreamIds);
                 }
-                for(VideoTrack track : this.localStream.videoTracks) {
+                for(VideoTrack track : localStream.videoTracks) {
                     peerConnection.addTrack(track, localStreamIds);
                 }
             }
