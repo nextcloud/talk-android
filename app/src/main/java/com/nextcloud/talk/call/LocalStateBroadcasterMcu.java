@@ -6,6 +6,8 @@
  */
 package com.nextcloud.talk.call;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
@@ -31,6 +33,8 @@ public class LocalStateBroadcasterMcu extends LocalStateBroadcaster {
 
     private final MessageSender messageSender;
 
+    private final Map<String, Disposable> sendStateWithRepetitionByParticipant = new HashMap<>();
+
     private Disposable sendStateWithRepetition;
 
     public LocalStateBroadcasterMcu(LocalCallParticipantModel localCallParticipantModel,
@@ -46,6 +50,10 @@ public class LocalStateBroadcasterMcu extends LocalStateBroadcaster {
         if (sendStateWithRepetition != null) {
             sendStateWithRepetition.dispose();
         }
+
+        for (Disposable sendStateWithRepetitionForParticipant: sendStateWithRepetitionByParticipant.values()) {
+            sendStateWithRepetitionForParticipant.dispose();
+        }
     }
 
     @Override
@@ -58,15 +66,34 @@ public class LocalStateBroadcasterMcu extends LocalStateBroadcaster {
             .fromArray(new Integer[]{0, 1, 2, 4, 8, 16})
             .concatMap(i -> Observable.just(i).delay(i, TimeUnit.SECONDS, Schedulers.io()))
             .subscribe(value -> sendState());
+
+        String sessionId = callParticipantModel.getSessionId();
+        if (sendStateWithRepetitionByParticipant.get(sessionId) != null) {
+            sendStateWithRepetitionByParticipant.get(sessionId).dispose();
+        }
+
+        sendStateWithRepetitionByParticipant.put(sessionId, Observable
+            .fromArray(new Integer[]{0, 1, 2, 4, 8, 16})
+            .concatMap(i -> Observable.just(i).delay(i, TimeUnit.SECONDS, Schedulers.io()))
+            .subscribe(value -> sendState(sessionId)));
     }
 
     @Override
     public void handleCallParticipantRemoved(CallParticipantModel callParticipantModel) {
+        String sessionId = callParticipantModel.getSessionId();
+        if (sendStateWithRepetitionByParticipant.get(sessionId) != null) {
+            sendStateWithRepetitionByParticipant.get(sessionId).dispose();
+        }
     }
 
     private void sendState() {
         messageSender.sendToAll(getDataChannelMessageForAudioState());
         messageSender.sendToAll(getDataChannelMessageForSpeakingState());
         messageSender.sendToAll(getDataChannelMessageForVideoState());
+    }
+
+    private void sendState(String sessionId) {
+        messageSender.send(getSignalingMessageForAudioState(), sessionId);
+        messageSender.send(getSignalingMessageForVideoState(), sessionId);
     }
 }

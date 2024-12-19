@@ -115,5 +115,8 @@ public class LocalStateBroadcasterNoMcu extends LocalStateBroadcaster {
         messageSender.send(getDataChannelMessageForAudioState(), sessionId);
         messageSender.send(getDataChannelMessageForSpeakingState(), sessionId);
         messageSender.send(getDataChannelMessageForVideoState(), sessionId);
+
+        messageSender.send(getSignalingMessageForAudioState(), sessionId);
+        messageSender.send(getSignalingMessageForVideoState(), sessionId);
     }
 }
