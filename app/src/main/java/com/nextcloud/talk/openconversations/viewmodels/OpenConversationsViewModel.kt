@@ -38,7 +38,7 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
 
     fun fetchConversations() {
         _viewState.value = FetchConversationsStartState
-        repository.fetchConversations(_searchTerm.value?: "")
+        repository.fetchConversations(_searchTerm.value ?: "")
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(FetchConversationsObserver())
