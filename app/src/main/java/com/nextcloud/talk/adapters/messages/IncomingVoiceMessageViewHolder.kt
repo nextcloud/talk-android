@@ -107,6 +107,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
+        showVoiceMessageDuration(message)
         if (message.isDownloadingVoiceMessage) {
             showVoiceMessageLoading()
         } else {
@@ -155,6 +156,17 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         isBound = true
     }
 
+    private fun showVoiceMessageDuration(message: ChatMessage) {
+        if (message.voiceMessageDuration > 0) {
+            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(
+                message.voiceMessageDuration.toLong()
+            )
+            binding.voiceMessageDuration.visibility = View.VISIBLE
+        } else {
+            binding.voiceMessageDuration.visibility = View.INVISIBLE
+        }
+    }
+
     private fun resetVoiceMessage(chatMessage: ChatMessage) {
         binding.playPauseBtn.visibility = View.VISIBLE
         binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -164,7 +176,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         binding.seekbar.progress = SEEKBAR_START
         chatMessage.resetVoiceMessage = false
         chatMessage.voiceMessagePlayedSeconds = 0
-        binding.voiceMessageDuration.visibility = View.INVISIBLE
+        showVoiceMessageDuration(message)
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
@@ -176,6 +188,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun handleIsPlayingVoiceMessageState(message: ChatMessage) {
+        colorizeMessageBubble(message)
         if (message.isPlayingVoiceMessage) {
             showPlayButton()
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
@@ -190,6 +203,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
+            showVoiceMessageDuration(message)
             binding.playPauseBtn.visibility = View.VISIBLE
             binding.playPauseBtn.icon = ContextCompat.getDrawable(
                 context!!,
@@ -279,7 +293,12 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     }
 
     private fun colorizeMessageBubble(message: ChatMessage) {
-        viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
+        viewThemeUtils.talk.themeIncomingMessageBubble(
+            bubble,
+            message.isGrouped,
+            message.isDeleted,
+            message.wasPlayedVoiceMessage
+        )
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

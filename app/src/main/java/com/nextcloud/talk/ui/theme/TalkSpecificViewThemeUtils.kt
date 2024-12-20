@@ -70,7 +70,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
 ) :
     ViewThemeUtilsBase(schemes) {
     private val dynamicColor = MaterialDynamicColors()
-    fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean) {
+    fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
         val resources = bubble.resources
 
         var bubbleResource = R.drawable.shape_incoming_message
@@ -81,6 +81,8 @@ class TalkSpecificViewThemeUtils @Inject constructor(
 
         val bgBubbleColor = if (deleted) {
             resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
+        } else if (isPlayed) {
+            resources.getColor(R.color.bg_message_list_incoming_bubble_audio_played, null)
         } else {
             resources.getColor(R.color.bg_message_list_incoming_bubble, null)
         }
@@ -93,10 +95,12 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         ViewCompat.setBackground(bubble, bubbleDrawable)
     }
 
-    fun themeOutgoingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean) {
+    fun themeOutgoingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
         withScheme(bubble) { scheme ->
             val bgBubbleColor = if (deleted) {
                 ColorUtils.setAlphaComponent(dynamicColor.surfaceVariant().getArgb(scheme), HALF_ALPHA_INT)
+            } else if (isPlayed) {
+                ContextCompat.getColor(bubble.context, R.color.bg_message_list_outgoing_bubble_audio_played)
             } else {
                 dynamicColor.surfaceVariant().getArgb(scheme)
             }

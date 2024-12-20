@@ -64,6 +64,8 @@
 
     <color name="bg_message_list_incoming_bubble">#EFEFEF</color>
     <color name="bg_message_list_incoming_bubble_deleted">#66EFEFEF</color>
+    <color name="bg_message_list_incoming_bubble_audio_played">#AFAFAF</color>
+    <color name="bg_message_list_outgoing_bubble_audio_played">#D3CFCF</color>
 
     <color name="bg_bottom_sheet">#FFFFFF</color>
     <color name="bg_call_screen_dialog">#121212</color>
