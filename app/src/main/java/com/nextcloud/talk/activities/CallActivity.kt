@@ -1174,12 +1174,12 @@ class CallActivity : CallBaseActivity() {
         if (isConnectionEstablished && othersInCall) {
             if (!hasMCU) {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.sendChannelData(DataChannelMessage(isSpeakingMessage))
+                    peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
                 }
             } else {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
                     if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.sendChannelData(DataChannelMessage(isSpeakingMessage))
+                        peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
                         break
                     }
                 }
@@ -1370,12 +1370,12 @@ class CallActivity : CallBaseActivity() {
         if (isConnectionEstablished) {
             if (!hasMCU) {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.sendChannelData(DataChannelMessage(message))
+                    peerConnectionWrapper.send(DataChannelMessage(message))
                 }
             } else {
                 for (peerConnectionWrapper in peerConnectionWrapperList) {
                     if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.sendChannelData(DataChannelMessage(message))
+                        peerConnectionWrapper.send(DataChannelMessage(message))
                         break
                     }
                 }
@@ -2563,7 +2563,7 @@ class CallActivity : CallBaseActivity() {
                         }
 
                         override fun onNext(aLong: Long) {
-                            peerConnectionWrapper.sendChannelData(dataChannelMessage)
+                            peerConnectionWrapper.send(dataChannelMessage)
                         }
 
                         override fun onError(e: Throwable) {
