@@ -839,4 +839,8 @@ How to translate with transifex:
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="status_reverted">Status Reverted</string>
     <string name="automatic_status_set">Your status was set automatically</string>
+
+    <string name="user_absence">%1$s is out of office and might not respond</string>
+    <string name="user_absence_for_one_day">%1$s is out of office today</string>
+    <string name="user_absence_replacement">Replacement: </string>
 </resources>
