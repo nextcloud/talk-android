@@ -218,34 +218,34 @@ class LocalStateBroadcasterMcuTest {
 
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
-        var messageCount = 1
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        var dataChannelMessageCount = 1
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
 
-        messageCount = 2
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 2
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        messageCount = 3
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 3
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
 
-        messageCount = 4
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 4
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         val callParticipantModel2 = MutableCallParticipantModel("theSessionId2")
@@ -254,50 +254,50 @@ class LocalStateBroadcasterMcuTest {
 
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
-        messageCount = 5
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 5
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
 
-        messageCount = 6
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 6
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        messageCount = 7
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 7
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
 
-        messageCount = 8
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 8
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
 
-        messageCount = 9
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 9
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(16, TimeUnit.SECONDS)
 
-        messageCount = 10
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 10
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(100, TimeUnit.SECONDS)
@@ -331,52 +331,52 @@ class LocalStateBroadcasterMcuTest {
 
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
-        var messageCount = 1
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        var dataChannelMessageCount = 1
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(1, TimeUnit.SECONDS)
 
-        messageCount = 2
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 2
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(2, TimeUnit.SECONDS)
 
-        messageCount = 3
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 3
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(4, TimeUnit.SECONDS)
 
-        messageCount = 4
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 4
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         localStateBroadcasterMcu!!.handleCallParticipantRemoved(callParticipantModel)
 
         testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
 
-        messageCount = 5
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 5
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(16, TimeUnit.SECONDS)
 
-        messageCount = 6
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedAudioOn)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedSpeaking)
-        Mockito.verify(mockedMessageSender!!, times(messageCount)).sendToAll(expectedVideoOn)
+        dataChannelMessageCount = 6
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedAudioOn)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedSpeaking)
+        Mockito.verify(mockedMessageSender!!, times(dataChannelMessageCount)).sendToAll(expectedVideoOn)
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
         testScheduler.advanceTimeBy(100, TimeUnit.SECONDS)
