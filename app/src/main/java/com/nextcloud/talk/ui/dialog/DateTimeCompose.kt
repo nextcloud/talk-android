@@ -204,7 +204,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
-            .with(nextOrSame(DayOfWeek.MONDAY))
+            .with(DayOfWeek.MONDAY)
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
