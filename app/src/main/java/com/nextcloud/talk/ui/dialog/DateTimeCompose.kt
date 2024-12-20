@@ -68,7 +68,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class DateTimeCompose(val bundle: Bundle) {
-    private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0,0, ZoneOffset.MIN))
+    private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN))
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -108,20 +108,20 @@ class DateTimeCompose(val bundle: Bundle) {
                     usePlatformDefaultWidth = isCollapsed.value
                 )
             ) {
-                 Surface(
-                     shape = RoundedCornerShape(8.dp),
-                     modifier = Modifier.animateContentSize()
-                 ) {
-                     Column(
-                         modifier = Modifier
-                             .padding(16.dp)
-                             .fillMaxWidth()
-                     ) {
-                         Header()
-                         Body()
-                         CollapsableDateTime(shouldDismiss, isCollapsed)
-                     }
-                 }
+                Surface(
+                    shape = RoundedCornerShape(INT_8.dp),
+                    modifier = Modifier.animateContentSize()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .padding(INT_16.dp)
+                            .fillMaxWidth()
+                    ) {
+                        Header()
+                        Body()
+                        CollapsableDateTime(shouldDismiss, isCollapsed)
+                    }
+                }
             }
         }
     }
@@ -131,44 +131,47 @@ class DateTimeCompose(val bundle: Bundle) {
         Row(
             modifier = Modifier.fillMaxWidth()
         ) {
-            TextButton(onClick = {
-                val user = userManager.currentUser.blockingGet()
-                val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-                val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
-                val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
-                chatViewModel.deleteReminder(user, roomToken, messageId, apiVersion)
-                shouldDismiss.value = true
-            },
-            modifier = Modifier
-                .weight(.33f)
+            TextButton(
+                onClick = {
+                    val user = userManager.currentUser.blockingGet()
+                    val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
+                    val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+                    val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
+                    chatViewModel.deleteReminder(user, roomToken, messageId, apiVersion)
+                    shouldDismiss.value = true
+                },
+                modifier = Modifier
+                    .weight(CUBED_PADDING)
             ) {
                 Text(
                     "Delete",
-                    color = Color.Red,
+                    color = Color.Red
                 )
             }
 
-            TextButton(onClick = {
-                val user = userManager.currentUser.blockingGet()
-                val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-                val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
-                val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
-                val offset = timeState.value.atZone(ZoneOffset.systemDefault()).offset
-                val timeVal = timeState.value.toEpochSecond(offset)
-                chatViewModel.setReminder(user, roomToken, messageId, timeVal.toInt(), apiVersion)
-                shouldDismiss.value = true
-            },
+            TextButton(
+                onClick = {
+                    val user = userManager.currentUser.blockingGet()
+                    val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
+                    val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+                    val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
+                    val offset = timeState.value.atZone(ZoneOffset.systemDefault()).offset
+                    val timeVal = timeState.value.toEpochSecond(offset)
+                    chatViewModel.setReminder(user, roomToken, messageId, timeVal.toInt(), apiVersion)
+                    shouldDismiss.value = true
+                },
                 modifier = Modifier
-                    .weight(.33f)
+                    .weight(CUBED_PADDING)
             ) {
                 Text("Set")
             }
 
-            TextButton(onClick = {
-                shouldDismiss.value = true
-            },
+            TextButton(
+                onClick = {
+                    shouldDismiss.value = true
+                },
                 modifier = Modifier
-                    .weight(.33f)
+                    .weight(CUBED_PADDING)
             ) {
                 Text("Close")
             }
@@ -180,32 +183,32 @@ class DateTimeCompose(val bundle: Bundle) {
         val currTime = LocalDateTime.now()
 
         val laterToday = LocalDateTime.now()
-            .withHour(18)
+            .withHour(INT_18)
             .withMinute(0)
             .withSecond(0)
-        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
+        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(PATTERN))
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
+        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(PATTERN))
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
+        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(PATTERN))
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
             .with(nextOrSame(DayOfWeek.MONDAY))
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a"))
+        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(PATTERN))
 
         if (currTime < laterToday) {
             TimeOption(
@@ -248,10 +251,9 @@ class DateTimeCompose(val bundle: Bundle) {
     private fun Header() {
         Row(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(INT_8.dp)
         ) {
             Text("Remind Me Later", modifier = Modifier.weight(1f))
-            // Spacer(modifier = Modifier.width(32.dp))
 
             val reminderState = chatViewModel.getReminderExistState
                 .asFlow()
@@ -259,14 +261,16 @@ class DateTimeCompose(val bundle: Bundle) {
 
             when (reminderState.value) {
                 is ChatViewModel.GetReminderExistState -> {
-                    val timeL = (reminderState.value as ChatViewModel.GetReminderExistState).reminder.timestamp!!.toLong()
+                    val timeL =
+                        (reminderState.value as ChatViewModel.GetReminderExistState).reminder.timestamp!!.toLong()
                     timeState.value = LocalDateTime.ofInstant(Instant.ofEpochSecond(timeL), ZoneId.systemDefault())
                 }
+
                 else -> {}
             }
 
-            if (timeState.value != LocalDateTime.ofEpochSecond(0,0, ZoneOffset.MIN)) {
-                Text(timeState.value.format(DateTimeFormatter.ofPattern("dd MMM, HH:mm a")))
+            if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
+                Text(timeState.value.format(DateTimeFormatter.ofPattern(PATTERN)))
             }
         }
         HorizontalDivider()
@@ -286,11 +290,11 @@ class DateTimeCompose(val bundle: Bundle) {
                 val timePickerState = rememberTimePickerState()
 
                 DatePicker(
-                    state = datePickerState,
+                    state = datePickerState
                 )
 
                 TimePicker(
-                    state = timePickerState,
+                    state = timePickerState
                 )
 
                 val date = datePickerState.selectedDateMillis?.let {
@@ -307,20 +311,16 @@ class DateTimeCompose(val bundle: Bundle) {
                 } else {
                     timeState.value = LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
                 }
-
             }
             Submission(shouldDismiss)
         }
     }
 
     @Composable
-    fun GeneralIconButton(
-        icon: ImageVector,
-        label: String,
-        onClick: () -> Unit
-    ) {
+    fun GeneralIconButton(icon: ImageVector, label: String, onClick: () -> Unit) {
         TextButton(
-            onClick = onClick) {
+            onClick = onClick
+        ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
@@ -328,29 +328,35 @@ class DateTimeCompose(val bundle: Bundle) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(INT_24.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(INT_8.dp))
                 Text(text = label)
             }
         }
     }
 
     @Composable
-    private fun TimeOption(
-        label: String,
-        timeString: String,
-        onClick: () -> Unit
-    ) {
+    private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(INT_8.dp)
                 .clickable { onClick() }
         ) {
-            Text(label, modifier = Modifier.weight(0.5f))
-            Text(timeString, modifier = Modifier.weight(0.5f))
+            Text(label, modifier = Modifier.weight(HALF_WEIGHT))
+            Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))
         }
+    }
+
+    companion object {
+        private const val PATTERN = "dd MMM, HH:mm a"
+        private const val HALF_WEIGHT = 0.5f
+        private const val INT_8 = 8
+        private const val INT_16 = 16
+        private const val INT_18 = 18
+        private const val INT_24 = 24
+        private const val CUBED_PADDING = 0.33f
     }
 
     // Preview Logic
