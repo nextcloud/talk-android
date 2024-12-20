@@ -26,6 +26,7 @@ object Mimetype {
     const val VIDEO_MP4 = "video/mp4"
     const val VIDEO_QUICKTIME = "video/quicktime"
     const val VIDEO_OGG = "video/ogg"
+    const val VIDEO_WEBM = "video/webm"
 
     const val TEXT_MARKDOWN = "text/markdown"
     const val TEXT_PLAIN = "text/plain"
