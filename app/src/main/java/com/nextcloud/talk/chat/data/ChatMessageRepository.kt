@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface ChatMessageRepository : LifecycleAwareManager {
 
@@ -97,4 +98,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
     ): Flow<Result<ChatMessage?>>
 
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
+
+    suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 }
