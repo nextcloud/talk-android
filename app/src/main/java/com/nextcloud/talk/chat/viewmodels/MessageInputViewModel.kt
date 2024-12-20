@@ -217,6 +217,21 @@ class MessageInputViewModel @Inject constructor(
         }
     }
 
+    fun editTempChatMessage(message: ChatMessage, editedMessageText: String) {
+        viewModelScope.launch {
+            chatRepository.editTempChatMessage(
+                message,
+                editedMessageText
+            ).collect { result ->
+                if (true) {
+                    // _editMessageViewState.value = EditMessageSuccessState(result)
+                } else {
+                    // _editMessageViewState.value = EditMessageErrorState
+                }
+            }
+        }
+    }
+
     fun reply(message: IMessage?) {
         _getReplyChatMessage.postValue(message)
     }

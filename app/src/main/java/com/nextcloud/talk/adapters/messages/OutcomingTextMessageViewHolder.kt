@@ -121,21 +121,23 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
 
         CoroutineScope(Dispatchers.Main).launch {
-            // if (message.sendingFailed) {
-            //     updateStatus(
-            //         R.drawable.baseline_report_problem_24,
-            //         "failed"
-            //     )
-            // } else
-
-            if (message.isTempMessage && !networkMonitor.isOnline.first()) {
+            if (message.isTemporary && !networkMonitor.isOnline.first()) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
                     "offline"
                 )
-            } else if (message.isTempMessage) {
+            } else if (message.sendingFailed) {
+                updateStatus(
+                    R.drawable.baseline_report_problem_24,
+                    "failed"
+                )
+                binding.bubble.setOnClickListener {
+                    commonMessageInterface.onOpenMessageActionsDialog(message)
+                }
+
+            } else if (message.isTemporary) {
                 showSendingSpinner()
-            } else if(message.readStatus == ReadStatus.READ){
+            } else if(message.readStatus == ReadStatus.READ) {
                 updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
             } else if(message.readStatus == ReadStatus.SENT) {
                 updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))

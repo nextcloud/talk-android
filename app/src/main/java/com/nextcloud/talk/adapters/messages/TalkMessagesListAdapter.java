@@ -68,9 +68,6 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof SystemMessageViewHolder holderInstance) {
             holderInstance.assignSystemMessageInterface(chatActivity);
 
-        } else if (holder instanceof TemporaryMessageViewHolder holderInstance) {
-            holderInstance.assignTemporaryMessageInterface(chatActivity);
-
         } else if (holder instanceof IncomingDeckCardViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingDeckCardViewHolder holderInstance) {

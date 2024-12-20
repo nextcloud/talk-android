@@ -32,6 +32,7 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 0
         ORDER BY timestamp DESC, id DESC
         """
     )
@@ -78,10 +79,10 @@ interface ChatMessagesDao {
     @Query(
         value = """
             DELETE FROM ChatMessages
-            WHERE id in (:messageIds)
+            WHERE internalId in (:internalIds)
         """
     )
-    fun deleteChatMessages(messageIds: List<Int>)
+    fun deleteChatMessages(internalIds: List<String>)
 
     @Query(
         value = """

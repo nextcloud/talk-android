@@ -13,10 +13,6 @@ import android.util.Log
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.Companion
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.SendChatMessageErrorState
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel.SendChatMessageSuccessState
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.mappers.asEntity
@@ -41,10 +37,13 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
@@ -337,32 +336,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
             }
         }
-
-    // TODO replace with WorkManager?
-    // private suspend fun tryToSendPendingMessages() {
-    //     val tempMessages = chatDao.getTempMessagesForConversation(internalConversationId).first()
-    //
-    //     tempMessages.forEach {
-    //         Log.d(TAG, "Sending chat message ${it.message} another time!!")
-    //
-    //         sendChatMessage(
-    //             credentials,
-    //             urlForChatting,
-    //             it.message,
-    //             it.actorDisplayName,
-    //             it.parentMessageId?.toInt() ?: 0,
-    //             false,
-    //             it.referenceId ?: ""
-    //         ).collect { result ->
-    //             if (result.isSuccess) {
-    //                 Log.d(TAG, "success. received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
-    //
-    //             } else {
-    //                 Log.d(TAG, "fail.  received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
-    //             }
-    //         }
-    //     }
-    // }
 
     private suspend fun handleNewAndTempMessages(
         receivedChatMessages : List<ChatMessage>,
@@ -829,35 +802,42 @@ class OfflineFirstChatRepository @Inject constructor(
         referenceId: String
     ): Flow<Result<ChatMessage?>> =
         flow {
-            try {
-                val response = network.sendChatMessage(
-                    credentials,
-                    url,
-                    message,
-                    displayName,
-                    replyTo,
-                    sendWithoutNotification,
-                    referenceId
-                )
+            val response = network.sendChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId
+            )
 
-                val chatMessageModel = response.ocs?.data?.asModel()
+            val chatMessageModel = response.ocs?.data?.asModel()
 
-                emit(Result.success(chatMessageModel))
-            } catch (e: Exception) {
-                Log.e(TAG, "Error when sending message", e)
+            emit(Result.success(chatMessageModel))
+        }
+        //     .retryWhen { cause, attempt ->
+        //     if (cause is IOException && attempt < 3) {
+        //         delay(2000)
+        //         return@retryWhen true
+        //     } else {
+        //         return@retryWhen false
+        //     }
+        // }
+        .catch { e ->
+            Log.e(TAG, "Error when sending message", e)
 
-                val failedMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-                failedMessage.sendingFailed = true
-                chatDao.updateChatMessage(failedMessage)
+            val failedMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
+            failedMessage.sendingFailed = true
+            chatDao.updateChatMessage(failedMessage)
 
-                // val failedMessageModel = failedMessage.asModel()
-                // _removeMessageFlow.emit(failedMessageModel)
-                //
-                // val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
-                // _messageFlow.emit(tripleChatMessages)
+            val failedMessageModel = failedMessage.asModel()
+            _removeMessageFlow.emit(failedMessageModel)
 
-                emit(Result.failure(e))
-            }
+            val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
+            _messageFlow.emit(tripleChatMessages)
+
+            emit(Result.failure(e))
         }
 
     override suspend fun editChatMessage(
@@ -875,6 +855,30 @@ class OfflineFirstChatRepository @Inject constructor(
                 emit(Result.success(response))
             } catch (e: Exception) {
                 emit(Result.failure(e))
+            }
+        }
+
+    override suspend fun editTempChatMessage(
+        message: ChatMessage, editedMessageText: String
+    ): Flow<Boolean> =
+        flow {
+            try {
+                val messageToEdit = chatDao.getChatMessageForConversation(internalConversationId, message.jsonMessageId
+                    .toLong()).first()
+                messageToEdit.message = editedMessageText
+                chatDao.upsertChatMessage(messageToEdit)
+
+
+                val editedMessageModel = messageToEdit.asModel()
+                _removeMessageFlow.emit(editedMessageModel)
+
+                val tripleChatMessages = Triple(true, false, listOf(editedMessageModel))
+                _messageFlow.emit(tripleChatMessages)
+
+
+                emit(true)
+            } catch (e: Exception) {
+                emit(false)
             }
         }
 
@@ -917,7 +921,7 @@ class OfflineFirstChatRepository @Inject constructor(
         val entity = ChatMessageEntity(
             internalId = internalConversationId + "@_temp_" + currentTimeMillies,
             internalConversationId = internalConversationId,
-            id = currentTimeMillies,
+            id = currentTimeMillies,    // TODO: currentTimeMillies fails as id because later on in the model it's not Long but Int!!!!
             message = message,
             deleted = false,
             token = conversationModel.token,

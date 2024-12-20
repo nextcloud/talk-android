@@ -916,16 +916,23 @@ class MessageInputFragment : Fragment() {
         // FIXME Fix API checking with guests?
         val apiVersion: Int = ApiUtils.getChatApiVersion(chatActivity.spreedCapabilities, intArrayOf(1))
 
-        chatActivity.messageInputViewModel.editChatMessage(
-            chatActivity.credentials!!,
-            ApiUtils.getUrlForChatMessage(
-                apiVersion,
-                chatActivity.conversationUser!!.baseUrl!!,
-                chatActivity.roomToken,
-                message.id
-            ),
-            editedMessageText
-        )
+        if (message.isTemporary) {
+            chatActivity.messageInputViewModel.editTempChatMessage(
+                message,
+                editedMessageText
+            )
+        } else {
+            chatActivity.messageInputViewModel.editChatMessage(
+                chatActivity.credentials!!,
+                ApiUtils.getUrlForChatMessage(
+                    apiVersion,
+                    chatActivity.conversationUser!!.baseUrl!!,
+                    chatActivity.roomToken,
+                    message.id
+                ),
+                editedMessageText
+            )
+        }
     }
 
     private fun setEditUI(message: ChatMessage) {
