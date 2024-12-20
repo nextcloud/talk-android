@@ -16,6 +16,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
@@ -33,6 +34,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ConversationUtils
@@ -47,6 +49,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
 
@@ -108,6 +111,10 @@ class ChatViewModel @Inject constructor(
     private val _getVoiceRecordingLocked: MutableLiveData<Boolean> = MutableLiveData()
     val getVoiceRecordingLocked: LiveData<Boolean>
         get() = _getVoiceRecordingLocked
+
+    private val _outOfOfficeViewState = MutableLiveData<OutOfOfficeUIState>(OutOfOfficeUIState.None)
+    val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
+        get() = _outOfOfficeViewState
 
     private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
@@ -764,8 +771,26 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun outOfOfficeStatusOfUser(credentials: String, baseUrl: String, userId: String) {
+        viewModelScope.launch {
+            try {
+                val response = chatNetworkDataSource.getOutOfOfficeStatusForUser(credentials, baseUrl, userId)
+                _outOfOfficeViewState.value = OutOfOfficeUIState.Success(response.ocs?.data!!)
+            } catch (exception: Exception) {
+                _outOfOfficeViewState.value = OutOfOfficeUIState.Error(exception)
+            }
+        }
+    }
+
     companion object {
         private val TAG = ChatViewModel::class.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
+    }
+
+    sealed class OutOfOfficeUIState {
+        data object None : OutOfOfficeUIState()
+        data class Success(val userAbsence: UserAbsenceData) : OutOfOfficeUIState()
+        data class Error(val exception: Exception) : OutOfOfficeUIState()
     }
 }

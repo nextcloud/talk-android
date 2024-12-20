@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="parent"
+    android:id="@+id/out_of_office_view"
+    app:layout_constraintHeight_min="0dp"
+    app:layout_constraintHeight_max="150dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <View
+            android:id="@+id/verticalLine"
+            android:layout_width="6dp"
+            android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/userAbsenceShortMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            tools:text="Jane is out of office"/>
+
+        <TextView
+            android:id="@+id/userAbsencePeriod"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop ="8dp"
+            android:textSize="14sp"
+            tools:text="Dec 5, 2024 - Dec 15, 2024"/>
+
+        <LinearLayout
+            android:id="@+id/userAbsenceReplacement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop ="8dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/absenceReplacement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                tools:text="Replacement: "/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/avatar_chip"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginStart="8dp"
+                app:cardCornerRadius="16dp"
+                android:layout_gravity="center_vertical"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding = "4dp"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/replacement_user_avatar"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginEnd="4dp"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="@null" />
+                    <TextView
+                        android:id="@+id/replacement_user_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:gravity="center_vertical"
+                        tools:text="Bob" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/userAbsenceLongMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop ="8dp"
+            android:textSize="14sp"
+            tools:text="Hi, I am out of office this week. Please contact ....., ..........write very very very very very very very very very very very very very very very long message..................................................................................................................................if you have any issues."/>
+    </LinearLayout>
+    </LinearLayout>
+</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

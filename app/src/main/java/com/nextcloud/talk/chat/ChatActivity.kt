@@ -45,15 +45,18 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
+import androidx.cardview.widget.CardView
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
+import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
@@ -70,11 +73,13 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import coil.imageLoader
+import coil.load
 import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -209,7 +214,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.String
 import kotlin.collections.set
 import kotlin.math.roundToInt
 
@@ -239,6 +243,9 @@ class ChatActivity :
 
     @Inject
     lateinit var dateUtils: DateUtils
+
+    @Inject
+    lateinit var colorUtil: ColorUtil
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -568,7 +575,7 @@ class ChatActivity :
         this.lifecycle.removeObserver(chatViewModel)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressLint("NotifyDataSetChanged", "SetTextI18n", "ResourceAsColor")
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
@@ -684,9 +691,21 @@ class ChatActivity :
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
                         setActionBarTitle()
-
                         checkShowCallButtons()
                         checkLobbyState()
+                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                            currentConversation?.status == "dnd"
+                        ) {
+                            conversationUser?.let { user ->
+                                val credentials = ApiUtils.getCredentials(user.username, user.token)
+                                chatViewModel.outOfOfficeStatusOfUser(
+                                    credentials!!,
+                                    user.baseUrl!!,
+                                    currentConversation!!.name
+                                )
+                            }
+                        }
+
                         updateRoomTimerHandler()
 
                         val urlForChatting =
@@ -1052,6 +1071,99 @@ class ChatActivity :
 
         chatViewModel.recordTouchObserver.observe(this) { y ->
             binding.voiceRecordingLock.y -= y
+        }
+
+        chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.OutOfOfficeUIState.Error -> {
+                    Log.e(TAG, "Error fetching/ no user absence data", uiState.exception)
+                }
+                ChatViewModel.OutOfOfficeUIState.None -> {
+                }
+                is ChatViewModel.OutOfOfficeUIState.Success -> {
+                    binding.outOfOfficeContainer.visibility = View.VISIBLE
+
+                    val backgroundColor = colorUtil.getNullSafeColorWithFallbackRes(
+                        conversationUser!!.capabilities!!.themingCapability!!.color,
+                        R.color.colorPrimary
+                    )
+
+                    binding.outOfOfficeContainer.findViewById<View>(
+                        R.id.verticalLine
+                    ).setBackgroundColor(backgroundColor)
+                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, OUT_OF_OFFICE_ALPHA)
+                    binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
+
+                    val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
+                    val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
+
+                    val startDate = Date(startDateTimestamp * ONE_SECOND_IN_MILLIS)
+                    val endDate = Date(endDateTimestamp * ONE_SECOND_IN_MILLIS)
+
+                    if (dateUtils.isSameDate(startDate, endDate)) {
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence_for_one_day),
+                                uiState.userAbsence.userId
+                            )
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
+                            View.GONE
+                    } else {
+                        val dateFormatter = SimpleDateFormat("MMM d, yyyy", Locale.getDefault())
+                        val startDateString = dateFormatter.format(startDate)
+                        val endDateString = dateFormatter.format(endDate)
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
+                            String.format(
+                                context.resources.getString(R.string.user_absence),
+                                uiState.userAbsence.userId
+                            )
+
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text =
+                            "$startDateString - $endDateString"
+                    }
+
+                    if (uiState.userAbsence.replacementUserDisplayName != null) {
+                        var imageUri = Uri.parse(
+                            ApiUtils.getUrlForAvatar(
+                                conversationUser?.baseUrl,
+                                uiState.userAbsence
+                                    .replacementUserId,
+                                false
+                            )
+                        )
+                        if (DisplayUtils.isDarkModeOn(context)) {
+                            imageUri = Uri.parse(
+                                ApiUtils.getUrlForAvatarDarkTheme(
+                                    conversationUser?.baseUrl,
+                                    uiState
+                                        .userAbsence
+                                        .replacementUserId,
+                                    false
+                                )
+                            )
+                        }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
+                            context.resources.getString(R.string.user_absence_replacement)
+                        binding.outOfOfficeContainer.findViewById<ImageView>(R.id.replacement_user_avatar)
+                            .load(imageUri) {
+                                transformations(CircleCropTransformation())
+                                placeholder(R.drawable.account_circle_96dp)
+                                error(R.drawable.account_circle_96dp)
+                                crossfade(true)
+                            }
+                        binding.outOfOfficeContainer.findViewById<TextView>(R.id.replacement_user_name).text =
+                            uiState.userAbsence.replacementUserDisplayName
+                    } else {
+                        binding.outOfOfficeContainer.findViewById<LinearLayout>(R.id.userAbsenceReplacement)
+                            .visibility = View.GONE
+                    }
+                    binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceLongMessage).text =
+                        uiState.userAbsence.message
+                    binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
+                        joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                    }
+                }
+            }
         }
     }
 
@@ -3819,6 +3931,24 @@ class ChatActivity :
         startActivity(shareIntent)
     }
 
+    fun joinOneToOneConversation(userId: String) {
+        val apiVersion =
+            ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
+        val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
+            apiVersion,
+            conversationUser?.baseUrl!!,
+            ROOM_TYPE_ONE_TO_ONE,
+            ACTOR_TYPE,
+            userId,
+            null
+        )
+        chatViewModel.createRoom(
+            credentials!!,
+            retrofitBucket.url!!,
+            retrofitBucket.queryMap!!
+        )
+    }
+
     companion object {
         val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
@@ -3871,7 +4001,10 @@ class ChatActivity :
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val TEMPORARY_MESSAGE_ID_INT: Int = -3
         private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
+        private const val ROOM_TYPE_ONE_TO_ONE = "1"
+        private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
+        const val OUT_OF_OFFICE_ALPHA = 76
     }
 }
