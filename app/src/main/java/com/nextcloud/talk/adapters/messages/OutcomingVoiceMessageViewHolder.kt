@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("Detekt.TooManyFunctions")
 class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView),
     AdjustableMessageHolderInterface {

@@ -1614,7 +1614,7 @@ class ChatActivity :
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod", "Detekt.NestedBlockDepth")
     private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         if (!active && !backgroundPlayAllowed) {
             // don't begin to play voice message if screen is not visible anymore.
@@ -1630,7 +1630,7 @@ class ChatActivity :
         val index = adapter?.getMessagePositionById(id) ?: 0
 
         var nextMessage: ChatMessage? = null
-        for (i in -5..5) {
+        for (i in VOICE_MESSAGE_CONTINUOUS_BEFORE..VOICE_MESSAGE_CONTINUOUS_AFTER) {
             if (index - i < 0) {
                 break
             }
@@ -1659,7 +1659,7 @@ class ChatActivity :
                                 val durationStr =
                                     retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                                 retriever.release() // Always release the retriever to free resources
-                                (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
+                                (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
                             } catch (e: RuntimeException) {
                                 Log.e(
                                     TAG,
@@ -1679,7 +1679,7 @@ class ChatActivity :
                                 val durationStr =
                                     retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
                                 retriever.release() // Always release the retriever to free resources
-                                (durationStr?.toIntOrNull() ?: 0) / 1000 // Convert to int (seconds)
+                                (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
                             } catch (e: RuntimeException) {
                                 Log.e(
                                     TAG,
@@ -1714,11 +1714,15 @@ class ChatActivity :
                     if (mediaPlayer != null) {
                         if (message.isPlayingVoiceMessage) {
                             val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
-                            if (pos + 0.1 < (mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE)) {
+                            if (pos + VOICE_MESSAGE_PLAY_ADD_THRESHOLD < (mediaPlayer!!.duration.toFloat() /
+                                    VOICE_MESSAGE_SEEKBAR_BASE)
+                            ) {
                                 lastRecordMediaPosition = mediaPlayer!!.currentPosition
                                 message.voiceMessagePlayedSeconds = pos.toInt()
                                 message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
-                                if (mediaPlayer!!.currentPosition * 20 > mediaPlayer!!.duration) {
+                                if (mediaPlayer!!.currentPosition * VOICE_MESSAGE_MARK_PLAYED_FACTOR >
+                                    mediaPlayer!!.duration
+                                ) {
                                     // a voice message is marked as played when the mediaplayer position
                                     // is at least at 5% of its duration
                                     message.wasPlayedVoiceMessage = true
@@ -3966,5 +3970,9 @@ class ChatActivity :
         private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
+        const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5
+        const val VOICE_MESSAGE_CONTINUOUS_AFTER = 5
+        const val VOICE_MESSAGE_PLAY_ADD_THRESHOLD = 0.1
+        const val VOICE_MESSAGE_MARK_PLAYED_FACTOR = 20
     }
 }
