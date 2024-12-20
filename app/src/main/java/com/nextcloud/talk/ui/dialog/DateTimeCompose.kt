@@ -109,12 +109,12 @@ class DateTimeCompose(val bundle: Bundle) {
                 )
             ) {
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(INT_8.dp),
                     modifier = Modifier.animateContentSize()
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
+                            .padding(INT_16.dp)
                             .fillMaxWidth()
                     ) {
                         Header()
@@ -141,7 +141,7 @@ class DateTimeCompose(val bundle: Bundle) {
                     shouldDismiss.value = true
                 },
                 modifier = Modifier
-                    .weight(.33f)
+                    .weight(CUBED_PADDING)
             ) {
                 Text(
                     "Delete",
@@ -161,7 +161,7 @@ class DateTimeCompose(val bundle: Bundle) {
                     shouldDismiss.value = true
                 },
                 modifier = Modifier
-                    .weight(.33f)
+                    .weight(CUBED_PADDING)
             ) {
                 Text("Set")
             }
@@ -171,7 +171,7 @@ class DateTimeCompose(val bundle: Bundle) {
                     shouldDismiss.value = true
                 },
                 modifier = Modifier
-                    .weight(.33f)
+                    .weight(CUBED_PADDING)
             ) {
                 Text("Close")
             }
@@ -183,21 +183,21 @@ class DateTimeCompose(val bundle: Bundle) {
         val currTime = LocalDateTime.now()
 
         val laterToday = LocalDateTime.now()
-            .withHour(18)
+            .withHour(INT_18)
             .withMinute(0)
             .withSecond(0)
         val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(PATTERN))
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
         val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(PATTERN))
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
         val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(PATTERN))
@@ -205,7 +205,7 @@ class DateTimeCompose(val bundle: Bundle) {
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
             .with(nextOrSame(DayOfWeek.MONDAY))
-            .withHour(8)
+            .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
         val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(PATTERN))
@@ -251,7 +251,7 @@ class DateTimeCompose(val bundle: Bundle) {
     private fun Header() {
         Row(
             modifier = Modifier
-                .padding(8.dp)
+                .padding(INT_8.dp)
         ) {
             Text("Remind Me Later", modifier = Modifier.weight(1f))
 
@@ -328,9 +328,9 @@ class DateTimeCompose(val bundle: Bundle) {
                 Icon(
                     imageVector = icon,
                     contentDescription = null,
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(INT_24.dp)
                 )
-                Spacer(modifier = Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(INT_8.dp))
                 Text(text = label)
             }
         }
@@ -341,16 +341,22 @@ class DateTimeCompose(val bundle: Bundle) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp)
+                .padding(INT_8.dp)
                 .clickable { onClick() }
         ) {
-            Text(label, modifier = Modifier.weight(0.5f))
-            Text(timeString, modifier = Modifier.weight(0.5f))
+            Text(label, modifier = Modifier.weight(HALF_WEIGHT))
+            Text(timeString, modifier = Modifier.weight(HALF_WEIGHT))
         }
     }
 
     companion object {
         private const val PATTERN = "dd MMM, HH:mm a"
+        private const val HALF_WEIGHT = 0.5f
+        private const val INT_8 = 8
+        private const val INT_16 = 16
+        private const val INT_18 = 18
+        private const val INT_24 = 24
+        private const val CUBED_PADDING = 0.33f
     }
 
     // Preview Logic
