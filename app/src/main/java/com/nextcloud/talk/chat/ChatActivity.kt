@@ -1091,14 +1091,14 @@ class ChatActivity :
                     binding.outOfOfficeContainer.findViewById<View>(
                         R.id.verticalLine
                     ).setBackgroundColor(backgroundColor)
-                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, (0.3f * 255).toInt())
+                    val setAlpha = ColorUtils.setAlphaComponent(backgroundColor, OUT_OF_OFFICE_ALPHA)
                     binding.outOfOfficeContainer.setCardBackgroundColor(setAlpha)
 
                     val startDateTimestamp: Long = uiState.userAbsence.startDate.toLong()
                     val endDateTimestamp: Long = uiState.userAbsence.endDate.toLong()
 
-                    val startDate = Date(startDateTimestamp * 1000)
-                    val endDate = Date(endDateTimestamp * 1000)
+                    val startDate = Date(startDateTimestamp * ONE_SECOND_IN_MILLIS)
+                    val endDate = Date(endDateTimestamp * ONE_SECOND_IN_MILLIS)
 
                     if (dateUtils.isSameDate(startDate, endDate)) {
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
@@ -4005,5 +4005,6 @@ class ChatActivity :
         private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
+        const val OUT_OF_OFFICE_ALPHA = 76
     }
 }
