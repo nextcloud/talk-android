@@ -111,8 +111,6 @@ import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
-import com.nextcloud.talk.adapters.messages.TemporaryMessageInterface
-import com.nextcloud.talk.adapters.messages.TemporaryMessageViewHolder
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -154,6 +152,7 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
+import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
@@ -230,8 +229,7 @@ class ChatActivity :
     CommonMessageInterface,
     PreviewMessageInterface,
     SystemMessageInterface,
-    CallStartedMessageInterface,
-    TemporaryMessageInterface {
+    CallStartedMessageInterface {
 
     var active = false
 
@@ -600,16 +598,16 @@ class ChatActivity :
         // }
 
         messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
-            if (size == 0) {
-                var i = 0
-                var pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-                while (pos != null && pos > -1) {
-                    adapter?.items?.removeAt(pos)
-                    i++
-                    pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-                }
-                adapter?.notifyDataSetChanged()
-            }
+            // if (size == 0) {
+            //     var i = 0
+            //     var pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
+            //     while (pos != null && pos > -1) {
+            //         adapter?.items?.removeAt(pos)
+            //         i++
+            //         pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
+            //     }
+            //     adapter?.notifyDataSetChanged()
+            // }
         }
 
         this.lifecycleScope.launch {
@@ -1253,18 +1251,18 @@ class ChatActivity :
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
-    private fun getLastAdapterId(): Int {
-        var lastId = 0
-        if (adapter?.items?.size != 0) {
-            val item = adapter?.items?.get(0)?.item
-            if (item != null) {
-                lastId = (item as ChatMessage).jsonMessageId
-            } else {
-                lastId = 0
-            }
-        }
-        return lastId
-    }
+    // private fun getLastAdapterId(): Int {
+    //     var lastId = 0
+    //     if (adapter?.items?.size != 0) {
+    //         val item = adapter?.items?.get(0)?.item
+    //         if (item != null) {
+    //             lastId = (item as ChatMessage).jsonMessageId
+    //         } else {
+    //             lastId = 0
+    //         }
+    //     }
+    //     return lastId
+    // }
 
     private fun setupActionBar() {
         setSupportActionBar(binding.chatToolbar)
@@ -1382,17 +1380,6 @@ class ChatActivity :
         messageHolders.setOutcomingImageConfig(
             OutcomingPreviewMessageViewHolder::class.java,
             R.layout.item_custom_outcoming_preview_message
-        )
-
-        messageHolders.registerContentType(
-            CONTENT_TYPE_TEMP,
-            TemporaryMessageViewHolder::class.java,
-            payload,
-            R.layout.item_temporary_message,
-            TemporaryMessageViewHolder::class.java,
-            payload,
-            R.layout.item_temporary_message,
-            this
         )
 
         messageHolders.registerContentType(
@@ -3437,9 +3424,16 @@ class ChatActivity :
 
     private fun openMessageActionsDialog(iMessage: IMessage?) {
         val message = iMessage as ChatMessage
-        if (hasVisibleItems(message) &&
-            !isSystemMessage(message) &&
-            message.id != TEMPORARY_MESSAGE_ID_STRING
+
+        if (message.isTemporary) {
+            TempMessageActionsDialog(
+                this,
+                message,
+                conversationUser,
+                currentConversation,
+            ).show()
+        } else if (hasVisibleItems(message) &&
+            !isSystemMessage(message)
         ) {
             MessageActionsDialog(
                 this,
@@ -4009,30 +4003,6 @@ class ChatActivity :
 
     override fun joinVideoCall() {
         startACall(false, false)
-    }
-
-    override fun editTemporaryMessage(id: Int, newMessage: String) {
-        // messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
-        // adapter?.notifyDataSetChanged() // TODO optimize this
-    }
-
-    override fun deleteTemporaryMessage(id: Int) {
-        // messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
-        // var i = 0
-        // val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
-        // for (item in adapter?.items!!) {
-        //     if (i > max!! && max < 1) break
-        //     if (item.item is ChatMessage &&
-        //         (item.item as ChatMessage).isTempMessage &&
-        //         (item.item as ChatMessage).tempMessageId == id
-        //     ) {
-        //         val index = adapter?.items!!.indexOf(item)
-        //         adapter?.items!!.removeAt(index)
-        //         adapter?.notifyItemRemoved(index)
-        //         break
-        //     }
-        //     i++
-        // }
     }
 
     private fun logConversationInfos(methodName: String) {
