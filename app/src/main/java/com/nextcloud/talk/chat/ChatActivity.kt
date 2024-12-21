@@ -1826,8 +1826,9 @@ class ChatActivity :
                     if (mediaPlayer != null) {
                         if (message.isPlayingVoiceMessage) {
                             val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
-                            if (pos + VOICE_MESSAGE_PLAY_ADD_THRESHOLD < (mediaPlayer!!.duration.toFloat() /
-                                    VOICE_MESSAGE_SEEKBAR_BASE)
+                            if (pos + VOICE_MESSAGE_PLAY_ADD_THRESHOLD < (
+                                    mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
+                                    )
                             ) {
                                 lastRecordMediaPosition = mediaPlayer!!.currentPosition
                                 message.voiceMessagePlayedSeconds = pos.toInt()
