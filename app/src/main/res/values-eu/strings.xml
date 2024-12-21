@@ -581,6 +581,7 @@
     <string name="unban">Debekua kendu</string>
     <string name="unread">Irakurri gabe</string>
     <string name="upload_new_avatar_from_device">Igo avatar berria gailutik</string>
+    <string name="user_absence_replacement">Ordezkoa:</string>
     <string name="user_avatar">Erabltzaile-avatarra</string>
     <string name="user_info_address">Helbidea</string>
     <string name="user_info_displayname">Izen osoa</string>

@@ -652,6 +652,7 @@
     <string name="unban">Entsperren</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
+    <string name="user_absence_replacement">Ersatz:</string>
     <string name="user_avatar">Benutzer-Avatar</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Vollständiger Name</string>

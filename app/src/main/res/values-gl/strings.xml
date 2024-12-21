@@ -652,6 +652,7 @@
     <string name="unban">Retirar a expulsión</string>
     <string name="unread">Sen ler</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
+    <string name="user_absence_replacement">Substitución:</string>
     <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>

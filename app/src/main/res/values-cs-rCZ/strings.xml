@@ -651,6 +651,7 @@
     <string name="unban">Zrušit vyloučení</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
+    <string name="user_absence_replacement">Nahrazení:</string>
     <string name="user_avatar">Zástupný obrázek uživatele</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>

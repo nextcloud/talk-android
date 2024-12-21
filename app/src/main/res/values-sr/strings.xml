@@ -652,6 +652,7 @@
     <string name="unban">Уклони забрану</string>
     <string name="unread">Непрочитано</string>
     <string name="upload_new_avatar_from_device">Отпреми нови аватар са уређаја</string>
+    <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Кориснички аватар</string>
     <string name="user_info_address">Адреса</string>
     <string name="user_info_displayname">Пуно име</string>
