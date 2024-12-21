@@ -647,6 +647,7 @@
     <string name="unban">Tillåt</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
+    <string name="user_absence_replacement">Ersättning:</string>
     <string name="user_avatar">Användar-avatar</string>
     <string name="user_info_address">Adress</string>
     <string name="user_info_displayname">Fullständigt namn</string>

@@ -652,6 +652,7 @@
     <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
+    <string name="user_absence_replacement">Replacement: </string>
     <string name="user_avatar">User avatar</string>
     <string name="user_info_address">Address</string>
     <string name="user_info_displayname">Full name</string>

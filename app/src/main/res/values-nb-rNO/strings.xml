@@ -631,6 +631,7 @@
     <string name="unban">Opphev utestengelsen</string>
     <string name="unread">Ulest</string>
     <string name="upload_new_avatar_from_device">Last opp et nytt profilbilde fra enhet</string>
+    <string name="user_absence_replacement">Erstatter:</string>
     <string name="user_avatar">Bruker avatar</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Fullt navn</string>

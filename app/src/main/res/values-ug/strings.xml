@@ -641,6 +641,7 @@
     <string name="unban">Unban</string>
     <string name="unread">ئوقۇمىغان</string>
     <string name="upload_new_avatar_from_device">ئۈسكۈنىدىن يېڭى باش سۈرىتىنى يۈكلەڭ</string>
+    <string name="user_absence_replacement">ئالماشتۇرۇش: </string>
     <string name="user_avatar">ئىشلەتكۈچى باش سۈرىتى</string>
     <string name="user_info_address">ئادرېس</string>
     <string name="user_info_displayname">تولۇق ئىسمى</string>

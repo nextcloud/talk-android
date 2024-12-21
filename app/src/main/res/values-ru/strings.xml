@@ -588,6 +588,7 @@
     <string name="unban">Разбанить</string>
     <string name="unread">Непрочитанное</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>
+    <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Изображение профиля</string>
     <string name="user_info_address">Адрес</string>
     <string name="user_info_displayname">Полное имя</string>
