@@ -644,6 +644,7 @@
     <string name="unban">Proibir</string>
     <string name="unread">Não lido</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
+    <string name="user_absence_replacement">Substituição: </string>
     <string name="user_avatar">Avatar do usuário</string>
     <string name="user_info_address">Endereço</string>
     <string name="user_info_displayname">Nome completo</string>

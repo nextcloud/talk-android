@@ -652,6 +652,7 @@ Kies er eentje van een provider.</string>
     <string name="unban">Uitsluiten opheffen</string>
     <string name="unread">Ongelezen</string>
     <string name="upload_new_avatar_from_device">Upload nieuwe avatar van apparaat</string>
+    <string name="user_absence_replacement">Vervanging:</string>
     <string name="user_avatar">Gebruik avatar</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Volledige naam</string>

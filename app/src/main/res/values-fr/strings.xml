@@ -653,6 +653,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="unban">Retirer le ban</string>
     <string name="unread">Non lu</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
+    <string name="user_absence_replacement">Remplacement :</string>
     <string name="user_avatar">Avatar utilisateur</string>
     <string name="user_info_address">Adresse</string>
     <string name="user_info_displayname">Nom complet</string>

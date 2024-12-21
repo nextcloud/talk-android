@@ -652,6 +652,7 @@
     <string name="unban">解除封禁</string>
     <string name="unread">未讀</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新虛擬化身大頭照</string>
+    <string name="user_absence_replacement">取代︰</string>
     <string name="user_avatar">用戶虛擬化身大頭照</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>

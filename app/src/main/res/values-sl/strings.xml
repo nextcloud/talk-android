@@ -513,6 +513,7 @@
     <string name="translation_to">Za</string>
     <string name="unread">Neprebrano</string>
     <string name="upload_new_avatar_from_device">Posodobi podobo z naprave</string>
+    <string name="user_absence_replacement">Zamenjava</string>
     <string name="user_avatar">Podoba uporabnika</string>
     <string name="user_info_address">Naslov</string>
     <string name="user_info_displayname">Polno ime</string>
