@@ -652,6 +652,9 @@
     <string name="unban">رفع الحظر</string>
     <string name="unread">غير مقروء</string>
     <string name="upload_new_avatar_from_device">رفع صورة رمزية جديدة للملف الشخصي من الجهاز</string>
+    <string name="user_absence">%1$s خارج المكتب و قد لا يتمكن من الرّد</string>
+    <string name="user_absence_for_one_day">%1$s خارج المكتب اليوم</string>
+    <string name="user_absence_replacement">البديل:</string>
     <string name="user_avatar">صورة الملف الشخصي الرمزية للمستخدم</string>
     <string name="user_info_address">العنوان</string>
     <string name="user_info_displayname">الاسم الكامل</string>
