@@ -652,6 +652,8 @@
     <string name="unban">Entsperren</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
+    <string name="user_absence">%1$s ist nicht im Büro und antwortet möglicherweise nicht</string>
+    <string name="user_absence_for_one_day">%1$s ist heute nicht im Büro</string>
     <string name="user_absence_replacement">Ersatz:</string>
     <string name="user_avatar">Benutzer-Avatar</string>
     <string name="user_info_address">Adresse</string>

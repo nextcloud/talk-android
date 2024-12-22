@@ -652,6 +652,8 @@
     <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
+    <string name="user_absence">%1$s is out of office and might not respond</string>
+    <string name="user_absence_for_one_day">%1$s is out of office today</string>
     <string name="user_absence_replacement">Replacement: </string>
     <string name="user_avatar">User avatar</string>
     <string name="user_info_address">Address</string>

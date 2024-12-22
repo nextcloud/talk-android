@@ -499,6 +499,7 @@
     <string name="nc_shared_items_empty">Žádné sdílené položky</string>
     <string name="nc_shared_items_location">Poloha</string>
     <string name="nc_shared_location">Sdílené umístění</string>
+    <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit pravidelné varování</string>
     <string name="nc_show_notification_warning_title">Zobrazovat pravidelné varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
     <string name="nc_start_time">Čas zahájení</string>
@@ -651,6 +652,9 @@
     <string name="unban">Zrušit vyloučení</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
+    <string name="user_absence">%1$s je mimo kancelář a může se stát, že neodpoví.</string>
+    <string name="user_absence_for_one_day">%1$s je dnes mimo kancelář</string>
+    <string name="user_absence_replacement">Nahrazení:</string>
     <string name="user_avatar">Zástupný obrázek uživatele</string>
     <string name="user_info_address">Adresa</string>
     <string name="user_info_displayname">Celé jméno</string>
