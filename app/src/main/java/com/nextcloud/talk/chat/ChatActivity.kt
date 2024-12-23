@@ -1498,7 +1498,7 @@ class ChatActivity :
             currentConversation?.type != null &&
             currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
 
-    private fun updateRoomTimerHandler() {
+    private fun updateRoomTimerHandler(delay: Long = -1) {
         val delayForRecursiveCall = if (shouldShowLobby()) {
             GET_ROOM_INFO_DELAY_LOBBY
         } else {
@@ -1512,7 +1512,7 @@ class ChatActivity :
             {
                 chatViewModel.getRoom(conversationUser!!, roomToken)
             },
-            delayForRecursiveCall
+            if (delay > 0) delay else delayForRecursiveCall
         )
     }
 
@@ -1940,45 +1940,44 @@ class ChatActivity :
 
     private fun checkLobbyState() {
         if (currentConversation != null &&
-            ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities)
+            ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities) &&
+            shouldShowLobby()
         ) {
-            if (shouldShowLobby()) {
-                binding.lobby.lobbyView.visibility = View.VISIBLE
-                binding.messagesListView.visibility = View.GONE
-                binding.fragmentContainerActivityChat.visibility = View.GONE
-                binding.progressBar.visibility = View.GONE
-
-                val sb = StringBuilder()
-                sb.append(resources!!.getText(R.string.nc_lobby_waiting))
-                    .append("\n\n")
-
-                if (currentConversation?.lobbyTimer != null &&
-                    currentConversation?.lobbyTimer !=
-                    0L
-                ) {
-                    val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
-                    val stringWithStartDate = String.format(
-                        resources!!.getString(R.string.nc_lobby_start_date),
-                        dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
-                    )
-                    val relativeTime = dateUtils.relativeStartTimeForLobby(timestampMS, resources!!)
-
-                    sb.append("$stringWithStartDate - $relativeTime")
-                        .append("\n\n")
-                }
-
-                sb.append(currentConversation!!.description)
-                binding.lobby.lobbyTextView.text = sb.toString()
-            } else {
-                binding.lobby.lobbyView.visibility = View.GONE
-                binding.messagesListView.visibility = View.VISIBLE
-                checkShowMessageInputView()
-            }
+            showLobbyView()
         } else {
             binding.lobby.lobbyView.visibility = View.GONE
             binding.messagesListView.visibility = View.VISIBLE
             checkShowMessageInputView()
         }
+    }
+
+    private fun showLobbyView() {
+        binding.lobby.lobbyView.visibility = View.VISIBLE
+        binding.messagesListView.visibility = View.GONE
+        binding.fragmentContainerActivityChat.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+
+        val sb = StringBuilder()
+        sb.append(resources!!.getText(R.string.nc_lobby_waiting))
+            .append("\n\n")
+
+        if (currentConversation?.lobbyTimer != null &&
+            currentConversation?.lobbyTimer !=
+            0L
+        ) {
+            val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
+            val stringWithStartDate = String.format(
+                resources!!.getString(R.string.nc_lobby_start_date),
+                dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
+            )
+            val relativeTime = dateUtils.relativeStartTimeForLobby(timestampMS, resources!!)
+
+            sb.append("$stringWithStartDate - $relativeTime")
+                .append("\n\n")
+        }
+
+        sb.append(currentConversation!!.description)
+        binding.lobby.lobbyTextView.text = sb.toString()
     }
 
     private fun onRemoteFileBrowsingResult(intent: Intent?) {
@@ -3782,6 +3781,7 @@ class ChatActivity :
         private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
+        private const val MILLIS_250 = 250L
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
         private const val REQUEST_SHARE_FILE_PERMISSION: Int = 221
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
