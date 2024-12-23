@@ -1648,7 +1648,7 @@ class ChatActivity :
         val delayForRecursiveCall = if (shouldShowLobby()) {
             GET_ROOM_INFO_DELAY_LOBBY
         } else {
-            GET_ROOM_INFO_DELAY_NORMAL
+            GET_ROOM_INFO_DELAY_LOBBY
         }
 
         if (getRoomInfoTimerHandler == null) {
@@ -1752,7 +1752,7 @@ class ChatActivity :
             val curMsg = adapter?.items?.getOrNull(index - i)?.item
             if (curMsg is ChatMessage) {
                 if (nextMessage == null && i > 0) {
-                    nextMessage = curMsg as ChatMessage
+                    nextMessage = curMsg
                 }
 
                 if (curMsg.isVoiceMessage) {
@@ -1763,7 +1763,7 @@ class ChatActivity :
                     val filename = curMsg.selectedIndividualHashMap!!["name"]
                     val file = File(context.cacheDir, filename!!)
                     if (!file.exists()) {
-                        downloadFileToCache(curMsg as ChatMessage, false) {
+                        downloadFileToCache(curMsg, false) {
                             curMsg.isDownloadingVoiceMessage = false
                             curMsg.voiceMessageDuration = try {
                                 val retriever = MediaMetadataRetriever()
@@ -2144,17 +2144,6 @@ class ChatActivity :
         }
     }
 
-    private fun checkShowMessageInputView() {
-        if (isReadOnlyConversation() ||
-            shouldShowLobby() ||
-            !participantPermissions.hasChatPermission()
-        ) {
-            binding.fragmentContainerActivityChat.visibility = View.GONE
-        } else {
-            binding.fragmentContainerActivityChat.visibility = View.VISIBLE
-        }
-    }
-
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
             return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
@@ -2230,12 +2219,12 @@ class ChatActivity :
             } else {
                 binding.lobby.lobbyView.visibility = View.GONE
                 binding.messagesListView.visibility = View.VISIBLE
-                checkShowMessageInputView()
+                binding.fragmentContainerActivityChat.visibility = View.VISIBLE
             }
         } else {
             binding.lobby.lobbyView.visibility = View.GONE
             binding.messagesListView.visibility = View.VISIBLE
-            checkShowMessageInputView()
+            binding.fragmentContainerActivityChat.visibility = View.VISIBLE
         }
     }
 
