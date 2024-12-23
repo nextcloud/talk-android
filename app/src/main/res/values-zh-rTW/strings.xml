@@ -652,6 +652,8 @@
     <string name="unban">取消封鎖</string>
     <string name="unread">未讀</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新大頭照</string>
+    <string name="user_absence">%1$s 不在辦公室，可能不會回應</string>
+    <string name="user_absence_for_one_day">%1$s 今天不在辦公室</string>
     <string name="user_absence_replacement">取代：</string>
     <string name="user_avatar">使用者頭像</string>
     <string name="user_info_address">地址</string>

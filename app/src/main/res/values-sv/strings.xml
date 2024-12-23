@@ -647,6 +647,8 @@
     <string name="unban">Tillåt</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
+    <string name="user_absence">%1$s är frånvarande och kanske inte svarar</string>
+    <string name="user_absence_for_one_day">%1$s är frånvarande idag</string>
     <string name="user_absence_replacement">Ersättning:</string>
     <string name="user_avatar">Användar-avatar</string>
     <string name="user_info_address">Adress</string>
