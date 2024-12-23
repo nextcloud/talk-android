@@ -1043,6 +1043,7 @@ class ConversationsListActivity :
                 nextUnreadConversationScrollPosition,
                 binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
             )
+            binding.newMentionPopupBubble.visibility = View.GONE
         }
         binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
