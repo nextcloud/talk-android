@@ -2350,18 +2350,22 @@ class CallActivity : CallBaseActivity() {
         sessionId: String?,
         type: String
     ): PeerConnectionWrapper {
+        val tempSdpConstraints: MediaConstraints?
         val tempIsMCUPublisher: Boolean
         val tempHasMCU: Boolean
         val tempLocalStream: MediaStream?
         if (hasMCU && publisher) {
+            tempSdpConstraints = sdpConstraintsForMCUPublisher
             tempIsMCUPublisher = true
             tempHasMCU = true
             tempLocalStream = localStream
         } else if (hasMCU) {
+            tempSdpConstraints = sdpConstraints
             tempIsMCUPublisher = false
             tempHasMCU = true
             tempLocalStream = null
         } else {
+            tempSdpConstraints = sdpConstraints
             tempIsMCUPublisher = false
             tempHasMCU = false
             tempLocalStream = if ("screen" != type) {
@@ -2374,7 +2378,7 @@ class CallActivity : CallBaseActivity() {
         return PeerConnectionWrapper(
             peerConnectionFactory,
             iceServers,
-            sdpConstraintsForMCUPublisher,
+            tempSdpConstraints,
             sessionId,
             callSession,
             tempLocalStream,
