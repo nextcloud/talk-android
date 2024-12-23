@@ -272,8 +272,6 @@ dependencies {
     implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:${fidoVersion}"
     implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido2:${fidoVersion}"
 
-    implementation 'com.github.nextcloud:PopupBubble:2.0.0'
-
     implementation "com.afollestad.material-dialogs:core:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:datetime:${materialDialogsVersion}"
     implementation "com.afollestad.material-dialogs:bottomsheets:${materialDialogsVersion}"
