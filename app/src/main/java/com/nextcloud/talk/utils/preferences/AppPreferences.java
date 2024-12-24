@@ -11,11 +11,7 @@ package com.nextcloud.talk.utils.preferences;
 
 import android.annotation.SuppressLint;
 
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel;
 import com.nextcloud.talk.ui.PlaybackSpeed;
-
-import java.util.List;
-import java.util.Map;
 
 @SuppressLint("NonConstantResourceId")
 public interface AppPreferences {
@@ -175,9 +171,11 @@ public interface AppPreferences {
 
     int getLastKnownId(String internalConversationId, int defaultValue);
 
-    void saveVoiceMessagePlaybackSpeedPreferences(Map<String, PlaybackSpeed> speeds);
+    void deleteAllMessageQueuesFor(String userId);
 
-    Map<String, PlaybackSpeed> readVoiceMessagePlaybackSpeedPreferences();
+    void savePreferredPlayback(String userId, PlaybackSpeed speed);
+
+    PlaybackSpeed getPreferredPlayback(String userId);
 
     Long getNotificationWarningLastPostponedDate();
 
