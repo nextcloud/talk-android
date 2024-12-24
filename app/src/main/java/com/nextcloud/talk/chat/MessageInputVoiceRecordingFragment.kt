@@ -16,6 +16,7 @@ import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
@@ -24,6 +25,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.databinding.FragmentMessageInputVoiceRecordingBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -60,6 +64,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        chatActivity.messageInputViewModel.stopMediaPlayer() // if it wasn't stopped already
         this.lifecycle.removeObserver(chatActivity.messageInputViewModel)
     }
 
@@ -68,13 +73,16 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         chatActivity.messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
             binding.micInputCloud.setRotationSpeed(it.first, it.second)
         }
-        chatActivity.messageInputViewModel.mediaPlayerSeekbarObserver.observe(viewLifecycleOwner) { progress ->
-            if (progress >= SEEK_LIMIT) {
-                togglePausePlay()
-                binding.seekbar.progress = 0
-            } else if (!pause) {
-                binding.seekbar.progress = progress
-            }
+
+        lifecycleScope.launch {
+            chatActivity.messageInputViewModel.mediaPlayerSeekbarObserver.onEach { progress ->
+                if (progress >= SEEK_LIMIT) {
+                    togglePausePlay()
+                    binding.seekbar.progress = 0
+                } else if (!pause && chatActivity.messageInputViewModel.isVoicePreviewPlaying.value == true) {
+                    binding.seekbar.progress = progress
+                }
+            }.collect()
         }
 
         chatActivity.messageInputViewModel.getAudioFocusChange.observe(viewLifecycleOwner) { state ->
@@ -107,7 +115,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         binding.sendVoiceRecording.setOnClickListener {
             chatActivity.chatViewModel.stopAndSendAudioRecording(
                 chatActivity.roomToken,
-                chatActivity.currentConversation!!.displayName!!,
+                chatActivity.currentConversation!!.displayName,
                 MessageInputFragment.VOICE_MESSAGE_META_DATA
             )
             clear()

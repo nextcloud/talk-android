@@ -38,7 +38,9 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ExecutionException
@@ -65,9 +67,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     @Inject
     lateinit var dateUtils: DateUtils
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     lateinit var message: ChatMessage
 
@@ -90,7 +91,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
 
         val filename = message.selectedIndividualHashMap!!["name"]
-        val retrieved = appPreferences!!.getWaveFormFromFile(filename)
+        val retrieved = appPreferences.getWaveFormFromFile(filename)
         if (retrieved.isNotEmpty() &&
             message.voiceMessageFloatArray == null ||
             message.voiceMessageFloatArray?.isEmpty() == true
@@ -99,6 +100,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
         }
 
+        binding.seekbar.max = MAX
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
@@ -136,9 +138,15 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
         setReadStatus(message.readStatus)
 
-        voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
-            binding.playbackSpeedControlBtn.setSpeed(speed)
+        CoroutineScope(Dispatchers.Default).launch {
+            (voiceMessageInterface as ChatActivity).chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
+                withContext(Dispatchers.Main) {
+                    binding.playbackSpeedControlBtn.setSpeed(speed)
+                }
+            }.collect()
         }
+
+        binding.playbackSpeedControlBtn.setSpeed(appPreferences.getPreferredPlayback(message.actorId))
 
         Reaction().showReactions(
             message,
@@ -199,9 +207,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
     private fun showVoiceMessageDuration(message: ChatMessage) {
         if (message.voiceMessageDuration > 0) {
-            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(
-                message.voiceMessageDuration.toLong()
-            )
             binding.voiceMessageDuration.visibility = View.VISIBLE
         } else {
             binding.voiceMessageDuration.visibility = View.INVISIBLE
@@ -234,7 +239,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             showVoiceMessageDuration(message)
@@ -377,6 +381,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     companion object {
         private const val TAG = "VoiceOutMessageView"
         private const val SEEKBAR_START: Int = 0
-        private const val ONE_SEC: Int = 1000
+        private const val MAX = 100
     }
 }

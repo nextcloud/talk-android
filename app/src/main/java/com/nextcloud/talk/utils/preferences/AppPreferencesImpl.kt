@@ -8,7 +8,6 @@
 package com.nextcloud.talk.utils.preferences
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -24,9 +23,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.SerializationException
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 
 @ExperimentalCoroutinesApi
 @Suppress("TooManyFunctions", "DeferredResultUnused", "EmptyFunctionBlock")
@@ -500,25 +496,41 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return if (lastReadId.isNotEmpty()) lastReadId.toInt() else defaultValue
     }
 
-    override fun saveVoiceMessagePlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
-        Json.encodeToString(speeds).let {
-            runBlocking<Unit> { async { writeString(VOICE_MESSAGE_PLAYBACK_SPEEDS, it) } }
-        }
-    }
+    override fun deleteAllMessageQueuesFor(userId: String) {
+        runBlocking {
+            async {
+                val keyList = mutableListOf<Preferences.Key<*>>()
+                val preferencesMap = context.dataStore.data.first().asMap()
+                for (preference in preferencesMap) {
+                    if (preference.key.name.contains("$userId@")) {
+                        keyList.add(preference.key)
+                    }
+                }
 
-    override fun readVoiceMessagePlaybackSpeedPreferences(): Map<String, PlaybackSpeed> {
-        return runBlocking {
-            async { readString(VOICE_MESSAGE_PLAYBACK_SPEEDS, "{}").first() }
-        }.getCompleted().let {
-            try {
-                Json.decodeFromString<HashMap<String, String>>(it)
-                    .map { entry -> entry.key to PlaybackSpeed.byName(entry.value) }.toMap()
-            } catch (e: SerializationException) {
-                Log.e(TAG, "ignoring invalid json format in voice message playback speed preferences", e)
-                emptyMap()
+                for (key in keyList) {
+                    context.dataStore.edit {
+                        it.remove(key)
+                    }
+                }
             }
         }
     }
+
+    override fun savePreferredPlayback(userId: String, speed: PlaybackSpeed) {
+        runBlocking<Unit> {
+            async {
+                writeString(userId + PLAY_BACK, speed.name)
+            }
+        }
+    }
+
+    override fun getPreferredPlayback(userId: String): PlaybackSpeed =
+        runBlocking {
+            async {
+                val name = readString(userId + PLAY_BACK).first()
+                return@async if (name == "") PlaybackSpeed.NORMAL else PlaybackSpeed.byName(name)
+            }
+        }.getCompleted()
 
     override fun getNotificationWarningLastPostponedDate(): Long =
         runBlocking {
@@ -609,6 +621,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
+        const val MESSAGE_QUEUE = "@message_queue"
+        const val PLAY_BACK = "_playback"
         const val VOICE_MESSAGE_PLAYBACK_SPEEDS = "voice_message_playback_speeds"
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
