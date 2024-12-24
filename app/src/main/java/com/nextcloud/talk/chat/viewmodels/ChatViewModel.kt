@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
+import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -41,11 +42,15 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -57,6 +62,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
+    private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val chatRepository: ChatMessageRepository,
     private val conversationRepository: OfflineConversationsRepository,
@@ -73,8 +79,11 @@ class ChatViewModel @Inject constructor(
         STOPPED
     }
 
+    private val mediaPlayerManager: MediaPlayerManager = MediaPlayerManager.sharedInstance(appPreferences)
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+    var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
+    val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
 
     fun getChatRepository(): ChatMessageRepository {
         return chatRepository
@@ -85,6 +94,7 @@ class ChatViewModel @Inject constructor(
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
+        mediaPlayerManager.handleOnResume()
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -94,6 +104,7 @@ class ChatViewModel @Inject constructor(
         disposableSet.clear()
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
+        mediaPlayerManager.handleOnPause()
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -101,7 +112,20 @@ class ChatViewModel @Inject constructor(
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
+        mediaPlayerManager.handleOnStop()
     }
+
+    val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
+
+    val mediaPlayerSeekbarObserver: Flow<ChatMessage>
+        get() = mediaPlayerManager.mediaPlayerSeekBarPositionMsg
+
+    val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
+        get() = mediaPlayerManager.managerState
+
+    val voiceMessagePlayBackUIFlow: Flow<PlaybackSpeed>
+        get() = _voiceMessagePlayBackUIFlow
+    private val _voiceMessagePlayBackUIFlow: MutableSharedFlow<PlaybackSpeed> = MutableSharedFlow()
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -121,10 +145,6 @@ class ChatViewModel @Inject constructor(
     private val _outOfOfficeViewState = MutableLiveData<OutOfOfficeUIState>(OutOfOfficeUIState.None)
     val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
         get() = _outOfOfficeViewState
-
-    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
-    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
-        get() = _voiceMessagePlaybackSpeedPreferences
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -665,12 +685,34 @@ class ChatViewModel @Inject constructor(
             emit(message.first())
         }
 
-    fun applyPlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
-        _voiceMessagePlaybackSpeedPreferences.postValue(speeds)
+    fun setPlayBack(speed: PlaybackSpeed) {
+        mediaPlayerManager.setPlayBackSpeed(speed)
+        CoroutineScope(Dispatchers.Default).launch {
+            _voiceMessagePlayBackUIFlow.emit(speed)
+        }
     }
 
-    fun getPlaybackSpeedPreference(message: ChatMessage) =
-        _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
+    fun startMediaPlayer(path: String) {
+        audioRequest(true) {
+            mediaPlayerManager.start(path)
+        }
+    }
+
+    fun startCyclingMediaPlayer() = audioRequest(true, mediaPlayerManager::startCycling)
+
+    fun pauseMediaPlayer(notifyUI: Boolean) {
+        audioRequest(false) {
+            mediaPlayerManager.pause(notifyUI)
+        }
+    }
+
+    fun seekToMediaPlayer(progress: Int) = mediaPlayerManager.seekTo(progress)
+
+    fun stopMediaPlayer() = audioRequest(false, mediaPlayerManager::stop)
+
+    fun queueInMediaPlayer(path: String, msg: ChatMessage) = mediaPlayerManager.addToPlayList(path, msg)
+
+    fun clearMediaPlayerQueue() = mediaPlayerManager.clearPlayList()
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {

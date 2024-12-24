@@ -24,6 +24,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,7 +83,7 @@ class MessageInputViewModel @Inject constructor(
     val micInputAudioObserver: LiveData<Pair<Float, Float>>
         get() = audioRecorderManager.getAudioValues
 
-    val mediaPlayerSeekbarObserver: LiveData<Int>
+    val mediaPlayerSeekbarObserver: Flow<Int>
         get() = mediaPlayerManager.mediaPlayerSeekBarPosition
 
     private val _getEditChatMessage: MutableLiveData<IMessage?> = MutableLiveData()
@@ -231,7 +232,7 @@ class MessageInputViewModel @Inject constructor(
 
     fun pauseMediaPlayer() {
         audioFocusRequestManager.audioFocusRequest(false) {
-            mediaPlayerManager.pause()
+            mediaPlayerManager.pause(false)
             _isVoicePreviewPlaying.postValue(false)
         }
     }
