@@ -652,6 +652,8 @@
     <string name="unban">Yasaklamayı kaldır</string>
     <string name="unread">Okunmamış</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>
+    <string name="user_absence">%1$s iş yeri dışında ve yanıt veremeyebilir.</string>
+    <string name="user_absence_for_one_day">%1$s bugün iş yeri dışında</string>
     <string name="user_absence_replacement">Yedek:</string>
     <string name="user_avatar">Kullanıcı avatarı</string>
     <string name="user_info_address">Adres</string>
