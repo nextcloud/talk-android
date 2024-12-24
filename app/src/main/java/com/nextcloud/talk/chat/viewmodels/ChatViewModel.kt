@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
+import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -56,6 +57,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
+    private val mediaPlayerManager: MediaPlayerManager,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val chatRepository: ChatMessageRepository,
     private val conversationRepository: OfflineConversationsRepository,
@@ -64,6 +66,11 @@ class ChatViewModel @Inject constructor(
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userProvider: CurrentUserProviderNew
 ) : ViewModel(), DefaultLifecycleObserver {
+
+
+    // TODO keep track of played messages here
+    // TODO impl a UI flow that informs list to display the background audio view, (creative opportunity here)
+    // TODO on orientation change, or resume restore the playing message
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -96,6 +103,10 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
     }
+
+    val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
+        get() = _managerStateFlow
+    private val _managerStateFlow = mediaPlayerManager.managerState
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -754,7 +765,7 @@ class ChatViewModel @Inject constructor(
                         val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
                         ConversationUtils.isNoteToSelfConversation(model)
                     }
-                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token!!)
+                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token)
                 } catch (e: NoSuchElementException) {
                     _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
                     Log.e(TAG, "Note to self not found $e")

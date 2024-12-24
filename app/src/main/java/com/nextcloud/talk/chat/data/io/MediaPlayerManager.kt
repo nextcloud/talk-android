@@ -16,9 +16,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.io.File
+import java.io.FileNotFoundException
 
 /**
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
@@ -31,25 +35,71 @@ class MediaPlayerManager : LifecycleAwareManager {
         const val DIVIDER = 100f
     }
 
+    enum class MediaPlayerManagerState {
+        DEFAULT,
+        SETUP,
+        STARTED,
+        STOPPED,
+        RESUMED,
+        PAUSED,
+        ERROR
+    }
+
+    val isCycling: Flow<Boolean>
+        get() = _isCycling
+    private val _isCycling = MutableStateFlow(false)
+
+    val managerState: Flow<MediaPlayerManagerState>
+        get() = _managerState
+    private val _managerState = MutableStateFlow(MediaPlayerManagerState.DEFAULT)
+
+    // TODO model playback state see l:123 ChatViewModel
+
+    private val playQueue = mutableListOf<String>()
+    private val playIterator = playQueue.iterator()
+
+    val mediaPlayerSeekBarPosition: LiveData<Int>
+        get() = _mediaPlayerSeekBarPosition
+    private val _mediaPlayerSeekBarPosition: MutableLiveData<Int> = MutableLiveData()
+
     private var mediaPlayer: MediaPlayer? = null
     private var mediaPlayerPosition: Int = 0
     private var loop = false
     private var scope = MainScope()
-    var mediaPlayerDuration: Int = 0
-    private val _mediaPlayerSeekBarPosition: MutableLiveData<Int> = MutableLiveData()
-    val mediaPlayerSeekBarPosition: LiveData<Int>
-        get() = _mediaPlayerSeekBarPosition
+    var mediaPlayerDuration: Int = 0 // TODO get this from MetaData
+
+    // TODO b/c there is now two start and stop functions that use shared resources, there
+    //  should be state checking before each call to prevent user errors
+    //  also due to the new nature, I can no longer assume functions will not be called twice. Impl error checking
+    //  I do like this solution, but it can get messy if I don't diagram it. Once it ironed out the kinks, I want to
+    //  focus on the UI of the background audio play
+
 
     /**
      * Starts playing audio from the given path, initializes or resumes if the player is already created.
      */
-    fun start(path: String) {
+     fun start(path: String) {
         if (mediaPlayer == null || !scope.isActive) {
             init(path)
         } else {
+            _managerState.value = MediaPlayerManagerState.RESUMED
             mediaPlayer!!.start()
             loop = true
             scope.launch { seekbarUpdateObserver() }
+        }
+    }
+
+    /**
+     * Starting cycling through the playQueue, playing messages automatically unless stop() is called.
+     *
+     */
+    fun startCycling() {
+        if (playQueue.size == 0) {
+            throw IllegalStateException("Attempted to start cycling with empty playList")
+        }
+
+        if (mediaPlayer == null || !scope.isActive) {
+            initCycling()
         }
     }
 
@@ -60,9 +110,11 @@ class MediaPlayerManager : LifecycleAwareManager {
         if (mediaPlayer != null) {
             Log.d(TAG, "media player destroyed")
             loop = false
+            scope.cancel()
             mediaPlayer!!.stop()
             mediaPlayer!!.release()
             mediaPlayer = null
+            _managerState.value = MediaPlayerManagerState.STOPPED
         }
     }
 
@@ -72,6 +124,7 @@ class MediaPlayerManager : LifecycleAwareManager {
     fun pause() {
         if (mediaPlayer != null) {
             Log.d(TAG, "media player paused")
+            _managerState.value = MediaPlayerManagerState.PAUSED
             mediaPlayer!!.pause()
         }
     }
@@ -104,35 +157,91 @@ class MediaPlayerManager : LifecycleAwareManager {
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    /**
+     * Adds a audio file to the play queue. for cycling through
+     *
+     * @throws FileNotFoundException if the file is not downloaded to cache first
+     */
+    fun addToPlayList(path: String) {
+        val file = File(path)
+        if (!file.exists()) {
+            throw FileNotFoundException("Cannot add to playlist without downloading to cache first")
+        }
+        playQueue.add(path)
+    }
+
     private fun init(path: String) {
         try {
             mediaPlayer = MediaPlayer().apply {
+                _managerState.value = MediaPlayerManagerState.SETUP
                 setDataSource(path)
                 prepareAsync()
                 setOnPreparedListener {
-                    mediaPlayerDuration = it.duration
-                    start()
-                    loop = true
-                    scope = MainScope()
-                    scope.launch { seekbarUpdateObserver() }
+                    onPrepare()
                 }
             }
         } catch (e: Exception) {
             Log.e(ChatActivity.TAG, "failed to initialize mediaPlayer", e)
+            _managerState.value = MediaPlayerManagerState.ERROR
         }
+    }
+
+    private fun initCycling() {
+        try {
+            mediaPlayer = MediaPlayer().apply {
+                _managerState.value = MediaPlayerManagerState.SETUP
+                _isCycling.value = true
+                setDataSource(playIterator.next())
+                prepareAsync()
+                setOnPreparedListener {
+                    onPrepare()
+                }
+
+                setOnCompletionListener {
+                    scope.cancel()
+                    if (playIterator.hasNext()) {
+                        _managerState.value = MediaPlayerManagerState.SETUP
+                        setDataSource(playIterator.next())
+                        prepareAsync()
+                    } else {
+                        _isCycling.value = false
+                        mediaPlayer!!.release()
+                        mediaPlayer = null
+                        _managerState.value = MediaPlayerManagerState.STOPPED
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(ChatActivity.TAG, "failed to initialize mediaPlayer", e)
+            _managerState.value = MediaPlayerManagerState.ERROR
+        }
+    }
+
+    private fun MediaPlayer.onPrepare() {
+        mediaPlayerDuration = this.duration
+        start()
+        _managerState.value = MediaPlayerManagerState.STARTED
+        loop = true
+        scope = MainScope()
+        scope.launch { seekbarUpdateObserver() }
     }
 
     override fun handleOnPause() {
         // unused atm
     }
 
+    // Note: might be some issues with state here, double check
+    // Idea is that on orientation change or resume, if still playing, continue to loop
     override fun handleOnResume() {
-        // unused atm
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            loop = true
+        }
     }
 
     override fun handleOnStop() {
-        stop()
-        scope.cancel()
+        loop = false
+        if (mediaPlayer == null || !mediaPlayer!!.isPlaying) {
+            stop()
+        }
     }
 }
