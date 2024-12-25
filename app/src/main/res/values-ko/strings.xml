@@ -374,6 +374,7 @@
     <string name="nc_sort_by">정렬</string>
     <string name="nc_start_time">시작 시간</string>
     <string name="nc_switch_account">계정 전환</string>
+    <string name="nc_team">팀</string>
     <string name="nc_upload_choose_local_files">파일 선택</string>
     <string name="nc_upload_confirm_send_multiple">%1$s에게 이 파일들을 전송하시겠습니까?</string>
     <string name="nc_upload_confirm_send_single">%1$s에게 이 파일을 전송하시겠습니까?</string>
