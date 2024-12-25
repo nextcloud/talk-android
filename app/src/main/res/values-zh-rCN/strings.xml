@@ -43,6 +43,7 @@
     <string name="file_list_loading">正在加载 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
     <string name="fourHours">4小时</string>
+    <string name="hint_edited_message">（已编辑）</string>
     <string name="invisible">隐身</string>
     <string name="later_today">今日稍晚</string>
     <string name="leave_call">离开通话</string>
@@ -553,6 +554,7 @@
     <string name="typing_are_typing">正在输入...</string>
     <string name="typing_is_typing">正在输入...</string>
     <string name="typing_x_others">以及另外 %1$s 个人正在输入...</string>
+    <string name="unban">解除封禁</string>
     <string name="unread">未读</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
     <string name="user_avatar">用户头像</string>
