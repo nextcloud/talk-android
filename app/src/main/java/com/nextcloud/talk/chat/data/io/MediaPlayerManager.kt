@@ -12,6 +12,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -45,15 +46,9 @@ class MediaPlayerManager : LifecycleAwareManager {
         ERROR
     }
 
-    val isCycling: Flow<Boolean>
-        get() = _isCycling
-    private val _isCycling = MutableStateFlow(false)
-
     val managerState: Flow<MediaPlayerManagerState>
         get() = _managerState
     private val _managerState = MutableStateFlow(MediaPlayerManagerState.DEFAULT)
-
-    // TODO model playback state see l:123 ChatViewModel
 
     private val playQueue = mutableListOf<String>()
     private val playIterator = playQueue.iterator()
@@ -66,19 +61,16 @@ class MediaPlayerManager : LifecycleAwareManager {
     private var mediaPlayerPosition: Int = 0
     private var loop = false
     private var scope = MainScope()
-    var mediaPlayerDuration: Int = 0 // TODO get this from MetaData
-
-    // TODO b/c there is now two start and stop functions that use shared resources, there
-    //  should be state checking before each call to prevent user errors
-    //  also due to the new nature, I can no longer assume functions will not be called twice. Impl error checking
-    //  I do like this solution, but it can get messy if I don't diagram it. Once it ironed out the kinks, I want to
-    //  focus on the UI of the background audio play
-
+    var mediaPlayerDuration: Int = 0
 
     /**
      * Starts playing audio from the given path, initializes or resumes if the player is already created.
      */
      fun start(path: String) {
+         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+             stop()
+         }
+
         if (mediaPlayer == null || !scope.isActive) {
             init(path)
         } else {
@@ -96,6 +88,10 @@ class MediaPlayerManager : LifecycleAwareManager {
     fun startCycling() {
         if (playQueue.size == 0) {
             throw IllegalStateException("Attempted to start cycling with empty playList")
+        }
+
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            stop()
         }
 
         if (mediaPlayer == null || !scope.isActive) {
@@ -165,9 +161,22 @@ class MediaPlayerManager : LifecycleAwareManager {
     fun addToPlayList(path: String) {
         val file = File(path)
         if (!file.exists()) {
-            throw FileNotFoundException("Cannot add to playlist without downloading to cache first")
+            throw FileNotFoundException("Cannot add to playlist without downloading to cache first for path\n$path")
         }
         playQueue.add(path)
+    }
+
+    fun clearPlayList() {
+        playQueue.clear()
+    }
+
+    /**
+     * Sets the player speed.
+     */
+    fun setPlayBackSpeed(speed: PlaybackSpeed) {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            mediaPlayer!!.playbackParams.setSpeed(speed.value)
+        }
     }
 
     private fun init(path: String) {
@@ -190,7 +199,6 @@ class MediaPlayerManager : LifecycleAwareManager {
         try {
             mediaPlayer = MediaPlayer().apply {
                 _managerState.value = MediaPlayerManagerState.SETUP
-                _isCycling.value = true
                 setDataSource(playIterator.next())
                 prepareAsync()
                 setOnPreparedListener {
@@ -204,7 +212,6 @@ class MediaPlayerManager : LifecycleAwareManager {
                         setDataSource(playIterator.next())
                         prepareAsync()
                     } else {
-                        _isCycling.value = false
                         mediaPlayer!!.release()
                         mediaPlayer = null
                         _managerState.value = MediaPlayerManagerState.STOPPED
@@ -230,8 +237,8 @@ class MediaPlayerManager : LifecycleAwareManager {
         // unused atm
     }
 
-    // Note: might be some issues with state here, double check
-    // Idea is that on orientation change or resume, if still playing, continue to loop
+    // FIXME Note: might be some issues with state here, double check
+    //  Idea is that on orientation change or resume, if still playing, continue to loop
     override fun handleOnResume() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             loop = true
