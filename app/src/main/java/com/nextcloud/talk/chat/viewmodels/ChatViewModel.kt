@@ -24,6 +24,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
@@ -796,6 +797,29 @@ class ChatViewModel @Inject constructor(
     fun deleteTempMessage(chatMessage: ChatMessage) {
         viewModelScope.launch {
             chatRepository.deleteTempMessage(chatMessage)
+        }
+    }
+
+    fun resendMessage(
+        credentials: String,
+        urlForChat: String,
+        message: ChatMessage) {
+        viewModelScope.launch {
+            chatRepository.resendChatMessage(
+                credentials,
+                urlForChat,
+                message.message.orEmpty(),
+                message.actorDisplayName.orEmpty(),
+                message.parentMessageId?.toIntOrZero() ?: 0,
+                false,
+                message.referenceId.orEmpty()
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "resend successful")
+                } else {
+                    Log.e(TAG, "resend failed")
+                }
+            }
         }
     }
 
