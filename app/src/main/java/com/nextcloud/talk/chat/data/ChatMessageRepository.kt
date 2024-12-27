@@ -100,4 +100,9 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun editChatMessage(credentials: String, url: String, text: String): Flow<Result<ChatOverallSingleMessage>>
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
+
+    suspend fun sendTempChatMessages(
+        credentials: String,
+        url: String
+    )
 }
