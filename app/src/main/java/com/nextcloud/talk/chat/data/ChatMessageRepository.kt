@@ -105,4 +105,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
         credentials: String,
         url: String
     )
+
+    suspend fun deleteTempMessage(chatMessage: ChatMessage)
 }
