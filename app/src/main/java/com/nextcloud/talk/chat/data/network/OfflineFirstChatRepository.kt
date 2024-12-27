@@ -124,8 +124,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
-            sendTempChatMessages(credentials, urlForChatting)
-
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
@@ -196,6 +194,8 @@ class OfflineFirstChatRepository @Inject constructor(
                         showUnreadMessagesMarker = false
                     )
                 }
+
+                sendTempChatMessages(credentials, urlForChatting)
 
                 // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
                 // with them (otherwise there is a race condition).
@@ -842,6 +842,37 @@ class OfflineFirstChatRepository @Inject constructor(
 
             emit(Result.failure(e))
         }
+
+    override suspend fun resendChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>> {
+        val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
+        messageToResend.sendingFailed = false
+        chatDao.updateChatMessage(messageToResend)
+
+        val messageToResendModel = messageToResend.asModel()
+        _removeMessageFlow.emit(messageToResendModel)
+
+        val tripleChatMessages = Triple(true, false, listOf(messageToResendModel))
+        _messageFlow.emit(tripleChatMessages)
+
+        return sendChatMessage(
+            credentials,
+            url,
+            message,
+            displayName,
+            replyTo,
+            sendWithoutNotification,
+            referenceId
+        )
+    }
+
 
     override suspend fun editChatMessage(
         credentials: String,

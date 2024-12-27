@@ -68,6 +68,7 @@ class TempMessageActionsDialog(
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
+            initResendMessage(true)
             initMenuEditMessage(true)
             initMenuDeleteMessage(true)
         }
@@ -78,6 +79,27 @@ class TempMessageActionsDialog(
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+    }
+
+    private fun initResendMessage(visible: Boolean) {
+        if (visible) {
+            binding.menuResendMessage.setOnClickListener {
+
+
+                chatActivity.chatViewModel.resendMessage(
+                    chatActivity.conversationUser!!.getCredentials(),
+                    ApiUtils.getUrlForChat(
+                        chatActivity.chatApiVersion,
+                        chatActivity.conversationUser!!.baseUrl!!,
+                        chatActivity.roomToken
+                    ),
+                    message
+                )
+
+                dismiss()
+            }
+        }
+        binding.menuResendMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuDeleteMessage(visible: Boolean) {
