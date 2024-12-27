@@ -21,12 +21,14 @@ import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -41,9 +43,7 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
-import java.io.IOException
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
@@ -124,6 +124,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
+            sendTempChatMessages(credentials, urlForChatting)
+
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
 
@@ -363,6 +365,7 @@ class OfflineFirstChatRepository @Inject constructor(
         // add the remaining temp messages to UI again
         val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
+            .sortedBy { it.internalId }
             .map(ChatMessageEntity::asModel)
 
         val triple = Triple(true, false, remainingTempMessages)
@@ -882,6 +885,31 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
+    override suspend fun sendTempChatMessages(
+        credentials: String,
+        url: String
+    ) {
+        val tempMessages = chatDao.getTempMessagesForConversation(internalConversationId).first()
+        tempMessages.sortedBy { it.internalId }.onEach {
+            sendChatMessage(
+                credentials,
+                url,
+                it.message,
+                it.actorDisplayName,
+                it.parentMessageId?.toIntOrZero() ?: 0,
+                false,
+                it.referenceId.orEmpty()
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "sent temp message")
+                } else {
+                    Log.e(TAG, "Failed to send temp message")
+                }
+            }
+        }
+
+    }
+
     override suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
@@ -918,10 +946,12 @@ class OfflineFirstChatRepository @Inject constructor(
 
         val currentTimeMillies = System.currentTimeMillis()
 
+        val currentTimeWithoutYear = SendMessageUtils().removeYearFromTimestamp(currentTimeMillies)
+
         val entity = ChatMessageEntity(
             internalId = internalConversationId + "@_temp_" + currentTimeMillies,
             internalConversationId = internalConversationId,
-            id = currentTimeMillies,    // TODO: currentTimeMillies fails as id because later on in the model it's not Long but Int!!!!
+            id = currentTimeWithoutYear.toLong(),
             message = message,
             deleted = false,
             token = conversationModel.token,

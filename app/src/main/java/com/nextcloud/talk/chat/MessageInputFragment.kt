@@ -198,7 +198,16 @@ class MessageInputFragment : Fragment() {
                     wasOnline = !binding.fragmentConnectionLost.isShown
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                    // handleMessageQueue(isOnline)
+                    if (connectionGained) {
+                        chatActivity.messageInputViewModel.sendTempMessages(
+                            chatActivity.conversationUser!!.getCredentials(),
+                            ApiUtils.getUrlForChat(
+                                chatActivity.chatApiVersion,
+                                chatActivity.conversationUser!!.baseUrl!!,
+                                chatActivity.roomToken
+                            )
+                        )
+                    }
                     handleUI(isOnline, connectionGained)
                 }.collect()
         }
