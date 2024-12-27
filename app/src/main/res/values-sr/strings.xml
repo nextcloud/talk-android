@@ -652,6 +652,8 @@
     <string name="unban">Уклони забрану</string>
     <string name="unread">Непрочитано</string>
     <string name="upload_new_avatar_from_device">Отпреми нови аватар са уређаја</string>
+    <string name="user_absence">%1$s је ван канцеларије у можда неће одговорити</string>
+    <string name="user_absence_for_one_day">%1$s је данас ван канцеларије</string>
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Кориснички аватар</string>
     <string name="user_info_address">Адреса</string>
