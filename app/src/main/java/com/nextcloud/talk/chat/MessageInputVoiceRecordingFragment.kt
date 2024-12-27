@@ -24,6 +24,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.databinding.FragmentMessageInputVoiceRecordingBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -68,7 +69,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         chatActivity.messageInputViewModel.micInputAudioObserver.observe(viewLifecycleOwner) {
             binding.micInputCloud.setRotationSpeed(it.first, it.second)
         }
-        chatActivity.messageInputViewModel.mediaPlayerSeekbarObserver.observe(viewLifecycleOwner) { progress ->
+        chatActivity.messageInputViewModel.mediaPlayerSeekbarObserver.onEach { progress ->
             if (progress >= SEEK_LIMIT) {
                 togglePausePlay()
                 binding.seekbar.progress = 0
@@ -107,7 +108,7 @@ class MessageInputVoiceRecordingFragment : Fragment() {
         binding.sendVoiceRecording.setOnClickListener {
             chatActivity.chatViewModel.stopAndSendAudioRecording(
                 chatActivity.roomToken,
-                chatActivity.currentConversation!!.displayName!!,
+                chatActivity.currentConversation!!.displayName,
                 MessageInputFragment.VOICE_MESSAGE_META_DATA
             )
             clear()

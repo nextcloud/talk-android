@@ -460,8 +460,8 @@ class ChatActivity :
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
-        appPreferences.readVoiceMessagePlaybackSpeedPreferences().let { playbackSpeedPreferences ->
-            chatViewModel.applyPlaybackSpeedPreferences(playbackSpeedPreferences)
+        appPreferences.getPreferredPlayback(conversationUser!!.userId).let { speed ->
+            chatViewModel.setPlayBack(speed)
         }
 
         initObservers()
@@ -1309,11 +1309,8 @@ class ChatActivity :
 
         adapter?.registerViewClickListener(R.id.playbackSpeedControlBtn) { button, message ->
             val nextSpeed = (button as PlaybackSpeedControl).getSpeed().next()
-            HashMap(appPreferences.readVoiceMessagePlaybackSpeedPreferences()).let { playbackSpeedPreferences ->
-                playbackSpeedPreferences[message.user.id] = nextSpeed
-                chatViewModel.applyPlaybackSpeedPreferences(playbackSpeedPreferences)
-                appPreferences.saveVoiceMessagePlaybackSpeedPreferences(playbackSpeedPreferences)
-            }
+            chatViewModel.setPlayBack(nextSpeed)
+            appPreferences.savePreferredPlayback(conversationUser!!.userId, nextSpeed)
         }
     }
 
@@ -1752,7 +1749,7 @@ class ChatActivity :
             val curMsg = adapter?.items?.getOrNull(index - i)?.item
             if (curMsg is ChatMessage) {
                 if (nextMessage == null && i > 0) {
-                    nextMessage = curMsg as ChatMessage
+                    nextMessage = curMsg
                 }
 
                 if (curMsg.isVoiceMessage) {
@@ -1763,7 +1760,7 @@ class ChatActivity :
                     val filename = curMsg.selectedIndividualHashMap!!["name"]
                     val file = File(context.cacheDir, filename!!)
                     if (!file.exists()) {
-                        downloadFileToCache(curMsg as ChatMessage, false) {
+                        downloadFileToCache(curMsg, false) {
                             curMsg.isDownloadingVoiceMessage = false
                             curMsg.voiceMessageDuration = try {
                                 val retriever = MediaMetadataRetriever()
@@ -3069,6 +3066,7 @@ class ChatActivity :
      * and eventually resumes audio playback
      * @author Giacomo Pacini
      */
+    // FIXME this impl seems complicated. I think I can get reimpl this in the chatViewModel
     private fun resumeAudioPlaybackIfNeeded() {
         if (voiceMessageToRestoreId != "") {
             Log.d(RESUME_AUDIO_TAG, "begin method to resume audio playback")

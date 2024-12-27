@@ -68,9 +68,13 @@ class ChatViewModel @Inject constructor(
 ) : ViewModel(), DefaultLifecycleObserver {
 
 
-    // TODO keep track of played messages here
-    // TODO impl a UI flow that informs list to display the background audio view, (creative opportunity here)
-    // TODO on orientation change, or resume restore the playing message
+    // TODO on orientation changed flow, or resume restore the playing message
+    //  this requires keep track of some data about the currently played message in adapter. To then
+    //  observe in Activity.
+    //
+    //  But If I already have the last played message in manager, I can just
+    //  have pull it from manager on activity start, if it exists, listen for seekbar updates, else do nothing
+    //  thus not needing any more code in the viewmodel
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -104,9 +108,14 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnStop()
     }
 
+    val mediaPlayerSeekbarObserver: Flow<Int>
+        get() = mediaPlayerManager.mediaPlayerSeekBarPosition
+
+    val backgroundPlayUIFlow: Flow<Pair<Boolean, ChatMessage>>
+        get() = mediaPlayerManager.backgroundPlayUIFlow
+
     val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
-        get() = _managerStateFlow
-    private val _managerStateFlow = mediaPlayerManager.managerState
+        get() =  mediaPlayerManager.managerState
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -676,6 +685,11 @@ class ChatViewModel @Inject constructor(
 
     fun getPlaybackSpeedPreference(message: ChatMessage) =
         _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
+
+    fun setPlayBack(speed: PlaybackSpeed) {
+        mediaPlayerManager.setPlayBackSpeed(speed)
+    }
+
 
 // inner class GetRoomObserver : Observer<ConversationModel> {
 //     override fun onSubscribe(d: Disposable) {
