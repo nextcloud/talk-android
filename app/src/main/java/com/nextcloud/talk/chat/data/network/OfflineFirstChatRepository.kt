@@ -910,6 +910,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
     }
 
+    override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
+        chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))
+        _removeMessageFlow.emit(chatMessage)
+    }
+
     override suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
