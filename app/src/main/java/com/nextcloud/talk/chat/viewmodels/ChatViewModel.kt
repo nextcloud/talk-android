@@ -793,6 +793,12 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    fun deleteTempMessage(chatMessage: ChatMessage) {
+        viewModelScope.launch {
+            chatRepository.deleteTempMessage(chatMessage)
+        }
+    }
+
     companion object {
         private val TAG = ChatViewModel::class.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3

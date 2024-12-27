@@ -83,7 +83,7 @@ class TempMessageActionsDialog(
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {
             binding.menuDeleteMessage.setOnClickListener {
-                chatActivity.deleteMessage(message)
+                chatActivity.chatViewModel.deleteTempMessage(message)
                 dismiss()
             }
         }
