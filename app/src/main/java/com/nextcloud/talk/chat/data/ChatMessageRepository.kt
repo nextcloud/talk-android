@@ -90,6 +90,16 @@ interface ChatMessageRepository : LifecycleAwareManager {
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 
+    suspend fun resendChatMessage(
+        credentials: String,
+        url: String,
+        message: String,
+        displayName: String,
+        replyTo: Int,
+        sendWithoutNotification: Boolean,
+        referenceId: String
+    ): Flow<Result<ChatMessage?>>
+
     suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,
