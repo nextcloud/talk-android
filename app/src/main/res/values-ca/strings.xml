@@ -5,6 +5,7 @@
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
     <string name="archive_conversation">Arxiva la conversa</string>
+    <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -35,11 +36,13 @@
     <string name="connection_lost_sent_messages_are_queued">S\'ha perdut la connexió: els missatges enviats s\'han posat a la cua</string>
     <string name="continuous_voice_message_recording">Bloqueja l\'enregistrament per a l\'enregistrament continu del missatge de veu</string>
     <string name="conversation_is_read_only">La conversa és només de lectura</string>
+    <string name="conversation_read_only_failed">No s\'ha pogut establir la conversa en només de lectura</string>
     <string name="conversations">Converses</string>
     <string name="create_conversation">Crea una conversa</string>
     <string name="create_issue">Crea un error</string>
     <string name="custom">Personalitzat</string>
     <string name="danger_zone">Zona de perill</string>
+    <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="deleted_conversation">Conversa suprimida %1$s</string>
     <string name="dnd">No molesteu</string>
@@ -188,6 +191,7 @@
     <string name="nc_diagnose_app_users_amount">Usuaris registrats</string>
     <string name="nc_diagnose_app_version_title">Versió de l\'aplicació</string>
     <string name="nc_diagnose_battery_optimization_ignored">S\'ha ignorat l\'optimització de la bateria, tot bé</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">L\'optimització de la bateria està habilitada, i això pot causar problemes. Hauríeu de desactivar l\'optimització de la bateria.</string>
     <string name="nc_diagnose_battery_optimization_title">Paràmetres de la bateria</string>
     <string name="nc_diagnose_device_name_title">Dispositiu</string>
     <string name="nc_diagnose_dialog_open_checklist">Obre la llista de comprovació de resolució de problemes</string>
@@ -325,6 +329,7 @@
     <string name="nc_notification_channel_uploads">Pujades</string>
     <string name="nc_notification_channel_uploads_description">Notifica el progrés de càrrega</string>
     <string name="nc_notification_settings">Paràmetres de les notificacions</string>
+    <string name="nc_notification_warning">Les notificacions no estan configurades correctament</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Els permisos de notificacions i la configuració de la bateria estan configurats correctament per rebre notificacions. Si igualment teniu problemes per rebre notificacions, comproveu si els canals de notificació per a trucades i missatges estan habilitats. Podeu trobar més ajuda a DontKillMyApp.com o a la llista de comprovació de resolució de problemes. Si això no us ajuda, aneu a la pantalla de diagnòstic i envieu un informe d\'error.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Resolució de problemes de notificació</string>
     <string name="nc_notify_me_always">Notifica sempre</string>
@@ -353,6 +358,7 @@
     <string name="nc_promote">Promou a moderador</string>
     <string name="nc_public_call">Nova conversa pública</string>
     <string name="nc_public_call_explanation">Les converses públiques us permeten convidar gent de fora a través d’un enllaç especialment dissenyat.</string>
+    <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Servei de notificacions desactivat</string>
     <string name="nc_push_to_talk">Prem-i-parla</string>
     <string name="nc_push_to_talk_desc">Amb el micròfon desactivat, feu clic a &amp; i mantingueu-lo pressionat per fer servir el Prem-i-parla</string>
@@ -418,6 +424,7 @@
     <string name="nc_settings_advanced_title">Avançat</string>
     <string name="nc_settings_appearance">Aparença</string>
     <string name="nc_settings_call_ringtone">Trucades</string>
+    <string name="nc_settings_contact_admin_of">Contacteu amb l\'administrador de</string>
     <string name="nc_settings_diagnose_subtitle">Obre la pantalla de diagnòstic per a comprovar la configuració o crear un informe d\'error</string>
     <string name="nc_settings_diagnose_title">Diagnòstic</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica al teclat que desactivi l\'aprenentatge personalitzat (sense garanties)</string>
@@ -457,6 +464,7 @@
     <string name="nc_settings_server_almost_eol">La versió del servidor és molt antiga i no serà compatible amb la pròxima versió.</string>
     <string name="nc_settings_server_eol">La versió del servidor és massa antiga i no és compatible amb versió de l\'aplicació Android</string>
     <string name="nc_settings_server_eol_title">El servidor no és compatible</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">L\'aplicació de notificacions del servidor no s\'ha instal·lat</string>
     <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
     <string name="nc_settings_theme_dark">Fosc</string>
     <string name="nc_settings_theme_follow_system">Fes servir el predeterminat del sistema</string>
@@ -482,6 +490,8 @@
     <string name="nc_shared_items_empty">No hi ha elements compartits</string>
     <string name="nc_shared_items_location">Ubicació</string>
     <string name="nc_shared_location">Ubicació compartida</string>
+    <string name="nc_show_notification_warning_description">Quan les notificacions no estan configurades correctament, mostra un avís regular</string>
+    <string name="nc_show_notification_warning_title">Mostra un avís regular de notificacions</string>
     <string name="nc_sort_by">Ordena per</string>
     <string name="nc_start_time">Hora d\'inici</string>
     <string name="nc_switch_account">Canvia el compte</string>
@@ -510,6 +520,7 @@
     <string name="nc_yes">Sí</string>
     <string name="new_conversation_creation_icon">Icona de Creació de conversa nova</string>
     <string name="next_week">Setmana següent</string>
+    <string name="no_offline_messages_saved">No s\'han desat els missatges fora de línia</string>
     <string name="no_phone_book_integration_due_to_permissions">No hi ha integració amb el número de telèfon perquè falten permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línia</string>
@@ -517,6 +528,7 @@
     <string name="openConversations">Obre les converses</string>
     <string name="open_in_files_app">Obre a l\'aplicació Fitxers</string>
     <string name="play_pause_voice_message">Reprodueix/pausa el missatge de veu</string>
+    <string name="playback_speed_control">Control de velocitat de reproducció</string>
     <string name="polls_add_option">Afegeix una opció</string>
     <string name="polls_edit_vote">Edita el vot</string>
     <string name="polls_end_poll">Finalitza l\'enquesta</string>
@@ -581,6 +593,7 @@
     <string name="set_status">Estableix l\'estat</string>
     <string name="set_status_message">Estableix un missatge d\'estat</string>
     <string name="share">Compartir</string>
+    <string name="share_link_to_conversation">Uneix-te a la conversa %1$s a %2$s</string>
     <string name="shared_items_audio">Àudio</string>
     <string name="shared_items_file">Fitxer</string>
     <string name="shared_items_media">Multimèdia</string>
@@ -594,6 +607,7 @@
     <string name="startCallForbidden">No teniu permís per a iniciar una trucada</string>
     <string name="started_a_call">ha inciat una trucada</string>
     <string name="status_message">Missatge d\'estat</string>
+    <string name="status_reverted">S\'ha revertit l\'estat</string>
     <string name="switch_to_breakout_room">Canvia a la sala de descans</string>
     <string name="switch_to_main_room">Canvia a la sala principal</string>
     <string name="take_photo">Prendre una fotografia</string>
@@ -624,9 +638,14 @@
     <string name="typing_are_typing">estan escrivint…</string>
     <string name="typing_is_typing">està escrivint…</string>
     <string name="typing_x_others">i %1$s més estan escrivint…</string>
+    <string name="unarchive_conversation">Anul·la l\'arxivament de la conversa</string>
+    <string name="unarchive_hint">Quan s\'hagi anul·lat l\'arxivament d\'una conversa, es tornarà a mostrar per defecte.</string>
     <string name="unban">Anul·la la prohibició</string>
     <string name="unread">Per llegir</string>
     <string name="upload_new_avatar_from_device">Puja l\'avatar nou des del dispositiu</string>
+    <string name="user_absence">%1$s és fora de l\'oficina i és possible que no respongui.</string>
+    <string name="user_absence_for_one_day">%1$s és fora de l\'oficina avui</string>
+    <string name="user_absence_replacement">Substitució:</string>
     <string name="user_avatar">Utilitzar avatar</string>
     <string name="user_info_address">Adreça</string>
     <string name="user_info_displayname">Nom complet</string>
