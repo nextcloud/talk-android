@@ -311,9 +311,9 @@
     <string name="nc_save_message">保存</string>
     <string name="nc_save_success">已成功保存</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
-    <string name="nc_screen_lock_timeout_300">5分钟</string>
+    <string name="nc_screen_lock_timeout_300">5 分钟</string>
     <string name="nc_screen_lock_timeout_60">1分钟</string>
-    <string name="nc_screen_lock_timeout_600">10分钟</string>
+    <string name="nc_screen_lock_timeout_600">10 分钟</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -535,7 +535,7 @@
     <string name="take_photo_toggle_crop">裁剪相片</string>
     <string name="take_photo_toggle_lowres">削减图片尺寸</string>
     <string name="take_photo_toggle_torch">切换闪光灯</string>
-    <string name="thirtyMinutes">30分钟</string>
+    <string name="thirtyMinutes">30 分钟</string>
     <string name="thisWeek">本周</string>
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="this_weekend">本周末</string>
