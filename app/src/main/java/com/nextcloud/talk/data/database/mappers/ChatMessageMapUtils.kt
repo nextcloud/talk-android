@@ -68,18 +68,8 @@ fun ChatMessageEntity.asModel() =
         referenceId = referenceId,
         isTemporary = isTemporary,
         sendingFailed = sendingFailed,
-        readStatus = setStatus(isTemporary, sendingFailed)
+        readStatus = ReadStatus.NONE
     )
-
-fun setStatus(isTemporary: Boolean, sendingFailed: Boolean): ReadStatus {
-    return if (sendingFailed) {
-        ReadStatus.FAILED
-    } else if (isTemporary) {
-        ReadStatus.SENDING
-    } else {
-        ReadStatus.NONE
-    }
-}
 
 fun ChatMessageJson.asModel() =
     ChatMessage(
