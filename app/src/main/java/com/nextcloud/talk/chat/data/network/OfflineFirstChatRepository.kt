@@ -43,7 +43,9 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
 
 class OfflineFirstChatRepository @Inject constructor(
@@ -180,7 +182,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
             if (newestMessageIdFromDb.toInt() != 0) {
                 val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
-
 
                 val list = getMessagesBeforeAndEqual(
                     newestMessageIdFromDb,
@@ -340,7 +341,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
     private suspend fun handleNewAndTempMessages(
-        receivedChatMessages : List<ChatMessage>,
+        receivedChatMessages: List<ChatMessage>,
         lookIntoFuture: Boolean,
         showUnreadMessagesMarker: Boolean
     ) {
@@ -752,7 +753,6 @@ class OfflineFirstChatRepository @Inject constructor(
             it.map(ChatMessageEntity::asModel)
         }.first()
 
-
     private suspend fun showMessagesBefore(internalConversationId: String, messageId: Long, limit: Int) {
         suspend fun getMessagesBefore(
             messageId: Long,
@@ -819,29 +819,29 @@ class OfflineFirstChatRepository @Inject constructor(
 
             emit(Result.success(chatMessageModel))
         }
-        //     .retryWhen { cause, attempt ->
-        //     if (cause is IOException && attempt < 3) {
-        //         delay(2000)
-        //         return@retryWhen true
-        //     } else {
-        //         return@retryWhen false
-        //     }
-        // }
-        .catch { e ->
-            Log.e(TAG, "Error when sending message", e)
+            .retryWhen { cause, attempt ->
+                if (cause is IOException && attempt < SEND_MESSAGE_RETRY_ATTEMPTS) {
+                    delay(SEND_MESSAGE_RETRY_DELAY)
+                    return@retryWhen true
+                } else {
+                    return@retryWhen false
+                }
+            }
+            .catch { e ->
+                Log.e(TAG, "Error when sending message", e)
 
-            val failedMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-            failedMessage.sendingFailed = true
-            chatDao.updateChatMessage(failedMessage)
+                val failedMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
+                failedMessage.sendingFailed = true
+                chatDao.updateChatMessage(failedMessage)
 
-            val failedMessageModel = failedMessage.asModel()
-            _removeMessageFlow.emit(failedMessageModel)
+                val failedMessageModel = failedMessage.asModel()
+                _removeMessageFlow.emit(failedMessageModel)
 
-            val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
-            _messageFlow.emit(tripleChatMessages)
+                val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
+                _messageFlow.emit(tripleChatMessages)
 
-            emit(Result.failure(e))
-        }
+                emit(Result.failure(e))
+            }
 
     override suspend fun resendChatMessage(
         credentials: String,
@@ -873,7 +873,6 @@ class OfflineFirstChatRepository @Inject constructor(
         )
     }
 
-
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
@@ -897,11 +896,12 @@ class OfflineFirstChatRepository @Inject constructor(
     ): Flow<Boolean> =
         flow {
             try {
-                val messageToEdit = chatDao.getChatMessageForConversation(internalConversationId, message.jsonMessageId
-                    .toLong()).first()
+                val messageToEdit = chatDao.getChatMessageForConversation(
+                    internalConversationId, message.jsonMessageId
+                        .toLong()
+                ).first()
                 messageToEdit.message = editedMessageText
                 chatDao.upsertChatMessage(messageToEdit)
-
 
                 val editedMessageModel = messageToEdit.asModel()
                 _removeMessageFlow.emit(editedMessageModel)
@@ -938,7 +938,6 @@ class OfflineFirstChatRepository @Inject constructor(
                 }
             }
         }
-
     }
 
     override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
@@ -1018,5 +1017,7 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIES = 1000
+        private const val SEND_MESSAGE_RETRY_ATTEMPTS = 3
+        private const val SEND_MESSAGE_RETRY_DELAY: Long = 2000
     }
 }
