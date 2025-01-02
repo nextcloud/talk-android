@@ -316,7 +316,6 @@ class ChatActivity :
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
-    // lateinit var roomId: String
     var voiceOnly: Boolean = true
     private lateinit var path: String
 
@@ -522,7 +521,6 @@ class ChatActivity :
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
 
-        // roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
@@ -712,7 +710,6 @@ class ChatActivity :
 
                     sessionIdAfterRoomJoined = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
-                    // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = currentConversation!!.roomId
                     ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
                     ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
@@ -782,19 +779,6 @@ class ChatActivity :
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
                     binding.messagesListView.smoothScrollToPosition(0)
-
-                    // if (state.e is HttpException) {
-                    //     val code = state.e.code()
-                    //     if (code.toString().startsWith("2")) {
-                    //         myFirstMessage = state.message
-                    //
-                    //         if (binding.unreadMessagesPopup.isShown) {
-                    //             binding.unreadMessagesPopup.visibility = View.GONE
-                    //         }
-                    //
-                    //         binding.messagesListView.smoothScrollToPosition(0)
-                    //     }
-                    // }
                 }
 
                 else -> {}
@@ -831,7 +815,6 @@ class ChatActivity :
                 is ChatViewModel.CreateRoomSuccessState -> {
                     val bundle = Bundle()
                     bundle.putString(KEY_ROOM_TOKEN, state.roomOverall.ocs!!.data!!.token)
-                    // bundle.putString(KEY_ROOM_ID, state.roomOverall.ocs!!.data!!.roomId)
 
                     leaveRoom {
                         val chatIntent = Intent(context, ChatActivity::class.java)
@@ -2700,7 +2683,6 @@ class ChatActivity :
         ) {
             sessionIdAfterRoomJoined = ApplicationWideCurrentRoomHolder.getInstance().session
 
-            // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
             ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
             ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
         }
@@ -3326,7 +3308,6 @@ class ChatActivity :
         currentConversation?.let {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
-            // bundle.putString(KEY_ROOM_ID, roomId)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl!!)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
