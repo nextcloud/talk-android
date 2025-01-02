@@ -3586,8 +3586,6 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            // CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
-            // CONTENT_TYPE_TEMP -> message.readStatus == ReadStatus.FAILED
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false
@@ -3762,7 +3760,6 @@ class ChatActivity :
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val CONTENT_TYPE_DECK_CARD: Byte = 8
-        private const val CONTENT_TYPE_TEMP: Byte = 9
         private const val UNREAD_MESSAGES_MARKER_ID = -1
         private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
