@@ -841,10 +841,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 chatDao.updateChatMessage(failedMessage)
 
                 val failedMessageModel = failedMessage.asModel()
-                _removeMessageFlow.emit(failedMessageModel)
-
-                val tripleChatMessages = Triple(true, false, listOf(failedMessageModel))
-                _messageFlow.emit(tripleChatMessages)
+                _updateMessageFlow.emit(failedMessageModel)
 
                 emit(Result.failure(e))
             }
@@ -864,10 +861,7 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.updateChatMessage(messageToResend)
 
         val messageToResendModel = messageToResend.asModel()
-        _removeMessageFlow.emit(messageToResendModel)
-
-        val tripleChatMessages = Triple(true, false, listOf(messageToResendModel))
-        _messageFlow.emit(tripleChatMessages)
+        _updateMessageFlow.emit(messageToResendModel)
 
         return sendChatMessage(
             credentials,
@@ -911,12 +905,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 chatDao.upsertChatMessage(messageToEdit)
 
                 val editedMessageModel = messageToEdit.asModel()
-                _removeMessageFlow.emit(editedMessageModel)
-
-                val tripleChatMessages = Triple(true, false, listOf(editedMessageModel))
-                _messageFlow.emit(tripleChatMessages)
-
-
+                _updateMessageFlow.emit(editedMessageModel)
                 emit(true)
             } catch (e: Exception) {
                 emit(false)
