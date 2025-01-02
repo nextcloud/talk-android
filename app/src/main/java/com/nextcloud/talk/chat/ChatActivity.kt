@@ -550,35 +550,6 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
-        // messageInputViewModel.messageQueueFlow.observe(this) { list ->
-        //     list.forEachIndexed { _, qMsg ->
-        //         val temporaryChatMessage = ChatMessage()
-        //         temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
-        //         temporaryChatMessage.actorId = TEMPORARY_MESSAGE_ID_STRING
-        //         temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
-        //         temporaryChatMessage.message = qMsg.message.toString()
-        //         temporaryChatMessage.tempMessageId = qMsg.id
-        //         temporaryChatMessage.isTempMessage = true
-        //         temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
-        //         val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
-        //         adapter?.addToStart(temporaryChatMessage, true)
-        //         adapter?.notifyDataSetChanged()
-        //     }
-        // }
-
-        messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
-            // if (size == 0) {
-            //     var i = 0
-            //     var pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-            //     while (pos != null && pos > -1) {
-            //         adapter?.items?.removeAt(pos)
-            //         i++
-            //         pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-            //     }
-            //     adapter?.notifyDataSetChanged()
-            // }
-        }
-
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->

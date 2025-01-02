@@ -53,17 +53,6 @@ class MessageInputViewModel @Inject constructor(
         chatRepository = chatMessageRepository
     }
 
-    // data class QueuedMessage(
-    //     val id: Int,
-    //     var message: CharSequence? = null,
-    //     val displayName: String? = null,
-    //     val replyTo: Int? = null,
-    //     val sendWithoutNotification: Boolean? = null
-    // )
-
-    // private var isQueueing: Boolean = false
-    // private var messageQueue: MutableList<QueuedMessage> = mutableListOf()
-
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
@@ -115,7 +104,6 @@ class MessageInputViewModel @Inject constructor(
     private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
-    object EditMessageStartState : ViewState
     object EditMessageErrorState : ViewState
     class EditMessageSuccessState(val messageEdited: ChatOverallSingleMessage) : ViewState
 
@@ -126,14 +114,6 @@ class MessageInputViewModel @Inject constructor(
     private val _isVoicePreviewPlaying: MutableLiveData<Boolean> = MutableLiveData(false)
     val isVoicePreviewPlaying: LiveData<Boolean>
         get() = _isVoicePreviewPlaying
-
-    private val _messageQueueSizeFlow = MutableStateFlow(666)
-    val messageQueueSizeFlow: LiveData<Int>
-        get() = _messageQueueSizeFlow.asLiveData()
-
-    // private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
-    // val messageQueueFlow: LiveData<List<QueuedMessage>>
-    //     get() = _messageQueueFlow
 
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
