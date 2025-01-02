@@ -20,12 +20,12 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.DialogMessageActionsBinding
 import com.nextcloud.talk.databinding.DialogTempMessageActionsBinding
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -68,7 +68,7 @@ class TempMessageActionsDialog(
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
-            initResendMessage(true)
+            initResendMessage(networkMonitor.isOnline.first())
             initMenuEditMessage(true)
             initMenuDeleteMessage(true)
         }
@@ -84,8 +84,6 @@ class TempMessageActionsDialog(
     private fun initResendMessage(visible: Boolean) {
         if (visible) {
             binding.menuResendMessage.setOnClickListener {
-
-
                 chatActivity.chatViewModel.resendMessage(
                     chatActivity.conversationUser!!.getCredentials(),
                     ApiUtils.getUrlForChat(
@@ -95,7 +93,6 @@ class TempMessageActionsDialog(
                     ),
                     message
                 )
-
                 dismiss()
             }
         }
