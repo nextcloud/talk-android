@@ -3857,8 +3857,6 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            // CONTENT_TYPE_TEMP -> message.id == TEMPORARY_MESSAGE_ID_STRING
-            // CONTENT_TYPE_TEMP -> message.readStatus == ReadStatus.FAILED
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false
@@ -4053,7 +4051,6 @@ class ChatActivity :
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val CONTENT_TYPE_DECK_CARD: Byte = 8
-        private const val CONTENT_TYPE_TEMP: Byte = 9
         private const val UNREAD_MESSAGES_MARKER_ID = -1
         private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
@@ -4093,8 +4090,6 @@ class ChatActivity :
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
-        private const val TEMPORARY_MESSAGE_ID_INT: Int = -3
-        private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
