@@ -803,8 +803,14 @@ class OfflineFirstChatRepository @Inject constructor(
         replyTo: Int,
         sendWithoutNotification: Boolean,
         referenceId: String
-    ): Flow<Result<ChatMessage?>> =
-        flow {
+    ): Flow<Result<ChatMessage?>> {
+        if (!monitor.isOnline.first()) {
+            return flow {
+                emit(Result.failure(IOException("Skipped to send message as device is offline")))
+            }
+        }
+
+        return flow {
             val response = network.sendChatMessage(
                 credentials,
                 url,
@@ -842,6 +848,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 emit(Result.failure(e))
             }
+    }
 
     override suspend fun resendChatMessage(
         credentials: String,
@@ -932,7 +939,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 it.referenceId.orEmpty()
             ).collect { result ->
                 if (result.isSuccess) {
-                    Log.d(TAG, "sent temp message")
+                    Log.d(TAG, "Sent temp message")
                 } else {
                     Log.e(TAG, "Failed to send temp message")
                 }
