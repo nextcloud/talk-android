@@ -212,14 +212,6 @@ class MessageInputFragment : Fragment() {
                 }.collect()
         }
 
-        chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
-            if (size > 0) {
-                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
-            } else {
-                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
-            }
-        }
-
         chatActivity.messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
             val (message, show) = it
             if (show) {
@@ -299,23 +291,6 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.visibility = View.VISIBLE
         }
     }
-
-    // private fun handleMessageQueue(isOnline: Boolean) {
-    //     if (isOnline) {
-    //         chatActivity.messageInputViewModel.switchToMessageQueue(false)
-    //         chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
-    //             conversationInternalId,
-    //             chatActivity.conversationUser!!.getCredentials(),
-    //             ApiUtils.getUrlForChat(
-    //                 chatActivity.chatApiVersion,
-    //                 chatActivity.conversationUser!!.baseUrl!!,
-    //                 chatActivity.roomToken
-    //             )
-    //         )
-    //     } else {
-    //         chatActivity.messageInputViewModel.switchToMessageQueue(true)
-    //     }
-    // }
 
     private fun restoreState() {
         if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {
