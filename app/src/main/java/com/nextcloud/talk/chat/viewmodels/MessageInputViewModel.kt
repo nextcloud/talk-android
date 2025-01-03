@@ -31,8 +31,7 @@ import javax.inject.Inject
 class MessageInputViewModel @Inject constructor(
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val appPreferences: AppPreferences
+    private val audioFocusRequestManager: AudioFocusRequestManager
 ) : ViewModel(),
     DefaultLifecycleObserver {
 
@@ -197,13 +196,7 @@ class MessageInputViewModel @Inject constructor(
             chatRepository.editTempChatMessage(
                 message,
                 editedMessageText
-            ).collect { result ->
-                if (true) {
-                    // _editMessageViewState.value = EditMessageSuccessState(result)
-                } else {
-                    // _editMessageViewState.value = EditMessageErrorState
-                }
-            }
+            ).collect {}
         }
     }
 
@@ -262,6 +255,5 @@ class MessageInputViewModel @Inject constructor(
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 1000
     }
 }

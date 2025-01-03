@@ -33,8 +33,6 @@ import javax.inject.Inject
 class TempMessageActionsDialog(
     private val chatActivity: ChatActivity,
     private val message: ChatMessage,
-    private val user: User?,
-    private val currentConversation: ConversationModel?
 ) : BottomSheetDialog(chatActivity) {
 
     @Inject

@@ -52,9 +52,8 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val datastore: AppPreferences,
     private val monitor: NetworkMonitor,
-    private val userProvider: CurrentUserProviderNew
+    userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
     val currentUser: User = userProvider.currentUser.blockingGet()
