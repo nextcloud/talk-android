@@ -1142,14 +1142,13 @@ class ChatActivity :
     private fun removeMessageById(idToDelete: String) {
         val indexToDelete = adapter?.getMessagePositionById(idToDelete)
         if (indexToDelete != null && indexToDelete != UNREAD_MESSAGES_MARKER_ID) {
-
             // If user sent a message as a first message in todays chat, the temp message will be deleted when
             // messages are retrieved from server, but also the date has to be deleted as it will be added again
             // when the chat messages are added from server. Otherwise date "Today" would be shown twice.
             if (indexToDelete == 0 && (adapter?.items?.get(1))?.item is Date) {
                 adapter?.items?.removeAt(0)
                 adapter?.items?.removeAt(0)
-                adapter?.notifyItemRangeRemoved(indexToDelete,1)
+                adapter?.notifyItemRangeRemoved(indexToDelete, 1)
             } else {
                 adapter?.items?.removeAt(indexToDelete)
                 adapter?.notifyItemRemoved(indexToDelete)
@@ -1170,7 +1169,7 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        chatViewModel.getRoom(conversationUser!!, roomToken)
+        chatViewModel.getRoom(roomToken)
 
         actionBar?.show()
 
@@ -1627,7 +1626,7 @@ class ChatActivity :
         }
         getRoomInfoTimerHandler?.postDelayed(
             {
-                chatViewModel.getRoom(conversationUser!!, roomToken)
+                chatViewModel.getRoom(roomToken)
             },
             delayForRecursiveCall
         )
@@ -2938,8 +2937,11 @@ class ChatActivity :
     private fun isScrolledToBottom(): Boolean {
         val position = layoutManager?.findFirstVisibleItemPosition()
         if (position == -1) {
-            Log.w(TAG, "FirstVisibleItemPosition was -1 but true is returned for isScrolledToBottom(). This can " +
-                "happen when the UI is not yet ready")
+            Log.w(
+                TAG,
+                "FirstVisibleItemPosition was -1 but true is returned for isScrolledToBottom(). This can " +
+                    "happen when the UI is not yet ready"
+            )
             return true
         }
 
@@ -3294,7 +3296,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
+                .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3304,7 +3306,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
+                .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -3404,7 +3406,7 @@ class ChatActivity :
                 this,
                 message,
                 conversationUser,
-                currentConversation,
+                currentConversation
             ).show()
         } else if (hasVisibleItems(message) &&
             !isSystemMessage(message)
@@ -3614,7 +3616,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)

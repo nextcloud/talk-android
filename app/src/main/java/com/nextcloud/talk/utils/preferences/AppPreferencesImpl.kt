@@ -17,7 +17,6 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async

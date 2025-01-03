@@ -247,14 +247,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.setData(conversationModel, credentials, urlForChatting)
     }
 
-    fun getRoom(user: User, token: String) {
+    fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(token)
-
-        // chatNetworkDataSource.getRoom(user, token)
-        //     .subscribeOn(Schedulers.io())
-        //     ?.observeOn(AndroidSchedulers.mainThread())
-        //     ?.subscribe(GetRoomObserver())
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -677,25 +672,6 @@ class ChatViewModel @Inject constructor(
     fun getPlaybackSpeedPreference(message: ChatMessage) =
         _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
 
-// inner class GetRoomObserver : Observer<ConversationModel> {
-//     override fun onSubscribe(d: Disposable) {
-//         // unused atm
-//     }
-//
-//     override fun onNext(conversationModel: ConversationModel) {
-//         _getRoomViewState.value = GetRoomSuccessState(conversationModel)
-//     }
-//
-//     override fun onError(e: Throwable) {
-//         Log.e(TAG, "Error when fetching room")
-//         _getRoomViewState.value = GetRoomErrorState
-//     }
-//
-//     override fun onComplete() {
-//         // unused atm
-//     }
-// }
-
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
             disposableSet.add(d)
@@ -800,10 +776,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun resendMessage(
-        credentials: String,
-        urlForChat: String,
-        message: ChatMessage) {
+    fun resendMessage(credentials: String, urlForChat: String, message: ChatMessage) {
         viewModelScope.launch {
             chatRepository.resendChatMessage(
                 credentials,

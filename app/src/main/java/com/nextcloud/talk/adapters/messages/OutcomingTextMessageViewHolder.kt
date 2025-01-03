@@ -119,7 +119,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
-
         CoroutineScope(Dispatchers.Main).launch {
             if (message.isTemporary && !networkMonitor.isOnline.first()) {
                 updateStatus(
@@ -134,12 +133,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 binding.bubble.setOnClickListener {
                     commonMessageInterface.onOpenMessageActionsDialog(message)
                 }
-
             } else if (message.isTemporary) {
                 showSendingSpinner()
-            } else if(message.readStatus == ReadStatus.READ) {
+            } else if (message.readStatus == ReadStatus.READ) {
                 updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
-            } else if(message.readStatus == ReadStatus.SENT) {
+            } else if (message.readStatus == ReadStatus.SENT) {
                 updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
             }
         }
@@ -175,8 +173,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         viewThemeUtils.material.colorProgressBar(binding.sendingProgress)
     }
-
-
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
         commonMessageInterface.onLongClickReactions(chatMessage)

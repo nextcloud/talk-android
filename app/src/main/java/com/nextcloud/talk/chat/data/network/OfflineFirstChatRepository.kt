@@ -795,6 +795,7 @@ class OfflineFirstChatRepository @Inject constructor(
         scope.cancel()
     }
 
+    @Suppress("LongParameterList")
     override suspend fun sendChatMessage(
         credentials: String,
         url: String,
@@ -847,6 +848,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
     }
 
+    @Suppress("LongParameterList")
     override suspend fun resendChatMessage(
         credentials: String,
         url: String,
@@ -874,6 +876,7 @@ class OfflineFirstChatRepository @Inject constructor(
         )
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun editChatMessage(
         credentials: String,
         url: String,
@@ -892,13 +895,13 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun editTempChatMessage(
-        message: ChatMessage, editedMessageText: String
-    ): Flow<Boolean> =
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    override suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean> =
         flow {
             try {
                 val messageToEdit = chatDao.getChatMessageForConversation(
-                    internalConversationId, message.jsonMessageId
+                    internalConversationId,
+                    message.jsonMessageId
                         .toLong()
                 ).first()
                 messageToEdit.message = editedMessageText
@@ -912,10 +915,7 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun sendTempChatMessages(
-        credentials: String,
-        url: String
-    ) {
+    override suspend fun sendTempChatMessages(credentials: String, url: String) {
         val tempMessages = chatDao.getTempMessagesForConversation(internalConversationId).first()
         tempMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
@@ -974,7 +974,6 @@ class OfflineFirstChatRepository @Inject constructor(
         message: String,
         referenceId: String
     ): ChatMessageEntity {
-
         val currentTimeMillies = System.currentTimeMillis()
 
         val currentTimeWithoutYear = SendMessageUtils().removeYearFromTimestamp(currentTimeMillies)

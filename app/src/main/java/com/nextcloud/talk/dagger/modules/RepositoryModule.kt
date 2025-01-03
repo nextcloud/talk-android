@@ -65,7 +65,6 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
