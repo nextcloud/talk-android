@@ -1042,8 +1042,10 @@ class ChatActivity :
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
                     Log.e(TAG, "Error fetching/ no user absence data", uiState.exception)
                 }
+
                 ChatViewModel.OutOfOfficeUIState.None -> {
                 }
+
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
 
@@ -2922,7 +2924,23 @@ class ChatActivity :
         }
     }
 
-    private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
+    private fun isScrolledToBottom(): Boolean {
+        val position = layoutManager?.findFirstVisibleItemPosition()
+        Log.d(TAG, "first visible item position is :" + position)
+
+        if (position == -1) {
+            Log.d(TAG, "position is -1")
+        } else if (position != null) {
+            val item = adapter?.items?.get(position)?.item
+            if (item is ChatMessage) {
+                Log.d(TAG, "first visible item message is :" + item.message)
+            } else if (item is Date) {
+                Log.d(TAG, "first visible item time is :" + item.time)
+            }
+        }
+
+        return layoutManager?.findFirstVisibleItemPosition() == 0
+    }
 
     private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
         if (chatMessageList.isNotEmpty()) {
@@ -3272,7 +3290,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_DELETED
+            .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3282,7 +3300,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_EDITED
+            .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -3592,7 +3610,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)
