@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 
 interface ChatMessageRepository : LifecycleAwareManager {
 
@@ -80,6 +79,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     fun handleChatOnBackPress()
 
+    @Suppress("LongParameterList")
     suspend fun sendChatMessage(
         credentials: String,
         url: String,
@@ -90,6 +90,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 
+    @Suppress("LongParameterList")
     suspend fun resendChatMessage(
         credentials: String,
         url: String,
@@ -111,10 +112,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 
-    suspend fun sendTempChatMessages(
-        credentials: String,
-        url: String
-    )
+    suspend fun sendTempChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 }

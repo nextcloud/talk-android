@@ -855,7 +855,6 @@ class MessageInputFragment : Fragment() {
 
     private fun sendMessage(message: String, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
-            conversationInternalId,
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,

@@ -87,7 +87,7 @@ class DirectReplyReceiver : BroadcastReceiver() {
             currentUser.displayName,
             null,
             false,
-            SendMessageUtils().generateReferenceId() // TODO add temp chatMessage before with ref id...
+            SendMessageUtils().generateReferenceId()
         )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
