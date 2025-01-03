@@ -204,7 +204,7 @@ class CallActivity : CallBaseActivity() {
     private var audioConstraints: MediaConstraints? = null
     private var videoConstraints: MediaConstraints? = null
     private var sdpConstraints: MediaConstraints? = null
-    private var sdpConstraintsForMCU: MediaConstraints? = null
+    private var sdpConstraintsForMCUPublisher: MediaConstraints? = null
     private var videoSource: VideoSource? = null
     private var localVideoTrack: VideoTrack? = null
     private var audioSource: AudioSource? = null
@@ -809,7 +809,7 @@ class CallActivity : CallBaseActivity() {
 
         // create sdpConstraints
         sdpConstraints = MediaConstraints()
-        sdpConstraintsForMCU = MediaConstraints()
+        sdpConstraintsForMCUPublisher = MediaConstraints()
         sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
         var offerToReceiveVideoString = "true"
         if (isVoiceOnlyCall) {
@@ -818,10 +818,10 @@ class CallActivity : CallBaseActivity() {
         sdpConstraints!!.mandatory.add(
             MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString)
         )
-        sdpConstraintsForMCU!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
-        sdpConstraintsForMCU!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"))
-        sdpConstraintsForMCU!!.optional.add(MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
-        sdpConstraintsForMCU!!.optional.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
+        sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
+        sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"))
+        sdpConstraintsForMCUPublisher!!.optional.add(MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
+        sdpConstraintsForMCUPublisher!!.optional.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
         sdpConstraints!!.optional.add(MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
         sdpConstraints!!.optional.add(MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"))
         if (!isVoiceOnlyCall) {
@@ -2350,18 +2350,22 @@ class CallActivity : CallBaseActivity() {
         sessionId: String?,
         type: String
     ): PeerConnectionWrapper {
+        val tempSdpConstraints: MediaConstraints?
         val tempIsMCUPublisher: Boolean
         val tempHasMCU: Boolean
         val tempLocalStream: MediaStream?
         if (hasMCU && publisher) {
+            tempSdpConstraints = sdpConstraintsForMCUPublisher
             tempIsMCUPublisher = true
             tempHasMCU = true
             tempLocalStream = localStream
         } else if (hasMCU) {
+            tempSdpConstraints = sdpConstraints
             tempIsMCUPublisher = false
             tempHasMCU = true
             tempLocalStream = null
         } else {
+            tempSdpConstraints = sdpConstraints
             tempIsMCUPublisher = false
             tempHasMCU = false
             tempLocalStream = if ("screen" != type) {
@@ -2374,7 +2378,7 @@ class CallActivity : CallBaseActivity() {
         return PeerConnectionWrapper(
             peerConnectionFactory,
             iceServers,
-            sdpConstraintsForMCU,
+            tempSdpConstraints,
             sessionId,
             callSession,
             tempLocalStream,
