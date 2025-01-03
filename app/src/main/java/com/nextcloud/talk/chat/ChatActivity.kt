@@ -65,8 +65,10 @@ import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -2926,17 +2928,10 @@ class ChatActivity :
 
     private fun isScrolledToBottom(): Boolean {
         val position = layoutManager?.findFirstVisibleItemPosition()
-        Log.d(TAG, "first visible item position is :" + position)
-
         if (position == -1) {
-            Log.d(TAG, "position is -1")
-        } else if (position != null) {
-            val item = adapter?.items?.get(position)?.item
-            if (item is ChatMessage) {
-                Log.d(TAG, "first visible item message is :" + item.message)
-            } else if (item is Date) {
-                Log.d(TAG, "first visible item time is :" + item.time)
-            }
+            Log.w(TAG, "FirstVisibleItemPosition was -1 but true is returned for isScrolledToBottom(). This can " +
+                "happen when the UI is not yet ready")
+            return true
         }
 
         return layoutManager?.findFirstVisibleItemPosition() == 0
