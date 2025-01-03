@@ -905,6 +905,9 @@ class ChatActivity :
                     val lookIntoFuture = triple.first
                     val setUnreadMessagesMarker = triple.second
                     var chatMessageList = triple.third
+                    val firstMessage = chatMessageList.first()
+
+                    handleLobbyMessage(firstMessage)
 
                     chatMessageList = handleSystemMessages(chatMessageList)
 
@@ -1648,7 +1651,7 @@ class ChatActivity :
         val delayForRecursiveCall = if (shouldShowLobby()) {
             GET_ROOM_INFO_DELAY_LOBBY
         } else {
-            GET_ROOM_INFO_DELAY_LOBBY
+            GET_ROOM_INFO_DELAY_NORMAL
         }
 
         if (getRoomInfoTimerHandler == null) {
@@ -2190,32 +2193,7 @@ class ChatActivity :
             ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities)
         ) {
             if (shouldShowLobby()) {
-                binding.lobby.lobbyView.visibility = View.VISIBLE
-                binding.messagesListView.visibility = View.GONE
-                binding.fragmentContainerActivityChat.visibility = View.GONE
-                binding.progressBar.visibility = View.GONE
-
-                val sb = StringBuilder()
-                sb.append(resources!!.getText(R.string.nc_lobby_waiting))
-                    .append("\n\n")
-
-                if (currentConversation?.lobbyTimer != null &&
-                    currentConversation?.lobbyTimer !=
-                    0L
-                ) {
-                    val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
-                    val stringWithStartDate = String.format(
-                        resources!!.getString(R.string.nc_lobby_start_date),
-                        dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
-                    )
-                    val relativeTime = dateUtils.relativeStartTimeForLobby(timestampMS, resources!!)
-
-                    sb.append("$stringWithStartDate - $relativeTime")
-                        .append("\n\n")
-                }
-
-                sb.append(currentConversation!!.description)
-                binding.lobby.lobbyTextView.text = sb.toString()
+                showLobbyView()
             } else {
                 binding.lobby.lobbyView.visibility = View.GONE
                 binding.messagesListView.visibility = View.VISIBLE
@@ -2226,6 +2204,35 @@ class ChatActivity :
             binding.messagesListView.visibility = View.VISIBLE
             binding.fragmentContainerActivityChat.visibility = View.VISIBLE
         }
+    }
+
+    private fun showLobbyView() {
+        binding.lobby.lobbyView.visibility = View.VISIBLE
+        binding.messagesListView.visibility = View.GONE
+        binding.fragmentContainerActivityChat.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+
+        val sb = StringBuilder()
+        sb.append(resources!!.getText(R.string.nc_lobby_waiting))
+            .append("\n\n")
+
+        if (currentConversation?.lobbyTimer != null &&
+            currentConversation?.lobbyTimer !=
+            0L
+        ) {
+            val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
+            val stringWithStartDate = String.format(
+                resources!!.getString(R.string.nc_lobby_start_date),
+                dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
+            )
+            val relativeTime = dateUtils.relativeStartTimeForLobby(timestampMS, resources!!)
+
+            sb.append("$stringWithStartDate - $relativeTime")
+                .append("\n\n")
+        }
+
+        sb.append(currentConversation!!.description)
+        binding.lobby.lobbyTextView.text = sb.toString()
     }
 
     private fun onRemoteFileBrowsingResult(intent: Intent?) {
@@ -3278,6 +3285,17 @@ class ChatActivity :
         return chatMessageMap.values.toList()
     }
 
+    private fun handleLobbyMessage(lastMessage: ChatMessage) {
+        if (lastMessage.systemMessageType == ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS) {
+            showLobbyView()
+        } else if (lastMessage.systemMessageType == ChatMessage.SystemMessageType.LOBBY_NONE) {
+            binding.lobby.lobbyView.visibility = View.GONE
+            binding.messagesListView.visibility = View.VISIBLE
+            binding.fragmentContainerActivityChat.visibility = View.VISIBLE
+        }
+
+    }
+
     private fun handleExpandableSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
@@ -3319,6 +3337,11 @@ class ChatActivity :
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
+
+    private fun isLobbyMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.LOBBY_NONE ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.LOBBY_NON_MODERATORS ||
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.LOBBY_OPEN_TO_EVERYONE
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
         currentConversation?.let {
