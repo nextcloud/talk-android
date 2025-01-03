@@ -23,13 +23,14 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observer
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -71,24 +72,31 @@ class DirectReplyReceiver : BroadcastReceiver() {
         sendDirectReply()
     }
 
-    private fun getMessageText(intent: Intent): CharSequence? {
-        return RemoteInput.getResultsFromIntent(intent)?.getCharSequence(NotificationUtils.KEY_DIRECT_REPLY)
-    }
+    private fun getMessageText(intent: Intent): CharSequence? =
+        RemoteInput.getResultsFromIntent(intent)?.getCharSequence(NotificationUtils.KEY_DIRECT_REPLY)
 
     private fun sendDirectReply() {
         val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
         val apiVersion = ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(1))
         val url = ApiUtils.getUrlForChat(apiVersion, currentUser.baseUrl!!, roomToken!!)
 
-        ncApi.sendChatMessage(credentials, url, replyMessage, currentUser.displayName, null, false)
+        ncApi.sendChatMessage(
+            credentials,
+            url,
+            replyMessage,
+            currentUser.displayName,
+            null,
+            false,
+            SendMessageUtils().generateReferenceId()
+        )
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
+                override fun onNext(message: ChatOverallSingleMessage) {
                     confirmReplySent()
                 }
 

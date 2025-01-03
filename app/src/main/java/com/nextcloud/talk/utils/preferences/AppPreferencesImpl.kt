@@ -17,7 +17,6 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.ui.PlaybackSpeed
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -501,76 +500,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         return if (lastReadId.isNotEmpty()) lastReadId.toInt() else defaultValue
     }
 
-    override fun saveMessageQueue(
-        internalConversationId: String,
-        queue: MutableList<MessageInputViewModel.QueuedMessage>?
-    ) {
-        runBlocking<Unit> {
-            async {
-                var queueStr = ""
-                queue?.let {
-                    for (msg in queue) {
-                        val msgStr = "${msg.id},${msg.message},${msg.replyTo},${msg.displayName},${
-                            msg
-                                .sendWithoutNotification
-                        }^"
-                        queueStr += msgStr
-                    }
-                }
-                writeString(internalConversationId + MESSAGE_QUEUE, queueStr)
-            }
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun getMessageQueue(internalConversationId: String): MutableList<MessageInputViewModel.QueuedMessage> {
-        val queueStr =
-            runBlocking { async { readString(internalConversationId + MESSAGE_QUEUE).first() } }.getCompleted()
-
-        val queue: MutableList<MessageInputViewModel.QueuedMessage> = mutableListOf()
-        if (queueStr.isEmpty()) return queue
-
-        for (msgStr in queueStr.split("^")) {
-            try {
-                if (msgStr.isNotEmpty()) {
-                    val msgArray = msgStr.split(",")
-                    val id = msgArray[ID].toInt()
-                    val message = msgArray[MESSAGE_INDEX]
-                    val replyTo = msgArray[REPLY_TO_INDEX].toInt()
-                    val displayName = msgArray[DISPLAY_NAME_INDEX]
-                    val silent = msgArray[SILENT_INDEX].toBoolean()
-
-                    val qMsg = MessageInputViewModel.QueuedMessage(id, message, displayName, replyTo, silent)
-                    queue.add(qMsg)
-                }
-            } catch (e: IndexOutOfBoundsException) {
-                Log.e(TAG, "Message string: $msgStr\n Queue String: $queueStr \n$e")
-            }
-        }
-
-        return queue
-    }
-
-    override fun deleteAllMessageQueuesFor(userId: String) {
-        runBlocking {
-            async {
-                val keyList = mutableListOf<Preferences.Key<*>>()
-                val preferencesMap = context.dataStore.data.first().asMap()
-                for (preference in preferencesMap) {
-                    if (preference.key.name.contains("$userId@")) {
-                        keyList.add(preference.key)
-                    }
-                }
-
-                for (key in keyList) {
-                    context.dataStore.edit {
-                        it.remove(key)
-                    }
-                }
-            }
-        }
-    }
-
     override fun saveVoiceMessagePlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
         Json.encodeToString(speeds).let {
             runBlocking<Unit> { async { writeString(VOICE_MESSAGE_PLAYBACK_SPEEDS, it) } }
@@ -655,13 +584,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         @Suppress("UnusedPrivateProperty")
         private val TAG = AppPreferencesImpl::class.simpleName
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-        private const val ID: Int = 0
-        private const val MESSAGE_INDEX: Int = 1
-        private const val REPLY_TO_INDEX: Int = 2
-        private const val DISPLAY_NAME_INDEX: Int = 3
-        private const val SILENT_INDEX: Int = 4
         const val PROXY_TYPE = "proxy_type"
-        const val PROXY_SERVER = "proxy_server"
         const val PROXY_HOST = "proxy_host"
         const val PROXY_PORT = "proxy_port"
         const val PROXY_CRED = "proxy_credentials"
@@ -686,7 +609,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val DB_ROOM_MIGRATED = "db_room_migrated"
         const val PHONE_BOOK_INTEGRATION_LAST_RUN = "phone_book_integration_last_run"
         const val TYPING_STATUS = "typing_status"
-        const val MESSAGE_QUEUE = "@message_queue"
         const val VOICE_MESSAGE_PLAYBACK_SPEEDS = "voice_message_playback_speeds"
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"

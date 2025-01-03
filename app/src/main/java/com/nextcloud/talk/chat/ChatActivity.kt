@@ -109,8 +109,6 @@ import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
 import com.nextcloud.talk.adapters.messages.SystemMessageInterface
 import com.nextcloud.talk.adapters.messages.SystemMessageViewHolder
 import com.nextcloud.talk.adapters.messages.TalkMessagesListAdapter
-import com.nextcloud.talk.adapters.messages.TemporaryMessageInterface
-import com.nextcloud.talk.adapters.messages.TemporaryMessageViewHolder
 import com.nextcloud.talk.adapters.messages.UnreadNoticeMessageViewHolder
 import com.nextcloud.talk.adapters.messages.VoiceMessageInterface
 import com.nextcloud.talk.api.NcApi
@@ -152,6 +150,7 @@ import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
+import com.nextcloud.talk.ui.dialog.TempMessageActionsDialog
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeActions
 import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
@@ -206,7 +205,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import retrofit2.HttpException
 import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
@@ -229,8 +227,7 @@ class ChatActivity :
     CommonMessageInterface,
     PreviewMessageInterface,
     SystemMessageInterface,
-    CallStartedMessageInterface,
-    TemporaryMessageInterface {
+    CallStartedMessageInterface {
 
     var active = false
 
@@ -317,7 +314,6 @@ class ChatActivity :
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
-    // lateinit var roomId: String
     var voiceOnly: Boolean = true
     private lateinit var path: String
 
@@ -450,6 +446,7 @@ class ChatActivity :
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
+        messageInputViewModel.setData(chatViewModel.getChatRepository())
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
@@ -522,7 +519,6 @@ class ChatActivity :
     private fun handleIntent(intent: Intent) {
         val extras: Bundle? = intent.extras
 
-        // roomId = extras?.getString(KEY_ROOM_ID).orEmpty()
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
@@ -580,35 +576,6 @@ class ChatActivity :
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
-
-        messageInputViewModel.messageQueueFlow.observe(this) { list ->
-            list.forEachIndexed { _, qMsg ->
-                val temporaryChatMessage = ChatMessage()
-                temporaryChatMessage.jsonMessageId = TEMPORARY_MESSAGE_ID_INT
-                temporaryChatMessage.actorId = "-3"
-                temporaryChatMessage.timestamp = System.currentTimeMillis() / ONE_SECOND_IN_MILLIS
-                temporaryChatMessage.message = qMsg.message.toString()
-                temporaryChatMessage.tempMessageId = qMsg.id
-                temporaryChatMessage.isTempMessage = true
-                temporaryChatMessage.parentMessageId = qMsg.replyTo!!.toLong()
-                val pos = adapter?.getMessagePositionById(qMsg.replyTo.toString())
-                adapter?.addToStart(temporaryChatMessage, true)
-                adapter?.notifyDataSetChanged()
-            }
-        }
-
-        messageInputViewModel.messageQueueSizeFlow.observe(this) { size ->
-            if (size == 0) {
-                var i = 0
-                var pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-                while (pos != null && pos > -1) {
-                    adapter?.items?.removeAt(pos)
-                    i++
-                    pos = adapter?.getMessagePositionById(TEMPORARY_MESSAGE_ID_STRING)
-                }
-                adapter?.notifyDataSetChanged()
-            }
-        }
 
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
@@ -717,7 +684,6 @@ class ChatActivity :
                                 withCredentials = credentials!!,
                                 withUrl = urlForChatting
                             )
-                            messageInputViewModel.getTempMessagesFromMessageQueue(currentConversation!!.internalId)
                         }
                     } else {
                         Log.w(
@@ -742,7 +708,6 @@ class ChatActivity :
 
                     sessionIdAfterRoomJoined = currentConversation!!.sessionId
                     ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
-                    // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = currentConversation!!.roomId
                     ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
                     ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
@@ -811,18 +776,7 @@ class ChatActivity :
                 }
 
                 is MessageInputViewModel.SendChatMessageErrorState -> {
-                    if (state.e is HttpException) {
-                        val code = state.e.code()
-                        if (code.toString().startsWith("2")) {
-                            myFirstMessage = state.message
-
-                            if (binding.unreadMessagesPopup.isShown) {
-                                binding.unreadMessagesPopup.visibility = View.GONE
-                            }
-
-                            binding.messagesListView.smoothScrollToPosition(0)
-                        }
-                    }
+                    binding.messagesListView.smoothScrollToPosition(0)
                 }
 
                 else -> {}
@@ -859,7 +813,6 @@ class ChatActivity :
                 is ChatViewModel.CreateRoomSuccessState -> {
                     val bundle = Bundle()
                     bundle.putString(KEY_ROOM_TOKEN, state.roomOverall.ocs!!.data!!.token)
-                    // bundle.putString(KEY_ROOM_ID, state.roomOverall.ocs!!.data!!.roomId)
 
                     leaveRoom {
                         val chatIntent = Intent(context, ChatActivity::class.java)
@@ -931,6 +884,14 @@ class ChatActivity :
                     processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
+                }
+                .collect()
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.getRemoveMessageFlow
+                .onEach {
+                    removeMessageById(it.id)
                 }
                 .collect()
         }
@@ -1079,8 +1040,10 @@ class ChatActivity :
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
                     Log.e(TAG, "Error fetching/ no user absence data", uiState.exception)
                 }
+
                 ChatViewModel.OutOfOfficeUIState.None -> {
                 }
+
                 is ChatViewModel.OutOfOfficeUIState.Success -> {
                     binding.outOfOfficeContainer.visibility = View.VISIBLE
 
@@ -1169,9 +1132,25 @@ class ChatActivity :
     }
 
     private fun removeUnreadMessagesMarker() {
-        val index = adapter?.getMessagePositionById(UNREAD_MESSAGES_MARKER_ID.toString())
-        if (index != null && index != -1) {
-            adapter?.items?.removeAt(index)
+        removeMessageById(UNREAD_MESSAGES_MARKER_ID.toString())
+    }
+
+    // do not use adapter.deleteById() as it seems to contain a bug! Use this method instead!
+    @Suppress("MagicNumber")
+    private fun removeMessageById(idToDelete: String) {
+        val indexToDelete = adapter?.getMessagePositionById(idToDelete)
+        if (indexToDelete != null && indexToDelete != UNREAD_MESSAGES_MARKER_ID) {
+            // If user sent a message as a first message in todays chat, the temp message will be deleted when
+            // messages are retrieved from server, but also the date has to be deleted as it will be added again
+            // when the chat messages are added from server. Otherwise date "Today" would be shown twice.
+            if (indexToDelete == 0 && (adapter?.items?.get(1))?.item is Date) {
+                adapter?.items?.removeAt(0)
+                adapter?.items?.removeAt(0)
+                adapter?.notifyItemRangeRemoved(indexToDelete, 1)
+            } else {
+                adapter?.items?.removeAt(indexToDelete)
+                adapter?.notifyItemRemoved(indexToDelete)
+            }
         }
     }
 
@@ -1188,7 +1167,7 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        chatViewModel.getRoom(conversationUser!!, roomToken)
+        chatViewModel.getRoom(roomToken)
 
         actionBar?.show()
 
@@ -1236,18 +1215,18 @@ class ChatActivity :
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
-    private fun getLastAdapterId(): Int {
-        var lastId = 0
-        if (adapter?.items?.size != 0) {
-            val item = adapter?.items?.get(0)?.item
-            if (item != null) {
-                lastId = (item as ChatMessage).jsonMessageId
-            } else {
-                lastId = 0
-            }
-        }
-        return lastId
-    }
+    // private fun getLastAdapterId(): Int {
+    //     var lastId = 0
+    //     if (adapter?.items?.size != 0) {
+    //         val item = adapter?.items?.get(0)?.item
+    //         if (item != null) {
+    //             lastId = (item as ChatMessage).jsonMessageId
+    //         } else {
+    //             lastId = 0
+    //         }
+    //     }
+    //     return lastId
+    // }
 
     private fun setupActionBar() {
         setSupportActionBar(binding.chatToolbar)
@@ -1365,17 +1344,6 @@ class ChatActivity :
         messageHolders.setOutcomingImageConfig(
             OutcomingPreviewMessageViewHolder::class.java,
             R.layout.item_custom_outcoming_preview_message
-        )
-
-        messageHolders.registerContentType(
-            CONTENT_TYPE_TEMP,
-            TemporaryMessageViewHolder::class.java,
-            payload,
-            R.layout.item_temporary_message,
-            TemporaryMessageViewHolder::class.java,
-            payload,
-            R.layout.item_temporary_message,
-            this
         )
 
         messageHolders.registerContentType(
@@ -1656,7 +1624,7 @@ class ChatActivity :
         }
         getRoomInfoTimerHandler?.postDelayed(
             {
-                chatViewModel.getRoom(conversationUser!!, roomToken)
+                chatViewModel.getRoom(roomToken)
             },
             delayForRecursiveCall
         )
@@ -2725,7 +2693,6 @@ class ChatActivity :
         ) {
             sessionIdAfterRoomJoined = ApplicationWideCurrentRoomHolder.getInstance().session
 
-            // ApplicationWideCurrentRoomHolder.getInstance().currentRoomId = roomId
             ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = roomToken
             ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
         }
@@ -2916,7 +2883,6 @@ class ChatActivity :
     ) {
         if (message.item is ChatMessage) {
             val chatMessage = message.item as ChatMessage
-
             if (chatMessage.jsonMessageId <= xChatLastCommonRead) {
                 chatMessage.readStatus = ReadStatus.READ
             } else {
@@ -2966,7 +2932,19 @@ class ChatActivity :
         }
     }
 
-    private fun isScrolledToBottom() = layoutManager?.findFirstVisibleItemPosition() == 0
+    private fun isScrolledToBottom(): Boolean {
+        val position = layoutManager?.findFirstVisibleItemPosition()
+        if (position == -1) {
+            Log.w(
+                TAG,
+                "FirstVisibleItemPosition was -1 but true is returned for isScrolledToBottom(). This can " +
+                    "happen when the UI is not yet ready"
+            )
+            return true
+        }
+
+        return layoutManager?.findFirstVisibleItemPosition() == 0
+    }
 
     private fun setUnreadMessageMarker(chatMessageList: List<ChatMessage>) {
         if (chatMessageList.isNotEmpty()) {
@@ -3352,7 +3330,6 @@ class ChatActivity :
         currentConversation?.let {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
-            // bundle.putString(KEY_ROOM_ID, roomId)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
             bundle.putString(BundleKeys.KEY_MODIFIED_BASE_URL, conversationUser?.baseUrl!!)
             bundle.putString(KEY_CONVERSATION_NAME, it.displayName)
@@ -3421,9 +3398,14 @@ class ChatActivity :
 
     private fun openMessageActionsDialog(iMessage: IMessage?) {
         val message = iMessage as ChatMessage
-        if (hasVisibleItems(message) &&
-            !isSystemMessage(message) &&
-            message.id != "-3"
+
+        if (message.isTemporary) {
+            TempMessageActionsDialog(
+                this,
+                message
+            ).show()
+        } else if (hasVisibleItems(message) &&
+            !isSystemMessage(message)
         ) {
             MessageActionsDialog(
                 this,
@@ -3838,7 +3820,6 @@ class ChatActivity :
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
-            CONTENT_TYPE_TEMP -> message.id == "-3"
             CONTENT_TYPE_DECK_CARD -> message.isDeckCard()
 
             else -> false
@@ -3985,30 +3966,6 @@ class ChatActivity :
         startACall(false, false)
     }
 
-    override fun editTemporaryMessage(id: Int, newMessage: String) {
-        messageInputViewModel.editQueuedMessage(currentConversation!!.internalId, id, newMessage)
-        adapter?.notifyDataSetChanged() // TODO optimize this
-    }
-
-    override fun deleteTemporaryMessage(id: Int) {
-        messageInputViewModel.removeFromQueue(currentConversation!!.internalId, id)
-        var i = 0
-        val max = messageInputViewModel.messageQueueSizeFlow.value?.plus(1)
-        for (item in adapter?.items!!) {
-            if (i > max!! && max < 1) break
-            if (item.item is ChatMessage &&
-                (item.item as ChatMessage).isTempMessage &&
-                (item.item as ChatMessage).tempMessageId == id
-            ) {
-                val index = adapter?.items!!.indexOf(item)
-                adapter?.items!!.removeAt(index)
-                adapter?.notifyItemRemoved(index)
-                break
-            }
-            i++
-        }
-    }
-
     private fun logConversationInfos(methodName: String) {
         Log.d(TAG, " |-----------------------------------------------")
         Log.d(TAG, " | method: $methodName")
@@ -4057,9 +4014,7 @@ class ChatActivity :
         private const val CONTENT_TYPE_POLL: Byte = 6
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val CONTENT_TYPE_DECK_CARD: Byte = 8
-        private const val CONTENT_TYPE_TEMP: Byte = 9
         private const val UNREAD_MESSAGES_MARKER_ID = -1
-        private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)
@@ -4097,8 +4052,6 @@ class ChatActivity :
         private const val RESUME_AUDIO_TAG = "RESUME_AUDIO_TAG"
         private const val DELAY_TO_SHOW_PROGRESS_BAR = 1000L
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
-        private const val TEMPORARY_MESSAGE_ID_INT: Int = -3
-        private const val TEMPORARY_MESSAGE_ID_STRING: String = "-3"
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
