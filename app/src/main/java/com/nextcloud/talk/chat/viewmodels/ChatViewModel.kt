@@ -651,7 +651,7 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleChatOnBackPress()
     }
 
-    suspend fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
+    fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
         flow {
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_CHAT_URL, url)

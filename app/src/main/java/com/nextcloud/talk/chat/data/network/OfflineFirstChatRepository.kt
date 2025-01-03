@@ -29,7 +29,6 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -52,9 +51,8 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val datastore: AppPreferences,
     private val monitor: NetworkMonitor,
-    private val userProvider: CurrentUserProviderNew
+    userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
     val currentUser: User = userProvider.currentUser.blockingGet()
@@ -941,6 +939,7 @@ class OfflineFirstChatRepository @Inject constructor(
         _removeMessageFlow.emit(chatMessage)
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun addTemporaryMessage(
         message: CharSequence,
         displayName: String,

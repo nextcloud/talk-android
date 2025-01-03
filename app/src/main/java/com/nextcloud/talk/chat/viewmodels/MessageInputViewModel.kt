@@ -22,7 +22,6 @@ import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.message.SendMessageUtils
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.launch
@@ -31,8 +30,7 @@ import javax.inject.Inject
 class MessageInputViewModel @Inject constructor(
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val appPreferences: AppPreferences
+    private val audioFocusRequestManager: AudioFocusRequestManager
 ) : ViewModel(),
     DefaultLifecycleObserver {
 
@@ -197,13 +195,7 @@ class MessageInputViewModel @Inject constructor(
             chatRepository.editTempChatMessage(
                 message,
                 editedMessageText
-            ).collect { result ->
-                if (true) {
-                    // _editMessageViewState.value = EditMessageSuccessState(result)
-                } else {
-                    // _editMessageViewState.value = EditMessageErrorState
-                }
-            }
+            ).collect {}
         }
     }
 
@@ -262,6 +254,5 @@ class MessageInputViewModel @Inject constructor(
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 1000
     }
 }

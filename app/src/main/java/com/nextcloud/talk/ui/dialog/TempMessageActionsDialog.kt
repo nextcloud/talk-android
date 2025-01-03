@@ -19,9 +19,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.network.NetworkMonitor
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogTempMessageActionsBinding
-import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
@@ -32,9 +30,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class TempMessageActionsDialog(
     private val chatActivity: ChatActivity,
-    private val message: ChatMessage,
-    private val user: User?,
-    private val currentConversation: ConversationModel?
+    private val message: ChatMessage
 ) : BottomSheetDialog(chatActivity) {
 
     @Inject
