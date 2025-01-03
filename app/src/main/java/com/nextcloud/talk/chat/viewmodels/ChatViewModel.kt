@@ -233,14 +233,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.setData(conversationModel, credentials, urlForChatting)
     }
 
-    fun getRoom(user: User, token: String) {
+    fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(token)
-
-        // chatNetworkDataSource.getRoom(user, token)
-        //     .subscribeOn(Schedulers.io())
-        //     ?.observeOn(AndroidSchedulers.mainThread())
-        //     ?.subscribe(GetRoomObserver())
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {

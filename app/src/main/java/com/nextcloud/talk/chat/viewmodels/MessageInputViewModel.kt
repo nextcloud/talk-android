@@ -14,23 +14,18 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
 import javax.inject.Inject
 
 class MessageInputViewModel @Inject constructor(
@@ -49,7 +44,7 @@ class MessageInputViewModel @Inject constructor(
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
-    fun setData(chatMessageRepository: ChatMessageRepository){
+    fun setData(chatMessageRepository: ChatMessageRepository) {
         chatRepository = chatMessageRepository
     }
 
@@ -101,9 +96,11 @@ class MessageInputViewModel @Inject constructor(
     object SendChatMessageStartState : ViewState
     class SendChatMessageSuccessState(val message: CharSequence) : ViewState
     class SendChatMessageErrorState(val message: CharSequence) : ViewState
+
     private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
+
     object EditMessageErrorState : ViewState
     class EditMessageSuccessState(val messageEdited: ChatOverallSingleMessage) : ViewState
 
@@ -119,9 +116,7 @@ class MessageInputViewModel @Inject constructor(
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
 
-    @Suppress("LongParameterList")
     fun sendChatMessage(
-        internalId: String,
         credentials: String,
         url: String,
         message: String,
@@ -181,10 +176,7 @@ class MessageInputViewModel @Inject constructor(
         }
     }
 
-    fun sendTempMessages(
-        credentials: String,
-        url: String,
-    ) {
+    fun sendTempMessages(credentials: String, url: String) {
         viewModelScope.launch {
             chatRepository.sendTempChatMessages(
                 credentials,

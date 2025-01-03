@@ -122,6 +122,7 @@ interface NcApiCoroutines {
     @DELETE
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
+    @Suppress("LongParameterList")
     @FormUrlEncoded
     @POST
     suspend fun sendChatMessage(

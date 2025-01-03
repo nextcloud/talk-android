@@ -112,7 +112,7 @@ class RetrofitChatNetwork(private val ncApi: NcApi) : ChatNetworkDataSource {
             displayName,
             null,
             false,
-            SendMessageUtils().generateReferenceId() // TODO add temp message before with ref id..
+            SendMessageUtils().generateReferenceId()
         ).map {
             it
         }

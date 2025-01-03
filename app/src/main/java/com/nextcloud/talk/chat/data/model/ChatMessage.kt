@@ -113,9 +113,7 @@ data class ChatMessage(
 
     var openWhenDownloaded: Boolean = true,
 
-    var isTemporary: Boolean = false, // TODO: replace logic from message drafts with logic from temp message sending
-
-    // var tempMessageId: Int = -1, // TODO: replace logic from message drafts with logic from temp message sending
+    var isTemporary: Boolean = false,
 
     var referenceId: String? = null,
 

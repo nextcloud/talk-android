@@ -58,19 +58,15 @@ class TempMessageActionsDialog(
 
         viewThemeUtils.material.colorBottomSheetBackground(binding.root)
         viewThemeUtils.material.colorBottomSheetDragHandle(binding.bottomSheetDragHandle)
-
-        initMenuItemCopy(!message.isDeleted)
-        val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
-
-
         initMenuItems()
     }
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
             initResendMessage(networkMonitor.isOnline.first())
-            initMenuEditMessage(true)
-            initMenuDeleteMessage(true)
+            initMenuEditMessage()
+            initMenuDeleteMessage()
+            initMenuItemCopy()
         }
     }
 
@@ -99,34 +95,25 @@ class TempMessageActionsDialog(
         binding.menuResendMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuDeleteMessage(visible: Boolean) {
-        if (visible) {
-            binding.menuDeleteMessage.setOnClickListener {
-                chatActivity.chatViewModel.deleteTempMessage(message)
-                dismiss()
-            }
+    private fun initMenuDeleteMessage() {
+        binding.menuDeleteMessage.setOnClickListener {
+            chatActivity.chatViewModel.deleteTempMessage(message)
+            dismiss()
         }
-        binding.menuDeleteMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuEditMessage(visible: Boolean) {
+    private fun initMenuEditMessage() {
         binding.menuEditMessage.setOnClickListener {
             chatActivity.messageInputViewModel.edit(message)
             dismiss()
         }
-
-        binding.menuEditMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuItemCopy(visible: Boolean) {
-        if (visible) {
-            binding.menuCopyMessage.setOnClickListener {
-                chatActivity.copyMessage(message)
-                dismiss()
-            }
+    private fun initMenuItemCopy() {
+        binding.menuCopyMessage.setOnClickListener {
+            chatActivity.copyMessage(message)
+            dismiss()
         }
-
-        binding.menuCopyMessage.visibility = getVisibility(visible)
     }
 
     private fun getVisibility(visible: Boolean): Int {

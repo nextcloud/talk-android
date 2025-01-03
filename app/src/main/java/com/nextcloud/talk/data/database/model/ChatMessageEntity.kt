@@ -66,6 +66,6 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "referenceId") var referenceId: String? = null,
     @ColumnInfo(name = "sendingFailed") var sendingFailed: Boolean = false,
     @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
-    @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
+    @ColumnInfo(name = "timestamp") var timestamp: Long = 0
     // missing/not needed: silent
 )
