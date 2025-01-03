@@ -32,12 +32,20 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
     val viewState: LiveData<ViewState>
         get() = _viewState
 
+    private val _searchTerm: MutableLiveData<String> = MutableLiveData("")
+    val searchTerm: LiveData<String>
+        get() = _searchTerm
+
     fun fetchConversations() {
         _viewState.value = FetchConversationsStartState
-        repository.fetchConversations()
+        repository.fetchConversations(_searchTerm.value ?: "")
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(FetchConversationsObserver())
+    }
+
+    fun updateSearchTerm(newTerm: String) {
+        _searchTerm.value = newTerm
     }
 
     inner class FetchConversationsObserver : Observer<List<Conversation>> {
