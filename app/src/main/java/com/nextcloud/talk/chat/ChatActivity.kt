@@ -65,10 +65,8 @@ import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -1140,11 +1138,22 @@ class ChatActivity :
     }
 
     // do not use adapter.deleteById() as it seems to contain a bug! Use this method instead!
+    @Suppress("MagicNumber")
     private fun removeMessageById(idToDelete: String) {
-        val index = adapter?.getMessagePositionById(idToDelete)
-        if (index != null && index != -1) {
-            adapter?.items?.removeAt(index)
-            adapter?.notifyItemRemoved(index)
+        val indexToDelete = adapter?.getMessagePositionById(idToDelete)
+        if (indexToDelete != null && indexToDelete != UNREAD_MESSAGES_MARKER_ID) {
+
+            // If user sent a message as a first message in todays chat, the temp message will be deleted when
+            // messages are retrieved from server, but also the date has to be deleted as it will be added again
+            // when the chat messages are added from server. Otherwise date "Today" would be shown twice.
+            if (indexToDelete == 0 && (adapter?.items?.get(1))?.item is Date) {
+                adapter?.items?.removeAt(0)
+                adapter?.items?.removeAt(0)
+                adapter?.notifyItemRangeRemoved(indexToDelete,1)
+            } else {
+                adapter?.items?.removeAt(indexToDelete)
+                adapter?.notifyItemRemoved(indexToDelete)
+            }
         }
     }
 
