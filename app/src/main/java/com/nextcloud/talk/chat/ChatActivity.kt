@@ -3140,9 +3140,7 @@ class ChatActivity :
         if (message.isTemporary) {
             TempMessageActionsDialog(
                 this,
-                message,
-                conversationUser,
-                currentConversation
+                message
             ).show()
         } else if (hasVisibleItems(message) &&
             !isSystemMessage(message)
@@ -3735,7 +3733,6 @@ class ChatActivity :
         private const val CONTENT_TYPE_LINK_PREVIEW: Byte = 7
         private const val CONTENT_TYPE_DECK_CARD: Byte = 8
         private const val UNREAD_MESSAGES_MARKER_ID = -1
-        private const val CALL_STARTED_ID = -2
         private const val GET_ROOM_INFO_DELAY_NORMAL: Long = 30000
         private const val GET_ROOM_INFO_DELAY_LOBBY: Long = 5000
         private const val AGE_THRESHOLD_FOR_DELETE_MESSAGE: Int = 21600000 // (6 hours in millis = 6 * 3600 * 1000)

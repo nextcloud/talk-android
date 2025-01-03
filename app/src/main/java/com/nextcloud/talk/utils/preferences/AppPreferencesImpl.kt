@@ -630,13 +630,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         @Suppress("UnusedPrivateProperty")
         private val TAG = AppPreferencesImpl::class.simpleName
         private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
-        private const val ID: Int = 0
-        private const val MESSAGE_INDEX: Int = 1
-        private const val REPLY_TO_INDEX: Int = 2
-        private const val DISPLAY_NAME_INDEX: Int = 3
-        private const val SILENT_INDEX: Int = 4
         const val PROXY_TYPE = "proxy_type"
-        const val PROXY_SERVER = "proxy_server"
         const val PROXY_HOST = "proxy_host"
         const val PROXY_PORT = "proxy_port"
         const val PROXY_CRED = "proxy_credentials"

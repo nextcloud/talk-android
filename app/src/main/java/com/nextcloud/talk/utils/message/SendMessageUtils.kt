@@ -29,8 +29,4 @@ class SendMessageUtils {
         val second = calendar.get(Calendar.SECOND)
         return (month * 1000000) + (day * 10000) + (hour * 100) + (minute * 10) + second
     }
-
-    companion object {
-        private val TAG = SendMessageUtils::class.java.simpleName
-    }
 }
