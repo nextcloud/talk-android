@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Dodano rozmowę %1$s do ulubionych</string>
     <string name="appbar_search_in">Szukaj w %s</string>
     <string name="archive_conversation">Archiwum rozmowy</string>
+    <string name="archive_hint">Po zarchiwizowaniu rozmowa zostanie domyślnie ukryta. Wybierz filtr „Zarchiwizowane”, aby wyświetlić zarchiwizowane rozmowy. Bezpośrednie wzmianki będą nadal otrzymywane.</string>
     <string name="archived">Zarchiwizowane</string>
     <string name="audio_call">Rozmowa audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -191,6 +192,7 @@
     <string name="nc_diagnose_app_users_amount">Zarejestrowani użytkownicy</string>
     <string name="nc_diagnose_app_version_title">Wersja aplikacji</string>
     <string name="nc_diagnose_battery_optimization_ignored">Optymalizacja baterii jest ignorowana, wszystko w porządku</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Optymalizacja baterii jest włączona, co może powodować problemy. Powinieneś wyłączyć optymalizację baterii!</string>
     <string name="nc_diagnose_battery_optimization_title">Ustawienia baterii</string>
     <string name="nc_diagnose_device_name_title">Urządzenie</string>
     <string name="nc_diagnose_dialog_open_checklist">Otwórz listę kontrolną rozwiązywania problemów</string>
@@ -333,6 +335,7 @@
     <string name="nc_notification_channel_uploads">Wysłane</string>
     <string name="nc_notification_channel_uploads_description">Powiadamiaj o postępie wysyłania</string>
     <string name="nc_notification_settings">Ustawienia powiadomień</string>
+    <string name="nc_notification_warning">Powiadomienia nie są poprawnie skonfigurowane</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Zezwolenie na powiadomienia i ustawienia baterii są prawidłowo skonfigurowane do otrzymywania powiadomień. Jeśli mimo to masz problemy z otrzymywaniem powiadomień, sprawdź, czy kanały powiadomień dla połączeń i wiadomości są włączone. Dalszą pomoc można znaleźć na stronie DontKillMyApp.com lub na liście rozwiązywania problemów. Jeśli to nie pomoże, przejdź do ekranu diagnostycznego i wyślij raport o błędzie.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Rozwiązywanie problemów z powiadomieniami</string>
     <string name="nc_notify_me_always">Zawsze powiadamiaj</string>
@@ -430,6 +433,7 @@
     <string name="nc_settings_advanced_title">Zaawansowane</string>
     <string name="nc_settings_appearance">Wygląd</string>
     <string name="nc_settings_call_ringtone">Połączenia</string>
+    <string name="nc_settings_contact_admin_of">Proszę o kontakt z administratorem</string>
     <string name="nc_settings_diagnose_subtitle">Otwórz ekran diagnostyczny, aby sprawdzić ustawienia lub utworzyć raport o błędzie</string>
     <string name="nc_settings_diagnose_title">Diagnoza</string>
     <string name="nc_settings_incognito_keyboard_desc">Wskaż klawiaturze, aby wyłączyła spersonalizowane uczenie (bez gwarancji)</string>
@@ -469,6 +473,7 @@
     <string name="nc_settings_server_almost_eol">Wersja serwerowa jest bardzo stara i nie będzie obsługiwana w następnej wersji!</string>
     <string name="nc_settings_server_eol">Wersja serwera jest zbyt stara i nie jest obsługiwana przez tę wersję aplikacji na Androida</string>
     <string name="nc_settings_server_eol_title">Niewspierany serwer</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Aplikacja do powiadamiania serwera nie została zainstalowana</string>
     <string name="nc_settings_theme_battery_saver">Ustawiony według oszczędzania baterii</string>
     <string name="nc_settings_theme_dark">Ciemny</string>
     <string name="nc_settings_theme_follow_system">Użyj domyślnych ustawień systemu</string>
@@ -494,6 +499,8 @@
     <string name="nc_shared_items_empty">Brak udostępnionych elementów</string>
     <string name="nc_shared_items_location">Lokalizacja</string>
     <string name="nc_shared_location">Udostępniona lokalizacja</string>
+    <string name="nc_show_notification_warning_description">Gdy powiadomienia nie są poprawnie skonfigurowane, wyświetlaj regularne ostrzeżenie</string>
+    <string name="nc_show_notification_warning_title">Pokaż regularne ostrzeżenie o powiadomieniu</string>
     <string name="nc_sort_by">Sortuj według</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_switch_account">Przełącz konto</string>
@@ -522,6 +529,7 @@
     <string name="nc_yes">Tak</string>
     <string name="new_conversation_creation_icon">Ikona tworzenia nowej rozmowy</string>
     <string name="next_week">Następny tydzień</string>
+    <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="oneHour">1 godzina</string>
     <string name="online">Online</string>
@@ -529,6 +537,7 @@
     <string name="openConversations">Otwarte rozmowy</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
+    <string name="playback_speed_control">Kontrola prędkości odtwarzania</string>
     <string name="polls_add_option">Dodaj opcję</string>
     <string name="polls_edit_vote">Edytuj głos</string>
     <string name="polls_end_poll">Zakończ sondę</string>
@@ -643,6 +652,9 @@
     <string name="unban">Odblokuj</string>
     <string name="unread">Nieprzeczytane</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
+    <string name="user_absence">%1$s jest poza biurem i może nie odpowiadać</string>
+    <string name="user_absence_for_one_day">%1$s jest dzisiaj nieobecny w biurze</string>
+    <string name="user_absence_replacement">Zastępnik:</string>
     <string name="user_avatar">Awatar użytkownika</string>
     <string name="user_info_address">Adres</string>
     <string name="user_info_displayname">Pełna nazwa</string>
