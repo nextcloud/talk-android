@@ -128,9 +128,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 R.drawable.baseline_report_problem_24,
                 context.resources?.getString(R.string.nc_message_failed)
             )
-            binding.bubble.setOnClickListener {
-                commonMessageInterface.onOpenMessageActionsDialog(message)
-            }
         } else if (message.isTemporary) {
             showSendingSpinner()
         } else if (message.readStatus == ReadStatus.READ) {
