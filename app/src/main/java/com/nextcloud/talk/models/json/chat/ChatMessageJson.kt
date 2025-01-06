@@ -43,5 +43,6 @@ data class ChatMessageJson(
     @JsonField(name = ["lastEditActorType"]) var lastEditActorType: String? = null,
     @JsonField(name = ["lastEditTimestamp"]) var lastEditTimestamp: Long? = 0,
     @JsonField(name = ["deleted"]) var deleted: Boolean = false,
-    @JsonField(name = ["referenceId"]) var referenceId: String? = null
+    @JsonField(name = ["referenceId"]) var referenceId: String? = null,
+    @JsonField(name = ["silent"]) var silent: Boolean = false,
 ) : Parcelable

@@ -929,7 +929,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 it.message,
                 it.actorDisplayName,
                 it.parentMessageId?.toIntOrZero() ?: 0,
-                false,
+                it.silent,
                 it.referenceId.orEmpty()
             ).collect { result ->
                 if (result.isSuccess) {
@@ -951,6 +951,7 @@ class OfflineFirstChatRepository @Inject constructor(
         message: CharSequence,
         displayName: String,
         replyTo: Int,
+        sendWithoutNotification: Boolean,
         referenceId: String
     ): Flow<Result<ChatMessage?>> =
         flow {
@@ -959,6 +960,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     internalConversationId,
                     message.toString(),
                     replyTo,
+                    sendWithoutNotification,
                     referenceId
                 )
 
@@ -980,6 +982,7 @@ class OfflineFirstChatRepository @Inject constructor(
         internalConversationId: String,
         message: String,
         replyTo: Int,
+        sendWithoutNotification: Boolean,
         referenceId: String
     ): ChatMessageEntity {
         val currentTimeMillies = System.currentTimeMillis()
@@ -1007,12 +1010,13 @@ class OfflineFirstChatRepository @Inject constructor(
             parentMessageId = parentMessageId,
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             replyable = false,
-            timestamp = System.currentTimeMillis() / MILLIES,
+            timestamp = currentTimeMillies / MILLIES,
             expirationTimestamp = 0,
             actorDisplayName = currentUser.displayName!!,
             referenceId = referenceId,
             isTemporary = true,
-            sendingFailed = false
+            sendingFailed = false,
+            silent = sendWithoutNotification
         )
         return entity
     }

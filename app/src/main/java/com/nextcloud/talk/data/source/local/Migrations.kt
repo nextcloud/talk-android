@@ -292,5 +292,14 @@ object Migrations {
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column sendingFailed to table ChatMessages")
         }
+
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN silent INTEGER NOT NULL DEFAULT 0;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages")
+        }
     }
 }

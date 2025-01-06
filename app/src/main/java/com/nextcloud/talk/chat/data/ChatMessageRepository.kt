@@ -105,6 +105,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
         message: CharSequence,
         displayName: String,
         replyTo: Int,
+        sendWithoutNotification: Boolean,
         referenceId: String
     ): Flow<Result<ChatMessage?>>
 

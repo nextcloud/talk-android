@@ -134,6 +134,7 @@ class MessageInputViewModel @Inject constructor(
                 message,
                 displayName,
                 replyTo,
+                sendWithoutNotification,
                 referenceId
             ).collect { result ->
                 if (result.isSuccess) {
