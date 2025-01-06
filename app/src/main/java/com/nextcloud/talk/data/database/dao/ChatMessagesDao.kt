@@ -16,6 +16,7 @@ import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
+@Suppress("Detekt.TooManyFunctions")
 interface ChatMessagesDao {
     @Query(
         """
