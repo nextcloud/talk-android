@@ -51,7 +51,7 @@ object Migrations {
     val MIGRATION_12_13 = object : Migration(12, 13) {
         override fun migrate(db: SupportSQLiteDatabase) {
             Log.i("Migrations", "Migrating 12 to 13")
-            addReferenceIdToChatMessages(db)
+            addTempMessagesSupport(db)
         }
     }
 
@@ -265,7 +265,7 @@ object Migrations {
         }
     }
 
-    fun addReferenceIdToChatMessages(db: SupportSQLiteDatabase) {
+    fun addTempMessagesSupport(db: SupportSQLiteDatabase) {
         try {
             db.execSQL(
                 "ALTER TABLE ChatMessages " +
@@ -273,6 +273,24 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column referenceId to table ChatMessages")
+        }
+
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN isTemporary INTEGER NOT NULL DEFAULT 0;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column isTemporary to table ChatMessages")
+        }
+
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN sendingFailed INTEGER NOT NULL DEFAULT 0;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column sendingFailed to table ChatMessages")
         }
     }
 }
