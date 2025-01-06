@@ -59,9 +59,10 @@ class TempMessageActionsDialog(
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
-            initResendMessage(networkMonitor.isOnline.first())
-            initMenuEditMessage()
-            initMenuDeleteMessage()
+            val isOnline = networkMonitor.isOnline.first()
+            initResendMessage(message.sendingFailed && isOnline)
+            initMenuEditMessage(message.sendingFailed || !isOnline)
+            initMenuDeleteMessage(message.sendingFailed || !isOnline)
             initMenuItemCopy()
         }
     }
@@ -91,18 +92,24 @@ class TempMessageActionsDialog(
         binding.menuResendMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuDeleteMessage() {
-        binding.menuDeleteMessage.setOnClickListener {
-            chatActivity.chatViewModel.deleteTempMessage(message)
-            dismiss()
+    private fun initMenuDeleteMessage(visible: Boolean) {
+        if (visible) {
+            binding.menuDeleteMessage.setOnClickListener {
+                chatActivity.chatViewModel.deleteTempMessage(message)
+                dismiss()
+            }
         }
+        binding.menuDeleteMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuEditMessage() {
-        binding.menuEditMessage.setOnClickListener {
-            chatActivity.messageInputViewModel.edit(message)
-            dismiss()
+    private fun initMenuEditMessage(visible: Boolean) {
+        if (visible) {
+            binding.menuEditMessage.setOnClickListener {
+                chatActivity.messageInputViewModel.edit(message)
+                dismiss()
+            }
         }
+        binding.menuEditMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuItemCopy() {
