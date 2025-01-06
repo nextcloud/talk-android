@@ -26,6 +26,8 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -956,6 +958,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 val tempChatMessageEntity = createChatMessageEntity(
                     internalConversationId,
                     message.toString(),
+                    replyTo,
                     referenceId
                 )
 
@@ -976,25 +979,32 @@ class OfflineFirstChatRepository @Inject constructor(
     private fun createChatMessageEntity(
         internalConversationId: String,
         message: String,
+        replyTo: Int,
         referenceId: String
     ): ChatMessageEntity {
         val currentTimeMillies = System.currentTimeMillis()
 
         val currentTimeWithoutYear = SendMessageUtils().removeYearFromTimestamp(currentTimeMillies)
 
+        val parentMessageId = if (replyTo != 0) {
+            replyTo.toLong()
+        } else {
+            null
+        }
+
         val entity = ChatMessageEntity(
-            internalId = internalConversationId + "@_temp_" + currentTimeMillies,
+            internalId = "$internalConversationId@_temp_$currentTimeMillies",
             internalConversationId = internalConversationId,
             id = currentTimeWithoutYear.toLong(),
             message = message,
             deleted = false,
             token = conversationModel.token,
             actorId = currentUser.userId!!,
-            actorType = "users",
+            actorType = EnumActorTypeConverter().convertToString(Participant.ActorType.USERS),
             accountId = currentUser.id!!,
             messageParameters = null,
             messageType = "comment",
-            parentMessageId = null,
+            parentMessageId = parentMessageId,
             systemMessageType = ChatMessage.SystemMessageType.DUMMY,
             replyable = false,
             timestamp = System.currentTimeMillis() / MILLIES,
