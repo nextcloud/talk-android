@@ -64,6 +64,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
+    @Suppress("Detekt.LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)

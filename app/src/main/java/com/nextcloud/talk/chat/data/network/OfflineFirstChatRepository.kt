@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
+@Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
@@ -178,34 +179,38 @@ class OfflineFirstChatRepository @Inject constructor(
                 Log.d(TAG, "newestMessageIdFromDb after sync: $newestMessageIdFromDb")
             }
 
-            if (newestMessageIdFromDb.toInt() != 0) {
-                val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
-
-                val list = getMessagesBeforeAndEqual(
-                    newestMessageIdFromDb,
-                    internalConversationId,
-                    limit
-                )
-                if (list.isNotEmpty()) {
-                    handleNewAndTempMessages(
-                        receivedChatMessages = list,
-                        lookIntoFuture = false,
-                        showUnreadMessagesMarker = false
-                    )
-                }
-
-                sendTempChatMessages(credentials, urlForChatting)
-
-                // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
-                // with them (otherwise there is a race condition).
-                delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
-
-                updateUiForLastCommonRead()
-                updateUiForLastReadMessage(newestMessageIdFromDb)
-            }
+            handleMessagesFromDb(newestMessageIdFromDb)
 
             initMessagePolling(newestMessageIdFromDb)
         }
+
+    private suspend fun handleMessagesFromDb(newestMessageIdFromDb: Long) {
+        if (newestMessageIdFromDb.toInt() != 0) {
+            val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
+
+            val list = getMessagesBeforeAndEqual(
+                newestMessageIdFromDb,
+                internalConversationId,
+                limit
+            )
+            if (list.isNotEmpty()) {
+                handleNewAndTempMessages(
+                    receivedChatMessages = list,
+                    lookIntoFuture = false,
+                    showUnreadMessagesMarker = false
+                )
+            }
+
+            sendTempChatMessages(credentials, urlForChatting)
+
+            // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
+            // with them (otherwise there is a race condition).
+            delay(DELAY_TO_ENSURE_MESSAGES_ARE_ADDED)
+
+            updateUiForLastCommonRead()
+            updateUiForLastReadMessage(newestMessageIdFromDb)
+        }
+    }
 
     private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
         val chatBlock = getBlockOfMessage(messageId.toInt())

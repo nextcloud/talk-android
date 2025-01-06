@@ -61,7 +61,6 @@ import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -157,7 +156,6 @@ class RepositoryModule {
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
-        appPreferences: AppPreferences,
         networkMonitor: NetworkMonitor,
         userProvider: CurrentUserProviderNew
     ): ChatMessageRepository =
@@ -165,7 +163,6 @@ class RepositoryModule {
             chatMessagesDao,
             chatBlocksDao,
             dataSource,
-            appPreferences,
             networkMonitor,
             userProvider
         )

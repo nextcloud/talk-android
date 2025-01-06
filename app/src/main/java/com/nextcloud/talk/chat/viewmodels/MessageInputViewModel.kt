@@ -27,6 +27,7 @@ import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("Detekt.TooManyFunctions")
 class MessageInputViewModel @Inject constructor(
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
@@ -115,6 +116,7 @@ class MessageInputViewModel @Inject constructor(
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
 
+    @Suppress("LongParameterList")
     fun sendChatMessage(
         credentials: String,
         url: String,
