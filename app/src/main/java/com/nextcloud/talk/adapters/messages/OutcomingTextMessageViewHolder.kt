@@ -126,7 +126,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         if (message.sendingFailed) {
             updateStatus(
                 R.drawable.baseline_report_problem_24,
-                "failed"
+                context.resources?.getString(R.string.nc_message_failed)
             )
             binding.bubble.setOnClickListener {
                 commonMessageInterface.onOpenMessageActionsDialog(message)
@@ -143,7 +143,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             if (message.isTemporary && !networkMonitor.isOnline.first()) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
-                    "offline"
+                    context.resources?.getString(R.string.nc_message_offline)
                 )
             }
         }
