@@ -111,7 +111,7 @@ class ChatViewModel @Inject constructor(
     val mediaPlayerSeekbarObserver: Flow<Int>
         get() = mediaPlayerManager.mediaPlayerSeekBarPosition
 
-    val backgroundPlayUIFlow: Flow<Pair<Boolean, ChatMessage>>
+    val backgroundPlayUIFlow: Flow<Pair<Boolean, ChatMessage>> // FIXME make this just a nullable ChatMessage
         get() = mediaPlayerManager.backgroundPlayUIFlow
 
     val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
