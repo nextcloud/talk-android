@@ -120,26 +120,31 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageQuote.quotedChatMessageView.visibility = View.GONE
         }
 
+        binding.checkMark.visibility = View.INVISIBLE
+        binding.sendingProgress.visibility = View.GONE
+
+        if (message.sendingFailed) {
+            updateStatus(
+                R.drawable.baseline_report_problem_24,
+                "failed"
+            )
+            binding.bubble.setOnClickListener {
+                commonMessageInterface.onOpenMessageActionsDialog(message)
+            }
+        } else if (message.isTemporary) {
+            showSendingSpinner()
+        } else if (message.readStatus == ReadStatus.READ) {
+            updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
+        } else if (message.readStatus == ReadStatus.SENT) {
+            updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
+        }
+
         CoroutineScope(Dispatchers.Main).launch {
             if (message.isTemporary && !networkMonitor.isOnline.first()) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
                     "offline"
                 )
-            } else if (message.sendingFailed) {
-                updateStatus(
-                    R.drawable.baseline_report_problem_24,
-                    "failed"
-                )
-                binding.bubble.setOnClickListener {
-                    commonMessageInterface.onOpenMessageActionsDialog(message)
-                }
-            } else if (message.isTemporary) {
-                showSendingSpinner()
-            } else if (message.readStatus == ReadStatus.READ) {
-                updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
-            } else if (message.readStatus == ReadStatus.SENT) {
-                updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
             }
         }
 
