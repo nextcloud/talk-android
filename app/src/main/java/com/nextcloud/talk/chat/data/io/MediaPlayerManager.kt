@@ -46,9 +46,9 @@ class MediaPlayerManager : LifecycleAwareManager {
         ERROR
     }
 
-    val backgroundPlayUIFlow: Flow<Pair<Boolean, ChatMessage>>
+    val backgroundPlayUIFlow: Flow<ChatMessage?>
         get() = _backgroundPlayUIFlow
-    private val _backgroundPlayUIFlow = MutableSharedFlow<Pair<Boolean, ChatMessage>>()
+    private val _backgroundPlayUIFlow = MutableSharedFlow<ChatMessage?>()
 
     val managerState: Flow<MediaPlayerManagerState>
         get() = _managerState
@@ -225,7 +225,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                         mediaPlayer!!.release()
                         mediaPlayer = null
                         currentCycledMessage?.let {
-                            _backgroundPlayUIFlow.tryEmit(Pair(false, it))
+                            _backgroundPlayUIFlow.tryEmit(null)
                         }
                         currentCycledMessage = null
                         _managerState.value = MediaPlayerManagerState.STOPPED
@@ -243,7 +243,7 @@ class MediaPlayerManager : LifecycleAwareManager {
         start()
         _managerState.value = MediaPlayerManagerState.STARTED
         currentCycledMessage?.let {
-            _backgroundPlayUIFlow.tryEmit(Pair(true, it))
+            _backgroundPlayUIFlow.tryEmit(it)
         }
         loop = true
         scope = MainScope()
@@ -265,7 +265,7 @@ class MediaPlayerManager : LifecycleAwareManager {
     override fun handleOnStop() {
         loop = false
         if (mediaPlayer != null && mediaPlayer!!.isPlaying && currentCycledMessage != null) {
-            _backgroundPlayUIFlow.tryEmit(Pair(true, currentCycledMessage!!))
+            _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
         }
     }
 }

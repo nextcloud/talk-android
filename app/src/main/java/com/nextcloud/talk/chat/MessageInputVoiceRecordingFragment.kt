@@ -61,7 +61,9 @@ class MessageInputVoiceRecordingFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        chatActivity.messageInputViewModel.stopMediaPlayer() // if it wasn't stopped already
         this.lifecycle.removeObserver(chatActivity.messageInputViewModel)
+
     }
 
     private fun initObservers() {

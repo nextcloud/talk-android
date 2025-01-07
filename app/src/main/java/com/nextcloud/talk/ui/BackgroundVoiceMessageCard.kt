@@ -22,31 +22,33 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import autodagger.AutoInjector
+import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class BackgroundVoiceMessageSeekbarCard {
+class BackgroundVoiceMessageSeekbarCard(val name: String) {
 
-    // TODO impl onclick callbacks
     // TODO get avatar and name
-    // TODO connect to the manager through the model, test it out.
-
-    // .... I kinda suck. This is taking some time to impl, and im out of commission for a week.
-    // eta prob valentines day
+    // TODO connect to the manager through the viewmodel, test it out.
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -54,21 +56,27 @@ class BackgroundVoiceMessageSeekbarCard {
     @Inject
     lateinit var context: Context
 
+    /**
+     * Updates the state of the voice message
+     */
+    val progressState = mutableFloatStateOf(0.01f)
+
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
     }
 
     @Composable
-    fun GetView() {
+    fun GetView(onPlayPaused: (isPaused: Boolean) -> Unit, onClosed: () -> Unit) {
         MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(context)) {
             Surface(
                 shape = RoundedCornerShape(8.dp),
                 color = MaterialTheme.colorScheme.onPrimary,
-                modifier = Modifier
+                modifier = Modifier.
+                    padding(16.dp, 0.dp)
             ) {
                 Box(modifier = Modifier
                     .background(MaterialTheme.colorScheme.primary, shape = RoundedCornerShape(8.dp))
-                    .fillMaxWidth(0.51f)
+                    .fillMaxWidth(progressState.floatValue)
                     .height(4.dp)
                 )
                 Row (
@@ -79,24 +87,38 @@ class BackgroundVoiceMessageSeekbarCard {
                     Box(
                         contentAlignment= Alignment.Center,
                         modifier = Modifier
-                            .align(Alignment.CenterVertically),
+                            .align(Alignment.CenterVertically)
                     ){
-                        //internal circle with icon
-                        Icon(
-                            imageVector = Icons.Filled.PlayArrow,
-                            contentDescription = "contentDescription",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .padding(2.dp)
-                            ,
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                        var isPausedIcon by remember { mutableStateOf(false) }
+
+                        IconButton(
+                            onClick = {
+                                isPausedIcon = !isPausedIcon
+                                onPlayPaused(isPausedIcon)
+                                // progressState.floatValue += 0.05f TODO remove this
+                            }
+                        ) {
+                            //internal circle with icon
+                            Icon(
+                                imageVector = if (isPausedIcon) {
+                                     Icons.Filled.PlayArrow }
+                                else {
+                                    ImageVector.vectorResource(R.drawable.ic_baseline_pause_voice_message_24)
+                                },
+                                contentDescription = "contentDescription",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                ,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.size(16.dp))
 
 
                     Box(modifier = Modifier
-                        .weight(.8f),
+                        .weight(.8f)
+                        .align(Alignment.CenterVertically),
                        contentAlignment = Alignment.Center,
                     ){
                         Row {
@@ -104,12 +126,11 @@ class BackgroundVoiceMessageSeekbarCard {
                                 imageVector = Icons.Filled.Person,
                                 contentDescription = "contentDescription",
                                 modifier = Modifier
-                                    .size(24.dp)
-                                    .padding(2.dp),
+                                    .size(24.dp),
                                 tint = Color.Gray
                             )
 
-                            Text("John Smith",
+                            Text(name,
                                 modifier = Modifier
                                     .align(Alignment.CenterVertically),
                                 color = MaterialTheme.colorScheme.onBackground
@@ -122,14 +143,20 @@ class BackgroundVoiceMessageSeekbarCard {
                         modifier = Modifier
                             .align(Alignment.CenterVertically),
                     ){
-                        Icon(
-                            imageVector = Icons.Filled.Close,
-                            contentDescription = "contentDescription",
-                            modifier = Modifier
-                                .size(24.dp)
-                                .padding(2.dp),
-                            tint = MaterialTheme.colorScheme.primary
-                        )
+                        IconButton(
+                            onClick = {
+                                onClosed()
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Close,
+                                contentDescription = "contentDescription",
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .padding(2.dp),
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+                        }
                     }
 
                 }
@@ -137,14 +164,18 @@ class BackgroundVoiceMessageSeekbarCard {
         }
     }
 
-    // Preview Logic
-    class DummyProvider : PreviewParameterProvider<String> {
-        override val values: Sequence<String> = sequenceOf()
-    }
-    @Preview()
-    @PreviewParameter(DummyProvider::class)
-    @Composable
-    fun PreviewView() {
-        GetView()
-    }
+    // // Preview Logic
+    // class DummyProvider : PreviewParameterProvider<String> {
+    //     override val values: Sequence<String> = sequenceOf()
+    // }
+    // @Preview()
+    // @PreviewParameter(DummyProvider::class)
+    // @Composable
+    // fun PreviewView() {
+    //     GetView({ isPaused ->
+    //
+    //     },{
+    //
+    //     })
+    // }
 }
