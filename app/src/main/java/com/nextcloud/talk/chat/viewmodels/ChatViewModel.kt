@@ -150,6 +150,7 @@ class ChatViewModel @Inject constructor(
 
     object GetReminderStartState : ViewState
     open class GetReminderExistState(val reminder: Reminder) : ViewState
+    object GetReminderStateSet : ViewState
 
     private val _getReminderExistState: MutableLiveData<ViewState> = MutableLiveData(GetReminderStartState)
 
@@ -308,6 +309,10 @@ class ChatViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetReminderObserver())
+    }
+
+    fun overrideReminderState() {
+        _getReminderExistState.value = GetReminderStateSet
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {
@@ -754,7 +759,7 @@ class ChatViewModel @Inject constructor(
                         val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
                         ConversationUtils.isNoteToSelfConversation(model)
                     }
-                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token!!)
+                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token)
                 } catch (e: NoSuchElementException) {
                     _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
                     Log.e(TAG, "Note to self not found $e")

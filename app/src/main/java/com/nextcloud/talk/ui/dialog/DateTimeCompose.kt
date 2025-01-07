@@ -88,6 +88,9 @@ class DateTimeCompose(val bundle: Bundle) {
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
+    // TODO, can't seem to replicate 1.) on Sow's comment
+    // TODO make an issue out of the problem I gave marcel
+
     @Composable
     fun GetDateTimeDialog(shouldDismiss: MutableState<Boolean>, context: Context) {
         if (shouldDismiss.value) {
@@ -144,7 +147,7 @@ class DateTimeCompose(val bundle: Bundle) {
                     .weight(CUBED_PADDING)
             ) {
                 Text(
-                    "Delete",
+                    stringResource(R.string.nc_delete),
                     color = Color.Red
                 )
             }
@@ -163,7 +166,7 @@ class DateTimeCompose(val bundle: Bundle) {
                 modifier = Modifier
                     .weight(CUBED_PADDING)
             ) {
-                Text("Set")
+                Text(stringResource(R.string.set))
             }
 
             TextButton(
@@ -173,7 +176,7 @@ class DateTimeCompose(val bundle: Bundle) {
                 modifier = Modifier
                     .weight(CUBED_PADDING)
             ) {
-                Text("Close")
+                Text(stringResource(R.string.close))
             }
         }
     }
@@ -215,7 +218,7 @@ class DateTimeCompose(val bundle: Bundle) {
                 label = stringResource(R.string.later_today),
                 timeString = laterTodayStr
             ) {
-                timeState.value = laterToday
+                setTime(laterToday)
             }
         }
 
@@ -224,7 +227,7 @@ class DateTimeCompose(val bundle: Bundle) {
                 label = stringResource(R.string.tomorrow),
                 timeString = tomorrowStr
             ) {
-                timeState.value = tomorrow
+                setTime(tomorrow)
             }
         }
 
@@ -233,7 +236,7 @@ class DateTimeCompose(val bundle: Bundle) {
                 label = stringResource(R.string.this_weekend),
                 timeString = thisWeekendStr
             ) {
-                timeState.value = thisWeekend
+                setTime(thisWeekend)
             }
         }
 
@@ -241,10 +244,15 @@ class DateTimeCompose(val bundle: Bundle) {
             label = stringResource(R.string.next_week),
             timeString = nextWeekStr
         ) {
-            timeState.value = nextWeek
+            setTime(nextWeek)
         }
 
         HorizontalDivider()
+    }
+
+    private fun setTime(localDateTime: LocalDateTime) {
+        timeState.value = localDateTime
+        chatViewModel.overrideReminderState()
     }
 
     @Composable
@@ -253,7 +261,7 @@ class DateTimeCompose(val bundle: Bundle) {
             modifier = Modifier
                 .padding(INT_8.dp)
         ) {
-            Text("Remind Me Later", modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.nc_remind), modifier = Modifier.weight(1f))
 
             val reminderState = chatViewModel.getReminderExistState
                 .asFlow()
@@ -268,6 +276,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
                 else -> {}
             }
+
 
             if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
                 Text(timeState.value.format(DateTimeFormatter.ofPattern(PATTERN)))
@@ -307,9 +316,12 @@ class DateTimeCompose(val bundle: Bundle) {
                     val day = date.dayOfMonth
                     val hour = timePickerState.hour
                     val minute = timePickerState.minute
-                    timeState.value = LocalDateTime.of(year, month, day, hour, minute)
+                    val newTime = LocalDateTime.of(year, month, day, hour, minute)
+                    setTime(newTime)
+
                 } else {
-                    timeState.value = LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
+                    val newTime = LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
+                    setTime(newTime)
                 }
             }
             Submission(shouldDismiss)
