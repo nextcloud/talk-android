@@ -26,8 +26,6 @@ class OpenConversationsAdapter(
     private val onClick: (Conversation) -> Unit
 ) :
     ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
-    private var originalList: List<Conversation> = emptyList()
-    private var isFiltering = false
 
     inner class OpenConversationsViewHolder(val itemBinding: RvItemOpenConversationBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -77,33 +75,6 @@ class OpenConversationsAdapter(
     override fun onBindViewHolder(holder: OpenConversationsViewHolder, position: Int) {
         val conversation = getItem(position)
         holder.bindItem(conversation)
-    }
-
-    fun filter(text: String) {
-        if (text == "") {
-            submitList(originalList)
-            isFiltering = false
-            return
-        }
-
-        isFiltering = true
-        val newList = mutableListOf<Conversation>()
-        for (conversation in originalList) {
-            if (conversation.displayName.contains(text, true) || conversation.description!!.contains(text, true)) {
-                newList.add(conversation)
-            }
-        }
-
-        if (newList.isNotEmpty()) {
-            submitList(newList)
-        }
-    }
-
-    override fun onCurrentListChanged(previousList: MutableList<Conversation>, currentList: MutableList<Conversation>) {
-        if (!isFiltering) {
-            originalList = currentList
-        }
-        super.onCurrentListChanged(previousList, currentList)
     }
 }
 

@@ -21,10 +21,11 @@ class OpenConversationsRepositoryImpl(private val ncApi: NcApi, currentUserProvi
 
     val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
 
-    override fun fetchConversations(): Observable<List<Conversation>> {
+    override fun fetchConversations(searchTerm: String): Observable<List<Conversation>> {
         val roomOverall = ncApi.getOpenConversations(
             credentials,
-            ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!)
+            ApiUtils.getUrlForOpenConversations(apiVersion, currentUser.baseUrl!!),
+            searchTerm
         )
         return roomOverall.map { it.ocs?.data!! }
     }

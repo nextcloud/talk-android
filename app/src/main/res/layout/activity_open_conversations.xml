@@ -57,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/nc_search"
                     android:textColorHint="@color/low_emphasis_text"
+                    android:singleLine="true"
                     android:textColor = "@color/high_emphasis_text"/>
             </com.google.android.material.textfield.TextInputLayout>
         </com.google.android.material.appbar.MaterialToolbar>
