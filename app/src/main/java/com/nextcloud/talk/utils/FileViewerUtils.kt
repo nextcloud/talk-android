@@ -42,6 +42,7 @@ import com.nextcloud.talk.utils.Mimetype.TEXT_PLAIN
 import com.nextcloud.talk.utils.Mimetype.VIDEO_MP4
 import com.nextcloud.talk.utils.Mimetype.VIDEO_OGG
 import com.nextcloud.talk.utils.Mimetype.VIDEO_QUICKTIME
+import com.nextcloud.talk.utils.Mimetype.VIDEO_WEBM
 import com.nextcloud.talk.utils.MimetypeUtils.isAudioOnly
 import com.nextcloud.talk.utils.MimetypeUtils.isGif
 import com.nextcloud.talk.utils.MimetypeUtils.isMarkdown
@@ -148,7 +149,8 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 AUDIO_OGG,
                 VIDEO_MP4,
                 VIDEO_QUICKTIME,
-                VIDEO_OGG
+                VIDEO_OGG,
+                VIDEO_WEBM
                 -> openMediaView(filename, mimetype)
                 IMAGE_PNG,
                 IMAGE_JPEG,
@@ -252,6 +254,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             VIDEO_MP4,
             VIDEO_QUICKTIME,
             VIDEO_OGG,
+            VIDEO_WEBM,
             TEXT_MARKDOWN,
             TEXT_PLAIN -> true
             else -> false
