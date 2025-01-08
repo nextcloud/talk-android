@@ -33,6 +33,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -148,6 +149,7 @@ import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+@SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
 class ConversationsListActivity :
     BaseActivity(),
@@ -1035,13 +1037,14 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
-        binding.newMentionPopupBubble.hide()
-        binding.newMentionPopupBubble.setPopupBubbleListener {
+        binding.newMentionPopupBubble.visibility = View.GONE
+        binding.newMentionPopupBubble.setOnClickListener {
             val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
             layoutManager?.scrollToPositionWithOffset(
                 nextUnreadConversationScrollPosition,
                 binding.recyclerView.height / OFFSET_HEIGHT_DIVIDER
             )
+            binding.newMentionPopupBubble.visibility = View.GONE
         }
         binding.newMentionPopupBubble.let { viewThemeUtils.material.colorMaterialButtonPrimaryFilled(it) }
     }
@@ -1058,7 +1061,7 @@ class ConversationsListActivity :
         searchBehaviorSubject.subscribe { value ->
             if (value) {
                 nextUnreadConversationScrollPosition = 0
-                binding.newMentionPopupBubble.hide()
+                binding.newMentionPopupBubble.visibility = View.GONE
             } else {
                 try {
                     val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
@@ -1068,13 +1071,15 @@ class ConversationsListActivity :
                         if (hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
                             if (!binding.newMentionPopupBubble.isShown) {
-                                binding.newMentionPopupBubble.show()
+                                binding.newMentionPopupBubble.visibility = View.VISIBLE
+                                val popupAnimation = AnimationUtils.loadAnimation(this, R.anim.popup_animation)
+                                binding.newMentionPopupBubble.startAnimation(popupAnimation)
                             }
                             return@subscribe
                         }
                     }
                     nextUnreadConversationScrollPosition = 0
-                    binding.newMentionPopupBubble.hide()
+                    binding.newMentionPopupBubble.visibility = View.GONE
                 } catch (e: NullPointerException) {
                     Log.d(
                         TAG,
