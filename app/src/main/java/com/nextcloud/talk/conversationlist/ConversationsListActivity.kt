@@ -33,6 +33,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -1071,6 +1072,8 @@ class ConversationsListActivity :
                             nextUnreadConversationScrollPosition = position
                             if (!binding.newMentionPopupBubble.isShown) {
                                 binding.newMentionPopupBubble.visibility = View.VISIBLE
+                                val popupAnimation = AnimationUtils.loadAnimation(this, R.anim.popup_animation)
+                                binding.newMentionPopupBubble.startAnimation(popupAnimation)
                             }
                             return@subscribe
                         }
