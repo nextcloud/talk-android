@@ -63,6 +63,13 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.call.CallParticipant
 import com.nextcloud.talk.call.CallParticipantList
 import com.nextcloud.talk.call.CallParticipantModel
+import com.nextcloud.talk.call.LocalStateBroadcaster
+import com.nextcloud.talk.call.LocalStateBroadcasterMcu
+import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
+import com.nextcloud.talk.call.MessageSender
+import com.nextcloud.talk.call.MessageSenderMcu
+import com.nextcloud.talk.call.MessageSenderNoMcu
+import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
@@ -242,6 +249,9 @@ class CallActivity : CallBaseActivity() {
     private var signalingMessageReceiver: SignalingMessageReceiver? = null
     private val internalSignalingMessageSender = InternalSignalingMessageSender()
     private var signalingMessageSender: SignalingMessageSender? = null
+    private var messageSender: MessageSender? = null
+    private val localCallParticipantModel: MutableLocalCallParticipantModel = MutableLocalCallParticipantModel()
+    private var localStateBroadcaster: LocalStateBroadcaster? = null
     private val offerAnswerNickProviders: MutableMap<String?, OfferAnswerNickProvider?> = HashMap()
     private val callParticipantMessageListeners: MutableMap<String?, CallParticipantMessageListener> = HashMap()
     private val selfPeerConnectionObserver: PeerConnectionObserver = CallActivitySelfPeerConnectionObserver()
@@ -1119,6 +1129,7 @@ class CallActivity : CallBaseActivity() {
         localStream!!.addTrack(localVideoTrack)
         localVideoTrack!!.setEnabled(false)
         localVideoTrack!!.addSink(binding!!.selfVideoRenderer)
+        localCallParticipantModel.isVideoEnabled = false
     }
 
     private fun microphoneInitialization() {
@@ -1129,12 +1140,12 @@ class CallActivity : CallBaseActivity() {
         localAudioTrack = peerConnectionFactory!!.createAudioTrack("NCa0", audioSource)
         localAudioTrack!!.setEnabled(false)
         localStream!!.addTrack(localAudioTrack)
+        localCallParticipantModel.isAudioEnabled = false
     }
 
     @SuppressLint("MissingPermission")
     private fun startMicInputDetection() {
         if (permissionUtil!!.isMicrophonePermissionGranted() && micInputAudioRecordThread == null) {
-            var isSpeakingLongTerm = false
             micInputAudioRecorder = AudioRecord(
                 MediaRecorder.AudioSource.MIC,
                 SAMPLE_RATE,
@@ -1151,39 +1162,13 @@ class CallActivity : CallBaseActivity() {
                         micInputAudioRecorder.read(byteArr, 0, byteArr.size)
                         val isCurrentlySpeaking = abs(byteArr[0].toDouble()) > MICROPHONE_VALUE_THRESHOLD
 
-                        if (microphoneOn && isCurrentlySpeaking && !isSpeakingLongTerm) {
-                            isSpeakingLongTerm = true
-                            sendIsSpeakingMessage(true)
-                        } else if (!isCurrentlySpeaking && isSpeakingLongTerm) {
-                            isSpeakingLongTerm = false
-                            sendIsSpeakingMessage(false)
-                        }
+                        localCallParticipantModel.isSpeaking = isCurrentlySpeaking
+
                         Thread.sleep(MICROPHONE_VALUE_SLEEP)
                     }
                 }
             )
             micInputAudioRecordThread!!.start()
-        }
-    }
-
-    @Suppress("Detekt.NestedBlockDepth")
-    private fun sendIsSpeakingMessage(isSpeaking: Boolean) {
-        val isSpeakingMessage: String =
-            if (isSpeaking) SIGNALING_MESSAGE_SPEAKING_STARTED else SIGNALING_MESSAGE_SPEAKING_STOPPED
-
-        if (isConnectionEstablished && othersInCall) {
-            if (!hasMCU) {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
-                }
-            } else {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.send(DataChannelMessage(isSpeakingMessage))
-                        break
-                    }
-                }
-            }
         }
     }
 
@@ -1330,12 +1315,9 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun toggleMedia(enable: Boolean, video: Boolean) {
-        var message: String
         if (video) {
-            message = SIGNALING_MESSAGE_VIDEO_OFF
             if (enable) {
                 binding!!.cameraButton.alpha = OPACITY_ENABLED
-                message = SIGNALING_MESSAGE_VIDEO_ON
                 startVideoCapture()
             } else {
                 binding!!.cameraButton.alpha = OPACITY_DISABLED
@@ -1349,6 +1331,7 @@ class CallActivity : CallBaseActivity() {
             }
             if (localStream != null && localStream!!.videoTracks.size > 0) {
                 localStream!!.videoTracks[0].setEnabled(enable)
+                localCallParticipantModel.isVideoEnabled = enable
             }
             if (enable) {
                 binding!!.selfVideoRenderer.visibility = View.VISIBLE
@@ -1356,29 +1339,14 @@ class CallActivity : CallBaseActivity() {
                 binding!!.selfVideoRenderer.visibility = View.INVISIBLE
             }
         } else {
-            message = SIGNALING_MESSAGE_AUDIO_OFF
             if (enable) {
-                message = SIGNALING_MESSAGE_AUDIO_ON
                 binding!!.microphoneButton.alpha = OPACITY_ENABLED
             } else {
                 binding!!.microphoneButton.alpha = OPACITY_DISABLED
             }
             if (localStream != null && localStream!!.audioTracks.size > 0) {
                 localStream!!.audioTracks[0].setEnabled(enable)
-            }
-        }
-        if (isConnectionEstablished) {
-            if (!hasMCU) {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    peerConnectionWrapper.send(DataChannelMessage(message))
-                }
-            } else {
-                for (peerConnectionWrapper in peerConnectionWrapperList) {
-                    if (peerConnectionWrapper.sessionId == webSocketClient!!.sessionId) {
-                        peerConnectionWrapper.send(DataChannelMessage(message))
-                        break
-                    }
-                }
+                localCallParticipantModel.isAudioEnabled = enable
             }
         }
     }
@@ -1618,6 +1586,15 @@ class CallActivity : CallBaseActivity() {
                         signalingMessageReceiver!!.addListener(localParticipantMessageListener)
                         signalingMessageReceiver!!.addListener(offerMessageListener)
                         signalingMessageSender = internalSignalingMessageSender
+
+                        hasMCU = false
+
+                        messageSender = MessageSenderNoMcu(
+                            signalingMessageSender,
+                            callParticipants.keys,
+                            peerConnectionWrapperList
+                        )
+
                         joinRoomAndCall()
                     }
                 }
@@ -1754,6 +1731,15 @@ class CallActivity : CallBaseActivity() {
         }
         callParticipantList = CallParticipantList(signalingMessageReceiver)
         callParticipantList!!.addObserver(callParticipantListObserver)
+
+        if (hasMCU) {
+            localStateBroadcaster = LocalStateBroadcasterMcu(localCallParticipantModel, messageSender)
+        } else {
+            localStateBroadcaster = LocalStateBroadcasterNoMcu(
+                localCallParticipantModel,
+                messageSender as MessageSenderNoMcu
+            )
+        }
 
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
         ncApi!!.joinCall(
@@ -1903,6 +1889,26 @@ class CallActivity : CallBaseActivity() {
             signalingMessageReceiver!!.addListener(localParticipantMessageListener)
             signalingMessageReceiver!!.addListener(offerMessageListener)
             signalingMessageSender = webSocketClient!!.signalingMessageSender
+
+            // If the connection with the signaling server was not established yet the value will be false, but it will
+            // be overwritten with the right value once the response to the "hello" message is received.
+            hasMCU = webSocketClient!!.hasMCU()
+            Log.d(TAG, "hasMCU is $hasMCU")
+
+            if (hasMCU) {
+                messageSender = MessageSenderMcu(
+                    signalingMessageSender,
+                    callParticipants.keys,
+                    peerConnectionWrapperList,
+                    webSocketClient!!.sessionId
+                )
+            } else {
+                messageSender = MessageSenderNoMcu(
+                    signalingMessageSender,
+                    callParticipants.keys,
+                    peerConnectionWrapperList
+                )
+            }
         } else {
             if (webSocketClient!!.isConnected && currentCallStatus === CallStatus.PUBLISHER_FAILED) {
                 webSocketClient!!.restartWebSocket()
@@ -1928,6 +1934,25 @@ class CallActivity : CallBaseActivity() {
             when (webSocketCommunicationEvent.getType()) {
                 "hello" -> {
                     Log.d(TAG, "onMessageEvent 'hello'")
+
+                    hasMCU = webSocketClient!!.hasMCU()
+                    Log.d(TAG, "hasMCU is $hasMCU")
+
+                    if (hasMCU) {
+                        messageSender = MessageSenderMcu(
+                            signalingMessageSender,
+                            callParticipants.keys,
+                            peerConnectionWrapperList,
+                            webSocketClient!!.sessionId
+                        )
+                    } else {
+                        messageSender = MessageSenderNoMcu(
+                            signalingMessageSender,
+                            callParticipants.keys,
+                            peerConnectionWrapperList
+                        )
+                    }
+
                     if (!webSocketCommunicationEvent.getHashMap()!!.containsKey("oldResumeId")) {
                         if (currentCallStatus === CallStatus.RECONNECTING) {
                             hangup(false, false)
@@ -2076,6 +2101,9 @@ class CallActivity : CallBaseActivity() {
     private fun hangupNetworkCalls(shutDownView: Boolean, endCallForAll: Boolean) {
         Log.d(TAG, "hangupNetworkCalls. shutDownView=$shutDownView")
         val apiVersion = ApiUtils.getCallApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4, 1))
+        if (localStateBroadcaster != null) {
+            localStateBroadcaster!!.destroy()
+        }
         if (callParticipantList != null) {
             callParticipantList!!.removeObserver(callParticipantListObserver)
             callParticipantList!!.destroy()
@@ -2136,8 +2164,6 @@ class CallActivity : CallBaseActivity() {
         unchanged: Collection<Participant>
     ) {
         Log.d(TAG, "handleCallParticipantsChanged")
-        hasMCU = hasExternalSignalingServer && webSocketClient != null && webSocketClient!!.hasMCU()
-        Log.d(TAG, "   hasMCU is $hasMCU")
 
         // The signaling session is the same as the Nextcloud session only when the MCU is not used.
         var currentSessionId = callSession
@@ -2422,6 +2448,9 @@ class CallActivity : CallBaseActivity() {
         callParticipantEventDisplayers[sessionId] = callParticipantEventDisplayer
         callParticipantModel.addObserver(callParticipantEventDisplayer, callParticipantEventDisplayersHandler)
         runOnUiThread { addParticipantDisplayItem(callParticipantModel, "video") }
+
+        localStateBroadcaster!!.handleCallParticipantAdded(callParticipant.callParticipantModel)
+
         return callParticipant
     }
 
@@ -2447,6 +2476,9 @@ class CallActivity : CallBaseActivity() {
 
     private fun removeCallParticipant(sessionId: String?) {
         val callParticipant = callParticipants.remove(sessionId) ?: return
+
+        localStateBroadcaster!!.handleCallParticipantRemoved(callParticipant.callParticipantModel)
+
         val screenParticipantDisplayItemManager = screenParticipantDisplayItemManagers.remove(sessionId)
         callParticipant.callParticipantModel.removeObserver(screenParticipantDisplayItemManager)
         val callParticipantEventDisplayer = callParticipantEventDisplayers.remove(sessionId)
@@ -3264,12 +3296,5 @@ class CallActivity : CallBaseActivity() {
         private const val Y_POS_NO_CALL_INFO: Float = 20f
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
-
-        private const val SIGNALING_MESSAGE_SPEAKING_STARTED = "speaking"
-        private const val SIGNALING_MESSAGE_SPEAKING_STOPPED = "stoppedSpeaking"
-        private const val SIGNALING_MESSAGE_VIDEO_ON = "videoOn"
-        private const val SIGNALING_MESSAGE_VIDEO_OFF = "videoOff"
-        private const val SIGNALING_MESSAGE_AUDIO_ON = "audioOn"
-        private const val SIGNALING_MESSAGE_AUDIO_OFF = "audioOff"
     }
 }
