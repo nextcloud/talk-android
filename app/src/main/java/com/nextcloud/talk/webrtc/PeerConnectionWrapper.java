@@ -62,9 +62,6 @@ public class PeerConnectionWrapper {
     private final List<DataChannelMessage> pendingDataChannelMessages = new ArrayList<>();
     private final SdpObserver sdpObserver;
 
-    private final boolean hasInitiated;
-
-    private final MediaStream localStream;
     private final boolean isMCUPublisher;
     private final String videoStreamType;
 
@@ -113,14 +110,13 @@ public class PeerConnectionWrapper {
                                  boolean isMCUPublisher, boolean hasMCU, String videoStreamType,
                                  SignalingMessageReceiver signalingMessageReceiver,
                                  SignalingMessageSender signalingMessageSender) {
-        this.localStream = localStream;
         this.videoStreamType = videoStreamType;
 
         this.sessionId = sessionId;
         this.mediaConstraints = mediaConstraints;
 
         sdpObserver = new SdpObserver();
-        hasInitiated = sessionId.compareTo(localSession) < 0;
+        boolean hasInitiated = sessionId.compareTo(localSession) < 0;
         this.isMCUPublisher = isMCUPublisher;
 
         PeerConnection.RTCConfiguration configuration = new PeerConnection.RTCConfiguration(iceServerList);
@@ -133,12 +129,12 @@ public class PeerConnectionWrapper {
         this.signalingMessageSender = signalingMessageSender;
 
         if (peerConnection != null) {
-            if (this.localStream != null) {
-                List<String> localStreamIds = Collections.singletonList(this.localStream.getId());
-                for(AudioTrack track : this.localStream.audioTracks) {
+            if (localStream != null) {
+                List<String> localStreamIds = Collections.singletonList(localStream.getId());
+                for(AudioTrack track : localStream.audioTracks) {
                     peerConnection.addTrack(track, localStreamIds);
                 }
-                for(VideoTrack track : this.localStream.videoTracks) {
+                for(VideoTrack track : localStream.videoTracks) {
                     peerConnection.addTrack(track, localStreamIds);
                 }
             }
@@ -329,22 +325,6 @@ public class PeerConnectionWrapper {
         return sessionId;
     }
 
-    private void sendInitialMediaStatus() {
-        if (localStream != null) {
-            if (localStream.videoTracks.size() == 1 && localStream.videoTracks.get(0).enabled()) {
-                send(new DataChannelMessage("videoOn"));
-            } else {
-                send(new DataChannelMessage("videoOff"));
-            }
-
-            if (localStream.audioTracks.size() == 1 && localStream.audioTracks.get(0).enabled()) {
-                send(new DataChannelMessage("audioOn"));
-            } else {
-                send(new DataChannelMessage("audioOff"));
-            }
-        }
-    }
-
     public boolean isMCUPublisher() {
         return isMCUPublisher;
     }
@@ -431,10 +411,6 @@ public class PeerConnectionWrapper {
                         sendWithoutQueuing(dataChannel, dataChannelMessage);
                     }
                     pendingDataChannelMessages.clear();
-                }
-
-                if (dataChannel.state() == DataChannel.State.OPEN) {
-                    sendInitialMediaStatus();
                 }
             }
         }
@@ -523,11 +499,6 @@ public class PeerConnectionWrapper {
         public void onIceConnectionChange(PeerConnection.IceConnectionState iceConnectionState) {
 
             Log.d("iceConnectionChangeTo: ", iceConnectionState.name() + " over " + peerConnection.hashCode() + " " + sessionId);
-            if (iceConnectionState == PeerConnection.IceConnectionState.CONNECTED) {
-                if (hasInitiated) {
-                    sendInitialMediaStatus();
-                }
-            }
 
             peerConnectionNotifier.notifyIceConnectionStateChanged(iceConnectionState);
         }
