@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
+import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
@@ -56,6 +57,7 @@ import javax.inject.Inject
 @Suppress("TooManyFunctions", "LongParameterList")
 class ChatViewModel @Inject constructor(
     // should be removed here. Use it via RetrofitChatNetwork
+    private val mediaPlayerManager: MediaPlayerManager,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val chatRepository: ChatMessageRepository,
     private val conversationRepository: OfflineConversationsRepository,
@@ -64,6 +66,15 @@ class ChatViewModel @Inject constructor(
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userProvider: CurrentUserProviderNew
 ) : ViewModel(), DefaultLifecycleObserver {
+
+
+    // TODO on orientation changed flow, or resume restore the playing message
+    //  this requires keep track of some data about the currently played message in adapter. To then
+    //  observe in Activity.
+    //
+    //  But If I already have the last played message in manager, I can just
+    //  have pull it from manager on activity start, if it exists, listen for seekbar updates, else do nothing
+    //  thus not needing any more code in the viewmodel
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -96,6 +107,15 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
     }
+
+    val mediaPlayerSeekbarObserver: Flow<Int>
+        get() = mediaPlayerManager.mediaPlayerSeekBarPosition
+
+    val backgroundPlayUIFlow: Flow<ChatMessage?>
+        get() = mediaPlayerManager.backgroundPlayUIFlow
+
+    val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
+        get() =  mediaPlayerManager.managerState
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -666,6 +686,11 @@ class ChatViewModel @Inject constructor(
     fun getPlaybackSpeedPreference(message: ChatMessage) =
         _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
 
+    fun setPlayBack(speed: PlaybackSpeed) {
+        mediaPlayerManager.setPlayBackSpeed(speed)
+    }
+
+
 // inner class GetRoomObserver : Observer<ConversationModel> {
 //     override fun onSubscribe(d: Disposable) {
 //         // unused atm
@@ -754,7 +779,7 @@ class ChatViewModel @Inject constructor(
                         val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
                         ConversationUtils.isNoteToSelfConversation(model)
                     }
-                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token!!)
+                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token)
                 } catch (e: NoSuchElementException) {
                     _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
                     Log.e(TAG, "Note to self not found $e")

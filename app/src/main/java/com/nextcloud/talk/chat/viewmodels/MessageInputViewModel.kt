@@ -28,6 +28,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import java.lang.Thread.sleep
@@ -92,7 +93,7 @@ class MessageInputViewModel @Inject constructor(
     val micInputAudioObserver: LiveData<Pair<Float, Float>>
         get() = audioRecorderManager.getAudioValues
 
-    val mediaPlayerSeekbarObserver: LiveData<Int>
+    val mediaPlayerSeekbarObserver: Flow<Int>
         get() = mediaPlayerManager.mediaPlayerSeekBarPosition
 
     private val _getEditChatMessage: MutableLiveData<IMessage?> = MutableLiveData()

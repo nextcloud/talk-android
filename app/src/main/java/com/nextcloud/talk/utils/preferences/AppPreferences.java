@@ -15,7 +15,6 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel;
 import com.nextcloud.talk.ui.PlaybackSpeed;
 
 import java.util.List;
-import java.util.Map;
 
 @SuppressLint("NonConstantResourceId")
 public interface AppPreferences {
@@ -181,9 +180,9 @@ public interface AppPreferences {
 
     void deleteAllMessageQueuesFor(String userId);
 
-    void saveVoiceMessagePlaybackSpeedPreferences(Map<String, PlaybackSpeed> speeds);
+    void savePreferredPlayback(String userId, PlaybackSpeed speed);
 
-    Map<String, PlaybackSpeed> readVoiceMessagePlaybackSpeedPreferences();
+    PlaybackSpeed getPreferredPlayback(String userId);
 
     Long getNotificationWarningLastPostponedDate();
 
