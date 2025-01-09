@@ -429,7 +429,6 @@
     <string name="polls_max_votes_reached">Ni mogoče izbrati več možnosti te ankete.</string>
     <string name="polls_multiple_answers">Več odgovorov</string>
     <string name="polls_option_delete">Izbriši možnost %1$s</string>
-    <string name="polls_option_hint">Možnost %1$s</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Zasebna anketa</string>
     <string name="polls_question">Vprašanje</string>

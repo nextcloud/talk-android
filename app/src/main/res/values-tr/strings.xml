@@ -545,7 +545,6 @@
     <string name="polls_max_votes_reached">Bu ankete başka seçenekler ile oy veremezsiniz.</string>
     <string name="polls_multiple_answers">Birden çok yanıt</string>
     <string name="polls_option_delete">%1$s seçeneğini sil</string>
-    <string name="polls_option_hint">%1$s seçeneği</string>
     <string name="polls_options">Seçenekler</string>
     <string name="polls_private_poll">Kapalı anket</string>
     <string name="polls_question">Soru</string>

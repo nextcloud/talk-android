@@ -536,7 +536,6 @@
     <string name="polls_max_votes_reached">No podeu votar amb més opcions per a aquesta enquesta.</string>
     <string name="polls_multiple_answers">Respostes múltiples</string>
     <string name="polls_option_delete">Suprimeix l\'opció %1$s</string>
-    <string name="polls_option_hint">Opció %1$s</string>
     <string name="polls_options">Opcions</string>
     <string name="polls_private_poll">Enquesta privada</string>
     <string name="polls_question">Pregunta</string>

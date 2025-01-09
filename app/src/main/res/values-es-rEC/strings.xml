@@ -427,7 +427,6 @@
     <string name="polls_max_votes_reached">No puedes votar con más opciones para esta encuesta.</string>
     <string name="polls_multiple_answers">Respuestas múltiples</string>
     <string name="polls_option_delete">Eliminar opción %1$s</string>
-    <string name="polls_option_hint">Opción %1$s</string>
     <string name="polls_options">Opciones</string>
     <string name="polls_private_poll">Encuesta privada</string>
     <string name="polls_question">Pregunta</string>

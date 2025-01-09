@@ -492,7 +492,6 @@
     <string name="polls_max_votes_reached">Вы не можете голосовать с несколькими вариантами для этого опроса.</string>
     <string name="polls_multiple_answers">Множество ответов</string>
     <string name="polls_option_delete">Удалить опцию %1$s</string>
-    <string name="polls_option_hint">Опция %1$s</string>
     <string name="polls_options">Варианты</string>
     <string name="polls_private_poll">Закрытый опрос</string>
     <string name="polls_question">Вопрос</string>
