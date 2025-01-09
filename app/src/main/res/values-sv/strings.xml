@@ -541,7 +541,6 @@
     <string name="polls_max_votes_reached">Du kan inte rösta med fler alternativ för den här omröstningen.</string>
     <string name="polls_multiple_answers">Flera svar</string>
     <string name="polls_option_delete">Ta bort alternativ %1$s</string>
-    <string name="polls_option_hint">Alternativ %1$s</string>
     <string name="polls_options">Alternativ</string>
     <string name="polls_private_poll">Privat omröstning</string>
     <string name="polls_question">Fråga</string>

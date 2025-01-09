@@ -545,7 +545,6 @@
     <string name="polls_max_votes_reached">У овом гласању не можете да изаберете више одговора.</string>
     <string name="polls_multiple_answers">Вишеструки одговори</string>
     <string name="polls_option_delete">Обриши опцију %1$s</string>
-    <string name="polls_option_hint">Опција %1$s</string>
     <string name="polls_options">Избори</string>
     <string name="polls_private_poll">Приватно гласање</string>
     <string name="polls_question">Питање</string>

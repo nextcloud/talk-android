@@ -457,7 +457,6 @@
     <string name="polls_max_votes_reached">您无法为此投票选择更多选项。</string>
     <string name="polls_multiple_answers">多选答案</string>
     <string name="polls_option_delete">删除选项 %1$s</string>
-    <string name="polls_option_hint">选项 %1$s</string>
     <string name="polls_options">选项</string>
     <string name="polls_private_poll">私密投票</string>
     <string name="polls_question">问题</string>

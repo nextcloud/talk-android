@@ -409,7 +409,6 @@
     <string name="polls_max_votes_reached">이 투표에 더 많은 옵션으로 투표할 수 없습니다.</string>
     <string name="polls_multiple_answers">다수의 답변</string>
     <string name="polls_option_delete">옵션 %1$s을 삭제하다</string>
-    <string name="polls_option_hint">옵션 %1$s</string>
     <string name="polls_options">옵션들</string>
     <string name="polls_private_poll">개인 옵션</string>
     <string name="polls_question">질문</string>

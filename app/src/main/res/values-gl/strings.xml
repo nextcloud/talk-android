@@ -545,7 +545,6 @@
     <string name="polls_max_votes_reached">Non é posíbel votar con máis opcións para esta enquisa.</string>
     <string name="polls_multiple_answers">Varias respostas</string>
     <string name="polls_option_delete">Eliminar a opción %1$s</string>
-    <string name="polls_option_hint">Opción %1$s</string>
     <string name="polls_options">Opcións</string>
     <string name="polls_private_poll">Enquisa privada</string>
     <string name="polls_question">Pregunta</string>
