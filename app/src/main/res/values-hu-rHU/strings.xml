@@ -456,7 +456,6 @@
     <string name="polls_end_poll_confirm">Biztos, hogy befejezi ezt a szavazást? Ez nem vonható vissza.</string>
     <string name="polls_max_votes_reached">Nem szavazhat több lehetőségre ennél a szavazásnál.</string>
     <string name="polls_multiple_answers">Több válasz</string>
-    <string name="polls_option_delete">%1$s. lehetőség törlése</string>
     <string name="polls_options">Lehetőségek</string>
     <string name="polls_private_poll">Privát szavazás</string>
     <string name="polls_question">Kérdés</string>

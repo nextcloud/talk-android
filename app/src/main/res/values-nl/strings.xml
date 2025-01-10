@@ -544,7 +544,6 @@ Kies er eentje van een provider.</string>
     <string name="polls_end_poll_confirm">Wil je deze peiling echt beëindigen? Dit kan niet ogedaan gemaakt worden.</string>
     <string name="polls_max_votes_reached">Je kan niet stemmen met meer opties voor deze peiling.</string>
     <string name="polls_multiple_answers">Meerdere antwoorden</string>
-    <string name="polls_option_delete">Verwijder optie %1$s</string>
     <string name="polls_options">Opties</string>
     <string name="polls_private_poll">Privé peiling</string>
     <string name="polls_question">Vraag</string>

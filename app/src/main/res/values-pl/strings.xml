@@ -544,7 +544,6 @@
     <string name="polls_end_poll_confirm">Czy na pewno chcesz zakończyć sondę? Tego nie można cofnąć.</string>
     <string name="polls_max_votes_reached">Nie możesz głosować z większą liczbą opcji w tej sondzie.</string>
     <string name="polls_multiple_answers">Wiele odpowiedzi</string>
-    <string name="polls_option_delete">Usuń opcję %1$s</string>
     <string name="polls_options">Opcje</string>
     <string name="polls_private_poll">Sonda prywatna</string>
     <string name="polls_question">Pytanie</string>

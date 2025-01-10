@@ -536,7 +536,6 @@
     <string name="polls_end_poll_confirm">Você realmente quer terminar esta enquete? Isto não pode ser desfeito.</string>
     <string name="polls_max_votes_reached">Você não pode votar com mais opções para esta enquete.</string>
     <string name="polls_multiple_answers">Várias respostas</string>
-    <string name="polls_option_delete">Excluir opção %1$s</string>
     <string name="polls_options">Opções</string>
     <string name="polls_private_poll">Enquete privada</string>
     <string name="polls_question">Pergunta</string>

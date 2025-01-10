@@ -545,7 +545,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="polls_end_poll_confirm">Voulez-vous réellement terminer ce sondage ? Cela ne peut pas être annulé.</string>
     <string name="polls_max_votes_reached">Vous ne pouvez pas voter pour plus de choix pour ce sondage.</string>
     <string name="polls_multiple_answers">Réponses multiples</string>
-    <string name="polls_option_delete">Supprimer l\'option %1$s</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Sondage privé</string>
     <string name="polls_question">Question</string>

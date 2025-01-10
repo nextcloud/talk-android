@@ -544,7 +544,6 @@
     <string name="polls_end_poll_confirm">你真的要結束這個民意調查嗎？這是無法撤消的。</string>
     <string name="polls_max_votes_reached">您無法為此民意調查選擇更多選項。</string>
     <string name="polls_multiple_answers">多個答案</string>
-    <string name="polls_option_delete">刪除選項 %1$s</string>
     <string name="polls_options">選項</string>
     <string name="polls_private_poll">私人投票</string>
     <string name="polls_question">問題</string>

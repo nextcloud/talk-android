@@ -416,7 +416,6 @@
     <string name="polls_end_poll_confirm">Наистина ли искате да прекратите тази анкета? Това не може да бъде отменено.</string>
     <string name="polls_max_votes_reached">Не можете да гласувате с повече опции за тази анкета.</string>
     <string name="polls_multiple_answers">Множество отговори</string>
-    <string name="polls_option_delete">Изтриване на опция %1$s</string>
     <string name="polls_options">Опции</string>
     <string name="polls_private_poll">Частна анкета</string>
     <string name="polls_question">Въпрос</string>

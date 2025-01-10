@@ -544,7 +544,6 @@
     <string name="polls_end_poll_confirm">هل تريد حقا إنهاء هذا الاستبيان؟ لا يمكن التراجع عن هذا الخيار لاحقاً.</string>
     <string name="polls_max_votes_reached">لا يمكنك التصويت مع المزيد من الخيارات في هذا الاستبيان.</string>
     <string name="polls_multiple_answers">إجابات متعددة</string>
-    <string name="polls_option_delete">حذف الخيار %1$s</string>
     <string name="polls_options">الخيارات</string>
     <string name="polls_private_poll">إستبيان خاص</string>
     <string name="polls_question">سؤال</string>
