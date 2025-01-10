@@ -54,11 +54,13 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.os.bundleOf
 import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
@@ -147,7 +149,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
-import com.nextcloud.talk.ui.dialog.DateTimePickerFragment
+import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
@@ -3502,8 +3504,17 @@ class ChatActivity :
 
         val chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1, 1))
 
-        val newFragment: DialogFragment = DateTimePickerFragment.newInstance(roomToken, message!!.id, chatApiVersion)
-        newFragment.show(supportFragmentManager, DateTimePickerFragment.TAG)
+        val bundle = bundleOf()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        bundle.putString(BundleKeys.KEY_MESSAGE_ID, message!!.id)
+        bundle.putInt(BundleKeys.KEY_CHAT_API_VERSION, chatApiVersion)
+
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
+            }
+        }
     }
 
     fun markAsUnread(message: IMessage?) {
