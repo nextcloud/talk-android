@@ -544,7 +544,7 @@
     <string name="polls_end_poll_confirm">Opravdu chcete tuto anketu ukončit? Toto nelze vzít zpět.</string>
     <string name="polls_max_votes_reached">V této anketě není možné hlasovat více volbami.</string>
     <string name="polls_multiple_answers">Vícero odpovědí</string>
-    <string name="polls_option_delete">Smazat volbu %1$s</string>
+    <string name="polls_option_hint">Volba %1$d</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Soukromá anketa</string>
     <string name="polls_question">Otázka</string>

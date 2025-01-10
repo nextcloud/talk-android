@@ -526,7 +526,6 @@
     <string name="polls_end_poll_confirm">Ønsker du virkelig å avslutte denne avstemningen? Det kan ikke angres.</string>
     <string name="polls_max_votes_reached">Du kan ikke stemme med flere alternativer for denne avstemningen.</string>
     <string name="polls_multiple_answers">Flere svar</string>
-    <string name="polls_option_delete">Slett alternativ %1$s</string>
     <string name="polls_options">Valg</string>
     <string name="polls_private_poll">Privat avstemning</string>
     <string name="polls_question">Spørsmål</string>

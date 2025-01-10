@@ -513,7 +513,6 @@
     <string name="polls_end_poll_confirm">本当にこのアンケートを終了しますか? これは元に戻すことができません</string>
     <string name="polls_max_votes_reached">このアンケートでは、これ以上のオプションで投票することはできません。</string>
     <string name="polls_multiple_answers">複数の答え</string>
-    <string name="polls_option_delete">オプション %1$sを削除する</string>
     <string name="polls_options">オプション</string>
     <string name="polls_private_poll">プライベート投票</string>
     <string name="polls_question">質問</string>

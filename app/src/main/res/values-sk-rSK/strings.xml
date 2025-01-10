@@ -528,7 +528,6 @@
     <string name="polls_end_poll_confirm">Naozaj chcete ukončiť toto hlasovanie? Toto nie je možné vrátiť späť.</string>
     <string name="polls_max_votes_reached">Nie je možné vybrať viac možností v tejto ankete,</string>
     <string name="polls_multiple_answers">Viac odpovedí</string>
-    <string name="polls_option_delete">Odstrániť voľbu %1$s</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Súkromná anketa</string>
     <string name="polls_question">Otázka</string>

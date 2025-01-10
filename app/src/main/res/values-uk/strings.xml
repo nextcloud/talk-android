@@ -413,7 +413,6 @@
     <string name="polls_end_poll_confirm">Ви справді хочете закінчити це опитування? Це не можна скасувати.</string>
     <string name="polls_max_votes_reached">Ви не можете голосувати більше ніж за один варіант у цьому опитуванні.</string>
     <string name="polls_multiple_answers">Кілька відповідей</string>
-    <string name="polls_option_delete">Вилучити варіант %1$s</string>
     <string name="polls_options">Параметри</string>
     <string name="polls_private_poll">Приватне опитування</string>
     <string name="polls_results_subtitle">Результат</string>
