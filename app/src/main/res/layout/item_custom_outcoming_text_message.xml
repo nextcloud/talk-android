@@ -95,22 +95,16 @@
             app:tint="@color/high_emphasis_text"
             tools:src="@drawable/ic_warning_white"/>
 
-        <com.google.android.material.progressindicator.CircularProgressIndicator
+        <ImageView
             android:id="@+id/sending_progress"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/message_bubble_checkmark_height"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="7dp"
             android:contentDescription="@null"
-            android:indeterminate="true"
-            android:visibility="gone"
-            app:indicatorColor="@color/colorPrimary"
-            app:indicatorSize="10dp"
-            app:trackColor="@color/colorPrimary"
-            app:trackThickness="2dp"
-            tools:visibility="visible"
-            />
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/baseline_schedule_24"/>
 
         <include
             android:id="@+id/reactions"

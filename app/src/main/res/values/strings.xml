@@ -435,6 +435,7 @@ How to translate with transifex:
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_failed">Failed</string>
+    <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>

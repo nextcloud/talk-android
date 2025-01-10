@@ -124,12 +124,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.sendingProgress.visibility = View.GONE
 
         if (message.sendingFailed) {
-            updateStatus(
-                R.drawable.baseline_report_problem_24,
-                context.resources?.getString(R.string.nc_message_failed)
-            )
+            updateStatus(R.drawable.baseline_error_outline_24, context.resources?.getString(R.string.nc_message_failed))
         } else if (message.isTemporary) {
-            showSendingSpinner()
+            updateStatus(R.drawable.baseline_schedule_24, context.resources?.getString(R.string.nc_message_sending))
         } else if (message.readStatus == ReadStatus.READ) {
             updateStatus(R.drawable.ic_check_all, context.resources?.getString(R.string.nc_message_read))
         } else if (message.readStatus == ReadStatus.SENT) {
@@ -170,13 +167,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.checkMark.contentDescription = description
     }
 
-    private fun showSendingSpinner() {
-        binding.sendingProgress.visibility = View.VISIBLE
-        binding.checkMark.visibility = View.GONE
-
-        viewThemeUtils.material.colorProgressBar(binding.sendingProgress)
-    }
-
     private fun longClickOnReaction(chatMessage: ChatMessage) {
         commonMessageInterface.onLongClickReactions(chatMessage)
     }
@@ -205,7 +195,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         ).first()
                     }
 
-                    parentChatMessage!!.activeUser = message.activeUser
+                    parentChatMessage.activeUser = message.activeUser
                     parentChatMessage.imageUrl?.let {
                         binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                         binding.messageQuote.quotedMessageImage.load(it) {
@@ -232,7 +222,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
                     binding.messageQuote.quotedChatMessageView.setOnClickListener {
-                        val chatActivity = commonMessageInterface as ChatActivity
                         chatActivity.jumpToQuotedMessage(parentChatMessage)
                     }
                 } catch (e: Exception) {
