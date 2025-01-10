@@ -218,7 +218,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     )
 
                     binding.messageQuote.quotedChatMessageView.setOnClickListener {
-                        val chatActivity = commonMessageInterface as ChatActivity
                         chatActivity.jumpToQuotedMessage(parentChatMessage)
                     }
                 } catch (e: Exception) {

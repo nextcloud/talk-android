@@ -175,12 +175,6 @@ public interface AppPreferences {
 
     int getLastKnownId(String internalConversationId, int defaultValue);
 
-    void saveMessageQueue(String internalConversationId, List<MessageInputViewModel.QueuedMessage> queue);
-
-    List<MessageInputViewModel.QueuedMessage> getMessageQueue(String internalConversationId);
-
-    void deleteAllMessageQueuesFor(String userId);
-
     void saveVoiceMessagePlaybackSpeedPreferences(Map<String, PlaybackSpeed> speeds);
 
     Map<String, PlaybackSpeed> readVoiceMessagePlaybackSpeedPreferences();

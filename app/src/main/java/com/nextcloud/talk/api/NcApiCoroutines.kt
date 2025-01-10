@@ -8,6 +8,7 @@
 package com.nextcloud.talk.api
 
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
+import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
@@ -30,6 +31,7 @@ import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import retrofit2.http.Url
 
+@Suppress("TooManyFunctions")
 interface NcApiCoroutines {
     @GET
     @JvmSuppressWildcards
@@ -121,6 +123,27 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun unarchiveConversation(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @Suppress("LongParameterList")
+    @FormUrlEncoded
+    @POST
+    suspend fun sendChatMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String,
+        @Field("actorDisplayName") actorDisplayName: String,
+        @Field("replyTo") replyTo: Int,
+        @Field("silent") sendWithoutNotification: Boolean,
+        @Field("referenceId") referenceId: String
+    ): ChatOverallSingleMessage
+
+    @FormUrlEncoded
+    @PUT
+    suspend fun editChatMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String
+    ): ChatOverallSingleMessage
 
     @FormUrlEncoded
     @POST

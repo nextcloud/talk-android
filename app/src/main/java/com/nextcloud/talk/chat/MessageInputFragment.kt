@@ -158,7 +158,6 @@ class MessageInputFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        chatActivity.messageInputViewModel.restoreMessageQueue(conversationInternalId)
     }
 
     override fun onDestroyView() {
@@ -199,17 +198,18 @@ class MessageInputFragment : Fragment() {
                     wasOnline = !binding.fragmentConnectionLost.isShown
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
-                    handleMessageQueue(isOnline)
+                    if (connectionGained) {
+                        chatActivity.messageInputViewModel.sendTempMessages(
+                            chatActivity.conversationUser!!.getCredentials(),
+                            ApiUtils.getUrlForChat(
+                                chatActivity.chatApiVersion,
+                                chatActivity.conversationUser!!.baseUrl!!,
+                                chatActivity.roomToken
+                            )
+                        )
+                    }
                     handleUI(isOnline, connectionGained)
                 }.collect()
-        }
-
-        chatActivity.messageInputViewModel.messageQueueSizeFlow.observe(viewLifecycleOwner) { size ->
-            if (size > 0) {
-                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_queued, size)
-            } else {
-                binding.fragmentConnectionLost.text = getString(R.string.connection_lost_sent_messages_are_queued)
-            }
         }
 
         chatActivity.messageInputViewModel.callStartedFlow.observe(viewLifecycleOwner) {
@@ -289,23 +289,6 @@ class MessageInputFragment : Fragment() {
             binding.fragmentConnectionLost.visibility = View.GONE
             binding.fragmentConnectionLost.setBackgroundColor(resources.getColor(R.color.hwSecurityRed))
             binding.fragmentConnectionLost.visibility = View.VISIBLE
-        }
-    }
-
-    private fun handleMessageQueue(isOnline: Boolean) {
-        if (isOnline) {
-            chatActivity.messageInputViewModel.switchToMessageQueue(false)
-            chatActivity.messageInputViewModel.sendAndEmptyMessageQueue(
-                conversationInternalId,
-                chatActivity.conversationUser!!.getCredentials(),
-                ApiUtils.getUrlForChat(
-                    chatActivity.chatApiVersion,
-                    chatActivity.conversationUser!!.baseUrl!!,
-                    chatActivity.roomToken
-                )
-            )
-        } else {
-            chatActivity.messageInputViewModel.switchToMessageQueue(true)
         }
     }
 
@@ -868,7 +851,7 @@ class MessageInputFragment : Fragment() {
                 .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
 
             sendMessage(
-                editable,
+                editable.toString(),
                 replyMessageId,
                 sendWithoutNotification
             )
@@ -876,9 +859,8 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun sendMessage(message: CharSequence, replyTo: Int?, sendWithoutNotification: Boolean) {
+    private fun sendMessage(message: String, replyTo: Int?, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
-            conversationInternalId,
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,
@@ -917,16 +899,23 @@ class MessageInputFragment : Fragment() {
         // FIXME Fix API checking with guests?
         val apiVersion: Int = ApiUtils.getChatApiVersion(chatActivity.spreedCapabilities, intArrayOf(1))
 
-        chatActivity.messageInputViewModel.editChatMessage(
-            chatActivity.credentials!!,
-            ApiUtils.getUrlForChatMessage(
-                apiVersion,
-                chatActivity.conversationUser!!.baseUrl!!,
-                chatActivity.roomToken,
-                message.id
-            ),
-            editedMessageText
-        )
+        if (message.isTemporary) {
+            chatActivity.messageInputViewModel.editTempChatMessage(
+                message,
+                editedMessageText
+            )
+        } else {
+            chatActivity.messageInputViewModel.editChatMessage(
+                chatActivity.credentials!!,
+                ApiUtils.getUrlForChatMessage(
+                    apiVersion,
+                    chatActivity.conversationUser!!.baseUrl!!,
+                    chatActivity.roomToken,
+                    message.id
+                ),
+                editedMessageText
+            )
+        }
     }
 
     private fun setEditUI(message: ChatMessage) {

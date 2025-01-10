@@ -344,18 +344,14 @@ public interface NcApi {
 
     @FormUrlEncoded
     @POST
-    Observable<GenericOverall> sendChatMessage(@Header("Authorization") String authorization,
+    Observable<ChatOverallSingleMessage> sendChatMessage(@Header("Authorization") String authorization,
                                                @Url String url,
                                                @Field("message") CharSequence message,
                                                @Field("actorDisplayName") String actorDisplayName,
                                                @Field("replyTo") Integer replyTo,
-                                               @Field("silent") Boolean sendWithoutNotification);
-
-    @FormUrlEncoded
-    @PUT
-    Observable<ChatOverallSingleMessage> editChatMessage(@Header("Authorization") String authorization,
-                                                         @Url String url,
-                                                         @Field("message") String message);
+                                               @Field("silent") Boolean sendWithoutNotification,
+                                               @Field("referenceId") String referenceId
+                                               );
 
     @GET
     Observable<Response<ChatShareOverall>> getSharedItems(

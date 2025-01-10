@@ -192,7 +192,6 @@ public class AccountRemovalWorker extends Worker {
         if (user.getId() != null) {
             String username = user.getUsername();
             try {
-                appPreferences.deleteAllMessageQueuesFor(user.getUserId());
                 userManager.deleteUser(user.getId());
                 Log.d(TAG, "deleted user: " + username);
             } catch (Throwable e) {

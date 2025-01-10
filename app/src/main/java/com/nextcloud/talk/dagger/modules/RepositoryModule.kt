@@ -61,7 +61,6 @@ import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -74,87 +73,66 @@ class RepositoryModule {
         ncApi: NcApi,
         ncApiCoroutines: NcApiCoroutines,
         userProvider: CurrentUserProviderNew
-    ): ConversationsRepository {
-        return ConversationsRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
-    }
+    ): ConversationsRepository = ConversationsRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
 
     @Provides
-    fun provideSharedItemsRepository(ncApi: NcApi, dateUtils: DateUtils): SharedItemsRepository {
-        return SharedItemsRepositoryImpl(ncApi, dateUtils)
-    }
+    fun provideSharedItemsRepository(ncApi: NcApi, dateUtils: DateUtils): SharedItemsRepository =
+        SharedItemsRepositoryImpl(ncApi, dateUtils)
 
     @Provides
-    fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): UnifiedSearchRepository {
-        return UnifiedSearchRepositoryImpl(ncApi, userProvider)
-    }
+    fun provideUnifiedSearchRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): UnifiedSearchRepository =
+        UnifiedSearchRepositoryImpl(ncApi, userProvider)
 
     @Provides
-    fun provideDialogPollRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): PollRepository {
-        return PollRepositoryImpl(ncApi, userProvider)
-    }
+    fun provideDialogPollRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): PollRepository =
+        PollRepositoryImpl(ncApi, userProvider)
 
     @Provides
     fun provideRemoteFileBrowserItemsRepository(
         okHttpClient: OkHttpClient,
         userProvider: CurrentUserProviderNew
-    ): RemoteFileBrowserItemsRepository {
-        return RemoteFileBrowserItemsRepositoryImpl(okHttpClient, userProvider)
-    }
+    ): RemoteFileBrowserItemsRepository = RemoteFileBrowserItemsRepositoryImpl(okHttpClient, userProvider)
 
     @Provides
-    fun provideUsersRepository(database: TalkDatabase): UsersRepository {
-        return UsersRepositoryImpl(database.usersDao())
-    }
+    fun provideUsersRepository(database: TalkDatabase): UsersRepository = UsersRepositoryImpl(database.usersDao())
 
     @Provides
-    fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository {
-        return ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
-    }
+    fun provideArbitraryStoragesRepository(database: TalkDatabase): ArbitraryStoragesRepository =
+        ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
 
     @Provides
     fun provideReactionsRepository(
         ncApi: NcApi,
         userProvider: CurrentUserProviderNew,
         dao: ChatMessagesDao
-    ): ReactionsRepository {
-        return ReactionsRepositoryImpl(ncApi, userProvider, dao)
-    }
+    ): ReactionsRepository = ReactionsRepositoryImpl(ncApi, userProvider, dao)
 
     @Provides
-    fun provideCallRecordingRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): CallRecordingRepository {
-        return CallRecordingRepositoryImpl(ncApi, userProvider)
-    }
+    fun provideCallRecordingRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): CallRecordingRepository =
+        CallRecordingRepositoryImpl(ncApi, userProvider)
 
     @Provides
     fun provideRequestAssistanceRepository(
         ncApi: NcApi,
         userProvider: CurrentUserProviderNew
-    ): RequestAssistanceRepository {
-        return RequestAssistanceRepositoryImpl(ncApi, userProvider)
-    }
+    ): RequestAssistanceRepository = RequestAssistanceRepositoryImpl(ncApi, userProvider)
 
     @Provides
     fun provideOpenConversationsRepository(
         ncApi: NcApi,
         userProvider: CurrentUserProviderNew
-    ): OpenConversationsRepository {
-        return OpenConversationsRepositoryImpl(ncApi, userProvider)
-    }
+    ): OpenConversationsRepository = OpenConversationsRepositoryImpl(ncApi, userProvider)
 
     @Provides
-    fun translateRepository(ncApi: NcApi): TranslateRepository {
-        return TranslateRepositoryImpl(ncApi)
-    }
+    fun translateRepository(ncApi: NcApi): TranslateRepository = TranslateRepositoryImpl(ncApi)
 
     @Provides
-    fun provideChatNetworkDataSource(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): ChatNetworkDataSource {
-        return RetrofitChatNetwork(ncApi, ncApiCoroutines)
-    }
+    fun provideChatNetworkDataSource(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): ChatNetworkDataSource =
+        RetrofitChatNetwork(ncApi, ncApiCoroutines)
 
     @Provides
-    fun provideConversationsNetworkDataSource(ncApi: NcApi): ConversationsNetworkDataSource {
-        return RetrofitConversationsNetwork(ncApi)
-    }
+    fun provideConversationsNetworkDataSource(ncApi: NcApi): ConversationsNetworkDataSource =
+        RetrofitConversationsNetwork(ncApi)
 
     @Provides
     fun provideConversationInfoEditRepository(
@@ -166,33 +144,27 @@ class RepositoryModule {
     }
 
     @Provides
-    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository {
-        return ConversationRepositoryImpl(ncApi, userProvider)
-    }
+    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository =
+        ConversationRepositoryImpl(ncApi, userProvider)
 
     @Provides
-    fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository {
-        return InvitationsRepositoryImpl(ncApi)
-    }
+    fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
 
     @Provides
     fun provideOfflineFirstChatRepository(
         chatMessagesDao: ChatMessagesDao,
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
-        appPreferences: AppPreferences,
         networkMonitor: NetworkMonitor,
         userProvider: CurrentUserProviderNew
-    ): ChatMessageRepository {
-        return OfflineFirstChatRepository(
+    ): ChatMessageRepository =
+        OfflineFirstChatRepository(
             chatMessagesDao,
             chatBlocksDao,
             dataSource,
-            appPreferences,
             networkMonitor,
             userProvider
         )
-    }
 
     @Provides
     fun provideOfflineFirstConversationsRepository(
@@ -201,26 +173,22 @@ class RepositoryModule {
         chatNetworkDataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor,
         currentUserProviderNew: CurrentUserProviderNew
-    ): OfflineConversationsRepository {
-        return OfflineFirstConversationsRepository(
+    ): OfflineConversationsRepository =
+        OfflineFirstConversationsRepository(
             dao,
             dataSource,
             chatNetworkDataSource,
             networkMonitor,
             currentUserProviderNew
         )
-    }
 
     @Provides
-    fun provideContactsRepository(ncApiCoroutines: NcApiCoroutines, userManager: UserManager): ContactsRepository {
-        return ContactsRepositoryImpl(ncApiCoroutines, userManager)
-    }
+    fun provideContactsRepository(ncApiCoroutines: NcApiCoroutines, userManager: UserManager): ContactsRepository =
+        ContactsRepositoryImpl(ncApiCoroutines, userManager)
 
     @Provides
     fun provideConversationCreationRepository(
         ncApiCoroutines: NcApiCoroutines,
         userManager: UserManager
-    ): ConversationCreationRepository {
-        return ConversationCreationRepositoryImpl(ncApiCoroutines, userManager)
-    }
+    ): ConversationCreationRepository = ConversationCreationRepositoryImpl(ncApiCoroutines, userManager)
 }

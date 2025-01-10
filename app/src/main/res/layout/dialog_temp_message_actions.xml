@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/standard_half_padding">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:id="@+id/bottom_sheet_drag_handle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/message_actions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/menu_resend_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_resend_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/ic_send"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_resend_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_double_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/resend_message"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_copy_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_copy_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/ic_content_copy"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_copy_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_double_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_copy_message"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_edit_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_edit_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/edit_message_icon_description"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/ic_edit_24"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_edit_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_double_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_edit_message"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/menu_delete_message"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:id="@+id/menu_icon_delete_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:paddingStart="@dimen/standard_padding"
+                    android:paddingEnd="@dimen/zero"
+                    android:src="@drawable/ic_delete"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/menu_text_delete_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="@dimen/standard_double_padding"
+                    android:paddingEnd="@dimen/standard_padding"
+                    android:text="@string/nc_delete_message"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</LinearLayout>

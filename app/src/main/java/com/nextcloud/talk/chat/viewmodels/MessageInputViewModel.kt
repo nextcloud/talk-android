@@ -14,50 +14,40 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
-import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.update
-import java.lang.Thread.sleep
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("Detekt.TooManyFunctions")
 class MessageInputViewModel @Inject constructor(
-    private val chatNetworkDataSource: ChatNetworkDataSource,
     private val audioRecorderManager: AudioRecorderManager,
     private val mediaPlayerManager: MediaPlayerManager,
-    private val audioFocusRequestManager: AudioFocusRequestManager,
-    private val appPreferences: AppPreferences
-) : ViewModel(), DefaultLifecycleObserver {
+    private val audioFocusRequestManager: AudioFocusRequestManager
+) : ViewModel(),
+    DefaultLifecycleObserver {
+
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
         STOPPED
     }
+
+    lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
-    data class QueuedMessage(
-        val id: Int,
-        var message: CharSequence? = null,
-        val displayName: String? = null,
-        val replyTo: Int? = null,
-        val sendWithoutNotification: Boolean? = null
-    )
-
-    private var isQueueing: Boolean = false
-    private var messageQueue: MutableList<QueuedMessage> = mutableListOf()
+    fun setData(chatMessageRepository: ChatMessageRepository) {
+        chatRepository = chatMessageRepository
+    }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -106,11 +96,12 @@ class MessageInputViewModel @Inject constructor(
     sealed interface ViewState
     object SendChatMessageStartState : ViewState
     class SendChatMessageSuccessState(val message: CharSequence) : ViewState
-    class SendChatMessageErrorState(val e: Throwable, val message: CharSequence) : ViewState
+    class SendChatMessageErrorState(val message: CharSequence) : ViewState
+
     private val _sendChatMessageViewState: MutableLiveData<ViewState> = MutableLiveData(SendChatMessageStartState)
     val sendChatMessageViewState: LiveData<ViewState>
         get() = _sendChatMessageViewState
-    object EditMessageStartState : ViewState
+
     object EditMessageErrorState : ViewState
     class EditMessageSuccessState(val messageEdited: ChatOverallSingleMessage) : ViewState
 
@@ -122,89 +113,93 @@ class MessageInputViewModel @Inject constructor(
     val isVoicePreviewPlaying: LiveData<Boolean>
         get() = _isVoicePreviewPlaying
 
-    private val _messageQueueSizeFlow = MutableStateFlow(messageQueue.size)
-    val messageQueueSizeFlow: LiveData<Int>
-        get() = _messageQueueSizeFlow.asLiveData()
-
-    private val _messageQueueFlow: MutableLiveData<List<QueuedMessage>> = MutableLiveData()
-    val messageQueueFlow: LiveData<List<QueuedMessage>>
-        get() = _messageQueueFlow
-
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
-        internalId: String,
         credentials: String,
         url: String,
-        message: CharSequence,
+        message: String,
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean
     ) {
-        if (isQueueing) {
-            val tempID = System.currentTimeMillis().toInt()
-            val qMsg = QueuedMessage(tempID, message, displayName, replyTo, sendWithoutNotification)
-            messageQueue = appPreferences.getMessageQueue(internalId)
-            messageQueue.add(qMsg)
-            appPreferences.saveMessageQueue(internalId, messageQueue)
-            _messageQueueSizeFlow.update { messageQueue.size }
-            _messageQueueFlow.postValue(listOf(qMsg))
-            return
+        val referenceId = SendMessageUtils().generateReferenceId()
+        Log.d(TAG, "Random SHA-256 Hash: $referenceId")
+
+        viewModelScope.launch {
+            chatRepository.addTemporaryMessage(
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "temp message ref id: " + (result.getOrNull()?.referenceId ?: "none"))
+
+                    _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
+                }
+            }
         }
 
-        chatNetworkDataSource.sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification
-        ).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
+        viewModelScope.launch {
+            chatRepository.sendChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
 
-                override fun onError(e: Throwable) {
-                    _sendChatMessageViewState.value = SendChatMessageErrorState(e, message)
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(t: GenericOverall) {
                     _sendChatMessageViewState.value = SendChatMessageSuccessState(message)
+                } else {
+                    _sendChatMessageViewState.value = SendChatMessageErrorState(message)
                 }
-            })
+            }
+        }
+    }
+
+    fun sendTempMessages(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.sendTempChatMessages(
+                credentials,
+                url
+            )
+        }
     }
 
     fun editChatMessage(credentials: String, url: String, text: String) {
-        chatNetworkDataSource.editChatMessage(credentials, url, text)
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
-                override fun onSubscribe(d: Disposable) {
-                    disposableSet.add(d)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to edit message", e)
+        viewModelScope.launch {
+            chatRepository.editChatMessage(
+                credentials,
+                url,
+                text
+            ).collect { result ->
+                if (result.isSuccess) {
+                    _editMessageViewState.value = EditMessageSuccessState(result.getOrNull()!!)
+                } else {
                     _editMessageViewState.value = EditMessageErrorState
                 }
+            }
+        }
+    }
 
-                override fun onComplete() {
-                    // unused atm
-                }
-
-                override fun onNext(messageEdited: ChatOverallSingleMessage) {
-                    _editMessageViewState.value = EditMessageSuccessState(messageEdited)
-                }
-            })
+    fun editTempChatMessage(message: ChatMessage, editedMessageText: String) {
+        viewModelScope.launch {
+            chatRepository.editTempChatMessage(
+                message,
+                editedMessageText
+            ).collect {}
+        }
     }
 
     fun reply(message: IMessage?) {
@@ -256,75 +251,11 @@ class MessageInputViewModel @Inject constructor(
         _getRecordingTime.postValue(time)
     }
 
-    fun sendAndEmptyMessageQueue(internalId: String, credentials: String, url: String) {
-        if (isQueueing) return
-        messageQueue.clear()
-
-        val queue = appPreferences.getMessageQueue(internalId)
-        appPreferences.saveMessageQueue(internalId, null) // empties the queue
-        while (queue.size > 0) {
-            val msg = queue.removeAt(0)
-            sendChatMessage(
-                internalId,
-                credentials,
-                url,
-                msg.message!!,
-                msg.displayName!!,
-                msg.replyTo!!,
-                msg.sendWithoutNotification!!
-            )
-            sleep(DELAY_BETWEEN_QUEUED_MESSAGES)
-        }
-        _messageQueueSizeFlow.tryEmit(0)
-    }
-
-    fun getTempMessagesFromMessageQueue(internalId: String) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        val list = mutableListOf<QueuedMessage>()
-        for (msg in queue) {
-            list.add(msg)
-        }
-        _messageQueueFlow.postValue(list)
-    }
-
-    fun switchToMessageQueue(shouldQueue: Boolean) {
-        isQueueing = shouldQueue
-    }
-
-    fun restoreMessageQueue(internalId: String) {
-        messageQueue = appPreferences.getMessageQueue(internalId)
-        _messageQueueSizeFlow.tryEmit(messageQueue.size)
-    }
-
-    fun removeFromQueue(internalId: String, id: Int) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        for (qMsg in queue) {
-            if (qMsg.id == id) {
-                queue.remove(qMsg)
-                break
-            }
-        }
-        appPreferences.saveMessageQueue(internalId, queue)
-        _messageQueueSizeFlow.tryEmit(queue.size)
-    }
-
-    fun editQueuedMessage(internalId: String, id: Int, newMessage: String) {
-        val queue = appPreferences.getMessageQueue(internalId)
-        for (qMsg in queue) {
-            if (qMsg.id == id) {
-                qMsg.message = newMessage
-                break
-            }
-        }
-        appPreferences.saveMessageQueue(internalId, queue)
-    }
-
     fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {
         _callStartedFlow.postValue(Pair(recent, show))
     }
 
     companion object {
         private val TAG = MessageInputViewModel::class.java.simpleName
-        private const val DELAY_BETWEEN_QUEUED_MESSAGES: Long = 1000
     }
 }

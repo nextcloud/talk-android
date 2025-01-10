@@ -10,6 +10,7 @@ package com.nextcloud.talk.data.database.mappers
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.models.json.chat.ReadStatus
 
 fun ChatMessageJson.asEntity(accountId: Long) =
     ChatMessageEntity(
@@ -37,7 +38,9 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
         lastEditTimestamp = lastEditTimestamp,
-        deleted = deleted
+        deleted = deleted,
+        referenceId = referenceId,
+        silent = silent
     )
 
 fun ChatMessageEntity.asModel() =
@@ -62,7 +65,12 @@ fun ChatMessageEntity.asModel() =
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
         lastEditTimestamp = lastEditTimestamp,
-        isDeleted = deleted
+        isDeleted = deleted,
+        referenceId = referenceId,
+        isTemporary = isTemporary,
+        sendingFailed = sendingFailed,
+        readStatus = ReadStatus.NONE,
+        silent = silent
     )
 
 fun ChatMessageJson.asModel() =
@@ -87,5 +95,7 @@ fun ChatMessageJson.asModel() =
         lastEditActorId = lastEditActorId,
         lastEditActorType = lastEditActorType,
         lastEditTimestamp = lastEditTimestamp,
-        isDeleted = deleted
+        isDeleted = deleted,
+        referenceId = referenceId,
+        silent = silent
     )

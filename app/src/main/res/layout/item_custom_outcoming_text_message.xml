@@ -43,7 +43,6 @@
             android:textIsSelectable="false"
             tools:text="Talk to you later!" />
 
-
         <TextView
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
@@ -76,13 +75,36 @@
 
         <ImageView
             android:id="@+id/checkMark"
+            android:layout_width="25dp"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/ic_check_all" />
+
+        <ImageView
+            android:id="@+id/sending_failed"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/message_bubble_checkmark_height"
             android:layout_below="@id/messageTime"
             android:layout_marginStart="8dp"
             android:contentDescription="@null"
             app:layout_alignSelf="center"
-            app:tint="@color/high_emphasis_text" />
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/ic_warning_white"/>
+
+        <ImageView
+            android:id="@+id/sending_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/message_bubble_checkmark_height"
+            android:layout_below="@id/messageTime"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@null"
+            app:layout_alignSelf="center"
+            app:tint="@color/high_emphasis_text"
+            tools:src="@drawable/baseline_schedule_24"/>
 
         <include
             android:id="@+id/reactions"

@@ -433,6 +433,9 @@ How to translate with transifex:
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
+    <string name="nc_message_offline">Offline</string>
+    <string name="nc_message_failed">Failed</string>
+    <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>
@@ -820,7 +823,6 @@ How to translate with transifex:
     <string name="show_banned_participants">Show banned participants</string>
     <string name="bans_list">Bans list</string>
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
-    <string name="connection_lost_queued">Connection lost - %1$d are queued</string>
     <string name="connection_established">Connection established</string>
     <string name="message_deleted_by_you">Message deleted by you</string>
     <string name="unban">Unban</string>
@@ -843,4 +845,5 @@ How to translate with transifex:
     <string name="user_absence">%1$s is out of office and might not respond</string>
     <string name="user_absence_for_one_day">%1$s is out of office today</string>
     <string name="user_absence_replacement">Replacement: </string>
+    <string name="resend_message">Resend</string>
 </resources>

@@ -24,6 +24,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
@@ -63,7 +64,8 @@ class ChatViewModel @Inject constructor(
     private val mediaRecorderManager: MediaRecorderManager,
     private val audioFocusRequestManager: AudioFocusRequestManager,
     private val userProvider: CurrentUserProviderNew
-) : ViewModel(), DefaultLifecycleObserver {
+) : ViewModel(),
+    DefaultLifecycleObserver {
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -73,6 +75,10 @@ class ChatViewModel @Inject constructor(
 
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+
+    fun getChatRepository(): ChatMessageRepository {
+        return chatRepository
+    }
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -130,6 +136,8 @@ class ChatViewModel @Inject constructor(
         }.catch {
             _chatMessageViewState.value = ChatMessageErrorState
         }
+
+    val getRemoveMessageFlow = chatRepository.removeMessageFlow
 
     val getUpdateMessageFlow = chatRepository.updateMessageFlow
 
@@ -239,14 +247,9 @@ class ChatViewModel @Inject constructor(
         chatRepository.setData(conversationModel, credentials, urlForChatting)
     }
 
-    fun getRoom(user: User, token: String) {
+    fun getRoom(token: String) {
         _getRoomViewState.value = GetRoomStartState
         conversationRepository.getRoom(token)
-
-        // chatNetworkDataSource.getRoom(user, token)
-        //     .subscribeOn(Schedulers.io())
-        //     ?.observeOn(AndroidSchedulers.mainThread())
-        //     ?.subscribe(GetRoomObserver())
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -478,12 +481,12 @@ class ChatViewModel @Inject constructor(
         chatNetworkDataSource.shareToNotes(credentials, url, message, displayName)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
+            ?.subscribe(object : Observer<ChatOverallSingleMessage> {
                 override fun onSubscribe(d: Disposable) {
                     disposableSet.add(d)
                 }
 
-                override fun onNext(genericOverall: GenericOverall) {
+                override fun onNext(genericOverall: ChatOverallSingleMessage) {
                     // unused atm
                 }
 
@@ -609,9 +612,7 @@ class ChatViewModel @Inject constructor(
         cachedFile.delete()
     }
 
-    fun getCurrentVoiceRecordFile(): String {
-        return mediaRecorderManager.currentVoiceRecordFile
-    }
+    fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
     fun uploadFile(fileUri: String, room: String, displayName: String, metaData: String) {
         try {
@@ -650,7 +651,7 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleChatOnBackPress()
     }
 
-    suspend fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
+    fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
         flow {
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_CHAT_URL, url)
@@ -670,25 +671,6 @@ class ChatViewModel @Inject constructor(
 
     fun getPlaybackSpeedPreference(message: ChatMessage) =
         _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
-
-// inner class GetRoomObserver : Observer<ConversationModel> {
-//     override fun onSubscribe(d: Disposable) {
-//         // unused atm
-//     }
-//
-//     override fun onNext(conversationModel: ConversationModel) {
-//         _getRoomViewState.value = GetRoomSuccessState(conversationModel)
-//     }
-//
-//     override fun onError(e: Throwable) {
-//         Log.e(TAG, "Error when fetching room")
-//         _getRoomViewState.value = GetRoomErrorState
-//     }
-//
-//     override fun onComplete() {
-//         // unused atm
-//     }
-// }
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
@@ -784,6 +766,32 @@ class ChatViewModel @Inject constructor(
                 _outOfOfficeViewState.value = OutOfOfficeUIState.Success(response.ocs?.data!!)
             } catch (exception: Exception) {
                 _outOfOfficeViewState.value = OutOfOfficeUIState.Error(exception)
+            }
+        }
+    }
+
+    fun deleteTempMessage(chatMessage: ChatMessage) {
+        viewModelScope.launch {
+            chatRepository.deleteTempMessage(chatMessage)
+        }
+    }
+
+    fun resendMessage(credentials: String, urlForChat: String, message: ChatMessage) {
+        viewModelScope.launch {
+            chatRepository.resendChatMessage(
+                credentials,
+                urlForChat,
+                message.message.orEmpty(),
+                message.actorDisplayName.orEmpty(),
+                message.parentMessageId?.toIntOrZero() ?: 0,
+                false,
+                message.referenceId.orEmpty()
+            ).collect { result ->
+                if (result.isSuccess) {
+                    Log.d(TAG, "resend successful")
+                } else {
+                    Log.e(TAG, "resend failed")
+                }
             }
         }
     }
