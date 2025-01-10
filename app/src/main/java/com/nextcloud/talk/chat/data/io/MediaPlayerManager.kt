@@ -9,6 +9,7 @@ package com.nextcloud.talk.chat.data.io
 
 import android.media.MediaPlayer
 import android.util.Log
+import androidx.compose.ui.util.fastRoundToInt
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.PlaybackSpeed
@@ -55,7 +56,10 @@ class MediaPlayerManager : LifecycleAwareManager {
     private val _managerState = MutableStateFlow(MediaPlayerManagerState.DEFAULT)
 
     private val playQueue = mutableListOf<Pair<String, ChatMessage>>()
-    private val playIterator = playQueue.iterator()
+
+    val mediaPlayerSeekBarPositionPair: Flow<Pair<Int, String>>
+        get() = _mediaPlayerSeekBarPositionPair
+    private val _mediaPlayerSeekBarPositionPair: MutableSharedFlow<Pair<Int, String>> = MutableSharedFlow()
 
     val mediaPlayerSeekBarPosition: Flow<Int>
         get() = _mediaPlayerSeekBarPosition
@@ -95,12 +99,13 @@ class MediaPlayerManager : LifecycleAwareManager {
             throw IllegalStateException("Attempted to start cycling with empty playList")
         }
 
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            stop()
-        }
-
         if (mediaPlayer == null || !scope.isActive) {
             initCycling()
+        } else {
+            _managerState.value = MediaPlayerManagerState.RESUMED
+            mediaPlayer!!.start()
+            loop = true
+            scope.launch { seekbarUpdateObserver() }
         }
     }
 
@@ -151,7 +156,11 @@ class MediaPlayerManager : LifecycleAwareManager {
                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                     val pos = mediaPlayer!!.currentPosition
                     val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
-                    _mediaPlayerSeekBarPosition.tryEmit(progress.toInt())
+                    val progressI = progress.fastRoundToInt()
+                    _mediaPlayerSeekBarPosition.emit(progressI)
+                    currentCycledMessage?.let {
+                        _mediaPlayerSeekBarPositionPair.emit(Pair(progressI, it.id))
+                    }
                 }
 
                 delay(SEEKBAR_UPDATE_DELAY)
@@ -205,9 +214,10 @@ class MediaPlayerManager : LifecycleAwareManager {
         try {
             mediaPlayer = MediaPlayer().apply {
                 _managerState.value = MediaPlayerManagerState.SETUP
-                val pair = playIterator.next()
+                val pair = playQueue.iterator().next()
                 setDataSource(pair.first)
                 currentCycledMessage = pair.second
+                playQueue.removeAt(0)
                 prepareAsync()
                 setOnPreparedListener {
                     onPrepare()
@@ -215,13 +225,13 @@ class MediaPlayerManager : LifecycleAwareManager {
 
                 setOnCompletionListener {
                     scope.cancel()
-                    if (playIterator.hasNext()) {
-                        _managerState.value = MediaPlayerManagerState.SETUP
-                        val nextPair = playIterator.next()
-                        setDataSource(nextPair.first)
-                        currentCycledMessage = nextPair.second
-                        prepareAsync()
-                    } else {
+                    // if (playQueue.iterator().hasNext()) { // FIXME illegal state bug here on cycling
+                    //     _managerState.value = MediaPlayerManagerState.SETUP
+                    //     val nextPair = playQueue.iterator().next()
+                    //     setDataSource(nextPair.first)
+                    //     _currentCycledMessage = nextPair.second
+                    //     prepareAsync()
+                    // } else {
                         mediaPlayer!!.release()
                         mediaPlayer = null
                         currentCycledMessage?.let {
@@ -229,7 +239,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                         }
                         currentCycledMessage = null
                         _managerState.value = MediaPlayerManagerState.STOPPED
-                    }
+                    // }
                 }
             }
         } catch (e: Exception) {
@@ -243,6 +253,7 @@ class MediaPlayerManager : LifecycleAwareManager {
         start()
         _managerState.value = MediaPlayerManagerState.STARTED
         currentCycledMessage?.let {
+            it.isPlayingVoiceMessage = true
             _backgroundPlayUIFlow.tryEmit(it)
         }
         loop = true

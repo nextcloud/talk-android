@@ -99,6 +99,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
         }
 
+        binding.seekbar.max = 100
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
@@ -234,7 +235,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             showVoiceMessageDuration(message)

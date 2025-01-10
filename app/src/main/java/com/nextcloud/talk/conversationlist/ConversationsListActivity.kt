@@ -400,9 +400,9 @@ class ConversationsListActivity :
                             // TODO need to get user info from message to load name and avatar
                             BackgroundVoiceMessageSeekbarCard(msg.actorDisplayName!!)
                                 .GetView({ isPaused ->
-                                    // TODO on pausePlay
+                                    // TODO on pause should pause, or start cycling
                                 }) {
-                                    // TODO on close
+                                    // TODO on close should stop cycling
                                 }
                         }
                     }

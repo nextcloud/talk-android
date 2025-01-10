@@ -103,7 +103,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
+        binding.seekbar.max = 100
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
@@ -200,7 +200,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             showVoiceMessageDuration(message)

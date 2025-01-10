@@ -68,14 +68,6 @@ class ChatViewModel @Inject constructor(
 ) : ViewModel(), DefaultLifecycleObserver {
 
 
-    // TODO on orientation changed flow, or resume restore the playing message
-    //  this requires keep track of some data about the currently played message in adapter. To then
-    //  observe in Activity.
-    //
-    //  But If I already have the last played message in manager, I can just
-    //  have pull it from manager on activity start, if it exists, listen for seekbar updates, else do nothing
-    //  thus not needing any more code in the viewmodel
-
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
@@ -108,8 +100,8 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnStop()
     }
 
-    val mediaPlayerSeekbarObserver: Flow<Int>
-        get() = mediaPlayerManager.mediaPlayerSeekBarPosition
+    val mediaPlayerSeekbarObserver: Flow<Pair<Int, String>>
+        get() = mediaPlayerManager.mediaPlayerSeekBarPositionPair
 
     val backgroundPlayUIFlow: Flow<ChatMessage?>
         get() = mediaPlayerManager.backgroundPlayUIFlow
@@ -690,25 +682,24 @@ class ChatViewModel @Inject constructor(
         mediaPlayerManager.setPlayBackSpeed(speed)
     }
 
+    fun startMediaPlayer(path: String) {
+        audioRequest(true) {
+            mediaPlayerManager.start(path)
+        }
+    }
 
-// inner class GetRoomObserver : Observer<ConversationModel> {
-//     override fun onSubscribe(d: Disposable) {
-//         // unused atm
-//     }
-//
-//     override fun onNext(conversationModel: ConversationModel) {
-//         _getRoomViewState.value = GetRoomSuccessState(conversationModel)
-//     }
-//
-//     override fun onError(e: Throwable) {
-//         Log.e(TAG, "Error when fetching room")
-//         _getRoomViewState.value = GetRoomErrorState
-//     }
-//
-//     override fun onComplete() {
-//         // unused atm
-//     }
-// }
+    fun startCyclingMediaPlayer() = audioRequest(true, mediaPlayerManager::startCycling)
+
+    fun pauseMediaPlayer() = audioRequest(false, mediaPlayerManager::pause)
+
+    fun seekToMediaPlayer(progress: Int) = mediaPlayerManager.seekTo(progress)
+
+    fun stopMediaPlayer() = audioRequest(false, mediaPlayerManager::stop)
+
+    fun queueInMediaPlayer(path: String, msg: ChatMessage) = mediaPlayerManager.addToPlayList(path, msg)
+
+    fun clearMediaPlayerQueue() = mediaPlayerManager.clearPlayList()
+
 
     inner class JoinRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {

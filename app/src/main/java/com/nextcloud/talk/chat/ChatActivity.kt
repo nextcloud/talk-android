@@ -27,7 +27,6 @@ import android.database.Cursor
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.media.MediaMetadataRetriever
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Build
@@ -352,9 +351,6 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             chatViewModel.handleChatOnBackPress()
-            if (currentlyPlayedVoiceMessage != null) {
-                stopMediaPlayer(currentlyPlayedVoiceMessage!!)
-            }
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
             intent.putExtras(Bundle())
             startActivity(intent)
@@ -974,6 +970,19 @@ class ChatActivity :
             }.collect()
         }
 
+        this.lifecycleScope.launch {
+            chatViewModel.mediaPlayerSeekbarObserver.onEach { pair ->
+                val pos = adapter?.getMessagePositionById(pair.second) ?: -1
+                val message = (adapter?.items?.get(pos))?.item as ChatMessage
+                message.voiceMessageSeekbarProgress = pair.first
+                adapter?.update(message)
+                adapter?.notifyItemChanged(pos)
+                // FIXME Pausing one and playing another just restarts the first. Need to take the current msg into
+                //  account when dealing with pause logic. Nevertheless, it does work. Also figure out how those
+                //  durations get set in UI
+            }.collect()
+        }
+
         chatViewModel.reactionDeletedViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.ReactionDeletedSuccessState -> {
@@ -1290,13 +1299,15 @@ class ChatActivity :
             val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
-                    pausePlayback(message)
+                    chatViewModel.pauseMediaPlayer()
+                    message.isPlayingVoiceMessage = false
+                    adapter?.update(message)
                 } else {
                     val retrieved = appPreferences.getWaveFormFromFile(filename)
                     if (retrieved.isEmpty()) {
                         setUpWaveform(message)
                     } else {
-                        startPlayback(message)
+                        startPlayback(file, message)
                     }
                 }
             } else {
@@ -1325,12 +1336,20 @@ class ChatActivity :
                 appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
-                    startPlayback(message, thenPlay, backgroundPlayAllowed)
+                    startPlayback(file, message)
                 }
             }
         } else {
-            startPlayback(message, thenPlay, backgroundPlayAllowed)
+            startPlayback(file, message)
         }
+    }
+
+    private fun startPlayback(file: File, message: ChatMessage) {
+        chatViewModel.clearMediaPlayerQueue()
+        chatViewModel.queueInMediaPlayer(file.canonicalPath, message)
+        chatViewModel.startCyclingMediaPlayer()
+        message.isPlayingVoiceMessage = true
+        adapter?.update(message)
     }
 
     private fun initMessageHolders(): MessageHolders {
@@ -1724,253 +1743,255 @@ class ChatActivity :
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod", "Detekt.NestedBlockDepth")
-    private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
-        if (!active && !backgroundPlayAllowed) {
-            // don't begin to play voice message if screen is not visible anymore.
-            // this situation might happen if file is downloading but user already left the chatview.
-            // If user returns to chatview, the old chatview instance is not attached anymore
-            // and he has to click the play button again (which is considered to be okay)
-            return
-        }
-
-        initMediaPlayer(message)
-
-        val id = message.id.toString()
-        val index = adapter?.getMessagePositionById(id) ?: 0
-
-        var nextMessage: ChatMessage? = null
-        for (i in VOICE_MESSAGE_CONTINUOUS_BEFORE..VOICE_MESSAGE_CONTINUOUS_AFTER) {
-            if (index - i < 0) {
-                break
-            }
-            if (i == 0 || index - i >= (adapter?.items?.size ?: 0)) {
-                continue
-            }
-            val curMsg = adapter?.items?.getOrNull(index - i)?.item
-            if (curMsg is ChatMessage) {
-                if (nextMessage == null && i > 0) {
-                    nextMessage = curMsg
-                }
-
-                if (curMsg.isVoiceMessage) {
-                    if (curMsg.selectedIndividualHashMap == null) {
-                        // WORKAROUND TO FETCH FILE INFO:
-                        curMsg.getImageUrl()
-                    }
-                    val filename = curMsg.selectedIndividualHashMap!!["name"]
-                    val file = File(context.cacheDir, filename!!)
-                    if (!file.exists()) {
-                        downloadFileToCache(curMsg, false) {
-                            curMsg.isDownloadingVoiceMessage = false
-                            curMsg.voiceMessageDuration = try {
-                                val retriever = MediaMetadataRetriever()
-                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
-                                val durationStr =
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                                retriever.release() // Always release the retriever to free resources
-                                (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
-                            } catch (e: RuntimeException) {
-                                Log.e(
-                                    TAG,
-                                    "An exception occurred while computing " +
-                                        "voice message duration for " + filename,
-                                    e
-                                )
-                                0
-                            }
-                            adapter?.update(curMsg)
-                        }
-                    } else {
-                        if (curMsg.voiceMessageDuration == 0) {
-                            curMsg.voiceMessageDuration = try {
-                                val retriever = MediaMetadataRetriever()
-                                retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
-                                val durationStr =
-                                    retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
-                                retriever.release() // Always release the retriever to free resources
-                                (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
-                            } catch (e: RuntimeException) {
-                                Log.e(
-                                    TAG,
-                                    "An exception occurred while computing " +
-                                        "voice message duration for " + filename,
-                                    e
-                                )
-                                0
-                            }
-                            adapter?.update(curMsg)
-                        }
-                    }
-                }
-            }
-        }
-
-        val hasConsecutiveVoiceMessage = if (nextMessage != null) nextMessage.isVoiceMessage else false
-
-        mediaPlayer?.let {
-            if (!it.isPlaying && doPlay) {
-                chatViewModel.audioRequest(true) {
-                    it.playbackParams = it.playbackParams.apply {
-                        setSpeed(chatViewModel.getPlaybackSpeedPreference(message).value)
-                    }
-                    it.start()
-                }
-            }
-
-            mediaPlayerHandler = Handler()
-            runOnUiThread(object : Runnable {
-                override fun run() {
-                    if (mediaPlayer != null) {
-                        if (message.isPlayingVoiceMessage) {
-                            val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
-                            if (pos + VOICE_MESSAGE_PLAY_ADD_THRESHOLD < (
-                                    mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
-                                    )
-                            ) {
-                                lastRecordMediaPosition = mediaPlayer!!.currentPosition
-                                message.voiceMessagePlayedSeconds = pos.toInt()
-                                message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
-                                if (mediaPlayer!!.currentPosition * VOICE_MESSAGE_MARK_PLAYED_FACTOR >
-                                    mediaPlayer!!.duration
-                                ) {
-                                    // a voice message is marked as played when the mediaplayer position
-                                    // is at least at 5% of its duration
-                                    message.wasPlayedVoiceMessage = true
-                                }
-                                adapter?.update(message)
-                            } else {
-                                message.resetVoiceMessage = true
-                                message.voiceMessagePlayedSeconds = 0
-                                message.voiceMessageSeekbarProgress = 0
-                                adapter?.update(message)
-                                stopMediaPlayer(message)
-                                if (hasConsecutiveVoiceMessage) {
-                                    val defaultMediaPlayer = MediaPlayer.create(
-                                        context,
-                                        R.raw
-                                            .next_voice_message_doodle
-                                    )
-                                    defaultMediaPlayer.setOnCompletionListener {
-                                        defaultMediaPlayer.release()
-                                        setUpWaveform(nextMessage as ChatMessage, doPlay, true)
-                                    }
-                                    defaultMediaPlayer.start()
-                                }
-                            }
-                        }
-                    }
-                    mediaPlayerHandler?.postDelayed(this, MILLISEC_15)
-                }
-            })
-
-            message.isDownloadingVoiceMessage = false
-            message.isPlayingVoiceMessage = doPlay
-            // message.voiceMessagePlayedSeconds = lastRecordMediaPosition / VOICE_MESSAGE_SEEKBAR_BASE
-            // message.voiceMessageSeekbarProgress = lastRecordMediaPosition
-            // the commented instructions objective was to update audio seekbarprogress
-            // in the case in which audio status is paused when the position is resumed
-            adapter?.update(message)
-        }
-    }
-
-    private fun pausePlayback(message: ChatMessage) {
-        if (mediaPlayer!!.isPlaying) {
-            chatViewModel.audioRequest(false) {
-                mediaPlayer!!.pause()
-            }
-        }
-
-        message.isPlayingVoiceMessage = false
-        adapter?.update(message)
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    private fun initMediaPlayer(message: ChatMessage) {
-        if (message != currentlyPlayedVoiceMessage) {
-            currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
-        }
-
-        if (mediaPlayer == null) {
-            val fileName = message.selectedIndividualHashMap!!["name"]
-            val absolutePath = context.cacheDir.absolutePath + "/" + fileName
-
-            try {
-                mediaPlayer = MediaPlayer().apply {
-                    setDataSource(absolutePath)
-                    prepare()
-                    setOnPreparedListener {
-                        currentlyPlayedVoiceMessage = message
-                        message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
-                        lastRecordedSeeked = false
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                        setOnMediaTimeDiscontinuityListener { mp, _ ->
-                            if (lastRecordMediaPosition > ONE_SECOND_IN_MILLIS && !lastRecordedSeeked) {
-                                mp.seekTo(lastRecordMediaPosition)
-                                lastRecordedSeeked = true
-                            }
-                        }
-                        // this ensures that audio can be resumed at a given position
-                        this.seekTo(lastRecordMediaPosition)
-                    }
-                    setOnCompletionListener {
-                        stopMediaPlayer(message)
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "failed to initialize mediaPlayer", e)
-                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-            }
-        }
-    }
-
-    private fun stopMediaPlayer(message: ChatMessage) {
-        message.isPlayingVoiceMessage = false
-        message.resetVoiceMessage = true
-        adapter?.update(message)
-
-        currentlyPlayedVoiceMessage = null
-        lastRecordMediaPosition = 0 // this ensures that if audio track is changed, then it is played from the beginning
-
-        mediaPlayerHandler?.removeCallbacksAndMessages(null)
-
-        try {
-            mediaPlayer?.let {
-                if (it.isPlaying) {
-                    Log.d(TAG, "media player is stopped")
-                    chatViewModel.audioRequest(false) {
-                        it.stop()
-                    }
-                }
-            }
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "mediaPlayer was not initialized", e)
-        } finally {
-            mediaPlayer?.release()
-            mediaPlayer = null
-        }
-    }
-
+    // private fun startPlayback(message: ChatMessage, doPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
+    //     if (!active && !backgroundPlayAllowed) {
+    //         // don't begin to play voice message if screen is not visible anymore.
+    //         // this situation might happen if file is downloading but user already left the chatview.
+    //         // If user returns to chatview, the old chatview instance is not attached anymore
+    //         // and he has to click the play button again (which is considered to be okay)
+    //         return
+    //     }
+    //
+    //     initMediaPlayer(message)
+    //
+    //     val id = message.id.toString()
+    //     val index = adapter?.getMessagePositionById(id) ?: 0
+    //
+    //     var nextMessage: ChatMessage? = null
+    //     for (i in VOICE_MESSAGE_CONTINUOUS_BEFORE..VOICE_MESSAGE_CONTINUOUS_AFTER) {
+    //         if (index - i < 0) {
+    //             break
+    //         }
+    //         if (i == 0 || index - i >= (adapter?.items?.size ?: 0)) {
+    //             continue
+    //         }
+    //         val curMsg = adapter?.items?.getOrNull(index - i)?.item
+    //         if (curMsg is ChatMessage) {
+    //             if (nextMessage == null && i > 0) {
+    //                 nextMessage = curMsg
+    //             }
+    //
+    //             if (curMsg.isVoiceMessage) {
+    //                 if (curMsg.selectedIndividualHashMap == null) {
+    //                     // WORKAROUND TO FETCH FILE INFO:
+    //                     curMsg.getImageUrl()
+    //                 }
+    //                 val filename = curMsg.selectedIndividualHashMap!!["name"]
+    //                 val file = File(context.cacheDir, filename!!)
+    //                 if (!file.exists()) {
+    //                     downloadFileToCache(curMsg, false) {
+    //                         curMsg.isDownloadingVoiceMessage = false
+    //                         curMsg.voiceMessageDuration = try {
+    //                             val retriever = MediaMetadataRetriever()
+    //                             retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+    //                             val durationStr =
+    //                                 retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+    //                             retriever.release() // Always release the retriever to free resources
+    //                             (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
+    //                         } catch (e: RuntimeException) {
+    //                             Log.e(
+    //                                 TAG,
+    //                                 "An exception occurred while computing " +
+    //                                     "voice message duration for " + filename,
+    //                                 e
+    //                             )
+    //                             0
+    //                         }
+    //                         adapter?.update(curMsg)
+    //                     }
+    //                 } else {
+    //                     if (curMsg.voiceMessageDuration == 0) {
+    //                         curMsg.voiceMessageDuration = try {
+    //                             val retriever = MediaMetadataRetriever()
+    //                             retriever.setDataSource(file.absolutePath) // Set the audio file as the data source
+    //                             val durationStr =
+    //                                 retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION)
+    //                             retriever.release() // Always release the retriever to free resources
+    //                             (durationStr?.toIntOrNull() ?: 0) / ONE_SECOND_IN_MILLIS // Convert to int (seconds)
+    //                         } catch (e: RuntimeException) {
+    //                             Log.e(
+    //                                 TAG,
+    //                                 "An exception occurred while computing " +
+    //                                     "voice message duration for " + filename,
+    //                                 e
+    //                             )
+    //                             0
+    //                         }
+    //                         adapter?.update(curMsg)
+    //                     }
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     val hasConsecutiveVoiceMessage = if (nextMessage != null) nextMessage.isVoiceMessage else false
+    //
+    //     mediaPlayer?.let {
+    //         if (!it.isPlaying && doPlay) {
+    //             chatViewModel.audioRequest(true) {
+    //                 it.playbackParams = it.playbackParams.apply {
+    //                     setSpeed(chatViewModel.getPlaybackSpeedPreference(message).value)
+    //                 }
+    //                 it.start()
+    //             }
+    //         }
+    //
+    //         mediaPlayerHandler = Handler()
+    //         runOnUiThread(object : Runnable {
+    //             override fun run() {
+    //                 if (mediaPlayer != null) {
+    //                     if (message.isPlayingVoiceMessage) {
+    //                         val pos = mediaPlayer!!.currentPosition.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
+    //                         if (pos + VOICE_MESSAGE_PLAY_ADD_THRESHOLD < (
+    //                                 mediaPlayer!!.duration.toFloat() / VOICE_MESSAGE_SEEKBAR_BASE
+    //                                 )
+    //                         ) {
+    //                             lastRecordMediaPosition = mediaPlayer!!.currentPosition
+    //                             message.voiceMessagePlayedSeconds = pos.toInt()
+    //                             message.voiceMessageSeekbarProgress = mediaPlayer!!.currentPosition
+    //                             if (mediaPlayer!!.currentPosition * VOICE_MESSAGE_MARK_PLAYED_FACTOR >
+    //                                 mediaPlayer!!.duration
+    //                             ) {
+    //                                 // a voice message is marked as played when the mediaplayer position
+    //                                 // is at least at 5% of its duration
+    //                                 message.wasPlayedVoiceMessage = true
+    //                             }
+    //                             adapter?.update(message)
+    //                         } else {
+    //                             message.resetVoiceMessage = true
+    //                             message.voiceMessagePlayedSeconds = 0
+    //                             message.voiceMessageSeekbarProgress = 0
+    //                             adapter?.update(message)
+    //                             stopMediaPlayer(message)
+    //                             if (hasConsecutiveVoiceMessage) {
+    //                                 val defaultMediaPlayer = MediaPlayer.create(
+    //                                     context,
+    //                                     R.raw
+    //                                         .next_voice_message_doodle
+    //                                 )
+    //                                 defaultMediaPlayer.setOnCompletionListener {
+    //                                     defaultMediaPlayer.release()
+    //                                     setUpWaveform(nextMessage as ChatMessage, doPlay, true)
+    //                                 }
+    //                                 defaultMediaPlayer.start()
+    //                             }
+    //                         }
+    //                     }
+    //                 }
+    //                 mediaPlayerHandler?.postDelayed(this, MILLISEC_15)
+    //             }
+    //         })
+    //
+    //         message.isDownloadingVoiceMessage = false
+    //         message.isPlayingVoiceMessage = doPlay
+    //         // message.voiceMessagePlayedSeconds = lastRecordMediaPosition / VOICE_MESSAGE_SEEKBAR_BASE
+    //         // message.voiceMessageSeekbarProgress = lastRecordMediaPosition
+    //         // the commented instructions objective was to update audio seekbarprogress
+    //         // in the case in which audio status is paused when the position is resumed
+    //         adapter?.update(message)
+    //     }
+    // }
+    //
+    // private fun pausePlayback(message: ChatMessage) {
+    //     if (mediaPlayer!!.isPlaying) {
+    //         chatViewModel.audioRequest(false) {
+    //             mediaPlayer!!.pause()
+    //         }
+    //     }
+    //
+    //     message.isPlayingVoiceMessage = false
+    //     adapter?.update(message)
+    // }
+    //
+    // @Suppress("Detekt.TooGenericExceptionCaught")
+    // private fun initMediaPlayer(message: ChatMessage) {
+    //     if (message != currentlyPlayedVoiceMessage) {
+    //         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) }
+    //     }
+    //
+    //     if (mediaPlayer == null) {
+    //         val fileName = message.selectedIndividualHashMap!!["name"]
+    //         val absolutePath = context.cacheDir.absolutePath + "/" + fileName
+    //
+    //         try {
+    //             mediaPlayer = MediaPlayer().apply {
+    //                 setDataSource(absolutePath)
+    //                 prepare()
+    //                 setOnPreparedListener {
+    //                     currentlyPlayedVoiceMessage = message
+    //                     message.voiceMessageDuration = mediaPlayer!!.duration / VOICE_MESSAGE_SEEKBAR_BASE
+    //                     lastRecordedSeeked = false
+    //                 }
+    //                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+    //                     setOnMediaTimeDiscontinuityListener { mp, _ ->
+    //                         if (lastRecordMediaPosition > ONE_SECOND_IN_MILLIS && !lastRecordedSeeked) {
+    //                             mp.seekTo(lastRecordMediaPosition)
+    //                             lastRecordedSeeked = true
+    //                         }
+    //                     }
+    //                     // this ensures that audio can be resumed at a given position
+    //                     this.seekTo(lastRecordMediaPosition)
+    //                 }
+    //                 setOnCompletionListener {
+    //                     stopMediaPlayer(message)
+    //                 }
+    //             }
+    //         } catch (e: Exception) {
+    //             Log.e(TAG, "failed to initialize mediaPlayer", e)
+    //             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+    //         }
+    //     }
+    // }
+    //
+    // private fun stopMediaPlayer(message: ChatMessage) {
+    //     message.isPlayingVoiceMessage = false
+    //     message.resetVoiceMessage = true
+    //     adapter?.update(message)
+    //
+    //     currentlyPlayedVoiceMessage = null
+    //     lastRecordMediaPosition = 0 // this ensures that if audio track is changed, then it is played from the beginning
+    //
+    //     mediaPlayerHandler?.removeCallbacksAndMessages(null)
+    //
+    //     try {
+    //         mediaPlayer?.let {
+    //             if (it.isPlaying) {
+    //                 Log.d(TAG, "media player is stopped")
+    //                 chatViewModel.audioRequest(false) {
+    //                     it.stop()
+    //                 }
+    //             }
+    //         }
+    //     } catch (e: IllegalStateException) {
+    //         Log.e(TAG, "mediaPlayer was not initialized", e)
+    //     } finally {
+    //         mediaPlayer?.release()
+    //         mediaPlayer = null
+    //     }
+    // }
+    //
     override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
-        if (mediaPlayer != null) {
-            if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
-                mediaPlayer!!.seekTo(progress)
-            }
-        }
+        // TODO make this use manager
+        // if (mediaPlayer != null) {
+        //     if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
+        //         mediaPlayer!!.seekTo(progress)
+        //     }
+        // }
     }
 
     override fun registerMessageToObservePlaybackSpeedPreferences(
         userId: String,
         listener: (speed: PlaybackSpeed) -> Unit
     ) {
-        chatViewModel.voiceMessagePlaybackSpeedPreferences.let { liveData ->
-            liveData.observe(this) { playbackSpeedPreferences ->
-                listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
-            }
-            liveData.value?.let { playbackSpeedPreferences ->
-                listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
-            }
-        }
+        // TODO make this use manager
+        // chatViewModel.voiceMessagePlaybackSpeedPreferences.let { liveData ->
+        //     liveData.observe(this) { playbackSpeedPreferences ->
+        //         listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
+        //     }
+        //     liveData.value?.let { playbackSpeedPreferences ->
+        //         listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
+        //     }
+        // }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -2709,7 +2730,8 @@ class ChatActivity :
             actionBar?.setIcon(null)
         }
 
-        currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
+        // FIXME might be a barrier to cont play orientation change,
+        chatViewModel.stopMediaPlayer()
 
         adapter = null
         disposables.dispose()
