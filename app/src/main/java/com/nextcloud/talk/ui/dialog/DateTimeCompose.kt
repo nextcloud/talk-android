@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2024 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -87,9 +87,6 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
-
-    // TODO, can't seem to replicate 1.) on Sow's comment
-    // TODO make an issue out of the problem I gave marcel
 
     @Composable
     fun GetDateTimeDialog(shouldDismiss: MutableState<Boolean>, context: Context) {
@@ -277,7 +274,6 @@ class DateTimeCompose(val bundle: Bundle) {
                 else -> {}
             }
 
-
             if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
                 Text(timeState.value.format(DateTimeFormatter.ofPattern(PATTERN)))
             }
@@ -318,7 +314,6 @@ class DateTimeCompose(val bundle: Bundle) {
                     val minute = timePickerState.minute
                     val newTime = LocalDateTime.of(year, month, day, hour, minute)
                     setTime(newTime)
-
                 } else {
                     val newTime = LocalDate.now().atTime(timePickerState.hour, timePickerState.minute)
                     setTime(newTime)
@@ -370,15 +365,4 @@ class DateTimeCompose(val bundle: Bundle) {
         private const val INT_24 = 24
         private const val CUBED_PADDING = 0.33f
     }
-
-    // Preview Logic
-    // class DummyProvider : PreviewParameterProvider<String> {
-    //     override val values: Sequence<String> = sequenceOf()
-    // }
-    // @Preview()
-    // @PreviewParameter(DummyProvider::class)
-    // @Composable
-    // fun PreviewDateTimeDialog() {
-    //     GetDateTimeDialog()
-    // }
 }
