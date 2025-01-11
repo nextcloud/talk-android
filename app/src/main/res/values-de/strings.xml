@@ -306,7 +306,9 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_message_failed">Fehlgeschlagen</string>
     <string name="nc_message_failed_to_send">Fehler beim Senden der Nachricht:</string>
+    <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Antwort abbrechen</string>
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
@@ -544,6 +546,7 @@
     <string name="polls_end_poll_confirm">Soll diese Umfrage wirklich beendet werden? Das kann nicht rückgängig gemacht werden.</string>
     <string name="polls_max_votes_reached">Sie können nicht mit mehreren Optionen für diese Umfrage abstimmen.</string>
     <string name="polls_multiple_answers">Mehrere Antworten</string>
+    <string name="polls_option_delete">Option %1$d löschen</string>
     <string name="polls_option_hint">Option %1$d</string>
     <string name="polls_options">Optionen</string>
     <string name="polls_private_poll">Private Umfrage</string>

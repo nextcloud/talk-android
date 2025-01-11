@@ -170,6 +170,7 @@
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_mark_as_read">Marker som læst</string>
     <string name="nc_mark_as_unread">Marker som ulæst</string>
+    <string name="nc_message_failed">Mislykkede</string>
     <string name="nc_message_sent">Beskeden blev sendt</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Aldrig deltaget</string>

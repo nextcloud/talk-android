@@ -298,6 +298,7 @@
     <string name="nc_manual">Nenastavené</string>
     <string name="nc_mark_as_read">Označiť ako prečítané</string>
     <string name="nc_mark_as_unread">Označiť ako neprečítané</string>
+    <string name="nc_message_failed">Zlyhalo</string>
     <string name="nc_message_failed_to_send">Chyba pri posielaní správy:</string>
     <string name="nc_message_quote_cancel_reply">Zrušiť odpoveď</string>
     <string name="nc_message_read">Správa bola prečítaná</string>

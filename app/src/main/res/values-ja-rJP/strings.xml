@@ -289,6 +289,7 @@
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">既読にする</string>
     <string name="nc_mark_as_unread">未読にする</string>
+    <string name="nc_message_failed">失敗しました</string>
     <string name="nc_message_failed_to_send">メッセージの送信に失敗しました:</string>
     <string name="nc_message_quote_cancel_reply">返信をキャンセル</string>
     <string name="nc_message_read">メッセージ既読</string>

@@ -176,6 +176,7 @@
     <string name="nc_manual">Nenustatyta</string>
     <string name="nc_mark_as_read">Žymėti kaip skaitytą</string>
     <string name="nc_mark_as_unread">Žymėti kaip neskaitytą</string>
+    <string name="nc_message_failed">Nepavyko</string>
     <string name="nc_message_sent">Žinutė išsiųsta</string>
     <string name="nc_moderator">Moderatorius</string>
     <string name="nc_new_conversation">Naujas pokalbis</string>
