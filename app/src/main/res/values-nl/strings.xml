@@ -307,7 +307,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_manual">Niet ingesteld</string>
     <string name="nc_mark_as_read">Markeren als gelezen</string>
     <string name="nc_mark_as_unread">Markeren als ongelezen</string>
+    <string name="nc_message_failed">Mislukt</string>
     <string name="nc_message_failed_to_send">Fout bij versturen bericht:</string>
+    <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
     <string name="nc_message_sent">Bericht verstuurd</string>

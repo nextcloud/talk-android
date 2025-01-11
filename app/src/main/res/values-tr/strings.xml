@@ -306,7 +306,9 @@
     <string name="nc_manual">Ayarlanmamış</string>
     <string name="nc_mark_as_read">Okunmuş olarak işaretle</string>
     <string name="nc_mark_as_unread">Okunmamış olarak işaretle</string>
+    <string name="nc_message_failed">Tamamlanamadı</string>
     <string name="nc_message_failed_to_send">İleti gönderilemedi.</string>
+    <string name="nc_message_offline">Çevrim dışı</string>
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <string name="nc_message_read">İleti okundu</string>
     <string name="nc_message_sent">İleti gönderildi</string>

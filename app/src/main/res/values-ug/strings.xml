@@ -303,7 +303,9 @@
     <string name="nc_manual">تەڭشەلمىدى</string>
     <string name="nc_mark_as_read">ئوقۇغاندەك بەلگە قويۇڭ</string>
     <string name="nc_mark_as_unread">ئوقۇلمىغان دەپ بەلگە قويۇڭ</string>
+    <string name="nc_message_failed">مەغلۇب بولدى</string>
     <string name="nc_message_failed_to_send">ئۇچۇر ئەۋەتمىدى:</string>
+    <string name="nc_message_offline">تورسىز</string>
     <string name="nc_message_quote_cancel_reply">جاۋابنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="nc_message_read">ئۇچۇر ئوقۇلدى</string>
     <string name="nc_message_sent">ئۇچۇر ئەۋەتىلدى</string>

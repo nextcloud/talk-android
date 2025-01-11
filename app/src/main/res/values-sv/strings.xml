@@ -303,7 +303,9 @@
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>
+    <string name="nc_message_failed">Misslyckades</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
+    <string name="nc_message_offline">Frånkopplad</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_read">Meddelande läst</string>
     <string name="nc_message_sent">Meddelande skickat</string>

@@ -306,7 +306,9 @@
     <string name="nc_manual">Gan socraithe</string>
     <string name="nc_mark_as_read">Marcáil mar léite</string>
     <string name="nc_mark_as_unread">Marcáil mar neamhléite</string>
+    <string name="nc_message_failed">Theip</string>
     <string name="nc_message_failed_to_send">Theip ar an teachtaireacht a sheoladh:</string>
+    <string name="nc_message_offline">As líne</string>
     <string name="nc_message_quote_cancel_reply">Cealaigh freagra</string>
     <string name="nc_message_read">Léadh an teachtaireacht</string>
     <string name="nc_message_sent">Teachtaireacht seolta</string>
@@ -544,6 +546,8 @@
     <string name="polls_end_poll_confirm">Ar mhaith leat deireadh a chur leis an bpobalbhreith seo? Ní féidir é seo a chealú.</string>
     <string name="polls_max_votes_reached">Ní féidir leat vótáil le tuilleadh roghanna don vótaíocht seo.</string>
     <string name="polls_multiple_answers">Freagraí iolracha</string>
+    <string name="polls_option_delete">Scrios rogha %1$d</string>
+    <string name="polls_option_hint">Rogha %1$d</string>
     <string name="polls_options">Roghanna</string>
     <string name="polls_private_poll">Vótaíocht phríobháideach</string>
     <string name="polls_question">Ceist</string>

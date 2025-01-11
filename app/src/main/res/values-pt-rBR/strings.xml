@@ -305,7 +305,9 @@
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como Lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
+    <string name="nc_message_failed">Falhou</string>
     <string name="nc_message_failed_to_send">Falha no envio da mensagem:</string>
+    <string name="nc_message_offline">Desligada</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Leitura de mensagem</string>
     <string name="nc_message_sent">Mensagem enviada</string>

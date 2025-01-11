@@ -306,7 +306,9 @@
     <string name="nc_manual">未定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_message_failed">失敗了</string>
     <string name="nc_message_failed_to_send">傳送訊息失敗︰</string>
+    <string name="nc_message_offline">離線</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
     <string name="nc_message_sent">訊息已傳送</string>
