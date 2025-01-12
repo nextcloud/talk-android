@@ -311,6 +311,7 @@
     <string name="nc_message_offline">As líne</string>
     <string name="nc_message_quote_cancel_reply">Cealaigh freagra</string>
     <string name="nc_message_read">Léadh an teachtaireacht</string>
+    <string name="nc_message_sending">Ag seoladh</string>
     <string name="nc_message_sent">Teachtaireacht seolta</string>
     <string name="nc_microphone_permission_hint">Tabhair cead \"Micreafón\" le do thoil chun cumarsáid gutha a chumasú.</string>
     <string name="nc_missed_call">Chaill tú glao ó %s</string>
@@ -576,6 +577,7 @@
     <string name="recording_settings_title">Taifeadadh</string>
     <string name="removed_from_favorites">Baineadh comhrá %1$s de cheanáin</string>
     <string name="renamed_conversation">Athainmníodh comhrá %1$s</string>
+    <string name="resend_message">Seol ar ais</string>
     <string name="reset_status">Stádas a athshocrú</string>
     <string name="restrict_join_other_room_while_call">Ní féidir dul isteach i seomraí eile agus tú ar ghlao</string>
     <string name="save">Sábháil</string>

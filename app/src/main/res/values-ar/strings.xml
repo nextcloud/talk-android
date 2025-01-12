@@ -306,9 +306,12 @@
     <string name="nc_manual">غير معيّن</string>
     <string name="nc_mark_as_read">تمييز كمقروء</string>
     <string name="nc_mark_as_unread">تمييز كغير مقروء</string>
+    <string name="nc_message_failed">فشل</string>
     <string name="nc_message_failed_to_send">تعذّر إرسال الرسالة:</string>
+    <string name="nc_message_offline">بدون اتصالٍ</string>
     <string name="nc_message_quote_cancel_reply">إلغاء الردّ</string>
     <string name="nc_message_read">تمّت قراءة الرسالة</string>
+    <string name="nc_message_sending">الإرسال</string>
     <string name="nc_message_sent">تمّ إرسال الرسالة </string>
     <string name="nc_microphone_permission_hint">لتمكين الاتصال الصوتي ، يرجى منح إذن \"الميكروفون\".</string>
     <string name="nc_missed_call">فَاتَتكَ مكالمةٌ من %s</string>
@@ -544,6 +547,8 @@
     <string name="polls_end_poll_confirm">هل تريد حقا إنهاء هذا الاستبيان؟ لا يمكن التراجع عن هذا الخيار لاحقاً.</string>
     <string name="polls_max_votes_reached">لا يمكنك التصويت مع المزيد من الخيارات في هذا الاستبيان.</string>
     <string name="polls_multiple_answers">إجابات متعددة</string>
+    <string name="polls_option_delete">حذف الخيار %1$d</string>
+    <string name="polls_option_hint">الخيار %1$d</string>
     <string name="polls_options">الخيارات</string>
     <string name="polls_private_poll">إستبيان خاص</string>
     <string name="polls_question">سؤال</string>
@@ -572,6 +577,7 @@
     <string name="recording_settings_title">تسجيل</string>
     <string name="removed_from_favorites">تمّ سحب المحادثة %1$s من قائمة المفضلة</string>
     <string name="renamed_conversation">المحادثة %1$s تمّ تغيير تسميتها</string>
+    <string name="resend_message">إعادة الإرسال</string>
     <string name="reset_status">إعادة تعيين الحالة</string>
     <string name="restrict_join_other_room_while_call">لا يمكنك الانضمام إلى غرف محادثة أخرى طالما أنت تجري مكالمةً</string>
     <string name="save">حفظ</string>
