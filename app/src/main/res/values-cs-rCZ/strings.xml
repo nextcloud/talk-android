@@ -306,9 +306,12 @@
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
+    <string name="nc_message_failed">Nezdařilo se</string>
     <string name="nc_message_failed_to_send">Odeslání zprávy se nezdařilo:</string>
+    <string name="nc_message_offline">Bez připojení</string>
     <string name="nc_message_quote_cancel_reply">Odebrat odpověď</string>
     <string name="nc_message_read">Zpráva přečtena</string>
+    <string name="nc_message_sending">Odesílání</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
     <string name="nc_microphone_permission_hint">Pro zapnutí hlasové komunikace udělte oprávnění „Mikrofon“ .</string>
     <string name="nc_missed_call">Zmeškali jste hovor od %s</string>
@@ -544,6 +547,7 @@
     <string name="polls_end_poll_confirm">Opravdu chcete tuto anketu ukončit? Toto nelze vzít zpět.</string>
     <string name="polls_max_votes_reached">V této anketě není možné hlasovat více volbami.</string>
     <string name="polls_multiple_answers">Vícero odpovědí</string>
+    <string name="polls_option_delete">Smazat volbu %1$d</string>
     <string name="polls_option_hint">Volba %1$d</string>
     <string name="polls_options">Možnosti</string>
     <string name="polls_private_poll">Soukromá anketa</string>
@@ -573,6 +577,7 @@
     <string name="recording_settings_title">Zaznamenávání</string>
     <string name="removed_from_favorites">Konverzace %1$s odebrána z oblíbených</string>
     <string name="renamed_conversation">Konverzace %1$s byla přejmenována</string>
+    <string name="resend_message">Poslat znovu</string>
     <string name="reset_status">Resetovat stav</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>
     <string name="save">Uložit</string>

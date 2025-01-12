@@ -311,6 +311,7 @@
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Antwort abbrechen</string>
     <string name="nc_message_read">Nachricht gelesen</string>
+    <string name="nc_message_sending">Sende</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
     <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung „Mikrofon“ erteilen.</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
@@ -576,6 +577,7 @@
     <string name="recording_settings_title">Aufnahme</string>
     <string name="removed_from_favorites">Unterhaltung %1$s aus Favoriten entfernt</string>
     <string name="renamed_conversation">Unterhaltung %1$s wurde umbenannt</string>
+    <string name="resend_message">Nochmals senden</string>
     <string name="reset_status">Status zurücksetzen</string>
     <string name="restrict_join_other_room_while_call">Während einer Unterhaltung können Sie keinen anderen Räumen beitreten</string>
     <string name="save">Speichern</string>

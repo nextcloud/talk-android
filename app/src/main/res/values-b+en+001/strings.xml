@@ -311,6 +311,7 @@
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <string name="nc_message_read">Message read</string>
+    <string name="nc_message_sending">Sending</string>
     <string name="nc_message_sent">Message sent</string>
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
     <string name="nc_missed_call">You missed a call from %s</string>
@@ -546,6 +547,8 @@
     <string name="polls_end_poll_confirm">Do you really want to end this poll? This cannot be undone.</string>
     <string name="polls_max_votes_reached">You cannot vote with more options for this poll.</string>
     <string name="polls_multiple_answers">Multiple answers</string>
+    <string name="polls_option_delete">Delete option %1$d</string>
+    <string name="polls_option_hint">Option %1$d</string>
     <string name="polls_options">Options</string>
     <string name="polls_private_poll">Private poll</string>
     <string name="polls_question">Question</string>
@@ -574,6 +577,7 @@
     <string name="recording_settings_title">Recording</string>
     <string name="removed_from_favorites">Removed conversation %1$s from favourites</string>
     <string name="renamed_conversation">Conversation %1$s was renamed</string>
+    <string name="resend_message">Resend</string>
     <string name="reset_status">Reset status</string>
     <string name="restrict_join_other_room_while_call">It is not possible to join other rooms while in a call</string>
     <string name="save">Save</string>
