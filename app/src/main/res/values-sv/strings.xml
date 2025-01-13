@@ -308,6 +308,7 @@
     <string name="nc_message_offline">Frånkopplad</string>
     <string name="nc_message_quote_cancel_reply">Avbryt svar</string>
     <string name="nc_message_read">Meddelande läst</string>
+    <string name="nc_message_sending">Skickar</string>
     <string name="nc_message_sent">Meddelande skickat</string>
     <string name="nc_microphone_permission_hint">För att aktivera röstkommunikation ange \"Mikrofon\"-tillstånd.</string>
     <string name="nc_missed_call">Du missade ett samtal från %s</string>
@@ -542,6 +543,8 @@
     <string name="polls_end_poll_confirm">Vill du verkligen avsluta den här omröstningen? Detta kan inte ångras.</string>
     <string name="polls_max_votes_reached">Du kan inte rösta med fler alternativ för den här omröstningen.</string>
     <string name="polls_multiple_answers">Flera svar</string>
+    <string name="polls_option_delete">Ta bort alternativ %1$d</string>
+    <string name="polls_option_hint">Alternativ %1$d</string>
     <string name="polls_options">Alternativ</string>
     <string name="polls_private_poll">Privat omröstning</string>
     <string name="polls_question">Fråga</string>
@@ -570,6 +573,7 @@
     <string name="recording_settings_title">Inspelning</string>
     <string name="removed_from_favorites">Tog bort konversationen %1$s från favoriter</string>
     <string name="renamed_conversation">Konversationen %1$s har bytt namn</string>
+    <string name="resend_message">Skicka igen</string>
     <string name="reset_status">Återställ status</string>
     <string name="restrict_join_other_room_while_call">Det är inte möjligt att gå med i andra rum under ett samtal</string>
     <string name="save">Spara</string>
