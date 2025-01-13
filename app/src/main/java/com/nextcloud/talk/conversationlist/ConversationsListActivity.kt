@@ -79,6 +79,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
@@ -141,6 +142,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
@@ -390,24 +392,7 @@ class ConversationsListActivity :
                     setConversationList(list)
                 }.collect()
 
-            chatViewModel.backgroundPlayUIFlow.onEach { msg ->
-                binding.composeViewForBackgroundPlay.apply {
-                    // Dispose of the Composition when the view's LifecycleOwner is destroyed
-                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
-                    setContent {
-                        // Only shows view if message exists
-                        msg?.let {
-                            // TODO need to get user info from message to load name and avatar
-                            BackgroundVoiceMessageSeekbarCard(msg.actorDisplayName!!)
-                                .GetView({ isPaused ->
-                                    // TODO on pause should pause, or start cycling
-                                }) {
-                                    // TODO on close should stop cycling
-                                }
-                        }
-                    }
-                }
-            }.collect()
+            // TODO observe the backgroundUI flow, somehow
         }
     }
 

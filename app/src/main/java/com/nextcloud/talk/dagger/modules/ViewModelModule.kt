@@ -10,8 +10,8 @@ package com.nextcloud.talk.dagger.modules
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
@@ -35,6 +35,7 @@ import dagger.Module
 import dagger.multibindings.IntoMap
 import javax.inject.Inject
 import javax.inject.Provider
+import javax.inject.Singleton
 import kotlin.reflect.KClass
 
 class ViewModelFactory @Inject constructor(

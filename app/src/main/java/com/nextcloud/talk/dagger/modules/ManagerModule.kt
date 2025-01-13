@@ -30,7 +30,7 @@ class ManagerModule {
 
     @Provides
     fun provideMediaPlayerManager(): MediaPlayerManager {
-        return MediaPlayerManager()
+        return MediaPlayerManager
     }
 
     @Provides

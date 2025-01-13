@@ -1971,12 +1971,7 @@ class ChatActivity :
     // }
     //
     override fun updateMediaPlayerProgressBySlider(messageWithSlidedProgress: ChatMessage, progress: Int) {
-        // TODO make this use manager
-        // if (mediaPlayer != null) {
-        //     if (messageWithSlidedProgress == currentlyPlayedVoiceMessage) {
-        //         mediaPlayer!!.seekTo(progress)
-        //     }
-        // }
+        chatViewModel.seekToMediaPlayer(progress)
     }
 
     override fun registerMessageToObservePlaybackSpeedPreferences(

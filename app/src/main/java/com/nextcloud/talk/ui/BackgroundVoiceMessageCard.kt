@@ -47,7 +47,7 @@ import javax.inject.Inject
 @AutoInjector(NextcloudTalkApplication::class)
 class BackgroundVoiceMessageSeekbarCard(val name: String) {
 
-    // TODO get avatar and name
+    // TODO get avatar
     // TODO connect to the manager through the viewmodel, test it out.
 
     @Inject

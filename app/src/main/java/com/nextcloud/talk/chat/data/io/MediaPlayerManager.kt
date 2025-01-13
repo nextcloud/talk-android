@@ -13,6 +13,7 @@ import androidx.compose.ui.util.fastRoundToInt
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.PlaybackSpeed
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.cancel
@@ -20,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -30,12 +32,10 @@ import java.io.FileNotFoundException
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
  * to manage the MediaPlayer instance.
  */
-class MediaPlayerManager : LifecycleAwareManager {
-    companion object {
-        val TAG: String = MediaPlayerManager::class.java.simpleName
-        private const val SEEKBAR_UPDATE_DELAY = 15L
-        const val DIVIDER = 100f
-    }
+object MediaPlayerManager : LifecycleAwareManager {
+    val TAG: String = MediaPlayerManager::class.java.simpleName
+    private const val SEEKBAR_UPDATE_DELAY = 15L
+    const val DIVIDER = 100f
 
     enum class MediaPlayerManagerState {
         DEFAULT,
@@ -47,9 +47,9 @@ class MediaPlayerManager : LifecycleAwareManager {
         ERROR
     }
 
-    val backgroundPlayUIFlow: Flow<ChatMessage?>
+    val backgroundPlayUIFlow: StateFlow<ChatMessage?>
         get() = _backgroundPlayUIFlow
-    private val _backgroundPlayUIFlow = MutableSharedFlow<ChatMessage?>()
+    private val _backgroundPlayUIFlow = MutableStateFlow<ChatMessage?>(null)
 
     val managerState: Flow<MediaPlayerManagerState>
         get() = _managerState
@@ -70,19 +70,20 @@ class MediaPlayerManager : LifecycleAwareManager {
     private var loop = false
     private var scope = MainScope()
     private var currentCycledMessage: ChatMessage? = null
+    private var currentDataSource: String = ""
     var mediaPlayerDuration: Int = 0
 
     /**
      * Starts playing audio from the given path, initializes or resumes if the player is already created.
      */
-     fun start(path: String) {
-         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-             stop()
-         }
+    fun start(path: String) {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            stop()
+        }
 
         if (mediaPlayer == null || !scope.isActive) {
             init(path)
-        } else {
+        } else { // FIXME need to check if the current chat message is different than the one mediaPlayerManager data
             _managerState.value = MediaPlayerManagerState.RESUMED
             mediaPlayer!!.start()
             loop = true
@@ -96,10 +97,16 @@ class MediaPlayerManager : LifecycleAwareManager {
      */
     fun startCycling() {
         if (playQueue.size == 0) {
-            throw IllegalStateException("Attempted to start cycling with empty playList")
+            error("Attempted to start cycling with empty playList")
         }
 
-        if (mediaPlayer == null || !scope.isActive) {
+        if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
+            stop()
+        }
+
+        val shouldReset = playQueue.first().first != currentDataSource
+
+        if (mediaPlayer == null || !scope.isActive || shouldReset) {
             initCycling()
         } else {
             _managerState.value = MediaPlayerManagerState.RESUMED
@@ -199,6 +206,7 @@ class MediaPlayerManager : LifecycleAwareManager {
             mediaPlayer = MediaPlayer().apply {
                 _managerState.value = MediaPlayerManagerState.SETUP
                 setDataSource(path)
+                currentDataSource = path
                 prepareAsync()
                 setOnPreparedListener {
                     onPrepare()
@@ -216,6 +224,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                 _managerState.value = MediaPlayerManagerState.SETUP
                 val pair = playQueue.iterator().next()
                 setDataSource(pair.first)
+                currentDataSource = pair.first
                 currentCycledMessage = pair.second
                 playQueue.removeAt(0)
                 prepareAsync()
@@ -232,13 +241,11 @@ class MediaPlayerManager : LifecycleAwareManager {
                     //     _currentCycledMessage = nextPair.second
                     //     prepareAsync()
                     // } else {
-                        mediaPlayer!!.release()
-                        mediaPlayer = null
-                        currentCycledMessage?.let {
-                            _backgroundPlayUIFlow.tryEmit(null)
-                        }
-                        currentCycledMessage = null
-                        _managerState.value = MediaPlayerManagerState.STOPPED
+                    mediaPlayer!!.release()
+                    mediaPlayer = null
+                    _backgroundPlayUIFlow.tryEmit(null)
+                    currentCycledMessage = null
+                    _managerState.value = MediaPlayerManagerState.STOPPED
                     // }
                 }
             }
@@ -275,8 +282,17 @@ class MediaPlayerManager : LifecycleAwareManager {
 
     override fun handleOnStop() {
         loop = false
-        if (mediaPlayer != null && mediaPlayer!!.isPlaying && currentCycledMessage != null) {
-            _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
+        if (mediaPlayer != null &&
+            _managerState.value != MediaPlayerManagerState.STOPPED && // TODO might be a state error here
+            currentCycledMessage != null
+        ) {
+            CoroutineScope(Dispatchers.Default).launch {
+                delay(100)
+                _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
+                Log.d("Julius", "Msg sent")
+            }
+            // this might be being sent, but before list Activity, therefore not showing up
+            // try a different approach. Maybe a stateflow instead should be a better fit.
         }
     }
 }

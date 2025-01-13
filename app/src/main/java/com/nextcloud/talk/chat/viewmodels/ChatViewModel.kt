@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.viewmodels
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore.Audio.Media
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -46,6 +47,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -67,7 +69,6 @@ class ChatViewModel @Inject constructor(
     private val userProvider: CurrentUserProviderNew
 ) : ViewModel(), DefaultLifecycleObserver {
 
-
     enum class LifeCycleFlag {
         PAUSED,
         RESUMED,
@@ -82,6 +83,7 @@ class ChatViewModel @Inject constructor(
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
         mediaRecorderManager.handleOnResume()
         chatRepository.handleOnResume()
+        mediaPlayerManager.handleOnResume()
     }
 
     override fun onPause(owner: LifecycleOwner) {
@@ -91,6 +93,7 @@ class ChatViewModel @Inject constructor(
         disposableSet.clear()
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
+        mediaPlayerManager.handleOnPause()
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -98,13 +101,11 @@ class ChatViewModel @Inject constructor(
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
         mediaRecorderManager.handleOnStop()
         chatRepository.handleOnStop()
+        mediaPlayerManager.handleOnStop()
     }
 
     val mediaPlayerSeekbarObserver: Flow<Pair<Int, String>>
         get() = mediaPlayerManager.mediaPlayerSeekBarPositionPair
-
-    val backgroundPlayUIFlow: Flow<ChatMessage?>
-        get() = mediaPlayerManager.backgroundPlayUIFlow
 
     val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
         get() =  mediaPlayerManager.managerState
