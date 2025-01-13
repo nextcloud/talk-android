@@ -125,6 +125,7 @@
     <string name="nc_conversations_empty">Приєднайтеся до розмови або почніть нову</string>
     <string name="nc_conversations_empty_details">Привітайтеся з вашими друзями та колегами!</string>
     <string name="nc_copy_message">Копіювати</string>
+    <string name="nc_create_new_conversation">Створити нову розмову</string>
     <string name="nc_create_poll">Створити опитування</string>
     <string name="nc_date_header_today">Сьогодні</string>
     <string name="nc_date_header_yesterday">Вчора</string>

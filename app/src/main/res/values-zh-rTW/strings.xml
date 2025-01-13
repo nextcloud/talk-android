@@ -311,6 +311,7 @@
     <string name="nc_message_offline">離線</string>
     <string name="nc_message_quote_cancel_reply">取消回覆</string>
     <string name="nc_message_read">訊息已讀</string>
+    <string name="nc_message_sending">正在傳送</string>
     <string name="nc_message_sent">已傳送郵件</string>
     <string name="nc_microphone_permission_hint">要啟用語音通訊，請授予「麥克風」權限。</string>
     <string name="nc_missed_call">您錯過了來自 %s 的通話</string>
@@ -546,6 +547,7 @@
     <string name="polls_end_poll_confirm">您真的想要結束此投票嗎？此動作無法還原。</string>
     <string name="polls_max_votes_reached">您無法為此投票選擇更多選項。</string>
     <string name="polls_multiple_answers">多個答案</string>
+    <string name="polls_option_delete">刪除選項 %1$d</string>
     <string name="polls_option_hint">選項 %1$d</string>
     <string name="polls_options">選項</string>
     <string name="polls_private_poll">私人投票</string>
@@ -575,6 +577,7 @@
     <string name="recording_settings_title">錄音</string>
     <string name="removed_from_favorites">從最愛移除了對話 %1$s</string>
     <string name="renamed_conversation">對話 %1$s 已重新命名</string>
+    <string name="resend_message">重新傳送</string>
     <string name="reset_status">重設狀態</string>
     <string name="restrict_join_other_room_while_call">通話時無法加入其他聊天室</string>
     <string name="save">儲存</string>

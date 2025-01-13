@@ -285,6 +285,7 @@
     <string name="nc_settings_screen_lock_title">Ekrano užraktas</string>
     <string name="nc_settings_screen_security_desc">Neleidžia daryti ekrano kopijų paskiausiųjų sąraše ir programėlės viduje</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
+    <string name="nc_settings_server_eol_title">Nepalaikomas serveris</string>
     <string name="nc_settings_theme_battery_saver">Nustatytas baterijos taupytojo</string>
     <string name="nc_settings_theme_dark">Tamsus</string>
     <string name="nc_settings_theme_follow_system">Naudoti sistemos numatytąjį</string>
@@ -305,6 +306,7 @@
     <string name="nc_switch_account">Perjungti paskyrą</string>
     <string name="nc_team">Komanda</string>
     <string name="nc_teams">Komandos</string>
+    <string name="nc_upload_failed_notification_title">Nesėkmė</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_user">Naudotojas</string>
@@ -362,6 +364,7 @@
     <string name="take_photo_toggle_crop">Apkirpti nuotrauką</string>
     <string name="thirtyMinutes">30 minučių</string>
     <string name="thisWeek">Šią savaitę</string>
+    <string name="this_is_a_test_message">Tai yra bandomoji žinutė</string>
     <string name="this_weekend">Šį savaitgalį</string>
     <string name="today">Šiandiena</string>
     <string name="tomorrow">Rytoj</string>
