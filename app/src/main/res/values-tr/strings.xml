@@ -311,6 +311,7 @@
     <string name="nc_message_offline">Çevrim dışı</string>
     <string name="nc_message_quote_cancel_reply">Yanıtı iptal et</string>
     <string name="nc_message_read">İleti okundu</string>
+    <string name="nc_message_sending">Gönderiliyor</string>
     <string name="nc_message_sent">İleti gönderildi</string>
     <string name="nc_microphone_permission_hint">Sesli iletişim kurabilmek için \"Mikrofon\" için erişme izni verin.</string>
     <string name="nc_missed_call">%s sizi aramış</string>
@@ -546,6 +547,8 @@
     <string name="polls_end_poll_confirm">Bu anketi sonlandırmak istediğinize emin misiniz? Bu işlem geri alınamaz!</string>
     <string name="polls_max_votes_reached">Bu ankete başka seçenekler ile oy veremezsiniz.</string>
     <string name="polls_multiple_answers">Birden çok yanıt</string>
+    <string name="polls_option_delete">%1$d seçeneğini sil</string>
+    <string name="polls_option_hint">%1$d seçeneği</string>
     <string name="polls_options">Seçenekler</string>
     <string name="polls_private_poll">Kapalı anket</string>
     <string name="polls_question">Soru</string>
@@ -574,6 +577,7 @@
     <string name="recording_settings_title">Kaydediliyor</string>
     <string name="removed_from_favorites">%1$s görüşmesi sık kullanılanlardan kaldırıldı</string>
     <string name="renamed_conversation">%1$s görüşmesi yeniden adlandırıldı</string>
+    <string name="resend_message">Yeniden gönder</string>
     <string name="reset_status">Durumu sıfırla</string>
     <string name="restrict_join_other_room_while_call">Bir çağrı sürerken diğer odalara katılamazsınız</string>
     <string name="save">Kaydet</string>
