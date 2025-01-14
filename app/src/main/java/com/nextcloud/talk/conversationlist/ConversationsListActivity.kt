@@ -138,7 +138,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
@@ -1359,7 +1358,7 @@ class ConversationsListActivity :
 
     override fun onItemLongClick(position: Int) {
         this.lifecycleScope.launch {
-            if (showShareToScreen || !networkMonitor.isOnline.first()) {
+            if (showShareToScreen || !networkMonitor.isOnline.value) {
                 Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
             } else {
                 val clickedItem: Any? = adapter!!.getItem(position)

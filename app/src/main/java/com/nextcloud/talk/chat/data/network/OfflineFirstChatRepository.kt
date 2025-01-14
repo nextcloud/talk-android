@@ -54,7 +54,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val monitor: NetworkMonitor,
+    private val networkMonitor: NetworkMonitor,
     userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
@@ -303,7 +303,7 @@ class OfflineFirstChatRepository @Inject constructor(
             var showUnreadMessagesMarker = true
 
             while (true) {
-                if (!monitor.isOnline.first() || itIsPaused) {
+                if (!networkMonitor.isOnline.value || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
                     // sync database with server
@@ -530,7 +530,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
-        if (!monitor.isOnline.first()) {
+        if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
             return null
         }
@@ -810,7 +810,7 @@ class OfflineFirstChatRepository @Inject constructor(
         sendWithoutNotification: Boolean,
         referenceId: String
     ): Flow<Result<ChatMessage?>> {
-        if (!monitor.isOnline.first()) {
+        if (!networkMonitor.isOnline.value) {
             return flow {
                 emit(Result.failure(IOException("Skipped to send message as device is offline")))
             }

@@ -134,7 +134,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
 
         CoroutineScope(Dispatchers.Main).launch {
-            if (message.isTemporary && !networkMonitor.isOnline.first()) {
+            if (message.isTemporary && !networkMonitor.isOnline.value) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
                     context.resources?.getString(R.string.nc_message_offline)

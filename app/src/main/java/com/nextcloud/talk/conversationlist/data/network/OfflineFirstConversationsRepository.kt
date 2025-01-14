@@ -39,7 +39,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val dao: ConversationsDao,
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
-    private val monitor: NetworkMonitor,
+    private val networkMonitor: NetworkMonitor,
     private val currentUserProviderNew: CurrentUserProviderNew
 ) : OfflineConversationsRepository {
     override val roomListFlow: Flow<List<ConversationModel>>
@@ -58,7 +58,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             val initialConversationModels = getListOfConversations(user.id!!)
             _roomListFlow.emit(initialConversationModels)
 
-            if (monitor.isOnline.first()) {
+            if (networkMonitor.isOnline.value) {
                 val conversationEntitiesFromSync = getRoomsFromServer()
                 if (!conversationEntitiesFromSync.isNullOrEmpty()) {
                     val conversationModelsFromSync = conversationEntitiesFromSync.map(ConversationEntity::asModel)
@@ -108,7 +108,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
         var conversationsFromSync: List<ConversationEntity>? = null
 
-        if (!monitor.isOnline.first()) {
+        if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load conversations from server")
             return null
         }
