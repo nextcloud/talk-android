@@ -180,7 +180,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         ).first()
                     }
 
-                    parentChatMessage!!.activeUser = message.activeUser
+                    parentChatMessage.activeUser = message.activeUser
                     parentChatMessage.imageUrl?.let {
                         binding.messageQuote.quotedMessageImage.visibility = View.VISIBLE
                         binding.messageQuote.quotedMessageImage.load(it) {
@@ -207,7 +207,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
 
                     binding.messageQuote.quotedChatMessageView.setOnClickListener {
-                        val chatActivity = commonMessageInterface as ChatActivity
                         chatActivity.jumpToQuotedMessage(parentChatMessage)
                     }
                 } catch (e: Exception) {
