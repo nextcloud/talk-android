@@ -235,6 +235,8 @@ class ConversationsListActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        currentUser = currentUserProvider.currentUser.blockingGet()
+
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
@@ -284,7 +286,7 @@ class ConversationsListActivity :
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
         }
-        currentUser = userManager.currentUser.blockingGet()
+
         if (currentUser != null) {
             if (isServerEOL(currentUser!!.serverVersion?.major)) {
                 showServerEOLDialog()
@@ -309,7 +311,7 @@ class ConversationsListActivity :
             fetchRooms()
             fetchPendingInvitations()
         } else {
-            Log.e(TAG, "userManager.currentUser.blockingGet() returned null")
+            Log.e(TAG, "currentUser was null")
             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
         }
 
@@ -421,7 +423,7 @@ class ConversationsListActivity :
     }
 
     fun filterConversation() {
-        val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(currentUser)
         filterState[FilterConversationFragment.UNREAD] = (
             arbitraryStorageManager.getStorageSetting(
                 accountId,
@@ -1365,7 +1367,7 @@ class ConversationsListActivity :
                     val conversation = clickedItem.model
                     conversationsListBottomDialog = ConversationsListBottomDialog(
                         this@ConversationsListActivity,
-                        userManager.currentUser.blockingGet(),
+                        currentUser!!,
                         conversation
                     )
                     conversationsListBottomDialog!!.show()
@@ -1557,7 +1559,7 @@ class ConversationsListActivity :
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
         val serverNotificationAppInstalled =
-            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
