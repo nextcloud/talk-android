@@ -398,29 +398,33 @@ class ConversationsListActivity :
                     // Dispose of the Composition when the view's LifecycleOwner is destroyed
                     setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
                     setContent {
-                        // TODO need to get user info from message to load avatar
                         msg?.let {
                             val duration = chatViewModel.mediaPlayerDuration
                             val position = chatViewModel.mediaPlayerPosition
                             val offset = position.toFloat() / duration
-                            Log.d("Julius", "d: $duration p: $position o: $offset")
+                            val imageURI = ApiUtils.getUrlForAvatar(
+                                currentUser?.baseUrl,
+                                msg.actorId,
+                                true
+                            )
                             if (duration > 0) {
                                 BackgroundVoiceMessageSeekbarCard(
                                     msg.actorDisplayName!!,
                                     duration - position,
-                                    offset
+                                    offset,
+                                    imageURI
                                 )
-                                .GetView({ isPaused ->
-                                    if (isPaused) {
-                                        chatViewModel.pauseMediaPlayer()
-                                    } else {
-                                        val filename = msg.selectedIndividualHashMap!!["name"]
-                                        val file = File(context.cacheDir, filename!!)
-                                        chatViewModel.startMediaPlayer(file.canonicalPath)
+                                    .GetView({ isPaused ->
+                                        if (isPaused) {
+                                            chatViewModel.pauseMediaPlayer()
+                                        } else {
+                                            val filename = msg.selectedIndividualHashMap!!["name"]
+                                            val file = File(context.cacheDir, filename!!)
+                                            chatViewModel.startMediaPlayer(file.canonicalPath)
+                                        }
+                                    }) {
+                                        chatViewModel.stopMediaPlayer()
                                     }
-                                }) {
-                                    chatViewModel.stopMediaPlayer()
-                                }
                             }
                         }
                     }

@@ -13,6 +13,7 @@ import androidx.compose.ui.util.fastRoundToInt
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -27,15 +28,19 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
+import javax.inject.Inject
 
 /**
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
  * to manage the MediaPlayer instance.
  */
- object MediaPlayerManager : LifecycleAwareManager {
+object MediaPlayerManager : LifecycleAwareManager {
     val TAG: String = MediaPlayerManager::class.java.simpleName
     private const val SEEKBAR_UPDATE_DELAY = 15L
     const val DIVIDER = 100f
+
+    @Inject
+    lateinit var appPreferences: AppPreferences
 
     enum class MediaPlayerManagerState {
         DEFAULT,
@@ -259,6 +264,7 @@ import java.io.FileNotFoundException
 
     private fun MediaPlayer.onPrepare() {
         mediaPlayerDuration = this.duration
+        mediaPlayer!!.playbackParams.setSpeed(appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value)
         start()
         _managerState.value = MediaPlayerManagerState.STARTED
         currentCycledMessage?.let {
