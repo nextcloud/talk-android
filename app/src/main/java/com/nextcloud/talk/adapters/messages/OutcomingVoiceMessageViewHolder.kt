@@ -65,9 +65,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     @Inject
     lateinit var dateUtils: DateUtils
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     lateinit var message: ChatMessage
 
@@ -140,6 +139,8 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
             binding.playbackSpeedControlBtn.setSpeed(speed)
         }
+
+        binding.playbackSpeedControlBtn.setSpeed(appPreferences.getPreferredPlayback(message.actorId))
 
         Reaction().showReactions(
             message,

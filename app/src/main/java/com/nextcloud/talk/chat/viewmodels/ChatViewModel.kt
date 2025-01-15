@@ -46,6 +46,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -111,6 +112,10 @@ class ChatViewModel @Inject constructor(
 
     val managerStateFlow: Flow<MediaPlayerManager.MediaPlayerManagerState>
         get() =  mediaPlayerManager.managerState
+
+    val voiceMessagePlayBackUIFlow: Flow<PlaybackSpeed>
+        get() = _voiceMessagePlayBackUIFlow
+    val _voiceMessagePlayBackUIFlow: MutableSharedFlow<PlaybackSpeed> = MutableSharedFlow()
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -683,6 +688,7 @@ class ChatViewModel @Inject constructor(
 
     fun setPlayBack(speed: PlaybackSpeed) {
         mediaPlayerManager.setPlayBackSpeed(speed)
+        _voiceMessagePlayBackUIFlow.tryEmit(speed)
     }
 
     fun startMediaPlayer(path: String) {

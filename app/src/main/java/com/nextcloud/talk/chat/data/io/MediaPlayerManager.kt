@@ -28,7 +28,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
-import javax.inject.Inject
 
 /**
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
@@ -39,7 +38,6 @@ object MediaPlayerManager : LifecycleAwareManager {
     private const val SEEKBAR_UPDATE_DELAY = 15L
     const val DIVIDER = 100f
 
-    @Inject
     lateinit var appPreferences: AppPreferences
 
     enum class MediaPlayerManagerState {
@@ -204,7 +202,10 @@ object MediaPlayerManager : LifecycleAwareManager {
      */
     fun setPlayBackSpeed(speed: PlaybackSpeed) {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
-            mediaPlayer!!.playbackParams.setSpeed(speed.value)
+            mediaPlayer!!.playbackParams.let { params ->
+                params.setSpeed(speed.value)
+                mediaPlayer!!.playbackParams = params
+            }
         }
     }
 

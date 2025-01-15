@@ -1749,17 +1749,13 @@ class ChatActivity :
         userId: String,
         listener: (speed: PlaybackSpeed) -> Unit
     ) {
-
-        // TODO I like the approach, but I don't like the implementation. Use flows instead, and keep
-        //  things simple. Might need to rewrite the interface to accomodate this
-        // chatViewModel.voiceMessagePlaybackSpeedPreferences.let { liveData ->
-        //     liveData.observe(this) { playbackSpeedPreferences ->
-        //         listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
-        //     }
-        //     liveData.value?.let { playbackSpeedPreferences ->
-        //         listener(playbackSpeedPreferences[userId] ?: PlaybackSpeed.NORMAL)
-        //     }
-        // }
+        CoroutineScope(Dispatchers.Default).launch {
+            chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
+                withContext(Dispatchers.Main) {
+                    listener(speed)
+                }
+            }.collect()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
