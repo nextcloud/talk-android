@@ -10,7 +10,6 @@ package com.nextcloud.talk.chat.viewmodels
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore.Audio.Media
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -47,7 +46,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -77,6 +75,8 @@ class ChatViewModel @Inject constructor(
 
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+    var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
+    val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
@@ -103,6 +103,8 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnStop()
         mediaPlayerManager.handleOnStop()
     }
+
+    val backgroundPlayUIFlow = mediaPlayerManager.backgroundPlayUIFlow
 
     val mediaPlayerSeekbarObserver: Flow<Pair<Int, String>>
         get() = mediaPlayerManager.mediaPlayerSeekBarPositionPair

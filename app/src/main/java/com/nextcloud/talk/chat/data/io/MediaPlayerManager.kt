@@ -32,7 +32,7 @@ import java.io.FileNotFoundException
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
  * to manage the MediaPlayer instance.
  */
-object MediaPlayerManager : LifecycleAwareManager {
+ object MediaPlayerManager : LifecycleAwareManager {
     val TAG: String = MediaPlayerManager::class.java.simpleName
     private const val SEEKBAR_UPDATE_DELAY = 15L
     const val DIVIDER = 100f
@@ -66,12 +66,12 @@ object MediaPlayerManager : LifecycleAwareManager {
     private val _mediaPlayerSeekBarPosition: MutableSharedFlow<Int> = MutableSharedFlow()
 
     private var mediaPlayer: MediaPlayer? = null
-    private var mediaPlayerPosition: Int = 0
     private var loop = false
     private var scope = MainScope()
     private var currentCycledMessage: ChatMessage? = null
     private var currentDataSource: String = ""
     var mediaPlayerDuration: Int = 0
+    var mediaPlayerPosition: Int = 0
 
     /**
      * Starts playing audio from the given path, initializes or resumes if the player is already created.
@@ -128,6 +128,7 @@ object MediaPlayerManager : LifecycleAwareManager {
             mediaPlayer!!.release()
             mediaPlayer = null
             currentCycledMessage = null
+            _backgroundPlayUIFlow.tryEmit(null)
             _managerState.value = MediaPlayerManagerState.STOPPED
         }
     }
@@ -162,6 +163,7 @@ object MediaPlayerManager : LifecycleAwareManager {
                 }
                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                     val pos = mediaPlayer!!.currentPosition
+                    mediaPlayerPosition = pos
                     val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
                     val progressI = progress.fastRoundToInt()
                     _mediaPlayerSeekBarPosition.emit(progressI)
@@ -282,17 +284,10 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     override fun handleOnStop() {
         loop = false
-        if (mediaPlayer != null &&
-            _managerState.value != MediaPlayerManagerState.STOPPED && // TODO might be a state error here
-            currentCycledMessage != null
-        ) {
+        if (mediaPlayer != null && currentCycledMessage != null) {
             CoroutineScope(Dispatchers.Default).launch {
-                delay(100)
                 _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
-                Log.d("Julius", "Msg sent")
             }
-            // this might be being sent, but before list Activity, therefore not showing up
-            // try a different approach. Maybe a stateflow instead should be a better fit.
         }
     }
 }

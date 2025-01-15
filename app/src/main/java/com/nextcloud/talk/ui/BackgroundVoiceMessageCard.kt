@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.ui
 
+import android.animation.ValueAnimator
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -45,10 +46,9 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class BackgroundVoiceMessageSeekbarCard(val name: String) {
+class BackgroundVoiceMessageSeekbarCard(val name: String, val duration: Int, val offset: Float) {
 
     // TODO get avatar
-    // TODO connect to the manager through the viewmodel, test it out.
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -56,13 +56,17 @@ class BackgroundVoiceMessageSeekbarCard(val name: String) {
     @Inject
     lateinit var context: Context
 
-    /**
-     * Updates the state of the voice message
-     */
-    val progressState = mutableFloatStateOf(0.01f)
+    private val progressState = mutableFloatStateOf(0.01f)
+    private val animator = ValueAnimator.ofFloat(offset, 1.0f)
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        animator.duration = duration.toLong()
+        animator.addUpdateListener { animation ->
+            progressState.floatValue = animation.animatedValue as Float
+        }
+
+        animator.start()
     }
 
     @Composable
@@ -95,7 +99,11 @@ class BackgroundVoiceMessageSeekbarCard(val name: String) {
                             onClick = {
                                 isPausedIcon = !isPausedIcon
                                 onPlayPaused(isPausedIcon)
-                                // progressState.floatValue += 0.05f TODO remove this
+                                if (isPausedIcon) {
+                                    animator.pause()
+                                } else {
+                                    animator.resume()
+                                }
                             }
                         ) {
                             //internal circle with icon

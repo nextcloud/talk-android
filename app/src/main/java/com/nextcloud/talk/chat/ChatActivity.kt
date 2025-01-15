@@ -973,13 +973,12 @@ class ChatActivity :
         this.lifecycleScope.launch {
             chatViewModel.mediaPlayerSeekbarObserver.onEach { pair ->
                 val pos = adapter?.getMessagePositionById(pair.second) ?: -1
-                val message = (adapter?.items?.get(pos))?.item as ChatMessage
-                message.voiceMessageSeekbarProgress = pair.first
-                adapter?.update(message)
-                adapter?.notifyItemChanged(pos)
-                // FIXME Pausing one and playing another just restarts the first. Need to take the current msg into
-                //  account when dealing with pause logic. Nevertheless, it does work. Also figure out how those
-                //  durations get set in UI
+                if (pos > -1) {
+                    val message = (adapter?.items?.get(pos))?.item as ChatMessage
+                    message.voiceMessageSeekbarProgress = pair.first
+                    adapter?.update(message)
+                    adapter?.notifyItemChanged(pos)
+                }
             }.collect()
         }
 

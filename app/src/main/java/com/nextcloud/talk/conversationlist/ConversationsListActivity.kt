@@ -79,7 +79,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
@@ -142,13 +141,13 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
+import java.io.File
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -391,8 +390,42 @@ class ConversationsListActivity :
                 .onEach { list ->
                     setConversationList(list)
                 }.collect()
+        }
 
-            // TODO observe the backgroundUI flow, somehow
+        lifecycleScope.launch {
+            chatViewModel.backgroundPlayUIFlow.onEach { msg ->
+                binding.composeViewForBackgroundPlay.apply {
+                    // Dispose of the Composition when the view's LifecycleOwner is destroyed
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        // TODO need to get user info from message to load avatar
+                        msg?.let {
+                            val duration = chatViewModel.mediaPlayerDuration
+                            val position = chatViewModel.mediaPlayerPosition
+                            val offset = position.toFloat() / duration
+                            Log.d("Julius", "d: $duration p: $position o: $offset")
+                            if (duration > 0) {
+                                BackgroundVoiceMessageSeekbarCard(
+                                    msg.actorDisplayName!!,
+                                    duration - position,
+                                    offset
+                                )
+                                .GetView({ isPaused ->
+                                    if (isPaused) {
+                                        chatViewModel.pauseMediaPlayer()
+                                    } else {
+                                        val filename = msg.selectedIndividualHashMap!!["name"]
+                                        val file = File(context.cacheDir, filename!!)
+                                        chatViewModel.startMediaPlayer(file.canonicalPath)
+                                    }
+                                }) {
+                                    chatViewModel.stopMediaPlayer()
+                                }
+                            }
+                        }
+                    }
+                }
+            }.collect()
         }
     }
 
