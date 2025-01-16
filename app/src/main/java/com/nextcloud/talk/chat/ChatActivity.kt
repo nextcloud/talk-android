@@ -954,14 +954,8 @@ class ChatActivity :
         }
 
         this.lifecycleScope.launch {
-            chatViewModel.mediaPlayerSeekbarObserver.onEach { pair ->
-                val pos = adapter?.getMessagePositionById(pair.second) ?: -1
-                if (pos > -1) {
-                    val message = (adapter?.items?.get(pos))?.item as ChatMessage
-                    message.voiceMessageSeekbarProgress = pair.first
-                    adapter?.update(message)
-                    adapter?.notifyItemChanged(pos)
-                }
+            chatViewModel.mediaPlayerSeekbarObserver.onEach { msg ->
+                adapter?.update(msg)
             }.collect()
         }
 
@@ -2473,9 +2467,6 @@ class ChatActivity :
         if (actionBar != null) {
             actionBar?.setIcon(null)
         }
-
-        // FIXME might be a barrier to cont play orientation change,
-        chatViewModel.stopMediaPlayer()
 
         adapter = null
         disposables.dispose()

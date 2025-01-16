@@ -35,7 +35,7 @@ import java.io.FileNotFoundException
  */
 object MediaPlayerManager : LifecycleAwareManager {
     val TAG: String = MediaPlayerManager::class.java.simpleName
-    private const val SEEKBAR_UPDATE_DELAY = 15L
+    private const val SEEKBAR_UPDATE_DELAY = 150L
     const val DIVIDER = 100f
 
     lateinit var appPreferences: AppPreferences
@@ -60,9 +60,9 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     private val playQueue = mutableListOf<Pair<String, ChatMessage>>()
 
-    val mediaPlayerSeekBarPositionPair: Flow<Pair<Int, String>>
+    val mediaPlayerSeekBarPositionMsg: Flow<ChatMessage>
         get() = _mediaPlayerSeekBarPositionPair
-    private val _mediaPlayerSeekBarPositionPair: MutableSharedFlow<Pair<Int, String>> = MutableSharedFlow()
+    private val _mediaPlayerSeekBarPositionPair: MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
     val mediaPlayerSeekBarPosition: Flow<Int>
         get() = _mediaPlayerSeekBarPosition
@@ -162,7 +162,9 @@ object MediaPlayerManager : LifecycleAwareManager {
         withContext(Dispatchers.IO) {
             while (true) {
                 if (!loop) {
-                    return@withContext
+                    // FIXME NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
+                    delay(SEEKBAR_UPDATE_DELAY)
+                    continue
                 }
                 if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
                     val pos = mediaPlayer!!.currentPosition
@@ -171,7 +173,9 @@ object MediaPlayerManager : LifecycleAwareManager {
                     val progressI = progress.fastRoundToInt()
                     _mediaPlayerSeekBarPosition.emit(progressI)
                     currentCycledMessage?.let {
-                        _mediaPlayerSeekBarPositionPair.emit(Pair(progressI, it.id))
+                        it.isPlayingVoiceMessage = true
+                        it.voiceMessageSeekbarProgress = progressI
+                        _mediaPlayerSeekBarPositionPair.emit(it)
                     }
                 }
 
