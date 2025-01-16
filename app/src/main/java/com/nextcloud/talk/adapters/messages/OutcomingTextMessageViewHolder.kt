@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
