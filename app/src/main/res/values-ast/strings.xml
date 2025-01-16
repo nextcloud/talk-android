@@ -170,7 +170,9 @@
     <string name="nc_lobby">Sala d\'espera</string>
     <string name="nc_lobby_waiting">Tas na sala d\'espera.</string>
     <string name="nc_locked_tap_to_unlock">Toca pa desbloquiar</string>
+    <string name="nc_message_failed">Falló</string>
     <string name="nc_message_failed_to_send">Nun se pue unviar el mensaxe:</string>
+    <string name="nc_message_offline">Desconectáu</string>
     <string name="nc_message_read">Lleóse\'l mensaxe</string>
     <string name="nc_message_sent">Unvióse\'l mensaxe</string>
     <string name="nc_microphone_permission_hint">P\'activar la comunicación per voz, concede\'l permisu «Micrófonu».</string>
