@@ -150,7 +150,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = ""
         }
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
-        val paddingSide = DisplayUtils.convertDpToPixel(8.0f, context!!).toInt()
+        val paddingSide = DisplayUtils.convertDpToPixel(HORIZONTAL_REACTION_PADDING, context!!).toInt()
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -339,5 +339,6 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         const val ACTOR_ID_CHANGELOG = "changelog"
         const val KEY_NAME = "name"
         const val MIN_IMAGE_HEIGHT = 100F
+        const val HORIZONTAL_REACTION_PADDING = 8.0F
     }
 }
