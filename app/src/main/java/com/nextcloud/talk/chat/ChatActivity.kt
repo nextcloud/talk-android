@@ -366,19 +366,6 @@ class ChatActivity :
     private var voiceMessageToRestoreAudioPosition = 0
     private var voiceMessageToRestoreWasPlaying = false
 
-    private val playbackSpeedPreferencesObserver: (Map<String, PlaybackSpeed>) -> Unit = { speedPreferenceLiveData ->
-        mediaPlayer?.let { mediaPlayer ->
-            (mediaPlayer.isPlaying == true).also {
-                currentlyPlayedVoiceMessage?.let { message ->
-                    mediaPlayer.playbackParams.let { params ->
-                        params.setSpeed(chatViewModel.getPlaybackSpeedPreference(message).value)
-                        mediaPlayer.playbackParams = params
-                    }
-                }
-            }
-        }
-    }
-
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
             if (token != null) {
@@ -455,10 +442,6 @@ class ChatActivity :
         }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
-
-        appPreferences.getPreferredPlayback(conversationUser!!.userId).let { speed ->
-            chatViewModel.setPlayBack(speed)
-        }
 
         initObservers()
 
@@ -1202,8 +1185,6 @@ class ChatActivity :
 
         setupSwipeToReply()
 
-        chatViewModel.voiceMessagePlaybackSpeedPreferences.observe(this, playbackSpeedPreferencesObserver)
-
         binding.unreadMessagesPopup.setOnClickListener {
             binding.messagesListView.smoothScrollToPosition(0)
             binding.unreadMessagesPopup.visibility = View.GONE
@@ -1749,6 +1730,7 @@ class ChatActivity :
         userId: String,
         listener: (speed: PlaybackSpeed) -> Unit
     ) {
+        // TODO this code is tricky. His impl worked, need to look at it
         CoroutineScope(Dispatchers.Default).launch {
             chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
                 withContext(Dispatchers.Main) {
@@ -2427,8 +2409,6 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
-
-        chatViewModel.voiceMessagePlaybackSpeedPreferences.removeObserver(playbackSpeedPreferencesObserver)
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations

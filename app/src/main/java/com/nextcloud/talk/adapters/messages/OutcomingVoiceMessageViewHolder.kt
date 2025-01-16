@@ -38,7 +38,9 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ExecutionException
@@ -89,7 +91,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
 
         val filename = message.selectedIndividualHashMap!!["name"]
-        val retrieved = appPreferences!!.getWaveFormFromFile(filename)
+        val retrieved = appPreferences.getWaveFormFromFile(filename)
         if (retrieved.isNotEmpty() &&
             message.voiceMessageFloatArray == null ||
             message.voiceMessageFloatArray?.isEmpty() == true
@@ -136,8 +138,12 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
         setReadStatus(message.readStatus)
 
-        voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
-            binding.playbackSpeedControlBtn.setSpeed(speed)
+        CoroutineScope(Dispatchers.Default).launch {
+            (voiceMessageInterface as ChatActivity).chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
+                withContext(Dispatchers.Main) {
+                    binding.playbackSpeedControlBtn.setSpeed(speed)
+                }
+            }.collect()
         }
 
         binding.playbackSpeedControlBtn.setSpeed(appPreferences.getPreferredPlayback(message.actorId))

@@ -45,6 +45,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
@@ -115,7 +117,7 @@ class ChatViewModel @Inject constructor(
 
     val voiceMessagePlayBackUIFlow: Flow<PlaybackSpeed>
         get() = _voiceMessagePlayBackUIFlow
-    val _voiceMessagePlayBackUIFlow: MutableSharedFlow<PlaybackSpeed> = MutableSharedFlow()
+    private val _voiceMessagePlayBackUIFlow: MutableSharedFlow<PlaybackSpeed> = MutableSharedFlow()
 
     val getAudioFocusChange: LiveData<AudioFocusRequestManager.ManagerState>
         get() = audioFocusRequestManager.getManagerState
@@ -135,10 +137,6 @@ class ChatViewModel @Inject constructor(
     private val _outOfOfficeViewState = MutableLiveData<OutOfOfficeUIState>(OutOfOfficeUIState.None)
     val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
         get() = _outOfOfficeViewState
-
-    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
-    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
-        get() = _voiceMessagePlaybackSpeedPreferences
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -679,16 +677,12 @@ class ChatViewModel @Inject constructor(
             emit(message.first())
         }
 
-    fun applyPlaybackSpeedPreferences(speeds: Map<String, PlaybackSpeed>) {
-        _voiceMessagePlaybackSpeedPreferences.postValue(speeds)
-    }
-
-    fun getPlaybackSpeedPreference(message: ChatMessage) =
-        _voiceMessagePlaybackSpeedPreferences.value?.get(message.user.id) ?: PlaybackSpeed.NORMAL
-
     fun setPlayBack(speed: PlaybackSpeed) {
         mediaPlayerManager.setPlayBackSpeed(speed)
-        _voiceMessagePlayBackUIFlow.tryEmit(speed)
+        CoroutineScope(Dispatchers.Default).launch {
+            _voiceMessagePlayBackUIFlow.emit(speed)
+        }
+
     }
 
     fun startMediaPlayer(path: String) {
