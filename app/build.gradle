@@ -184,7 +184,7 @@ dependencies {
 
     implementation("androidx.compose.runtime:runtime:1.7.6")
     implementation 'androidx.preference:preference-ktx:1.2.1'
-    implementation 'androidx.datastore:datastore-core:1.1.1'
+    implementation 'androidx.datastore:datastore-core:1.1.2'
     implementation 'androidx.datastore:datastore-preferences:1.1.1'
     implementation 'androidx.test.ext:junit-ktx:1.2.1'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
