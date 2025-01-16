@@ -85,7 +85,10 @@
          <trusted-key id="31BAE2E51D95E0F8AD9B7BCC40A3C4432BD7308C" group="com.googlecode.juniversalchardet" name="juniversalchardet" version="1.0.3"/>
          <trusted-key id="3288B8BE8512D6C0CA185268C51E6CBC7FF46F0B" group="com.google.auto"/>
          <trusted-key id="33FD4BFD33554634053D73C0C2148900BCD3C2AF" group="org.jetbrains" name="annotations" version="23.0.0"/>
-         <trusted-key id="34441E504A937F43EB0DAEF96A65176A0FB1CD0B" group="org.codehaus.groovy"/>
+         <trusted-key id="34441E504A937F43EB0DAEF96A65176A0FB1CD0B">
+            <trusting group="org.apache.groovy" name="groovy-bom" version="4.0.22"/>
+            <trusting group="org.codehaus.groovy"/>
+         </trusted-key>
          <trusted-key id="38FD31D9C6FD39D58EF1AB0DE96EF7AE7D967845" group="com.vanniktech"/>
          <trusted-key id="3A1AAFA9B89A1D1DDD5F3A4B98AD2E19BFF4106D">
             <trusting group="org.osmdroid" name="osmdroid-android" version="6.1.18"/>
@@ -106,6 +109,7 @@
          <trusted-key id="48B086A7D843CFA258E83286928FBF39003C0425">
             <trusting group="org.springframework" name="spring-framework-bom" version="5.3.31"/>
             <trusting group="org.springframework" name="spring-framework-bom" version="5.3.32"/>
+            <trusting group="org.springframework" name="spring-framework-bom" version="5.3.39"/>
          </trusted-key>
          <trusted-key id="4A2E4BE286EDAE3ADB3A3C26C21CE653B639E41A" group="com.bluelinelabs"/>
          <trusted-key id="4BF79B8259007B566D2FCE82296CD27F60EED12C" group="com.google.crypto.tink" name="tink" version="1.7.0"/>
