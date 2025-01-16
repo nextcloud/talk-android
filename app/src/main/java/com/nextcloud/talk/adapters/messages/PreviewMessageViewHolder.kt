@@ -150,6 +150,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = ""
         }
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+        val paddingSide = DisplayUtils.convertDpToPixel(8.0f, context!!).toInt()
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -159,6 +160,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             true,
             viewThemeUtils!!
         )
+        reactionsBinding!!.reactionsEmojiWrapper.setPadding(paddingSide,0,paddingSide,0)
 
         if (userAvatar != null) {
             if (message.isGrouped || message.isOneToOneConversation) {
