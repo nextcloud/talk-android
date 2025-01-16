@@ -26,7 +26,6 @@ import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
@@ -45,8 +44,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
-    private val datastore: AppPreferences,
-    private val monitor: NetworkMonitor,
+    private val networkMonitor: NetworkMonitor,
     private val userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
@@ -71,8 +69,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 >
             > = MutableSharedFlow()
 
-    override val updateMessageFlow:
-        Flow<ChatMessage>
+    override val updateMessageFlow: Flow<ChatMessage>
         get() = _updateMessageFlow
 
     private val _updateMessageFlow:
@@ -85,8 +82,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val _lastCommonReadFlow:
         MutableSharedFlow<Int> = MutableSharedFlow()
 
-    override val lastReadMessageFlow:
-        Flow<Int>
+    override val lastReadMessageFlow: Flow<Int>
         get() = _lastReadMessageFlow
 
     private val _lastReadMessageFlow:
@@ -278,7 +274,7 @@ class OfflineFirstChatRepository @Inject constructor(
             var showUnreadMessagesMarker = true
 
             while (true) {
-                if (!monitor.isOnline.first() || itIsPaused) {
+                if (!networkMonitor.isOnline.value || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
                     // sync database with server
@@ -469,7 +465,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
-        if (!monitor.isOnline.first()) {
+        if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
             return null
         }
