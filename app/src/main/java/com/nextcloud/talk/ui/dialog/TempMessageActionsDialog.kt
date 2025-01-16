@@ -23,7 +23,6 @@ import com.nextcloud.talk.databinding.DialogTempMessageActionsBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DateUtils
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -59,10 +58,9 @@ class TempMessageActionsDialog(
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
-            val isOnline = networkMonitor.isOnline.first()
-            initResendMessage(message.sendingFailed && isOnline)
-            initMenuEditMessage(message.sendingFailed || !isOnline)
-            initMenuDeleteMessage(message.sendingFailed || !isOnline)
+            initResendMessage(message.sendingFailed && networkMonitor.isOnline.value)
+            initMenuEditMessage(message.sendingFailed || !networkMonitor.isOnline.value)
+            initMenuDeleteMessage(message.sendingFailed || !networkMonitor.isOnline.value)
             initMenuItemCopy()
         }
     }

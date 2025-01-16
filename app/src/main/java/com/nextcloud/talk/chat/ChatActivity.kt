@@ -201,7 +201,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -452,7 +451,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
-            if (adapter?.isEmpty == true && networkMonitor.isOnline.first()) {
+            if (adapter?.isEmpty == true && networkMonitor.isOnline.value) {
                 binding.progressBar.visibility = View.VISIBLE
             }
         }
@@ -927,7 +926,7 @@ class ChatActivity :
             chatViewModel.getGeneralUIFlow.onEach { key ->
                 when (key) {
                     NO_OFFLINE_MESSAGES_FOUND -> {
-                        if (networkMonitor.isOnline.first().not()) {
+                        if (networkMonitor.isOnline.value.not()) {
                             binding.offline.root.visibility = View.VISIBLE
                         }
                     }

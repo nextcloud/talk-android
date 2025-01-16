@@ -51,7 +51,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
@@ -134,7 +133,7 @@ class MessageActionsDialog(
                         initMenuAddToNote(
                             !message.isDeleted &&
                                 !ConversationUtils.isNoteToSelfConversation(currentConversation) &&
-                                networkMonitor.isOnline.first(),
+                                networkMonitor.isOnline.value,
                             state.roomToken
                         )
                     }
@@ -147,16 +146,16 @@ class MessageActionsDialog(
             }
         }
 
-        initMenuItems()
+        initMenuItems(networkMonitor.isOnline.value)
     }
 
-    private fun initMenuItems() {
+    private fun initMenuItems(isOnline: Boolean) {
         this.lifecycleScope.launch {
             initMenuItemTranslate(
                 !message.isDeleted &&
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                     CapabilitiesUtil.isTranslationsSupported(spreedCapabilities) &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
             initMenuEditorDetails(message.lastEditTimestamp!! != 0L && !message.isDeleted)
             initMenuReplyToMessage(message.replyable && hasChatPermission)
@@ -165,29 +164,29 @@ class MessageActionsDialog(
                     hasUserId(user) &&
                     hasUserActorId(message) &&
                     currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
             initMenuEditMessage(isMessageEditable)
-            initMenuDeleteMessage(showMessageDeletionButton && networkMonitor.isOnline.first())
+            initMenuDeleteMessage(showMessageDeletionButton && isOnline)
             initMenuForwardMessage(
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() &&
                     !(message.isDeletedCommentMessage || message.isDeleted) &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
             initMenuRemindMessage(
                 !message.isDeleted &&
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                     ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
-            initMenuShare(messageHasFileAttachment || messageHasRegularText && networkMonitor.isOnline.first())
+            initMenuShare(messageHasFileAttachment || messageHasRegularText && isOnline)
             initMenuItemOpenNcApp(
                 ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType() &&
-                    networkMonitor.isOnline.first()
+                    isOnline
             )
             initMenuItemSave(message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)
         }

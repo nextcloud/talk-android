@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -133,8 +134,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
         }
 
-        CoroutineScope(Dispatchers.Main).launch {
-            if (message.isTemporary && !networkMonitor.isOnline.first()) {
+        val chatActivity = commonMessageInterface as ChatActivity
+
+        chatActivity.lifecycleScope.launch {
+            if (message.isTemporary && !networkMonitor.isOnline.value) {
                 updateStatus(
                     R.drawable.ic_signal_wifi_off_white_24dp,
                     context.resources?.getString(R.string.nc_message_offline)
