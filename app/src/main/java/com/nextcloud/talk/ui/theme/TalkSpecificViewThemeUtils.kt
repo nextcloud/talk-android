@@ -168,12 +168,12 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
-    fun setCheckedBackground(linearLayout: LinearLayout, outgoing: Boolean) {
+    fun setCheckedBackground(linearLayout: LinearLayout, outgoing: Boolean, isBubbled: Boolean) {
         withScheme(linearLayout) { scheme ->
             val drawable = AppCompatResources
                 .getDrawable(linearLayout.context, R.drawable.reaction_self_background)!!
                 .mutate()
-            val backgroundColor = if (outgoing) {
+            val backgroundColor = if (outgoing && isBubbled) {
                 ContextCompat.getColor(
                     linearLayout.context,
                     R.color.bg_message_list_incoming_bubble

@@ -28,13 +28,13 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.components.filebrowser.models.BrowserFile
 import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
@@ -158,7 +158,8 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             reactionsBinding!!,
             messageText.context,
             true,
-            viewThemeUtils!!
+            viewThemeUtils!!,
+            hasBubbleBackground(message)
         )
         reactionsBinding!!.reactionsEmojiWrapper.setPadding(paddingSide,0,paddingSide,0)
 
@@ -313,6 +314,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
 
     fun assignPreviewMessageInterface(previewMessageInterface: PreviewMessageInterface?) {
         this.previewMessageInterface = previewMessageInterface
+    }
+
+    fun hasBubbleBackground(message: ChatMessage): Boolean {
+        return !message.isVoiceMessage && message.message != "{file}";
     }
 
     abstract val messageText: EmojiTextView
