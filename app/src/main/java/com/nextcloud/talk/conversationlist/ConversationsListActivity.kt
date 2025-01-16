@@ -455,8 +455,20 @@ class ConversationsListActivity :
                 newItems.add(i)
             }
         }
+
+        val archiveFilterOn = filterState[FilterConversationFragment.ARCHIVE] ?: false
+        if (archiveFilterOn && newItems.isEmpty()) {
+            binding.noArchivedConversationLayout.visibility = View.VISIBLE
+        } else {
+            binding.noArchivedConversationLayout.visibility = View.GONE
+        }
+
         adapter!!.updateDataSet(newItems, true)
         setFilterableItems(newItems)
+        if (archiveFilterOn) {
+            // Never a notification from archived conversations
+            binding.newMentionPopupBubble.visibility = View.GONE
+        }
 
         updateFilterConversationButtonColor()
     }

@@ -168,7 +168,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <ImageView
             android:id="@+id/empty_list_icon"
@@ -208,6 +208,38 @@
             android:textAlignment="center"
             android:textColor="@color/textColorMaxContrast"
             android:textSize="16sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/no_archived_conversation_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/no_archived_conversation_icon"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:contentDescription="@string/nc_app_product_name"
+            android:src="@drawable/ic_list_empty_error"
+            app:tint="@color/hwSecurityRed" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/no_archived_conversation_icon"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="2"
+            android:paddingTop="@dimen/standard_padding"
+            android:paddingBottom="@dimen/standard_half_padding"
+            android:text="@string/no_conversations_archived"
+            android:textAlignment="center"
+            android:textColor="@color/conversation_item_header"
+            android:textSize="22sp" />
     </RelativeLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

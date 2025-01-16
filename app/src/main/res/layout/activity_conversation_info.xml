@@ -447,7 +447,7 @@
                     android:layout_marginEnd="@dimen/standard_margin"
                     android:contentDescription="@null"
                     tools:src="@drawable/outline_archive_24"
-                    app:tint="@color/grey_600" />
+                    app:tint="@color/nc_darkYellow" />
 
                 <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/archive_conversation_text"
@@ -455,6 +455,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center_vertical"
                     tools:text="@string/unarchive_conversation"
+                    android:textColor="@color/nc_darkYellow"
                     android:textSize="@dimen/headline_text_size" />
 
             </LinearLayout>
@@ -464,7 +465,8 @@
                 android:layout_marginHorizontal="@dimen/standard_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/archive_hint" />
+                android:text="@string/archive_hint"
+                android:textColor="@color/nc_darkYellow"/>
 
             <LinearLayout
                 android:id="@+id/danger_zone_options"
