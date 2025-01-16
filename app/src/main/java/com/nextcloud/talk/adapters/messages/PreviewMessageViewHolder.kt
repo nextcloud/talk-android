@@ -161,7 +161,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             viewThemeUtils!!,
             hasBubbleBackground(message)
         )
-        reactionsBinding!!.reactionsEmojiWrapper.setPadding(paddingSide,0,paddingSide,0)
+        reactionsBinding!!.reactionsEmojiWrapper.setPadding(paddingSide, 0, paddingSide, 0)
 
         if (userAvatar != null) {
             if (message.isGrouped || message.isOneToOneConversation) {
@@ -317,7 +317,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     }
 
     fun hasBubbleBackground(message: ChatMessage): Boolean {
-        return !message.isVoiceMessage && message.message != "{file}";
+        return !message.isVoiceMessage && message.message != "{file}"
     }
 
     abstract val messageText: EmojiTextView
