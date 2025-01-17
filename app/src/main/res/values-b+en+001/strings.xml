@@ -389,6 +389,7 @@
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>
     <string name="nc_screen_lock_timeout_600">10 minutes</string>
+    <string name="nc_screen_lock_timeout_immediate">Immediate</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>

@@ -389,6 +389,7 @@
     <string name="nc_screen_lock_timeout_300">5分鐘</string>
     <string name="nc_screen_lock_timeout_60">一分鐘</string>
     <string name="nc_screen_lock_timeout_600">10分鐘</string>
+    <string name="nc_screen_lock_timeout_immediate">即時</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
