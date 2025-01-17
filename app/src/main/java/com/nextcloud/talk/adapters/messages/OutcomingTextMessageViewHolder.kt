@@ -89,6 +89,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             itemView
         )
 
+        var isBubbled = true
         if (
             (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
             TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
@@ -96,6 +97,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
             layoutParams.isWrapBefore = true
             realView.isSelected = true
+            isBubbled = false
         }
 
         setBubbleOnChatMessage(message)
@@ -154,7 +156,8 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.reactions,
             context,
             true,
-            viewThemeUtils
+            viewThemeUtils,
+            isBubbled
         )
     }
 

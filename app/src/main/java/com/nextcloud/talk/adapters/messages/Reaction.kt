@@ -26,7 +26,8 @@ class Reaction {
         binding: ReactionsInsideMessageBinding,
         context: Context,
         isOutgoingMessage: Boolean,
-        viewThemeUtils: ViewThemeUtils
+        viewThemeUtils: ViewThemeUtils,
+        isBubbled: Boolean = true
     ) {
         binding.reactionsEmojiWrapper.removeAllViews()
 
@@ -64,7 +65,8 @@ class Reaction {
                         viewThemeUtils,
                         isOutgoingMessage,
                         isSelfReaction
-                    )
+                    ),
+                    isBubbled
                 )
 
                 emojiWithAmountWrapper.setOnClickListener {
@@ -86,7 +88,8 @@ class Reaction {
         context: Context,
         emoji: String,
         amount: Int,
-        layoutInfo: EmojiWithAmountWrapperLayoutInfo
+        layoutInfo: EmojiWithAmountWrapperLayoutInfo,
+        isBubbled: Boolean
     ): LinearLayout {
         val emojiWithAmountWrapper = LinearLayout(context)
         emojiWithAmountWrapper.orientation = LinearLayout.HORIZONTAL
@@ -96,7 +99,11 @@ class Reaction {
         emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
 
         if (layoutInfo.isSelfReaction) {
-            layoutInfo.viewThemeUtils.talk.setCheckedBackground(emojiWithAmountWrapper, layoutInfo.isOutgoingMessage)
+            layoutInfo.viewThemeUtils.talk.setCheckedBackground(
+                emojiWithAmountWrapper,
+                layoutInfo.isOutgoingMessage,
+                isBubbled
+            )
 
             emojiWithAmountWrapper.setPaddingRelative(
                 layoutInfo.paddingSide,
