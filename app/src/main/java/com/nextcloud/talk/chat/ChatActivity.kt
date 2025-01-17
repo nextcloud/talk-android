@@ -861,14 +861,15 @@ class ChatActivity :
                     var chatMessageList = triple.third
 
                     chatMessageList = handleSystemMessages(chatMessageList)
+                    if (chatMessageList.isEmpty()) {
+                        return@onEach
+                    }
 
                     determinePreviousMessageIds(chatMessageList)
 
                     handleExpandableSystemMessages(chatMessageList)
 
-                    if (chatMessageList.isNotEmpty() &&
-                        ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType
-                    ) {
+                    if (ChatMessage.SystemMessageType.CLEARED_CHAT == chatMessageList[0].systemMessageType) {
                         adapter?.clear()
                         adapter?.notifyDataSetChanged()
                     }
