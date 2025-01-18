@@ -136,6 +136,7 @@
     <string name="nc_dialog_save_to_storage_continue">Tęsti?</string>
     <string name="nc_dialog_save_to_storage_no">Ne</string>
     <string name="nc_dialog_save_to_storage_yes">Taip</string>
+    <string name="nc_edit_icon">Taisyti piktogramą</string>
     <string name="nc_edit_message">Taisyti</string>
     <string name="nc_email">El. paštas</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
@@ -294,7 +295,7 @@
     <string name="nc_settings_theme_title">Apipavidalinimas</string>
     <string name="nc_settings_warning">Įspėjimas</string>
     <string name="nc_settings_wrong_account">Iš naujo įgaliota gali būti tik esama paskyra</string>
-    <string name="nc_share_link">Bendrinimo nuoroda</string>
+    <string name="nc_share_link">Viešinio nuoroda</string>
     <string name="nc_share_this_location">Bendrinti šią vietą</string>
     <string name="nc_share_to_choose_account">Parinkti paskyrą</string>
     <string name="nc_shared_items">Bendrinami elementai</string>
