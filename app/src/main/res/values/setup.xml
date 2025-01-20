@@ -20,7 +20,7 @@
 
     <!-- Branding -->
     <bool name="hide_provider">false</bool>
-    <bool name="hide_auth_cert">true</bool>
+    <bool name="hide_auth_cert">false</bool>
     <bool name="multiaccount_support">true</bool>
     <string name="weblogin_url" translatable="false"></string>
 
