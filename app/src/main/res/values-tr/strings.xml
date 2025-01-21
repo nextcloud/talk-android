@@ -389,6 +389,7 @@
     <string name="nc_screen_lock_timeout_300">5 dakika</string>
     <string name="nc_screen_lock_timeout_60">1 dakika</string>
     <string name="nc_screen_lock_timeout_600">10 dakika</string>
+    <string name="nc_screen_lock_timeout_immediate">Hemen</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
