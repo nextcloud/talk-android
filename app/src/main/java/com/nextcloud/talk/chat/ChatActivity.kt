@@ -311,7 +311,6 @@ class ChatActivity :
     var adapter: TalkMessagesListAdapter<ChatMessage>? = null
     var mentionAutocomplete: Autocomplete<*>? = null
     var layoutManager: LinearLayoutManager? = null
-    var pullChatMessagesPending = false
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
 
@@ -434,20 +433,22 @@ class ChatActivity :
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
+        chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
+
         binding = ActivityChatBinding.inflate(layoutInflater)
-        setupActionBar()
+        // setupActionBar()
         setContentView(binding.root)
         setupSystemColors()
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
-        handleIntent(intent)
+        conversationUser = currentUserProvider.currentUser.blockingGet() // TODO: -> ViewModel
+        handleIntent(intent) // TODO: -> ViewModel
 
         messageInputFragment = getMessageInputFragment()
 
-        chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
+        chatViewModel.getRoom(roomToken)
 
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository())
+        messageInputViewModel.setData(chatViewModel.getChatRepository()) // TODO: -> ViewModel
 
         this.lifecycleScope.launch {
             delay(DELAY_TO_SHOW_PROGRESS_BAR)
@@ -461,8 +462,6 @@ class ChatActivity :
         appPreferences.readVoiceMessagePlaybackSpeedPreferences().let { playbackSpeedPreferences ->
             chatViewModel.applyPlaybackSpeedPreferences(playbackSpeedPreferences)
         }
-
-        initObservers()
 
         if (savedInstanceState != null) {
             // Restore value of members from saved state
@@ -517,7 +516,7 @@ class ChatActivity :
         }
     }
 
-    private fun handleIntent(intent: Intent) {
+    private fun handleIntent(intent: Intent) { // TODO: -> ViewModel
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
@@ -578,53 +577,16 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
-        this.lifecycleScope.launch {
-            chatViewModel.getConversationFlow
-                .onEach { conversationModel ->
-                    currentConversation = conversationModel
-
-                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-
-                    chatViewModel.setData(
-                        currentConversation!!,
-                        credentials!!,
-                        urlForChatting
-                    )
-
-                    logConversationInfos("GetRoomSuccessState")
-
-                    if (adapter == null) {
-                        initAdapter()
-                        binding.messagesListView.setAdapter(adapter)
-                        layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
-                    }
-
-                    chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
-                }.collect()
-        }
-
-        chatViewModel.getRoomViewState.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.GetRoomSuccessState -> {
-                    // unused atm
-                }
-
-                is ChatViewModel.GetRoomErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
-            }
-        }
-
         chatViewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetCapabilitiesUpdateState -> {
-                    if (currentConversation != null) {
+                    if (chatViewModel.currentConversation != null) {
                         spreedCapabilities = state.spreedCapabilities
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                        participantPermissions = ParticipantPermissions(
+                            spreedCapabilities,
+                            chatViewModel.currentConversation!!
+                        )
 
                         invalidateOptionsMenu()
                         checkShowCallButtons()
@@ -639,10 +601,21 @@ class ChatActivity :
                 }
 
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
-                    if (currentConversation != null) {
+                    setupActionBar()
+
+                    if (adapter == null) {
+                        initAdapter()
+                        binding.messagesListView.setAdapter(adapter)
+                        layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+                    }
+
+                    if (chatViewModel.currentConversation != null) {
                         spreedCapabilities = state.spreedCapabilities
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
-                        participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
+                        participantPermissions = ParticipantPermissions(
+                            spreedCapabilities,
+                            chatViewModel.currentConversation!!
+                        )
 
                         supportFragmentManager.commit {
                             setReorderingAllowed(true) // optimizes out redundant replace operations
@@ -662,15 +635,16 @@ class ChatActivity :
                         setActionBarTitle()
                         checkShowCallButtons()
                         checkLobbyState()
-                        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
-                            currentConversation?.status == "dnd"
+                        if (chatViewModel.currentConversation?.type ==
+                            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+                            chatViewModel.currentConversation?.status == "dnd"
                         ) {
                             conversationUser?.let { user ->
                                 val credentials = ApiUtils.getCredentials(user.username, user.token)
                                 chatViewModel.outOfOfficeStatusOfUser(
                                     credentials!!,
                                     user.baseUrl!!,
-                                    currentConversation!!.name
+                                    chatViewModel.currentConversation!!.name
                                 )
                             }
                         }
@@ -705,11 +679,13 @@ class ChatActivity :
         chatViewModel.joinRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.JoinRoomSuccessState -> {
-                    currentConversation = state.conversationModel
+                    chatViewModel.currentConversation = state.conversationModel
 
-                    sessionIdAfterRoomJoined = currentConversation!!.sessionId
-                    ApplicationWideCurrentRoomHolder.getInstance().session = currentConversation!!.sessionId
-                    ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken = currentConversation!!.token
+                    sessionIdAfterRoomJoined = chatViewModel.currentConversation!!.sessionId
+                    ApplicationWideCurrentRoomHolder.getInstance().session =
+                        chatViewModel.currentConversation!!.sessionId
+                    ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken =
+                        chatViewModel.currentConversation!!.token
                     ApplicationWideCurrentRoomHolder.getInstance().userInRoom = conversationUser
 
                     logConversationInfos("joinRoomWithPassword#onNext")
@@ -744,7 +720,7 @@ class ChatActivity :
                         getRoomInfoTimerHandler?.removeCallbacksAndMessages(null)
                     }
 
-                    if (webSocketInstance != null && currentConversation != null) {
+                    if (webSocketInstance != null && chatViewModel.currentConversation != null) {
                         webSocketInstance?.joinRoomWithRoomTokenAndSession(
                             "",
                             sessionIdAfterRoomJoined
@@ -1159,16 +1135,14 @@ class ChatActivity :
     override fun onResume() {
         super.onResume()
 
-        logConversationInfos("onResume")
+        initObservers()
 
-        pullChatMessagesPending = false
+        // logConversationInfos("onResume")
 
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(localParticipantMessageListener)
         webSocketInstance?.getSignalingMessageReceiver()?.addListener(conversationMessageListener)
 
         cancelNotificationsForCurrentConversation()
-
-        chatViewModel.getRoom(roomToken)
 
         actionBar?.show()
 
@@ -1211,8 +1185,8 @@ class ChatActivity :
             }
         })
 
-        loadAvatarForStatusBar()
-        setActionBarTitle()
+        // loadAvatarForStatusBar()
+        // setActionBarTitle()
         viewThemeUtils.material.colorToolbarOverflowIcon(binding.chatToolbar)
     }
 
@@ -1245,7 +1219,7 @@ class ChatActivity :
         val senderId = if (!conversationUser!!.userId.equals("?")) {
             "users/" + conversationUser!!.userId
         } else {
-            currentConversation?.actorType + "/" + currentConversation?.actorId
+            chatViewModel.currentConversation?.actorType + "/" + chatViewModel.currentConversation?.actorId
         }
 
         Log.d(TAG, "Initialize TalkMessagesListAdapter with senderId: $senderId")
@@ -1322,7 +1296,7 @@ class ChatActivity :
 
         val payload = MessagePayload(
             roomToken,
-            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!),
+            ConversationUtils.isParticipantOwnerOrModerator(chatViewModel.currentConversation!!),
             profileBottomSheet
         )
 
@@ -1525,14 +1499,14 @@ class ChatActivity :
     }
 
     private fun loadAvatarForStatusBar() {
-        if (currentConversation == null) {
+        if (chatViewModel.currentConversation == null) {
             return
         }
 
         if (isOneToOneConversation()) {
             var url = ApiUtils.getUrlForAvatar(
                 conversationUser!!.baseUrl!!,
-                currentConversation!!.name,
+                chatViewModel.currentConversation!!.name,
                 true
             )
 
@@ -1549,7 +1523,7 @@ class ChatActivity :
                         if (drawable != null && avatarSize > 0) {
                             val bitmap = drawable.toBitmap(avatarSize, avatarSize)
                             val status = StatusDrawable(
-                                currentConversation!!.status,
+                                chatViewModel.currentConversation!!.status,
                                 null,
                                 size,
                                 0,
@@ -1561,7 +1535,7 @@ class ChatActivity :
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
                                 .setImageDrawable(status)
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status).contentDescription =
-                                currentConversation?.status
+                                chatViewModel.currentConversation?.status
                             binding.chatToolbar.findViewById<FrameLayout>(R.id.chat_toolbar_avatar_container)
                                 .visibility = View.VISIBLE
                         } else {
@@ -1599,19 +1573,19 @@ class ChatActivity :
     }
 
     fun isOneToOneConversation() =
-        currentConversation != null &&
-            currentConversation?.type != null &&
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        chatViewModel.currentConversation != null &&
+            chatViewModel.currentConversation?.type != null &&
+            chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun isGroupConversation() =
-        currentConversation != null &&
-            currentConversation?.type != null &&
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL
+        chatViewModel.currentConversation != null &&
+            chatViewModel.currentConversation?.type != null &&
+            chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL
 
     private fun isPublicConversation() =
-        currentConversation != null &&
-            currentConversation?.type != null &&
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
+        chatViewModel.currentConversation != null &&
+            chatViewModel.currentConversation?.type != null &&
+            chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
 
     private fun updateRoomTimerHandler(delay: Long = -1) {
         val delayForRecursiveCall = if (shouldShowLobby()) {
@@ -1634,7 +1608,7 @@ class ChatActivity :
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
             runOnUiThread {
-                if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
+                if (chatViewModel.currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
                     Snackbar.make(
                         binding.root,
                         context.resources.getString(R.string.switch_to_main_room),
@@ -2105,7 +2079,7 @@ class ChatActivity :
     private fun checkShowCallButtons() {
         if (isReadOnlyConversation() ||
             shouldShowLobby() ||
-            ConversationUtils.isNoteToSelfConversation(currentConversation)
+            ConversationUtils.isNoteToSelfConversation(chatViewModel.currentConversation)
         ) {
             disableCallButtons()
         } else {
@@ -2125,10 +2099,11 @@ class ChatActivity :
     }
 
     private fun shouldShowLobby(): Boolean {
-        if (currentConversation != null) {
+        if (chatViewModel.currentConversation != null) {
             return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
-                currentConversation?.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-                !ConversationUtils.canModerate(currentConversation!!, spreedCapabilities) &&
+                chatViewModel.currentConversation?.lobbyState ==
+                ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
+                !ConversationUtils.canModerate(chatViewModel.currentConversation!!, spreedCapabilities) &&
                 !participantPermissions.canIgnoreLobby()
         }
         return false
@@ -2161,13 +2136,13 @@ class ChatActivity :
     }
 
     private fun isReadOnlyConversation(): Boolean =
-        currentConversation?.conversationReadOnlyState != null &&
-            currentConversation?.conversationReadOnlyState ==
+        chatViewModel.currentConversation?.conversationReadOnlyState != null &&
+            chatViewModel.currentConversation?.conversationReadOnlyState ==
             ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY
 
     private fun checkLobbyState() {
-        if (currentConversation != null &&
-            ConversationUtils.isLobbyViewApplicable(currentConversation!!, spreedCapabilities) &&
+        if (chatViewModel.currentConversation != null &&
+            ConversationUtils.isLobbyViewApplicable(chatViewModel.currentConversation!!, spreedCapabilities) &&
             shouldShowLobby()
         ) {
             showLobbyView()
@@ -2188,11 +2163,11 @@ class ChatActivity :
         sb.append(resources!!.getText(R.string.nc_lobby_waiting))
             .append("\n\n")
 
-        if (currentConversation?.lobbyTimer != null &&
-            currentConversation?.lobbyTimer !=
+        if (chatViewModel.currentConversation?.lobbyTimer != null &&
+            chatViewModel.currentConversation?.lobbyTimer !=
             0L
         ) {
-            val timestampMS = (currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
+            val timestampMS = (chatViewModel.currentConversation?.lobbyTimer ?: 0) * DateConstants.SECOND_DIVIDER
             val stringWithStartDate = String.format(
                 resources!!.getString(R.string.nc_lobby_start_date),
                 dateUtils.getLocalDateTimeStringFromTimestamp(timestampMS)
@@ -2203,7 +2178,7 @@ class ChatActivity :
                 .append("\n\n")
         }
 
-        sb.append(currentConversation!!.description)
+        sb.append(chatViewModel.currentConversation!!.description)
         binding.lobby.lobbyTextView.text = sb.toString()
     }
 
@@ -2503,7 +2478,7 @@ class ChatActivity :
 
         if (token == "") room = roomToken else room = token
 
-        chatViewModel.uploadFile(fileUri, room, currentConversation?.displayName!!, metaData)
+        chatViewModel.uploadFile(fileUri, room, chatViewModel.currentConversation?.displayName!!, metaData)
     }
 
     private fun showLocalFilePicker() {
@@ -2560,7 +2535,7 @@ class ChatActivity :
     }
 
     private fun validSessionId(): Boolean =
-        currentConversation != null &&
+        chatViewModel.currentConversation != null &&
             sessionIdAfterRoomJoined?.isNotEmpty() == true &&
             sessionIdAfterRoomJoined != "0"
 
@@ -2628,32 +2603,32 @@ class ChatActivity :
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
-            if (currentConversation?.displayName != null) {
+            if (chatViewModel.currentConversation?.displayName != null) {
                 try {
-                    EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
+                    EmojiCompat.get().process(chatViewModel.currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
                     Log.e(TAG, "setActionBarTitle failed $e")
-                    currentConversation?.displayName
+                    chatViewModel.currentConversation?.displayName
                 }
             } else {
                 ""
             }
 
-        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""
-            if (currentConversation?.statusIcon != null) {
-                statusMessage += currentConversation?.statusIcon
+            if (chatViewModel.currentConversation?.statusIcon != null) {
+                statusMessage += chatViewModel.currentConversation?.statusIcon
             }
-            if (currentConversation?.statusMessage != null) {
-                statusMessage += currentConversation?.statusMessage
+            if (chatViewModel.currentConversation?.statusMessage != null) {
+                statusMessage += chatViewModel.currentConversation?.statusMessage
             }
             statusMessageViewContents(statusMessage)
         } else {
-            if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
-                currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
+            if (chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_GROUP_CALL ||
+                chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_PUBLIC_CALL
             ) {
                 var descriptionMessage = ""
-                descriptionMessage += currentConversation?.description
+                descriptionMessage += chatViewModel.currentConversation?.description
                 statusMessageViewContents(descriptionMessage)
             }
         }
@@ -2689,7 +2664,7 @@ class ChatActivity :
     private fun joinRoomWithPassword() {
         // if ApplicationWideCurrentRoomHolder contains a session (because a call is active), then keep the sessionId
         if (ApplicationWideCurrentRoomHolder.getInstance().currentRoomToken ==
-            currentConversation!!.token
+            chatViewModel.currentConversation!!.token
         ) {
             sessionIdAfterRoomJoined = ApplicationWideCurrentRoomHolder.getInstance().session
 
@@ -2733,11 +2708,11 @@ class ChatActivity :
     }
 
     private fun setupWebsocket() {
-        if (currentConversation == null || conversationUser == null) {
+        if (chatViewModel.currentConversation == null || conversationUser == null) {
             return
         }
 
-        if (currentConversation!!.remoteServer?.isNotEmpty() == true) {
+        if (chatViewModel.currentConversation!!.remoteServer?.isNotEmpty() == true) {
             val apiVersion = ApiUtils.getSignalingApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V3, 2, 1))
             ncApi.getSignalingSettings(
                 credentials,
@@ -2918,9 +2893,12 @@ class ChatActivity :
                     chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
                 }
                 chatMessage.isOneToOneConversation =
-                    (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL)
+                    (
+                        chatViewModel.currentConversation?.type ==
+                            ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                        )
                 chatMessage.isFormerOneToOneConversation =
-                    (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
+                    (chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
                 Log.d(TAG, "chatMessage to add:" + chatMessage.message)
                 it.addToStart(chatMessage, scrollToBottom)
             }
@@ -2965,9 +2943,9 @@ class ChatActivity :
 
             val chatMessage = chatMessageList[i]
             chatMessage.isOneToOneConversation =
-                currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             chatMessage.isFormerOneToOneConversation =
-                (currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
+                (chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE)
             chatMessage.activeUser = conversationUser
             chatMessage.token = roomToken
         }
@@ -3120,7 +3098,7 @@ class ChatActivity :
             withUrl = urlForChatting,
             withCredentials = credentials!!,
             withMessageLimit = MESSAGE_PULL_LIMIT,
-            roomToken = currentConversation!!.token
+            roomToken = chatViewModel.currentConversation!!.token
         )
     }
 
@@ -3157,9 +3135,9 @@ class ChatActivity :
             val searchItem = menu.findItem(R.id.conversation_search)
 
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
-                currentConversation!!.remoteServer.isNullOrEmpty()
+                chatViewModel.currentConversation!!.remoteServer.isNullOrEmpty()
 
-            if (currentConversation!!.remoteServer != null ||
+            if (chatViewModel.currentConversation!!.remoteServer != null ||
                 !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
             ) {
                 menu.removeItem(R.id.shared_items)
@@ -3233,18 +3211,18 @@ class ChatActivity :
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
-        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
+        intent.putExtra(KEY_CONVERSATION_NAME, chatViewModel.currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         intent.putExtra(
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
-            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+            ConversationUtils.isParticipantOwnerOrModerator(chatViewModel.currentConversation!!)
         )
         startActivity(intent)
     }
 
     private fun startMessageSearch() {
         val intent = Intent(this, MessageSearchActivity::class.java)
-        intent.putExtra(KEY_CONVERSATION_NAME, currentConversation?.displayName)
+        intent.putExtra(KEY_CONVERSATION_NAME, chatViewModel.currentConversation?.displayName)
         intent.putExtra(KEY_ROOM_TOKEN, roomToken)
         startMessageSearchForResult.launch(intent)
     }
@@ -3293,8 +3271,7 @@ class ChatActivity :
 
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
-            currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_DELETED
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3303,17 +3280,16 @@ class ChatActivity :
 
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
-            currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_EDITED
+            currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
 
     private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
-        currentConversation?.let {
+        chatViewModel.currentConversation?.let {
             if (conversationUser != null) {
                 val pp = ParticipantPermissions(spreedCapabilities, it)
-                if (!pp.canStartCall() && currentConversation?.hasCall == false) {
+                if (!pp.canStartCall() && chatViewModel.currentConversation?.hasCall == false) {
                     Snackbar.make(binding.root, R.string.startCallForbidden, Snackbar.LENGTH_LONG).show()
                 } else {
                     ApplicationWideCurrentRoomHolder.getInstance().isDialing = true
@@ -3327,7 +3303,7 @@ class ChatActivity :
     }
 
     private fun getIntentForCall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean): Intent? {
-        currentConversation?.let {
+        chatViewModel.currentConversation?.let {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, roomToken)
             bundle.putString(BundleKeys.KEY_CONVERSATION_PASSWORD, roomPassword)
@@ -3411,7 +3387,7 @@ class ChatActivity :
                 this,
                 message,
                 conversationUser,
-                currentConversation,
+                chatViewModel.currentConversation,
                 isShowMessageDeletionButton(message),
                 participantPermissions.hasChatPermission(),
                 spreedCapabilities
@@ -3612,7 +3588,7 @@ class ChatActivity :
             val lon = data["longitude"]!!
             metaData =
                 "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                    "\"longitude\":\"$lon\",\"name\":\"$name\"}"
         }
 
         shareToNotes(shareUri, roomToken, message, objectId, metaData)
@@ -3693,8 +3669,8 @@ class ChatActivity :
             conversationUser?.userId?.isNotEmpty() == true &&
             conversationUser!!.userId != "?" &&
             message.user.id.startsWith("users/") &&
-            message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId &&
-            currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+            message.user.id.substring(ACTOR_LENGTH) != chatViewModel.currentConversation?.actorId &&
+            chatViewModel.currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
             isShowMessageDeletionButton(message) ||
             // delete
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message.getCalculateMessageType() ||
@@ -3710,7 +3686,7 @@ class ChatActivity :
         messageTemp.message = getString(R.string.message_deleted_by_you)
 
         messageTemp.isOneToOneConversation =
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
@@ -3728,7 +3704,7 @@ class ChatActivity :
         }
 
         messageTemp.isOneToOneConversation =
-            currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+            chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
         messageTemp.activeUser = conversationUser
 
         adapter?.update(messageTemp)
@@ -3740,7 +3716,7 @@ class ChatActivity :
 
             // TODO is this needed?
             messageTemp.isOneToOneConversation =
-                currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+                chatViewModel.currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
             messageTemp.activeUser = conversationUser
 
             adapter?.update(messageTemp)
@@ -3815,7 +3791,7 @@ class ChatActivity :
         val isUserAllowedByPrivileges = if (message.actorId == conversationUser!!.userId) {
             true
         } else {
-            ConversationUtils.canModerate(currentConversation!!, spreedCapabilities)
+            ConversationUtils.canModerate(chatViewModel.currentConversation!!, spreedCapabilities)
         }
         return isUserAllowedByPrivileges
     }
@@ -3877,8 +3853,8 @@ class ChatActivity :
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onMessageEvent(userMentionClickEvent: UserMentionClickEvent) {
-        if (currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
-            currentConversation?.name != userMentionClickEvent.userId
+        if (chatViewModel.currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+            chatViewModel.currentConversation?.name != userMentionClickEvent.userId
         ) {
             var apiVersion = 1
             // FIXME Fix API checking with guests?
@@ -3980,7 +3956,10 @@ class ChatActivity :
         Log.d(TAG, " | method: $methodName")
         Log.d(TAG, " | ChatActivity: " + System.identityHashCode(this).toString())
         Log.d(TAG, " | roomToken: $roomToken")
-        Log.d(TAG, " | currentConversation?.displayName: ${currentConversation?.displayName}")
+        Log.d(
+            TAG,
+            " | chatViewModel.currentConversation?.displayName: ${chatViewModel.currentConversation?.displayName}"
+        )
         Log.d(TAG, " | sessionIdAfterRoomJoined: $sessionIdAfterRoomJoined")
         Log.d(TAG, " |-----------------------------------------------")
     }

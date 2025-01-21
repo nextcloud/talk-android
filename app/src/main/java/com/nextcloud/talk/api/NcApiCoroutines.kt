@@ -227,4 +227,7 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): UserAbsenceOverall
+
+    @GET
+    suspend fun getRoom(@Header("Authorization") authorization: String?, @Url url: String?): RoomOverall
 }

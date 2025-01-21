@@ -19,11 +19,6 @@ interface OfflineConversationsRepository {
     val roomListFlow: Flow<List<ConversationModel>>
 
     /**
-     * Stream of a single conversation, for use in each conversations settings.
-     */
-    val conversationFlow: Flow<ConversationModel>
-
-    /**
      * Loads rooms from local storage. If the rooms are not found, then it
      * synchronizes the database with the server, before retrying exactly once. Only
      * emits to [roomListFlow] if the rooms list is not empty.
@@ -35,5 +30,5 @@ interface OfflineConversationsRepository {
      * Called once onStart to emit a conversation to [conversationFlow]
      * to be handled asynchronously.
      */
-    fun getRoom(roomToken: String): Job
+    fun getRoom(roomToken: String): Flow<ConversationModel?>
 }

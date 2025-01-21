@@ -36,6 +36,18 @@ class RetrofitChatNetwork(
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
+    override suspend fun getRoomCoroutines(user: User, roomToken: String): ConversationModel {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
+
+        val conversation = ncApiCoroutines.getRoom(
+            credentials,
+            ApiUtils.getUrlForRoom(apiVersion, user.baseUrl!!, roomToken)
+        ).ocs?.data!!
+
+        return ConversationModel.mapToConversationModel(conversation, user)
+    }
+
     override fun getCapabilities(user: User, roomToken: String): Observable<SpreedCapability> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
