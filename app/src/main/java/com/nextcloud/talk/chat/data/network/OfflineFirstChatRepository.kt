@@ -29,6 +29,8 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -299,8 +301,9 @@ class OfflineFirstChatRepository @Inject constructor(
             lookIntoFuture = true,
             timeout = 0,
             includeLastKnown = false,
-            setReadMarker = true,
-            lastKnown = lastKnown.toInt()
+            setReadMarker = false,
+            lastKnown = lastKnown.toInt(),
+            markNotificationAsRead = false
         )
 
         val networkParams = bundleOf()
@@ -446,7 +449,8 @@ class OfflineFirstChatRepository @Inject constructor(
         includeLastKnown: Boolean,
         setReadMarker: Boolean,
         lastKnown: Int?,
-        limit: Int = DEFAULT_MESSAGES_LIMIT
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        markNotificationAsRead: Boolean = true
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
 
@@ -464,6 +468,11 @@ class OfflineFirstChatRepository @Inject constructor(
         fieldMap["limit"] = limit
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
+
+        val spreedCapabilities = currentUser.capabilities?.spreedCapability!!
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_KEEP_NOTIFICATIONS)) {
+            fieldMap["markNotificationsAsRead"] = if (markNotificationAsRead) 1 else 0
+        }
 
         return fieldMap
     }
