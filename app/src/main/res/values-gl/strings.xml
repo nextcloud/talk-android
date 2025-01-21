@@ -472,7 +472,7 @@
     <string name="nc_settings_screen_lock_title">Bloqueo de pantalla</string>
     <string name="nc_settings_screen_security_desc">Evita capturas de pantalla na lista recente e dentro da aplicación</string>
     <string name="nc_settings_screen_security_title">Seguranza da pantalla</string>
-    <string name="nc_settings_server_almost_eol">A versión do servidor é moi antiga e non será compatíbel coa próxima publicación.</string>
+    <string name="nc_settings_server_almost_eol">A versión do servidor é moi antiga e non será compatíbel coa próxima edición!</string>
     <string name="nc_settings_server_eol">A versión do servidor é demasiado antiga e non é compatíbel con esta versión da aplicación para Android</string>
     <string name="nc_settings_server_eol_title">Servidor non admitido</string>
     <string name="nc_settings_server_notification_app_not_installed_title">A aplicación de notificacións do servidor non está instalada</string>
