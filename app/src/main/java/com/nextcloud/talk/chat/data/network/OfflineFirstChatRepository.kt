@@ -308,7 +308,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
             var showUnreadMessagesMarker = true
 
-            while (true) {
+            while (isActive) {
                 if (!networkMonitor.isOnline.value || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
@@ -324,11 +324,15 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        handleNewAndTempMessages(
-                            receivedChatMessages = chatMessages,
-                            lookIntoFuture = true,
-                            showUnreadMessagesMarker = showUnreadMessagesMarker
-                        )
+                        if (isActive) {
+                            handleNewAndTempMessages(
+                                receivedChatMessages = chatMessages,
+                                lookIntoFuture = true,
+                                showUnreadMessagesMarker = showUnreadMessagesMarker
+                            )
+                        } else {
+                            Log.d(TAG, "scope was already canceled")
+                        }
                     } else {
                         Log.d(TAG, "resultsFromSync are null or empty")
                     }
