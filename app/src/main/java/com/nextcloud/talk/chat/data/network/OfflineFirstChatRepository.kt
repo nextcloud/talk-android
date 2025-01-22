@@ -806,10 +806,6 @@ class OfflineFirstChatRepository @Inject constructor(
         scope.cancel()
     }
 
-    override fun handleChatOnBackPress() {
-        scope.cancel()
-    }
-
     @Suppress("LongParameterList")
     override suspend fun sendChatMessage(
         credentials: String,

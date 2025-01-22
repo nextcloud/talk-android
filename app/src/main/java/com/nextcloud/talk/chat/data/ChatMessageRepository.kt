@@ -74,11 +74,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
 
-    /**
-     * Destroys unused resources.
-     */
-    fun handleChatOnBackPress()
-
     @Suppress("LongParameterList")
     suspend fun sendChatMessage(
         credentials: String,

@@ -647,10 +647,6 @@ class ChatViewModel @Inject constructor(
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
     }
 
-    fun handleChatOnBackPress() {
-        chatRepository.handleChatOnBackPress()
-    }
-
     fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
         flow {
             val bundle = Bundle()
