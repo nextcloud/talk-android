@@ -46,7 +46,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String)
 
-    fun loadInitialMessages(withNetworkParams: Bundle): Job
+    fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle)
 
     /**
      * Loads messages from local storage. If the messages are not found, then it
@@ -73,11 +73,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
      * Gets a individual message.
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
-
-    /**
-     * Destroys unused resources.
-     */
-    fun handleChatOnBackPress()
 
     @Suppress("LongParameterList")
     suspend fun sendChatMessage(

@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -111,7 +112,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var scope: CoroutineScope
 
     lateinit var internalConversationId: String
     private lateinit var conversationModel: ConversationModel
@@ -125,7 +126,12 @@ class OfflineFirstChatRepository @Inject constructor(
         internalConversationId = conversationModel.internalId
     }
 
-    override fun loadInitialMessages(withNetworkParams: Bundle): Job =
+    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
+        scope = CoroutineScope(Dispatchers.IO)
+        loadInitialMessages(withNetworkParams)
+    }
+
+    private fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
@@ -302,7 +308,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
             var showUnreadMessagesMarker = true
 
-            while (true) {
+            while (isActive) {
                 if (!networkMonitor.isOnline.value || itIsPaused) {
                     Thread.sleep(HALF_SECOND)
                 } else {
@@ -318,11 +324,15 @@ class OfflineFirstChatRepository @Inject constructor(
                         val weHaveMessagesFromOurself = chatMessages.any { it.actorId == currentUser.userId }
                         showUnreadMessagesMarker = showUnreadMessagesMarker && !weHaveMessagesFromOurself
 
-                        handleNewAndTempMessages(
-                            receivedChatMessages = chatMessages,
-                            lookIntoFuture = true,
-                            showUnreadMessagesMarker = showUnreadMessagesMarker
-                        )
+                        if (isActive) {
+                            handleNewAndTempMessages(
+                                receivedChatMessages = chatMessages,
+                                lookIntoFuture = true,
+                                showUnreadMessagesMarker = showUnreadMessagesMarker
+                            )
+                        } else {
+                            Log.d(TAG, "scope was already canceled")
+                        }
                     } else {
                         Log.d(TAG, "resultsFromSync are null or empty")
                     }
@@ -793,10 +803,6 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override fun handleOnStop() {
-        // unused atm
-    }
-
-    override fun handleChatOnBackPress() {
         scope.cancel()
     }
 

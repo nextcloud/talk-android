@@ -395,7 +395,7 @@ class ChatViewModel @Inject constructor(
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.loadInitialMessages(
+        chatRepository.initScopeAndLoadInitialMessages(
             withNetworkParams = bundle
         )
     }
@@ -645,10 +645,6 @@ class ChatViewModel @Inject constructor(
 
     fun handleOrientationChange() {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
-    }
-
-    fun handleChatOnBackPress() {
-        chatRepository.handleChatOnBackPress()
     }
 
     fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
