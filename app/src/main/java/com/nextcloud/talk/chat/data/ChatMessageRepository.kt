@@ -46,7 +46,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String)
 
-    fun loadInitialMessages(withNetworkParams: Bundle): Job
+    fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle)
 
     /**
      * Loads messages from local storage. If the messages are not found, then it

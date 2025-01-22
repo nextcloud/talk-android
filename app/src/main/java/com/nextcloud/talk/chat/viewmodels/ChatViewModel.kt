@@ -395,7 +395,7 @@ class ChatViewModel @Inject constructor(
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)
         bundle.putString(BundleKeys.KEY_CREDENTIALS, withCredentials)
-        chatRepository.loadInitialMessages(
+        chatRepository.initScopeAndLoadInitialMessages(
             withNetworkParams = bundle
         )
     }

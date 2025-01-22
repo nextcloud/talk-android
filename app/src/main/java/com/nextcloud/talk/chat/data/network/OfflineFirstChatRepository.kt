@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.retryWhen
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
@@ -111,7 +112,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     private var newXChatLastCommonRead: Int? = null
     private var itIsPaused = false
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private lateinit var scope: CoroutineScope
 
     lateinit var internalConversationId: String
     private lateinit var conversationModel: ConversationModel
@@ -125,7 +126,12 @@ class OfflineFirstChatRepository @Inject constructor(
         internalConversationId = conversationModel.internalId
     }
 
-    override fun loadInitialMessages(withNetworkParams: Bundle): Job =
+    override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
+        scope = CoroutineScope(Dispatchers.IO)
+        loadInitialMessages(withNetworkParams)
+    }
+
+    private fun loadInitialMessages(withNetworkParams: Bundle): Job =
         scope.launch {
             Log.d(TAG, "---- loadInitialMessages ------------")
             newXChatLastCommonRead = conversationModel.lastCommonReadMessage
@@ -793,7 +799,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override fun handleOnStop() {
-        // unused atm
+        scope.cancel()
     }
 
     override fun handleChatOnBackPress() {

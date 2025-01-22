@@ -680,12 +680,10 @@ class ChatActivity :
                         val urlForChatting =
                             ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-                        if (adapter?.isEmpty == true) {
-                            chatViewModel.loadMessages(
-                                withCredentials = credentials!!,
-                                withUrl = urlForChatting
-                            )
-                        }
+                        chatViewModel.loadMessages(
+                            withCredentials = credentials!!,
+                            withUrl = urlForChatting
+                        )
                     } else {
                         Log.w(
                             TAG,
