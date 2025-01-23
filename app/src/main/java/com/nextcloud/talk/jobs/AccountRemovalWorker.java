@@ -10,6 +10,7 @@ package com.nextcloud.talk.jobs;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.util.Log;
+
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.api.NcApi;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
@@ -73,7 +74,7 @@ public class AccountRemovalWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
+        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
 
         List<User> users = userManager.getUsersScheduledForDeletion().blockingGet();
         for (User user : users) {
@@ -91,7 +92,7 @@ public class AccountRemovalWorker extends Worker {
 
                 ncApi.unregisterDeviceForNotificationsWithNextcloud(
                         ApiUtils.getCredentials(user.getUsername(), user.getToken()),
-                        ApiUtils.getUrlNextcloudPush(user.getBaseUrl()))
+                        ApiUtils.getUrlNextcloudPush(Objects.requireNonNull(user.getBaseUrl())))
                     .blockingSubscribe(new Observer<GenericOverall>() {
                         @Override
                         public void onSubscribe(@io.reactivex.annotations.NonNull Disposable d) {
@@ -177,10 +178,11 @@ public class AccountRemovalWorker extends Worker {
 
     private void initiateUserDeletion(User user) {
         if (user.getId() != null) {
-            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(user.getId());
+            long id = user.getId();
+            WebSocketConnectionHelper.deleteExternalSignalingInstanceForUserEntity(id);
 
             try {
-                arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(user.getId());
+                arbitraryStorageManager.deleteAllEntriesForAccountIdentifier(id);
                 deleteUser(user);
             } catch (Throwable e) {
                 Log.e(TAG, "error while trying to delete All Entries For Account Identifier", e);
@@ -193,7 +195,9 @@ public class AccountRemovalWorker extends Worker {
             String username = user.getUsername();
             try {
                 userManager.deleteUser(user.getId());
-                Log.d(TAG, "deleted user: " + username);
+                if (username != null) {
+                    Log.d(TAG, "deleted user: " + username);
+                }
             } catch (Throwable e) {
                 Log.e(TAG, "error while trying to delete user", e);
             }
