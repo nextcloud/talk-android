@@ -410,7 +410,6 @@
                 android:orientation="horizontal"
                 android:background="?android:attr/selectableItemBackground">
 
-
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="40dp"
@@ -425,48 +424,7 @@
                     android:gravity="center_vertical"
                     android:text="@string/show_banned_participants"
                     android:textSize="@dimen/headline_text_size" />
-
             </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/archive_conversation_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="@dimen/standard_margin"
-                android:paddingTop="@dimen/standard_half_margin"
-                android:paddingEnd="@dimen/standard_margin"
-                android:paddingBottom="@dimen/standard_half_margin"
-                android:orientation="horizontal"
-                android:background="?android:attr/selectableItemBackground">
-
-
-                <ImageView
-                    android:id="@+id/archive_conversation_icon"
-                    android:layout_width="24dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="@dimen/standard_margin"
-                    android:contentDescription="@null"
-                    tools:src="@drawable/outline_archive_24"
-                    app:tint="@color/nc_darkYellow" />
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/archive_conversation_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    tools:text="@string/unarchive_conversation"
-                    android:textColor="@color/nc_darkYellow"
-                    android:textSize="@dimen/headline_text_size" />
-
-            </LinearLayout>
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/archive_conversation_text_hint"
-                android:layout_marginHorizontal="@dimen/standard_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/archive_hint"
-                android:textColor="@color/nc_darkYellow"/>
 
             <LinearLayout
                 android:id="@+id/danger_zone_options"
@@ -483,6 +441,41 @@
                     android:textColor="@color/design_default_color_error"
                     android:textSize="@dimen/headline_text_size"
                     android:textStyle="bold" />
+
+                <LinearLayout
+                    android:id="@+id/archive_conversation_btn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/standard_margin"
+                    android:paddingEnd="@dimen/standard_margin">
+
+                    <ImageView
+                        android:id="@+id/archive_conversation_icon"
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        app:tint="@color/grey_600"
+                        tools:src="@drawable/outline_archive_24" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/archive_conversation_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/headline_text_size"
+                        tools:text="@string/unarchive_conversation" />
+                </LinearLayout>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/archive_conversation_text_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="@dimen/standard_margin"
+                    android:text="@string/archive_hint"
+                    android:textColor="@color/disabled_text" />
 
                 <LinearLayout
                     android:id="@+id/leaveConversationAction"
