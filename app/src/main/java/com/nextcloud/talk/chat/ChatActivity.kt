@@ -828,12 +828,15 @@ class ChatActivity :
                     // Handle UI on first load
                     cancelNotificationsForCurrentConversation()
                     binding.progressBar.visibility = View.GONE
+                    binding.offline.root.visibility = View.GONE
                     binding.messagesListView.visibility = View.VISIBLE
                     collapseSystemMessages()
                 }
 
                 is ChatViewModel.ChatMessageUpdateState -> {
-                    // unused atm
+                    binding.progressBar.visibility = View.GONE
+                    binding.offline.root.visibility = View.GONE
+                    binding.messagesListView.visibility = View.VISIBLE
                 }
 
                 is ChatViewModel.ChatMessageErrorState -> {
@@ -918,9 +921,9 @@ class ChatActivity :
             chatViewModel.getGeneralUIFlow.onEach { key ->
                 when (key) {
                     NO_OFFLINE_MESSAGES_FOUND -> {
-                        if (networkMonitor.isOnline.value.not()) {
-                            binding.offline.root.visibility = View.VISIBLE
-                        }
+                        binding.progressBar.visibility = View.GONE
+                        binding.messagesListView.visibility = View.GONE
+                        binding.offline.root.visibility = View.VISIBLE
                     }
 
                     else -> {}
