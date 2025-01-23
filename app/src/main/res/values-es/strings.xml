@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archived">Archivada</string>
+    <string name="archived_conversation">%1$s archivada</string>
     <string name="audio_call">Llamada de Audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
@@ -508,6 +509,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sí</string>
     <string name="next_week">Semana siguiente</string>
+    <string name="no_conversations_archived">No hay conversaciones archivadas</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
@@ -618,6 +620,7 @@
     <string name="typing_are_typing">están escribiendo ...</string>
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
+    <string name="unarchived_conversation">%1$s desarchivada</string>
     <string name="unread">No leído</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
     <string name="user_avatar">Usar avatar</string>
