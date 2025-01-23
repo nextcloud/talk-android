@@ -3,6 +3,7 @@
     <string name= "nc_edit">Modifica</string>
     <string name="appbar_search_in">Cerca in %s</string>
     <string name="archived">Archiviati</string>
+    <string name="archived_conversation">Archiviato %1$s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Uscita audio</string>
     <string name="audio_output_phone">Telefono</string>
@@ -386,6 +387,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sì</string>
     <string name="next_week">Settimana successiva</string>
+    <string name="no_conversations_archived">Nessuna conversazione archiviata</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In linea</string>
@@ -457,6 +459,7 @@
     <string name="translation_error_title">Traduzione fallita</string>
     <string name="translation_from">Da</string>
     <string name="translation_to">A</string>
+    <string name="unarchived_conversation">Non archiviato %1$s</string>
     <string name="unread">Da leggere</string>
     <string name="upload_new_avatar_from_device">Carica nuovo avatar dal dispositivo</string>
     <string name="user_avatar">Avatar dell\'utente</string>

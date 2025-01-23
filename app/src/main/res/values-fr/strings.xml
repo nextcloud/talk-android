@@ -7,6 +7,7 @@
     <string name="archive_conversation">Conversation Archiver</string>
     <string name="archive_hint">Lorsqu\'une conversation est archivée, elle est cachée par défaut. Choisissez le filtre \"Archivés\" pour voir les conversations archivées. Les mentions directes seront toujours bien reçues.</string>
     <string name="archived">Archivé</string>
+    <string name="archived_conversation">%1$s archivée</string>
     <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortie audio</string>
@@ -532,6 +533,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_yes">Oui</string>
     <string name="new_conversation_creation_icon">Icône de création d\'une nouvelle conversation</string>
     <string name="next_week">Semaine suivante</string>
+    <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="oneHour">1 heure</string>
@@ -650,6 +652,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
     <string name="unarchive_conversation">Conversation Désarchiver </string>
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
+    <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>
     <string name="unread">Non lu</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>

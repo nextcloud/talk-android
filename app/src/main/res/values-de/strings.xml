@@ -533,6 +533,7 @@
     <string name="nc_yes">Ja</string>
     <string name="new_conversation_creation_icon">Neue Unterhaltung erstellen-Symbol</string>
     <string name="next_week">Nächste Woche</string>
+    <string name="no_conversations_archived">Keine Unterhaltungen archiviert</string>
     <string name="no_offline_messages_saved">Keine Offlinenachrichten gespeichert</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="oneHour">1 Stunde</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">und %1$s andere schreiben…</string>
     <string name="unarchive_conversation">Unterhaltung dearchivieren</string>
     <string name="unarchive_hint">Sobald eine Unterhaltung dearchiviert wurde, wird sie standardmäßig wieder angezeigt.</string>
+    <string name="unarchived_conversation">%1$s dearchiviert</string>
     <string name="unban">Entsperren</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
