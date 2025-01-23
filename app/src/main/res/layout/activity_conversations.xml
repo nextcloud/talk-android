@@ -223,8 +223,8 @@
             android:layout_width="match_parent"
             android:layout_height="72dp"
             android:contentDescription="@string/nc_app_product_name"
-            android:src="@drawable/ic_list_empty_error"
-            app:tint="@color/hwSecurityRed" />
+            android:src="@drawable/outline_archive_24"
+            app:tint="@color/grey_600" />
 
         <TextView
             android:layout_width="match_parent"
@@ -238,7 +238,7 @@
             android:paddingBottom="@dimen/standard_half_padding"
             android:text="@string/no_conversations_archived"
             android:textAlignment="center"
-            android:textColor="@color/conversation_item_header"
+            android:textColor="@color/high_emphasis_text"
             android:textSize="22sp" />
     </RelativeLayout>
 
