@@ -26,6 +26,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversation.RenameConversationDialogFragment
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
@@ -67,6 +68,9 @@ class ConversationsListBottomDialog(
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
+
+    @Inject
+    lateinit var conversationInfoViewModel: ConversationInfoViewModel
 
     @Inject
     lateinit var userManager: UserManager
@@ -189,6 +193,16 @@ class ConversationsListBottomDialog(
             dismiss()
         }
 
+        binding.conversationArchiveText.text = if (conversation.hasArchived) {
+            this.activity.resources.getString(R.string.unarchive_conversation)
+        } else {
+            this.activity.resources.getString(R.string.archive_conversation)
+        }
+
+        binding.conversationArchive.setOnClickListener {
+            handleArchiving()
+        }
+
         binding.conversationOperationRename.setOnClickListener {
             renameConversation()
         }
@@ -200,6 +214,33 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.setOnClickListener {
             deleteConversation()
         }
+    }
+
+    private fun handleArchiving() {
+        val currentUser = userManager.currentUser.blockingGet()
+        val token = conversation.token
+        lifecycleScope.launch {
+            if (conversation.hasArchived) {
+                conversationInfoViewModel.unarchiveConversation(currentUser, token)
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.unarchived_conversation),
+                        conversation.displayName
+                    )
+                )
+                dismiss()
+            } else {
+                conversationInfoViewModel.archiveConversation(currentUser, token)
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.archived_conversation),
+                        conversation.displayName
+                    )
+                )
+                dismiss()
+            }
+        }
+        activity.fetchRooms()
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
