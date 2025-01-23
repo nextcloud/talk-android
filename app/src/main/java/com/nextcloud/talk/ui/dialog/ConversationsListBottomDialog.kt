@@ -200,17 +200,7 @@ class ConversationsListBottomDialog(
         }
 
         binding.conversationArchive.setOnClickListener {
-            val currentUser = userManager.currentUser.blockingGet()
-            val token = conversation.token
-            lifecycleScope.launch {
-                if (conversation.hasArchived) {
-                    conversationInfoViewModel.unarchiveConversation(currentUser, token)
-                } else {
-                    conversationInfoViewModel.archiveConversation(currentUser, token)
-                }
-            }
-            activity.fetchRooms()
-            dismiss()
+            handleArchiving()
         }
 
         binding.conversationOperationRename.setOnClickListener {
@@ -224,6 +214,33 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.setOnClickListener {
             deleteConversation()
         }
+    }
+
+    private fun handleArchiving() {
+        val currentUser = userManager.currentUser.blockingGet()
+        val token = conversation.token
+        lifecycleScope.launch {
+            if (conversation.hasArchived) {
+                conversationInfoViewModel.unarchiveConversation(currentUser, token)
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.unarchived_conversation),
+                        conversation.displayName
+                    )
+                )
+                dismiss()
+            } else {
+                conversationInfoViewModel.archiveConversation(currentUser, token)
+                activity.showSnackbar(
+                    String.format(
+                        context.resources.getString(R.string.archived_conversation),
+                        conversation.displayName
+                    )
+                )
+                dismiss()
+            }
+        }
+        activity.fetchRooms()
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

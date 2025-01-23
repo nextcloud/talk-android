@@ -848,4 +848,6 @@ How to translate with transifex:
     <string name="user_absence_replacement">Replacement: </string>
     <string name="resend_message">Resend</string>
     <string name="no_conversations_archived">No conversations archived</string>
+    <string name="archived_conversation">Archived %1$s</string>
+    <string name="unarchived_conversation">Unarchived %1$s</string>
 </resources>
