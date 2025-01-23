@@ -6,11 +6,13 @@
  */
 package com.nextcloud.talk.chat.data.network
 
+import android.util.Log
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -194,5 +196,17 @@ class RetrofitChatNetwork(
             credentials,
             ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
         )
+    }
+
+    override suspend fun getContextForChatMessage(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String,
+        limit: Int
+    ): List<ChatMessageJson> {
+        val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
+        Log.d("Julius", "Url: $url") // TODO debugg this
+        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit)
     }
 }
