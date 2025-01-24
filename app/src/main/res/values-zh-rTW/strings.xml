@@ -7,6 +7,7 @@
     <string name="archive_conversation">封存對話</string>
     <string name="archive_hint">對話封存後，預設會隱藏。選取篩選條件「已封存」可檢視已封存的對話。仍會收到直接提及。</string>
     <string name="archived">已封存</string>
+    <string name="archived_conversation">已封存 %1$s</string>
     <string name="audio_call">音訊通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
     <string name="audio_output_dialog_headline">音訊輸入</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">是</string>
     <string name="new_conversation_creation_icon">新對話建立圖示</string>
     <string name="next_week">下週</string>
+    <string name="no_conversations_archived">尚無已封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
     <string name="no_phone_book_integration_due_to_permissions">因為缺少權限而無法整合電話號碼</string>
     <string name="oneHour">1小時</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">以及另外 %1$s 個人正在輸入……</string>
     <string name="unarchive_conversation">解除封存對話</string>
     <string name="unarchive_hint">對話取消存檔後，預設會再次顯示。</string>
+    <string name="unarchived_conversation">已解除封存 %1$s</string>
     <string name="unban">取消封鎖</string>
     <string name="unread">未讀</string>
     <string name="upload_new_avatar_from_device">從裝置上傳新大頭照</string>

@@ -4,8 +4,8 @@
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
-    <string name="archive_conversation">Zaarchivovat konverzaci</string>
-    <string name="archive_hint">Jakmile je konverzace zaarchivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
+    <string name="archive_conversation">Archivovat konverzaci</string>
+    <string name="archive_hint">Jakmile je konverzace archivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
     <string name="archived">Archivováno</string>
     <string name="audio_call">Hlasový hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>

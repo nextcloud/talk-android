@@ -621,6 +621,7 @@
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
     <string name="unarchived_conversation">%1$s desarchivada</string>
+    <string name="unban">Desbloquear</string>
     <string name="unread">No leído</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
     <string name="user_avatar">Usar avatar</string>

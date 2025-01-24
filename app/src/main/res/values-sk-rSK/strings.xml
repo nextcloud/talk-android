@@ -7,6 +7,7 @@
     <string name="archive_conversation">Archivovať Konverzáciu</string>
     <string name="archive_hint">Keď je konverzácia archivovaná, bude predvolene skrytá. Ak chcete zobraziť archivované konverzácie, vyberte filter „Archivované“. Priame zmienky budú stále prijímané.</string>
     <string name="archived">Archivované</string>
+    <string name="archived_conversation">Archivované %1$s</string>
     <string name="audio_call">Audio hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Áno</string>
     <string name="new_conversation_creation_icon">Ikona vytvorenia novej konverzácie</string>
     <string name="next_week">Nasledujúci týždeň</string>
+    <string name="no_conversations_archived">Žiadne konverzácie neboli archivované</string>
     <string name="no_offline_messages_saved">Žiadne správy pri odpojení neboli uložené</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre chýbajúce oprávnenia</string>
     <string name="oneHour">1 hodina</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">a %1$s ďalších píšu...</string>
     <string name="unarchive_conversation">Zrušiť archiváciu Konverzácie</string>
     <string name="unarchive_hint">Keď bude zrušená archivácia konverzácie, bude predvolene znova zobrazená.</string>
+    <string name="unarchived_conversation">Zrušená archivácia %1$s</string>
     <string name="unban">Zrušiť zákaz</string>
     <string name="unread">Neprečítané</string>
     <string name="upload_new_avatar_from_device">Nahrať nového avatara zo zariadenia</string>
