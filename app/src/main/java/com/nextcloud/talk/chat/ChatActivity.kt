@@ -1324,6 +1324,21 @@ class ChatActivity :
         chatViewModel.startCyclingMediaPlayer()
         message.isPlayingVoiceMessage = true
         adapter?.update(message)
+
+        var pos = adapter?.getMessagePositionById(message.id)!! - 1
+        do {
+            if (pos < 0) break
+            val nextItem = (adapter?.items?.get(pos)?.item) ?: break
+            val nextMessage = if (nextItem is ChatMessage) nextItem else break
+            if (!nextMessage.isVoiceMessage) break
+
+            downloadFileToCache(nextMessage, false) {
+                val newFilename = nextMessage.selectedIndividualHashMap!!["name"]
+                val newFile = File(context.cacheDir, newFilename!!)
+                chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
+            }
+            pos--
+        } while(true && pos >= 0)
     }
 
     private fun initMessageHolders(): MessageHolders {
@@ -1724,7 +1739,6 @@ class ChatActivity :
         userId: String,
         listener: (speed: PlaybackSpeed) -> Unit
     ) {
-        // TODO this code is tricky. His impl worked, need to look at it
         CoroutineScope(Dispatchers.Default).launch {
             chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
                 withContext(Dispatchers.Main) {

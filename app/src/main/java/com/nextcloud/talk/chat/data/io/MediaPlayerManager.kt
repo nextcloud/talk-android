@@ -86,7 +86,7 @@ object MediaPlayerManager : LifecycleAwareManager {
 
         if (mediaPlayer == null || !scope.isActive) {
             init(path)
-        } else { // FIXME need to check if the current chat message is different than the one mediaPlayerManager data
+        } else {
             _managerState.value = MediaPlayerManagerState.RESUMED
             mediaPlayer!!.start()
             loop = true
@@ -162,7 +162,7 @@ object MediaPlayerManager : LifecycleAwareManager {
         withContext(Dispatchers.IO) {
             while (true) {
                 if (!loop) {
-                    // FIXME NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
+                    // NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
                     delay(SEEKBAR_UPDATE_DELAY)
                     continue
                 }
@@ -175,8 +175,11 @@ object MediaPlayerManager : LifecycleAwareManager {
                     currentCycledMessage?.let {
                         it.isPlayingVoiceMessage = true
                         it.voiceMessageSeekbarProgress = progressI
+                        if (progressI >= 5) it.wasPlayedVoiceMessage = true
                         _mediaPlayerSeekBarPositionPair.emit(it)
                     }
+                    // TODO noticed a bug with card, shows up even when the message is paused. It shouldn't.
+                    //  happens occasionally
                 }
 
                 delay(SEEKBAR_UPDATE_DELAY)
@@ -246,19 +249,21 @@ object MediaPlayerManager : LifecycleAwareManager {
 
                 setOnCompletionListener {
                     scope.cancel()
-                    // if (playQueue.iterator().hasNext()) { // FIXME illegal state bug here on cycling
-                    //     _managerState.value = MediaPlayerManagerState.SETUP
-                    //     val nextPair = playQueue.iterator().next()
-                    //     setDataSource(nextPair.first)
-                    //     _currentCycledMessage = nextPair.second
-                    //     prepareAsync()
-                    // } else {
-                    mediaPlayer!!.release()
-                    mediaPlayer = null
-                    _backgroundPlayUIFlow.tryEmit(null)
-                    currentCycledMessage = null
-                    _managerState.value = MediaPlayerManagerState.STOPPED
-                    // }
+                    if (playQueue.iterator().hasNext()) {
+                        _managerState.value = MediaPlayerManagerState.SETUP
+                        val nextPair = playQueue.iterator().next()
+                        playQueue.removeAt(0)
+                        mediaPlayer?.reset()
+                        mediaPlayer?.setDataSource(nextPair.first)
+                        currentCycledMessage = nextPair.second
+                        prepare()
+                    } else {
+                        mediaPlayer!!.release()
+                        mediaPlayer = null
+                        _backgroundPlayUIFlow.tryEmit(null)
+                        currentCycledMessage = null
+                        _managerState.value = MediaPlayerManagerState.STOPPED
+                    }
                 }
             }
         } catch (e: Exception) {
@@ -286,7 +291,6 @@ object MediaPlayerManager : LifecycleAwareManager {
     }
 
     // FIXME Note: might be some issues with state here, double check
-    //  Idea is that on orientation change or resume, if still playing, continue to loop
     override fun handleOnResume() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             loop = true
