@@ -335,15 +335,6 @@ class ChatActivity :
     private val filesToUpload: MutableList<String> = ArrayList()
     lateinit var sharedText: String
 
-    var mediaPlayer: MediaPlayer? = null
-    var mediaPlayerHandler: Handler? = null
-
-    private var currentlyPlayedVoiceMessage: ChatMessage? = null
-
-    // messy workaround for a mediaPlayer bug, don't delete
-    private var lastRecordMediaPosition: Int = 0
-    private var lastRecordedSeeked: Boolean = false
-
     lateinit var participantPermissions: ParticipantPermissions
 
     private var videoURI: Uri? = null
@@ -362,9 +353,6 @@ class ChatActivity :
     val typingParticipants = HashMap<String, TypingParticipant>()
 
     var callStarted = false
-    private var voiceMessageToRestoreId = ""
-    private var voiceMessageToRestoreAudioPosition = 0
-    private var voiceMessageToRestoreWasPlaying = false
 
     private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
         override fun onSwitchTo(token: String?) {
@@ -444,30 +432,6 @@ class ChatActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
-
-        if (savedInstanceState != null) {
-            // Restore value of members from saved state
-            var voiceMessageId = savedInstanceState.getString(CURRENT_AUDIO_MESSAGE_KEY, "")
-            var voiceMessagePosition = savedInstanceState.getInt(CURRENT_AUDIO_POSITION_KEY, 0)
-            var wasAudioPLaying = savedInstanceState.getBoolean(CURRENT_AUDIO_WAS_PLAYING_KEY, false)
-            if (!voiceMessageId.equals("")) {
-                Log.d(RESUME_AUDIO_TAG, "restored voice messageID: " + voiceMessageId)
-                Log.d(RESUME_AUDIO_TAG, "audio position: " + voiceMessagePosition)
-                Log.d(RESUME_AUDIO_TAG, "audio was playing: " + wasAudioPLaying.toString())
-                voiceMessageToRestoreId = voiceMessageId
-                voiceMessageToRestoreAudioPosition = voiceMessagePosition
-                voiceMessageToRestoreWasPlaying = wasAudioPLaying
-            } else {
-                Log.d(RESUME_AUDIO_TAG, "stored voice message id is empty, not resuming audio playing")
-                voiceMessageToRestoreId = ""
-                voiceMessageToRestoreAudioPosition = 0
-                voiceMessageToRestoreWasPlaying = false
-            }
-        } else {
-            voiceMessageToRestoreId = ""
-            voiceMessageToRestoreAudioPosition = 0
-            voiceMessageToRestoreWasPlaying = false
-        }
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
@@ -533,17 +497,6 @@ class ChatActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        if (currentlyPlayedVoiceMessage != null) {
-            outState.putString(CURRENT_AUDIO_MESSAGE_KEY, currentlyPlayedVoiceMessage!!.id)
-            outState.putInt(CURRENT_AUDIO_POSITION_KEY, currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds)
-            outState.putBoolean(CURRENT_AUDIO_WAS_PLAYING_KEY, currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage)
-            Log.d(RESUME_AUDIO_TAG, "Stored current audio message ID: " + currentlyPlayedVoiceMessage!!.id)
-            Log.d(
-                RESUME_AUDIO_TAG,
-                "Audio Position: " + currentlyPlayedVoiceMessage!!.voiceMessagePlayedSeconds
-                    .toString() + " | isPLaying: " + currentlyPlayedVoiceMessage!!.isPlayingVoiceMessage
-            )
-        }
         chatViewModel.handleOrientationChange()
         super.onSaveInstanceState(outState)
     }
@@ -2766,8 +2719,6 @@ class ChatActivity :
             adapter?.addToEnd(chatMessageList, false)
         }
         scrollToRequestedMessageIfNeeded()
-        // FENOM: add here audio resume policy
-        resumeAudioPlaybackIfNeeded()
     }
 
     private fun scrollToFirstUnreadMessage() {
@@ -2828,38 +2779,6 @@ class ChatActivity :
 
             previousMessageId = chatMessage.jsonMessageId
         }
-    }
-
-    /**
-     * this method must be called after that the adapter has finished loading ChatMessages items
-     * it searches by ID the message that was playing,s
-     * then, if it finds it, it restores audio position
-     * and eventually resumes audio playback
-     * @author Giacomo Pacini
-     */
-    // FIXME this impl seems complicated. I think I can get reimpl this in the chatViewModel
-    private fun resumeAudioPlaybackIfNeeded() {
-        if (voiceMessageToRestoreId != "") {
-            Log.d(RESUME_AUDIO_TAG, "begin method to resume audio playback")
-
-            val pair = getItemFromAdapter(voiceMessageToRestoreId)
-            currentlyPlayedVoiceMessage = pair?.first
-            val voiceMessagePosition = pair?.second!!
-
-            lastRecordMediaPosition = voiceMessageToRestoreAudioPosition * ONE_SECOND_IN_MILLIS
-            Log.d(RESUME_AUDIO_TAG, "trying to resume audio")
-            binding.messagesListView.scrollToPosition(voiceMessagePosition)
-            // WORKAROUND TO FETCH FILE INFO:
-            currentlyPlayedVoiceMessage!!.getImageUrl()
-            // see getImageUrl() source code
-            setUpWaveform(currentlyPlayedVoiceMessage!!, voiceMessageToRestoreWasPlaying)
-            Log.d(RESUME_AUDIO_TAG, "resume audio procedure completed")
-        } else {
-            Log.d(RESUME_AUDIO_TAG, "No voice message to restore")
-        }
-        voiceMessageToRestoreId = ""
-        voiceMessageToRestoreAudioPosition = 0
-        voiceMessageToRestoreWasPlaying = false
     }
 
     private fun getItemFromAdapter(messageId: String): Pair<ChatMessage, Int>? {

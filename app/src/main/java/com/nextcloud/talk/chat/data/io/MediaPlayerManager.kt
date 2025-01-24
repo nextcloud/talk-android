@@ -160,6 +160,7 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     private suspend fun seekbarUpdateObserver() {
         withContext(Dispatchers.IO) {
+            currentCycledMessage?.voiceMessageDuration = mediaPlayerDuration / 1000
             while (true) {
                 if (!loop) {
                     // NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
@@ -178,8 +179,6 @@ object MediaPlayerManager : LifecycleAwareManager {
                         if (progressI >= 5) it.wasPlayedVoiceMessage = true
                         _mediaPlayerSeekBarPositionPair.emit(it)
                     }
-                    // TODO noticed a bug with card, shows up even when the message is paused. It shouldn't.
-                    //  happens occasionally
                 }
 
                 delay(SEEKBAR_UPDATE_DELAY)
