@@ -206,7 +206,6 @@ class RetrofitChatNetwork(
         limit: Int
     ): List<ChatMessageJson> {
         val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
-        Log.d("Julius", "Url: $url") // TODO debugg this
-        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit)
+        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit).ocs?.data ?: listOf()
     }
 }

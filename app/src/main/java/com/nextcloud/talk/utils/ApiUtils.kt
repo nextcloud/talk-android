@@ -613,6 +613,6 @@ object ApiUtils {
     }
 
     fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String {
-        return "$baseUrl$OCS_API_VERSION/chat/$token/$messageId/context"
+        return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"
     }
 }

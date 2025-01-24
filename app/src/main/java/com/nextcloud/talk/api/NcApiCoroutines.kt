@@ -8,7 +8,7 @@
 package com.nextcloud.talk.api
 
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -234,5 +234,5 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Query("limit") limit: Int
-    ): List<ChatMessageJson>
+    ): ChatOverall
 }

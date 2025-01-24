@@ -9,7 +9,6 @@ package com.nextcloud.talk.ui.dialog
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -82,8 +81,8 @@ class ContextChatCompose(val bundle: Bundle) {
                             .fillMaxWidth()
                     ) {
                         val user = userManager.currentUser.blockingGet()
-                        if (user.hasSpreedFeatureCapability("chat-get-context") &&
-                            user.hasSpreedFeatureCapability("federation-v1") && false // FIXME remove this
+                        if (!user.hasSpreedFeatureCapability("chat-get-context") ||
+                            !user.hasSpreedFeatureCapability("federation-v1")
                         ) {
                             Icon(
                                 Icons.Filled.Info,
@@ -101,7 +100,7 @@ class ContextChatCompose(val bundle: Bundle) {
                                 val baseUrl = bundle.getString(BundleKeys.KEY_BASE_URL)
                                 val token = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)
                                 val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)
-                                val limit = 10
+                                val limit = 10 // actual size is 2*limit, goes both ways
 
                                 val messages = dataSource.getContextForChatMessage(
                                     credentials!!,
@@ -110,8 +109,6 @@ class ContextChatCompose(val bundle: Bundle) {
                                     messageId!!,
                                     limit
                                 )
-
-                                Log.d("Julius", "Message: size: ${messages.size}")
 
                                 // TODO put messages in adapter
                             }
