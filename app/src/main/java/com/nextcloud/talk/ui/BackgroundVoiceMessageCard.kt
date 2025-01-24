@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -47,7 +48,13 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class BackgroundVoiceMessageSeekbarCard(val name: String, val duration: Int, val offset: Float, val imageURI: String) {
+class BackgroundVoiceMessageSeekbarCard(
+    val name: String,
+    val duration: Int,
+    val offset: Float,
+    val imageURI: String,
+    val conversationImageURI: String
+) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -128,20 +135,37 @@ class BackgroundVoiceMessageSeekbarCard(val name: String, val duration: Int, val
                         contentAlignment = Alignment.Center,
                     ) {
                         Row {
-                            val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-                            val loadedImage = loadImage(imageURI, context, errorPlaceholderImage)
-                            AsyncImage(
-                                model = loadedImage,
-                                contentDescription = stringResource(R.string.user_avatar),
-                                modifier = Modifier
-                                    .size(width = 45.dp, height = 45.dp)
-                                    .padding(8.dp)
-                            )
+                            Box {
+                                val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+                                val loadedImage = loadImage(imageURI, context, errorPlaceholderImage)
+                                val conversationImage = loadImage(
+                                    conversationImageURI,
+                                    context,
+                                    errorPlaceholderImage
+                                )
+                                AsyncImage(
+                                    model = conversationImage,
+                                    contentDescription = stringResource(R.string.user_avatar),
+                                    modifier = Modifier
+                                        .size(width = 45.dp, height = 45.dp)
+                                        .padding(8.dp)
+                                        .offset(10.dp, 10.dp)
+                                )
+
+                                AsyncImage(
+                                    model = loadedImage,
+                                    contentDescription = stringResource(R.string.user_avatar),
+                                    modifier = Modifier
+                                        .size(width = 45.dp, height = 45.dp)
+                                        .padding(8.dp)
+                                )
+                            }
 
                             Text(
                                 name,
                                 modifier = Modifier
-                                    .align(Alignment.CenterVertically),
+                                    .align(Alignment.CenterVertically)
+                                    .padding(8.dp),
                                 color = MaterialTheme.colorScheme.onBackground
                             )
                         }

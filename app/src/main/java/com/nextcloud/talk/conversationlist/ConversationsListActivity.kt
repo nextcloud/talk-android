@@ -407,12 +407,19 @@ class ConversationsListActivity :
                                 msg.actorId,
                                 true
                             )
+                            val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
+                                ApiUtils.API_V1,
+                                currentUser?.baseUrl,
+                                msg.token
+                            )
+
                             if (duration > 0) {
                                 BackgroundVoiceMessageSeekbarCard(
                                     msg.actorDisplayName!!,
                                     duration - position,
                                     offset,
-                                    imageURI
+                                    imageURI,
+                                    conversationImageURI
                                 )
                                     .GetView({ isPaused ->
                                         if (isPaused) {
