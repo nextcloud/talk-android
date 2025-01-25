@@ -7,6 +7,7 @@
     <string name="archive_conversation">Görüşmeyi arşivle</string>
     <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \"Arşivlenmiş\" süzgecini seçin. Doğrudan anmalar yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
+    <string name="archived_conversation">%1$s arşivlendi</string>
     <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Ses çıkışı</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Evet</string>
     <string name="new_conversation_creation_icon">Yeni görüşme oluştur simgesi</string>
     <string name="next_week">Sonraki hafta</string>
+    <string name="no_conversations_archived">Arşivlenmiş bir yazışma yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="oneHour">1 saat</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">ve %1$s diğer kişi yazıyor…</string>
     <string name="unarchive_conversation">Görüşmeyi arşivden çıkar</string>
     <string name="unarchive_hint">Bir görüşme arşivden çıkarıldığında varsayılan olarak yeniden gösterilir.</string>
+    <string name="unarchived_conversation">%1$s arşivden çıkarıldı</string>
     <string name="unban">Yasaklamayı kaldır</string>
     <string name="unread">Okunmamış</string>
     <string name="upload_new_avatar_from_device">Aygıttan yeni avatar yükle</string>

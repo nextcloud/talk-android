@@ -7,6 +7,7 @@
     <string name="archive_conversation">Comhrá Cartlainne</string>
     <string name="archive_hint">Nuair a bheidh comhrá curtha i gcartlann, cuirfear i bhfolach é de réir réamhshocraithe. Roghnaigh an scagaire \"Cartlannaithe\" chun féachaint ar chomhráite cartlainne. Gheofar tagairtí díreacha fós.</string>
     <string name="archived">Cartlannaithe</string>
+    <string name="archived_conversation">Cartlannaithe %1$s</string>
     <string name="audio_call">Glao Fuaime</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Aschur fuaime</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Tá</string>
     <string name="new_conversation_creation_icon">Deilbhín Cruthaithe Comhrá Nua</string>
     <string name="next_week">An tseachtain seo chugainn</string>
+    <string name="no_conversations_archived">Níor cuireadh aon chomhrá sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
     <string name="no_phone_book_integration_due_to_permissions">Níl aon chomhtháthú uimhir theileafóin mar gheall ar cheadanna in easnamh</string>
     <string name="oneHour">1 uair</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">agus %1$s eile ag clóscríobh …</string>
     <string name="unarchive_conversation">Comhrá Díchartlann</string>
     <string name="unarchive_hint">Nuair a bheidh comhrá gan chartlannú, taispeánfar arís é de réir réamhshocraithe.</string>
+    <string name="unarchived_conversation">Gan chartlann %1$s</string>
     <string name="unban">Dícosc</string>
     <string name="unread">Neamhléite</string>
     <string name="upload_new_avatar_from_device">Íosluchtaigh avatar nua ar an teileafón</string>

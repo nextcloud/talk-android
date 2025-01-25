@@ -6,7 +6,8 @@
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archive_conversation">Arquivar a conversa</string>
     <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
-    <string name="archived">Arquivado</string>
+    <string name="archived">Arquivada</string>
+    <string name="archived_conversation">%1$s foi arquivada</string>
     <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de son</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Si</string>
     <string name="new_conversation_creation_icon">conversaNew Conversation Creation IconNova icona de Icona «Creación de nova conversa»</string>
     <string name="next_week">Semana seguinte</string>
+    <string name="no_conversations_archived">Non hai ningunha conversa arquivada</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
     <string name="oneHour">1 hora</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">e %1$s máis están a escribiren…</string>
     <string name="unarchive_conversation">Desarquivar a conversa</string>
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
+    <string name="unarchived_conversation">%1$s foi desarquivada</string>
     <string name="unban">Retirar a expulsión</string>
     <string name="unread">Sen ler</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
