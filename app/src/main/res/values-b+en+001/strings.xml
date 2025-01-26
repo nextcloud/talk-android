@@ -7,6 +7,7 @@
     <string name="archive_conversation">Archive Conversation</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
+    <string name="archived_conversation">Archived %1$s</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Yes</string>
     <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
     <string name="next_week">Next week</string>
+    <string name="no_conversations_archived">No conversations archived</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">1 hour</string>
@@ -654,6 +656,7 @@
     <string name="typing_x_others">and %1$s others are typing …</string>
     <string name="unarchive_conversation">Unarchive Conversation</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
+    <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
