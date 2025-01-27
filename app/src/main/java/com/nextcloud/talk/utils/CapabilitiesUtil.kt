@@ -121,6 +121,16 @@ object CapabilitiesUtil {
         return DEFAULT_CHAT_SIZE
     }
 
+    fun conversationDescriptionLength(spreedCapabilities: SpreedCapability):Int{
+        if(spreedCapabilities.config?.containsKey("conversations") == true){
+            val map: Map<String, Any>? = spreedCapabilities.config!!["conversations"]
+            if (map != null && map.containsKey("description-length")) {
+                return (map["description-length"].toString().toInt())
+            }
+        }
+        return CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER
+    }
+
     fun isReadStatusAvailable(spreedCapabilities: SpreedCapability): Boolean {
         if (spreedCapabilities.config?.containsKey("chat") == true) {
             val map: Map<String, Any>? = spreedCapabilities.config!!["chat"]
@@ -287,4 +297,5 @@ object CapabilitiesUtil {
     const val RECORDING_CONSENT_DEPEND_ON_CONVERSATION = 2
     private const val SERVER_VERSION_MIN_SUPPORTED = 17
     private const val SERVER_VERSION_SUPPORT_WARNING = 26
+    private const val CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER = 500
 }
