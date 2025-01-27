@@ -74,9 +74,9 @@ class ConversationCreationViewModel @Inject constructor(
 
     fun updateConversationDescription(conversationDescription: String) {
         _conversationDescription.value = conversationDescription.take(
-            CapabilitiesUtil.conversationDescriptionLength(currentUser.capabilities?.spreedCapability!!))
+            CapabilitiesUtil.conversationDescriptionLength(currentUser.capabilities?.spreedCapability!!)
+        )
     }
-
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants(

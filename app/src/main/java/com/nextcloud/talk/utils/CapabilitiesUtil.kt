@@ -121,8 +121,8 @@ object CapabilitiesUtil {
         return DEFAULT_CHAT_SIZE
     }
 
-    fun conversationDescriptionLength(spreedCapabilities: SpreedCapability):Int{
-        if(spreedCapabilities.config?.containsKey("conversations") == true){
+    fun conversationDescriptionLength(spreedCapabilities: SpreedCapability): Int {
+        if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map: Map<String, Any>? = spreedCapabilities.config!!["conversations"]
             if (map != null && map.containsKey("description-length")) {
                 return (map["description-length"].toString().toInt())
