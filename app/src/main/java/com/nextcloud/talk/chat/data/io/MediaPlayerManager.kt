@@ -9,7 +9,6 @@ package com.nextcloud.talk.chat.data.io
 
 import android.media.MediaPlayer
 import android.util.Log
-import androidx.compose.ui.util.fastRoundToInt
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.PlaybackSpeed
@@ -28,15 +27,18 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
+import kotlin.math.ceil
 
 /**
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
  * to manage the MediaPlayer instance.
  */
+@Suppress("TooManyFunctions")
 object MediaPlayerManager : LifecycleAwareManager {
     val TAG: String = MediaPlayerManager::class.java.simpleName
     private const val SEEKBAR_UPDATE_DELAY = 150L
-    const val DIVIDER = 100f
+    private const val ONE_SEC = 1000
+    private const val DIVIDER = 100f
 
     lateinit var appPreferences: AppPreferences
 
@@ -144,6 +146,7 @@ object MediaPlayerManager : LifecycleAwareManager {
             Log.d(TAG, "media player paused")
             _managerState.value = MediaPlayerManagerState.PAUSED
             mediaPlayer!!.pause()
+            _backgroundPlayUIFlow.tryEmit(null)
         }
     }
 
@@ -160,7 +163,8 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     private suspend fun seekbarUpdateObserver() {
         withContext(Dispatchers.IO) {
-            currentCycledMessage?.voiceMessageDuration = mediaPlayerDuration / 1000
+            currentCycledMessage?.voiceMessageDuration = mediaPlayerDuration / ONE_SEC
+            currentCycledMessage?.resetVoiceMessage = false
             while (true) {
                 if (!loop) {
                     // NOTE: ok so this doesn't stop the loop, but rather stop the update. Wasteful, but minimal
@@ -171,11 +175,13 @@ object MediaPlayerManager : LifecycleAwareManager {
                     val pos = mediaPlayer!!.currentPosition
                     mediaPlayerPosition = pos
                     val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
-                    val progressI = progress.fastRoundToInt()
+                    val progressI = ceil(progress).toInt()
+                    val seconds = (pos / ONE_SEC)
                     _mediaPlayerSeekBarPosition.emit(progressI)
                     currentCycledMessage?.let {
                         it.isPlayingVoiceMessage = true
                         it.voiceMessageSeekbarProgress = progressI
+                        it.voiceMessagePlayedSeconds = seconds
                         if (progressI >= 5) it.wasPlayedVoiceMessage = true
                         _mediaPlayerSeekBarPositionPair.emit(it)
                     }
@@ -247,7 +253,6 @@ object MediaPlayerManager : LifecycleAwareManager {
                 }
 
                 setOnCompletionListener {
-                    scope.cancel()
                     if (playQueue.iterator().hasNext()) {
                         _managerState.value = MediaPlayerManagerState.SETUP
                         val nextPair = playQueue.iterator().next()
@@ -273,7 +278,14 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     private fun MediaPlayer.onPrepare() {
         mediaPlayerDuration = this.duration
-        mediaPlayer!!.playbackParams.setSpeed(appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value)
+
+        val playBackSpeed = if (currentCycledMessage?.actorId == null) {
+            PlaybackSpeed.NORMAL.value
+        } else {
+            appPreferences.getPreferredPlayback(currentCycledMessage?.actorId).value
+        }
+        mediaPlayer!!.playbackParams.setSpeed(playBackSpeed)
+
         start()
         _managerState.value = MediaPlayerManagerState.STARTED
         currentCycledMessage?.let {
@@ -289,7 +301,6 @@ object MediaPlayerManager : LifecycleAwareManager {
         // unused atm
     }
 
-    // FIXME Note: might be some issues with state here, double check
     override fun handleOnResume() {
         if (mediaPlayer != null && mediaPlayer!!.isPlaying) {
             loop = true
@@ -298,7 +309,7 @@ object MediaPlayerManager : LifecycleAwareManager {
 
     override fun handleOnStop() {
         loop = false
-        if (mediaPlayer != null && currentCycledMessage != null) {
+        if (mediaPlayer != null && currentCycledMessage != null && mediaPlayer!!.isPlaying) {
             CoroutineScope(Dispatchers.Default).launch {
                 _backgroundPlayUIFlow.tryEmit(currentCycledMessage!!)
             }
