@@ -19,6 +19,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -72,8 +73,10 @@ class ConversationCreationViewModel @Inject constructor(
     }
 
     fun updateConversationDescription(conversationDescription: String) {
-        _conversationDescription.value = conversationDescription
+        _conversationDescription.value = conversationDescription.take(
+            CapabilitiesUtil.conversationDescriptionLength(currentUser.capabilities?.spreedCapability!!))
     }
+
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun createRoomAndAddParticipants(
