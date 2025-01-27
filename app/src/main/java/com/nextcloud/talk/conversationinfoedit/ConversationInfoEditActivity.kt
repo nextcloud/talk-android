@@ -279,8 +279,10 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     fun saveConversationDescription() {
         val conversationDescription = binding.conversationDescription.text.toString()
-        val trimConversationDescription = conversationDescription.take(CapabilitiesUtil
-            .conversationDescriptionLength(spreedCapabilities))
+        val trimConversationDescription = conversationDescription.take(
+            CapabilitiesUtil
+                .conversationDescriptionLength(spreedCapabilities)
+        )
         conversationInfoEditViewModel.setConversationDescription(conversation!!.token, trimConversationDescription)
     }
 
