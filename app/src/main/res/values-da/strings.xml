@@ -165,6 +165,7 @@
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%skarakterbegrænsning nået</string>
     <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby_start_date">Mødet er skemalagt til %1$s</string>
     <string name="nc_lobby_waiting">Du venter nu i lobbyen.</string>
     <string name="nc_locked_tap_to_unlock">Tryk for at låse op</string>
     <string name="nc_manual">Ikke indstillet</string>
