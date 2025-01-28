@@ -20,9 +20,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +28,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 class OfflineFirstConversationsRepository @Inject constructor(
@@ -45,10 +43,6 @@ class OfflineFirstConversationsRepository @Inject constructor(
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
     private val _roomListFlow: MutableSharedFlow<List<ConversationModel>> = MutableSharedFlow()
-
-    override val conversationFlow: Flow<ConversationModel>
-        get() = _conversationFlow
-    private val _conversationFlow: MutableSharedFlow<ConversationModel> = MutableSharedFlow()
 
     private val scope = CoroutineScope(Dispatchers.IO)
     private var user: User = currentUserProviderNew.currentUser.blockingGet()
@@ -67,41 +61,23 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
         }
 
-    override fun getRoom(roomToken: String): Job =
-        scope.launch {
-            chatNetworkDataSource.getRoom(user, roomToken)
-                .subscribeOn(Schedulers.io())
-                ?.observeOn(AndroidSchedulers.mainThread())
-                ?.subscribe(object : Observer<ConversationModel> {
-                    override fun onSubscribe(p0: Disposable) {
-                        // unused atm
-                    }
-
-                    override fun onError(e: Throwable) {
-                        runBlocking {
-                            // In case network is offline or call fails
-                            val id = user.id!!
-                            val model = getConversation(id, roomToken)
-                            if (model != null) {
-                                _conversationFlow.emit(model)
-                            } else {
-                                Log.e(TAG, "Conversation model not found on device database")
-                            }
-                        }
-                    }
-
-                    override fun onComplete() {
-                        // unused atm
-                    }
-
-                    override fun onNext(model: ConversationModel) {
-                        runBlocking {
-                            _conversationFlow.emit(model)
-                            val entityList = listOf(model.asEntity())
-                            dao.upsertConversations(entityList)
-                        }
-                    }
-                })
+    override fun getRoom(roomToken: String): Flow<ConversationModel?> =
+        flow {
+            try {
+                val conversationModel = chatNetworkDataSource.getRoomCoroutines(user, roomToken)
+                emit(conversationModel)
+                val entityList = listOf(conversationModel.asEntity())
+                dao.upsertConversations(entityList)
+            } catch (e: Exception) {
+                // In case network is offline or call fails
+                val id = user.id!!
+                val model = getConversation(id, roomToken)
+                if (model != null) {
+                    emit(model)
+                } else {
+                    Log.e(TAG, "Conversation model not found on device database")
+                }
+            }
         }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
