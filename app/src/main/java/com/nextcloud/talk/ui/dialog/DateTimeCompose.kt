@@ -151,6 +151,16 @@ class DateTimeCompose(val bundle: Bundle) {
 
             TextButton(
                 onClick = {
+                    shouldDismiss.value = true
+                },
+                modifier = Modifier
+                    .weight(CUBED_PADDING)
+            ) {
+                Text(stringResource(R.string.close))
+            }
+
+            TextButton(
+                onClick = {
                     val user = userManager.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                     val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
@@ -164,16 +174,6 @@ class DateTimeCompose(val bundle: Bundle) {
                     .weight(CUBED_PADDING)
             ) {
                 Text(stringResource(R.string.set))
-            }
-
-            TextButton(
-                onClick = {
-                    shouldDismiss.value = true
-                },
-                modifier = Modifier
-                    .weight(CUBED_PADDING)
-            ) {
-                Text(stringResource(R.string.close))
             }
         }
     }
