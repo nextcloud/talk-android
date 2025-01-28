@@ -181,13 +181,13 @@ configurations.configureEach {
 dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
 
     implementation("androidx.compose.runtime:runtime:1.7.6")
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.1.2'
     implementation 'androidx.datastore:datastore-preferences:1.1.2'
     implementation 'androidx.test.ext:junit-ktx:1.2.1'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
 	
     implementation fileTree(include: ['*'], dir: 'libs')
 
@@ -222,6 +222,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycleVersion}"
     implementation "androidx.lifecycle:lifecycle-process:${lifecycleVersion}"
     implementation "androidx.lifecycle:lifecycle-common:${lifecycleVersion}"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:${lifecycleVersion}")
 
     implementation 'androidx.biometric:biometric:1.1.0'
 
@@ -240,6 +241,7 @@ dependencies {
 
     implementation "com.squareup.retrofit2:retrofit:${retrofit2Version}"
     implementation "com.squareup.retrofit2:adapter-rxjava2:${retrofit2Version}"
+    implementation "com.squareup.retrofit2:converter-gson:${retrofit2Version}"
     implementation 'de.mannodermaus.retrofit2:converter-logansquare:1.4.1'
 
     implementation "com.google.dagger:dagger:${daggerVersion}"
@@ -247,7 +249,7 @@ dependencies {
     implementation 'com.github.lukaspili.autodagger2:autodagger2:1.1'
     kapt 'com.github.lukaspili.autodagger2:autodagger2-compiler:1.1'
     compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
-    // Android only
+
     implementation 'org.greenrobot:eventbus:3.3.1'
     implementation 'net.zetetic:android-database-sqlcipher:4.5.4'
 
@@ -267,6 +269,7 @@ dependencies {
     implementation "io.coil-kt:coil:${coilKtVersion}"
     implementation "io.coil-kt:coil-gif:${coilKtVersion}"
     implementation "io.coil-kt:coil-svg:${coilKtVersion}"
+    implementation "io.coil-kt:coil-compose:${coilKtVersion}"
     implementation 'com.github.natario1:Autocomplete:1.1.0'
 
     implementation "com.github.nextcloud-deps.hwsecurity:hwsecurity-fido:${fidoVersion}"
@@ -278,7 +281,6 @@ dependencies {
     implementation "com.afollestad.material-dialogs:lifecycle:${materialDialogsVersion}"
 
     implementation 'com.google.code.gson:gson:2.11.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
 
     implementation "androidx.media3:media3-exoplayer:$media3_version"
     implementation "androidx.media3:media3-ui:$media3_version"
@@ -312,7 +314,6 @@ dependencies {
     implementation 'androidx.compose.material3:material3:1.3.1'
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation 'androidx.activity:activity-compose:1.9.3'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     //tests
@@ -341,19 +342,7 @@ dependencies {
 
     androidTestImplementation('com.android.support.test.espresso:espresso-intents:3.0.2')
 
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
-
-    implementation 'androidx.activity:activity-ktx:1.9.3'
-
-    implementation 'com.github.nextcloud.android-common:ui:0.23.2'
-
-    implementation 'com.github.nextcloud-deps:android-talk-webrtc:121.6167.0'
-    implementation("io.coil-kt:coil-compose:2.7.0")
-
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     androidTestImplementation(platform("androidx.compose:compose-bom:2025.01.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
