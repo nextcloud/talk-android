@@ -8,6 +8,7 @@
 package com.nextcloud.talk.users
 
 import android.text.TextUtils
+import android.util.Log
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.model.User
@@ -88,12 +89,11 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .flatMapMaybe {
                 if (it.isNotEmpty()) {
                     val user = it.first()
-                    user.apply {
-                        current = true
-                    }.also { currentUser ->
-                        userRepository.updateUser(currentUser)
+                    if (setUserAsActive(user).blockingGet()) {
+                        userRepository.getActiveUser()
+                    } else {
+                        Maybe.empty()
                     }
-                    Maybe.just(user)
                 } else {
                     Maybe.empty()
                 }
@@ -123,6 +123,7 @@ class UserManager internal constructor(private val userRepository: UsersReposito
     }
 
     fun setUserAsActive(user: User): Single<Boolean> {
+        Log.d(TAG, "setUserAsActive:" + user.id!!)
         return userRepository.setUserAsActiveWithId(user.id!!)
     }
 
