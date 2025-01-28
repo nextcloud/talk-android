@@ -27,7 +27,7 @@ class ChatMessageUtils {
             } else {
                 view.loadDefaultAvatar(viewThemeUtils)
             }
-        } else if (message.actorType == "bots" && message.actorId == "changelog") {
+        } else if (message.actorType == "bots" && (message.actorId == "changelog" || message.actorId == "sample")) {
             view.loadChangelogBotAvatar()
         } else if (message.actorType == "bots") {
             view.loadBotsAvatar()
