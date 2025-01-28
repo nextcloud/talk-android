@@ -7,6 +7,7 @@
  */
 package com.nextcloud.talk.data.user
 
+import android.util.Log
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.push.PushConfigurationState
 import io.reactivex.Maybe
@@ -17,7 +18,12 @@ import io.reactivex.Single
 class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun getActiveUser(): Maybe<User> {
-        return usersDao.getActiveUser().map { UserMapper.toModel(it) }
+        val user = usersDao.getActiveUser()
+            .map {
+                setUserAsActiveWithId(it.id)
+                UserMapper.toModel(it)!!
+            }
+        return user
     }
 
     override fun getActiveUserObservable(): Observable<User> {
@@ -62,6 +68,7 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun setUserAsActiveWithId(id: Long): Single<Boolean> {
         val amountUpdated = usersDao.setUserAsActiveWithId(id)
+        Log.d(TAG, "setUserAsActiveWithId. amountUpdated: $amountUpdated")
         return if (amountUpdated > 0) {
             Single.just(true)
         } else {
@@ -75,5 +82,9 @@ class UsersRepositoryImpl(private val usersDao: UsersDao) : UsersRepository {
 
     override fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
         return usersDao.updatePushState(id, state)
+    }
+
+    companion object {
+        private val TAG = UsersRepositoryImpl::class.simpleName
     }
 }
