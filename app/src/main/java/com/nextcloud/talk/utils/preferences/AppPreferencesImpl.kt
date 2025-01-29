@@ -8,7 +8,6 @@
 package com.nextcloud.talk.utils.preferences
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -495,56 +494,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
     override fun getLastKnownId(internalConversationId: String, defaultValue: Int): Int {
         val lastReadId = runBlocking { async { readString(internalConversationId).first() } }.getCompleted()
         return if (lastReadId.isNotEmpty()) lastReadId.toInt() else defaultValue
-    }
-
-    override fun saveMessageQueue(
-        internalConversationId: String,
-        queue: MutableList<MessageInputViewModel.QueuedMessage>?
-    ) {
-        runBlocking<Unit> {
-            async {
-                var queueStr = ""
-                queue?.let {
-                    for (msg in queue) {
-                        val msgStr = "${msg.id},${msg.message},${msg.replyTo},${msg.displayName},${
-                            msg
-                                .sendWithoutNotification
-                        }^"
-                        queueStr += msgStr
-                    }
-                }
-                writeString(internalConversationId + MESSAGE_QUEUE, queueStr)
-            }
-        }
-    }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    override fun getMessageQueue(internalConversationId: String): MutableList<MessageInputViewModel.QueuedMessage> {
-        val queueStr =
-            runBlocking { async { readString(internalConversationId + MESSAGE_QUEUE).first() } }.getCompleted()
-
-        val queue: MutableList<MessageInputViewModel.QueuedMessage> = mutableListOf()
-        if (queueStr.isEmpty()) return queue
-
-        for (msgStr in queueStr.split("^")) {
-            try {
-                if (msgStr.isNotEmpty()) {
-                    val msgArray = msgStr.split(",")
-                    val id = msgArray[ID].toInt()
-                    val message = msgArray[MESSAGE_INDEX]
-                    val replyTo = msgArray[REPLY_TO_INDEX].toInt()
-                    val displayName = msgArray[DISPLAY_NAME_INDEX]
-                    val silent = msgArray[SILENT_INDEX].toBoolean()
-
-                    val qMsg = MessageInputViewModel.QueuedMessage(id, message, displayName, replyTo, silent)
-                    queue.add(qMsg)
-                }
-            } catch (e: IndexOutOfBoundsException) {
-                Log.e(TAG, "Message string: $msgStr\n Queue String: $queueStr \n$e")
-            }
-        }
-
-        return queue
     }
 
     override fun deleteAllMessageQueuesFor(userId: String) {

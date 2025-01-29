@@ -336,7 +336,6 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            chatViewModel.handleChatOnBackPress()
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
             intent.putExtras(Bundle())
             startActivity(intent)
