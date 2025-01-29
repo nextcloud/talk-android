@@ -10,6 +10,7 @@ package com.nextcloud.talk.conversationinfoedit
 import android.app.Activity
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.InputFilter
 import android.text.TextUtils
 import android.util.Log
 import android.view.Menu
@@ -117,6 +118,11 @@ class ConversationInfoEditActivity : BaseActivity() {
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
 
         pickImage = PickImage(this, conversationUser)
+
+        binding.conversationDescription.filters = arrayOf(
+            InputFilter.LengthFilter(CapabilitiesUtil.conversationDescriptionLength(conversationUser
+                .capabilities?.spreedCapability!!))
+        )
 
         initObservers()
     }
@@ -277,13 +283,9 @@ class ConversationInfoEditActivity : BaseActivity() {
         )
     }
 
-    fun saveConversationDescription() {
+    private fun saveConversationDescription() {
         val conversationDescription = binding.conversationDescription.text.toString()
-        val trimConversationDescription = conversationDescription.take(
-            CapabilitiesUtil
-                .conversationDescriptionLength(spreedCapabilities)
-        )
-        conversationInfoEditViewModel.setConversationDescription(conversation!!.token, trimConversationDescription)
+        conversationInfoEditViewModel.setConversationDescription(conversation!!.token, conversationDescription)
     }
 
     private fun handleResult(result: ActivityResult, onResult: (result: ActivityResult) -> Unit) {
