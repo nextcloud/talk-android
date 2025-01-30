@@ -343,11 +343,20 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     OutlinedTextField(
         value = conversationDescription.value,
         onValueChange = {
-            if(it.length > CapabilitiesUtil.conversationDescriptionLength(conversationCreationViewModel.currentUser
-                .capabilities?.spreedCapability!!)){
-                conversationCreationViewModel.updateConversationDescription(it.take(CapabilitiesUtil.conversationDescriptionLength(conversationCreationViewModel.currentUser
-                    .capabilities?.spreedCapability!!)))
-            }else{
+            if (it.length > CapabilitiesUtil.conversationDescriptionLength(
+                    conversationCreationViewModel.currentUser
+                        .capabilities?.spreedCapability!!
+                )
+            ) {
+                conversationCreationViewModel.updateConversationDescription(
+                    it.take(
+                        CapabilitiesUtil.conversationDescriptionLength(
+                            conversationCreationViewModel.currentUser
+                                .capabilities?.spreedCapability!!
+                        )
+                    )
+                )
+            } else {
                 conversationCreationViewModel.updateConversationDescription(it)
             }
         },

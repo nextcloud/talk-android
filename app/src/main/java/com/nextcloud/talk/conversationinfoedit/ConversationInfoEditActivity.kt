@@ -120,8 +120,12 @@ class ConversationInfoEditActivity : BaseActivity() {
         pickImage = PickImage(this, conversationUser)
 
         binding.conversationDescription.filters = arrayOf(
-            InputFilter.LengthFilter(CapabilitiesUtil.conversationDescriptionLength(conversationUser
-                .capabilities?.spreedCapability!!))
+            InputFilter.LengthFilter(
+                CapabilitiesUtil.conversationDescriptionLength(
+                    conversationUser
+                        .capabilities?.spreedCapability!!
+                )
+            )
         )
 
         initObservers()
