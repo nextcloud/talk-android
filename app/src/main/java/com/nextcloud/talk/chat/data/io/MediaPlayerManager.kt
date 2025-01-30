@@ -148,13 +148,15 @@ class MediaPlayerManager : LifecycleAwareManager {
     /**
      * Pauses the player.
      */
-    fun pause() {
+    fun pause(notifyUI: Boolean) {
         if (mediaPlayer != null) {
             Log.d(TAG, "media player paused")
             _managerState.value = MediaPlayerManagerState.PAUSED
             mediaPlayer!!.pause()
             loop = false
-            _backgroundPlayUIFlow.tryEmit(null)
+            if (notifyUI) {
+                _backgroundPlayUIFlow.tryEmit(null)
+            }
         }
     }
 

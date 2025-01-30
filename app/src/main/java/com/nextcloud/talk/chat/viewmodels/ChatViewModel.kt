@@ -696,7 +696,9 @@ class ChatViewModel @Inject constructor(
 
     fun startCyclingMediaPlayer() = audioRequest(true, mediaPlayerManager::startCycling)
 
-    fun pauseMediaPlayer() = audioRequest(false, mediaPlayerManager::pause)
+    fun pauseMediaPlayer(notifyUI: Boolean) = audioRequest(false) {
+        mediaPlayerManager.pause(notifyUI)
+    }
 
     fun seekToMediaPlayer(progress: Int) = mediaPlayerManager.seekTo(progress)
 

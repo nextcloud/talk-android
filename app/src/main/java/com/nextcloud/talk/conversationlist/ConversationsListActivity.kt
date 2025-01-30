@@ -141,7 +141,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import org.apache.commons.lang3.builder.CompareToBuilder
@@ -427,7 +426,7 @@ class ConversationsListActivity :
                                 )
                                     .GetView({ isPaused ->
                                         if (isPaused) {
-                                            chatViewModel.pauseMediaPlayer()
+                                            chatViewModel.pauseMediaPlayer(false)
                                         } else {
                                             val filename = msg.selectedIndividualHashMap!!["name"]
                                             val file = File(context.cacheDir, filename!!)

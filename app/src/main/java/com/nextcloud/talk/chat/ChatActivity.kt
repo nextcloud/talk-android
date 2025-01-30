@@ -1200,7 +1200,7 @@ class ChatActivity :
             val file = File(context.cacheDir, filename!!)
             if (file.exists()) {
                 if (message.isPlayingVoiceMessage) {
-                    chatViewModel.pauseMediaPlayer()
+                    chatViewModel.pauseMediaPlayer(true)
                     message.isPlayingVoiceMessage = false
                     adapter?.update(message)
                 } else {
@@ -1208,7 +1208,6 @@ class ChatActivity :
                     if (retrieved.isEmpty()) {
                         setUpWaveform(message)
                     } else {
-                        Log.d("Julius", "UnPaused")
                         startPlayback(file, message)
                     }
                 }
