@@ -38,6 +38,7 @@ import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -66,6 +67,12 @@ class ChatViewModel @Inject constructor(
     private val userProvider: CurrentUserProviderNew
 ) : ViewModel(),
     DefaultLifecycleObserver {
+
+    var chatApiVersion: Int = 1
+
+    val currentUser: User = userProvider.currentUser.blockingGet()
+
+    lateinit var currentConversation: ConversationModel
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -145,13 +152,6 @@ class ChatViewModel @Inject constructor(
 
     val getLastReadMessageFlow = chatRepository.lastReadMessageFlow
 
-    val getConversationFlow = conversationRepository.conversationFlow
-        .onEach {
-            _getRoomViewState.value = GetRoomSuccessState
-        }.catch {
-            _getRoomViewState.value = GetRoomErrorState
-        }
-
     val getGeneralUIFlow = chatRepository.generalUIFlow
 
     sealed interface ViewState
@@ -171,14 +171,6 @@ class ChatViewModel @Inject constructor(
     private val _getNoteToSelfAvailability: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfNotAvailableState)
     val getNoteToSelfAvailability: LiveData<ViewState>
         get() = _getNoteToSelfAvailability
-
-    object GetRoomStartState : ViewState
-    object GetRoomErrorState : ViewState
-    object GetRoomSuccessState : ViewState
-
-    private val _getRoomViewState: MutableLiveData<ViewState> = MutableLiveData(GetRoomStartState)
-    val getRoomViewState: LiveData<ViewState>
-        get() = _getRoomViewState
 
     object GetCapabilitiesStartState : ViewState
     object GetCapabilitiesErrorState : ViewState
@@ -243,16 +235,31 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
-    fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
-        chatRepository.setData(conversationModel, credentials, urlForChatting)
-    }
-
     fun getRoom(token: String) {
-        _getRoomViewState.value = GetRoomStartState
-        conversationRepository.getRoom(token)
+        viewModelScope.launch {
+            conversationRepository.getRoom(token).collect { conversation ->
+                currentConversation = conversation!!
+                // val chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
+
+                val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, currentUser.baseUrl, token)
+                val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+
+                chatRepository.setData(currentConversation, credentials!!, urlForChatting)
+
+                // logConversationInfos("GetRoomSuccessState")
+
+                // if (adapter == null) {  // do later when capabilities are fetched?
+                //     initAdapter()
+                //     binding.messagesListView.setAdapter(adapter)
+                //     layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+                // }
+
+                getCapabilities(currentUser, currentConversation)
+            }
+        }
     }
 
-    fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
+    fun getCapabilities(user: User, conversationModel: ConversationModel) {
         Log.d(TAG, "Remote server ${conversationModel.remoteServer}")
         if (conversationModel.remoteServer.isNullOrEmpty()) {
             if (_getCapabilitiesViewState.value == GetCapabilitiesStartState) {
@@ -263,7 +270,7 @@ class ChatViewModel @Inject constructor(
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
         } else {
-            chatNetworkDataSource.getCapabilities(user, token)
+            chatNetworkDataSource.getCapabilities(user, conversationModel.token)
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(object : Observer<SpreedCapability> {
@@ -362,7 +369,6 @@ class ChatViewModel @Inject constructor(
                 override fun onNext(t: GenericOverall) {
                     _leaveRoomViewState.value = LeaveRoomSuccessState(funToCallWhenLeaveSuccessful)
                     _getCapabilitiesViewState.value = GetCapabilitiesStartState
-                    _getRoomViewState.value = GetRoomStartState
                 }
             })
     }
