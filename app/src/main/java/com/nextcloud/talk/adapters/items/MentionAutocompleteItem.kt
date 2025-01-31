@@ -165,6 +165,12 @@ class MentionAutocompleteItem(
                 }
             }
 
+            SOURCE_TEAMS ->{
+                holder.binding.avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable.ic_avatar_group)
+                )
+            }
+
             else -> {
                 holder.binding.avatarView.loadUserAvatar(
                     currentUser,
@@ -237,6 +243,7 @@ class MentionAutocompleteItem(
         const val SOURCE_GUESTS = "guests"
         const val SOURCE_GROUPS = "groups"
         const val SOURCE_EMAILS = "emails"
+        const val SOURCE_TEAMS = "teams"
         const val SOURCE_FEDERATION = "federated_users"
     }
 }
