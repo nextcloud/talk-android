@@ -70,6 +70,8 @@ import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.adapters.items.AdvancedUserItem
+import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
@@ -80,6 +82,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.ContactsUiState
+import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -95,6 +99,9 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
@@ -177,6 +184,9 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
 
@@ -387,6 +397,46 @@ class ConversationsListActivity :
                     setConversationList(list)
                 }.collect()
         }
+
+        lifecycleScope.launch {
+            contactsViewModel.contactsViewState.onEach { state ->
+                when (state) {
+                    is ContactsUiState.Success -> {
+                        if (state.contacts.isNullOrEmpty()) return@onEach
+
+                        val userItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+                        val actorTypeConverter = EnumActorTypeConverter()
+                        var genericTextHeaderItem: GenericTextHeaderItem
+                        for (autocompleteUser in state.contacts) {
+                            val headerTitle = resources!!.getString(R.string.nc_user)
+                            if (!callHeaderItems.containsKey(headerTitle)) {
+                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                                callHeaderItems[headerTitle] = genericTextHeaderItem
+                            }
+
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+
+                            val contactItem = ContactItem(
+                                participant,
+                                currentUser!!,
+                                callHeaderItems[headerTitle],
+                                viewThemeUtils
+                            )
+
+                            userItems.add(contactItem)
+                        }
+
+                        // TODO add users to adapter
+
+                    }
+
+                    else -> {}
+                }
+            }.collect()
+        }
     }
 
     private fun setConversationList(list: List<ConversationModel>) {
@@ -410,7 +460,7 @@ class ConversationsListActivity :
             currentUser!!,
             intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
         )
-        fetchOpenConversations(apiVersion)
+        fetchOpenConversations(apiVersion, "")
     }
 
     private fun hasFilterEnabled(): Boolean {
@@ -935,7 +985,7 @@ class ConversationsListActivity :
         }
     }
 
-    private fun fetchOpenConversations(apiVersion: Int) {
+    private fun fetchOpenConversations(apiVersion: Int, filter: String?) {
         searchableConversationItems.clear()
         searchableConversationItems.addAll(conversationItemsWithHeader)
         if (hasSpreedFeatureCapability(
@@ -944,38 +994,45 @@ class ConversationsListActivity :
             )
         ) {
             val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-            // openConversationsQueryDisposable = ncApi.getOpenConversations(
-            //     credentials,
-            //     ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!)
-            // )
-            //     .subscribeOn(Schedulers.io())
-            //     .observeOn(AndroidSchedulers.mainThread())
-            //     .subscribe({ (ocs): RoomsOverall ->
-            //         for (conversation in ocs!!.data!!) {
-            //             val headerTitle = resources!!.getString(R.string.openConversations)
-            //             var genericTextHeaderItem: GenericTextHeaderItem
-            //             if (!callHeaderItems.containsKey(headerTitle)) {
-            //                 genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-            //                 callHeaderItems[headerTitle] = genericTextHeaderItem
-            //             }
-            //             val conversationItem = ConversationItem(
-            //                 conversation,
-            //                 currentUser!!,
-            //                 this,
-            //                 callHeaderItems[headerTitle],
-            //                 viewThemeUtils
-            //             )
-            //             openConversationItems.add(conversationItem)
-            //         }
-            //         searchableConversationItems.addAll(openConversationItems)
-            //     }, { throwable: Throwable ->
-            //         Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
-            //         handleHttpExceptions(throwable)
-            //         dispose(openConversationsQueryDisposable)
-            //     }) { dispose(openConversationsQueryDisposable) }
+            openConversationsQueryDisposable = ncApi.getOpenConversations(
+                credentials,
+                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!),
+                filter ?: ""
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ (ocs): RoomsOverall ->
+                    for (conversation in ocs!!.data!!) {
+                        val headerTitle = resources!!.getString(R.string.openConversations)
+                        var genericTextHeaderItem: GenericTextHeaderItem
+                        if (!callHeaderItems.containsKey(headerTitle)) {
+                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                            callHeaderItems[headerTitle] = genericTextHeaderItem
+                        }
+                        val conversationItem = ConversationItem(
+                            ConversationModel.mapToConversationModel(conversation, currentUser!!),
+                            currentUser!!,
+                            this,
+                            callHeaderItems[headerTitle],
+                            viewThemeUtils
+                        )
+                        openConversationItems.add(conversationItem)
+                    }
+                    searchableConversationItems.addAll(openConversationItems)
+                    conversationItemsWithHeader.addAll(openConversationItems)
+                }, { throwable: Throwable ->
+                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
+                    handleHttpExceptions(throwable)
+                    dispose(openConversationsQueryDisposable)
+                }) { dispose(openConversationsQueryDisposable) }
         } else {
             Log.d(TAG, "no open conversations fetched because of missing capability")
         }
+    }
+
+    private fun fetchUsers(filter: String?) {
+        contactsViewModel.updateSearchQuery(filter ?: "")
+        contactsViewModel.getContactsFromSearchParams()
     }
 
     private fun handleHttpExceptions(throwable: Throwable) {
@@ -1167,6 +1224,7 @@ class ConversationsListActivity :
     }
 
     private fun performFilterAndSearch(filter: String?) {
+        // FIXME upon clearing the filter the items aren't reset
         if (filter!!.length >= SEARCH_MIN_CHARS) {
             clearMessageSearchResults()
 
@@ -1180,9 +1238,19 @@ class ConversationsListActivity :
                 adapter!!.filterItems()
             }
 
+            val apiVersion = ApiUtils.getConversationApiVersion(
+                currentUser!!,
+                intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+            )
+            fetchOpenConversations(apiVersion, filter)
+
+            fetchUsers(filter)
+
             if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
                 startMessageSearch(filter)
             }
+
+            adapter?.updateDataSet(searchableConversationItems)
         } else {
             resetSearchResults()
         }
@@ -1924,7 +1992,8 @@ class ConversationsListActivity :
                     adapterItems.add(LoadMoreResultsItem)
                 }
                 // add unified search result at the end of the list
-                adapter!!.addItems(adapter!!.mainItemCount + adapter!!.scrollableHeaders.size, adapterItems)
+                // TODO try and make this come last
+                adapter!!.addItems(0, adapterItems)
                 binding.recyclerView?.scrollToPosition(0)
             }
         }
