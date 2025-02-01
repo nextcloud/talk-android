@@ -5,7 +5,7 @@
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
     <string name="archive_conversation">Unterhaltung archivieren</string>
-    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter „Archiviert“, um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
+    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter \"Archiviert\", um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
     <string name="archived">Archiviert</string>
     <string name="archived_conversation">%1$s archiviert</string>
     <string name="audio_call">Audioanruf</string>
@@ -106,7 +106,7 @@
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
-    <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung „Geräte in der Nähe“ erteilen.</string>
+    <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung \"Geräte in der Nähe\" erteilen.</string>
     <string name="nc_call_button_content_description_advanced">Erweiterte Anrufoptionen</string>
     <string name="nc_call_button_content_description_answer_video_call">Als Videoanruf annehmen</string>
     <string name="nc_call_button_content_description_answer_voice_only">Nur als Sprachanruf annehmen</string>
@@ -118,7 +118,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
-    <string name="nc_call_notifications">Anruf-Benachrichtigungen</string>
+    <string name="nc_call_notifications">Anrufbenachrichtigungen</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
@@ -129,7 +129,7 @@
     <string name="nc_call_unknown">%s Anruf</string>
     <string name="nc_call_video">%s Videoanruf</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
-    <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung „Kamera“ erteilen.</string>
+    <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung \"Kamera\" erteilen.</string>
     <string name="nc_cancel">Abbrechen</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
     <string name="nc_caption">Untertitel</string>
@@ -281,7 +281,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie „Alle Apps“ -> %1$s -> Nicht optimieren</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
@@ -314,7 +314,7 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sending">Sende</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
-    <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung „Mikrofon“ erteilen.</string>
+    <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung \"Mikrofon\" erteilen.</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>
