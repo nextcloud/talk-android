@@ -90,6 +90,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
@@ -342,7 +343,22 @@ fun ConversationNameAndDescription(conversationCreationViewModel: ConversationCr
     OutlinedTextField(
         value = conversationDescription.value,
         onValueChange = {
-            conversationCreationViewModel.updateConversationDescription(it)
+            if (it.length > CapabilitiesUtil.conversationDescriptionLength(
+                    conversationCreationViewModel.currentUser
+                        .capabilities?.spreedCapability!!
+                )
+            ) {
+                conversationCreationViewModel.updateConversationDescription(
+                    it.take(
+                        CapabilitiesUtil.conversationDescriptionLength(
+                            conversationCreationViewModel.currentUser
+                                .capabilities?.spreedCapability!!
+                        )
+                    )
+                )
+            } else {
+                conversationCreationViewModel.updateConversationDescription(it)
+            }
         },
         label = { Text(text = stringResource(id = R.string.nc_conversation_description)) },
         modifier = Modifier
