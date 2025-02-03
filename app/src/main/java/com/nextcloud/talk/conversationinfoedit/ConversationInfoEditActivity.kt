@@ -119,14 +119,11 @@ class ConversationInfoEditActivity : BaseActivity() {
 
         pickImage = PickImage(this, conversationUser)
 
+        val max = CapabilitiesUtil.conversationDescriptionLength(conversationUser.capabilities?.spreedCapability!!)
         binding.conversationDescription.filters = arrayOf(
-            InputFilter.LengthFilter(
-                CapabilitiesUtil.conversationDescriptionLength(
-                    conversationUser
-                        .capabilities?.spreedCapability!!
-                )
-            )
+            InputFilter.LengthFilter(max)
         )
+        binding.conversationDescriptionInputLayout.counterMaxLength = max
 
         initObservers()
     }
