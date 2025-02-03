@@ -207,7 +207,7 @@
     <string name="nc_public_call_explanation">Offentlige samtaler lader dig invitere folk udefra gennem et speciel lavet link.</string>
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
-    <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Push-to-talk</string>
+    <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Tryk-for-at-tale</string>
     <string name="nc_refresh">Opdater</string>
     <string name="nc_remind">Påmind mig senere</string>
     <string name="nc_remove_from_favorites">Fjern fra favoritter</string>
@@ -239,6 +239,8 @@
     <string name="nc_sent_an_audio_you">Du sendte en lyd.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sendte et billede.</string>
     <string name="nc_sent_an_image_you">Du sendte et billede.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s sendte et opslagskort</string>
+    <string name="nc_sent_deck_card_you">Du sendte et opslagskort</string>
     <string name="nc_server_connect">Test server forbindelsen</string>
     <string name="nc_server_db_upgrade_needed">Opdater venligst din %1$s database</string>
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
@@ -261,7 +263,7 @@
     <string name="nc_settings_incognito_keyboard_desc">Indstiller tastatur til at deaktivere personaliseret indlæring (uden garanti)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito tastatur</string>
     <string name="nc_settings_no_ringtone">Ingen lyd</string>
-    <string name="nc_settings_no_talk_installed">Talk appen er ikke installeret på serveren du prøver at blive godkendt på</string>
+    <string name="nc_settings_no_talk_installed">Snak appen er ikke installeret på serveren du prøver at blive godkendt på</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifikationer</string>
     <string name="nc_settings_other_notifications_ringtone">Beskeder</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Indtast telefonnummer</string>
@@ -289,6 +291,7 @@
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
     <string name="nc_share_link">Del link</string>
     <string name="nc_share_to_choose_account">Vælg konto</string>
+    <string name="nc_shared_items_deck_card">Opslagskort</string>
     <string name="nc_shared_items_location">Sted</string>
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_time">Start tid</string>
@@ -318,7 +321,7 @@
     <string name="scope_federated_title">Forbundet</string>
     <string name="scope_local_description">Kun synlig for personer i denne instans og gæster</string>
     <string name="scope_local_title">Lokal</string>
-    <string name="scope_private_description">Kun synlig for personer, der matches via telefonnummerintegration via Talk på mobil</string>
+    <string name="scope_private_description">Kun synlig for personer, der matches via telefonnummerintegration via Snak på mobil</string>
     <string name="scope_private_title">Privat</string>
     <string name="scope_published_description">Synkroniser til betroede servere og den globale og offentlige adressebog</string>
     <string name="scope_published_title">Udgivet</string>
