@@ -176,6 +176,9 @@ object DisplayUtils {
         } else {
             chip.setChipIconResource(R.drawable.ic_circular_group)
         }
+        if(type == "teams"){
+            chip.setChipIconResource(R.drawable.icon_team_white)
+        }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
         if (!isCallOrGroup) {
             var url = getUrlForAvatar(conversationUser.baseUrl, id, false)
