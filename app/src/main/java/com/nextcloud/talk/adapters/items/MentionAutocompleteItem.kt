@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
+import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.status.StatusType
@@ -166,9 +167,7 @@ class MentionAutocompleteItem(
             }
 
             SOURCE_TEAMS ->{
-                holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable.ic_avatar_group)
-                )
+                holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
             }
 
             else -> {
