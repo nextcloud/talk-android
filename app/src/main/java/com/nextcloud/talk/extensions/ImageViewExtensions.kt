@@ -343,6 +343,11 @@ fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.rea
     return loadUserAvatar(data)
 }
 
+fun ImageView.loadTeamAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.icon_team_white) as Any
+    return loadUserAvatar(data)
+}
+
 fun ImageView.loadDefaultAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
     val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.account_circle_96dp) as Any
     return loadUserAvatar(data)
