@@ -166,7 +166,7 @@ class MentionAutocompleteItem(
                 }
             }
 
-            SOURCE_TEAMS ->{
+            SOURCE_TEAMS -> {
                 holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
             }
 
