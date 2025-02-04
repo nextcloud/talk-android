@@ -46,9 +46,10 @@ class MediaPlayerManager : LifecycleAwareManager {
         @JvmStatic
         private val manager: MediaPlayerManager = MediaPlayerManager()
 
-        fun sharedInstance(preferences: AppPreferences): MediaPlayerManager = manager.apply {
-            appPreferences = preferences
-        }
+        fun sharedInstance(preferences: AppPreferences): MediaPlayerManager =
+            manager.apply {
+                appPreferences = preferences
+            }
     }
 
     lateinit var appPreferences: AppPreferences
@@ -74,8 +75,8 @@ class MediaPlayerManager : LifecycleAwareManager {
     private val playQueue = mutableListOf<Pair<String, ChatMessage>>()
 
     val mediaPlayerSeekBarPositionMsg: Flow<ChatMessage>
-        get() = _mediaPlayerSeekBarPositionPair
-    private val _mediaPlayerSeekBarPositionPair: MutableSharedFlow<ChatMessage> = MutableSharedFlow()
+        get() = _mediaPlayerSeekBarPositionMsg
+    private val _mediaPlayerSeekBarPositionMsg: MutableSharedFlow<ChatMessage> = MutableSharedFlow()
 
     val mediaPlayerSeekBarPosition: Flow<Int>
         get() = _mediaPlayerSeekBarPosition
@@ -194,7 +195,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                         it.voiceMessageSeekbarProgress = progressI
                         it.voiceMessagePlayedSeconds = seconds
                         if (progressI >= IS_PLAYED_CUTOFF) it.wasPlayedVoiceMessage = true
-                        _mediaPlayerSeekBarPositionPair.emit(it)
+                        _mediaPlayerSeekBarPositionMsg.emit(it)
                     }
                 }
 
@@ -286,7 +287,7 @@ class MediaPlayerManager : LifecycleAwareManager {
                             it.isPlayingVoiceMessage = false
                         }
                         runBlocking {
-                            _mediaPlayerSeekBarPositionPair.emit(currentCycledMessage!!)
+                            _mediaPlayerSeekBarPositionMsg.emit(currentCycledMessage!!)
                         }
                         currentCycledMessage = null
                         loop = false

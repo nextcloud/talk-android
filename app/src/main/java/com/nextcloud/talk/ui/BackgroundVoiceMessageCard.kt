@@ -51,9 +51,9 @@ import javax.inject.Inject
 class BackgroundVoiceMessageCard(
     val name: String,
     val duration: Int,
-    val offset: Float,
-    val imageURI: String,
-    val conversationImageURI: String
+    private val offset: Float,
+    private val imageURI: String,
+    private val conversationImageURI: String
 ) {
 
     @Inject
@@ -62,7 +62,7 @@ class BackgroundVoiceMessageCard(
     @Inject
     lateinit var context: Context
 
-    private val progressState = mutableFloatStateOf(0.01f)
+    private val progressState = mutableFloatStateOf(0.0f)
     private val animator = ValueAnimator.ofFloat(offset, 1.0f)
 
     init {
@@ -75,6 +75,11 @@ class BackgroundVoiceMessageCard(
         animator.start()
     }
 
+    companion object {
+        private const val ACCOUNT_WEIGHT = .8f
+    }
+
+    @Suppress("FunctionNaming", "LongMethod")
     @Composable
     fun GetView(onPlayPaused: (isPaused: Boolean) -> Unit, onClosed: () -> Unit) {
         MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(context)) {
@@ -130,7 +135,7 @@ class BackgroundVoiceMessageCard(
 
                     Box(
                         modifier = Modifier
-                            .weight(.8f)
+                            .weight(ACCOUNT_WEIGHT)
                             .align(Alignment.CenterVertically),
                         contentAlignment = Alignment.Center
                     ) {
