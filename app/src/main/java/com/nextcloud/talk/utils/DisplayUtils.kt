@@ -177,7 +177,7 @@ object DisplayUtils {
             chip.setChipIconResource(R.drawable.ic_circular_group)
         }
         if(type == "circle"){
-            chip.setChipIconResource(R.drawable.icon_team_white)
+            chip.setChipIconResource(R.drawable.icon_team)
         }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
         if (!isCallOrGroup) {
