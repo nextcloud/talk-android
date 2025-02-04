@@ -104,7 +104,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = 100
+        binding.seekbar.max = MAX
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
@@ -375,6 +375,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     companion object {
         private const val TAG = "VoiceInMessageView"
         private const val SEEKBAR_START: Int = 0
-        private const val ONE_SEC: Int = 1000
+        private const val MAX: Int = 100
     }
 }

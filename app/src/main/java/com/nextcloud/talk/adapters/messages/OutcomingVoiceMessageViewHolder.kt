@@ -100,7 +100,7 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
             binding.seekbar.setWaveData(message.voiceMessageFloatArray!!)
         }
 
-        binding.seekbar.max = 100
+        binding.seekbar.max = MAX
         binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
 
         colorizeMessageBubble(message)
@@ -381,6 +381,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
     companion object {
         private const val TAG = "VoiceOutMessageView"
         private const val SEEKBAR_START: Int = 0
-        private const val ONE_SEC: Int = 1000
+        private const val MAX = 100
     }
 }
