@@ -326,6 +326,7 @@ class ConversationsListActivity :
         showSearchOrToolbar()
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
