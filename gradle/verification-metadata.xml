@@ -234,6 +234,7 @@
             <trusting group="joda-time" name="joda-time" version="2.12.6"/>
             <trusting group="joda-time" name="joda-time" version="2.12.7"/>
             <trusting group="joda-time" name="joda-time" version="2.13.0"/>
+            <trusting group="joda-time" name="joda-time" version="2.13.1"/>
          </trusted-key>
          <trusted-key id="B6E73D84EA4FCC47166087253FAAD2CD5ECBB314" group="org.apache.commons" name="commons-parent" version="52"/>
          <trusted-key id="B801E2F8EF035068EC1139CC29579F18FA8FD93B" group="com.google.j2objc" name="j2objc-annotations" version="1.3"/>
