@@ -138,12 +138,14 @@
             app:boxStrokeColor="@color/colorPrimary"
             app:errorTextAppearance="@style/ErrorAppearance"
             app:hintTextColor="@color/colorPrimary"
+            app:counterEnabled="true"
             android:hint="@string/nc_conversation_description">
 
             <com.nextcloud.talk.utils.EmojiTextInputEditText
                 android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:maxHeight="300dp"
                 android:imeOptions="actionNext"
                 android:inputType="text|textMultiLine"
                 android:singleLine="true"
