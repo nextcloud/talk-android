@@ -45,7 +45,7 @@ class ContactsRepositoryImpl(
 
     override suspend fun createRoom(
         roomType: String,
-        sourceType: String,
+        sourceType: String?,
         userId: String,
         conversationName: String?
     ): RoomOverall {
