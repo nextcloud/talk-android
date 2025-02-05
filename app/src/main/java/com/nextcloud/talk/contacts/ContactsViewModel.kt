@@ -87,7 +87,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
+    fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(

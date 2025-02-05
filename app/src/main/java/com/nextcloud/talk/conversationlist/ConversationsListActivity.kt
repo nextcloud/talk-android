@@ -83,6 +83,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -396,6 +397,24 @@ class ConversationsListActivity :
                 .onEach { list ->
                     setConversationList(list)
                 }.collect()
+        }
+
+        lifecycleScope.launch {
+            contactsViewModel.roomViewState.onEach { state ->
+                when (state) {
+                    is RoomUiState.Success -> {
+                        val conversation = state.conversation
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
+                    }
+
+                    else -> {}
+                }
+            }.collect()
         }
 
         lifecycleScope.launch {
@@ -1303,6 +1322,16 @@ class ConversationsListActivity :
 
                 ConversationItem.VIEW_TYPE -> {
                     handleConversation((Objects.requireNonNull(item) as ConversationItem).model)
+                }
+
+                ContactItem.VIEW_TYPE -> {
+                    val contact = item as ContactItem
+                    contactsViewModel.createRoom(
+                        "1",
+                        null,
+                        contact.model.actorId!!,
+                        null
+                    )
                 }
             }
         }
