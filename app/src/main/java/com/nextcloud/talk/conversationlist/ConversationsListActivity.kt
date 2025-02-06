@@ -70,6 +70,7 @@ import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.adapters.items.ContactItem
 import com.nextcloud.talk.adapters.items.ConversationItem
 import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
@@ -80,6 +81,9 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.ContactsUiState
+import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -95,6 +99,9 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
+import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
@@ -177,6 +184,9 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
 
@@ -317,6 +327,7 @@ class ConversationsListActivity :
         showSearchOrToolbar()
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         this.lifecycleScope.launch {
             networkMonitor.isOnline.onEach { isOnline ->
@@ -387,6 +398,63 @@ class ConversationsListActivity :
                     setConversationList(list)
                 }.collect()
         }
+
+        lifecycleScope.launch {
+            contactsViewModel.roomViewState.onEach { state ->
+                when (state) {
+                    is RoomUiState.Success -> {
+                        val conversation = state.conversation
+                        val bundle = Bundle()
+                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
+                        val chatIntent = Intent(context, ChatActivity::class.java)
+                        chatIntent.putExtras(bundle)
+                        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        startActivity(chatIntent)
+                    }
+
+                    else -> {}
+                }
+            }.collect()
+        }
+
+        lifecycleScope.launch {
+            contactsViewModel.contactsViewState.onEach { state ->
+                when (state) {
+                    is ContactsUiState.Success -> {
+                        if (state.contacts.isNullOrEmpty()) return@onEach
+
+                        val userItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+                        val actorTypeConverter = EnumActorTypeConverter()
+                        var genericTextHeaderItem: GenericTextHeaderItem
+                        for (autocompleteUser in state.contacts) {
+                            val headerTitle = resources!!.getString(R.string.nc_user)
+                            if (!callHeaderItems.containsKey(headerTitle)) {
+                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                                callHeaderItems[headerTitle] = genericTextHeaderItem
+                            }
+
+                            val participant = Participant()
+                            participant.actorId = autocompleteUser.id
+                            participant.actorType = actorTypeConverter.getFromString(autocompleteUser.source)
+                            participant.displayName = autocompleteUser.label
+
+                            val contactItem = ContactItem(
+                                participant,
+                                currentUser!!,
+                                callHeaderItems[headerTitle],
+                                viewThemeUtils
+                            )
+
+                            userItems.add(contactItem)
+                        }
+
+                        searchableConversationItems.addAll(userItems)
+                    }
+
+                    else -> {}
+                }
+            }.collect()
+        }
     }
 
     private fun setConversationList(list: List<ConversationModel>) {
@@ -411,6 +479,9 @@ class ConversationsListActivity :
             intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
         )
         fetchOpenConversations(apiVersion)
+
+        // Get users
+        fetchUsers()
     }
 
     private fun hasFilterEnabled(): Boolean {
@@ -944,38 +1015,43 @@ class ConversationsListActivity :
             )
         ) {
             val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-            // openConversationsQueryDisposable = ncApi.getOpenConversations(
-            //     credentials,
-            //     ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!)
-            // )
-            //     .subscribeOn(Schedulers.io())
-            //     .observeOn(AndroidSchedulers.mainThread())
-            //     .subscribe({ (ocs): RoomsOverall ->
-            //         for (conversation in ocs!!.data!!) {
-            //             val headerTitle = resources!!.getString(R.string.openConversations)
-            //             var genericTextHeaderItem: GenericTextHeaderItem
-            //             if (!callHeaderItems.containsKey(headerTitle)) {
-            //                 genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-            //                 callHeaderItems[headerTitle] = genericTextHeaderItem
-            //             }
-            //             val conversationItem = ConversationItem(
-            //                 conversation,
-            //                 currentUser!!,
-            //                 this,
-            //                 callHeaderItems[headerTitle],
-            //                 viewThemeUtils
-            //             )
-            //             openConversationItems.add(conversationItem)
-            //         }
-            //         searchableConversationItems.addAll(openConversationItems)
-            //     }, { throwable: Throwable ->
-            //         Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
-            //         handleHttpExceptions(throwable)
-            //         dispose(openConversationsQueryDisposable)
-            //     }) { dispose(openConversationsQueryDisposable) }
+            openConversationsQueryDisposable = ncApi.getOpenConversations(
+                credentials,
+                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!),
+                ""
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ (ocs): RoomsOverall ->
+                    for (conversation in ocs!!.data!!) {
+                        val headerTitle = resources!!.getString(R.string.openConversations)
+                        var genericTextHeaderItem: GenericTextHeaderItem
+                        if (!callHeaderItems.containsKey(headerTitle)) {
+                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                            callHeaderItems[headerTitle] = genericTextHeaderItem
+                        }
+                        val conversationItem = ConversationItem(
+                            ConversationModel.mapToConversationModel(conversation, currentUser!!),
+                            currentUser!!,
+                            this,
+                            callHeaderItems[headerTitle],
+                            viewThemeUtils
+                        )
+                        openConversationItems.add(conversationItem)
+                    }
+                    searchableConversationItems.addAll(openConversationItems)
+                }, { throwable: Throwable ->
+                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
+                    handleHttpExceptions(throwable)
+                    dispose(openConversationsQueryDisposable)
+                }) { dispose(openConversationsQueryDisposable) }
         } else {
             Log.d(TAG, "no open conversations fetched because of missing capability")
         }
+    }
+
+    private fun fetchUsers() {
+        contactsViewModel.getContactsFromSearchParams()
     }
 
     private fun handleHttpExceptions(throwable: Throwable) {
@@ -1246,6 +1322,16 @@ class ConversationsListActivity :
 
                 ConversationItem.VIEW_TYPE -> {
                     handleConversation((Objects.requireNonNull(item) as ConversationItem).model)
+                }
+
+                ContactItem.VIEW_TYPE -> {
+                    val contact = item as ContactItem
+                    contactsViewModel.createRoom(
+                        ROOM_TYPE_ONE_ONE,
+                        null,
+                        contact.model.actorId!!,
+                        null
+                    )
                 }
             }
         }
@@ -1923,8 +2009,8 @@ class ConversationsListActivity :
                 if (results.hasMore) {
                     adapterItems.add(LoadMoreResultsItem)
                 }
-                // add unified search result at the end of the list
-                adapter!!.addItems(adapter!!.mainItemCount + adapter!!.scrollableHeaders.size, adapterItems)
+
+                adapter!!.addItems(0, adapterItems)
                 binding.recyclerView?.scrollToPosition(0)
             }
         }
@@ -1965,7 +2051,7 @@ class ConversationsListActivity :
         const val BOTTOM_SHEET_DELAY: Long = 2500
         private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
-        const val SEARCH_MIN_CHARS = 2
+        const val SEARCH_MIN_CHARS = 1
         const val HTTP_UNAUTHORIZED = 401
         const val HTTP_CLIENT_UPGRADE_REQUIRED = 426
         const val CLIENT_UPGRADE_MARKET_LINK = "market://details?id="
@@ -1977,5 +2063,6 @@ class ConversationsListActivity :
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
+        const val ROOM_TYPE_ONE_ONE = "1"
     }
 }
