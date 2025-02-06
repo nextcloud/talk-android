@@ -1327,7 +1327,7 @@ class ConversationsListActivity :
                 ContactItem.VIEW_TYPE -> {
                     val contact = item as ContactItem
                     contactsViewModel.createRoom(
-                        "1",
+                        ROOM_TYPE_ONE_ONE,
                         null,
                         contact.model.actorId!!,
                         null
@@ -2063,5 +2063,6 @@ class ConversationsListActivity :
         const val DAYS_FOR_NOTIFICATION_WARNING = 5L
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
+        const val ROOM_TYPE_ONE_ONE = "1"
     }
 }
