@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
+import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.status.StatusType
@@ -165,6 +166,10 @@ class MentionAutocompleteItem(
                 }
             }
 
+            SOURCE_TEAMS -> {
+                holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
+            }
+
             else -> {
                 holder.binding.avatarView.loadUserAvatar(
                     currentUser,
@@ -237,6 +242,7 @@ class MentionAutocompleteItem(
         const val SOURCE_GUESTS = "guests"
         const val SOURCE_GROUPS = "groups"
         const val SOURCE_EMAILS = "emails"
+        const val SOURCE_TEAMS = "teams"
         const val SOURCE_FEDERATION = "federated_users"
     }
 }

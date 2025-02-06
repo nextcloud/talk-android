@@ -838,7 +838,8 @@ class MessageInputFragment : Fragment() {
                     mentionId.contains("@") ||
                     mentionId.startsWith("guest/") ||
                     mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/")
+                    mentionId.startsWith("email/") ||
+                    mentionId.startsWith("team/")
                 if (shouldQuote) {
                     mentionId = "\"" + mentionId + "\""
                 }
