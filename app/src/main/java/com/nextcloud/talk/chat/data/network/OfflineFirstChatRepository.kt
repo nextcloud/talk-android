@@ -44,7 +44,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -839,14 +838,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
             emit(Result.success(chatMessageModel))
         }
-            .retryWhen { cause, attempt ->
-                if (cause is IOException && attempt < SEND_MESSAGE_RETRY_ATTEMPTS) {
-                    delay(SEND_MESSAGE_RETRY_DELAY)
-                    return@retryWhen true
-                } else {
-                    return@retryWhen false
-                }
-            }
             .catch { e ->
                 Log.e(TAG, "Error when sending message", e)
 
@@ -1038,7 +1029,5 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIES = 1000
-        private const val SEND_MESSAGE_RETRY_ATTEMPTS = 3
-        private const val SEND_MESSAGE_RETRY_DELAY: Long = 2000
     }
 }
