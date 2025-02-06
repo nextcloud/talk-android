@@ -174,6 +174,7 @@
     <string name="nc_group">Gruppo</string>
     <string name="nc_groups">Gruppi</string>
     <string name="nc_guest">Ospite</string>
+    <string name="nc_guest_access">Accesso ospiti</string>
     <string name="nc_guest_access_allow_title">Consenti ospiti</string>
     <string name="nc_guest_access_password_dialog_hint">Digita una password</string>
     <string name="nc_guest_access_password_summary">Imposta una password per limitare chi può utilizzare il collegamento pubblico.</string>
@@ -348,6 +349,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Chiaro</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_typing_status_desc">Condividi il mio stato di digitazione e mostra lo stato di digitazione degli altri.</string>
     <string name="nc_settings_use_credentials_title">Il proxy richiede credenziali</string>
     <string name="nc_settings_warning">Avviso</string>
     <string name="nc_settings_wrong_account">Può essere autorizzato nuovamente solo l\'account attuale</string>
@@ -406,6 +408,8 @@
     <string name="raise_hand">Alza la mano</string>
     <string name="reactions_tab_all">Tutti</string>
     <string name="read_storage_no_permission">La condivisione dei file dall\'archiviazione non è possibile senza permessi</string>
+    <string name="recording_consent_all">Il permesso di registrazione è richiesto per tutte le call</string>
+    <string name="recording_consent_for_conversation_title">Permesso di registrazione</string>
     <string name="recording_settings_title">Registrazione</string>
     <string name="reset_status">Ripristina stato</string>
     <string name="save">Salva</string>
