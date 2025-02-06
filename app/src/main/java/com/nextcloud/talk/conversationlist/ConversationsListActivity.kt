@@ -2051,7 +2051,7 @@ class ConversationsListActivity :
         const val BOTTOM_SHEET_DELAY: Long = 2500
         private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
-        const val SEARCH_MIN_CHARS = 2
+        const val SEARCH_MIN_CHARS = 1
         const val HTTP_UNAUTHORIZED = 401
         const val HTTP_CLIENT_UPGRADE_REQUIRED = 426
         const val CLIENT_UPGRADE_MARKET_LINK = "market://details?id="
