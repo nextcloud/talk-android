@@ -40,6 +40,7 @@ import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
 import com.nextcloud.talk.utils.CapabilitiesUtil;
 import com.nextcloud.talk.utils.DisplayUtils;
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
 
 import java.net.CookieManager;
 import java.util.ArrayList;
@@ -71,6 +72,9 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
     @Inject
     UserManager userManager;
+
+    @Inject
+    CurrentUserProviderNew currentUserProvider;
 
     @Inject
     CookieManager cookieManager;
@@ -109,7 +113,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
-        User user = userManager.getCurrentUser().blockingGet();
+        User user = currentUserProvider.getCurrentUser().blockingGet();
 
         themeViews();
         setupCurrentUser(user);
@@ -268,7 +272,7 @@ public class ChooseAccountDialogFragment extends DialogFragment {
     private void loadCurrentStatus(User user) {
         String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
 
-        if (CapabilitiesUtil.isUserStatusAvailable(userManager.getCurrentUser().blockingGet())) {
+        if (CapabilitiesUtil.isUserStatusAvailable(currentUserProvider.getCurrentUser().blockingGet())) {
             binding.statusView.setVisibility(View.VISIBLE);
 
             ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).

@@ -54,8 +54,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -72,7 +72,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        val user = userManager.currentUser.blockingGet()
+        val user = currentUserProvider.currentUser.blockingGet()
         val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
         val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
         val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
@@ -83,7 +83,7 @@ class DateTimeCompose(val bundle: Bundle) {
     lateinit var chatViewModel: ChatViewModel
 
     @Inject
-    lateinit var userManager: UserManager
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -133,7 +133,7 @@ class DateTimeCompose(val bundle: Bundle) {
         ) {
             TextButton(
                 onClick = {
-                    val user = userManager.currentUser.blockingGet()
+                    val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                     val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
@@ -161,7 +161,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
             TextButton(
                 onClick = {
-                    val user = userManager.currentUser.blockingGet()
+                    val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
                     val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)

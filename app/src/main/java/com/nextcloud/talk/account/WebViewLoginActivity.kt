@@ -224,7 +224,7 @@ class WebViewLoginActivity : BaseActivity() {
                 if (!reauthorizeAccount) {
                     alias = appPreferences.temporaryClientCertAlias
                 }
-                val user = userManager.currentUser.blockingGet()
+                val user = currentUserProvider.currentUser.blockingGet()
                 if (TextUtils.isEmpty(alias) && user != null) {
                     alias = user.clientCertificate
                 }
@@ -373,7 +373,7 @@ class WebViewLoginActivity : BaseActivity() {
     }
 
     private fun updateUserAndRestartApp(loginData: LoginData) {
-        val currentUser = userManager.currentUser.blockingGet()
+        val currentUser = currentUserProvider.currentUser.blockingGet()
         if (currentUser != null) {
             currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
             currentUser.token = loginData.token
