@@ -1666,7 +1666,7 @@ class ConversationsListActivity :
 
         return settingsOfUserAreWrong &&
             shouldShowNotificationWarningByUserChoice() &&
-            ClosedInterfaceImpl().isGooglePlayServicesAvailable
+            ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)
     }
 
     private fun openConversation(textToPaste: String? = "") {

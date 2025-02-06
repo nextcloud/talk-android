@@ -959,7 +959,7 @@ class SettingsActivity :
         binding.settingsShowNotificationWarningSwitch.isChecked =
             appPreferences.showRegularNotificationWarning
 
-        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+        if (ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)) {
             binding.settingsShowNotificationWarning.setOnClickListener {
                 val isChecked = binding.settingsShowNotificationWarningSwitch.isChecked
                 binding.settingsShowNotificationWarningSwitch.isChecked = !isChecked
