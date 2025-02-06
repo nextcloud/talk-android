@@ -14,6 +14,7 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -30,6 +31,9 @@ class ConversationsListViewModel @Inject constructor(
 
     @Inject
     lateinit var invitationsRepository: InvitationsRepository
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     sealed interface ViewState
 
@@ -90,7 +94,7 @@ class ConversationsListViewModel @Inject constructor(
         }
 
         override fun onNext(invitationsModel: InvitationsModel) {
-            val currentUser = userManager.currentUser.blockingGet()
+            val currentUser = currentUserProvider.currentUser.blockingGet()
 
             if (invitationsModel.user.userId?.equals(currentUser.userId) == true &&
                 invitationsModel.user.baseUrl?.equals(currentUser.baseUrl) == true

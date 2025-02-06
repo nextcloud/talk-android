@@ -15,8 +15,8 @@ import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.translate.repositories.TranslateRepository
 import com.nextcloud.talk.translate.repositories.model.Language
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class TranslateViewModel @Inject constructor(
     private val repository: TranslateRepository,
-    private val userManager: UserManager
+    private val currentUserProvider: CurrentUserProviderNew
 ) : ViewModel() {
 
     sealed interface ViewState
@@ -44,7 +44,7 @@ class TranslateViewModel @Inject constructor(
         get() = _viewState
 
     fun translateMessage(toLanguage: String, fromLanguage: String?, text: String) {
-        val currentUser: User = userManager.currentUser.blockingGet()
+        val currentUser: User = currentUserProvider.currentUser.blockingGet()
         val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
         val url: String = ApiUtils.getUrlForTranslation(currentUser.baseUrl!!)
         val calculatedFromLanguage =
@@ -67,7 +67,7 @@ class TranslateViewModel @Inject constructor(
     }
 
     fun getLanguages() {
-        val currentUser: User = userManager.currentUser.blockingGet()
+        val currentUser: User = currentUserProvider.currentUser.blockingGet()
         val authorization: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
         val url: String = ApiUtils.getUrlForLanguages(currentUser.baseUrl!!)
         Log.d(TAG, "URL is: $url")
