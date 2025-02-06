@@ -12,15 +12,17 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.RetrofitBucket
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ContactUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import javax.inject.Inject
 
-class ContactsRepositoryImpl(
+class ContactsRepositoryImpl @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
-    private val userManager: UserManager
+    currentUserProvider: CurrentUserProviderNew
 ) : ContactsRepository {
-    private val _currentUser = userManager.currentUser.blockingGet()
+
+    private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, 1))

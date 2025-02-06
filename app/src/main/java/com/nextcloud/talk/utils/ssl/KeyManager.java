@@ -15,6 +15,7 @@ import android.util.Log;
 import com.nextcloud.talk.application.NextcloudTalkApplication;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.users.UserManager;
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 
 import java.net.Socket;
@@ -27,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.inject.Inject;
 import javax.net.ssl.X509KeyManager;
 
 import androidx.annotation.Nullable;
@@ -34,6 +36,9 @@ import androidx.annotation.Nullable;
 public class KeyManager implements X509KeyManager {
     private static final String TAG = "KeyManager";
     private final X509KeyManager keyManager;
+
+    @Inject
+    CurrentUserProviderNew currentUserProvider;
 
     private UserManager userManager;
     private AppPreferences appPreferences;
@@ -50,7 +55,7 @@ public class KeyManager implements X509KeyManager {
     @Override
     public String chooseClientAlias(String[] strings, Principal[] principals, Socket socket) {
         String alias;
-        User currentUser = userManager.getCurrentUser().blockingGet();
+        User currentUser = currentUserProvider.getCurrentUser().blockingGet();
         if ((currentUser != null &&
             !TextUtils.isEmpty(alias = currentUser.getClientCertificate())) ||
             !TextUtils.isEmpty(alias = appPreferences.getTemporaryClientCertAlias())

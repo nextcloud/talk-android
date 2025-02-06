@@ -14,21 +14,22 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
-import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipant
 import com.nextcloud.talk.utils.ApiUtils.getRetrofitBucketForAddParticipantWithSource
 import com.nextcloud.talk.utils.Mimetype
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import javax.inject.Inject
 
-class ConversationCreationRepositoryImpl(
+class ConversationCreationRepositoryImpl @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
-    private val userManager: UserManager
+    currentUserProvider: CurrentUserProviderNew
 ) : ConversationCreationRepository {
-    private val _currentUser = userManager.currentUser.blockingGet()
+    private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))

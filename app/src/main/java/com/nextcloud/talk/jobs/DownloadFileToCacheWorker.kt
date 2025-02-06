@@ -18,6 +18,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.ResponseBody
 import java.io.BufferedInputStream
@@ -40,6 +41,9 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
     lateinit var userManager: UserManager
 
     @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
     lateinit var appPreferences: AppPreferences
 
     override fun doWork(): Result {
@@ -50,7 +54,7 @@ class DownloadFileToCacheWorker(val context: Context, workerParameters: WorkerPa
         }
 
         try {
-            val currentUser = userManager.currentUser.blockingGet()
+            val currentUser = currentUserProvider.currentUser.blockingGet()
             val baseUrl = inputData.getString(KEY_BASE_URL)
             val userId = inputData.getString(KEY_USER_ID)
             val attachmentFolder = inputData.getString(KEY_ATTACHMENT_FOLDER)
