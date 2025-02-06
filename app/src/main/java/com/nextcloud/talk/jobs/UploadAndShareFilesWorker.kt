@@ -41,6 +41,7 @@ import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.RemoteFileUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -57,6 +58,9 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @Inject
     lateinit var appPreferences: AppPreferences
@@ -95,7 +99,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
 
         return try {
-            currentUser = userManager.currentUser.blockingGet()
+            currentUser = currentUserProvider.currentUser.blockingGet()
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
             roomToken = inputData.getString(ROOM_TOKEN)!!
             conversationName = inputData.getString(CONVERSATION_NAME)!!

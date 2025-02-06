@@ -480,12 +480,13 @@ class SettingsActivity :
 
     private fun setupServerNotificationAppCheck() {
         val serverNotificationAppInstalled =
-            userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+            currentUserProvider.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty()
+                ?: false
         if (!serverNotificationAppInstalled) {
             binding.settingsServerNotificationAppWrapper.visibility = View.VISIBLE
 
             val description = context.getString(R.string.nc_settings_contact_admin_of) + LINEBREAK +
-                userManager.currentUser.blockingGet().baseUrl!!
+                currentUserProvider.currentUser.blockingGet().baseUrl!!
 
             binding.settingsServerNotificationAppDescription.text = description
             if (openedByNotificationWarning) {
