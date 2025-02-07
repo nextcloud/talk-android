@@ -39,8 +39,12 @@ class ChatUtils {
                         if (type == "file") {
                             resultMessage?.replace("{$key}", individualHashMap["name"].toString())
                         } else {
-                            individualHashMap["name"]?.let { resultMessage?.replace("{$key}",
-                                individualHashMap["name"]!!) }
+                            individualHashMap["name"]?.let {
+                                resultMessage?.replace(
+                                    "{$key}",
+                                    individualHashMap["name"]!!
+                                )
+                            }
                         }
                     } else {
                         individualHashMap["name"]?.let { resultMessage?.replace("{$key}", it) }
