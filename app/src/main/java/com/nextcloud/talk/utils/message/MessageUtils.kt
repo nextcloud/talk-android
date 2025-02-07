@@ -152,8 +152,12 @@ class MessageUtils(val context: Context) {
                             val end = start + placeholder.length
                             spannable.replace(start, end, replacementText)
                             spannable.setSpan(
-                                ForegroundColorSpan(Color.BLUE), start, start + replacementText!!
-                                .length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                                ForegroundColorSpan(Color.BLUE),
+                                start,
+                                start + replacementText!!
+                                    .length,
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
 
                             start = spannable.indexOf(placeholder, start + replacementText.length)
                         }
