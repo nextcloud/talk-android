@@ -13,13 +13,14 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import coil.Coil
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadGuestAvatar
-import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.status.StatusType
@@ -167,7 +168,19 @@ class MentionAutocompleteItem(
             }
 
             SOURCE_TEAMS -> {
-                holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
+                holder.binding.avatarView.post {
+                    val imageViewWidth = holder.binding.avatarView.width
+                    val imageViewHeight = holder.binding.avatarView.height
+
+                    val request = ImageRequest.Builder(context)
+                        .data(R.drawable.icon_team)
+                        .size(imageViewWidth, imageViewHeight)
+                        .scale(coil.size.Scale.FILL)
+                        .target(holder.binding.avatarView)
+                        .build()
+
+                    Coil.imageLoader(context).enqueue(request)
+                }
             }
 
             else -> {
