@@ -158,7 +158,7 @@ class ContactsActivity :
             }
         }
 
-        currentUser = userManager.currentUser.blockingGet()
+        currentUser = currentUserProvider.currentUser.blockingGet()
         if (currentUser != null) {
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
         }

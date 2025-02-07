@@ -25,6 +25,7 @@ import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils.getUrlForParticipantsSelf
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -43,12 +44,15 @@ class LeaveConversationWorker(context: Context, workerParams: WorkerParameters) 
     @Inject
     lateinit var userManager: UserManager
 
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
     private val result = SettableFuture.create<Result>()
 
     override fun startWork(): ListenableFuture<Result> {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val conversationToken = inputData.getString(BundleKeys.KEY_ROOM_TOKEN)
-        val currentUser = userManager.currentUser.blockingGet()
+        val currentUser = currentUserProvider.currentUser.blockingGet()
 
         if (currentUser != null && conversationToken != null) {
             val credentials = getCredentials(currentUser.username, currentUser.token)
