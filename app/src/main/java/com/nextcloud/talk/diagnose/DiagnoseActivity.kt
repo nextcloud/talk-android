@@ -306,26 +306,26 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun setupAccountValues() {
+        val currentUser = currentUserProvider.currentUser.blockingGet()
+
         addHeadline(context.resources.getString(R.string.nc_diagnose_account_category_title))
 
         addKey(context.resources.getString(R.string.nc_diagnose_account_server))
-        addValue(userManager.currentUser.blockingGet().baseUrl!!)
+        addValue(currentUser.baseUrl!!)
 
         addKey(context.resources.getString(R.string.nc_diagnose_account_user_name))
-        addValue(userManager.currentUser.blockingGet().displayName!!)
+        addValue(currentUser.displayName!!)
 
         addKey(context.resources.getString(R.string.nc_diagnose_account_user_status_enabled))
         addValue(
             translateBoolean(
-                (userManager.currentUser.blockingGet().capabilities?.userStatusCapability?.enabled)
+                (currentUser.capabilities?.userStatusCapability?.enabled)
             )
         )
 
         addKey(context.resources.getString(R.string.nc_diagnose_account_server_notification_app))
         addValue(
-            translateBoolean(
-                userManager.currentUser.blockingGet().capabilities?.notificationsCapability?.features?.isNotEmpty()
-            )
+            translateBoolean(currentUser.capabilities?.notificationsCapability?.features?.isNotEmpty())
         )
 
         if (isGooglePlayServicesAvailable) {
@@ -333,16 +333,14 @@ class DiagnoseActivity : BaseActivity() {
         }
 
         addKey(context.resources.getString(R.string.nc_diagnose_server_version))
-        addValue(userManager.currentUser.blockingGet().serverVersion?.versionString!!)
+        addValue(currentUser.serverVersion?.versionString!!)
 
         addKey(context.resources.getString(R.string.nc_diagnose_server_talk_version))
-        addValue(userManager.currentUser.blockingGet().capabilities?.spreedCapability?.version!!)
+        addValue(currentUser.capabilities?.spreedCapability?.version!!)
 
         addKey(context.resources.getString(R.string.nc_diagnose_signaling_mode_title))
 
-        if (userManager.currentUser.blockingGet().externalSignalingServer?.externalSignalingServer?.isNotEmpty()
-            == true
-        ) {
+        if (currentUser.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
             addValue(context.resources.getString(R.string.nc_diagnose_signaling_mode_extern))
         } else {
             addValue(context.resources.getString(R.string.nc_diagnose_signaling_mode_intern))
@@ -350,7 +348,7 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun setupPushRegistrationDiagnose() {
-        val accountId = UserIdUtils.getIdForUser(userManager.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
 
         val latestPushRegistrationAtServer = arbitraryStorageManager.getStorageSetting(
             accountId,

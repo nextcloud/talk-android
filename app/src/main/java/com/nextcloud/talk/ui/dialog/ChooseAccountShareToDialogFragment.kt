@@ -29,6 +29,7 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import java.net.CookieManager
@@ -39,6 +40,9 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     @JvmField
     @Inject
     var userManager: UserManager? = null
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @JvmField
     @Inject
@@ -61,7 +65,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
-        val user = userManager!!.currentUser.blockingGet()
+        val user = currentUserProvider.currentUser.blockingGet()
         themeViews()
         setupCurrentUser(user)
         setupListeners(user)

@@ -18,7 +18,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.generic.GenericMeta
 import com.nextcloud.talk.repositories.conversations.ConversationsRepositoryImpl.Companion.STATUS_CODE_OK
-import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class ConversationCreationViewModel @Inject constructor(
     private val repository: ConversationCreationRepository,
-    private val userManager: UserManager
+    private val currentUserProvider: CurrentUserProviderNew
 ) : ViewModel() {
     private val _selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipants: StateFlow<List<AutocompleteUser>> = _selectedParticipants
@@ -35,7 +35,7 @@ class ConversationCreationViewModel @Inject constructor(
     private val _selectedImageUri = MutableStateFlow<Uri?>(null)
     val selectedImageUri: StateFlow<Uri?> = _selectedImageUri
 
-    private val _currentUser = userManager.currentUser.blockingGet()
+    private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
     private val _isPasswordEnabled = mutableStateOf(false)
