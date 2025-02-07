@@ -34,7 +34,7 @@ import kotlin.math.ceil
  * Abstraction over the [MediaPlayer](https://developer.android.com/reference/android/media/MediaPlayer) class used
  * to manage the MediaPlayer instance.
  */
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "TooGenericExceptionCaught")
 class MediaPlayerManager : LifecycleAwareManager {
     companion object {
         val TAG: String = MediaPlayerManager::class.java.simpleName
