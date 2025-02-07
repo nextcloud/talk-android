@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.TextPaint
 import android.text.TextUtils
@@ -222,6 +223,28 @@ object DisplayUtils {
             imageLoader(context).enqueue(imageRequest)
         }
         return chip
+    }
+
+     fun replaceLabelWithPlaceholder(
+        text: Spanned,
+        labelToSearch: String,
+        placeholder: String
+    ): Spannable {
+        val spannableStringBuilder = SpannableStringBuilder(text)
+        val stringText = text.toString()
+        val m = Pattern.compile(
+            Pattern.quote(labelToSearch),
+            Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
+        )
+            .matcher(spannableStringBuilder)
+        var lastStartIndex = 0
+        while (m.find()) {
+            val start = stringText.indexOf(m.group(), lastStartIndex)
+            val end = start + m.group().length
+            lastStartIndex = end
+            spannableStringBuilder.replace(start, end, placeholder)
+        }
+        return spannableStringBuilder
     }
 
     fun searchAndReplaceWithMentionSpan(

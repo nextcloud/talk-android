@@ -118,6 +118,19 @@ class MessageUtils(val context: Context) {
                         } else {
                             individualHashMap["id"]
                         }
+                        val label = individualHashMap["name"]!!
+                        val type = individualHashMap["type"]!!
+                        val labelToSearch = if (type == "circle") {
+                            "@team/$label"
+                        } else {
+                            "@$label"
+                        }
+
+                        messageStringInternal = DisplayUtils.replaceLabelWithPlaceholder(
+                            messageStringInternal,
+                            labelToSearch,
+                            PLACEHOLDER
+                        )
 
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
                             key!!,
@@ -169,5 +182,6 @@ class MessageUtils(val context: Context) {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
         const val HTTPS_PROTOCOL = "https://"
+        const val PLACEHOLDER = "[mention]"
     }
 }
