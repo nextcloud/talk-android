@@ -13,6 +13,8 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
+import coil.Coil
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
@@ -165,6 +167,22 @@ class MentionAutocompleteItem(
                 }
             }
 
+            SOURCE_TEAMS -> {
+                holder.binding.avatarView.post {
+                    val imageViewWidth = holder.binding.avatarView.width
+                    val imageViewHeight = holder.binding.avatarView.height
+
+                    val request = ImageRequest.Builder(context)
+                        .data(R.drawable.icon_team)
+                        .size(imageViewWidth, imageViewHeight)
+                        .scale(coil.size.Scale.FILL)
+                        .target(holder.binding.avatarView)
+                        .build()
+
+                    Coil.imageLoader(context).enqueue(request)
+                }
+            }
+
             else -> {
                 holder.binding.avatarView.loadUserAvatar(
                     currentUser,
@@ -237,6 +255,7 @@ class MentionAutocompleteItem(
         const val SOURCE_GUESTS = "guests"
         const val SOURCE_GROUPS = "groups"
         const val SOURCE_EMAILS = "emails"
+        const val SOURCE_TEAMS = "teams"
         const val SOURCE_FEDERATION = "federated_users"
     }
 }
