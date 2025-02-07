@@ -119,13 +119,13 @@ class MessageUtils(val context: Context) {
                             individualHashMap["id"]
                         }
                         val label = individualHashMap["name"]!!
+                        val mentionId = individualHashMap["id"]
                         val type = individualHashMap["type"]!!
-                        val labelToSearch = if (type == "circle") {
-                            "@team/$label"
-                        } else {
-                            "@$label"
+                        val labelToSearch = if (type == "circle" || type == "teams") {
+                            "@team/$mentionId"
+                        } else{
+                            ""
                         }
-
                         messageStringInternal = DisplayUtils.replaceLabelWithPlaceholder(
                             messageStringInternal,
                             labelToSearch,
