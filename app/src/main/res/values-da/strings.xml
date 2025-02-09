@@ -39,7 +39,7 @@
     <string name="conversations">Samtaler</string>
     <string name="create_conversation">Opret samtale</string>
     <string name="create_issue">Opret problem</string>
-    <string name="custom">Valgfrit</string>
+    <string name="custom">Brugerdefineret</string>
     <string name="danger_zone">Danger Zone</string>
     <string name="delete_avatar">Slet avatar</string>
     <string name="dnd">Forstyr ikke</string>
@@ -112,6 +112,7 @@
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
     <string name="nc_copy_message">Kopiér</string>
+    <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
@@ -133,6 +134,8 @@
     <string name="nc_dialog_invalid_password">Ugyldigt kodeord</string>
     <string name="nc_dialog_maintenance_mode">Vedligeholdelsestilstand</string>
     <string name="nc_dialog_outdated_client_option_update">Opdater</string>
+    <string name="nc_dialog_save_to_storage_no">Nej</string>
+    <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_edit_message">Redigér</string>
@@ -287,6 +290,7 @@
     <string name="nc_settings_theme_key">tema</string>
     <string name="nc_settings_theme_light">Lys</string>
     <string name="nc_settings_theme_title">Tema</string>
+    <string name="nc_settings_use_credentials_title">Proxy kræver legitimationsoplysninger</string>
     <string name="nc_settings_warning">Advarsler</string>
     <string name="nc_settings_wrong_account">Kun nuværende konto kan gen autoriseres</string>
     <string name="nc_share_link">Del link</string>
@@ -296,6 +300,7 @@
     <string name="nc_sort_by">Sortér efter</string>
     <string name="nc_start_time">Start tid</string>
     <string name="nc_switch_account">Skift konto</string>
+    <string name="nc_team">Team</string>
     <string name="nc_teams">Teams</string>
     <string name="nc_upload_from_device">Upload fra enhed</string>
     <string name="nc_upload_in_progess">Uploader</string>
@@ -310,6 +315,7 @@
     <string name="online_status">Online status</string>
     <string name="polls_add_option">Tilføj valg</string>
     <string name="polls_options">Valgmuligheder</string>
+    <string name="polls_question">Spørgsmål</string>
     <string name="polls_results_subtitle">Resultater</string>
     <string name="polls_settings">Indstillinger</string>
     <string name="polls_submit_vote">Stemme</string>
