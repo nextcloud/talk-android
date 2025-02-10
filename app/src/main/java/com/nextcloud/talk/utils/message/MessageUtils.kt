@@ -8,12 +8,12 @@ package com.nextcloud.talk.utils.message
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.graphics.Typeface
 import android.net.Uri
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
-import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import com.nextcloud.talk.R
@@ -152,13 +152,12 @@ class MessageUtils(val context: Context) {
                             val end = start + placeholder.length
                             spannable.replace(start, end, replacementText)
                             spannable.setSpan(
-                                ForegroundColorSpan(Color.BLUE),
+                                StyleSpan(Typeface.BOLD),
                                 start,
                                 start + replacementText!!
                                     .length,
                                 Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
                             )
-
                             start = spannable.indexOf(placeholder, start + replacementText.length)
                         }
                         messageStringInternal = spannable
@@ -166,7 +165,6 @@ class MessageUtils(val context: Context) {
                 }
             }
         }
-
         return messageStringInternal
     }
 
