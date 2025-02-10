@@ -366,15 +366,23 @@ class MessageInputFragment : Fragment() {
                     var mentionSpan: Spans.MentionChipSpan
                     for (i in mentionSpans.indices) {
                         mentionSpan = mentionSpans[i]
+                        val start = editable.getSpanStart(mentionSpan)
+                        val end = editable.getSpanEnd(mentionSpan)
+                        Log.d("Julius", "S:$start E:$end")
                         if (start >= editable.getSpanStart(mentionSpan) &&
                             start < editable.getSpanEnd(mentionSpan)
                         ) {
-                            if (editable.subSequence(
-                                    editable.getSpanStart(mentionSpan),
-                                    editable.getSpanEnd(mentionSpan)
-                                ).toString().trim { it <= ' ' } != mentionSpan.label
+                            val what = editable.subSequence(
+                                editable.getSpanStart(mentionSpan),
+                                editable.getSpanEnd(mentionSpan)
+                            ).toString()
+
+                            if (what.trim { it <= ' ' } != mentionSpan.label
                             ) {
-                                editable.removeSpan(mentionSpan)
+                                Log.d("Julius", "What: $what")
+                                Log.d("Julius", "MentionSpan removed: $mentionSpan")
+                                // FIXME error here- I knew it I was right, but why?
+                                // editable.removeSpan(mentionSpan)
                             }
                         }
                     }
