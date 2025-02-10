@@ -216,7 +216,7 @@
     <string name="nc_diagnose_notification_messages_channel_permission">Activouse a canle de notificación de mensaxes?</string>
     <string name="nc_diagnose_notification_permission">Permisos de notificación</string>
     <string name="nc_diagnose_phone_category_title">Teléfono</string>
-    <string name="nc_diagnose_server_talk_version">Versión de Parlar do servidor</string>
+    <string name="nc_diagnose_server_talk_version">Versión de Parladoiro do servidor</string>
     <string name="nc_diagnose_server_version">Versión do servidor</string>
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
@@ -428,7 +428,7 @@
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
     <string name="nc_server_testing_connection">Probando a conexión</string>
-    <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Parlar</string>
+    <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Parladoiro</string>
     <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_set_new_password">Definir un novo contrasinal</string>
@@ -444,13 +444,13 @@
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
-    <string name="nc_settings_no_talk_installed">A aplicación Parlar non está instalada no servidor contra o que tentou autenticarse</string>
+    <string name="nc_settings_no_talk_installed">A aplicación Parladoiro non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificacións</string>
     <string name="nc_settings_notifications_declined">As notificacións son rexeitadas</string>
     <string name="nc_settings_notifications_declined_hint">As notificacións son rexeitadas. Permita as notificacións nos axustes de Android</string>
     <string name="nc_settings_notifications_granted">As notificacións están permitidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensaxes</string>
-    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Parlar na lista de teléfonos</string>
+    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Parladoiro na lista de teléfonos</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429, demasiadas solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode definir o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduza o número de teléfono</string>
@@ -588,7 +588,7 @@
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_description">Visíbel só para as persoas desta instancia e os convidados</string>
     <string name="scope_local_title">Local</string>
-    <string name="scope_private_description">Só son visíbeis para as persoas coincidentes mediante a integración do número de teléfono a través de Parlar no móbil</string>
+    <string name="scope_private_description">Só son visíbeis para as persoas coincidentes mediante a integración do número de teléfono a través de Parladoiro no móbil</string>
     <string name="scope_private_title">Privado</string>
     <string name="scope_published_description">Sincronizar con servidores de confianza e co caderno de enderezos global e público</string>
     <string name="scope_published_title">Publicado</string>
