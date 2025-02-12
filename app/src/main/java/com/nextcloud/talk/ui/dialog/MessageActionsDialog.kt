@@ -98,10 +98,12 @@ class MessageActionsDialog(
         SpreedFeatures
             .EDIT_MESSAGES_NOTE_TO_SELF
     ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+
+    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && message.isOneToOneConversation
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
-    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
+    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit && isMessageBotOneToOne
 
     private val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable
 
@@ -550,5 +552,6 @@ class MessageActionsDialog(
         private const val NO_PREVIOUS_MESSAGE_ID: Int = -1
         private const val DELAY: Long = 200
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
+        private const val ACTOR_BOTS = "bots"
     }
 }
