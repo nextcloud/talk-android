@@ -1055,6 +1055,8 @@ class ConversationsListActivity :
     }
 
     private fun handleHttpExceptions(throwable: Throwable) {
+        if (!networkMonitor.isOnline.value) return
+
         if (throwable is HttpException) {
             when (throwable.code()) {
                 HTTP_UNAUTHORIZED -> showUnauthorizedDialog()
@@ -2020,7 +2022,6 @@ class ConversationsListActivity :
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
         binding.swipeRefreshLayoutView?.isRefreshing = false
-        showErrorDialog()
     }
 
     fun updateFilterState(mention: Boolean, unread: Boolean) {
