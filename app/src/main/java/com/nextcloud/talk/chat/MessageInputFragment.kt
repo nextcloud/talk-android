@@ -156,10 +156,6 @@ class MessageInputFragment : Fragment() {
         saveState()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -356,34 +352,32 @@ class MessageInputFragment : Fragment() {
                 }
 
                 val editable = binding.fragmentMessageInputView.inputEditText?.editableText
+                if (editable != null && binding.fragmentMessageInputView.inputEditText != null) return
 
-                if (editable != null && binding.fragmentMessageInputView.inputEditText != null) {
-                    val mentionSpans = editable.getSpans(
-                        0,
-                        binding.fragmentMessageInputView.inputEditText!!.length(),
-                        Spans.MentionChipSpan::class.java
-                    )
-                    var mentionSpan: Spans.MentionChipSpan
-                    for (i in mentionSpans.indices) {
-                        mentionSpan = mentionSpans[i]
+                val mentionSpans = editable!!.getSpans(
+                    0,
+                    binding.fragmentMessageInputView.inputEditText!!.length(),
+                    Spans.MentionChipSpan::class.java
+                )
+                var mentionSpan: Spans.MentionChipSpan
+                for (i in mentionSpans.indices) {
+                    mentionSpan = mentionSpans[i]
 
-                        val what = editable.subSequence(
-                            editable.getSpanStart(mentionSpan),
-                            editable.getSpanEnd(mentionSpan)
-                        ).toString().trim { it <= ' ' }
-                        val error = what.length > mentionSpan.label.length
+                    val spStart = editable.getSpanStart(mentionSpan)
+                    val spEnd = editable.getSpanEnd(mentionSpan)
 
-                        if (start >= editable.getSpanStart(mentionSpan) &&
-                            start < editable.getSpanEnd(mentionSpan) &&
-                            what != mentionSpan.label
-                        ) {
-                            editable.removeSpan(mentionSpan)
-                            if (error) {
-                                Log.d("Julius", "Error: Fix mention")
-                            }
-                        }
+                    val what = editable.subSequence(spStart, spEnd).toString().trim { it <= ' ' }
+                    val error = what.length > mentionSpan.label.length
+
+                    if (start in spStart..< spEnd && what != mentionSpan.label) {
+                        editable.removeSpan(mentionSpan)
+                    }
+
+                    if (error) {
+                        Log.d("Julius", "Error: Fix mention")
                     }
                 }
+
             }
 
             override fun afterTextChanged(s: Editable) {
