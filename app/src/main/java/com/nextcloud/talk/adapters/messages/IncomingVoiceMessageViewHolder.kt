@@ -36,7 +36,9 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.ExecutionException
@@ -61,9 +63,8 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     @Inject
     lateinit var dateUtils: DateUtils
 
-    @JvmField
     @Inject
-    var appPreferences: AppPreferences? = null
+    lateinit var appPreferences: AppPreferences
 
     lateinit var message: ChatMessage
 
@@ -83,7 +84,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         sharedApplication!!.componentApplication.inject(this)
 
         val filename = message.selectedIndividualHashMap!!["name"]
-        val retrieved = appPreferences!!.getWaveFormFromFile(filename)
+        val retrieved = appPreferences.getWaveFormFromFile(filename)
         if (retrieved.isNotEmpty() &&
             message.voiceMessageFloatArray == null ||
             message.voiceMessageFloatArray?.isEmpty() == true
@@ -103,7 +104,7 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
         setParentMessageDataOnMessageItem(message)
 
         updateDownloadState(message)
-        binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
+        binding.seekbar.max = MAX
         viewThemeUtils.talk.themeWaveFormSeekBar(binding.seekbar)
         viewThemeUtils.platform.colorCircularProgressBar(binding.progressBar, ColorRole.ON_SURFACE_VARIANT)
 
@@ -139,9 +140,15 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             }
         })
 
-        voiceMessageInterface.registerMessageToObservePlaybackSpeedPreferences(message.user.id) { speed ->
-            binding.playbackSpeedControlBtn.setSpeed(speed)
+        CoroutineScope(Dispatchers.Default).launch {
+            (voiceMessageInterface as ChatActivity).chatViewModel.voiceMessagePlayBackUIFlow.onEach { speed ->
+                withContext(Dispatchers.Main) {
+                    binding.playbackSpeedControlBtn.setSpeed(speed)
+                }
+            }.collect()
         }
+
+        binding.playbackSpeedControlBtn.setSpeed(appPreferences.getPreferredPlayback(message.actorId))
 
         Reaction().showReactions(
             message,
@@ -158,9 +165,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
 
     private fun showVoiceMessageDuration(message: ChatMessage) {
         if (message.voiceMessageDuration > 0) {
-            binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(
-                message.voiceMessageDuration.toLong()
-            )
             binding.voiceMessageDuration.visibility = View.VISIBLE
         } else {
             binding.voiceMessageDuration.visibility = View.INVISIBLE
@@ -200,7 +204,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
             val t = message.voiceMessagePlayedSeconds.toLong()
             binding.voiceMessageDuration.text = android.text.format.DateUtils.formatElapsedTime(d - t)
             binding.voiceMessageDuration.visibility = View.VISIBLE
-            binding.seekbar.max = message.voiceMessageDuration * ONE_SEC
             binding.seekbar.progress = message.voiceMessageSeekbarProgress
         } else {
             showVoiceMessageDuration(message)
@@ -372,6 +375,6 @@ class IncomingVoiceMessageViewHolder(incomingView: View, payload: Any) :
     companion object {
         private const val TAG = "VoiceInMessageView"
         private const val SEEKBAR_START: Int = 0
-        private const val ONE_SEC: Int = 1000
+        private const val MAX: Int = 100
     }
 }
