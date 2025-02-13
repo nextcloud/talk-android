@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.chat
 
-import android.content.res.Resources
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -16,6 +15,7 @@ import android.os.CountDownTimer
 import android.os.SystemClock
 import android.text.Editable
 import android.text.InputFilter
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.util.Log
@@ -85,7 +85,7 @@ import kotlinx.coroutines.launch
 import java.util.Objects
 import javax.inject.Inject
 
-@Suppress("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList", "TooManyFunctions", "LargeClass")
 @AutoInjector(NextcloudTalkApplication::class)
 class MessageInputFragment : Fragment() {
 
@@ -108,6 +108,19 @@ class MessageInputFragment : Fragment() {
         private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
+
+        /**
+         * Note: Start index guaranteed >= 0 if correct, -1 if error
+         * @return `Pair(start index + 1, end index)
+         */
+        private fun String.getStartAndEndIndexOf(substring: String): Pair<Int, Int> {
+            val index = this.indexOf(substring)
+            if (index < 0) return Pair(-1, -1)
+
+            val start = kotlin.math.max(0, index + 1)
+            val end = start + substring.length
+            return Pair(start, end)
+        }
     }
 
     @Inject
@@ -344,7 +357,7 @@ class MessageInputFragment : Fragment() {
 
                 if (s.length >= lengthFilter) {
                     binding.fragmentMessageInputView.inputEditText?.error = String.format(
-                        Objects.requireNonNull<Resources>(resources).getString(R.string.nc_limit_hit),
+                        Objects.requireNonNull(resources).getString(R.string.nc_limit_hit),
                         lengthFilter.toString()
                     )
                 } else {
@@ -352,9 +365,9 @@ class MessageInputFragment : Fragment() {
                 }
 
                 val editable = binding.fragmentMessageInputView.inputEditText?.editableText
-                if (editable != null && binding.fragmentMessageInputView.inputEditText != null) return
+                if (editable == null || binding.fragmentMessageInputView.inputEditText == null) return
 
-                val mentionSpans = editable!!.getSpans(
+                val mentionSpans = editable.getSpans(
                     0,
                     binding.fragmentMessageInputView.inputEditText!!.length(),
                     Spans.MentionChipSpan::class.java
@@ -365,19 +378,25 @@ class MessageInputFragment : Fragment() {
 
                     val spStart = editable.getSpanStart(mentionSpan)
                     val spEnd = editable.getSpanEnd(mentionSpan)
+                    val spanRangeStr = editable.subSequence(spStart, spEnd).toString().trim { it <= ' ' }
+                    val error = spanRangeStr.length > mentionSpan.label.length
 
-                    val what = editable.subSequence(spStart, spEnd).toString().trim { it <= ' ' }
-                    val error = what.length > mentionSpan.label.length
-
-                    if (start in spStart..< spEnd && what != mentionSpan.label) {
+                    if (start in spStart..<spEnd && spanRangeStr != mentionSpan.label) {
                         editable.removeSpan(mentionSpan)
                     }
 
+                    // workaround, not a proper fix for issue #4642
                     if (error) {
-                        Log.d("Julius", "Error: Fix mention")
+                        val pair = spanRangeStr.getStartAndEndIndexOf(mentionSpan.label.toString())
+                        if (pair.first < 0) {
+                            Log.e(TAG, "Mention Span not found in editable: Not reinserted")
+                            return
+                        }
+
+                        editable.setSpan(mentionSpan, pair.first, pair.second, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
+                        Log.e(TAG, "Reinserted Span in editable at Start: ${pair.first} End: ${pair.second}")
                     }
                 }
-
             }
 
             override fun afterTextChanged(s: Editable) {
