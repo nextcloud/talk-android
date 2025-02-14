@@ -459,7 +459,7 @@ class ConversationsListActivity :
 
     private fun setConversationList(list: List<ConversationModel>) {
         // Refreshes conversation messages in the background asynchronously
-        conversationsListViewModel.updateRoomMessages(credentials!!, conversationItems, list)
+        conversationsListViewModel.updateRoomMessages(credentials!!, list)
 
         // Update Conversations
         conversationItems.clear()
