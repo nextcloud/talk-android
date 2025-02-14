@@ -468,7 +468,11 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.recordAudioButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() &&
                     chatActivity.messageInputViewModel.getEditChatMessage.value == null
-                ) View.VISIBLE else View.GONE
+                ) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
 
             binding.fragmentMessageInputView.messageSendButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
