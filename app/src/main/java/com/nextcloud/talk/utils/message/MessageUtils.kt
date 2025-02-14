@@ -8,9 +8,12 @@ package com.nextcloud.talk.utils.message
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Typeface
 import android.net.Uri
 import android.text.SpannableString
+import android.text.SpannableStringBuilder
 import android.text.Spanned
+import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
 import com.nextcloud.talk.R
@@ -140,10 +143,28 @@ class MessageUtils(val context: Context) {
                             context.startActivity(browserIntent)
                         }
                     }
+                    else -> {
+                        val spannable = SpannableStringBuilder(messageStringInternal)
+                        val placeholder = "{$key}"
+                        val replacementText = individualHashMap["name"]
+                        var start = spannable.indexOf(placeholder)
+                        while (start != -1) {
+                            val end = start + placeholder.length
+                            spannable.replace(start, end, replacementText)
+                            spannable.setSpan(
+                                StyleSpan(Typeface.BOLD),
+                                start,
+                                start + replacementText!!
+                                    .length,
+                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                            start = spannable.indexOf(placeholder, start + replacementText.length)
+                        }
+                        messageStringInternal = spannable
+                    }
                 }
             }
         }
-
         return messageStringInternal
     }
 
