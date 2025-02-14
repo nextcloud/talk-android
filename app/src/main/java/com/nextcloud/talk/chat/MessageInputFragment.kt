@@ -160,10 +160,6 @@ class MessageInputFragment : Fragment() {
         saveState()
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
@@ -470,7 +466,13 @@ class MessageInputFragment : Fragment() {
         }
         binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
             binding.fragmentMessageInputView.recordAudioButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() &&
+                    chatActivity.messageInputViewModel.getEditChatMessage.value == null
+                ) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
 
             binding.fragmentMessageInputView.messageSendButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
