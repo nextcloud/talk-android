@@ -567,6 +567,7 @@
     <string name="scope_toggle_description">Cambiar el nivel de privacidad de %1$s</string>
     <string name="scroll_to_bottom">Ir al final</string>
     <string name="secondsAgo">hace segundos</string>
+    <string name="see_similar_system_messages">Ver %1$d mensajes similares</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_email">Enviar email</string>
     <string name="send_to">Enviar a</string>
