@@ -597,6 +597,7 @@
     <string name="scroll_to_bottom">Odrolovat na konec</string>
     <string name="search_icon">Ikona vyhledávání</string>
     <string name="secondsAgo">sekund před</string>
+    <string name="see_similar_system_messages">Viz %1$d podobných zpráv</string>
     <string name="selected_list_item">Vybráno</string>
     <string name="send_email">Odeslat e-mail</string>
     <string name="send_to">Odeslat k</string>
