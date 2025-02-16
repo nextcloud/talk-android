@@ -104,7 +104,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
     }
 
-    @SuppressLint("SetTextI18n", "StringFormatInvalid")
+    @SuppressLint("SetTextI18n")
     private fun processExpandableParent(message: ChatMessage, messageString: Spannable) {
         binding.expandCollapseIcon.visibility = View.VISIBLE
 
