@@ -675,6 +675,14 @@
     <string name="userinfo_no_info_text">إضافة الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
     <string name="video_call">مكالمة مرئية</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="zero">أنظُر %d رسالة مشابهة</item>
+        <item quantity="one">أنظُر %d رسالة مشابهة</item>
+        <item quantity="two">أنظُر %d رسالة مشابهة</item>
+        <item quantity="few">أنظُر %d رسائل مشابهة</item>
+        <item quantity="many">أنظُر %d رسالة مشابهة</item>
+        <item quantity="other">أنظُر %d رسالة مشابهة</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="zero">%d أصوات</item>
         <item quantity="one">%d صوت</item>
