@@ -109,8 +109,9 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
         binding.expandCollapseIcon.visibility = View.VISIBLE
 
         if (!message.isExpanded) {
-            val similarMessages = String.format(
-                sharedApplication!!.resources.getString(R.string.see_similar_system_messages),
+            val similarMessages = sharedApplication!!.resources.getQuantityString(
+                R.plurals.see_similar_system_messages,
+                message.expandableChildrenAmount,
                 message.expandableChildrenAmount
             )
 

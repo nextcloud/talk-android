@@ -438,7 +438,10 @@ How to translate with transifex:
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="emoji_backspace">Backspace</string>
-    <string name="see_similar_system_messages">See %1$d similar messages</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">See %d similar message</item>
+        <item quantity="other">See %d similar messages</item>
+    </plurals>
 
     <!-- Conversation info guest access -->
     <string name="nc_guest_access">Guest access</string>
