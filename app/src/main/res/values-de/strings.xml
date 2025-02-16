@@ -675,6 +675,10 @@
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="video_call">Videoanruf</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d ähnliche Nachricht ansehen</item>
+        <item quantity="other">%d ähnliche Nachrichten ansehen</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d Stimme</item>
         <item quantity="other">%d Stimmen</item>

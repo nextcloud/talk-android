@@ -675,6 +675,10 @@
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
     <string name="video_call">Vídeo chamada</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Ver %d mensaxe semellante</item>
+        <item quantity="other">Ver %d mensaxes semellantes</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
         <item quantity="other">%d votos</item>
