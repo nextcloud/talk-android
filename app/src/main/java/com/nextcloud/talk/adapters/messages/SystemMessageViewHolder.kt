@@ -8,8 +8,13 @@ package com.nextcloud.talk.adapters.messages
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -22,14 +27,19 @@ import com.nextcloud.talk.databinding.ItemSystemMessageBinding
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessageViewHolder<ChatMessage>(itemView) {
+class SystemMessageViewHolder(itemView: View) : MessageHolders
+    .IncomingTextMessageViewHolder<ChatMessage>(itemView) {
 
     private val binding: ItemSystemMessageBinding = ItemSystemMessageBinding.bind(itemView)
+
+    @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
 
     @JvmField
     @Inject
@@ -54,6 +64,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
     @SuppressLint("SetTextI18n")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
+        val user = currentUserProvider.currentUser.blockingGet()
         val resources = itemView.resources
         val pressedColor: Int = resources.getColor(R.color.bg_message_list_incoming_bubble)
         val mentionColor: Int = resources.getColor(R.color.textColorMaxContrast)
@@ -78,30 +89,57 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
                         individualMap["name"]
                     }
                     messageString = DisplayUtils.searchAndColor(messageString, searchText!!, mentionColor)
+                    if (individualMap["link"] != null) {
+                        val displayName = individualMap["name"] ?: ""
+                        val link = (user.baseUrl + individualMap["link"])
+                        val newStartIndex = messageString.indexOf(displayName)
+                        if (newStartIndex != -1) {
+                            val clickableSpan = object : ClickableSpan() {
+                                override fun onClick(widget: View) {
+                                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                                    browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                    context?.startActivity(browserIntent)
+                                }
+
+                                override fun updateDrawState(ds: TextPaint) {
+                                    super.updateDrawState(ds)
+                                    ds.color = mentionColor
+                                    ds.isUnderlineText = false
+                                }
+                            }
+
+                            messageString.setSpan(
+                                clickableSpan,
+                                newStartIndex,
+                                newStartIndex + displayName.length,
+                                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                            )
+                        }
+                    }
                 }
             }
-        }
 
-        binding.systemMessageLayout.visibility = View.VISIBLE
-        binding.similarMessagesHint.visibility = View.GONE
-        if (message.expandableParent) {
-            processExpandableParent(message, messageString)
-        } else if (message.hiddenByCollapse) {
-            binding.systemMessageLayout.visibility = View.GONE
-        } else {
-            binding.expandCollapseIcon.visibility = View.GONE
-            binding.messageText.text = messageString
-            binding.expandCollapseIcon.setImageDrawable(null)
-            binding.systemMessageLayout.setOnClickListener(null)
-        }
+            binding.systemMessageLayout.visibility = View.VISIBLE
+            binding.similarMessagesHint.visibility = View.GONE
+            if (message.expandableParent) {
+                processExpandableParent(message, messageString)
+            } else if (message.hiddenByCollapse) {
+                binding.systemMessageLayout.visibility = View.GONE
+            } else {
+                binding.expandCollapseIcon.visibility = View.GONE
+                binding.messageText.text = messageString
+                binding.expandCollapseIcon.setImageDrawable(null)
+                binding.systemMessageLayout.setOnClickListener(null)
+            }
 
-        if (!message.expandableParent && message.lastItemOfExpandableGroup != 0) {
-            binding.systemMessageLayout.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
-            binding.messageText.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
-        }
+            if (!message.expandableParent && message.lastItemOfExpandableGroup != 0) {
+                binding.systemMessageLayout.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
+                binding.messageText.setOnClickListener { systemMessageInterface.collapseSystemMessages() }
+            }
 
-        binding.messageTime.text = dateUtils!!.getLocalTimeStringFromTimestamp(message.timestamp)
-        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+            binding.messageTime.text = dateUtils!!.getLocalTimeStringFromTimestamp(message.timestamp)
+            itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+        }
     }
 
     @SuppressLint("SetTextI18n", "StringFormatInvalid")
@@ -116,6 +154,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders.IncomingTextMessa
             )
 
             binding.messageText.text = messageString
+            binding.messageText.movementMethod = LinkMovementMethod.getInstance()
             binding.similarMessagesHint.visibility = View.VISIBLE
             binding.similarMessagesHint.text = similarMessages
 
