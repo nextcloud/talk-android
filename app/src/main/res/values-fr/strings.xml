@@ -593,7 +593,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="scroll_to_bottom">Défiler jusqu\'en bas</string>
     <string name="search_icon">Icône de recherche</string>
     <string name="secondsAgo">secondes avant</string>
-    <string name="see_similar_system_messages">Voir les %1$s messages similaires</string>
     <string name="selected_list_item">Sélectionné</string>
     <string name="send_email">Envoyer un e-mail</string>
     <string name="send_to">Envoyer a</string>

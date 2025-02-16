@@ -592,7 +592,6 @@
     <string name="scope_toggle_description">Ändra hemlighetsnivå för %1$s</string>
     <string name="scroll_to_bottom">Bläddra till botten</string>
     <string name="secondsAgo">sekunder sedan</string>
-    <string name="see_similar_system_messages">Se %1$s liknande meddelanden</string>
     <string name="selected_list_item">Vald</string>
     <string name="send_email">Skicka e-post</string>
     <string name="send_to">Skicka till</string>
