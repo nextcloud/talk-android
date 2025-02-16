@@ -509,7 +509,7 @@
     <string name="nc_upload_from_cloud">%1$s دىن ئورتاقلىشىش</string>
     <string name="nc_upload_from_device">ئۈسكۈنىدىن يۈكلەش</string>
     <string name="nc_upload_in_progess">يۈكلەش</string>
-    <string name="nc_upload_notification_text">%1$s دىن%2$s  - %3$s  \ %%</string>
+    <string name="nc_upload_notification_text">%1$s دىن %2$s - %3$s\%%</string>
     <string name="nc_upload_picture_from_cam">رەسىمگە تارتىڭ</string>
     <string name="nc_upload_video_from_cam">سىن ئېلىڭ</string>
     <string name="nc_user">ئىشلەتكۈچى</string>
