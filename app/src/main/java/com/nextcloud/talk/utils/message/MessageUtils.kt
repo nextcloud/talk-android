@@ -196,6 +196,5 @@ class MessageUtils(val context: Context) {
     companion object {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
-        const val HTTPS_PROTOCOL = "https://"
     }
 }
