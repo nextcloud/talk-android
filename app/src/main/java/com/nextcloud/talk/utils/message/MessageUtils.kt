@@ -110,7 +110,7 @@ class MessageUtils(val context: Context) {
             val individualHashMap = message.messageParameters!![key]
             if (individualHashMap != null) {
                 when (individualHashMap["type"]) {
-                    "user", "guest", "call", "user-group", "email", "circle" -> {
+                    "user", "guest", "call", "user-group", "email","circle" -> {
                         val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
                             R.xml.chip_you
                         } else {
@@ -144,28 +144,35 @@ class MessageUtils(val context: Context) {
                         }
                     }
                     else -> {
-                        val spannable = SpannableStringBuilder(messageStringInternal)
-                        val placeholder = "{$key}"
-                        val replacementText = individualHashMap["name"]
-                        var start = spannable.indexOf(placeholder)
-                        while (start != -1) {
-                            val end = start + placeholder.length
-                            spannable.replace(start, end, replacementText)
-                            spannable.setSpan(
-                                StyleSpan(Typeface.BOLD),
-                                start,
-                                start + replacementText!!
-                                    .length,
-                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-                            )
-                            start = spannable.indexOf(placeholder, start + replacementText.length)
-                        }
-                        messageStringInternal = spannable
+                        messageStringInternal = defaultMessageParameters(messageStringInternal, individualHashMap, key)
                     }
                 }
             }
         }
         return messageStringInternal
+    }
+
+    private fun defaultMessageParameters(
+        messageString: Spanned,
+        individualHashMap: HashMap<String?, String?>,
+        key: String?
+    ):Spanned {
+        val spannable = SpannableStringBuilder(messageString)
+        val placeholder = "{$key}"
+        val replacementText = individualHashMap["name"]
+        var start = spannable.indexOf(placeholder)
+        while (start != -1) {
+            val end = start + placeholder.length
+            spannable.replace(start, end, replacementText)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                start,
+                start + replacementText!!.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+            start = spannable.indexOf(placeholder, start + replacementText.length)
+        }
+        return spannable
     }
 
     fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
