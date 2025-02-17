@@ -10,21 +10,28 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
+    private val chatRepository: ChatMessageRepository,
     var userManager: UserManager
 ) :
     ViewModel() {
@@ -86,6 +93,30 @@ class ConversationsListViewModel @Inject constructor(
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         repository.getRooms()
+    }
+
+    fun updateRoomMessages(
+        credentials: String,
+        list: List<ConversationModel>
+    ) {
+        val current = list.associateWith { model ->
+            val unreadMessages = model.unreadMessages
+            unreadMessages
+        }
+        val baseUrl = userManager.currentUser.blockingGet().baseUrl!!
+        viewModelScope.launch(Dispatchers.IO) {
+            for ((model, unreadMessages) in current) {
+                if (unreadMessages > 0) {
+                    updateRoomMessage(model, unreadMessages, credentials, baseUrl)
+                }
+            }
+        }
+    }
+
+    private suspend fun updateRoomMessage(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
+        val urlForChatting = ApiUtils.getUrlForChat(1, baseUrl, model.token) // FIXME v1?
+        chatRepository.setData(model, credentials, urlForChatting)
+        chatRepository.updateRoomMessages(model.internalId, limit)
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
