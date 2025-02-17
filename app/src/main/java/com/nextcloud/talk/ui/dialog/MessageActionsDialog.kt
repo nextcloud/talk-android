@@ -99,13 +99,14 @@ class MessageActionsDialog(
             .EDIT_MESSAGES_NOTE_TO_SELF
     ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
-    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && message.isOneToOneConversation
+    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && (message.isOneToOneConversation ||
+        message.isFormerOneToOneConversation)
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
-    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit && isMessageBotOneToOne
+    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
 
-    private val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable
+    private val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable || isMessageBotOneToOne
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
