@@ -562,6 +562,7 @@ class ChatActivity :
     override fun onStop() {
         super.onStop()
         active = false
+        adapter = null
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
     }
@@ -2677,7 +2678,6 @@ class ChatActivity :
 
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
 
-        adapter = null
         disposables.dispose()
     }
 
