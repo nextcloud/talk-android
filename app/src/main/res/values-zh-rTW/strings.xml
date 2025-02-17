@@ -675,6 +675,9 @@
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、大頭照和聯絡資訊。</string>
     <string name="video_call">視訊通話</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="other">檢視 %d 則類似的訊息</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>
     </plurals>
