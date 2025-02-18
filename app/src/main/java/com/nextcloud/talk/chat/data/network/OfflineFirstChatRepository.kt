@@ -118,11 +118,14 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
 
-    override fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
-        this.conversationModel = conversationModel
+    override fun initData(credentials: String, urlForChatting: String, roomToken: String) {
+        internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting
-        internalConversationId = conversationModel.internalId
+    }
+
+    override fun updateConversation(conversationModel: ConversationModel) {
+        this.conversationModel = conversationModel
     }
 
     override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
