@@ -804,7 +804,9 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override fun handleOnStop() {
-        scope.cancel()
+        if (this::scope.isInitialized) {
+            scope.cancel()
+        }
     }
 
     @Suppress("LongParameterList")
