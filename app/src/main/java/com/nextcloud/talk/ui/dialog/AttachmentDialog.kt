@@ -19,9 +19,10 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.DialogAttachmentBinding
+import com.nextcloud.talk.ui.LastImagesCompose
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -45,6 +46,10 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
         initItemsStrings()
         initItemsVisibility()
         initItemsClickListeners()
+
+        dialogAttachmentBinding.lastImagesCompose.setContent {
+            LastImagesCompose().GetView(context)
+        }
     }
 
     private fun initItemsStrings() {
