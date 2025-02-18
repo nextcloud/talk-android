@@ -675,6 +675,11 @@
     <string name="userinfo_no_info_text">Додајте име, слику и детаље за контакт на страницу профила.</string>
     <string name="video_call">Видео позив</string>
     <string name="whats_your_status">Који је ваш статус?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Погледајте %d сличну поруку</item>
+        <item quantity="few">Погледајте %d сличне поруке</item>
+        <item quantity="other">Погледајте %d сличних порука</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d глас</item>
         <item quantity="few">%d гласа</item>

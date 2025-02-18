@@ -675,6 +675,13 @@
     <string name="userinfo_no_info_text">Cuir ainm, pictiúr agus sonraí teagmhála ar do leathanach próifíle.</string>
     <string name="video_call">Glao Físe</string>
     <string name="whats_your_status">Cad é do stádas?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Féach ar %d teachtaireacht dá samhail</item>
+        <item quantity="two">Féach ar %d teachtaireacht dá samhail</item>
+        <item quantity="few">Féach ar %d teachtaireacht dá samhail</item>
+        <item quantity="many">Féach ar %d teachtaireacht dá samhail</item>
+        <item quantity="other">Féach ar %d teachtaireacht dá samhail</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vóta</item>
         <item quantity="two">%d vótaí</item>
