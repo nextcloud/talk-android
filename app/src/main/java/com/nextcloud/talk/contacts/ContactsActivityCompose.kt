@@ -132,7 +132,10 @@ class ContactsActivityCompose : BaseActivity() {
                         )
                     },
                     content = {
-                        Column(Modifier.padding(it)) {
+                        Column(
+                            Modifier.padding(it)
+                                .background(colorResource(id = R.color.bg_default))
+                        ) {
                             ConversationCreationOptions(context = context, contactsViewModel = contactsViewModel)
                             ContactsList(
                                 contactsUiState = uiState.value,
