@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
@@ -430,9 +431,9 @@ fun Header(header: String) {
         text = header,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Transparent)
+            .background(colorResource(id = R.color.bg_default))
             .padding(start = 60.dp),
-        color = Color.Blue,
+        color = MaterialTheme.colorScheme.primary,
         fontWeight = FontWeight.Bold
     )
 }
