@@ -210,6 +210,8 @@ fun ConversationCreationScreen(
             Column(
                 modifier = Modifier
                     .padding(paddingValues)
+                    .background(colorResource(id = R.color.bg_default))
+                    .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
                 DefaultUserAvatar(selectedImageUri)
