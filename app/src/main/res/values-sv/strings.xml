@@ -670,6 +670,10 @@
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
     <string name="video_call">Videosamtal</string>
     <string name="whats_your_status">Vad är din status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Se %d liknande meddelande</item>
+        <item quantity="other">Se %d liknande meddelanden</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d röst</item>
         <item quantity="other">%d röster</item>
