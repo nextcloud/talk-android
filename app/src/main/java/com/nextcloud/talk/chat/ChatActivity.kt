@@ -440,10 +440,17 @@ class ChatActivity :
         conversationUser = currentUserProvider.currentUser.blockingGet()
         handleIntent(intent)
 
-        messageInputFragment = getMessageInputFragment()
-
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
+        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+        val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+        chatViewModel.initData(
+            credentials!!,
+            urlForChatting,
+            roomToken
+        )
+
+        messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
         messageInputViewModel.setData(chatViewModel.getChatRepository())
 
@@ -576,14 +583,8 @@ class ChatActivity :
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->
                     currentConversation = conversationModel
-
-                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-
-                    chatViewModel.setData(
-                        currentConversation!!,
-                        credentials!!,
-                        urlForChatting
+                    chatViewModel.updateConversation(
+                        currentConversation!!
                     )
 
                     logConversationInfos("GetRoomSuccessState")
