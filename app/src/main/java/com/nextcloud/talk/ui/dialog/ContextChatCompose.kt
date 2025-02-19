@@ -9,7 +9,6 @@ package com.nextcloud.talk.ui.dialog
 
 import android.content.Context
 import android.os.Bundle
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,36 +20,47 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
-import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ContextChatCompose(val bundle: Bundle) {
 
+    companion object {
+        private const val LIMIT = 10
+    }
+
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
 
     @Inject
-    lateinit var dataSource: ChatNetworkDataSource
+    lateinit var viewModel: ChatViewModel
 
     @Inject
     lateinit var userManager: UserManager
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)!!
+        val baseUrl = bundle.getString(BundleKeys.KEY_BASE_URL)!!
+        val token = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
+        val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+
+        viewModel.getContextForChatMessages(credentials, baseUrl, token, messageId, LIMIT)
     }
 
     @Composable
@@ -59,8 +69,9 @@ class ContextChatCompose(val bundle: Bundle) {
             return
         }
 
+        val adapter = ComposeChatAdapter()
         val colorScheme = viewThemeUtils.getColorScheme(context)
-        MaterialTheme { // Note: using theme makes this hard to see. Should be better when I get adapter setup
+        MaterialTheme { // TODO: using theme makes this hard to see. Should be better when I get adapter setup
             Dialog(
                 onDismissRequest = {
                     shouldDismiss.value = true
@@ -73,7 +84,6 @@ class ContextChatCompose(val bundle: Bundle) {
             ) {
                 Surface(
                     shape = RoundedCornerShape(8.dp),
-                    modifier = Modifier.animateContentSize()
                 ) {
                     Column(
                         modifier = Modifier
@@ -95,23 +105,8 @@ class ContextChatCompose(val bundle: Bundle) {
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         } else {
-                            LaunchedEffect(Dispatchers.IO) {
-                                val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)
-                                val baseUrl = bundle.getString(BundleKeys.KEY_BASE_URL)
-                                val token = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)
-                                val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)
-                                val limit = 10 // actual size is 2*limit, goes both ways
-
-                                val messages = dataSource.getContextForChatMessage(
-                                    credentials!!,
-                                    baseUrl!!,
-                                    token!!,
-                                    messageId!!,
-                                    limit
-                                )
-
-                                // TODO put messages in adapter
-                            }
+                            val contextState = viewModel.getContextChatMessages.asFlow().collectAsState(listOf())
+                            adapter.GetView(context, contextState.value)
                         }
                     }
                 }

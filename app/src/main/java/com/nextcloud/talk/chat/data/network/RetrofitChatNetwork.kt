@@ -6,7 +6,6 @@
  */
 package com.nextcloud.talk.chat.data.network
 
-import android.util.Log
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User

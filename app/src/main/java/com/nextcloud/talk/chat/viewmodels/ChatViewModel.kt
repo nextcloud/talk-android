@@ -23,6 +23,7 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -30,6 +31,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
@@ -125,6 +127,10 @@ class ChatViewModel @Inject constructor(
     private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
+
+    private val _getContextChatMessages: MutableLiveData<List<ChatMessage>> = MutableLiveData()
+    val getContextChatMessages: LiveData<List<ChatMessage>>
+        get() = _getContextChatMessages
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -789,6 +795,20 @@ class ChatViewModel @Inject constructor(
                     Log.e(TAG, "resend failed")
                 }
             }
+        }
+    }
+
+    fun getContextForChatMessages(credentials: String, baseUrl: String, token: String, messageId: String, limit: Int) {
+        viewModelScope.launch {
+            val messages = chatNetworkDataSource.getContextForChatMessage(
+                credentials,
+                baseUrl,
+                token,
+                messageId,
+                limit
+            ).map(ChatMessageJson::asModel)
+
+            _getContextChatMessages.value = messages
         }
     }
 
