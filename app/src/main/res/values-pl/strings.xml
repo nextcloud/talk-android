@@ -7,6 +7,7 @@
     <string name="archive_conversation">Archiwum rozmowy</string>
     <string name="archive_hint">Po zarchiwizowaniu rozmowa zostanie domyślnie ukryta. Wybierz filtr „Zarchiwizowane”, aby wyświetlić zarchiwizowane rozmowy. Bezpośrednie wzmianki będą nadal otrzymywane.</string>
     <string name="archived">Zarchiwizowane</string>
+    <string name="archived_conversation">Zarchiwizowane %1$s</string>
     <string name="audio_call">Rozmowa audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Wyjście audio</string>
@@ -311,6 +312,7 @@
     <string name="nc_message_offline">Niedostępny</string>
     <string name="nc_message_quote_cancel_reply">Anuluj odpowiedź</string>
     <string name="nc_message_read">Wiadomość przeczytana</string>
+    <string name="nc_message_sending">Wysyłanie</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
     <string name="nc_microphone_permission_hint">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\".</string>
     <string name="nc_missed_call">Nie odebrałeś połączenia od %s</string>
@@ -388,6 +390,7 @@
     <string name="nc_screen_lock_timeout_300">5 minut</string>
     <string name="nc_screen_lock_timeout_60">1 minuta</string>
     <string name="nc_screen_lock_timeout_600">10 minut</string>
+    <string name="nc_screen_lock_timeout_immediate">Natychmiastowe</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -531,6 +534,7 @@
     <string name="nc_yes">Tak</string>
     <string name="new_conversation_creation_icon">Ikona tworzenia nowej rozmowy</string>
     <string name="next_week">Następny tydzień</string>
+    <string name="no_conversations_archived">Brak zarchiwizowanych rozmów</string>
     <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
     <string name="oneHour">1 godzina</string>
@@ -546,6 +550,8 @@
     <string name="polls_end_poll_confirm">Czy na pewno chcesz zakończyć sondę? Tego nie można cofnąć.</string>
     <string name="polls_max_votes_reached">Nie możesz głosować z większą liczbą opcji w tej sondzie.</string>
     <string name="polls_multiple_answers">Wiele odpowiedzi</string>
+    <string name="polls_option_delete">Usuń opcję %1$d</string>
+    <string name="polls_option_hint">Opcja %1$d</string>
     <string name="polls_options">Opcje</string>
     <string name="polls_private_poll">Sonda prywatna</string>
     <string name="polls_question">Pytanie</string>
@@ -574,6 +580,7 @@
     <string name="recording_settings_title">Nagranie</string>
     <string name="removed_from_favorites">Usunięto rozmowę %1$s z ulubionych</string>
     <string name="renamed_conversation">Nazwa rozmowy %1$s została zmieniona</string>
+    <string name="resend_message">Wyślij ponownie</string>
     <string name="reset_status">Zresetuj status</string>
     <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
@@ -587,7 +594,7 @@
     <string name="scope_published_title">Opublikowane</string>
     <string name="scope_toggle">Przełącz zakres</string>
     <string name="scope_toggle_description">Zmień poziom prywatności %1$s</string>
-    <string name="scroll_to_bottom">Przewiń do dołu</string>
+    <string name="scroll_to_bottom">Przewiń na dół</string>
     <string name="search_icon">Ikona wyszukiwania</string>
     <string name="secondsAgo">przed chwilą</string>
     <string name="selected_list_item">Wybrany</string>
@@ -648,6 +655,7 @@
     <string name="typing_x_others">i %1$s innych pisze…</string>
     <string name="unarchive_conversation">Przywróć zarchiwizowaną rozmowę</string>
     <string name="unarchive_hint">Po przywróceniu archiwizacji rozmowa będzie ponownie wyświetlana domyślnie.</string>
+    <string name="unarchived_conversation">Niezarchiwizowane %1$s</string>
     <string name="unban">Odblokuj</string>
     <string name="unread">Nieprzeczytane</string>
     <string name="upload_new_avatar_from_device">Wyślij nowy awatar z urządzenia</string>
@@ -667,6 +675,12 @@
     <string name="userinfo_no_info_text">Dodaj nazwę, zdjęcie profilowe i dane kontaktowe do swojego profilu.</string>
     <string name="video_call">Wideo rozmowa</string>
     <string name="whats_your_status">Jaki jest Twój status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Zobacz %d podobną wiadomość</item>
+        <item quantity="few">Zobacz %d podobne wiadomości</item>
+        <item quantity="many">Zobacz %d podobnych wiadomości</item>
+        <item quantity="other">Zobacz %d podobnych wiadomości</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d głos</item>
         <item quantity="few">%d głosy</item>
