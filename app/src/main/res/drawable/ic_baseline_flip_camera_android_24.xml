@@ -8,15 +8,9 @@
     android:width="24dp"
     android:height="24dp"
     android:tint="?attr/colorControlNormal"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:viewportWidth="960"
+    android:viewportHeight="960">
     <path
         android:fillColor="@android:color/white"
-        android:pathData="M9,12c0,1.66 1.34,3 3,3s3,-1.34 3,-3s-1.34,-3 -3,-3S9,10.34 9,12z" />
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M8,10V8H5.09C6.47,5.61 9.05,4 12,4c3.72,0 6.85,2.56 7.74,6h2.06c-0.93,-4.56 -4.96,-8 -9.8,-8C8.73,2 5.82,3.58 4,6.01V4H2v6H8z" />
-    <path
-        android:fillColor="@android:color/white"
-        android:pathData="M16,14v2h2.91c-1.38,2.39 -3.96,4 -6.91,4c-3.72,0 -6.85,-2.56 -7.74,-6H2.2c0.93,4.56 4.96,8 9.8,8c3.27,0 6.18,-1.58 8,-4.01V20h2v-6H16z" />
+        android:pathData="M480,880Q337,880 227,790Q117,700 88,560L170,560Q198,666 284,733Q370,800 480,800Q566,800 640,757.5Q714,715 756,640L640,640L640,560L880,560L880,800L800,800L800,720Q743,796 659,838Q575,880 480,880ZM480,600Q430,600 395,565Q360,530 360,480Q360,430 395,395Q430,360 480,360Q530,360 565,395Q600,430 600,480Q600,530 565,565Q530,600 480,600ZM80,400L80,160L160,160L160,240Q217,164 301,122Q385,80 480,80Q623,80 733,170Q843,260 872,400L790,400Q762,294 676,227Q590,160 480,160Q394,160 320,202.5Q246,245 204,320L320,320L320,400L80,400Z" />
 </vector>
