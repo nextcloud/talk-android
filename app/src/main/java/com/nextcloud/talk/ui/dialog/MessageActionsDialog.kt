@@ -99,8 +99,10 @@ class MessageActionsDialog(
             .EDIT_MESSAGES_NOTE_TO_SELF
     ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
-    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && (message.isOneToOneConversation ||
-        message.isFormerOneToOneConversation) && !isOlderThanTwentyFourHours
+    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && (
+        message.isOneToOneConversation ||
+            message.isFormerOneToOneConversation
+        ) && !isOlderThanTwentyFourHours
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
