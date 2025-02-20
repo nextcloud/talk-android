@@ -9,14 +9,13 @@
  */
 package com.nextcloud.talk.adapters.messages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import androidx.core.text.toSpanned
-import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.material.snackbar.Snackbar
@@ -85,82 +84,81 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
 
-        var processedMessageText = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            message,
-            true,
-            viewThemeUtils
-        )
-
-        processedMessageText = messageUtils.processMessageParameters(
-            binding.messageText.context,
-            viewThemeUtils,
-            processedMessageText!!,
-            message,
-            itemView
-        )
-
         val hasCheckboxes = processCheckboxes(
-            binding.messageText,
-            binding
-                .checkboxContainer,
             message,
             user
         )
 
-        val messageParameters = message.messageParameters
-        if (
-            (messageParameters == null || messageParameters.size <= 0) &&
-            TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
-        ) {
-            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
-            itemView.isSelected = true
-            binding.messageAuthor.visibility = View.GONE
+        if(!hasCheckboxes){
+            var processedMessageText = messageUtils.enrichChatMessageText(
+                binding.messageText.context,
+                message,
+                true,
+                viewThemeUtils
+            )
+
+            processedMessageText = messageUtils.processMessageParameters(
+                binding.messageText.context,
+                viewThemeUtils,
+                processedMessageText!!,
+                message,
+                itemView
+            )
+
+            val messageParameters = message.messageParameters
+            if (
+                (messageParameters == null || messageParameters.size <= 0) &&
+                TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
+            ) {
+                textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
+                itemView.isSelected = true
+                binding.messageAuthor.visibility = View.GONE
+            }
+
+                binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+                binding.messageText.text = processedMessageText
+
+            if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+                binding.messageEditIndicator.visibility = View.VISIBLE
+                binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
+            } else {
+                binding.messageEditIndicator.visibility = View.GONE
+                binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+            }
+
+            // parent message handling
+            if (!message.isDeleted && message.parentMessageId != null) {
+                processParentMessage(message)
+                binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+            } else {
+                binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+            }
+
+            itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+
+            Reaction().showReactions(
+                message,
+                ::clickOnReaction,
+                ::longClickOnReaction,
+                binding.reactions,
+                binding.messageText.context,
+                false,
+                viewThemeUtils
+            )
         }
-
-        if (!hasCheckboxes) {
-            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-            binding.messageText.text = processedMessageText
-        }
-
-        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
-            binding.messageEditIndicator.visibility = View.VISIBLE
-            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
-        } else {
-            binding.messageEditIndicator.visibility = View.GONE
-            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-        }
-
-        // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
-            processParentMessage(message)
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
-
-        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
-
-        Reaction().showReactions(
-            message,
-            ::clickOnReaction,
-            ::longClickOnReaction,
-            binding.reactions,
-            binding.messageText.context,
-            false,
-            viewThemeUtils
-        )
     }
 
+    @SuppressLint("StringFormatMatches")
     private fun processCheckboxes(
-        messageTextView: EmojiTextView,
-        checkBoxContainer: LinearLayout,
         chatMessage: ChatMessage,
         user: User
     ): Boolean {
         val message = chatMessage.message!!.toSpanned()
+        val messageTextView = binding.messageText
+        val checkBoxContainer = binding.checkboxContainer
+
         checkBoxContainer.removeAllViews()
-        val regex = """(- \[(X| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
+        val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
         val matches = regex.findAll(message)
         if (matches.none()) return false
         val firstPart = message.toString().substringBefore("\n- [")
@@ -171,7 +169,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             viewThemeUtils
         )
         matches.forEach { matchResult ->
-            val isChecked = matchResult.groupValues[2] == "X"
+            val isChecked = matchResult.groupValues[2] == "X" || matchResult.groupValues[2] == "x"
             val taskText = matchResult.groupValues[3].trim()
             lateinit var updatedMessage: String
             val checkBox = CheckBox(checkBoxContainer.context).apply {
@@ -208,13 +206,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                                     ).show()
                                 }
                             }
-                        }
-                        if (chatMessage.lastEditTimestamp != 0L && !chatMessage.isDeleted) {
-                            binding.messageEditIndicator.visibility = View.VISIBLE
-                            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(
-                                chatMessage
-                                    .lastEditTimestamp!!
-                            )
                         }
                     }
                 }
