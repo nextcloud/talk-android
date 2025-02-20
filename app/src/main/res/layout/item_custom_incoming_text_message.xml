@@ -93,8 +93,8 @@
             android:textColor="@color/no_emphasis_text"
             android:textIsSelectable="false"
             android:gravity = "end"
-            app:layout_alignSelf="flex_end"
             app:layout_flexGrow="1"
+            app:layout_alignSelf="flex_end"
             app:layout_wrapBefore="false"
             tools:text="12:38" />
 
@@ -110,7 +110,6 @@
             app:layout_alignSelf="flex_end"
             android:text = "@string/hint_edited_message"
             android:textSize="12sp">
-
         </TextView>
         </LinearLayout>
 
