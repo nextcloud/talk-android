@@ -320,7 +320,7 @@
     <string name="nc_never">Aldrig deltaget</string>
     <string name="nc_new_conversation">Ny samtale</string>
     <string name="nc_new_conversation_visibility">Synlighed</string>
-    <string name="nc_new_mention">Ulæste hvor du er nævnt</string>
+    <string name="nc_new_mention">Ulæste omtaler</string>
     <string name="nc_new_messages">Ulæste beskedder</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s ikke tilgængelig (Ikke installeret eller begrænset af admin)</string>
     <string name="nc_nick_guest">Gæst</string>
