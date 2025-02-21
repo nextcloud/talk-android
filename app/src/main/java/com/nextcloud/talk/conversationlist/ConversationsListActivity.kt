@@ -470,7 +470,7 @@ class ConversationsListActivity :
         // Filter Conversations
         if (!hasFilterEnabled()) filterableConversationItems = conversationItems
         filterConversation()
-        adapter!!.updateDataSet(filterableConversationItems, false)
+        adapter?.updateDataSet(filterableConversationItems, false)
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
         // Fetch Open Conversations
@@ -534,7 +534,7 @@ class ConversationsListActivity :
             binding.noArchivedConversationLayout.visibility = View.GONE
         }
 
-        adapter!!.updateDataSet(newItems, true)
+        adapter?.updateDataSet(newItems, true)
         setFilterableItems(newItems)
         if (archiveFilterOn) {
             // Never a notification from archived conversations
@@ -735,9 +735,9 @@ class ConversationsListActivity :
             supportActionBar?.setTitle(R.string.nc_forward_to_three_dots)
         } else {
             searchItem!!.isVisible = conversationItems.size > 0
-            if (adapter!!.hasFilter()) {
+            if (adapter?.hasFilter() == true) {
                 showSearchView(searchView, searchItem)
-                searchView!!.setQuery(adapter!!.getFilter(String::class.java), false)
+                searchView!!.setQuery(adapter?.getFilter(String::class.java), false)
             }
             binding.searchText.setOnClickListener {
                 showSearchView(searchView, searchItem)
@@ -768,20 +768,20 @@ class ConversationsListActivity :
             searchItem!!.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
                 override fun onMenuItemActionExpand(item: MenuItem): Boolean {
                     initSearchDisposable()
-                    adapter!!.setHeadersShown(true)
+                    adapter?.setHeadersShown(true)
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
-                    adapter!!.updateDataSet(filterableConversationItems, false)
-                    adapter!!.showAllHeaders()
+                    adapter?.updateDataSet(filterableConversationItems, false)
+                    adapter?.showAllHeaders()
                     binding.swipeRefreshLayoutView?.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
                 }
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
-                    adapter!!.setHeadersShown(false)
+                    adapter?.setHeadersShown(false)
                     if (!hasFilterEnabled()) filterableConversationItems = conversationItemsWithHeader
-                    adapter!!.updateDataSet(filterableConversationItems, false)
-                    adapter!!.hideAllHeaders()
+                    adapter?.updateDataSet(filterableConversationItems, false)
+                    adapter?.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
@@ -1158,8 +1158,8 @@ class ConversationsListActivity :
                     val lastVisibleItem = layoutManager!!.findLastCompletelyVisibleItemPosition()
                     for (flexItem in conversationItems) {
                         val conversation: ConversationModel = (flexItem as ConversationItem).model
-                        val position = adapter!!.getGlobalPositionOf(flexItem)
-                        if (hasUnreadItems(conversation) && position > lastVisibleItem) {
+                        val position = adapter?.getGlobalPositionOf(flexItem)
+                        if (position != null && hasUnreadItems(conversation) && position > lastVisibleItem) {
                             nextUnreadConversationScrollPosition = position
                             if (!binding.newMentionPopupBubble.isShown) {
                                 binding.newMentionPopupBubble.visibility = View.VISIBLE
@@ -1239,7 +1239,7 @@ class ConversationsListActivity :
             val filter = searchQuery
             searchQuery = ""
             performFilterAndSearch(filter)
-        } else if (adapter!!.hasNewFilter(newText)) {
+        } else if (adapter?.hasNewFilter(newText) == true) {
             performFilterAndSearch(newText)
         }
     }
@@ -1250,12 +1250,12 @@ class ConversationsListActivity :
 
             if (hasFilterEnabled()) {
                 adapter?.updateDataSet(conversationItems)
-                adapter!!.setFilter(filter)
-                adapter!!.filterItems()
+                adapter?.setFilter(filter)
+                adapter?.filterItems()
                 adapter?.updateDataSet(filterableConversationItems)
             } else {
-                adapter!!.setFilter(filter)
-                adapter!!.filterItems()
+                adapter?.setFilter(filter)
+                adapter?.filterItems()
             }
 
             if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
@@ -1268,18 +1268,18 @@ class ConversationsListActivity :
 
     private fun resetSearchResults() {
         clearMessageSearchResults()
-        adapter!!.setFilter("")
-        adapter!!.filterItems()
+        adapter?.setFilter("")
+        adapter?.filterItems()
     }
 
     private fun clearMessageSearchResults() {
-        val firstHeader = adapter!!.getSectionHeader(0)
+        val firstHeader = adapter?.getSectionHeader(0)
         if (firstHeader != null && firstHeader.itemViewType == MessagesTextHeaderItem.VIEW_TYPE) {
-            adapter!!.removeSection(firstHeader)
+            adapter?.removeSection(firstHeader)
         } else {
-            adapter!!.removeItemsOfType(MessageResultItem.VIEW_TYPE)
+            adapter?.removeItemsOfType(MessageResultItem.VIEW_TYPE)
         }
-        adapter!!.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE)
+        adapter?.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE)
     }
 
     @SuppressLint("CheckResult") // handled by helper
@@ -1308,7 +1308,7 @@ class ConversationsListActivity :
     }
 
     override fun onItemClick(view: View, position: Int): Boolean {
-        val item = adapter!!.getItem(position)
+        val item = adapter?.getItem(position)
         if (item != null) {
             when (item.itemViewType) {
                 MessageResultItem.VIEW_TYPE -> {
@@ -1461,7 +1461,7 @@ class ConversationsListActivity :
             if (showShareToScreen || !networkMonitor.isOnline.value) {
                 Log.d(TAG, "sharing to multiple rooms not yet implemented. onItemLongClick is ignored.")
             } else {
-                val clickedItem: Any? = adapter!!.getItem(position)
+                val clickedItem: Any? = adapter?.getItem(position)
                 if (clickedItem != null && clickedItem is ConversationItem) {
                     val conversation = clickedItem.model
                     conversationsListBottomDialog = ConversationsListBottomDialog(
@@ -2012,7 +2012,7 @@ class ConversationsListActivity :
                     adapterItems.add(LoadMoreResultsItem)
                 }
 
-                adapter!!.addItems(0, adapterItems)
+                adapter?.addItems(0, adapterItems)
                 binding.recyclerView?.scrollToPosition(0)
             }
         }
