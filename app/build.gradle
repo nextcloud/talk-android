@@ -181,7 +181,7 @@ configurations.configureEach {
 dependencies {
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.13.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.9'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
 
     implementation("androidx.compose.runtime:runtime:1.7.8")
     implementation 'androidx.preference:preference-ktx:1.2.1'
