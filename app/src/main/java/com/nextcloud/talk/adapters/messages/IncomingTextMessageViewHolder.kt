@@ -37,6 +37,7 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -71,6 +72,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     @Inject
     lateinit var chatRepository: ChatMessageRepository
 
+    private var job: Job? = null
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -87,7 +90,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             message,
             user
         )
-
         if (!hasCheckboxes) {
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
@@ -178,6 +180,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             }
             checkBoxContainer.addView(checkBox)
             checkboxList.add(checkBox)
+            viewThemeUtils.platform.themeCheckbox(checkBox)
         }
 
         checkBoxContainer.visibility = View.VISIBLE
@@ -185,7 +188,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     }
 
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
-        CoroutineScope(Dispatchers.Main).launch {
+       job =  CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {
                 val apiVersion: Int = ApiUtils.getChatApiVersion(
                     user.capabilities?.spreedCapability!!,
@@ -202,10 +205,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     withContext(Dispatchers.Main) {
                         if (result.isSuccess) {
                             val editedMessage = result.getOrNull()?.ocs?.data!!.parentMessage!!
-                            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(editedMessage.lastEditTimestamp!!)
+                            Log.d(TAG," EditedMessage: $editedMessage")
                             binding.messageEditIndicator.apply {
                                 visibility = View.VISIBLE
-                                text = String.format(context.getString(R.string.edited_by), editedMessage.lastEditActorType)
                             }
                         } else {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
