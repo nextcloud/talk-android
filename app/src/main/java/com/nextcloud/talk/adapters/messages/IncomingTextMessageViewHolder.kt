@@ -168,8 +168,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         val checkboxList = mutableListOf<CheckBox>()
 
         matches.forEach { matchResult ->
-            val isChecked = matchResult.groupValues[2] == "X" || matchResult.groupValues[2] == "x"
-            val taskText = matchResult.groupValues[3].trim()
+            val isChecked = matchResult.groupValues[CHECKED_GROUP_INDEX] == "X" ||
+                matchResult.groupValues[CHECKED_GROUP_INDEX] == "x"
+            val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
 
             val checkBox = CheckBox(checkBoxContainer.context).apply {
                 text = taskText
@@ -341,5 +342,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
+        private const val CHECKED_GROUP_INDEX = 2
+        private const val TASK_TEXT_GROUP_INDEX = 3
     }
 }
