@@ -588,7 +588,7 @@ How to translate with transifex:
     <string name="nc_phone_book_integration_chat_via">Chat via %s</string>
     <string name="nc_phone_book_integration_account_not_found">Account not found</string>
     <string name= "nc_edit">Edit</string>
-
+    <string name="edited_by">(edited by %1$s)</string>
     <!--  save feature -->
     <string name="nc_save_message">Save</string>
     <string name="nc_dialog_save_to_storage_title">Save to storage?</string>
