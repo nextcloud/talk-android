@@ -346,7 +346,7 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.11.4'
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.12.0'
 }
 
 tasks.register('installGitHooks', Copy) {
