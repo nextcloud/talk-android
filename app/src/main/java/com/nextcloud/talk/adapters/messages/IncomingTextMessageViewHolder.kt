@@ -84,12 +84,15 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         itemView.isSelected = false
         val user = currentUserProvider.currentUser.blockingGet()
 
-        var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
-
         val hasCheckboxes = processCheckboxes(
             message,
             user
         )
+        processMessage(message, hasCheckboxes)
+    }
+
+    private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
+        var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
         if (!hasCheckboxes) {
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
@@ -227,7 +230,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         checkboxes.forEach { checkBox ->
             updatedMessage = regex.replace(updatedMessage) { matchResult ->
-                val taskText = matchResult.groupValues[3].trim()
+                val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
                 val checkboxState = if (checkboxes.find { it.text == taskText }?.isChecked == true) "X" else " "
                 "- [$checkboxState] $taskText"
             }
