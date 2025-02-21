@@ -188,7 +188,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     }
 
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
-       job =  CoroutineScope(Dispatchers.Main).launch {
+        job = CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {
                 val apiVersion: Int = ApiUtils.getChatApiVersion(
                     user.capabilities?.spreedCapability!!,
@@ -205,10 +205,12 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     withContext(Dispatchers.Main) {
                         if (result.isSuccess) {
                             val editedMessage = result.getOrNull()?.ocs?.data!!.parentMessage!!
-                            Log.d(TAG," EditedMessage: $editedMessage")
+                            Log.d(TAG, "EditedMessage: $editedMessage")
                             binding.messageEditIndicator.apply {
                                 visibility = View.VISIBLE
                             }
+                            binding.messageTime.text =
+                                dateUtils.getLocalTimeStringFromTimestamp(editedMessage.lastEditTimestamp!!)
                         } else {
                             Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                         }
