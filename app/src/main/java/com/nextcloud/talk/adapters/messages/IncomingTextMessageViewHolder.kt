@@ -9,7 +9,6 @@
  */
 package com.nextcloud.talk.adapters.messages
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
@@ -89,7 +88,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             user
         )
 
-        if(!hasCheckboxes){
+        if (!hasCheckboxes) {
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
                 message,
@@ -115,8 +114,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 binding.messageAuthor.visibility = View.GONE
             }
 
-                binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-                binding.messageText.text = processedMessageText
+            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+            binding.messageText.text = processedMessageText
 
             if (message.lastEditTimestamp != 0L && !message.isDeleted) {
                 binding.messageEditIndicator.visibility = View.VISIBLE
@@ -148,11 +147,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         }
     }
 
-    @SuppressLint("StringFormatMatches")
-    private fun processCheckboxes(
-        chatMessage: ChatMessage,
-        user: User
-    ): Boolean {
+    private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
         val message = chatMessage.message!!.toSpanned()
         val messageTextView = binding.messageText
         val checkBoxContainer = binding.checkboxContainer
@@ -160,68 +155,79 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         checkBoxContainer.removeAllViews()
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
         val matches = regex.findAll(message)
+
         if (matches.none()) return false
+
         val firstPart = message.toString().substringBefore("\n- [")
         messageTextView.text = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            firstPart,
-            true,
-            viewThemeUtils
+            binding.messageText.context, firstPart, true, viewThemeUtils
         )
+
+        val checkboxList = mutableListOf<CheckBox>()
+
         matches.forEach { matchResult ->
             val isChecked = matchResult.groupValues[2] == "X" || matchResult.groupValues[2] == "x"
             val taskText = matchResult.groupValues[3].trim()
-            lateinit var updatedMessage: String
+
             val checkBox = CheckBox(checkBoxContainer.context).apply {
                 text = taskText
                 this.isChecked = isChecked
-                setOnCheckedChangeListener { _, isChecked ->
-                    CoroutineScope(Dispatchers.Main).launch {
-                        withContext(Dispatchers.IO) {
-                            val apiVersion: Int = ApiUtils.getChatApiVersion(
-                                user.capabilities?.spreedCapability!!,
-                                intArrayOf(1)
-                            )
-                            updatedMessage =
-                                updateMessageWithCheckboxState(chatMessage.message!!, taskText, isChecked)
-
-                            chatRepository.editChatMessage(
-                                user.getCredentials(),
-                                ApiUtils.getUrlForChatMessage(
-                                    apiVersion,
-                                    user.baseUrl!!,
-                                    chatMessage.token!!,
-                                    chatMessage.id
-                                ),
-                                updatedMessage
-                            ).collect { result ->
-                                if (result.isSuccess) {
-                                    val editedMessage = result.getOrNull()?.ocs?.data?.parentMessage?.message ?: return@collect
-                                    chatMessage.message = editedMessage
-                                } else {
-                                    Snackbar.make(
-                                        binding.root,
-                                        R.string.nc_common_error_sorry,
-                                        Snackbar.LENGTH_LONG
-                                    ).show()
-                                }
-                            }
-                        }
-                    }
+                setOnCheckedChangeListener { _, _ ->
+                    updateCheckboxStates(chatMessage, user, checkboxList)
                 }
             }
             checkBoxContainer.addView(checkBox)
+            checkboxList.add(checkBox)
         }
+
         checkBoxContainer.visibility = View.VISIBLE
         return true
     }
 
-    private fun updateMessageWithCheckboxState(originalMessage: String, taskText: String, isChecked: Boolean): String {
-        val regex = """(- \[(X| )])\s*$taskText""".toRegex(RegexOption.MULTILINE)
-        return regex.replace(originalMessage) {
-            val checkboxState = if (isChecked) "X" else " "
-            "- [$checkboxState] $taskText"
+    private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
+        CoroutineScope(Dispatchers.Main).launch {
+            withContext(Dispatchers.IO) {
+                val apiVersion: Int = ApiUtils.getChatApiVersion(
+                    user.capabilities?.spreedCapability!!,
+                    intArrayOf(1)
+                )
+
+                val updatedMessage = updateMessageWithCheckboxStates(chatMessage.message!!, checkboxes)
+
+                chatRepository.editChatMessage(
+                    user.getCredentials(),
+                    ApiUtils.getUrlForChatMessage(apiVersion, user.baseUrl!!, chatMessage.token!!, chatMessage.id),
+                    updatedMessage
+                ).collect { result ->
+                    withContext(Dispatchers.Main) {
+                        if (result.isSuccess) {
+                            val editedMessage = result.getOrNull()?.ocs?.data!!.parentMessage!!
+                            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(editedMessage.lastEditTimestamp!!)
+                            binding.messageEditIndicator.apply {
+                                visibility = View.VISIBLE
+                                text = String.format(context.getString(R.string.edited_by), editedMessage.lastEditActorType)
+                            }
+                        } else {
+                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                        }
+                    }
+                }
+            }
         }
+    }
+
+    private fun updateMessageWithCheckboxStates(originalMessage: String, checkboxes: List<CheckBox>): String {
+        var updatedMessage = originalMessage
+        val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
+
+        checkboxes.forEach { checkBox ->
+            updatedMessage = regex.replace(updatedMessage) { matchResult ->
+                val taskText = matchResult.groupValues[3].trim()
+                val checkboxState = if (checkboxes.find { it.text == taskText }?.isChecked == true) "X" else " "
+                "- [$checkboxState] $taskText"
+            }
+        }
+        return updatedMessage
     }
 
     private fun longClickOnReaction(chatMessage: ChatMessage) {
