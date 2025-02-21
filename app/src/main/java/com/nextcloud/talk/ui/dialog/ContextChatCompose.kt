@@ -10,6 +10,8 @@ package com.nextcloud.talk.ui.dialog
 import android.content.Context
 import android.os.Bundle
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +27,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.asFlow
@@ -71,7 +74,7 @@ class ContextChatCompose(val bundle: Bundle) {
 
         val adapter = ComposeChatAdapter()
         val colorScheme = viewThemeUtils.getColorScheme(context)
-        MaterialTheme { // TODO: using theme makes this hard to see. Should be better when I get adapter setup
+        MaterialTheme(colorScheme) {
             Dialog(
                 onDismissRequest = {
                     shouldDismiss.value = true
@@ -89,6 +92,7 @@ class ContextChatCompose(val bundle: Bundle) {
                         modifier = Modifier
                             .padding(16.dp)
                             .fillMaxWidth()
+                            .fillMaxHeight(.9f)
                     ) {
                         val user = userManager.currentUser.blockingGet()
                         if (!user.hasSpreedFeatureCapability("chat-get-context") ||
@@ -105,6 +109,13 @@ class ContextChatCompose(val bundle: Bundle) {
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         } else {
+                            Row(modifier = Modifier.align(Alignment.Start)) {
+                                Column {
+                                    // TODO get these from the activity
+                                    Text("Conversation 1", fontSize = 24.sp)
+                                    Text("This is description", fontSize = 12.sp)
+                                }
+                            }
                             val contextState = viewModel.getContextChatMessages.asFlow().collectAsState(listOf())
                             adapter.GetView(context, contextState.value)
                         }
