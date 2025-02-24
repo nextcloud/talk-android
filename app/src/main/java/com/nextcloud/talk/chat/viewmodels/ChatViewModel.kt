@@ -23,7 +23,6 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
-import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -128,8 +127,8 @@ class ChatViewModel @Inject constructor(
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
 
-    private val _getContextChatMessages: MutableLiveData<List<ChatMessage>> = MutableLiveData()
-    val getContextChatMessages: LiveData<List<ChatMessage>>
+    private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
+    val getContextChatMessages: LiveData<List<ChatMessageJson>>
         get() = _getContextChatMessages
 
     val getMessageFlow = chatRepository.messageFlow
@@ -810,7 +809,7 @@ class ChatViewModel @Inject constructor(
                 token,
                 messageId,
                 limit
-            ).map(ChatMessageJson::asModel)
+            )
 
             _getContextChatMessages.value = messages
         }

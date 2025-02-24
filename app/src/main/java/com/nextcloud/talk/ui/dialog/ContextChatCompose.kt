@@ -13,11 +13,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -34,6 +35,8 @@ import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -44,7 +47,7 @@ import javax.inject.Inject
 class ContextChatCompose(val bundle: Bundle) {
 
     companion object {
-        private const val LIMIT = 10
+        private const val LIMIT = 12
     }
 
     @Inject
@@ -72,7 +75,6 @@ class ContextChatCompose(val bundle: Bundle) {
             return
         }
 
-        val adapter = ComposeChatAdapter()
         val colorScheme = viewThemeUtils.getColorScheme(context)
         MaterialTheme(colorScheme) {
             Dialog(
@@ -82,7 +84,7 @@ class ContextChatCompose(val bundle: Bundle) {
                 properties = DialogProperties(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true,
-                    usePlatformDefaultWidth = true
+                    usePlatformDefaultWidth = false
                 )
             ) {
                 Surface(
@@ -90,9 +92,8 @@ class ContextChatCompose(val bundle: Bundle) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(16.dp)
                             .fillMaxWidth()
-                            .fillMaxHeight(.9f)
+                            .fillMaxHeight()
                     ) {
                         val user = userManager.currentUser.blockingGet()
                         if (!user.hasSpreedFeatureCapability("chat-get-context") ||
@@ -110,14 +111,27 @@ class ContextChatCompose(val bundle: Bundle) {
                             )
                         } else {
                             Row(modifier = Modifier.align(Alignment.Start)) {
+                                IconButton(onClick = {
+                                    shouldDismiss.value = true
+                                }) {
+                                    Icon(
+                                        Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                        "Exit",
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .size(48.dp)
+                                    )
+                                }
                                 Column {
-                                    // TODO get these from the activity
+                                    // TODO get these from token from bundle
                                     Text("Conversation 1", fontSize = 24.sp)
                                     Text("This is description", fontSize = 12.sp)
                                 }
                             }
                             val contextState = viewModel.getContextChatMessages.asFlow().collectAsState(listOf())
-                            adapter.GetView(context, contextState.value)
+                            val messagesJson = contextState.value
+                            val messages = messagesJson.map(ChatMessageJson::asModel)
+                            ComposeChatAdapter(messagesJson).GetView(context, messages)
                         }
                     }
                 }
