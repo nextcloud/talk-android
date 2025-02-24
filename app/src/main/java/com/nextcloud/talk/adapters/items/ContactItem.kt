@@ -194,6 +194,7 @@ class ContactItem(
     }
 
     companion object {
+        const val VIEW_TYPE = FlexibleItemViewType.CONTACT_ITEM
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val SEMI_TRANSPARENT: Float = 0.38f
     }

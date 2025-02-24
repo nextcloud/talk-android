@@ -440,10 +440,17 @@ class ChatActivity :
         conversationUser = currentUserProvider.currentUser.blockingGet()
         handleIntent(intent)
 
-        messageInputFragment = getMessageInputFragment()
-
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
+        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+        val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+        chatViewModel.initData(
+            credentials!!,
+            urlForChatting,
+            roomToken
+        )
+
+        messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
         messageInputViewModel.setData(chatViewModel.getChatRepository())
 
@@ -562,6 +569,7 @@ class ChatActivity :
     override fun onStop() {
         super.onStop()
         active = false
+        adapter = null
         this.lifecycle.removeObserver(AudioUtils)
         this.lifecycle.removeObserver(chatViewModel)
     }
@@ -575,14 +583,8 @@ class ChatActivity :
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->
                     currentConversation = conversationModel
-
-                    val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
-                    val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
-
-                    chatViewModel.setData(
-                        currentConversation!!,
-                        credentials!!,
-                        urlForChatting
+                    chatViewModel.updateConversation(
+                        currentConversation!!
                     )
 
                     logConversationInfos("GetRoomSuccessState")
@@ -828,12 +830,15 @@ class ChatActivity :
                     // Handle UI on first load
                     cancelNotificationsForCurrentConversation()
                     binding.progressBar.visibility = View.GONE
+                    binding.offline.root.visibility = View.GONE
                     binding.messagesListView.visibility = View.VISIBLE
                     collapseSystemMessages()
                 }
 
                 is ChatViewModel.ChatMessageUpdateState -> {
-                    // unused atm
+                    binding.progressBar.visibility = View.GONE
+                    binding.offline.root.visibility = View.GONE
+                    binding.messagesListView.visibility = View.VISIBLE
                 }
 
                 is ChatViewModel.ChatMessageErrorState -> {
@@ -918,9 +923,9 @@ class ChatActivity :
             chatViewModel.getGeneralUIFlow.onEach { key ->
                 when (key) {
                     NO_OFFLINE_MESSAGES_FOUND -> {
-                        if (networkMonitor.isOnline.value.not()) {
-                            binding.offline.root.visibility = View.VISIBLE
-                        }
+                        binding.progressBar.visibility = View.GONE
+                        binding.messagesListView.visibility = View.GONE
+                        binding.offline.root.visibility = View.VISIBLE
                     }
 
                     else -> {}
@@ -2674,7 +2679,6 @@ class ChatActivity :
 
         currentlyPlayedVoiceMessage?.let { stopMediaPlayer(it) } // FIXME, mediaplayer can sometimes be null here
 
-        adapter = null
         disposables.dispose()
     }
 

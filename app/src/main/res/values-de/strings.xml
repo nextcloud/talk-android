@@ -5,8 +5,9 @@
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
     <string name="archive_conversation">Unterhaltung archivieren</string>
-    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter „Archiviert“, um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
+    <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter \"Archiviert\", um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
     <string name="archived">Archiviert</string>
+    <string name="archived_conversation">%1$s archiviert</string>
     <string name="audio_call">Audioanruf</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio-Ausgabe</string>
@@ -88,7 +89,7 @@
     <string name="message_last_edited_by">Bearbeitet von %1$s</string>
     <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>
     <string name="message_search_begin_empty">Keine Suchergebnisse</string>
-    <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen ...</string>
+    <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen …</string>
     <string name="message_search_hint">Suche …</string>
     <string name="messages">Nachrichten</string>
     <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
@@ -105,7 +106,7 @@
     <string name="nc_all_ok_operation">OK, alles erledigt!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s entsperren</string>
-    <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung „Geräte in der Nähe“ erteilen.</string>
+    <string name="nc_bluetooth_permission_hint">Um Bluetooth-Lautsprecher zu aktivieren, bitte die Berechtigung \"Geräte in der Nähe\" erteilen.</string>
     <string name="nc_call_button_content_description_advanced">Erweiterte Anrufoptionen</string>
     <string name="nc_call_button_content_description_answer_video_call">Als Videoanruf annehmen</string>
     <string name="nc_call_button_content_description_answer_voice_only">Nur als Sprachanruf annehmen</string>
@@ -117,7 +118,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">Wechseln Sie zum Eigenen Video</string>
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
-    <string name="nc_call_notifications">Anruf-Benachrichtigungen</string>
+    <string name="nc_call_notifications">Anrufbenachrichtigungen</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>
@@ -128,7 +129,7 @@
     <string name="nc_call_unknown">%s Anruf</string>
     <string name="nc_call_video">%s Videoanruf</string>
     <string name="nc_call_voice">%s Sprachanruf</string>
-    <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung „Kamera“ erteilen.</string>
+    <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung \"Kamera\" erteilen.</string>
     <string name="nc_cancel">Abbrechen</string>
     <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
     <string name="nc_caption">Untertitel</string>
@@ -280,7 +281,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie „Alle Apps“ -> %1$s -> Nicht optimieren</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
@@ -313,7 +314,7 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sending">Sende</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
-    <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung „Mikrofon“ erteilen.</string>
+    <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung \"Mikrofon\" erteilen.</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
     <string name="nc_never">Nie beigetreten</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Ja</string>
     <string name="new_conversation_creation_icon">Neue Unterhaltung erstellen-Symbol</string>
     <string name="next_week">Nächste Woche</string>
+    <string name="no_conversations_archived">Keine Unterhaltungen archiviert</string>
     <string name="no_offline_messages_saved">Keine Offlinenachrichten gespeichert</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
     <string name="oneHour">1 Stunde</string>
@@ -595,7 +597,6 @@
     <string name="scroll_to_bottom">Nach unten blättern</string>
     <string name="search_icon">Such-Symbol</string>
     <string name="secondsAgo">Gerade eben</string>
-    <string name="see_similar_system_messages">%1$s ähnliche Nachrichten ansehen</string>
     <string name="selected_list_item">Ausgewählt</string>
     <string name="send_email">E-Mail senden</string>
     <string name="send_to">Senden an</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">und %1$s andere schreiben…</string>
     <string name="unarchive_conversation">Unterhaltung dearchivieren</string>
     <string name="unarchive_hint">Sobald eine Unterhaltung dearchiviert wurde, wird sie standardmäßig wieder angezeigt.</string>
+    <string name="unarchived_conversation">%1$s dearchiviert</string>
     <string name="unban">Entsperren</string>
     <string name="unread">Ungelesen</string>
     <string name="upload_new_avatar_from_device">Neuen Avatar vom Gerät hochladen</string>
@@ -673,6 +675,10 @@
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="video_call">Videoanruf</string>
     <string name="whats_your_status">Wie ist Ihr Status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d ähnliche Nachricht ansehen</item>
+        <item quantity="other">%d ähnliche Nachrichten ansehen</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d Stimme</item>
         <item quantity="other">%d Stimmen</item>

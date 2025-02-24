@@ -820,6 +820,7 @@ class ConversationInfoActivity :
                     binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
                 }
             }
+            viewModel.getRoom(conversationUser, conversationToken)
         }
 
         if (conversation!!.hasArchived) {

@@ -25,6 +25,7 @@ import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadFirstLetterAvatar
+import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.participants.Participant
@@ -207,8 +208,12 @@ class ParticipantItem(
 
     private fun loadAvatars(holder: ParticipantItemViewHolder) {
         when (model.calculatedActorType) {
-            Participant.ActorType.GROUPS, Participant.ActorType.CIRCLES -> {
+            Participant.ActorType.GROUPS -> {
                 holder.binding.avatarView.loadDefaultGroupCallAvatar(viewThemeUtils)
+            }
+
+            Participant.ActorType.CIRCLES -> {
+                holder.binding.avatarView.loadTeamAvatar(viewThemeUtils)
             }
 
             Participant.ActorType.USERS -> {

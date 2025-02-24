@@ -6,7 +6,8 @@
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archive_conversation">Arquivar a conversa</string>
     <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
-    <string name="archived">Arquivado</string>
+    <string name="archived">Arquivada</string>
+    <string name="archived_conversation">%1$s foi arquivada</string>
     <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de son</string>
@@ -215,7 +216,7 @@
     <string name="nc_diagnose_notification_messages_channel_permission">Activouse a canle de notificación de mensaxes?</string>
     <string name="nc_diagnose_notification_permission">Permisos de notificación</string>
     <string name="nc_diagnose_phone_category_title">Teléfono</string>
-    <string name="nc_diagnose_server_talk_version">Versión de Parlar do servidor</string>
+    <string name="nc_diagnose_server_talk_version">Versión de Parladoiro do servidor</string>
     <string name="nc_diagnose_server_version">Versión do servidor</string>
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
@@ -427,7 +428,7 @@
     <string name="nc_server_maintenance">Retire a posición de matemento de %1$s</string>
     <string name="nc_server_not_installed">Ten que rematar a instalación de %1$s</string>
     <string name="nc_server_testing_connection">Probando a conexión</string>
-    <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Parlar</string>
+    <string name="nc_server_unsupported">O servidor non ten instalada a aplicación Parladoiro</string>
     <string name="nc_server_url">Enderezo do servidor https://…</string>
     <string name="nc_server_version">%1$s só funciona con %2$s 13 ou superior</string>
     <string name="nc_set_new_password">Definir un novo contrasinal</string>
@@ -443,13 +444,13 @@
     <string name="nc_settings_incognito_keyboard_desc">Indícalle ao teclado que desactive a aprendizaxe personalizada (sen garantías)</string>
     <string name="nc_settings_incognito_keyboard_title">Teclado de incógnito</string>
     <string name="nc_settings_no_ringtone">Sen son</string>
-    <string name="nc_settings_no_talk_installed">A aplicación Parlar non está instalada no servidor contra o que tentou autenticarse</string>
+    <string name="nc_settings_no_talk_installed">A aplicación Parladoiro non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificacións</string>
     <string name="nc_settings_notifications_declined">As notificacións son rexeitadas</string>
     <string name="nc_settings_notifications_declined_hint">As notificacións son rexeitadas. Permita as notificacións nos axustes de Android</string>
     <string name="nc_settings_notifications_granted">As notificacións están permitidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensaxes</string>
-    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Parlar na lista de teléfonos</string>
+    <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Parladoiro na lista de teléfonos</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Erro 429, demasiadas solicitudes</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Pode definir o seu número de teléfono para que outros usuarios poidan atopalo</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Introduza o número de teléfono</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Si</string>
     <string name="new_conversation_creation_icon">conversaNew Conversation Creation IconNova icona de Icona «Creación de nova conversa»</string>
     <string name="next_week">Semana seguinte</string>
+    <string name="no_conversations_archived">Non hai ningunha conversa arquivada</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
     <string name="oneHour">1 hora</string>
@@ -586,7 +588,7 @@
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_description">Visíbel só para as persoas desta instancia e os convidados</string>
     <string name="scope_local_title">Local</string>
-    <string name="scope_private_description">Só son visíbeis para as persoas coincidentes mediante a integración do número de teléfono a través de Parlar no móbil</string>
+    <string name="scope_private_description">Só son visíbeis para as persoas coincidentes mediante a integración do número de teléfono a través de Parladoiro no móbil</string>
     <string name="scope_private_title">Privado</string>
     <string name="scope_published_description">Sincronizar con servidores de confianza e co caderno de enderezos global e público</string>
     <string name="scope_published_title">Publicado</string>
@@ -595,7 +597,6 @@
     <string name="scroll_to_bottom">Desprazarse ata o final</string>
     <string name="search_icon">Icona «Buscar»</string>
     <string name="secondsAgo">segundos atrás</string>
-    <string name="see_similar_system_messages">Ver %1$s mensaxes similares</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_email">Enviar o correo</string>
     <string name="send_to">Enviar a</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">e %1$s máis están a escribiren…</string>
     <string name="unarchive_conversation">Desarquivar a conversa</string>
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
+    <string name="unarchived_conversation">%1$s foi desarquivada</string>
     <string name="unban">Retirar a expulsión</string>
     <string name="unread">Sen ler</string>
     <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
@@ -673,6 +675,10 @@
     <string name="userinfo_no_info_text">Engada o seu nome, imaxe e detalles de contacto na súa páxina de perfil.</string>
     <string name="video_call">Vídeo chamada</string>
     <string name="whats_your_status">Cal é o seu estado?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Ver %d mensaxe semellante</item>
+        <item quantity="other">Ver %d mensaxes semellantes</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
         <item quantity="other">%d votos</item>

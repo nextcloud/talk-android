@@ -29,8 +29,8 @@ class ContactsViewModel @Inject constructor(
     val searchQuery: StateFlow<String> = _searchQuery
     private val shareTypes: MutableList<String> = mutableListOf(ShareType.User.shareType)
     val shareTypeList: List<String> = shareTypes
-    private val _searchState = MutableStateFlow(false)
-    val searchState: StateFlow<Boolean> = _searchState
+    private val _isSearchActive = MutableStateFlow(false)
+    val isSearchActive: StateFlow<Boolean> = _isSearchActive
     private val selectedParticipants = MutableStateFlow<List<AutocompleteUser>>(emptyList())
     val selectedParticipantsList: StateFlow<List<AutocompleteUser>> = selectedParticipants.asStateFlow()
     private val _isAddParticipantsView = MutableStateFlow(false)
@@ -57,8 +57,8 @@ class ContactsViewModel @Inject constructor(
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
         selectedParticipants.value = participants
     }
-    fun updateSearchState(searchState: Boolean) {
-        _searchState.value = searchState
+    fun setSearchActive(searchState: Boolean) {
+        _isSearchActive.value = searchState
     }
 
     fun updateShareTypes(value: List<String>) {
@@ -87,7 +87,7 @@ class ContactsViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createRoom(roomType: String, sourceType: String, userId: String, conversationName: String?) {
+    fun createRoom(roomType: String, sourceType: String?, userId: String, conversationName: String?) {
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(

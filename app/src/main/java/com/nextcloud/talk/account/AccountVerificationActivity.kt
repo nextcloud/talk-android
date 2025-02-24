@@ -416,7 +416,7 @@ class AccountVerificationActivity : BaseActivity() {
         cookieManager.cookieStore.removeAll()
 
         if (userManager.users.blockingGet().size == 1 ||
-            userManager.currentUser.blockingGet().id != internalAccountId
+            currentUserProvider.currentUser.blockingGet().id != internalAccountId
         ) {
             val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
             Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)

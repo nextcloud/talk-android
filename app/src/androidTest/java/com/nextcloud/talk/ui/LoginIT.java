@@ -126,7 +126,7 @@ public class LoginIT {
 
         activityScenario.onActivity(activity -> {
             assertEquals(loginName,
-                         Objects.requireNonNull(activity.userManager.getCurrentUser().blockingGet()).getUserId());
+                         Objects.requireNonNull(activity.currentUserProvider.getCurrentUser().blockingGet()).getUserId());
         });
     }
 }

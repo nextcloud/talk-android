@@ -7,6 +7,7 @@
     <string name="archive_conversation">أرشفة المحادثة</string>
     <string name="archive_hint">رد أرشفة محادثة، سيتم إخفاؤها افتراضياً. حدِّد الفلتر \"مُؤرشَفة\" لعرض المحادثات المؤرشفة. الإشارات المباشرة ستظل قابلة ليُشار إليها حتى بعد الأرشفة.</string>
     <string name="archived">مؤرشفة</string>
+    <string name="archived_conversation">مؤرشفة %1$s</string>
     <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
     <string name="audio_output_dialog_headline">مَخِرج الصوت</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">نعم</string>
     <string name="new_conversation_creation_icon">أيقونة إنشاء محادثة جديدة</string>
     <string name="next_week">الأسبوع القادم</string>
+    <string name="no_conversations_archived">لم تتم أرشفة أي محادثات</string>
     <string name="no_offline_messages_saved">لم يتم حفظ أي رسائل غير متصلة بالإنترنت</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
     <string name="oneHour">1 ساعة</string>
@@ -595,7 +597,6 @@
     <string name="scroll_to_bottom">مرِّر للأسفل</string>
     <string name="search_icon">أيقونة البحث</string>
     <string name="secondsAgo">منذ ثوانٍ</string>
-    <string name="see_similar_system_messages">أنظُر %1$s رسائل مُشابِهة</string>
     <string name="selected_list_item">مُحدّدة</string>
     <string name="send_email">إرسال بريد</string>
     <string name="send_to">أرسِل إلى</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
     <string name="unarchive_conversation">إرجاع المحادثة من الأرشيف</string>
     <string name="unarchive_hint">بمجرد إعادة المحادثة من الأرشيف، سوف تظهر مجدداً بشكل تلقائي.</string>
+    <string name="unarchived_conversation">غير مؤرشفة %1$s</string>
     <string name="unban">رفع الحظر</string>
     <string name="unread">غير مقروء</string>
     <string name="upload_new_avatar_from_device">رفع صورة رمزية جديدة للملف الشخصي من الجهاز</string>
@@ -673,6 +675,14 @@
     <string name="userinfo_no_info_text">إضافة الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
     <string name="video_call">مكالمة مرئية</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="zero">أنظُر %d رسالة مشابهة</item>
+        <item quantity="one">أنظُر %d رسالة مشابهة</item>
+        <item quantity="two">أنظُر %d رسالة مشابهة</item>
+        <item quantity="few">أنظُر %d رسائل مشابهة</item>
+        <item quantity="many">أنظُر %d رسالة مشابهة</item>
+        <item quantity="other">أنظُر %d رسالة مشابهة</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="zero">%d أصوات</item>
         <item quantity="one">%d صوت</item>

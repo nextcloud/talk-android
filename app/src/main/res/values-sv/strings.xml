@@ -7,6 +7,7 @@
     <string name="archive_conversation">Arkivera konversation</string>
     <string name="archive_hint">När en konversation väl har arkiverats döljs den som standard. Välj filtret \"Arkiverad\" för att se arkiverade konversationer. Direkta omnämnanden kommer fortfarande att tas emot.</string>
     <string name="archived">Arkiverad</string>
+    <string name="archived_conversation">Arkiverad %1$s</string>
     <string name="audio_call">Ljudsamtal</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Ljudutgång</string>
@@ -529,6 +530,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Nästa vecka</string>
+    <string name="no_conversations_archived">Inga konversationer arkiverade</string>
     <string name="no_offline_messages_saved">Inga offlinemeddelanden sparade</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrering på grund av saknade behörigheter</string>
     <string name="oneHour">1 timme</string>
@@ -590,7 +592,6 @@
     <string name="scope_toggle_description">Ändra hemlighetsnivå för %1$s</string>
     <string name="scroll_to_bottom">Bläddra till botten</string>
     <string name="secondsAgo">sekunder sedan</string>
-    <string name="see_similar_system_messages">Se %1$s liknande meddelanden</string>
     <string name="selected_list_item">Vald</string>
     <string name="send_email">Skicka e-post</string>
     <string name="send_to">Skicka till</string>
@@ -649,6 +650,7 @@
     <string name="typing_x_others">och %1$s andra skriver …</string>
     <string name="unarchive_conversation">Avarkivera konversation</string>
     <string name="unarchive_hint">När en konversation har avarkiverats visas den som standard igen.</string>
+    <string name="unarchived_conversation">Avarkiverad %1$s</string>
     <string name="unban">Tillåt</string>
     <string name="unread">Oläst</string>
     <string name="upload_new_avatar_from_device">Ladda upp ny avatar från enheten</string>
@@ -668,6 +670,10 @@
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
     <string name="video_call">Videosamtal</string>
     <string name="whats_your_status">Vad är din status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Se %d liknande meddelande</item>
+        <item quantity="other">Se %d liknande meddelanden</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d röst</item>
         <item quantity="other">%d röster</item>

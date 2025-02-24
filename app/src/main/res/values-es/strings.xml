@@ -5,6 +5,7 @@
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
     <string name="archived">Archivada</string>
+    <string name="archived_conversation">%1$s archivada</string>
     <string name="audio_call">Llamada de Audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
@@ -508,6 +509,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sí</string>
     <string name="next_week">Semana siguiente</string>
+    <string name="no_conversations_archived">No hay conversaciones archivadas</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
@@ -521,6 +523,7 @@
     <string name="polls_end_poll_confirm">¿Está seguro de que quiere cerrar esta encuesta? Esta acción no se puede deshacer.</string>
     <string name="polls_max_votes_reached">No puede votar con más opciones para esta encuesta.</string>
     <string name="polls_multiple_answers">Múltiples respuestas</string>
+    <string name="polls_option_hint">Opción %1$d</string>
     <string name="polls_options">Opciones</string>
     <string name="polls_private_poll">Encuesta privada</string>
     <string name="polls_question">Pregunta</string>
@@ -564,7 +567,6 @@
     <string name="scope_toggle_description">Cambiar el nivel de privacidad de %1$s</string>
     <string name="scroll_to_bottom">Ir al final</string>
     <string name="secondsAgo">hace segundos</string>
-    <string name="see_similar_system_messages">Ver %1$s mensajes similares</string>
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_email">Enviar email</string>
     <string name="send_to">Enviar a</string>
@@ -618,6 +620,8 @@
     <string name="typing_are_typing">están escribiendo ...</string>
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
+    <string name="unarchived_conversation">%1$s desarchivada</string>
+    <string name="unban">Desbloquear</string>
     <string name="unread">No leído</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
     <string name="user_avatar">Usar avatar</string>

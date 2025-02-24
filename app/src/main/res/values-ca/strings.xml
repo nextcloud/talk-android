@@ -7,6 +7,7 @@
     <string name="archive_conversation">Arxiva la conversa</string>
     <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
+    <string name="archived_conversation">S\'ha arxivat %1$s</string>
     <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
@@ -580,7 +581,6 @@
     <string name="scroll_to_bottom">Desplaça al final</string>
     <string name="search_icon">Icona de Cerca</string>
     <string name="secondsAgo">fa uns segons</string>
-    <string name="see_similar_system_messages">Visualitzeu %1$s missatges similars</string>
     <string name="selected_list_item">Seleccionat</string>
     <string name="send_email">Enviar correu</string>
     <string name="send_to">Envia a</string>

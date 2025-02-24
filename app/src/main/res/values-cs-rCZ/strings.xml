@@ -4,9 +4,10 @@
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
-    <string name="archive_conversation">Zaarchivovat konverzaci</string>
-    <string name="archive_hint">Jakmile je konverzace zaarchivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
+    <string name="archive_conversation">Archivovat konverzaci</string>
+    <string name="archive_hint">Jakmile je konverzace archivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
     <string name="archived">Archivováno</string>
+    <string name="archived_conversation">Archivováno %1$s</string>
     <string name="audio_call">Hlasový hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Ano</string>
     <string name="new_conversation_creation_icon">Ikona vytváření nové konverzace</string>
     <string name="next_week">Příští týden</string>
+    <string name="no_conversations_archived">Nearchivovány žádné konverzace</string>
     <string name="no_offline_messages_saved">Neuloženy žádné zprávy pro režim bez připojení</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
     <string name="oneHour">1 hodina</string>
@@ -595,7 +597,6 @@
     <string name="scroll_to_bottom">Odrolovat na konec</string>
     <string name="search_icon">Ikona vyhledávání</string>
     <string name="secondsAgo">sekund před</string>
-    <string name="see_similar_system_messages">Viz %1$s podobných zpráv</string>
     <string name="selected_list_item">Vybráno</string>
     <string name="send_email">Odeslat e-mail</string>
     <string name="send_to">Odeslat k</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">a %1$s ostatní píší…</string>
     <string name="unarchive_conversation">Zrušit archivaci konverzace</string>
     <string name="unarchive_hint">Jakmile je zrušeno archivování konverzace, znovu bude zobrazováná už ve výchozí stavu.</string>
+    <string name="unarchived_conversation">Zrušena archivace %1$s</string>
     <string name="unban">Zrušit vyloučení</string>
     <string name="unread">Nastavit jako nepřečtené</string>
     <string name="upload_new_avatar_from_device">Nahrát nový profilový obrázek ze zařízení</string>
@@ -673,6 +675,12 @@
     <string name="userinfo_no_info_text">Přidejte jméno, obrázek a kontaktní údaje na svou profilovou stránku.</string>
     <string name="video_call">Videohovor</string>
     <string name="whats_your_status">Jaký je váš stav?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Viz %d podobná zpráva</item>
+        <item quantity="few">Viz %d podobné zprávy</item>
+        <item quantity="many">Viz %d podobných zpráv</item>
+        <item quantity="other">Viz %d podobné zprávy</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hlas</item>
         <item quantity="few">%d hlasy</item>

@@ -7,6 +7,7 @@
     <string name="archive_conversation">Archive Conversation</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
+    <string name="archived_conversation">Archived %1$s</string>
     <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
@@ -533,6 +534,7 @@
     <string name="nc_yes">Yes</string>
     <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
     <string name="next_week">Next week</string>
+    <string name="no_conversations_archived">No conversations archived</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">1 hour</string>
@@ -595,7 +597,6 @@
     <string name="scroll_to_bottom">Scroll to bottom</string>
     <string name="search_icon">Search Icon</string>
     <string name="secondsAgo">seconds ago</string>
-    <string name="see_similar_system_messages">See %1$s similar messages</string>
     <string name="selected_list_item">Selected</string>
     <string name="send_email">Send email</string>
     <string name="send_to">Send to</string>
@@ -654,6 +655,7 @@
     <string name="typing_x_others">and %1$s others are typing …</string>
     <string name="unarchive_conversation">Unarchive Conversation</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
+    <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="unban">Unban</string>
     <string name="unread">Unread</string>
     <string name="upload_new_avatar_from_device">Upload new avatar from device</string>
@@ -673,6 +675,10 @@
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
     <string name="video_call">Video Call</string>
     <string name="whats_your_status">What is your status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">See %d similar message</item>
+        <item quantity="other">See %d similar messages</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>

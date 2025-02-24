@@ -498,7 +498,6 @@
     <string name="scope_toggle_description">A(z) %1$s adatvédelmi szintjének módosítása</string>
     <string name="scroll_to_bottom">Görgetés az aljára</string>
     <string name="secondsAgo">pár másodperce</string>
-    <string name="see_similar_system_messages">További %1$s hasonló üzenet</string>
     <string name="selected_list_item">Kiválasztott</string>
     <string name="send_email">E-mail küldése</string>
     <string name="send_to">Küldés</string>

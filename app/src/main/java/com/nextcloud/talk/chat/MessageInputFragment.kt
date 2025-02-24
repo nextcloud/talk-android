@@ -75,6 +75,7 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -117,6 +118,9 @@ class MessageInputFragment : Fragment() {
     lateinit var userManager: UserManager
 
     @Inject
+    lateinit var currentUserProvider: CurrentUserProviderNew
+
+    @Inject
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var binding: FragmentMessageInputBinding
@@ -154,10 +158,6 @@ class MessageInputFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         saveState()
-    }
-
-    override fun onResume() {
-        super.onResume()
     }
 
     override fun onDestroyView() {
@@ -217,7 +217,7 @@ class MessageInputFragment : Fragment() {
             if (show) {
                 binding.fragmentCallStarted.callAuthorChip.text = message.actorDisplayName
                 binding.fragmentCallStarted.callAuthorChipSecondary.text = message.actorDisplayName
-                val user = userManager.currentUser.blockingGet()
+                val user = currentUserProvider.currentUser.blockingGet()
                 val url: String = if (message.actorType == "guests" || message.actorType == "guest") {
                     ApiUtils.getUrlForGuestAvatar(user!!.baseUrl!!, message.actorDisplayName, true)
                 } else {
@@ -466,7 +466,13 @@ class MessageInputFragment : Fragment() {
         }
         binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
             binding.fragmentMessageInputView.recordAudioButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) View.VISIBLE else View.GONE
+                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() &&
+                    chatActivity.messageInputViewModel.getEditChatMessage.value == null
+                ) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
 
             binding.fragmentMessageInputView.messageSendButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
@@ -838,7 +844,8 @@ class MessageInputFragment : Fragment() {
                     mentionId.contains("@") ||
                     mentionId.startsWith("guest/") ||
                     mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/")
+                    mentionId.startsWith("email/") ||
+                    mentionId.startsWith("team/")
                 if (shouldQuote) {
                     mentionId = "\"" + mentionId + "\""
                 }

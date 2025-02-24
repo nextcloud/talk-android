@@ -44,7 +44,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.retryWhen
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -119,11 +118,14 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
 
-    override fun setData(conversationModel: ConversationModel, credentials: String, urlForChatting: String) {
-        this.conversationModel = conversationModel
+    override fun initData(credentials: String, urlForChatting: String, roomToken: String) {
+        internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting
-        internalConversationId = conversationModel.internalId
+    }
+
+    override fun updateConversation(conversationModel: ConversationModel) {
+        this.conversationModel = conversationModel
     }
 
     override fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle) {
@@ -157,7 +159,9 @@ class OfflineFirstChatRepository @Inject constructor(
             } else {
                 if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
-                    _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    if (networkMonitor.isOnline.value.not()) {
+                        _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    }
                 } else {
                     Log.d(
                         TAG,
@@ -803,7 +807,9 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override fun handleOnStop() {
-        scope.cancel()
+        if (this::scope.isInitialized) {
+            scope.cancel()
+        }
     }
 
     @Suppress("LongParameterList")
@@ -837,14 +843,6 @@ class OfflineFirstChatRepository @Inject constructor(
 
             emit(Result.success(chatMessageModel))
         }
-            .retryWhen { cause, attempt ->
-                if (cause is IOException && attempt < SEND_MESSAGE_RETRY_ATTEMPTS) {
-                    delay(SEND_MESSAGE_RETRY_DELAY)
-                    return@retryWhen true
-                } else {
-                    return@retryWhen false
-                }
-            }
             .catch { e ->
                 Log.e(TAG, "Error when sending message", e)
 
@@ -1036,7 +1034,5 @@ class OfflineFirstChatRepository @Inject constructor(
         private const val DELAY_TO_ENSURE_MESSAGES_ARE_ADDED: Long = 100
         private const val DEFAULT_MESSAGES_LIMIT = 100
         private const val MILLIES = 1000
-        private const val SEND_MESSAGE_RETRY_ATTEMPTS = 3
-        private const val SEND_MESSAGE_RETRY_DELAY: Long = 2000
     }
 }

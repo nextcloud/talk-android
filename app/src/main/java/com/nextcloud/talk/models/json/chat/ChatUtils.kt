@@ -33,11 +33,16 @@ class ChatUtils {
                         resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
                     } else if (type == "geo-location") {
                         individualHashMap["name"]
-                    } else if (individualHashMap.containsKey("link") == true) {
+                    } else if (individualHashMap.containsKey("link")) {
                         if (type == "file") {
                             resultMessage?.replace("{$key}", individualHashMap["name"].toString())
                         } else {
-                            individualHashMap["link"].toString()
+                            individualHashMap["name"]?.let {
+                                resultMessage?.replace(
+                                    "{$key}",
+                                    individualHashMap["name"]!!
+                                )
+                            }
                         }
                     } else {
                         individualHashMap["name"]?.let { resultMessage?.replace("{$key}", it) }
