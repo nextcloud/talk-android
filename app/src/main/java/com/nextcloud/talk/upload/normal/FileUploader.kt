@@ -10,7 +10,10 @@ package com.nextcloud.talk.upload.normal
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import at.bitfire.dav4jvm.DavResource
+import at.bitfire.dav4jvm.exception.HttpException
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.dagger.modules.RestModule
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.utils.ApiUtils
@@ -18,16 +21,29 @@ import com.nextcloud.talk.utils.FileUtils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Protocol
 import okhttp3.RequestBody
+import okhttp3.Response
+import java.io.IOException
 import java.io.InputStream
 
 class FileUploader(
+    okHttpClient: OkHttpClient,
     val context: Context,
     val currentUser: User,
     val roomToken: String,
     val ncApi: NcApi
 ) {
+
+    private var okHttpClientNoRedirects: OkHttpClient? = null
+    private var uploadFolderUri: String = ""
+    init {
+        initHttpClient(okHttpClient, currentUser)
+    }
+
     fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
         return ncApi.uploadFile(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
@@ -46,7 +62,21 @@ class FileUploader(
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
                     true
                 } else {
-                    false
+                    if (response.code() == 404 || response.code() == 409) {
+                        uploadFolderUri = ApiUtils.getUrlForFileUpload(
+                            currentUser.baseUrl!!, currentUser.userId!!,
+                            remotePath
+                        )
+                        val davResource = DavResource(
+                            okHttpClientNoRedirects!!,
+                            uploadFolderUri.toHttpUrlOrNull()!!
+                        )
+                        createFolder(davResource)
+                        retryUpload(sourceFileUri, remotePath, fileName, metaData)
+                        true
+                    } else {
+                        false
+                    }
                 }
             }
     }
@@ -68,7 +98,70 @@ class FileUploader(
         return requestBody
     }
 
+    private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
+        val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
+        okHttpClientBuilder.followRedirects(true)
+        okHttpClientBuilder.followSslRedirects(true)
+        // okHttpClientBuilder.readTimeout(Duration.ofMinutes(30)) // TODO set timeout
+        okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1, Protocol.HTTP_2))
+        okHttpClientBuilder.authenticator(
+            RestModule.HttpAuthenticator(
+                ApiUtils.getCredentials(
+                    currentUser.username,
+                    currentUser.token
+                )!!,
+                "Authorization"
+            )
+        )
+        this.okHttpClientNoRedirects = okHttpClientBuilder.build()
+    }
+
+    private fun createFolder(davResource: DavResource) {
+        try {
+            davResource.mkCol(
+                xmlBody = null
+            ) { response: Response ->
+                if (!response.isSuccessful) {
+                    throw IOException("failed to create folder. response code: " + response.code)
+                }
+            }
+        } catch (e: IOException) {
+            throw IOException("failed to create folder", e)
+        } catch (e: HttpException) {
+            if (e.code == METHOD_NOT_ALLOWED_CODE) {
+                Log.d(TAG, "Folder most probably already exists, that's okay, just continue..")
+            } else {
+                throw IOException("failed to create folder", e)
+            }
+        }
+    }
+
+    private fun retryUpload(
+        sourceFileUri: Uri,
+        uploadUrl: String,
+        fileName: String,
+        metaData: String?
+    ): Observable<Boolean> {
+        return ncApi.uploadFile(
+            ApiUtils.getCredentials(currentUser.username, currentUser.token),
+            uploadUrl,
+            createRequestBody(sourceFileUri)
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .map { retryResponse ->
+                if (retryResponse.isSuccessful) {
+                    ShareOperationWorker.shareFile(roomToken, currentUser, uploadUrl, metaData)
+                    FileUtils.copyFileToCache(context, sourceFileUri, fileName)
+                    true
+                } else {
+                    false
+                }
+            }
+    }
+
     companion object {
         private val TAG = FileUploader::class.simpleName
+        private const val METHOD_NOT_ALLOWED_CODE: Int = 405
     }
 }
