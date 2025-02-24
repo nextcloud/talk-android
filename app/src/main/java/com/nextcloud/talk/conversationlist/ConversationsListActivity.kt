@@ -1878,7 +1878,7 @@ class ConversationsListActivity :
             binding.floatingActionButton.let {
                 Snackbar.make(
                     binding.root,
-                    R.string.nc_dialog_maintenance_mode_description,
+                    R.string.maintenance_mode_description,
                     Snackbar.LENGTH_LONG
                 ).show()
             }
