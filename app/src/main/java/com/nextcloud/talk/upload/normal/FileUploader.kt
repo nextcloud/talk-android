@@ -102,7 +102,6 @@ class FileUploader(
         val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
         okHttpClientBuilder.followRedirects(true)
         okHttpClientBuilder.followSslRedirects(true)
-        // okHttpClientBuilder.readTimeout(Duration.ofMinutes(30)) // TODO set timeout
         okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1, Protocol.HTTP_2))
         okHttpClientBuilder.authenticator(
             RestModule.HttpAuthenticator(
