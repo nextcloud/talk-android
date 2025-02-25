@@ -91,6 +91,35 @@
             </RelativeLayout>
 
             <LinearLayout
+                android:id="@+id/settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include
+                    android:id="@+id/notification_settings_view"
+                    layout="@layout/item_notification_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
+
+                <include
+                    android:id="@+id/webinar_info_view"
+                    layout="@layout/item_webinar_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
+
+                <include
+                    android:id="@+id/guest_access_view"
+                    layout="@layout/item_guest_access_settings"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/conversation_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -136,35 +165,6 @@
                     android:gravity="center_vertical"
                     android:text="@string/nc_add_to_favorites"
                     android:textSize="@dimen/two_line_primary_text_size" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/settings"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <include
-                    android:id="@+id/notification_settings_view"
-                    layout="@layout/item_notification_settings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin" />
-
-                <include
-                    android:id="@+id/webinar_info_view"
-                    layout="@layout/item_webinar_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin" />
-
-                <include
-                    android:id="@+id/guest_access_view"
-                    layout="@layout/item_guest_access_settings"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_quarter_margin" />
 
             </LinearLayout>
 

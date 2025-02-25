@@ -151,7 +151,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         } else {
             Log.d(TAG, "starting normal upload (not chunked) of $fileName")
 
-            FileUploader(okHttpClient, context, currentUser, roomToken, ncApi)
+            FileUploader(okHttpClient, context, currentUser, roomToken, ncApi, file!!)
                 .upload(sourceFileUri, fileName, remotePath, metaData)
                 .blockingFirst()
         }
