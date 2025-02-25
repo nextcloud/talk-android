@@ -10,21 +10,20 @@ package com.nextcloud.talk.ui
 import android.content.Context
 import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -37,8 +36,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,6 +60,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.message.MessageUtils
+import java.util.Date
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -79,6 +82,7 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
         private val REGULAR_TEXT_SIZE = 16.sp
         private val TIME_TEXT_SIZE = 12.sp
         private val AUTHOR_TEXT_SIZE = 12.sp
+        private const val LONG_1000 = 1000
     }
 
     @Inject
@@ -97,11 +101,18 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
 
     @Composable
     fun GetView(context: Context, messages: List<ChatMessage>) {
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp) ) {
-            // TODO figure out dates, they seem to be handled on the fly in the adapter
-            //  likely, by keeping track of the last day, and generating an appropriately formated date view
-            //  from the messages. Need a boolean to track ifAdd
+        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)) {
+            var lastDate = Date(0)
+
             items(messages) { message ->
+                // FIXME date logic is a bit buggy, need to preprocess the message list
+                //  to add Date items to it. Annoying, but needed
+                val currentDate = Date(message.timestamp * LONG_1000)
+                if (!DateUtils(context).isSameDate(lastDate, currentDate)) {
+                    GenericDate(context, message)
+                    lastDate = currentDate
+                }
+
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
                         SystemMessage(context, message)
@@ -148,7 +159,8 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
     }
 
     @Composable
-    private fun GenericDate(context: Context, dateString: String) {
+    private fun GenericDate(context: Context, message: ChatMessage) {
+        val dateString = DateUtils(context).getLocalDateTimeStringFromTimestamp(message.timestamp * LONG_1000)
         val colorScheme = viewThemeUtils.getColorScheme(context)
         val color = colorScheme.onBackground
         Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -158,12 +170,27 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
         }
     }
 
+    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun CommonMessageQuote(context: Context, message: ChatMessage) {
-        val colorScheme = viewThemeUtils.getColorScheme(context)
-        Row(modifier = Modifier.padding(16.dp, 0.dp, 0.dp, 0.dp).background(colorScheme.onBackground)) {
-            // FIXME get this dumb shape to work, try with a Icon
+        val color = colorResource(R.color.high_emphasis_text)
+        Row(
+            modifier = Modifier
+                .drawWithCache {
+                    onDrawWithContent {
+                        drawLine(
+                            color = color,
+                            start = Offset.Zero,
+                            end = Offset(0f, this.size.height),
+                            strokeWidth = 4f
+                        )
 
+                        drawContent()
+                    }
+                }
+                .padding(8.dp)
+                .padding(4.dp)
+        ) {
             Column {
                 Text(message.actorDisplayName!!, fontSize = AUTHOR_TEXT_SIZE)
                 val imageUri = message.imageUrl
@@ -218,14 +245,17 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
             }
 
             Surface(
-                modifier = Modifier.defaultMinSize(60.dp, 80.dp).widthIn(60.dp, 280.dp),
+                modifier = Modifier
+                    .defaultMinSize(60.dp, 40.dp)
+                    .widthIn(60.dp, 280.dp),
                 color = Color(color),
                 shape = shape
             ) {
                 val timeString = DateUtils(context).getLocalTimeStringFromTimestamp(message.timestamp)
                 Column(modifier = Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp)) {
                     if (message.parentMessageId != null && !message.isDeleted) {
-                        messagesJson?.let { list -> list.find { it.parentMessage?.id == message.parentMessageId }
+                        messagesJson?.let { list ->
+                            list.find { it.parentMessage?.id == message.parentMessageId }
                                 ?.parentMessage!!.asModel()
                                 .let {
                                     CommonMessageQuote(context, it)
@@ -277,7 +307,7 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
         val timeString = DateUtils(context).getLocalTimeStringFromTimestamp(message.timestamp)
         Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
             Spacer(modifier = Modifier.weight(1f))
-            Text(message.text, fontSize = REGULAR_TEXT_SIZE, modifier = Modifier.padding(8.dp))
+            Text(message.text, fontSize = AUTHOR_TEXT_SIZE, modifier = Modifier.padding(8.dp))
             Text(timeString, fontSize = TIME_TEXT_SIZE)
             Spacer(modifier = Modifier.weight(1f))
         }
@@ -303,23 +333,27 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
 
     @Composable
     private fun VoiceMessage(context: Context, message: ChatMessage) {
+        // FIXME, this is way to tall, not sure why
         val colorScheme = viewThemeUtils.getColorScheme(context)
         CommonMessageBody(context, message) {
-            Icon(Icons.Filled.PlayArrow,
+            Icon(
+                Icons.Filled.PlayArrow,
                 "play",
                 modifier = Modifier
                     .size(24.dp)
-                    .align(Alignment.CenterVertically))
+                    .align(Alignment.CenterVertically)
+            )
 
-            AndroidView(factory = { ctx ->
-                WaveformSeekBar(ctx).apply {
-                    layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                    setWaveData(FloatArray(50) { Random.nextFloat() }) // READ ONLY for now
-                    setColors(colorScheme.inversePrimary.toArgb(), colorScheme.onPrimaryContainer.toArgb())
-                }
-            }, modifier = Modifier
-                .align(Alignment.CenterVertically)
-                .height(80.dp)
+            AndroidView(
+                factory = { ctx ->
+                    WaveformSeekBar(ctx).apply {
+                        setWaveData(FloatArray(50) { Random.nextFloat() }) // READ ONLY for now
+                        setColors(colorScheme.inversePrimary.toArgb(), colorScheme.onPrimaryContainer.toArgb())
+                    }
+                },
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .width(140.dp)
             )
         }
     }
