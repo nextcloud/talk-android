@@ -27,6 +27,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Protocol
 import okhttp3.RequestBody
 import okhttp3.Response
+import java.io.File
 import java.io.IOException
 import java.io.InputStream
 
@@ -35,11 +36,14 @@ class FileUploader(
     val context: Context,
     val currentUser: User,
     val roomToken: String,
-    val ncApi: NcApi
+    val ncApi: NcApi,
+    val file: File
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
     private var uploadFolderUri: String = ""
+    private var uploadFileUri:String = ""
+
     init {
         initHttpClient(okHttpClient, currentUser)
     }
@@ -63,17 +67,21 @@ class FileUploader(
                     true
                 } else {
                     if (response.code() == 404 || response.code() == 409) {
-                        uploadFolderUri = ApiUtils.getUrlForFileUpload(
+                        uploadFileUri = ApiUtils.getUrlForFile(
                             currentUser.baseUrl!!, currentUser.userId!!,
-                            remotePath
                         )
+
+                        uploadFolderUri = uploadFileUri + "/" + FileUtils.md5Sum(file)
+
                         val davResource = DavResource(
                             okHttpClientNoRedirects!!,
                             uploadFolderUri.toHttpUrlOrNull()!!
+
                         )
+
                         createFolder(davResource)
-                        retryUpload(sourceFileUri, remotePath, fileName, metaData)
-                        true
+                       val value = retryUpload(sourceFileUri, remotePath, fileName, metaData)
+                        value
                     } else {
                         false
                     }
@@ -100,9 +108,9 @@ class FileUploader(
 
     private fun initHttpClient(okHttpClient: OkHttpClient, currentUser: User) {
         val okHttpClientBuilder: OkHttpClient.Builder = okHttpClient.newBuilder()
-        okHttpClientBuilder.followRedirects(true)
-        okHttpClientBuilder.followSslRedirects(true)
-        okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1, Protocol.HTTP_2))
+        okHttpClientBuilder.followRedirects(false)
+        okHttpClientBuilder.followSslRedirects(false)
+        okHttpClientBuilder.protocols(listOf(Protocol.HTTP_1_1))
         okHttpClientBuilder.authenticator(
             RestModule.HttpAuthenticator(
                 ApiUtils.getCredentials(
@@ -137,26 +145,32 @@ class FileUploader(
 
     private fun retryUpload(
         sourceFileUri: Uri,
-        uploadUrl: String,
+        remotePath: String,
         fileName: String,
         metaData: String?
-    ): Observable<Boolean> {
-        return ncApi.uploadFile(
-            ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            uploadUrl,
-            createRequestBody(sourceFileUri)
-        )
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { retryResponse ->
-                if (retryResponse.isSuccessful) {
-                    ShareOperationWorker.shareFile(roomToken, currentUser, uploadUrl, metaData)
-                    FileUtils.copyFileToCache(context, sourceFileUri, fileName)
-                    true
-                } else {
-                    false
+    ): Boolean {
+        return try {
+            ncApi.uploadFile(
+                ApiUtils.getCredentials(currentUser.username, currentUser.token),
+                ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, remotePath),
+                createRequestBody(sourceFileUri)
+            )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { retryResponse ->
+                    if (retryResponse.isSuccessful) {
+                        ShareOperationWorker.shareFile(roomToken, currentUser, remotePath, metaData)
+                        FileUtils.copyFileToCache(context, sourceFileUri, fileName)
+                        true
+                    } else {
+                        false
+                    }
                 }
-            }
+                .blockingFirst()
+        } catch (e: Exception) {
+            Log.e(TAG, "Retry upload failed", e)
+            false
+        }
     }
 
     companion object {
