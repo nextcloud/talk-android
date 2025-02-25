@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name= "nc_edit">Redigér</string>
+    <string name= "nc_edit">Rediger</string>
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
     <string name="appbar_search_in">Søg i %s</string>
@@ -147,7 +147,7 @@
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_common_and">og</string>
-    <string name="nc_common_copy">Kopiér</string>
+    <string name="nc_common_copy">Kopier</string>
     <string name="nc_common_copy_success">Kopieret til udklipsholder</string>
     <string name="nc_common_create">Opret</string>
     <string name="nc_common_disabled">Deaktiveret</string>
@@ -167,7 +167,7 @@
     <string name="nc_conversation_settings">Samtale indstillinger</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
-    <string name="nc_copy_message">Kopiér</string>
+    <string name="nc_copy_message">Kopier</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
     <string name="nc_date_header_today">I dag</string>
@@ -236,7 +236,7 @@
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_edit_icon">Redigeringsikon</string>
-    <string name="nc_edit_message">Redigér</string>
+    <string name="nc_edit_message">Rediger</string>
     <string name="nc_edit_message_text">Rediger besked tekst</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
     <string name="nc_email">E-mail</string>
@@ -270,12 +270,12 @@
     <string name="nc_guest_access_allow_failed">Kan ikke aktivere/deaktivere gæsteadgang.</string>
     <string name="nc_guest_access_allow_summary">Tillad gæster at dele et offentligt link for at deltage i denne samtale.</string>
     <string name="nc_guest_access_allow_title">Tillad gæster</string>
-    <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
+    <string name="nc_guest_access_password_dialog_hint">Angiv en adgangskodea password</string>
     <string name="nc_guest_access_password_dialog_title">Gæsteadgang adgangskode</string>
     <string name="nc_guest_access_password_failed">Fejl under angivelse/deaktivering af adgangskode.</string>
     <string name="nc_guest_access_password_summary">Angiv en adgangskode for at begrænse hvem der kan anvende det offentlige link.</string>
     <string name="nc_guest_access_password_title">Adgangskodebeskyttelse</string>
-    <string name="nc_guest_access_password_weak_alert_title">Svagt password</string>
+    <string name="nc_guest_access_password_weak_alert_title">Svag adgangskode</string>
     <string name="nc_guest_access_resend_invitations">Gensend invitationer</string>
     <string name="nc_guest_access_resend_invitations_failed">Invitationer blev ikke sendt pga en fejl.</string>
     <string name="nc_guest_access_resend_invitations_successful">Invitationer blev udsendt igen.</string>
@@ -352,7 +352,7 @@
     <string name="nc_owner">Ejer</string>
     <string name="nc_participants">Deltagere</string>
     <string name="nc_participants_add">Tilføj deltagere</string>
-    <string name="nc_password">Password</string>
+    <string name="nc_password">Adgangskode</string>
     <string name="nc_permissions_ask">Angiv rettigheder</string>
     <string name="nc_permissions_denied">Nogle rettigheder blev nægtet.</string>
     <string name="nc_permissions_rationale_dialog_title">Tillad venligst rettigheder</string>
@@ -506,7 +506,7 @@
     <string name="nc_shared_location">Delt placering</string>
     <string name="nc_show_notification_warning_description">Når notifikationer ikke er opsat korrekt, så vis en regulær advarsel</string>
     <string name="nc_show_notification_warning_title">Vis regulær notifikationsadvarsel</string>
-    <string name="nc_sort_by">Sortér efter</string>
+    <string name="nc_sort_by">Sorter efter</string>
     <string name="nc_start_time">Start tid</string>
     <string name="nc_switch_account">Skift konto</string>
     <string name="nc_team">Team</string>
