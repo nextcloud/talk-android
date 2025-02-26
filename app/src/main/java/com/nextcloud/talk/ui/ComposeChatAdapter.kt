@@ -14,26 +14,31 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
@@ -42,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -52,6 +58,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
@@ -60,13 +67,19 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.message.MessageUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import java.net.URLEncoder
 import java.util.Date
 import javax.inject.Inject
 import kotlin.random.Random
 
 @Suppress("FunctionNaming")
 @AutoInjector(NextcloudTalkApplication::class)
-class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
+class ComposeChatAdapter(
+    private var messagesJson: List<ChatMessageJson>? = null,
+    private var messageId: String? = null
+) {
 
     private var incomingShape: RoundedCornerShape
     private var outgoingShape: RoundedCornerShape
@@ -101,7 +114,13 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
 
     @Composable
     fun GetView(context: Context, messages: List<ChatMessage>) {
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(16.dp)) {
+        val listState = rememberLazyListState()
+
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            state = listState,
+            modifier = Modifier.padding(16.dp)
+        ) {
             var lastDate = Date(0)
 
             items(messages) { message ->
@@ -126,14 +145,12 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
                         ImageMessage(context, message)
                     }
 
-                    // TODO
                     ChatMessage.MessageType.SINGLE_NC_GEOLOCATION_MESSAGE -> {
-                        Log.d("Julius", "Geolocation Message: ${message.message}")
+                        GeolocationMessage(context, message)
                     }
 
-                    // TODO
                     ChatMessage.MessageType.POLL_MESSAGE -> {
-                        Log.d("Julius", "Poll Message: ${message.message}")
+                        PollMessage(context, message)
                     }
 
                     // TODO
@@ -145,15 +162,25 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
                         TextMessage(context, message)
                     }
 
-                    // TODO
                     ChatMessage.MessageType.SINGLE_LINK_MESSAGE -> {
-                        Log.d("Julius", "Link Message: ${message.message}")
+                        LinkMessage(context, message)
                     }
 
                     else -> {
                         Log.d("Julius", "Unknown message type: $type")
                     }
                 }
+
+            }
+
+        }
+
+        val state = remember { derivedStateOf { listState.layoutInfo } }
+        if (messageId != null && state.value.totalItemsCount > 0) {
+            LaunchedEffect(Dispatchers.Main) {
+                delay(50)
+                val pos = (listState.layoutInfo.totalItemsCount / 2)
+                listState.animateScrollToItem(pos)
             }
         }
     }
@@ -170,7 +197,6 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
         }
     }
 
-    @OptIn(ExperimentalLayoutApi::class)
     @Composable
     private fun CommonMessageQuote(context: Context, message: ChatMessage) {
         val color = colorResource(R.color.high_emphasis_text)
@@ -315,25 +341,27 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
 
     @Composable
     private fun ImageMessage(context: Context, message: ChatMessage) {
+        // FIXME needs a different body when there is no caption
         CommonMessageBody(context, message) {
-            val imageUri = message.imageUrl
-            val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-            val loadedImage = loadImage(imageUri, context, errorPlaceholderImage)
-            AsyncImage(
-                model = loadedImage,
-                contentDescription = stringResource(R.string.nc_sent_an_image),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .padding(8.dp)
-                    .fillMaxHeight()
-            )
-            Text(message.text, fontSize = 12.sp, modifier = Modifier.widthIn(20.dp, 140.dp))
+            Column {
+                message.activeUser = currentUser
+                val imageUri = message.imageUrl
+                val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
+                val loadedImage = load(imageUri, context, errorPlaceholderImage)
+                AsyncImage(
+                    model = loadedImage,
+                    contentDescription = stringResource(R.string.nc_sent_an_image),
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .fillMaxHeight()
+                )
+                Text(message.text, fontSize = 12.sp, modifier = Modifier.widthIn(20.dp, 140.dp))
+            }
         }
     }
 
     @Composable
     private fun VoiceMessage(context: Context, message: ChatMessage) {
-        // FIXME, this is way to tall, not sure why
         val colorScheme = viewThemeUtils.getColorScheme(context)
         CommonMessageBody(context, message) {
             Icon(
@@ -353,8 +381,81 @@ class ComposeChatAdapter(private var messagesJson: List<ChatMessageJson>?) {
                 },
                 modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .width(140.dp)
+                    .width(180.dp)
+                    .height(80.dp)
             )
+        }
+    }
+
+    @Composable
+    private fun GeolocationMessage(context: Context, message: ChatMessage) {
+        CommonMessageBody(context, message) {
+            Column {
+                if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+                    for (key in message.messageParameters!!.keys) {
+                        val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                        if (individualHashMap["type"] == "geo-location") {
+                            val locationLon = individualHashMap["longitude"]
+                            val locationLat = individualHashMap["latitude"]
+                            val locationName = individualHashMap["name"]
+                            val locationGeoLink = individualHashMap["id"]
+                            val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
+                            urlStringBuffer.append(
+                                "?mapProviderUrl=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_url))
+                            )
+                            urlStringBuffer.append(
+                                "&mapProviderAttribution=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_attributation))
+                            )
+                            urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
+                            urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
+                            urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
+                            urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
+                            // FIXME the web view
+                            // AndroidView(
+                            //     factory = { ctx ->
+                            //         WebView(ctx).apply {
+                            //             loadUrl(urlStringBuffer.toString())
+                            //         }
+                            //     },
+                            //     modifier = Modifier
+                            //         .height(80.dp)
+                            // )
+                        }
+                    }
+                }
+            }
+            Text(message.text, fontSize = REGULAR_TEXT_SIZE)
+        }
+    }
+
+    @Composable
+    private fun LinkMessage(context: Context, message: ChatMessage) {
+        CommonMessageBody(context, message) {
+            EnrichedText(message)
+            // TODO Add a preview
+        }
+    }
+
+    @Composable
+    private fun PollMessage(context: Context, message: ChatMessage) {
+        CommonMessageBody(context, message) {
+            Column {
+                if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+                    for (key in message.messageParameters!!.keys) {
+                        val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                        if (individualHashMap["type"] == "talk-poll") {
+                            val pollId = individualHashMap["id"]
+                            val pollName = individualHashMap["name"].toString()
+                            Text(pollName, fontSize = AUTHOR_TEXT_SIZE, fontWeight = FontWeight.Bold)
+                            TextButton(onClick = {
+                                // NOTE: Read Only for now
+                            }) {
+                                Text(stringResource(R.string.message_poll_tap_to_open), fontSize = REGULAR_TEXT_SIZE)
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }

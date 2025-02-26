@@ -13,10 +13,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -48,7 +49,7 @@ import javax.inject.Inject
 class ContextChatCompose(val bundle: Bundle) {
 
     companion object {
-        private const val LIMIT = 12
+        const val LIMIT = 12
     }
 
     @Inject
@@ -95,6 +96,7 @@ class ContextChatCompose(val bundle: Bundle) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .fillMaxHeight()
+                            .padding(top = 8.dp)
                     ) {
                         val user = userManager.currentUser.blockingGet()
                         if (!user.hasSpreedFeatureCapability("chat-get-context") ||
@@ -116,15 +118,15 @@ class ContextChatCompose(val bundle: Bundle) {
                                     shouldDismiss.value = true
                                 }) {
                                     Icon(
-                                        Icons.AutoMirrored.Filled.KeyboardArrowLeft,
+                                        Icons.Filled.Close,
                                         "Exit",
                                         modifier = Modifier
                                             .align(Alignment.CenterVertically)
-                                            .size(48.dp)
+                                            .size(24.dp)
                                     )
                                 }
                                 Column {
-                                    // TODO get these from token from bundle
+                                    // TODO get these from token from token
                                     Text("Conversation 1", fontSize = 24.sp)
                                     Text("This is description", fontSize = 12.sp)
                                 }
@@ -132,7 +134,8 @@ class ContextChatCompose(val bundle: Bundle) {
                             val contextState = viewModel.getContextChatMessages.asFlow().collectAsState(listOf())
                             val messagesJson = contextState.value
                             val messages = messagesJson.map(ChatMessageJson::asModel)
-                            ComposeChatAdapter(messagesJson).GetView(context, messages)
+                            val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+                            ComposeChatAdapter(messagesJson, messageId).GetView(context, messages)
                         }
                     }
                 }
