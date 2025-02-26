@@ -41,7 +41,6 @@ class FileUploader(
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
-    private var uploadFolderUri: String = ""
     private var uploadFileUri:String = ""
 
     init {
@@ -71,17 +70,16 @@ class FileUploader(
                             currentUser.baseUrl!!, currentUser.userId!!,
                         )
 
-                        uploadFolderUri = uploadFileUri + "/" + FileUtils.md5Sum(file)
-
-                        val davResource = DavResource(
+                        val davResource =
+                            DavResource(
                             okHttpClientNoRedirects!!,
-                            uploadFolderUri.toHttpUrlOrNull()!!
+                            uploadFileUri.toHttpUrlOrNull()!!
 
                         )
 
                         createFolder(davResource)
-                       val value = retryUpload(sourceFileUri, remotePath, fileName, metaData)
-                        value
+                       val value: Observable<Boolean> = upload(sourceFileUri, remotePath, fileName, metaData)
+                        value.blockingFirst()
                     } else {
                         false
                     }
@@ -128,6 +126,7 @@ class FileUploader(
             davResource.mkCol(
                 xmlBody = null
             ) { response: Response ->
+
                 if (!response.isSuccessful) {
                     throw IOException("failed to create folder. response code: " + response.code)
                 }
@@ -143,35 +142,6 @@ class FileUploader(
         }
     }
 
-    private fun retryUpload(
-        sourceFileUri: Uri,
-        remotePath: String,
-        fileName: String,
-        metaData: String?
-    ): Boolean {
-        return try {
-            ncApi.uploadFile(
-                ApiUtils.getCredentials(currentUser.username, currentUser.token),
-                ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, remotePath),
-                createRequestBody(sourceFileUri)
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map { retryResponse ->
-                    if (retryResponse.isSuccessful) {
-                        ShareOperationWorker.shareFile(roomToken, currentUser, remotePath, metaData)
-                        FileUtils.copyFileToCache(context, sourceFileUri, fileName)
-                        true
-                    } else {
-                        false
-                    }
-                }
-                .blockingFirst()
-        } catch (e: Exception) {
-            Log.e(TAG, "Retry upload failed", e)
-            false
-        }
-    }
 
     companion object {
         private val TAG = FileUploader::class.simpleName

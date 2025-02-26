@@ -460,7 +460,7 @@ object ApiUtils {
     }
 
     fun getUrlForFile(baseUrl: String, user: String): String {
-        return "$baseUrl/remote.php/dav/files/$user"
+        return "$baseUrl/remote.php/dav/files/$user/Talk"
     }
 
     fun getUrlForTempAvatar(baseUrl: String): String {
