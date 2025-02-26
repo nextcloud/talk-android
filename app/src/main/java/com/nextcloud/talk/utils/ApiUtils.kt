@@ -459,7 +459,11 @@ object ApiUtils {
         return "$baseUrl/remote.php/dav/files/$user/$remotePath"
     }
 
-    fun getUrlForFile(baseUrl: String, user: String): String {
+    fun userFileUploadPath(baseUrl: String, user: String): String {
+        return "$baseUrl/remote.php/dav/files/$user"
+    }
+
+    fun userTalkAttachmentsUploadPath(baseUrl: String, user: String): String {
         return "$baseUrl/remote.php/dav/files/$user/Talk"
     }
 
