@@ -41,8 +41,7 @@ class FileUploader(
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
-    private var okhttpClient:OkHttpClient = okHttpClient
-
+    private var okhttpClient: OkHttpClient = okHttpClient
 
     init {
         initHttpClient(okHttpClient, currentUser)
@@ -71,11 +70,18 @@ class FileUploader(
             }
     }
 
-
-    private fun createDavResource(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
+    private fun createDavResource(
+        sourceFileUri: Uri,
+        fileName: String,
+        remotePath: String,
+        metaData: String?
+    ): Observable<Boolean> {
         return Observable.fromCallable {
             val userFileUploadPath = ApiUtils.userFileUploadPath(currentUser.baseUrl!!, currentUser.userId!!)
-            val userTalkAttachmentsUploadPath = ApiUtils.userTalkAttachmentsUploadPath(currentUser.baseUrl!!, currentUser.userId!!)
+            val userTalkAttachmentsUploadPath = ApiUtils.userTalkAttachmentsUploadPath(
+                currentUser.baseUrl!!,
+                currentUser.userId!!
+            )
 
             var davResource = DavResource(okHttpClientNoRedirects!!, userFileUploadPath.toHttpUrlOrNull()!!)
             createFolder(davResource)
@@ -87,7 +93,6 @@ class FileUploader(
             .subscribeOn(Schedulers.io())
             .flatMap { upload(sourceFileUri, fileName, remotePath, metaData) }
     }
-
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createRequestBody(sourceFileUri: Uri): RequestBody? {
@@ -144,11 +149,10 @@ class FileUploader(
         }
     }
 
-
     companion object {
         private val TAG = FileUploader::class.simpleName
         private const val METHOD_NOT_ALLOWED_CODE: Int = 405
-        private const val HTTP_CODE_NOT_FOUND:Int = 404
-        private const val HTTP_CODE_CONFLICT : Int = 409
+        private const val HTTP_CODE_NOT_FOUND: Int = 404
+        private const val HTTP_CODE_CONFLICT: Int = 409
     }
 }
