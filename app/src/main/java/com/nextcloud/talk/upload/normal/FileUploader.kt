@@ -41,7 +41,8 @@ class FileUploader(
 ) {
 
     private var okHttpClientNoRedirects: OkHttpClient? = null
-    private var uploadFileUri:String = ""
+    private var okhttpClient:OkHttpClient = okHttpClient
+
 
     init {
         initHttpClient(okHttpClient, currentUser)
@@ -54,38 +55,39 @@ class FileUploader(
             createRequestBody(sourceFileUri)
         )
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).map { response ->
+            .observeOn(AndroidSchedulers.mainThread())
+            .flatMap { response ->
                 if (response.isSuccessful) {
-                    ShareOperationWorker.shareFile(
-                        roomToken,
-                        currentUser,
-                        remotePath,
-                        metaData
-                    )
+                    ShareOperationWorker.shareFile(roomToken, currentUser, remotePath, metaData)
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
-                    true
+                    Observable.just(true)
                 } else {
-                    if (response.code() == 404 || response.code() == 409) {
-                        uploadFileUri = ApiUtils.getUrlForFile(
-                            currentUser.baseUrl!!, currentUser.userId!!,
-                        )
-
-                        val davResource =
-                            DavResource(
-                            okHttpClientNoRedirects!!,
-                            uploadFileUri.toHttpUrlOrNull()!!
-
-                        )
-
-                        createFolder(davResource)
-                       val value: Observable<Boolean> = upload(sourceFileUri, remotePath, fileName, metaData)
-                        value.blockingFirst()
+                    if (response.code() == HTTP_CODE_NOT_FOUND || response.code() == HTTP_CODE_CONFLICT) {
+                        createDavResource(sourceFileUri, fileName, remotePath, metaData)
                     } else {
-                        false
+                        Observable.just(false)
                     }
                 }
             }
     }
+
+
+    private fun createDavResource(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
+        return Observable.fromCallable {
+            val userFileUploadPath = ApiUtils.userFileUploadPath(currentUser.baseUrl!!, currentUser.userId!!)
+            val userTalkAttachmentsUploadPath = ApiUtils.userTalkAttachmentsUploadPath(currentUser.baseUrl!!, currentUser.userId!!)
+
+            var davResource = DavResource(okHttpClientNoRedirects!!, userFileUploadPath.toHttpUrlOrNull()!!)
+            createFolder(davResource)
+            initHttpClient(okHttpClient = okhttpClient, currentUser)
+            davResource = DavResource(okHttpClientNoRedirects!!, userTalkAttachmentsUploadPath.toHttpUrlOrNull()!!)
+            createFolder(davResource)
+            true
+        }
+            .subscribeOn(Schedulers.io())
+            .flatMap { upload(sourceFileUri, fileName, remotePath, metaData) }
+    }
+
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createRequestBody(sourceFileUri: Uri): RequestBody? {
@@ -146,5 +148,7 @@ class FileUploader(
     companion object {
         private val TAG = FileUploader::class.simpleName
         private const val METHOD_NOT_ALLOWED_CODE: Int = 405
+        private const val HTTP_CODE_NOT_FOUND:Int = 404
+        private const val HTTP_CODE_CONFLICT : Int = 409
     }
 }
