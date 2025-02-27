@@ -110,6 +110,7 @@ class MessageUtils(val context: Context) {
         for (key in messageParameters.keys) {
             val individualHashMap = message.messageParameters?.get(key)
             if (individualHashMap != null) {
+
                 when (individualHashMap["type"]) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
                         val chip = if (individualHashMap["id"]?.equals(message.activeUser?.userId) == true) {

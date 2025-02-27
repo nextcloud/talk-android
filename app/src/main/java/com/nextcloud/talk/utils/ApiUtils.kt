@@ -363,6 +363,14 @@ object ApiUtils {
         return "$baseUrl$OCS_API_VERSION/cloud/users/$userId"
     }
 
+    fun getUrlForUserGroups(baseUrl: String, userId: String): String {
+        return "$baseUrl$OCS_API_VERSION/cloud/users/$userId/groups"
+    }
+
+    fun getUrlForUserCircles(baseUrl: String): String {
+        return "$baseUrl$OCS_API_VERSION/apps/circles/probecircles"
+    }
+
     fun getUrlForUserSettings(baseUrl: String): String {
         // FIXME Introduce API version
         return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/settings/user"
