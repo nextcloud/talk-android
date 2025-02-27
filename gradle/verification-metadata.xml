@@ -39,6 +39,7 @@
             <trusting group="androidx.constraintlayout"/>
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
+            <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.0"/>
             <trusting group="^androidx[.]compose($|([.].*))" regex="true"/>
             <trusting group="^com[.]android($|([.].*))" regex="true"/>
          </trusted-key>
