@@ -29,8 +29,6 @@ import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MessageUtils (val context: Context) {
