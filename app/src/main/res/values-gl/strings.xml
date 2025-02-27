@@ -409,8 +409,8 @@
     <string name="nc_sent_an_audio_you">Vde. enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_an_image_you">Vde. enviou unha imaxe.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s enviou unha tarxeta da Gabeta</string>
-    <string name="nc_sent_deck_card_you">Vde. enviou unha tarxeta da Gabeta</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviou unha tarxeta de Gabeta</string>
+    <string name="nc_sent_deck_card_you">Vde. enviou unha tarxeta de Gabeta</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou unha localización.</string>
     <string name="nc_sent_location_you">Vde. enviou unha localización.</string>
     <string name="nc_sent_poll" formatted="true">%1$s enviou unha enquisa.</string>

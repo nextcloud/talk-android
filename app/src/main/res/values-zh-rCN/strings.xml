@@ -154,6 +154,7 @@
     <string name="nc_description_send_message_button">发送消息</string>
     <string name="nc_diagnose_account_category_title">当前账号</string>
     <string name="nc_diagnose_account_server">服务器</string>
+    <string name="nc_diagnose_account_user_name">用户</string>
     <string name="nc_diagnose_android_version_title">安卓版本</string>
     <string name="nc_diagnose_app_category_title">应用</string>
     <string name="nc_diagnose_app_name_title">应用的名称</string>
