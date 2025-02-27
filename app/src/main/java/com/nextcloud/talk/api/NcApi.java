@@ -34,6 +34,8 @@ import com.nextcloud.talk.models.json.signaling.SignalingOverall;
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall;
 import com.nextcloud.talk.models.json.status.StatusOverall;
 import com.nextcloud.talk.models.json.unifiedsearch.UnifiedSearchOverall;
+import com.nextcloud.talk.models.json.usercircles.UserCirclesOverall;
+import com.nextcloud.talk.models.json.usergroups.UserGroupsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileFieldsOverall;
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall;
 import com.nextcloud.talk.polls.repositories.model.PollOverall;
@@ -646,4 +648,12 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
                                                 @Url String url);
+
+    @GET
+    Observable<UserGroupsOverall> getUserGroups (@Header("Authorization") String authorization,
+                                                 @Url String url);
+
+    @GET
+    Observable<UserCirclesOverall> getUserCircles(@Header("Authorization") String authorization,
+                                                  @Url String url);
 }
