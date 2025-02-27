@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -46,6 +47,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -69,12 +71,16 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.message.MessageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import java.net.URLEncoder
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import java.util.Date
 import javax.inject.Inject
 import kotlin.random.Random
 
-@Suppress("FunctionNaming")
+@Suppress("FunctionNaming", "TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
@@ -121,17 +127,9 @@ class ComposeChatAdapter(
             state = listState,
             modifier = Modifier.padding(16.dp)
         ) {
-            var lastDate = Date(0)
+            val processedMessages = messages.addDates(context)
 
-            items(messages) { message ->
-                // FIXME date logic is a bit buggy, need to preprocess the message list
-                //  to add Date items to it. Annoying, but needed
-                val currentDate = Date(message.timestamp * LONG_1000)
-                if (!DateUtils(context).isSameDate(lastDate, currentDate)) {
-                    GenericDate(context, message)
-                    lastDate = currentDate
-                }
-
+            items(processedMessages) { message ->
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
                         SystemMessage(context, message)
@@ -159,7 +157,11 @@ class ComposeChatAdapter(
                     }
 
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-                        TextMessage(context, message)
+                        if (message.isDate) {
+                            GenericDate(context, message)
+                        } else {
+                            TextMessage(context, message)
+                        }
                     }
 
                     ChatMessage.MessageType.SINGLE_LINK_MESSAGE -> {
@@ -170,9 +172,7 @@ class ComposeChatAdapter(
                         Log.d("Julius", "Unknown message type: $type")
                     }
                 }
-
             }
-
         }
 
         val state = remember { derivedStateOf { listState.layoutInfo } }
@@ -183,6 +183,26 @@ class ComposeChatAdapter(
                 listState.animateScrollToItem(pos)
             }
         }
+    }
+
+    private fun List<ChatMessage>.addDates(context: Context): List<ChatMessage> {
+        val newList = mutableListOf<ChatMessage>()
+        var lastDate = Date(0)
+        for (message in this) {
+            val currentDate = Date(message.timestamp * LONG_1000)
+            if (!DateUtils(context).isSameDate(lastDate, currentDate)) {
+                newList.add(
+                    ChatMessage().apply {
+                        isDate = true
+                        timestamp = message.timestamp
+                    }
+                )
+                lastDate = currentDate
+            }
+            newList.add(message)
+        }
+
+        return newList
     }
 
     @Composable
@@ -273,7 +293,8 @@ class ComposeChatAdapter(
             Surface(
                 modifier = Modifier
                     .defaultMinSize(60.dp, 40.dp)
-                    .widthIn(60.dp, 280.dp),
+                    .widthIn(60.dp, 280.dp)
+                    .heightIn(40.dp, 450.dp),
                 color = Color(color),
                 shape = shape
             ) {
@@ -289,7 +310,7 @@ class ComposeChatAdapter(
                         }
                     }
 
-                    Text(message.actorDisplayName!!, fontSize = AUTHOR_TEXT_SIZE)
+                    Text(message.actorDisplayName.toString(), fontSize = AUTHOR_TEXT_SIZE)
                     Row {
                         content()
                         Spacer(modifier = Modifier.size(8.dp))
@@ -304,17 +325,21 @@ class ComposeChatAdapter(
     private fun EnrichedText(message: ChatMessage) {
         AndroidView(factory = { ctx ->
             val incoming = message.actorId != currentUser.userId
-            val processedMessageText = messageUtils.enrichChatMessageText(
+            var processedMessageText = messageUtils.enrichChatMessageText(
                 ctx,
                 message,
                 incoming,
                 viewThemeUtils
             )
-
+            // FIXME get around the itemView parameter
+            // processedMessageText = messageUtils.processMessageParameters(
+            //     ctx, viewThemeUtils, processedMessageText!!, message, this
+            // )
             androidx.emoji2.widget.EmojiTextView(ctx).apply {
                 layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 setLineSpacing(0F, 1.2f)
                 textAlignment = TEXT_ALIGNMENT_VIEW_START
+
                 text = processedMessageText
             }
         }, modifier = Modifier)
@@ -395,31 +420,16 @@ class ComposeChatAdapter(
                     for (key in message.messageParameters!!.keys) {
                         val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                         if (individualHashMap["type"] == "geo-location") {
-                            val locationLon = individualHashMap["longitude"]
-                            val locationLat = individualHashMap["latitude"]
-                            val locationName = individualHashMap["name"]
-                            val locationGeoLink = individualHashMap["id"]
-                            val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
-                            urlStringBuffer.append(
-                                "?mapProviderUrl=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_url))
-                            )
-                            urlStringBuffer.append(
-                                "&mapProviderAttribution=" + URLEncoder.encode(context.getString(R.string.osm_tile_server_attributation))
-                            )
-                            urlStringBuffer.append("&locationLat=" + URLEncoder.encode(locationLat))
-                            urlStringBuffer.append("&locationLon=" + URLEncoder.encode(locationLon))
-                            urlStringBuffer.append("&locationName=" + URLEncoder.encode(locationName))
-                            urlStringBuffer.append("&locationGeoLink=" + URLEncoder.encode(locationGeoLink))
-                            // FIXME the web view
-                            // AndroidView(
-                            //     factory = { ctx ->
-                            //         WebView(ctx).apply {
-                            //             loadUrl(urlStringBuffer.toString())
-                            //         }
-                            //     },
-                            //     modifier = Modifier
-                            //         .height(80.dp)
-                            // )
+                            val lat = individualHashMap["latitude"]
+                            val lng = individualHashMap["longitude"]
+                            val name = individualHashMap["name"]
+                            val link = individualHashMap["id"]
+
+                            if (lat != null && lng != null) {
+                                val latitude = lat.toDouble()
+                                val longitude = lng.toDouble()
+                                OpenStreetMap(latitude, longitude)
+                            }
                         }
                     }
                 }
@@ -429,10 +439,50 @@ class ComposeChatAdapter(
     }
 
     @Composable
+    fun OpenStreetMap(latitude: Double, longitude: Double) {
+        AndroidView(
+            modifier = Modifier
+                .fillMaxHeight(.8f)
+                .fillMaxWidth(),
+            factory = { context ->
+                Configuration.getInstance().userAgentValue = context.packageName
+                MapView(context).apply {
+                    setTileSource(TileSourceFactory.MAPNIK)
+                    setBuiltInZoomControls(true)
+                    setMultiTouchControls(true)
+
+                    val geoPoint = GeoPoint(latitude, longitude)
+                    controller.setCenter(geoPoint)
+                    controller.setZoom(15.0)
+
+                    val marker = Marker(this)
+                    marker.position = geoPoint
+                    marker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                    marker.title = "Location"
+                    overlays.add(marker)
+
+                    invalidate()
+                }
+            },
+            update = { mapView ->
+                val geoPoint = GeoPoint(latitude, longitude)
+                mapView.controller.setCenter(geoPoint)
+
+                val marker = mapView.overlays.find { it is Marker } as? Marker
+                marker?.position = geoPoint
+                mapView.invalidate()
+            }
+        )
+    }
+
+    private fun foo() {}
+
+    @Composable
     private fun LinkMessage(context: Context, message: ChatMessage) {
         CommonMessageBody(context, message) {
             EnrichedText(message)
-            // TODO Add a preview
+            // TODO Add a preview, need to work with the LinkPreview Class, it uses an API call
+            //  which makes things harder to simplify
         }
     }
 
@@ -446,7 +496,10 @@ class ComposeChatAdapter(
                         if (individualHashMap["type"] == "talk-poll") {
                             val pollId = individualHashMap["id"]
                             val pollName = individualHashMap["name"].toString()
-                            Text(pollName, fontSize = AUTHOR_TEXT_SIZE, fontWeight = FontWeight.Bold)
+                            Row(modifier = Modifier.padding(start = 8.dp)) {
+                                Icon(painterResource(R.drawable.ic_baseline_bar_chart_24), "")
+                                Text(pollName, fontSize = AUTHOR_TEXT_SIZE, fontWeight = FontWeight.Bold)
+                            }
                             TextButton(onClick = {
                                 // NOTE: Read Only for now
                             }) {
