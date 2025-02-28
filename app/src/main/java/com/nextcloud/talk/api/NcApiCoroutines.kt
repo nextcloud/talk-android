@@ -287,4 +287,10 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun unbindRoom(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @GET
+    suspend fun getUserGroups(@Header("Authorization") authorization: String?, @Url url: String?): UserGroupsOverall
+
+    @GET
+    suspend fun getUserCircles(@Header("Authorization") authorization: String?, @Url url: String?): UserCirclesOverall
 }
