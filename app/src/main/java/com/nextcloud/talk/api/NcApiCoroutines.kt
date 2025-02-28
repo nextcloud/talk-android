@@ -246,4 +246,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("limit") limit: Int
     ): ChatOverall
+
+    @GET
+    suspend fun getUserGroups(@Header("Authorization") authorization: String?, @Url url: String?): UserGroupsOverall
+
+    @GET
+    suspend fun getUserCircles(@Header("Authorization") authorization: String?, @Url url: String?): UserCirclesOverall
 }
