@@ -16,9 +16,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
-import autodagger.AutoInjector
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
@@ -30,11 +28,15 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
-@AutoInjector(NextcloudTalkApplication::class)
-class MessageUtils (val context: Context) {
+class MessageUtils(val context: Context) {
 
     private lateinit var userGroups: Set<String>
     private lateinit var userCircles: Set<String?>
+
+    fun setUserData(groups: Set<String>, circles: Set<String>) {
+        this.userGroups = groups
+        this.userCircles = circles
+    }
 
     fun enrichChatReplyMessageText(
         context: Context,
@@ -55,8 +57,6 @@ class MessageUtils (val context: Context) {
             )
         }
     }
-
-
 
     fun enrichChatMessageText(
         context: Context,
@@ -118,13 +118,12 @@ class MessageUtils (val context: Context) {
         for (key in messageParameters.keys) {
             val individualHashMap = message.messageParameters!![key]
             if (individualHashMap != null) {
-
                 when (individualHashMap["type"]) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
                         val chip = if (individualHashMap["id"] == message.activeUser!!.userId ||
-                            userGroups.contains(individualHashMap["id"]) ||
-                            userCircles.contains(individualHashMap["id"])
-                            ) {
+                            userGroups.contains(individualHashMap["name"]) ||
+                            userCircles.contains(individualHashMap["name"])
+                        ) {
                             R.xml.chip_you
                         } else {
                             R.xml.chip_others
