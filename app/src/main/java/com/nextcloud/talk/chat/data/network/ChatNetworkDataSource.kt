@@ -77,4 +77,6 @@ interface ChatNetworkDataSource {
     ): List<ChatMessageJson>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+    suspend fun getUserGroups(user: User): Set<String>
+    suspend fun getUserCircles(user: User): Set<String>
 }

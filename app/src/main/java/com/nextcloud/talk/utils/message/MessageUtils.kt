@@ -30,6 +30,7 @@ import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
 class MessageUtils(val context: Context) {
+
     fun enrichChatReplyMessageText(
         context: Context,
         message: ChatMessage,

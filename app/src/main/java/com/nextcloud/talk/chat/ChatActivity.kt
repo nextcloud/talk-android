@@ -196,6 +196,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -270,6 +271,9 @@ class ChatActivity :
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     lateinit var chatViewModel: ChatViewModel
 
@@ -667,6 +671,10 @@ class ChatActivity :
                                     currentConversation!!.name
                                 )
                             }
+                        }
+
+                        conversationUser?.let { user ->
+                            chatViewModel.fetchUserData(user)
                         }
 
                         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT &&
@@ -1201,6 +1209,14 @@ class ChatActivity :
                     binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.userGroups.collect { userGroups ->
+                chatViewModel.userCircles.collect { userCircles ->
+                    messageUtils.setUserData(userGroups, userCircles)
                 }
             }
         }
