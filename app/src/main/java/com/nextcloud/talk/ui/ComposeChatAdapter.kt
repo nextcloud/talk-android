@@ -130,9 +130,12 @@ class ComposeChatAdapter(
             val processedMessages = messages.addDates(context)
 
             items(processedMessages) { message ->
+                message.activeUser = currentUser // -_-
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
-                        SystemMessage(context, message)
+                        if (!message.isReaction()) {
+                            SystemMessage(context, message)
+                        }
                     }
 
                     ChatMessage.MessageType.VOICE_MESSAGE -> {
@@ -151,21 +154,18 @@ class ComposeChatAdapter(
                         PollMessage(context, message)
                     }
 
-                    // TODO
                     ChatMessage.MessageType.DECK_CARD -> {
-                        Log.d("Julius", "Deck Card: ${message.message}")
+                        DeckMessage(context, message)
                     }
 
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
                         if (message.isDate) {
                             GenericDate(context, message)
+                        } else if (message.isLinkPreview()) {
+                            LinkMessage(context, message)
                         } else {
                             TextMessage(context, message)
                         }
-                    }
-
-                    ChatMessage.MessageType.SINGLE_LINK_MESSAGE -> {
-                        LinkMessage(context, message)
                     }
 
                     else -> {
@@ -184,6 +184,11 @@ class ComposeChatAdapter(
             }
         }
     }
+
+    private fun ChatMessage.isReaction(): Boolean =
+        systemMessageType == ChatMessage.SystemMessageType.REACTION ||
+            systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
+            systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
 
     private fun List<ChatMessage>.addDates(context: Context): List<ChatMessage> {
         val newList = mutableListOf<ChatMessage>()
@@ -226,8 +231,8 @@ class ComposeChatAdapter(
                     onDrawWithContent {
                         drawLine(
                             color = color,
-                            start = Offset.Zero,
-                            end = Offset(0f, this.size.height),
+                            start = Offset(0f, this.size.height / 6),
+                            end = Offset(0f, this.size.height - (this.size.height / 6)),
                             strokeWidth = 4f
                         )
 
@@ -235,7 +240,6 @@ class ComposeChatAdapter(
                     }
                 }
                 .padding(8.dp)
-                .padding(4.dp)
         ) {
             Column {
                 Text(message.actorDisplayName!!, fontSize = AUTHOR_TEXT_SIZE)
@@ -282,7 +286,7 @@ class ComposeChatAdapter(
                     model = loadedImage,
                     contentDescription = stringResource(R.string.user_avatar),
                     modifier = Modifier
-                        .size(width = 45.dp, height = 45.dp)
+                        .size(width = 48.dp, height = 48.dp)
                         .align(Alignment.CenterVertically)
                         .padding(8.dp)
                 )
@@ -331,15 +335,16 @@ class ComposeChatAdapter(
                 incoming,
                 viewThemeUtils
             )
-            // FIXME get around the itemView parameter
+
+            // TODO: - this link is read only now, but should be refactored to be clickable
             // processedMessageText = messageUtils.processMessageParameters(
-            //     ctx, viewThemeUtils, processedMessageText!!, message, this
+            //     ctx, viewThemeUtils, processedMessageText!!, message, null
             // )
+
             androidx.emoji2.widget.EmojiTextView(ctx).apply {
                 layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 setLineSpacing(0F, 1.2f)
                 textAlignment = TEXT_ALIGNMENT_VIEW_START
-
                 text = processedMessageText
             }
         }, modifier = Modifier)
@@ -366,19 +371,22 @@ class ComposeChatAdapter(
 
     @Composable
     private fun ImageMessage(context: Context, message: ChatMessage) {
-        // FIXME needs a different body when there is no caption
+        // Note: I would like a custom image body, but this works for now
         CommonMessageBody(context, message) {
             Column {
                 message.activeUser = currentUser
                 val imageUri = message.imageUrl
                 val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
                 val loadedImage = load(imageUri, context, errorPlaceholderImage)
+                val hasCaption = (message.message != "{file}")
+                val height = if (hasCaption) .8f else 1f
+
                 AsyncImage(
                     model = loadedImage,
                     contentDescription = stringResource(R.string.nc_sent_an_image),
                     modifier = Modifier
                         .padding(8.dp)
-                        .fillMaxHeight()
+                        .fillMaxHeight(height)
                 )
                 Text(message.text, fontSize = 12.sp, modifier = Modifier.widthIn(20.dp, 140.dp))
             }
@@ -422,8 +430,6 @@ class ComposeChatAdapter(
                         if (individualHashMap["type"] == "geo-location") {
                             val lat = individualHashMap["latitude"]
                             val lng = individualHashMap["longitude"]
-                            val name = individualHashMap["name"]
-                            val link = individualHashMap["id"]
 
                             if (lat != null && lng != null) {
                                 val latitude = lat.toDouble()
@@ -434,7 +440,6 @@ class ComposeChatAdapter(
                     }
                 }
             }
-            Text(message.text, fontSize = REGULAR_TEXT_SIZE)
         }
     }
 
@@ -442,7 +447,7 @@ class ComposeChatAdapter(
     fun OpenStreetMap(latitude: Double, longitude: Double) {
         AndroidView(
             modifier = Modifier
-                .fillMaxHeight(.8f)
+                .fillMaxHeight()
                 .fillMaxWidth(),
             factory = { context ->
                 Configuration.getInstance().userAgentValue = context.packageName
@@ -475,14 +480,34 @@ class ComposeChatAdapter(
         )
     }
 
-    private fun foo() {}
-
     @Composable
     private fun LinkMessage(context: Context, message: ChatMessage) {
+        val color = colorResource(R.color.high_emphasis_text)
+
         CommonMessageBody(context, message) {
-            EnrichedText(message)
-            // TODO Add a preview, need to work with the LinkPreview Class, it uses an API call
-            //  which makes things harder to simplify
+            Row(
+                modifier = Modifier
+                    .drawWithCache {
+                        onDrawWithContent {
+                            drawLine(
+                                color = color,
+                                start = Offset.Zero,
+                                end = Offset(0f, this.size.height),
+                                strokeWidth = 4f
+                            )
+
+                            drawContent()
+                        }
+                    }
+                    .padding(8.dp)
+                    .padding(4.dp)
+            ) {
+                Column {
+                    // TODO get this working with open graph
+                    EnrichedText(message)
+                }
+            }
+
         }
     }
 
@@ -494,7 +519,7 @@ class ComposeChatAdapter(
                     for (key in message.messageParameters!!.keys) {
                         val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
                         if (individualHashMap["type"] == "talk-poll") {
-                            val pollId = individualHashMap["id"]
+                            // val pollId = individualHashMap["id"]
                             val pollName = individualHashMap["name"].toString()
                             Row(modifier = Modifier.padding(start = 8.dp)) {
                                 Icon(painterResource(R.drawable.ic_baseline_bar_chart_24), "")
@@ -504,6 +529,38 @@ class ComposeChatAdapter(
                                 // NOTE: Read Only for now
                             }) {
                                 Text(stringResource(R.string.message_poll_tap_to_open), fontSize = REGULAR_TEXT_SIZE)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun DeckMessage(context: Context, message: ChatMessage) {
+        CommonMessageBody(context, message) {
+            Column {
+                if (message.messageParameters != null && message.messageParameters!!.size > 0) {
+                    for (key in message.messageParameters!!.keys) {
+                        val individualHashMap: Map<String?, String?> = message.messageParameters!![key]!!
+                        if (individualHashMap["type"] == "deck-card") {
+                            val cardName = individualHashMap["name"]
+                            val stackName = individualHashMap["stackname"]
+                            val boardName = individualHashMap["boardname"]
+                            // val cardLink = individualHashMap["link"]
+
+                            if (cardName?.isNotEmpty() == true) {
+                                val cardDescription = String.format(
+                                    context.resources.getString(R.string.deck_card_description),
+                                    stackName,
+                                    boardName
+                                )
+                                Row(modifier = Modifier.padding(start = 8.dp)) {
+                                    Icon(painterResource(R.drawable.deck), "")
+                                    Text(cardName, fontSize = AUTHOR_TEXT_SIZE, fontWeight = FontWeight.Bold)
+                                }
+                                Text(cardDescription, fontSize = AUTHOR_TEXT_SIZE)
                             }
                         }
                     }
