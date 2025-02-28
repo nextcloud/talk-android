@@ -18,6 +18,8 @@ import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
+import com.nextcloud.talk.models.json.usercircles.UserCirclesOverall
+import com.nextcloud.talk.models.json.usergroups.UserGroupsOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
