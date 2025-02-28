@@ -122,7 +122,8 @@ class MessageUtils(val context: Context) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
                         val chip = if (individualHashMap["id"] == message.activeUser!!.userId ||
                             userGroups.contains(individualHashMap["name"]) ||
-                            userCircles.contains(individualHashMap["name"])
+                            userCircles.contains(individualHashMap["name"]) ||
+                            individualHashMap["type"] == "call"
                         ) {
                             R.xml.chip_you
                         } else {
