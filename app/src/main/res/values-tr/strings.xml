@@ -675,6 +675,10 @@
     <string name="userinfo_no_info_text">Profil sayfanızdan ad, görsel ve iletişim bilgilerinizi ekleyin.</string>
     <string name="video_call">Görüntülü çağrı</string>
     <string name="whats_your_status">Durumunuz nedir?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">%d benzer iletiye bakın</item>
+        <item quantity="other">%d benzer iletiye bakın</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d oy</item>
         <item quantity="other">%d oy</item>
