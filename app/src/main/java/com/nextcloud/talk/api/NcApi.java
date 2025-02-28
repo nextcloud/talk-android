@@ -649,11 +649,4 @@ public interface NcApi {
     Observable<GenericOverall> rejectInvitation(@Header("Authorization") String authorization,
                                                 @Url String url);
 
-    @GET
-    Observable<UserGroupsOverall> getUserGroups (@Header("Authorization") String authorization,
-                                                 @Url String url);
-
-    @GET
-    Observable<UserCirclesOverall> getUserCircles(@Header("Authorization") String authorization,
-                                                  @Url String url);
 }
