@@ -1075,9 +1075,12 @@ class ChatActivity :
 
         lifecycleScope.launch {
             chatViewModel.userGroups.collect { userGroups ->
-                chatViewModel.userCircles.collect { userCircles ->
-                    messageUtils.setUserData(userGroups, userCircles)
-                }
+                messageUtils.setUserGroups(userGroups)
+            }
+        }
+        lifecycleScope.launch {
+            chatViewModel.userCircles.collect { userCircles ->
+                messageUtils.setUserCircles(userCircles)
             }
         }
     }

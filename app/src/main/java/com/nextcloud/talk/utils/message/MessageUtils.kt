@@ -31,10 +31,13 @@ import io.noties.markwon.ext.tasklist.TaskListPlugin
 class MessageUtils(val context: Context) {
 
     private lateinit var userGroups: Set<String>
-    private lateinit var userCircles: Set<String?>
+    private lateinit var userCircles: Set<String>
 
-    fun setUserData(groups: Set<String>, circles: Set<String>) {
+    fun setUserGroups(groups: Set<String>) {
         this.userGroups = groups
+    }
+
+    fun setUserCircles(circles: Set<String>) {
         this.userCircles = circles
     }
 
