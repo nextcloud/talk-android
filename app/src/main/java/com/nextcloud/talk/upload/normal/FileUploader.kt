@@ -49,19 +49,33 @@ class FileUploader(
 
     fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
         return ncApi.uploadFile(
-            ApiUtils.getCredentials(currentUser.username, currentUser.token),
-            ApiUtils.getUrlForFileUpload(currentUser.baseUrl!!, currentUser.userId!!, remotePath),
+            ApiUtils.getCredentials(
+                currentUser.username,
+                currentUser.token
+            ),
+            ApiUtils.getUrlForFileUpload(
+                currentUser.baseUrl!!,
+                currentUser.userId!!,
+                remotePath
+            ),
             createRequestBody(sourceFileUri)
         )
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .flatMap { response ->
                 if (response.isSuccessful) {
-                    ShareOperationWorker.shareFile(roomToken, currentUser, remotePath, metaData)
+                    ShareOperationWorker.shareFile(
+                        roomToken,
+                        currentUser,
+                        remotePath,
+                        metaData
+                    )
                     FileUtils.copyFileToCache(context, sourceFileUri, fileName)
                     Observable.just(true)
                 } else {
-                    if (response.code() == HTTP_CODE_NOT_FOUND || response.code() == HTTP_CODE_CONFLICT) {
+                    if (response.code() == HTTP_CODE_NOT_FOUND ||
+                        response.code() == HTTP_CODE_CONFLICT
+                    ) {
                         createDavResource(sourceFileUri, fileName, remotePath, metaData)
                     } else {
                         Observable.just(false)
@@ -77,16 +91,25 @@ class FileUploader(
         metaData: String?
     ): Observable<Boolean> {
         return Observable.fromCallable {
-            val userFileUploadPath = ApiUtils.userFileUploadPath(currentUser.baseUrl!!, currentUser.userId!!)
+            val userFileUploadPath = ApiUtils.userFileUploadPath(
+                currentUser.baseUrl!!,
+                currentUser.userId!!
+            )
             val userTalkAttachmentsUploadPath = ApiUtils.userTalkAttachmentsUploadPath(
                 currentUser.baseUrl!!,
                 currentUser.userId!!
             )
 
-            var davResource = DavResource(okHttpClientNoRedirects!!, userFileUploadPath.toHttpUrlOrNull()!!)
+            var davResource = DavResource(
+                okHttpClientNoRedirects!!,
+                userFileUploadPath.toHttpUrlOrNull()!!
+            )
             createFolder(davResource)
             initHttpClient(okHttpClient = okhttpClient, currentUser)
-            davResource = DavResource(okHttpClientNoRedirects!!, userTalkAttachmentsUploadPath.toHttpUrlOrNull()!!)
+            davResource = DavResource(
+                okHttpClientNoRedirects!!,
+                userTalkAttachmentsUploadPath.toHttpUrlOrNull()!!
+            )
             createFolder(davResource)
             true
         }
@@ -128,6 +151,7 @@ class FileUploader(
         this.okHttpClientNoRedirects = okHttpClientBuilder.build()
     }
 
+    @Suppress("Detekt.ThrowsCount")
     private fun createFolder(davResource: DavResource) {
         try {
             davResource.mkCol(
