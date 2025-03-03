@@ -35,6 +35,7 @@ How to translate with transifex:
     <string name="nc_common_disabled">Disabled</string>
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
+    <string name="nc_common_more_options">More options</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>

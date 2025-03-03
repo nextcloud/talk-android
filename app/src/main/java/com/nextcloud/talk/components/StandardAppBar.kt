@@ -1,11 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.diagnose
+package com.nextcloud.talk.components
 
 import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.foundation.background
@@ -33,7 +33,7 @@ import com.nextcloud.talk.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
+fun StandardAppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
     val backDispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
 
     var expanded by remember { mutableStateOf(false) }
@@ -53,13 +53,16 @@ fun AppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
         actions = {
             Box {
                 IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "More Options")
+                    Icon(
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = stringResource(R.string.nc_common_more_options)
+                    )
                 }
 
                 DropdownMenu(
                     expanded = expanded,
                     onDismissRequest = { expanded = false },
-                    Modifier.background(colorResource(id = R.color.bg_default))
+                    modifier = Modifier.background(color = colorResource(id = R.color.bg_default))
                 ) {
                     menuItems?.forEach { (label, action) ->
                         DropdownMenuItem(
@@ -79,5 +82,5 @@ fun AppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
 @Preview(showBackground = true)
 @Composable
 fun AppBarPreview() {
-    AppBar("title", null)
+    StandardAppBar("title", null)
 }
