@@ -6,7 +6,7 @@
  */
 package com.nextcloud.talk.remotefilebrowser.repositories
 
-import com.nextcloud.talk.components.filebrowser.webdav.ReadFolderListingOperation
+import com.nextcloud.talk.filebrowser.webdav.ReadFolderListingOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew

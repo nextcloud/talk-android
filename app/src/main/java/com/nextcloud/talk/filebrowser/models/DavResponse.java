@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.models;
+package com.nextcloud.talk.filebrowser.models;
 
 import at.bitfire.dav4jvm.Response;
 

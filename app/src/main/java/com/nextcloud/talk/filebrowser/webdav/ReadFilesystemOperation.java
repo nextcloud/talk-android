@@ -4,12 +4,12 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.webdav;
+package com.nextcloud.talk.filebrowser.webdav;
 
 import android.util.Log;
 
-import com.nextcloud.talk.components.filebrowser.models.BrowserFile;
-import com.nextcloud.talk.components.filebrowser.models.DavResponse;
+import com.nextcloud.talk.filebrowser.models.BrowserFile;
+import com.nextcloud.talk.filebrowser.models.DavResponse;
 import com.nextcloud.talk.dagger.modules.RestModule;
 import com.nextcloud.talk.data.user.model.User;
 import com.nextcloud.talk.utils.ApiUtils;

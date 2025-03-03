@@ -29,8 +29,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.components.filebrowser.models.BrowserFile
-import com.nextcloud.talk.components.filebrowser.webdav.ReadFilesystemOperation
+import com.nextcloud.talk.filebrowser.models.BrowserFile
+import com.nextcloud.talk.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
