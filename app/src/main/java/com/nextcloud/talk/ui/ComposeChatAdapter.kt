@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -54,17 +55,20 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.load
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
@@ -87,12 +91,10 @@ class ComposeChatAdapter(
     private var messageId: String? = null
 ) {
 
-    private var incomingShape: RoundedCornerShape
-    private var outgoingShape: RoundedCornerShape
+    private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
+    private var outgoingShape: RoundedCornerShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        incomingShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
-        outgoingShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
     }
 
     // NOTE: I would like to optimize context and colorScheme by declaring them before hand. In fact, it's best
@@ -115,6 +117,9 @@ class ComposeChatAdapter(
 
     @Inject
     lateinit var contactsViewModel: ContactsViewModel
+
+    @Inject
+    lateinit var chatViewModel: ChatViewModel
 
     private val currentUser: User = userManager.currentUser.blockingGet()
 
@@ -336,7 +341,7 @@ class ComposeChatAdapter(
                 viewThemeUtils
             )
 
-            // TODO: - this link is read only now, but should be refactored to be clickable
+            // Note: - this link is read only now, but should be refactored to be clickable
             // processedMessageText = messageUtils.processMessageParameters(
             //     ctx, viewThemeUtils, processedMessageText!!, message, null
             // )
@@ -483,6 +488,7 @@ class ComposeChatAdapter(
     @Composable
     private fun LinkMessage(context: Context, message: ChatMessage) {
         val color = colorResource(R.color.high_emphasis_text)
+        chatViewModel.getOpenGraph(currentUser.getCredentials(), currentUser.baseUrl!!, message.extractedUrlToPreview!!)
 
         CommonMessageBody(context, message) {
             Row(
@@ -503,11 +509,28 @@ class ComposeChatAdapter(
                     .padding(4.dp)
             ) {
                 Column {
-                    // TODO get this working with open graph
-                    EnrichedText(message)
+                    val graphObject = chatViewModel.getOpenGraph.asFlow().collectAsState(
+                        Reference(
+                            // Dummy class
+                        )
+                    ).value.openGraphObject
+                    graphObject?.let {
+                        Text(it.name, fontSize = REGULAR_TEXT_SIZE, fontWeight = FontWeight.Bold)
+                        it.description?.let { Text(it, fontSize = AUTHOR_TEXT_SIZE) }
+                        it.link?.let { Text(it, fontSize = TIME_TEXT_SIZE) }
+                        it.thumb?.let {
+                            val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
+                            val loadedImage = loadImage(it, context, errorPlaceholderImage)
+                            AsyncImage(
+                                model = loadedImage,
+                                contentDescription = stringResource(R.string.nc_sent_an_image),
+                                modifier = Modifier
+                                    .height(120.dp)
+                            )
+                        }
+                    }
                 }
             }
-
         }
     }
 

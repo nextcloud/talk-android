@@ -126,9 +126,8 @@ class ContextChatCompose(val bundle: Bundle) {
                                     )
                                 }
                                 Column {
-                                    // TODO get these from token from token, include avatar pic too
-                                    Text("Conversation 1", fontSize = 24.sp)
-                                    Text("This is description", fontSize = 12.sp)
+                                    val name = bundle.getString(BundleKeys.KEY_CONVERSATION_NAME)!!
+                                    Text(name, fontSize = 24.sp)
                                 }
                             }
                             val contextState = viewModel.getContextChatMessages.asFlow().collectAsState(listOf())

@@ -35,6 +35,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
@@ -130,6 +131,10 @@ class ChatViewModel @Inject constructor(
     private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
     val getContextChatMessages: LiveData<List<ChatMessageJson>>
         get() = _getContextChatMessages
+
+    val getOpenGraph: LiveData<Reference>
+        get() = _getOpenGraph
+    private val _getOpenGraph: MutableLiveData<Reference> = MutableLiveData()
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -812,6 +817,12 @@ class ChatViewModel @Inject constructor(
             )
 
             _getContextChatMessages.value = messages
+        }
+    }
+
+    fun getOpenGraph(credentials: String, baseUrl: String, urlToPreview: String) {
+        viewModelScope.launch {
+            _getOpenGraph.value = chatNetworkDataSource.getOpenGraph(credentials, baseUrl, urlToPreview)
         }
     }
 

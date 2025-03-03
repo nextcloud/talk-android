@@ -16,6 +16,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
@@ -206,5 +207,18 @@ class RetrofitChatNetwork(
     ): List<ChatMessageJson> {
         val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
         return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit).ocs?.data ?: listOf()
+    }
+
+    override suspend fun getOpenGraph(
+        credentials: String,
+        baseUrl: String,
+        extractedLinkToPreview: String
+    ): Reference? {
+        val openGraphLink = ApiUtils.getUrlForOpenGraph(baseUrl)
+        return ncApi.getOpenGraph(
+            credentials,
+            openGraphLink,
+            extractedLinkToPreview
+        ).blockingFirst().ocs?.data?.references?.entries?.iterator()?.next()?.value
     }
 }

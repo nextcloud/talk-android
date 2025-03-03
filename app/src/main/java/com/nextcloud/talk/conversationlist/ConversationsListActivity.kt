@@ -1315,15 +1315,21 @@ class ConversationsListActivity :
         if (item != null) {
             when (item.itemViewType) {
                 MessageResultItem.VIEW_TYPE -> {
+                    val messageItem: MessageResultItem = item as MessageResultItem
+                    val token = messageItem.messageEntry.conversationToken
+                    val conversationName = (conversationItems.first {
+                        (it is ConversationItem) && it.model.token == token
+                    } as ConversationItem).model.displayName
+
                     binding.genericComposeView.apply {
                         val shouldDismiss = mutableStateOf(false)
                         setContent {
-                            val messageItem: MessageResultItem = item as MessageResultItem
                             val bundle = bundleOf()
                             bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
                             bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
-                            bundle.putString(KEY_ROOM_TOKEN, messageItem.messageEntry.conversationToken)
+                            bundle.putString(KEY_ROOM_TOKEN, token)
                             bundle.putString(BundleKeys.KEY_MESSAGE_ID, messageItem.messageEntry.messageId)
+                            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversationName)
                             ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
                         }
                     }
