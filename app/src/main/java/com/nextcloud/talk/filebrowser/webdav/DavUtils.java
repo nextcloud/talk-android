@@ -5,14 +5,14 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.webdav;
+package com.nextcloud.talk.filebrowser.webdav;
 
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted;
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission;
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId;
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize;
+import com.nextcloud.talk.filebrowser.models.properties.NCEncrypted;
+import com.nextcloud.talk.filebrowser.models.properties.NCPermission;
+import com.nextcloud.talk.filebrowser.models.properties.NCPreview;
+import com.nextcloud.talk.filebrowser.models.properties.OCFavorite;
+import com.nextcloud.talk.filebrowser.models.properties.OCId;
+import com.nextcloud.talk.filebrowser.models.properties.OCSize;
 
 import java.util.ArrayList;
 import java.util.List;
