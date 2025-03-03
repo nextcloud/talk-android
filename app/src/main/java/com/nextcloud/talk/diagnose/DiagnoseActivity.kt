@@ -35,6 +35,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.components.SetStatusBarColor
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
@@ -100,7 +101,7 @@ class DiagnoseActivity : BaseActivity() {
             ) {
                 Scaffold(
                     topBar = {
-                        AppBar(
+                        StandardAppBar(
                             title = stringResource(R.string.nc_settings_diagnose_title),
                             menuItems
                         )
