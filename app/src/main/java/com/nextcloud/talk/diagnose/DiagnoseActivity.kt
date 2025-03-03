@@ -16,8 +16,6 @@ import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
 import android.os.Bundle
 import android.text.SpannableStringBuilder
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -83,13 +81,27 @@ class DiagnoseActivity : BaseActivity() {
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
+
+            val menuItems = mutableListOf(
+                stringResource(R.string.nc_common_copy) to { copyToClipboard(diagnoseData.toMarkdownString()) },
+                stringResource(R.string.share) to { shareToOtherApps(diagnoseData.toMarkdownString()) },
+                stringResource(R.string.send_email) to { composeEmail(diagnoseData.toMarkdownString()) }
+            )
+
+            if (BrandingUtils.isOriginalNextcloudClient(applicationContext)) {
+                menuItems.add(
+                    stringResource(R.string.create_issue) to { createGithubIssue(diagnoseData.toMarkdownString()) }
+                )
+            }
+
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
                 Scaffold(
                     topBar = {
                         AppBar(
-                            title = stringResource(R.string.nc_settings_diagnose_title)
+                            title = stringResource(R.string.nc_settings_diagnose_title),
+                            menuItems
                         )
                     },
                     content = {
@@ -120,50 +132,6 @@ class DiagnoseActivity : BaseActivity() {
         setupAccountValues()
 
         diagnoseDataState.value = diagnoseData.toList()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_diagnose, menu)
-        return true
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        super.onPrepareOptionsMenu(menu)
-        menu.findItem(R.id.create_issue).isVisible = BrandingUtils.isOriginalNextcloudClient(applicationContext)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressedDispatcher.onBackPressed()
-                true
-            }
-
-            R.id.copy -> {
-                copyToClipboard(diagnoseData.toMarkdownString())
-                true
-            }
-
-            R.id.share -> {
-                shareToOtherApps(diagnoseData.toMarkdownString())
-                true
-            }
-
-            R.id.send_mail -> {
-                composeEmail(diagnoseData.toMarkdownString())
-                true
-            }
-
-            R.id.create_issue -> {
-                createGithubIssue(diagnoseData.toMarkdownString())
-                true
-            }
-
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
     }
 
     private fun shareToOtherApps(message: String) {
@@ -468,6 +436,7 @@ class DiagnoseActivity : BaseActivity() {
                     markdownText.append("$MARKDOWN_HEADLINE ${it.headline}")
                     markdownText.append("\n\n")
                 }
+
                 is DiagnoseElement.DiagnoseEntry -> {
                     markdownText.append("$MARKDOWN_BOLD${it.key}$MARKDOWN_BOLD")
                     markdownText.append("\n\n")
