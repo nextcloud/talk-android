@@ -35,6 +35,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.components.SetStatusBarColor
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -116,6 +117,8 @@ class DiagnoseActivity : BaseActivity() {
                     }
                 )
             }
+
+            SetStatusBarColor()
         }
     }
 
