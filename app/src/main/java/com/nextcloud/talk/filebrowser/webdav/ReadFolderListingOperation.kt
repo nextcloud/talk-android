@@ -5,7 +5,7 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.webdav
+package com.nextcloud.talk.filebrowser.webdav
 
 import android.net.Uri
 import android.text.TextUtils
@@ -19,13 +19,13 @@ import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
-import com.nextcloud.talk.components.filebrowser.models.DavResponse
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
+import com.nextcloud.talk.filebrowser.models.DavResponse
+import com.nextcloud.talk.filebrowser.models.properties.NCEncrypted
+import com.nextcloud.talk.filebrowser.models.properties.NCPermission
+import com.nextcloud.talk.filebrowser.models.properties.NCPreview
+import com.nextcloud.talk.filebrowser.models.properties.OCFavorite
+import com.nextcloud.talk.filebrowser.models.properties.OCId
+import com.nextcloud.talk.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.dagger.modules.RestModule.HttpAuthenticator
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.remotefilebrowser.model.RemoteFileBrowserItem
