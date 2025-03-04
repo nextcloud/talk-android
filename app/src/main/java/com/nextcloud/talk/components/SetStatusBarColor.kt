@@ -6,7 +6,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.contacts.components
+package com.nextcloud.talk.components
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme

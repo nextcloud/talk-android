@@ -5,33 +5,33 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.models.properties
+package com.nextcloud.talk.filebrowser.models.properties
 
 import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
+import com.nextcloud.talk.filebrowser.webdav.DavUtils
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class OCFavorite internal constructor(var isOcFavorite: Boolean) : Property {
+class OCSize private constructor(var ocSize: Long) : Property {
 
     class Factory : PropertyFactory {
         override fun create(parser: XmlPullParser): Property {
             try {
                 val text = readText(parser)
                 if (!TextUtils.isEmpty(text)) {
-                    return OCFavorite("1" == text)
+                    return OCSize(text!!.toLong())
                 }
             } catch (e: IOException) {
-                Log.e("OCFavorite", "failed to create property", e)
+                Log.e("OCSize", "failed to create property", e)
             } catch (e: XmlPullParserException) {
-                Log.e("OCFavorite", "failed to create property", e)
+                Log.e("OCSize", "failed to create property", e)
             }
-            return OCFavorite(false)
+            return OCSize(-1)
         }
 
         override fun getName(): Property.Name {
@@ -41,6 +41,6 @@ class OCFavorite internal constructor(var isOcFavorite: Boolean) : Property {
 
     companion object {
         @JvmField
-        val NAME: Property.Name = Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_FAVORITE)
+        val NAME: Property.Name = Property.Name(DavUtils.OC_NAMESPACE, DavUtils.EXTENDED_PROPERTY_NAME_SIZE)
     }
 }
