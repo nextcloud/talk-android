@@ -55,7 +55,6 @@ class BackgroundVoiceMessageCard(
     private var context: Context
 ) {
 
-
     private val progressState = mutableFloatStateOf(0.0f)
     private val animator = ValueAnimator.ofFloat(offset, 1.0f)
 
