@@ -39,34 +39,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
-import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
-import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import javax.inject.Inject
 
-@AutoInjector(NextcloudTalkApplication::class)
+@Suppress("LongParameterList")
 class BackgroundVoiceMessageCard(
     val name: String,
     val duration: Int,
     private val offset: Float,
     private val imageURI: String,
-    private val conversationImageURI: String
+    private val conversationImageURI: String,
+    private var viewThemeUtils: ViewThemeUtils,
+    private var context: Context
 ) {
 
-    @Inject
-    lateinit var viewThemeUtils: ViewThemeUtils
-
-    @Inject
-    lateinit var context: Context
 
     private val progressState = mutableFloatStateOf(0.0f)
     private val animator = ValueAnimator.ofFloat(offset, 1.0f)
 
     init {
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         animator.duration = duration.toLong()
         animator.addUpdateListener { animation ->
             progressState.floatValue = animation.animatedValue as Float

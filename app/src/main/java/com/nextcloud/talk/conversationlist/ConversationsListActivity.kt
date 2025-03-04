@@ -490,7 +490,9 @@ class ConversationsListActivity :
                                     duration - position,
                                     offset,
                                     imageURI,
-                                    conversationImageURI
+                                    conversationImageURI,
+                                    viewThemeUtils,
+                                    context
                                 )
                                     .GetView({ isPaused ->
                                         if (isPaused) {
