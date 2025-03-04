@@ -272,8 +272,6 @@ How to translate with transifex:
     <string name="nc_contacts_done">Done</string>
     <string name="user_avatar">User avatar</string>
     <string name="back_button">Back button</string>
-    <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
-    <string name="join_open_conversations_icon">Join Open Conversations Icon</string>
     <!-- Permissions -->
     <string name="nc_permissions_rationale_dialog_title">Please allow permissions</string>
     <string name="nc_permissions_denied">Some permissions were denied.</string>

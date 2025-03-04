@@ -41,6 +41,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -80,6 +81,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -104,6 +106,7 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
@@ -151,6 +154,7 @@ import org.apache.commons.lang3.builder.CompareToBuilder
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
+import java.io.File
 import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -184,6 +188,9 @@ class ConversationsListActivity :
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var chatViewModel: ChatViewModel
 
     @Inject
     lateinit var contactsViewModel: ContactsViewModel
@@ -283,7 +290,7 @@ class ConversationsListActivity :
         if (adapter == null) {
             adapter = FlexibleAdapter(conversationItems, this, true)
         } else {
-            binding.loadingContent?.visibility = View.GONE
+            binding.loadingContent.visibility = View.GONE
         }
         adapter!!.addListener(this)
         prepareViews()
@@ -452,6 +459,55 @@ class ConversationsListActivity :
                     }
 
                     else -> {}
+                }
+            }.collect()
+        }
+
+        lifecycleScope.launch {
+            chatViewModel.backgroundPlayUIFlow.onEach { msg ->
+                binding.composeViewForBackgroundPlay.apply {
+                    // Dispose of the Composition when the view's LifecycleOwner is destroyed
+                    setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                    setContent {
+                        msg?.let {
+                            val duration = chatViewModel.mediaPlayerDuration
+                            val position = chatViewModel.mediaPlayerPosition
+                            val offset = position.toFloat() / duration
+                            val imageURI = ApiUtils.getUrlForAvatar(
+                                currentUser?.baseUrl,
+                                msg.actorId,
+                                true
+                            )
+                            val conversationImageURI = ApiUtils.getUrlForConversationAvatar(
+                                ApiUtils.API_V1,
+                                currentUser?.baseUrl,
+                                msg.token
+                            )
+
+                            if (duration > 0) {
+                                BackgroundVoiceMessageCard(
+                                    msg.actorDisplayName!!,
+                                    duration - position,
+                                    offset,
+                                    imageURI,
+                                    conversationImageURI,
+                                    viewThemeUtils,
+                                    context
+                                )
+                                    .GetView({ isPaused ->
+                                        if (isPaused) {
+                                            chatViewModel.pauseMediaPlayer(false)
+                                        } else {
+                                            val filename = msg.selectedIndividualHashMap!!["name"]
+                                            val file = File(context.cacheDir, filename!!)
+                                            chatViewModel.startMediaPlayer(file.canonicalPath)
+                                        }
+                                    }) {
+                                        chatViewModel.stopMediaPlayer()
+                                    }
+                            }
+                        }
+                    }
                 }
             }.collect()
         }
@@ -770,8 +826,8 @@ class ConversationsListActivity :
                     initSearchDisposable()
                     adapter?.setHeadersShown(true)
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
-                    adapter?.updateDataSet(filterableConversationItems, false)
-                    adapter?.showAllHeaders()
+                    adapter!!.updateDataSet(filterableConversationItems, false)
+                    adapter!!.showAllHeaders()
                     binding.swipeRefreshLayoutView?.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
@@ -786,9 +842,9 @@ class ConversationsListActivity :
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
                     }
-                    binding.swipeRefreshLayoutView?.isRefreshing = false
+                    binding.swipeRefreshLayoutView.isRefreshing = false
                     searchBehaviorSubject.onNext(false)
-                    binding.swipeRefreshLayoutView?.isEnabled = true
+                    binding.swipeRefreshLayoutView.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
                     binding.conversationListAppbar.stateListAnimator = AnimatorInflater.loadStateListAnimator(
@@ -801,7 +857,7 @@ class ConversationsListActivity :
                         viewThemeUtils.platform.resetStatusBar(this@ConversationsListActivity)
                     }
 
-                    val layoutManager = binding.recyclerView?.layoutManager as SmoothScrollLinearLayoutManager?
+                    val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
                     layoutManager?.scrollToPositionWithOffset(0, 0)
                     return true
                 }
@@ -894,18 +950,18 @@ class ConversationsListActivity :
 
     private fun initOverallLayout(isConversationListNotEmpty: Boolean) {
         if (isConversationListNotEmpty) {
-            if (binding.emptyLayout?.visibility != View.GONE) {
-                binding.emptyLayout?.visibility = View.GONE
+            if (binding.emptyLayout.visibility != View.GONE) {
+                binding.emptyLayout.visibility = View.GONE
             }
-            if (binding.swipeRefreshLayoutView?.visibility != View.VISIBLE) {
-                binding.swipeRefreshLayoutView?.visibility = View.VISIBLE
+            if (binding.swipeRefreshLayoutView.visibility != View.VISIBLE) {
+                binding.swipeRefreshLayoutView.visibility = View.VISIBLE
             }
         } else {
-            if (binding.emptyLayout?.visibility != View.VISIBLE) {
-                binding.emptyLayout?.visibility = View.VISIBLE
+            if (binding.emptyLayout.visibility != View.VISIBLE) {
+                binding.emptyLayout.visibility = View.VISIBLE
             }
-            if (binding.swipeRefreshLayoutView?.visibility != View.GONE) {
-                binding.swipeRefreshLayoutView?.visibility = View.GONE
+            if (binding.swipeRefreshLayoutView.visibility != View.GONE) {
+                binding.swipeRefreshLayoutView.visibility = View.GONE
             }
         }
     }
@@ -1092,24 +1148,24 @@ class ConversationsListActivity :
                 }
             }
         })
-        binding.recyclerView?.setOnTouchListener { v: View, _: MotionEvent? ->
+        binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
                 val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
         }
-        binding.swipeRefreshLayoutView?.setOnRefreshListener {
+        binding.swipeRefreshLayoutView.setOnRefreshListener {
             fetchRooms()
             fetchPendingInvitations()
         }
-        binding.swipeRefreshLayoutView?.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
-        binding.emptyLayout?.setOnClickListener { showNewConversationsScreen() }
-        binding.floatingActionButton?.setOnClickListener {
+        binding.swipeRefreshLayoutView.let { viewThemeUtils.androidx.themeSwipeRefreshLayout(it) }
+        binding.emptyLayout.setOnClickListener { showNewConversationsScreen() }
+        binding.floatingActionButton.setOnClickListener {
             run(context)
             showNewConversationsScreen()
         }
-        binding.floatingActionButton?.let { viewThemeUtils.material.themeFAB(it) }
+        binding.floatingActionButton.let { viewThemeUtils.material.themeFAB(it) }
 
         binding.switchAccountButton.setOnClickListener {
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
@@ -1284,7 +1340,7 @@ class ConversationsListActivity :
 
     @SuppressLint("CheckResult") // handled by helper
     private fun startMessageSearch(search: String?) {
-        binding.swipeRefreshLayoutView?.isRefreshing = true
+        binding.swipeRefreshLayoutView.isRefreshing = true
         searchHelper?.startMessageSearch(search!!)
             ?.subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
@@ -1539,8 +1595,8 @@ class ConversationsListActivity :
             filesToShare?.forEach {
                 UploadAndShareFilesWorker.upload(
                     it,
-                    selectedConversation!!.token!!,
-                    selectedConversation!!.displayName!!,
+                    selectedConversation!!.token,
+                    selectedConversation!!.displayName,
                     null
                 )
             }
@@ -2016,7 +2072,7 @@ class ConversationsListActivity :
                 binding.recyclerView?.scrollToPosition(0)
             }
         }
-        binding.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView.isRefreshing = false
     }
 
     private fun onMessageSearchError(throwable: Throwable) {
