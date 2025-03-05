@@ -33,7 +33,7 @@ import coil.decode.SvgDecoder
 import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.BuildConfig
-import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
+import com.nextcloud.talk.filebrowser.webdav.DavUtils
 import com.nextcloud.talk.dagger.modules.BusModule
 import com.nextcloud.talk.dagger.modules.ContextModule
 import com.nextcloud.talk.dagger.modules.DaosModule

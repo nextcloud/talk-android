@@ -35,6 +35,7 @@ How to translate with transifex:
     <string name="nc_common_disabled">Disabled</string>
     <string name="nc_common_copy">Copy</string>
     <string name="nc_common_copy_success">Copied to clipboard</string>
+    <string name="nc_common_more_options">More options</string>
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
@@ -66,7 +67,6 @@ How to translate with transifex:
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
 
-    <string name="nc_never">Never joined</string>
     <string name="nc_search">Search</string>
 
     <string name="nc_certificate_dialog_title">Check out the certificate</string>
@@ -305,7 +305,6 @@ How to translate with transifex:
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
     <string name="nc_call_button_content_description_microphone">Toggle microphone</string>
-    <string name="nc_call_button_content_description_advanced">Advanced call options</string>
     <string name="nc_call_button_content_description_hangup">Hang up</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
@@ -439,7 +438,6 @@ How to translate with transifex:
     <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>
     <string name="emoji_category_recent">Recent</string>
-    <string name="emoji_backspace">Backspace</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
