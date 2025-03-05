@@ -134,7 +134,9 @@ class ContextChatCompose(val bundle: Bundle) {
                             val messagesJson = contextState.value
                             val messages = messagesJson.map(ChatMessageJson::asModel)
                             val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
-                            ComposeChatAdapter(messagesJson, messageId).GetView(context, messages)
+                            val adapter = ComposeChatAdapter(messagesJson, messageId)
+                            adapter.addMessages(context, messages.toMutableList(), true)
+                            adapter.GetView(context)
                         }
                     }
                 }

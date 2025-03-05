@@ -40,6 +40,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -60,6 +61,7 @@ import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -94,7 +96,7 @@ class ComposeChatAdapter(
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
     private var outgoingShape: RoundedCornerShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
     init {
-        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        sharedApplication!!.componentApplication.inject(this)
     }
 
     // NOTE: I would like to optimize context and colorScheme by declaring them before hand. In fact, it's best
@@ -122,9 +124,22 @@ class ComposeChatAdapter(
     lateinit var chatViewModel: ChatViewModel
 
     private val currentUser: User = userManager.currentUser.blockingGet()
+    private val items = mutableStateListOf<ChatMessage>()
+
+
+    fun addMessages(context: Context, messages: MutableList<ChatMessage>, append: Boolean) {
+        val processedMessages = messages
+            .addDates(context)
+        // FIXME this needs to account for old dates in items, before adding
+        //  so I should iterate on not just the list, but also including the last message from
+        //  items
+
+        // TODO want to handle expanded system messages, but in a non dumb way
+        if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
+    }
 
     @Composable
-    fun GetView(context: Context, messages: List<ChatMessage>) {
+    fun GetView(context: Context) {
         val listState = rememberLazyListState()
 
         LazyColumn(
@@ -132,9 +147,8 @@ class ComposeChatAdapter(
             state = listState,
             modifier = Modifier.padding(16.dp)
         ) {
-            val processedMessages = messages.addDates(context)
 
-            items(processedMessages) { message ->
+            items(items) { message ->
                 message.activeUser = currentUser // -_-
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
@@ -364,13 +378,30 @@ class ComposeChatAdapter(
 
     @Composable
     private fun SystemMessage(context: Context, message: ChatMessage) {
-        // TODO crap I forgot this has wrapping -_- dang it. I'll have to handle that later
-        val timeString = DateUtils(context).getLocalTimeStringFromTimestamp(message.timestamp)
-        Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(message.text, fontSize = AUTHOR_TEXT_SIZE, modifier = Modifier.padding(8.dp))
-            Text(timeString, fontSize = TIME_TEXT_SIZE)
-            Spacer(modifier = Modifier.weight(1f))
+        val colorInt = context.resources.getColor(R.color.high_emphasis_text)
+        val similarMessages = sharedApplication!!.resources.getQuantityString(
+            R.plurals.see_similar_system_messages,
+            message.expandableChildrenAmount,
+            message.expandableChildrenAmount
+        )
+        Column {
+            val timeString = DateUtils(context).getLocalTimeStringFromTimestamp(message.timestamp)
+            Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
+                Spacer(modifier = Modifier.weight(1f))
+                Text(message.text, fontSize = AUTHOR_TEXT_SIZE, modifier = Modifier.padding(8.dp))
+                Text(timeString, fontSize = TIME_TEXT_SIZE)
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            TextButton(onClick = {
+                // NOTE: Read Only for now
+            }) {
+                Text(
+                    similarMessages,
+                    fontSize = AUTHOR_TEXT_SIZE,
+                    color = Color(colorInt),
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
         }
     }
 
