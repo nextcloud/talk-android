@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
     analysis:
-        runs-on: [ubuntu-latest, self-hosted]
+        runs-on: ubuntu-latest
         steps:
             -   name: Setup variables
                 id: get-vars

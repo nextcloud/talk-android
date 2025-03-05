@@ -22,7 +22,7 @@ permissions:
 jobs:
   analyze:
     name: Analyze
-    runs-on: [ubuntu-latest, self-hosted]
+    runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
