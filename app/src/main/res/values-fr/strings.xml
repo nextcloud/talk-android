@@ -312,6 +312,7 @@
     <string name="nc_message_offline">Hors-ligne</string>
     <string name="nc_message_quote_cancel_reply">Annuler la réponse</string>
     <string name="nc_message_read">Message lu</string>
+    <string name="nc_message_sending">Envoi en cours</string>
     <string name="nc_message_sent">Message envoyé</string>
     <string name="nc_microphone_permission_hint">Pour autoriser la communication audio, merci de donner l\'autorisation « Microphone ».</string>
     <string name="nc_missed_call">Vous avez manqué un appel de %s</string>
@@ -390,6 +391,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_screen_lock_timeout_300">5 minutes</string>
     <string name="nc_screen_lock_timeout_60">1 minute</string>
     <string name="nc_screen_lock_timeout_600">10 minutes</string>
+    <string name="nc_screen_lock_timeout_immediate">Immédiat</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -658,6 +660,8 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="unban">Retirer le ban</string>
     <string name="unread">Non lu</string>
     <string name="upload_new_avatar_from_device">Téléverser un nouvel avatar depuis l\'appareil</string>
+    <string name="user_absence">%1$s est absent et pourrait ne pas répondre.</string>
+    <string name="user_absence_for_one_day">%1$s est absent aujourd\'hui</string>
     <string name="user_absence_replacement">Remplacement :</string>
     <string name="user_avatar">Avatar utilisateur</string>
     <string name="user_info_address">Adresse</string>
@@ -672,6 +676,11 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
     <string name="video_call">Appel vidéo</string>
     <string name="whats_your_status">Quel est votre état ?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Voir %d message similaire</item>
+        <item quantity="many">Voir %d messages similaires</item>
+        <item quantity="other">Voir %d messages similaires</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
         <item quantity="many">%d votes</item>
