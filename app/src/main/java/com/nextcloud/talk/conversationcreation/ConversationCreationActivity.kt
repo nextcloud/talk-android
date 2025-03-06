@@ -89,6 +89,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.PickImage
@@ -182,7 +183,7 @@ fun ConversationCreationScreen(
             if (result.resultCode == Activity.RESULT_OK) {
                 val data = result.data
                 val selectedParticipants =
-                    data?.getParcelableArrayListExtra<AutocompleteUser>("selectedParticipants")
+                    data?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
                         ?: emptyList()
                 val participants = selectedParticipants.toMutableList()
                 conversationCreationViewModel.updateSelectedParticipants(participants)
@@ -402,7 +403,7 @@ fun AddParticipants(
                                 "selectedParticipants",
                                 participants as ArrayList<AutocompleteUser>
                             )
-                            intent.putExtra("isAddParticipants", true)
+                            intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                             intent.putExtra("isAddParticipantsEdit", true)
                             launcher.launch(intent)
                         },
@@ -436,7 +437,7 @@ fun AddParticipants(
                 .fillMaxWidth()
                 .clickable {
                     val intent = Intent(context, ContactsActivityCompose::class.java)
-                    intent.putExtra("isAddParticipants", true)
+                    intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                     launcher.launch(intent)
                 },
             verticalAlignment = Alignment.CenterVertically
@@ -627,7 +628,8 @@ fun ShowChangePassword(onDismiss: () -> Unit, conversationCreationViewModel: Con
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(vertical = 8.dp),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally

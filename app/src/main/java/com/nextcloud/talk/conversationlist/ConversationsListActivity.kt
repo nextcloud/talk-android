@@ -131,7 +131,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
@@ -1247,7 +1246,6 @@ class ConversationsListActivity :
 
     private fun showNewConversationsScreen() {
         val intent = Intent(context, ContactsActivityCompose::class.java)
-        intent.putExtra(KEY_NEW_CONVERSATION, true)
         startActivity(intent)
     }
 
