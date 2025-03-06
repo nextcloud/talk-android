@@ -556,6 +556,7 @@
     <string name="unban">解除封禁</string>
     <string name="unread">未读</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
+    <string name="user_absence_replacement">接替者：</string>
     <string name="user_avatar">用户头像</string>
     <string name="user_info_address">地址</string>
     <string name="user_info_displayname">全名</string>

@@ -186,6 +186,7 @@
     <string name="nc_moderator">Συντονιστής</string>
     <string name="nc_never">Δεν ξανασυνδέθηκε</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
+    <string name="nc_new_conversation_visibility">Ορατότητα</string>
     <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
     <string name="nc_nextcloud_talk_app_not_installed">Το %1$s δεν είναι διαθέσιμο (δεν έχει εγκατασταθεί ή έχει απαγορευθεί από τον διαχειριστή)</string>
     <string name="nc_nick_guest">Επισκέπτης</string>
@@ -271,6 +272,7 @@
     <string name="nc_server_unsupported">Ο διακομιστής δεν έχει εγκατεστημένη την υποστήριξη εφαρμογής Talk</string>
     <string name="nc_server_url">Διεύθυνση διακομιστή https://…</string>
     <string name="nc_server_version">%1$s δουλεύει μόνο με %2$s 13 και πάνω</string>
+    <string name="nc_set_new_password">Ορισμός νέου συνθηματικού</string>
     <string name="nc_settings">Ρυθμίσεις</string>
     <string name="nc_settings_account_updated">Ο υπάρχων λογαριασμός ενημερώθηκε, χωρίς την εισαγωγή νέου</string>
     <string name="nc_settings_advanced_title">Για προχωρημένους</string>
