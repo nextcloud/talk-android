@@ -5,14 +5,14 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.models.properties
+package com.nextcloud.talk.filebrowser.models.properties
 
 import android.text.TextUtils
 import android.util.Log
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.PropertyFactory
 import at.bitfire.dav4jvm.XmlUtils.readText
-import com.nextcloud.talk.components.filebrowser.webdav.DavUtils
+import com.nextcloud.talk.filebrowser.webdav.DavUtils
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException

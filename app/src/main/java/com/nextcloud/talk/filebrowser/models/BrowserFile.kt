@@ -4,7 +4,7 @@
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.components.filebrowser.models
+package com.nextcloud.talk.filebrowser.models
 
 import android.net.Uri
 import android.os.Parcelable
@@ -17,12 +17,12 @@ import at.bitfire.dav4jvm.property.GetLastModified
 import at.bitfire.dav4jvm.property.ResourceType
 import at.bitfire.dav4jvm.property.ResourceType.Companion.COLLECTION
 import com.bluelinelabs.logansquare.annotation.JsonObject
-import com.nextcloud.talk.components.filebrowser.models.properties.NCEncrypted
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPermission
-import com.nextcloud.talk.components.filebrowser.models.properties.NCPreview
-import com.nextcloud.talk.components.filebrowser.models.properties.OCFavorite
-import com.nextcloud.talk.components.filebrowser.models.properties.OCId
-import com.nextcloud.talk.components.filebrowser.models.properties.OCSize
+import com.nextcloud.talk.filebrowser.models.properties.NCEncrypted
+import com.nextcloud.talk.filebrowser.models.properties.NCPermission
+import com.nextcloud.talk.filebrowser.models.properties.NCPreview
+import com.nextcloud.talk.filebrowser.models.properties.OCFavorite
+import com.nextcloud.talk.filebrowser.models.properties.OCId
+import com.nextcloud.talk.filebrowser.models.properties.OCSize
 import com.nextcloud.talk.utils.Mimetype.FOLDER
 import kotlinx.parcelize.Parcelize
 import java.io.File
