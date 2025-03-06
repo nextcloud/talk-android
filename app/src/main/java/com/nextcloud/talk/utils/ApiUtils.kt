@@ -459,6 +459,14 @@ object ApiUtils {
         return "$baseUrl/remote.php/dav/files/$user/$remotePath"
     }
 
+    fun userFileUploadPath(baseUrl: String, user: String): String {
+        return "$baseUrl/remote.php/dav/files/$user"
+    }
+
+    fun userTalkAttachmentsUploadPath(baseUrl: String, user: String): String {
+        return "$baseUrl/remote.php/dav/files/$user/Talk"
+    }
+
     fun getUrlForTempAvatar(baseUrl: String): String {
         return "$baseUrl$OCS_API_VERSION/apps/spreed/temp-user-avatar"
     }
