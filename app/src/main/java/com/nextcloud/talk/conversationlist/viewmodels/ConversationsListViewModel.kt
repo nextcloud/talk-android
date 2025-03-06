@@ -17,7 +17,6 @@ import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -95,28 +94,18 @@ class ConversationsListViewModel @Inject constructor(
         repository.getRooms()
     }
 
-    fun updateRoomMessages(
-        credentials: String,
-        list: List<ConversationModel>
-    ) {
+    fun updateRoomMessages(list: List<ConversationModel>) {
         val current = list.associateWith { model ->
             val unreadMessages = model.unreadMessages
             unreadMessages
         }
-        val baseUrl = userManager.currentUser.blockingGet().baseUrl!!
         viewModelScope.launch(Dispatchers.IO) {
             for ((model, unreadMessages) in current) {
                 if (unreadMessages > 0) {
-                    updateRoomMessage(model, unreadMessages, credentials, baseUrl)
+                    chatRepository.updateRoomMessages(model.internalId, unreadMessages)
                 }
             }
         }
-    }
-
-    private suspend fun updateRoomMessage(model: ConversationModel, limit: Int, credentials: String, baseUrl: String) {
-        val urlForChatting = ApiUtils.getUrlForChat(1, baseUrl, model.token) // FIXME v1?
-        chatRepository.setData(model, credentials, urlForChatting)
-        chatRepository.updateRoomMessages(model.internalId, limit)
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
