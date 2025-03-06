@@ -9,7 +9,6 @@
 package com.nextcloud.talk.contacts
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.compose.material3.MaterialTheme
@@ -19,8 +18,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -36,7 +37,7 @@ class ContactsActivityCompose : BaseActivity() {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
         setContent {
-            val isAddParticipants = intent.getBooleanExtra("isAddParticipants", false)
+            val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
             if (isAddParticipants) {
                 contactsViewModel.updateShareTypes(
@@ -50,14 +51,10 @@ class ContactsActivityCompose : BaseActivity() {
             }
             val colorScheme = viewThemeUtils.getColorScheme(this)
             val uiState = contactsViewModel.contactsViewState.collectAsStateWithLifecycle()
+
             val selectedParticipants = remember {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    intent.getParcelableArrayListExtra("selectedParticipants", AutocompleteUser::class.java)
-                        ?: emptyList()
-                } else {
-                    @Suppress("DEPRECATION")
-                    intent.getParcelableArrayListExtra("selectedParticipants") ?: emptyList()
-                }
+                intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
+                    ?: emptyList()
             }.toSet().toMutableList()
             contactsViewModel.updateSelectedParticipants(selectedParticipants)
 

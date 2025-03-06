@@ -247,10 +247,6 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".contacts.ContactsActivity"
-            android:theme="@style/AppTheme" />
-
-        <activity
             android:name=".openconversations.ListOpenConversationsActivity"
             android:theme="@style/AppTheme" />
 
