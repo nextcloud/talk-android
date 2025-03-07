@@ -153,6 +153,7 @@
     <string name="nc_common_disabled">Désactivé</string>
     <string name="nc_common_dismiss">Ignorer</string>
     <string name="nc_common_error_sorry">Désolé, quelque chose s’est mal passé !</string>
+    <string name="nc_common_more_options">Plus d\'options</string>
     <string name="nc_common_set">Sauver</string>
     <string name="nc_common_skip">Ignorer</string>
     <string name="nc_common_unknown">Inconnu</string>

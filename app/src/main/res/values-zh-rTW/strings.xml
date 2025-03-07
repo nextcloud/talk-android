@@ -153,6 +153,7 @@
     <string name="nc_common_disabled">已停用</string>
     <string name="nc_common_dismiss">取消</string>
     <string name="nc_common_error_sorry">抱歉，發生了一些問題！</string>
+    <string name="nc_common_more_options">更多選項</string>
     <string name="nc_common_set">設定</string>
     <string name="nc_common_skip">跳過</string>
     <string name="nc_common_unknown">未知</string>
