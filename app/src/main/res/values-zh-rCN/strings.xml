@@ -124,6 +124,7 @@
     <string name="nc_common_disabled">已禁用</string>
     <string name="nc_common_dismiss">不予理会</string>
     <string name="nc_common_error_sorry">抱歉，出问题了！</string>
+    <string name="nc_common_more_options">更多选项</string>
     <string name="nc_common_set">设置</string>
     <string name="nc_common_skip">跳过</string>
     <string name="nc_common_unknown">未知</string>

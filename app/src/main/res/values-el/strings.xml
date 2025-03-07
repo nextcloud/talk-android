@@ -87,6 +87,7 @@
     <string name="nc_common_disabled">Απενεργοποιημένο</string>
     <string name="nc_common_dismiss">Τους ζυγούς λύσατε!</string>
     <string name="nc_common_error_sorry">Συγνώμη, κάτι πήγε στραβά!</string>
+    <string name="nc_common_more_options">Περισσότερες επιλογές</string>
     <string name="nc_common_set">Ορισμός</string>
     <string name="nc_common_skip">Παράλειψη</string>
     <string name="nc_common_unknown">Άγνωστο</string>
