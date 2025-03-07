@@ -42,8 +42,8 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.os.bundleOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -1373,9 +1373,11 @@ class ConversationsListActivity :
                 MessageResultItem.VIEW_TYPE -> {
                     val messageItem: MessageResultItem = item as MessageResultItem
                     val token = messageItem.messageEntry.conversationToken
-                    val conversationName = (conversationItems.first {
-                        (it is ConversationItem) && it.model.token == token
-                    } as ConversationItem).model.displayName
+                    val conversationName = (
+                        conversationItems.first {
+                            (it is ConversationItem) && it.model.token == token
+                        } as ConversationItem
+                        ).model.displayName
 
                     binding.genericComposeView.apply {
                         val shouldDismiss = mutableStateOf(false)

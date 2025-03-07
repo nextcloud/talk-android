@@ -92,7 +92,7 @@ class ContextChatCompose(val bundle: Bundle) {
                 )
             ) {
                 Surface(
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Column(
                         modifier = Modifier

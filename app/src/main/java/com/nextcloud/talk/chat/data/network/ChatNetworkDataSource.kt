@@ -75,9 +75,5 @@ interface ChatNetworkDataSource {
         messageId: String,
         limit: Int
     ): List<ChatMessageJson>
-    suspend fun getOpenGraph(
-        credentials: String,
-        baseUrl: String,
-        extractedLinkToPreview: String
-    ): Reference?
+    suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
 }
