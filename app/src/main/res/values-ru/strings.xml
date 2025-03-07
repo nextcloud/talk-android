@@ -134,6 +134,7 @@
     <string name="nc_common_disabled">Отключено</string>
     <string name="nc_common_dismiss">Отклонить</string>
     <string name="nc_common_error_sorry">Что-то пошло не так :(</string>
+    <string name="nc_common_more_options">Дополнительные параметры</string>
     <string name="nc_common_set">Установить</string>
     <string name="nc_common_skip">Пропустить</string>
     <string name="nc_common_unknown">Неизвестно</string>

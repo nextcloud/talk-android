@@ -153,6 +153,7 @@
     <string name="nc_common_disabled">Wyłączone</string>
     <string name="nc_common_dismiss">Odrzuć</string>
     <string name="nc_common_error_sorry">Przepraszamy, coś poszło nie tak!</string>
+    <string name="nc_common_more_options">Więcej opcji</string>
     <string name="nc_common_set">Ustaw</string>
     <string name="nc_common_skip">Pomiń</string>
     <string name="nc_common_unknown">Nieznany</string>
