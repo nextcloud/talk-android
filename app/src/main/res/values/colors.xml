@@ -53,7 +53,6 @@
     <color name="call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
     <color name="textColorMaxContrast">#767676</color>
-    <color name="colorBackgroundDarker">#DBDBDB</color>
 
     <color name="fg_default">#666666</color>
     <color name="fg_inverse">#FFFFFF</color>
