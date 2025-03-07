@@ -64,6 +64,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
         withNetworkParams: Bundle
     ): Job
 
+    suspend fun updateRoomMessages(internalConversationId: String, limit: Int)
+
     /**
      * Long polls the server for any updates to the chat, if found, it synchronizes
      * the database with the server and emits the new messages to [messageFlow],
