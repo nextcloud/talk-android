@@ -82,7 +82,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.RoomUiState
@@ -1252,7 +1252,7 @@ class ConversationsListActivity :
             conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
-        val intent = Intent(context, ContactsActivityCompose::class.java)
+        val intent = Intent(context, ContactsActivity::class.java)
         startActivity(intent)
     }
 

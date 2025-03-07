@@ -25,7 +25,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ContactsActivityCompose : BaseActivity() {
+class ContactsActivity : BaseActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -73,7 +73,7 @@ class ContactsActivityCompose : BaseActivity() {
 
 class CompanionClass {
     companion object {
-        internal val TAG = ContactsActivityCompose::class.simpleName
+        internal val TAG = ContactsActivity::class.simpleName
         internal const val ROOM_TYPE_ONE_ONE = "1"
     }
 }

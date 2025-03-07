@@ -84,8 +84,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.components.SetupSystemBars
-import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -379,7 +379,7 @@ fun AddParticipants(
                     modifier = Modifier
                         .padding(start = 16.dp, bottom = 16.dp)
                         .clickable {
-                            val intent = Intent(context, ContactsActivityCompose::class.java)
+                            val intent = Intent(context, ContactsActivity::class.java)
                             intent.putParcelableArrayListExtra(
                                 "selectedParticipants",
                                 participants as ArrayList<AutocompleteUser>
@@ -417,7 +417,7 @@ fun AddParticipants(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
-                    val intent = Intent(context, ContactsActivityCompose::class.java)
+                    val intent = Intent(context, ContactsActivity::class.java)
                     intent.putExtra(BundleKeys.KEY_ADD_PARTICIPANTS, true)
                     launcher.launch(intent)
                 },

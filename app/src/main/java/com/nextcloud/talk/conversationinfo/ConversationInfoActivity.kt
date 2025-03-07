@@ -53,7 +53,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
 import com.nextcloud.talk.data.user.model.User
@@ -694,7 +694,7 @@ class ConversationInfoActivity :
         bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
-        val intent = Intent(this, ContactsActivityCompose::class.java)
+        val intent = Intent(this, ContactsActivity::class.java)
         intent.putExtras(bundle)
 
         addParticipantsResult.launch(intent)
