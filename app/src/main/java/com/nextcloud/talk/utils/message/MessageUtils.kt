@@ -29,6 +29,18 @@ import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
 
 class MessageUtils(val context: Context) {
+
+    private lateinit var userGroups: Set<String>
+    private lateinit var userCircles: Set<String>
+
+    fun setUserGroups(groups: Set<String>) {
+        this.userGroups = groups
+    }
+
+    fun setUserCircles(circles: Set<String>) {
+        this.userCircles = circles
+    }
+
     fun enrichChatReplyMessageText(
         context: Context,
         message: ChatMessage,
@@ -111,7 +123,11 @@ class MessageUtils(val context: Context) {
             if (individualHashMap != null) {
                 when (individualHashMap["type"]) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
-                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
+                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId ||
+                            userGroups.contains(individualHashMap["name"]) ||
+                            userCircles.contains(individualHashMap["name"]) ||
+                            individualHashMap["type"] == "call"
+                        ) {
                             R.xml.chip_you
                         } else {
                             R.xml.chip_others
