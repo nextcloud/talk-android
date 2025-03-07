@@ -53,6 +53,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
@@ -151,7 +152,6 @@ class ConversationInfoActivity :
                 data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
                 return data.build()
             }
-
             return null
         }
 
@@ -339,7 +339,7 @@ class ConversationInfoActivity :
     fun showOptionsMenu() {
         if (::optionsMenu.isInitialized) {
             optionsMenu.clear()
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)) {
                 menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
             }
         }
@@ -403,7 +403,7 @@ class ConversationInfoActivity :
     }
 
     private fun setupWebinaryView() {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
             webinaryRoomType(conversation!!) &&
             ConversationUtils.canModerate(conversation!!, spreedCapabilities)
         ) {
@@ -682,16 +682,22 @@ class ConversationInfoActivity :
 
     private fun selectParticipantsToAdd() {
         val bundle = Bundle()
-        val existingParticipantsId = arrayListOf<String>()
+        val existingParticipants = ArrayList<AutocompleteUser>()
 
         for (userItem in userItems) {
             if (userItem.model.calculatedActorType == USERS) {
-                existingParticipantsId.add(userItem.model.calculatedActorId!!)
+                val user = AutocompleteUser(
+                    userItem.model.calculatedActorId!!,
+                    userItem.model.displayName,
+                    userItem.model.calculatedActorType.name.lowercase()
+                )
+                existingParticipants.add(user)
             }
         }
 
         bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
-        bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
+        bundle.putParcelableArrayList("selectedParticipants", existingParticipants)
+        bundle.putBoolean(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, true)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
         val intent = Intent(this, ContactsActivity::class.java)
@@ -851,7 +857,7 @@ class ConversationInfoActivity :
 
         setUpNotificationSettings(databaseStorageModule!!)
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
             conversationCopy.remoteServer.isNullOrEmpty()
         ) {
             binding.sharedItemsButton.setOnClickListener { showSharedItems() }
@@ -861,7 +867,7 @@ class ConversationInfoActivity :
 
         if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
             binding.addParticipantsAction.visibility = VISIBLE
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(
+            if (hasSpreedFeatureCapability(
                     spreedCapabilities,
                     SpreedFeatures.CLEAR_HISTORY
                 ) && conversationCopy.canDeleteConversation
@@ -1093,7 +1099,7 @@ class ConversationInfoActivity :
 
     private fun initExpiringMessageOption() {
         if (ConversationUtils.isParticipantOwnerOrModerator(conversation!!) &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
             val value = databaseStorageModule!!.getString("conversation_settings_dropdown", "")
@@ -1116,7 +1122,7 @@ class ConversationInfoActivity :
 
     private fun adjustNotificationLevelUI() {
         if (conversation != null) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.alpha = 1.0f
 
@@ -1151,7 +1157,7 @@ class ConversationInfoActivity :
 
     private fun setProperNotificationValue(conversation: ConversationModel?) {
         if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.setText(
                     resources.getString(R.string.nc_notify_me_always)
                 )

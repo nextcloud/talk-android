@@ -18,6 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -38,7 +39,9 @@ class ContactsActivity : BaseActivity() {
         contactsViewModel = ViewModelProvider(this, viewModelFactory)[ContactsViewModel::class.java]
         setContent {
             val isAddParticipants = intent.getBooleanExtra(BundleKeys.KEY_ADD_PARTICIPANTS, false)
+            val hideAlreadyAddedParticipants = intent.getBooleanExtra(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, false)
             contactsViewModel.updateIsAddParticipants(isAddParticipants)
+            contactsViewModel.hideAlreadyAddedParticipants(hideAlreadyAddedParticipants)
             if (isAddParticipants) {
                 contactsViewModel.updateShareTypes(
                     listOf(
@@ -75,5 +78,6 @@ class CompanionClass {
     companion object {
         internal val TAG = ContactsActivity::class.simpleName
         internal const val ROOM_TYPE_ONE_ONE = "1"
+        const val KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS: String = "KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS"
     }
 }

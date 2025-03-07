@@ -477,6 +477,7 @@ How to translate with transifex:
     <string name="nc_teams">Teams</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
+    <string name="nc_start_group_chat">Start group chat</string>
 
     <string name="nc_owner">Owner</string>
     <string name="nc_moderator">Moderator</string>
