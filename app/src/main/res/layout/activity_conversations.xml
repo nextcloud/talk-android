@@ -37,6 +37,17 @@
             android:visibility="gone"
             tools:visibility="visible" />
 
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/chat_list_maintenance_warning"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/hwSecurityRed"
+            android:gravity="center"
+            android:text="@string/nc_dialog_maintenance_mode_description"
+            android:textColor="@color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/search_toolbar"
             android:layout_width="match_parent"
