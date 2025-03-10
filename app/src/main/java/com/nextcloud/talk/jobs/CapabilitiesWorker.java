@@ -119,8 +119,12 @@ public class CapabilitiesWorker extends Worker {
                 .build()
                 .create(NcApi.class);
 
-            ncApi.getCapabilities(ApiUtils.getCredentials(user.getUsername(), user.getToken()),
-                                  ApiUtils.getUrlForCapabilities(user.getBaseUrl()))
+            String url = "";
+            if (user.getBaseUrl() != null) {
+                url = ApiUtils.getUrlForCapabilities(user.getBaseUrl());
+            }
+
+            ncApi.getCapabilities(ApiUtils.getCredentials(user.getUsername(), user.getToken()), url)
                 .retry(3)
                 .blockingSubscribe(new Observer<CapabilitiesOverall>() {
                     @Override
