@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data.network
 
 import android.os.Bundle
 import android.util.Log
+import androidx.core.os.bundleOf
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -28,6 +29,8 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -292,6 +295,24 @@ class OfflineFirstChatRepository @Inject constructor(
             updateUiForLastCommonRead()
         }
 
+    override suspend fun updateRoomMessages(internalConversationId: String, limit: Int) {
+        val lastKnown = chatDao.getNewestMessageId(internalConversationId)
+
+        Log.d(TAG, "---- updateRoomMessages ------------ with lastKnown: $lastKnown")
+        val fieldMap = getFieldMap(
+            lookIntoFuture = true,
+            timeout = 0,
+            includeLastKnown = false,
+            setReadMarker = false,
+            lastKnown = lastKnown.toInt(),
+            markNotificationAsRead = false
+        )
+
+        val networkParams = bundleOf()
+        networkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
+        sync(networkParams)
+    }
+
     override fun initMessagePolling(initialMessageId: Long): Job =
         scope.launch {
             Log.d(TAG, "---- initMessagePolling ------------")
@@ -430,7 +451,8 @@ class OfflineFirstChatRepository @Inject constructor(
         includeLastKnown: Boolean,
         setReadMarker: Boolean,
         lastKnown: Int?,
-        limit: Int = DEFAULT_MESSAGES_LIMIT
+        limit: Int = DEFAULT_MESSAGES_LIMIT,
+        markNotificationAsRead: Boolean = true
     ): HashMap<String, Int> {
         val fieldMap = HashMap<String, Int>()
 
@@ -448,6 +470,11 @@ class OfflineFirstChatRepository @Inject constructor(
         fieldMap["limit"] = limit
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
+
+        val spreedCapabilities = currentUser.capabilities?.spreedCapability!!
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_KEEP_NOTIFICATIONS)) {
+            fieldMap["markNotificationsAsRead"] = if (markNotificationAsRead) 1 else 0
+        }
 
         return fieldMap
     }
