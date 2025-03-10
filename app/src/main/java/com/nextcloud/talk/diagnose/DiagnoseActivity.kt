@@ -117,9 +117,8 @@ class DiagnoseActivity : BaseActivity() {
                         }
                     }
                 )
+                SetStatusBarColor()
             }
-
-            SetStatusBarColor()
         }
     }
 
