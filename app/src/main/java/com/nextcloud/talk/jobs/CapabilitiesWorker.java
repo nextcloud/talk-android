@@ -120,8 +120,9 @@ public class CapabilitiesWorker extends Worker {
                 .create(NcApi.class);
 
             String url = "";
-            if (user.getBaseUrl() != null) {
-                url = ApiUtils.getUrlForCapabilities(user.getBaseUrl());
+            String baseurl = user.getBaseUrl();
+            if (baseurl != null) {
+                url = ApiUtils.getUrlForCapabilities(baseurl);
             }
 
             ncApi.getCapabilities(ApiUtils.getCredentials(user.getUsername(), user.getToken()), url)
