@@ -20,15 +20,16 @@ import androidx.core.view.WindowCompat
 @Composable
 fun SetStatusBarColor() {
     val view = LocalView.current
-    val isDarkMod = isSystemInDarkTheme()
+    val isDarkMode = isSystemInDarkTheme()
     val statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
 
-    DisposableEffect(isDarkMod) {
+    DisposableEffect(isDarkMode) {
         val activity = view.context as Activity
         activity.window.statusBarColor = statusBarColor
 
         WindowCompat.getInsetsController(activity.window, activity.window.decorView).apply {
-            isAppearanceLightStatusBars = !isDarkMod
+            isAppearanceLightStatusBars = !isDarkMode
+            isAppearanceLightNavigationBars = !isDarkMode
         }
         onDispose { }
     }
