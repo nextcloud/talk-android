@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.components.SetStatusBarColor
+import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import javax.inject.Inject
 
@@ -68,9 +68,8 @@ class ContactsActivityCompose : BaseActivity() {
                     contactsViewModel = contactsViewModel,
                     uiState = uiState.value
                 )
+                SetupSystemBars()
             }
-
-            SetStatusBarColor()
         }
     }
 }

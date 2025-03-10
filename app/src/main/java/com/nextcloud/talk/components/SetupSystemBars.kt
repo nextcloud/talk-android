@@ -10,27 +10,26 @@ package com.nextcloud.talk.components
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.graphics.toArgb
-
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.res.colorResource
 import androidx.core.view.WindowCompat
-import com.nextcloud.talk.R
 
 @Composable
-fun SetStatusBarColor() {
+fun SetupSystemBars() {
     val view = LocalView.current
-    val isDarkMod = isSystemInDarkTheme()
-    val statusBarColor = colorResource(R.color.bg_default).toArgb()
+    val isDarkMode = isSystemInDarkTheme()
+    val statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
 
-    DisposableEffect(isDarkMod) {
+    DisposableEffect(isDarkMode) {
         val activity = view.context as Activity
         activity.window.statusBarColor = statusBarColor
 
         WindowCompat.getInsetsController(activity.window, activity.window.decorView).apply {
-            isAppearanceLightStatusBars = !isDarkMod
+            isAppearanceLightStatusBars = !isDarkMode
+            isAppearanceLightNavigationBars = !isDarkMode
         }
         onDispose { }
     }
