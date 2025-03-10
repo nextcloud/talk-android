@@ -36,6 +36,8 @@ class ContactsViewModel @Inject constructor(
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
+    private var hideAlreadyAddedParticipants: Boolean = false
+
     init {
         getContactsFromSearchParams()
     }
@@ -69,6 +71,10 @@ class ContactsViewModel @Inject constructor(
         _isAddParticipantsView.value = value
     }
 
+    fun hideAlreadyAddedParticipants(value: Boolean) {
+        hideAlreadyAddedParticipants = value
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun getContactsFromSearchParams() {
         _contactsViewState.value = ContactsUiState.Loading
@@ -78,7 +84,12 @@ class ContactsViewModel @Inject constructor(
                     searchQuery.value,
                     shareTypeList
                 )
-                val contactsList: List<AutocompleteUser>? = contacts.ocs!!.data
+                val contactsList: MutableList<AutocompleteUser>? = contacts.ocs!!.data?.toMutableList()
+
+                if (hideAlreadyAddedParticipants) {
+                    contactsList?.removeAll(selectedParticipants.value)
+                }
+
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
