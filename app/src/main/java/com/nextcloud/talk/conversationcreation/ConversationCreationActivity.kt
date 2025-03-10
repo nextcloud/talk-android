@@ -84,7 +84,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.components.SetStatusBarColor
+import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.contacts.ContactsActivityCompose
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -116,7 +116,7 @@ class ConversationCreationActivity : BaseActivity() {
                 colorScheme = colorScheme
             ) {
                 ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
-                SetStatusBarColor()
+                SetupSystemBars()
             }
         }
     }

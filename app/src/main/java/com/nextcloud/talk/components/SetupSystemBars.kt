@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
 @Composable
-fun SetStatusBarColor() {
+fun SetupSystemBars() {
     val view = LocalView.current
     val isDarkMode = isSystemInDarkTheme()
     val statusBarColor = MaterialTheme.colorScheme.surface.toArgb()
