@@ -47,6 +47,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -100,6 +101,7 @@ class ComposeChatAdapter(
     }
 
     companion object {
+        val TAG: String = ComposeChatAdapter::class.java.simpleName
         private val REGULAR_TEXT_SIZE = 16.sp
         private val TIME_TEXT_SIZE = 12.sp
         private val AUTHOR_TEXT_SIZE = 12.sp
@@ -161,10 +163,10 @@ class ComposeChatAdapter(
             modifier = Modifier.padding(16.dp)
         ) {
             items(items) { message ->
-                message.activeUser = currentUser // -_-
+                message.activeUser = currentUser
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
-                        if (!message.isReaction()) {
+                        if (!message.shouldFilter()) {
                             SystemMessage(message)
                         }
                     }
@@ -200,7 +202,7 @@ class ComposeChatAdapter(
                     }
 
                     else -> {
-                        Log.d("Julius", "Unknown message type: $type")
+                        Log.d(TAG, "Unknown message type: $type")
                     }
                 }
             }
@@ -215,6 +217,22 @@ class ComposeChatAdapter(
             }
         }
     }
+
+    private fun ChatMessage.shouldFilter(): Boolean =
+        this.isReaction() ||
+            this.isPollVotedMessage() ||
+            this.isEditMessage() ||
+            this.isInfoMessageAboutDeletion()
+
+    private fun ChatMessage.isInfoMessageAboutDeletion(): Boolean =
+        this.parentMessageId != null &&
+            this.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_DELETED
+
+    private fun ChatMessage.isPollVotedMessage(): Boolean =
+        this.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
+
+    private fun ChatMessage.isEditMessage(): Boolean =
+        this.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_EDITED
 
     private fun ChatMessage.isReaction(): Boolean =
         systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -263,7 +281,8 @@ class ComposeChatAdapter(
                             color = color,
                             start = Offset(0f, this.size.height / QUOTE_SHAPE_OFFSET),
                             end = Offset(0f, this.size.height - (this.size.height / QUOTE_SHAPE_OFFSET)),
-                            strokeWidth = 4f
+                            strokeWidth = 4f,
+                            cap = StrokeCap.Round
                         )
 
                         drawContent()
@@ -545,7 +564,8 @@ class ComposeChatAdapter(
                                 color = color,
                                 start = Offset.Zero,
                                 end = Offset(0f, this.size.height),
-                                strokeWidth = 4f
+                                strokeWidth = 4f,
+                                cap = StrokeCap.Round
                             )
 
                             drawContent()
