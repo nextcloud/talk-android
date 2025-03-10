@@ -68,9 +68,8 @@ class ContactsActivityCompose : BaseActivity() {
                     contactsViewModel = contactsViewModel,
                     uiState = uiState.value
                 )
+                SetStatusBarColor()
             }
-
-            SetStatusBarColor()
         }
     }
 }
