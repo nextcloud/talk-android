@@ -92,7 +92,10 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.util.Calendar
@@ -126,7 +129,6 @@ class ConversationInfoActivity :
     private lateinit var conversationUser: User
     private var hasAvatarSpacing: Boolean = false
     private lateinit var credentials: String
-    private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
     private var databaseStorageModule: DatabaseStorageModule? = null
@@ -193,7 +195,30 @@ class ConversationInfoActivity :
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
         binding.listBansButton.setOnClickListener { listBans() }
 
-        viewModel.getRoom(conversationUser, conversationToken)
+        CoroutineScope(Dispatchers.IO).launch {
+            val model = viewModel.getRoomBlocking(conversationUser, conversationToken)
+            spreedCapabilities = viewModel.getCapabilitiesBlocking(conversationUser, conversationToken, model)
+            conversation = model
+
+            withContext(Dispatchers.Main) {
+                if (ConversationUtils.isNoteToSelfConversation(conversation)) {
+                    binding.shareConversationButton.visibility = GONE
+                }
+
+                val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
+                binding.shareConversationButton.setOnClickListener {
+                    ShareUtils.shareConversationLink(
+                        this@ConversationInfoActivity,
+                        conversationUser.baseUrl,
+                        conversation?.token,
+                        conversation?.name,
+                        canGeneratePrettyURL
+                    )
+                }
+
+                handleConversation()
+            }
+        }
 
         themeTextViews()
         themeSwitchPreferences()
@@ -205,20 +230,6 @@ class ConversationInfoActivity :
     }
 
     private fun initObservers() {
-        initViewStateObserver()
-
-        viewModel.getCapabilitiesViewState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
-                    spreedCapabilities = state.spreedCapabilities
-
-                    handleConversation()
-                }
-
-                else -> {}
-            }
-        }
-
         viewModel.getBanActorState.observe(this) { state ->
             when (state) {
                 is ConversationInfoViewModel.BanActorSuccessState -> {
@@ -260,36 +271,6 @@ class ConversationInfoActivity :
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", uiState.exception)
                 }
-            }
-        }
-    }
-
-    private fun initViewStateObserver() {
-        viewModel.viewState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.GetRoomSuccessState -> {
-                    conversation = state.conversationModel
-                    viewModel.getCapabilities(conversationUser, conversationToken, conversation!!)
-                    if (ConversationUtils.isNoteToSelfConversation(conversation)) {
-                        binding.shareConversationButton.visibility = GONE
-                    }
-                    val canGeneratePrettyURL = CapabilitiesUtil.canGeneratePrettyURL(conversationUser)
-                    binding.shareConversationButton.setOnClickListener {
-                        ShareUtils.shareConversationLink(
-                            this,
-                            conversationUser.baseUrl,
-                            conversation?.token,
-                            conversation?.name,
-                            canGeneratePrettyURL
-                        )
-                    }
-                }
-
-                is ConversationInfoViewModel.GetRoomErrorState -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                }
-
-                else -> {}
             }
         }
     }
@@ -763,7 +744,7 @@ class ConversationInfoActivity :
         }
     }
 
-    @Suppress("LongMethod")
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     private fun handleConversation() {
         val conversationCopy = conversation!!
 
