@@ -195,6 +195,18 @@ class ConversationInfoActivity :
         binding.addParticipantsAction.setOnClickListener { addParticipants() }
         binding.listBansButton.setOnClickListener { listBans() }
 
+        updateRoomAndCapabilities()
+
+        themeTextViews()
+        themeSwitchPreferences()
+
+        binding.addParticipantsAction.visibility = GONE
+
+        binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
+        initObservers()
+    }
+
+    private fun updateRoomAndCapabilities() {
         CoroutineScope(Dispatchers.IO).launch {
             val model = viewModel.getRoomBlocking(conversationUser, conversationToken)
             spreedCapabilities = viewModel.getCapabilitiesBlocking(conversationUser, conversationToken, model)
@@ -218,15 +230,11 @@ class ConversationInfoActivity :
 
                 handleConversation()
             }
+        }.invokeOnCompletion { cause ->
+            if (cause != null) {
+                Log.d(TAG, "Error retrieving room and capabilities $cause")
+            }
         }
-
-        themeTextViews()
-        themeSwitchPreferences()
-
-        binding.addParticipantsAction.visibility = GONE
-
-        binding.progressBar.let { viewThemeUtils.platform.colorCircularProgressBar(it, ColorRole.PRIMARY) }
-        initObservers()
     }
 
     private fun initObservers() {
@@ -800,8 +808,9 @@ class ConversationInfoActivity :
                     binding.archiveConversationText.text = resources.getString(R.string.unarchive_conversation)
                     binding.archiveConversationTextHint.text = resources.getString(R.string.unarchive_hint)
                 }
+            }.invokeOnCompletion {
+                updateRoomAndCapabilities()
             }
-            viewModel.getRoom(conversationUser, conversationToken)
         }
 
         if (conversation!!.hasArchived) {
