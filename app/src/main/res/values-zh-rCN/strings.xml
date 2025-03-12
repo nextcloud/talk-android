@@ -298,6 +298,7 @@
     <string name="nc_promote">设置为主持人</string>
     <string name="nc_public_call">新的公开对话</string>
     <string name="nc_public_call_explanation">公共对话可以让你通过一个特别制作的链接邀请外面的人。</string>
+    <string name="nc_public_call_status">公开对话</string>
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_push_to_talk">按键讲话</string>
     <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
