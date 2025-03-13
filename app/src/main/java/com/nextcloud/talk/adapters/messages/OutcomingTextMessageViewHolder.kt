@@ -95,11 +95,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var isBubbled = true
+        val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
+        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         if (!hasCheckboxes) {
             realView.isSelected = false
-            val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
             layoutParams.isWrapBefore = false
-            var textSize = context.resources.getDimension(R.dimen.chat_text_size)
             viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
 
             var processedMessageText = messageUtils.enrichChatMessageText(
@@ -126,7 +126,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 isBubbled = false
             }
 
-            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             binding.messageTime.layoutParams = layoutParams
             viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
             binding.messageText.text = processedMessageText
@@ -134,7 +133,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }else{
             binding.messageText.text = ""
         }
-
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
