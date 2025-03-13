@@ -1045,6 +1045,10 @@ class ConversationsListActivity :
         binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
+    private fun showMaintenanceModeWarning(show: Boolean) {
+        binding.chatListMaintenanceWarning.visibility = if (show) View.VISIBLE else View.GONE
+    }
+
     private fun handleUI(show: Boolean) {
         binding.floatingActionButton.isEnabled = show
         binding.searchText.isEnabled = show
@@ -1133,6 +1137,8 @@ class ConversationsListActivity :
     private fun prepareViews() {
         hideLogoForBrandedClients()
 
+        showMaintenanceModeWarning(false)
+
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
@@ -1156,6 +1162,7 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
+            showMaintenanceModeWarning(false)
             fetchRooms()
             fetchPendingInvitations()
         }
@@ -1931,44 +1938,7 @@ class ConversationsListActivity :
 
     private fun showServiceUnavailableDialog(httpException: HttpException) {
         if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            binding.floatingActionButton.let {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog.colorMaterialAlertDialogIcon(
-                            context,
-                            R.drawable.ic_info_white_24dp
-                        )
-                    )
-                    .setTitle(R.string.nc_dialog_maintenance_mode)
-                    .setMessage(R.string.nc_dialog_maintenance_mode_description)
-                    .setCancelable(false)
-                    .setNegativeButton(R.string.nc_settings_remove_account) { _, _ ->
-                        deleteUserAndRestartApp()
-                    }
-
-                if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
-                    dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
-                        val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                        newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
-                    }
-                }
-
-                if (resources!!.getBoolean(R.bool.multiaccount_support)) {
-                    dialogBuilder.setNeutralButton(R.string.nc_account_chooser_add_account) { _, _ ->
-                        val intent = Intent(this, ServerSelectionActivity::class.java)
-                        intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
-                        startActivity(intent)
-                    }
-                }
-
-                viewThemeUtils.dialog.colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
-                )
-            }
+            showMaintenanceModeWarning(true)
         } else {
             showErrorDialog()
         }
