@@ -41,6 +41,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Date
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -77,13 +78,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
-
         setAvatarAndAuthorOnMessageItem(message)
         colorizeMessageBubble(message)
-
         itemView.isSelected = false
         val user = currentUserProvider.currentUser.blockingGet()
-
         val hasCheckboxes = processCheckboxes(
             message,
             user
@@ -122,40 +120,46 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             binding.messageText.text = processedMessageText
 
-            if (message.lastEditTimestamp != 0L && !message.isDeleted) {
-                binding.messageEditIndicator.visibility = View.VISIBLE
-                binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
-            } else {
-                binding.messageEditIndicator.visibility = View.GONE
-                binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
-            }
-
-            // parent message handling
-            if (!message.isDeleted && message.parentMessageId != null) {
-                processParentMessage(message)
-                binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-            } else {
-                binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-            }
-
-            itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
-
-            Reaction().showReactions(
-                message,
-                ::clickOnReaction,
-                ::longClickOnReaction,
-                binding.reactions,
-                binding.messageText.context,
-                false,
-                viewThemeUtils
-            )
+        }else{
+            binding.messageText.text = ""
         }
+
+        if (message.lastEditTimestamp != 0L && !message.isDeleted) {
+            binding.messageEditIndicator.visibility = View.VISIBLE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
+        } else {
+            binding.messageEditIndicator.visibility = View.GONE
+            binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
+        }
+        // parent message handling
+        if (!message.isDeleted && message.parentMessageId != null) {
+            processParentMessage(message)
+            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+        } else {
+            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        }
+
+        itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+
+        Reaction().showReactions(
+            message,
+            ::clickOnReaction,
+            ::longClickOnReaction,
+            binding.reactions,
+            binding.messageText.context,
+            false,
+            viewThemeUtils
+        )
     }
 
     private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
+        val chatActivity = commonMessageInterface as ChatActivity
         val message = chatMessage.message!!.toSpanned()
         val messageTextView = binding.messageText
         val checkBoxContainer = binding.checkboxContainer
+        val isOlderThanTwentyFourHours = chatMessage
+            .createdAt
+            .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
         checkBoxContainer.removeAllViews()
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
@@ -178,6 +182,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             val checkBox = CheckBox(checkBoxContainer.context).apply {
                 text = taskText
                 this.isChecked = isChecked
+                this.isEnabled = !isOlderThanTwentyFourHours &&  chatMessage.actorType == "bots" || chatActivity
+                    .userAllowedByPrivilages(chatMessage)
                 setOnCheckedChangeListener { _, _ ->
                     updateCheckboxStates(chatMessage, user, checkboxList)
                 }
@@ -186,7 +192,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             checkboxList.add(checkBox)
             viewThemeUtils.platform.themeCheckbox(checkBox)
         }
-
         checkBoxContainer.visibility = View.VISIBLE
         return true
     }
@@ -347,5 +352,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
         private const val CHECKED_GROUP_INDEX = 2
         private const val TASK_TEXT_GROUP_INDEX = 3
+        private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
