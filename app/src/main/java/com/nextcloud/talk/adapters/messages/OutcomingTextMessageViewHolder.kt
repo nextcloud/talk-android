@@ -95,12 +95,15 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var isBubbled = true
+        val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
+        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         if (!hasCheckboxes) {
             realView.isSelected = false
-            val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
             layoutParams.isWrapBefore = false
-            var textSize = context.resources.getDimension(R.dimen.chat_text_size)
             viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
+            binding.messageText.visibility = View.VISIBLE
+            binding.checkboxContainer.visibility = View.GONE
 
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
@@ -126,15 +129,15 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 isBubbled = false
             }
 
-            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             binding.messageTime.layoutParams = layoutParams
             viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
             binding.messageText.text = processedMessageText
 
         }else{
-            binding.messageText.text = ""
+            binding.messageText.visibility = View.GONE
+            binding.checkboxContainer.visibility = View.VISIBLE
         }
-
+        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.lastEditTimestamp!!)
@@ -267,7 +270,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         var updatedMessage = originalMessage
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
 
-        checkboxes.forEach { checkBox ->
+        checkboxes.forEach { _ ->
             updatedMessage = regex.replace(updatedMessage) { matchResult ->
                 val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
                 val checkboxState = if (checkboxes.find { it.text == taskText }?.isChecked == true) "X" else " "
@@ -359,6 +362,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
         this.commonMessageInterface = commonMessageInterface
+    }
+
+    override fun viewDetached() {
+        super.viewDetached()
+        job?.cancel()
     }
 
     companion object {

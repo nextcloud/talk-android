@@ -92,6 +92,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
         if (!hasCheckboxes) {
+            binding.messageText.visibility = View.VISIBLE
+            binding.checkboxContainer.visibility = View.GONE
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
                 message,
@@ -121,7 +123,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageText.text = processedMessageText
 
         }else{
-            binding.messageText.text = ""
+            binding.messageText.visibility = View.GONE
+            binding.checkboxContainer.visibility = View.VISIBLE
         }
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
@@ -233,7 +236,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         var updatedMessage = originalMessage
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
 
-        checkboxes.forEach { checkBox ->
+        checkboxes.forEach { _ ->
             updatedMessage = regex.replace(updatedMessage) { matchResult ->
                 val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
                 val checkboxState = if (checkboxes.find { it.text == taskText }?.isChecked == true) "X" else " "
@@ -347,6 +350,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         this.commonMessageInterface = commonMessageInterface
     }
 
+    override fun viewDetached() {
+        super.viewDetached()
+        job?.cancel()
+    }
+
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
@@ -355,3 +363,5 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
+
+
