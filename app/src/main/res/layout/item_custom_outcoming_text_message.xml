@@ -43,6 +43,17 @@
             android:textIsSelectable="false"
             tools:text="Talk to you later!" />
 
+        <LinearLayout
+            android:id="@+id/checkboxContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/messageText"
+            android:layout_marginTop="8dp"
+            android:visibility="gone">
+
+        </LinearLayout>
+
         <TextView
             android:id="@id/messageTime"
             android:layout_width="wrap_content"
