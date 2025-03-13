@@ -94,29 +94,14 @@ class OutcomingTextMessageViewHolder(itemView: View) :
     }
 
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
-        realView.isSelected = false
-        val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
-        layoutParams.isWrapBefore = false
-        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
-        var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         var isBubbled = true
-        if (
-            (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
-            TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
-        ) {
-            textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
-            layoutParams.isWrapBefore = true
-            realView.isSelected = true
-            isBubbled = false
-        }
-
-        setBubbleOnChatMessage(message)
-
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageTime.layoutParams = layoutParams
-        viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
-
         if (!hasCheckboxes) {
+            realView.isSelected = false
+            val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
+            layoutParams.isWrapBefore = false
+            var textSize = context.resources.getDimension(R.dimen.chat_text_size)
+            viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
             var processedMessageText = messageUtils.enrichChatMessageText(
                 binding.messageText.context,
                 message,
@@ -130,7 +115,22 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 message,
                 itemView
             )
+
+            if (
+                (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
+                TextMatchers.isMessageWithSingleEmoticonOnly(message.text)
+            ) {
+                textSize = (textSize * TEXT_SIZE_MULTIPLIER).toFloat()
+                layoutParams.isWrapBefore = true
+                realView.isSelected = true
+                isBubbled = false
+            }
+
+            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+            binding.messageTime.layoutParams = layoutParams
+            viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
             binding.messageText.text = processedMessageText
+
         }else{
             binding.messageText.text = ""
         }
@@ -142,7 +142,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
-
+        setBubbleOnChatMessage(message)
         // parent message handling
         if (!message.isDeleted && message.parentMessageId != null) {
             processParentMessage(message)
