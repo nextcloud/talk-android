@@ -62,6 +62,7 @@
     <string name="menu_item_sort_by_size_biggest_first">大文件在前</string>
     <string name="menu_item_sort_by_size_smallest_first">小文件在前</string>
     <string name="message_deleted_by_you">消息被你删除了</string>
+    <string name="message_last_edited_by">由 %1$s 编辑</string>
     <string name="message_poll_tap_to_open">点击打开投票</string>
     <string name="message_search_begin_empty">无搜索结果</string>
     <string name="message_search_begin_typing">开始输入以搜索…</string>
@@ -191,6 +192,7 @@
     <string name="nc_external_server_failed">获取网络设置失败</string>
     <string name="nc_federation_invitation_accept">接受</string>
     <string name="nc_federation_invitation_reject">拒绝</string>
+    <string name="nc_federation_no_invitations">没有待处理的邀请</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要文件访问权限</string>
     <string name="nc_filter">筛选对话</string>
@@ -308,6 +310,7 @@
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_remove_group_and_members">移除群组和成员</string>
     <string name="nc_remove_participant">移除参与者</string>
+    <string name="nc_remove_team_and_members">移除团队和成员</string>
     <string name="nc_rename">重命名对话</string>
     <string name="nc_rename_confirm">重命名</string>
     <string name="nc_reply">回复</string>
