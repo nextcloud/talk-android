@@ -211,7 +211,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -785,7 +784,7 @@ class ChatActivity :
                 .onEach { triple ->
                     val lookIntoFuture = triple.first
                     val setUnreadMessagesMarker = triple.second
-                    var chatMessageList = triple.third
+                    var chatMessageList = triple.third.filterDuplicates()
 
                     chatMessageList = handleSystemMessages(chatMessageList)
                     if (chatMessageList.isEmpty()) {
@@ -2730,6 +2729,17 @@ class ChatActivity :
             (message2.actorId == message1.actorId) &&
             (!isLessThan5Min) &&
             (message2.lastEditTimestamp == 0L || message1.lastEditTimestamp == 0L)
+    }
+
+    private fun List<ChatMessage>.filterDuplicates(): List<ChatMessage> {
+        val newlist = mutableListOf<ChatMessage>()
+        val currentList = adapter!!.items.filter { it.item is ChatMessage }.map { it.item as ChatMessage }.reversed()
+        for (message in this) {
+            if (!currentList.any { it.id == message.id }) {
+                newlist.add(message)
+            }
+        }
+        return newlist
     }
 
     private fun determinePreviousMessageIds(chatMessageList: List<ChatMessage>) {
