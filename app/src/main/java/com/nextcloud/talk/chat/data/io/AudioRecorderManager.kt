@@ -32,7 +32,7 @@ import kotlin.math.log10
  * to manage the AudioRecord instance and the asynchronous updating of the MicInputCloud. Allows access to the raw
  * bytes recorded from hardware.
  */
-class AudioRecorderManager : LifecycleAwareManager {
+class AudioRecorderManager : LifecycleAwareManager() {
 
     companion object {
         val TAG: String = AudioRecorderManager::class.java.simpleName
@@ -126,14 +126,6 @@ class AudioRecorderManager : LifecycleAwareManager {
                 bufferSize
             )
         }
-    }
-
-    override fun handleOnPause() {
-        // unused atm
-    }
-
-    override fun handleOnResume() {
-        // unused atm
     }
 
     override fun handleOnStop() {

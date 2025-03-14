@@ -211,7 +211,6 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -493,8 +492,13 @@ class ChatActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        chatViewModel.handleOrientationChange()
+        chatViewModel.handleSavedInstance()
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(inState: Bundle) {
+        chatViewModel.handleRestoreInstance()
+        super.onRestoreInstanceState(inState)
     }
 
     override fun onStop() {
