@@ -404,6 +404,7 @@
     <string name="today">Σήμερα</string>
     <string name="tomorrow">Αύριο</string>
     <string name="translate">Μετάφραση</string>
+    <string name="translation_detect_language">Ανίχνευση γλώσσας</string>
     <string name="translation_device_settings">Ρυθμίσεις συσκευής</string>
     <string name="translation_error_message">Δεν ήταν δυνατός ο εντοπισμός της γλώσσας</string>
     <string name="translation_from">Από</string>
