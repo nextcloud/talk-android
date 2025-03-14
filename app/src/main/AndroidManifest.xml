@@ -126,7 +126,7 @@
             android:name=".account.WebViewLoginActivity"
             android:theme="@style/AppTheme" />
 
-        <activity android:name=".contacts.ContactsActivityCompose"
+        <activity android:name=".contacts.ContactsActivity"
             android:theme="@style/AppTheme"/>
 
         <activity android:name=".conversationcreation.ConversationCreationActivity"
@@ -244,10 +244,6 @@
 
         <activity
             android:name=".conversationinfoedit.ConversationInfoEditActivity"
-            android:theme="@style/AppTheme" />
-
-        <activity
-            android:name=".contacts.ContactsActivity"
             android:theme="@style/AppTheme" />
 
         <activity

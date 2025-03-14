@@ -11,6 +11,7 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -21,6 +22,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
@@ -49,6 +52,8 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
+import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.ConversationInfoEditActivity
@@ -56,14 +61,17 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationInfoBinding
 import com.nextcloud.talk.databinding.DialogBanParticipantBinding
 import com.nextcloud.talk.events.EventStatus
+import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
+import com.nextcloud.talk.jobs.AddParticipantsToConversation
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.converters.DomainEnumNotificationLevelConverter
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
@@ -126,12 +134,9 @@ class ConversationInfoActivity :
     private lateinit var conversationUser: User
     private var hasAvatarSpacing: Boolean = false
     private lateinit var credentials: String
-    private var roomDisposable: Disposable? = null
     private var participantsDisposable: Disposable? = null
 
     private var databaseStorageModule: DatabaseStorageModule? = null
-
-    // private var conversation: Conversation? = null
     private var conversation: ConversationModel? = null
 
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
@@ -147,9 +152,20 @@ class ConversationInfoActivity :
                 data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
                 return data.build()
             }
-
             return null
         }
+
+    private val addParticipantsResult = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        executeIfResultOk(it) { intent ->
+            val selectedParticipants =
+                intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
+                    ?: emptyList()
+            val participants = selectedParticipants.toMutableList()
+            addParticipantsToConversation(participants)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -190,7 +206,7 @@ class ConversationInfoActivity :
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
-        binding.addParticipantsAction.setOnClickListener { addParticipants() }
+        binding.addParticipantsAction.setOnClickListener { selectParticipantsToAdd() }
         binding.listBansButton.setOnClickListener { listBans() }
 
         viewModel.getRoom(conversationUser, conversationToken)
@@ -237,9 +253,11 @@ class ConversationInfoActivity :
             when (state) {
                 is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
                 }
+
                 is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
                     Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
                 }
+
                 is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
                 }
             }
@@ -249,6 +267,7 @@ class ConversationInfoActivity :
             when (uiState) {
                 is ConversationInfoViewModel.ClearChatHistoryViewState.None -> {
                 }
+
                 is ConversationInfoViewModel.ClearChatHistoryViewState.Success -> {
                     Snackbar.make(
                         binding.root,
@@ -256,6 +275,7 @@ class ConversationInfoActivity :
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
+
                 is ConversationInfoViewModel.ClearChatHistoryViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", uiState.exception)
@@ -319,7 +339,7 @@ class ConversationInfoActivity :
     fun showOptionsMenu() {
         if (::optionsMenu.isInitialized) {
             optionsMenu.clear()
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.AVATAR)) {
                 menuInflater.inflate(R.menu.menu_conversation_info, optionsMenu)
             }
         }
@@ -383,7 +403,7 @@ class ConversationInfoActivity :
     }
 
     private fun setupWebinaryView() {
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
             webinaryRoomType(conversation!!) &&
             ConversationUtils.canModerate(conversation!!, spreedCapabilities)
         ) {
@@ -652,23 +672,89 @@ class ConversationInfoActivity :
             .commit()
     }
 
-    private fun addParticipants() {
+    private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
+        if (result.resultCode == Activity.RESULT_OK) {
+            onResult(result.data)
+        } else {
+            Log.e(ChatActivity.TAG, "resultCode for received intent was != ok")
+        }
+    }
+
+    private fun selectParticipantsToAdd() {
         val bundle = Bundle()
-        val existingParticipantsId = arrayListOf<String>()
+        val existingParticipants = ArrayList<AutocompleteUser>()
 
         for (userItem in userItems) {
             if (userItem.model.calculatedActorType == USERS) {
-                existingParticipantsId.add(userItem.model.calculatedActorId!!)
+                val user = AutocompleteUser(
+                    userItem.model.calculatedActorId!!,
+                    userItem.model.displayName,
+                    userItem.model.calculatedActorType.name.lowercase()
+                )
+                existingParticipants.add(user)
             }
         }
 
         bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)
-        bundle.putStringArrayList(BundleKeys.KEY_EXISTING_PARTICIPANTS, existingParticipantsId)
+        bundle.putParcelableArrayList("selectedParticipants", existingParticipants)
+        bundle.putBoolean(KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS, true)
         bundle.putString(BundleKeys.KEY_TOKEN, conversation!!.token)
 
         val intent = Intent(this, ContactsActivity::class.java)
         intent.putExtras(bundle)
-        startActivity(intent)
+
+        addParticipantsResult.launch(intent)
+    }
+
+    private fun addParticipantsToConversation(participants: List<AutocompleteUser>) {
+        val groupIdsArray: MutableSet<String> = HashSet()
+        val emailIdsArray: MutableSet<String> = HashSet()
+        val circleIdsArray: MutableSet<String> = HashSet()
+        val userIdsArray: MutableSet<String> = HashSet()
+
+        participants.forEach { participant ->
+            when (participant.source) {
+                Participant.ActorType.GROUPS.name.lowercase() -> groupIdsArray.add(participant.id!!)
+                Participant.ActorType.EMAILS.name.lowercase() -> emailIdsArray.add(participant.id!!)
+                Participant.ActorType.CIRCLES.name.lowercase() -> circleIdsArray.add(participant.id!!)
+                else -> userIdsArray.add(participant.id!!)
+            }
+        }
+
+        val data = Data.Builder()
+        data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
+        data.putString(BundleKeys.KEY_TOKEN, conversationToken)
+        data.putStringArray(BundleKeys.KEY_SELECTED_USERS, userIdsArray.toTypedArray())
+        data.putStringArray(BundleKeys.KEY_SELECTED_GROUPS, groupIdsArray.toTypedArray())
+        data.putStringArray(BundleKeys.KEY_SELECTED_EMAILS, emailIdsArray.toTypedArray())
+        data.putStringArray(BundleKeys.KEY_SELECTED_CIRCLES, circleIdsArray.toTypedArray())
+        val addParticipantsToConversationWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(
+            AddParticipantsToConversation::class.java
+        ).setInputData(data.build()).build()
+        WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(addParticipantsToConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.RUNNING -> {
+                            Log.d(TAG, "running AddParticipantsToConversation")
+                        }
+
+                        WorkInfo.State.SUCCEEDED -> {
+                            Log.d(TAG, "success AddParticipantsToConversation")
+                            getListOfParticipants()
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            Log.d(TAG, "failed AddParticipantsToConversation")
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
     }
 
     private fun leaveConversation() {
@@ -693,6 +779,7 @@ class ConversationInfoActivity :
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                                 startActivity(intent)
                             }
+
                             WorkInfo.State.FAILED -> {
                                 val errorType = workInfo.outputData.getString("error_type")
                                 if (errorType == LeaveConversationWorker.ERROR_NO_OTHER_MODERATORS_OR_OWNERS_LEFT) {
@@ -709,6 +796,7 @@ class ConversationInfoActivity :
                                     ).show()
                                 }
                             }
+
                             else -> {
                             }
                         }
@@ -769,7 +857,7 @@ class ConversationInfoActivity :
 
         setUpNotificationSettings(databaseStorageModule!!)
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
             conversationCopy.remoteServer.isNullOrEmpty()
         ) {
             binding.sharedItemsButton.setOnClickListener { showSharedItems() }
@@ -779,7 +867,7 @@ class ConversationInfoActivity :
 
         if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
             binding.addParticipantsAction.visibility = VISIBLE
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(
+            if (hasSpreedFeatureCapability(
                     spreedCapabilities,
                     SpreedFeatures.CLEAR_HISTORY
                 ) && conversationCopy.canDeleteConversation
@@ -1011,7 +1099,7 @@ class ConversationInfoActivity :
 
     private fun initExpiringMessageOption() {
         if (ConversationUtils.isParticipantOwnerOrModerator(conversation!!) &&
-            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)
         ) {
             databaseStorageModule?.setMessageExpiration(conversation!!.messageExpiration)
             val value = databaseStorageModule!!.getString("conversation_settings_dropdown", "")
@@ -1034,7 +1122,7 @@ class ConversationInfoActivity :
 
     private fun adjustNotificationLevelUI() {
         if (conversation != null) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.NOTIFICATION_LEVELS)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.isEnabled = true
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.alpha = 1.0f
 
@@ -1069,7 +1157,7 @@ class ConversationInfoActivity :
 
     private fun setProperNotificationValue(conversation: ConversationModel?) {
         if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)) {
                 binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown.setText(
                     resources.getString(R.string.nc_notify_me_always)
                 )
