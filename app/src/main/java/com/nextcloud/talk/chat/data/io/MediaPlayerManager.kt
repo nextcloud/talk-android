@@ -35,7 +35,7 @@ import kotlin.math.ceil
  * to manage the MediaPlayer instance.
  */
 @Suppress("TooManyFunctions", "TooGenericExceptionCaught")
-class MediaPlayerManager : LifecycleAwareManager {
+class MediaPlayerManager : LifecycleAwareManager() {
     companion object {
         val TAG: String = MediaPlayerManager::class.java.simpleName
         private const val SEEKBAR_UPDATE_DELAY = 150L
@@ -183,7 +183,10 @@ class MediaPlayerManager : LifecycleAwareManager {
                     continue
                 }
 
-                if (mediaPlayer != null && mediaPlayer?.isPlaying == true) {
+                if (mediaPlayer != null &&
+                    _managerState.value != MediaPlayerManagerState.SETUP &&
+                    mediaPlayer?.isPlaying == true
+                ) {
                     val pos = mediaPlayer!!.currentPosition
                     mediaPlayerPosition = pos
                     val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
@@ -320,10 +323,6 @@ class MediaPlayerManager : LifecycleAwareManager {
         loop = true
         scope = MainScope()
         scope.launch { seekbarUpdateObserver() }
-    }
-
-    override fun handleOnPause() {
-        // unused atm
     }
 
     override fun handleOnResume() {

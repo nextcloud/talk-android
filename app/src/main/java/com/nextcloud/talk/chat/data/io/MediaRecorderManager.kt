@@ -22,7 +22,7 @@ import java.util.Date
  * used to manage the MediaRecorder instance and it's state changes. Google doesn't provide a way of accessing state
  * directly, so this handles the changes without exposing the user to it.
  */
-class MediaRecorderManager : LifecycleAwareManager {
+class MediaRecorderManager : LifecycleAwareManager() {
 
     companion object {
         val TAG: String = MediaRecorderManager::class.java.simpleName
@@ -157,14 +157,7 @@ class MediaRecorderManager : LifecycleAwareManager {
         currentVoiceRecordFile = "${context.cacheDir.absolutePath}/$fileName"
     }
 
-    override fun handleOnPause() {
-        // unused atm
-    }
-
-    override fun handleOnResume() {
-        // unused atm
-    }
-
+    // how do I stop on stop without stopping on orientation change which includes onStop?
     override fun handleOnStop() {
         stop()
     }

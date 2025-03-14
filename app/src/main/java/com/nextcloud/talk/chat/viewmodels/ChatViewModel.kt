@@ -667,8 +667,12 @@ class ChatViewModel @Inject constructor(
         audioFocusRequestManager.audioFocusRequest(request, callback)
     }
 
-    fun handleOrientationChange() {
+    fun handleSavedInstance() {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
+    }
+
+    fun handleRestoreInstance() {
+        // TODO preserve the mediaRecorder here on orientation change, somehow
     }
 
     fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
