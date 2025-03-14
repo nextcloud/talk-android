@@ -317,9 +317,7 @@ class CallActivity : CallBaseActivity() {
         val audioPermission = permissionMap[Manifest.permission.RECORD_AUDIO]
         if (audioPermission != null) {
             if (java.lang.Boolean.TRUE == audioPermission) {
-                if (!microphoneOn) {
-                    onMicrophoneClick()
-                }
+                Log.d(TAG, "Microphone permission was granted")
             } else {
                 rationaleList.add(resources.getString(R.string.nc_microphone_permission_hint))
             }
@@ -327,15 +325,7 @@ class CallActivity : CallBaseActivity() {
         val cameraPermission = permissionMap[Manifest.permission.CAMERA]
         if (cameraPermission != null) {
             if (java.lang.Boolean.TRUE == cameraPermission) {
-                if (!videoOn) {
-                    onCameraClick()
-                }
-                if (cameraEnumerator!!.deviceNames.isEmpty()) {
-                    binding!!.cameraButton.visibility = View.GONE
-                }
-                if (cameraEnumerator!!.deviceNames.size > 1) {
-                    binding!!.switchSelfVideoButton.visibility = View.VISIBLE
-                }
+                Log.d(TAG, "Camera permission was granted")
             } else {
                 rationaleList.add(resources.getString(R.string.nc_camera_permission_hint))
             }
@@ -356,6 +346,10 @@ class CallActivity : CallBaseActivity() {
         }
         if (rationaleList.isNotEmpty()) {
             showRationaleDialogForSettings(rationaleList)
+        }
+
+        if (!isConnectionEstablished) {
+            prepareCall()
         }
     }
     private var canPublishAudioStream = false
@@ -404,14 +398,11 @@ class CallActivity : CallBaseActivity() {
             .setDuration(PULSE_ANIMATION_DURATION)
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE)
-        basicInitialization()
         callParticipants = HashMap()
         participantDisplayItems = HashMap()
-        initViews()
-        updateSelfVideoViewPosition()
         reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
 
-        checkRecordingConsentAndInitiateCall()
+        checkInitialDevicePermissions()
     }
 
     private fun initCallRecordingViewModel(recordingState: Int) {
@@ -877,7 +868,6 @@ class CallActivity : CallBaseActivity() {
     private fun initViews() {
         Log.d(TAG, "initViews")
         binding!!.callInfosLinearLayout.visibility = View.VISIBLE
-        binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
         if (!isPipModePossible) {
             binding!!.pictureInPictureButton.visibility = View.GONE
         }
@@ -995,13 +985,11 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun checkDevicePermissions() {
+    private fun checkInitialDevicePermissions() {
         val permissionsToRequest: MutableList<String> = ArrayList()
         val rationaleList: MutableList<String> = ArrayList()
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
-            if (!microphoneOn) {
-                onMicrophoneClick()
-            }
+            Log.d(TAG, "Microphone permission already granted")
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.RECORD_AUDIO)) {
             permissionsToRequest.add(Manifest.permission.RECORD_AUDIO)
             rationaleList.add(resources.getString(R.string.nc_microphone_permission_hint))
@@ -1011,15 +999,7 @@ class CallActivity : CallBaseActivity() {
 
         if (!isVoiceOnlyCall) {
             if (permissionUtil!!.isCameraPermissionGranted()) {
-                if (!videoOn) {
-                    onCameraClick()
-                }
-                if (cameraEnumerator!!.deviceNames.isEmpty()) {
-                    binding!!.cameraButton.visibility = View.GONE
-                }
-                if (cameraEnumerator!!.deviceNames.size > 1) {
-                    binding!!.switchSelfVideoButton.visibility = View.VISIBLE
-                }
+                Log.d(TAG, "Camera permission already granted")
             } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 permissionsToRequest.add(Manifest.permission.CAMERA)
                 rationaleList.add(resources.getString(R.string.nc_camera_permission_hint))
@@ -1037,16 +1017,41 @@ class CallActivity : CallBaseActivity() {
                 permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
             }
         }
+
         if (permissionsToRequest.isNotEmpty()) {
             if (rationaleList.isNotEmpty()) {
                 showRationaleDialog(permissionsToRequest, rationaleList)
             } else {
                 requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
             }
+        } else if (!isConnectionEstablished) {
+            prepareCall()
+        }
+    }
+
+    private fun prepareCall() {
+        basicInitialization()
+        initViews()
+        updateSelfVideoViewPosition()
+        checkRecordingConsentAndInitiateCall()
+
+        if (permissionUtil!!.isMicrophonePermissionGranted()) {
+            if (!microphoneOn) {
+                onMicrophoneClick()
+            }
         }
 
-        if (!isConnectionEstablished) {
-            fetchSignalingSettings()
+        if (isVoiceOnlyCall) {
+            binding!!.selfVideoViewWrapper.visibility = View.GONE
+        } else if (permissionUtil!!.isCameraPermissionGranted()) {
+            binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
+            onCameraClick()
+            if (cameraEnumerator!!.deviceNames.isEmpty()) {
+                binding!!.cameraButton.visibility = View.GONE
+            }
+            if (cameraEnumerator!!.deviceNames.size > 1) {
+                binding!!.switchSelfVideoButton.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -1603,8 +1608,8 @@ class CallActivity : CallBaseActivity() {
                 }
 
                 override fun onError(e: Throwable) {
-                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "Failed to fetch capabilities", e)
+                    Snackbar.make(binding!!.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     // unused atm
                 }
 
@@ -1925,7 +1930,7 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "connection already established")
             return
         }
-        checkDevicePermissions()
+        fetchSignalingSettings()
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
