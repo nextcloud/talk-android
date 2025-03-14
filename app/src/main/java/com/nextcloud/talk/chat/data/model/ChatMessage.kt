@@ -121,7 +121,9 @@ data class ChatMessage(
 
     var sendingFailed: Boolean = true,
 
-    var silent: Boolean = false
+    var silent: Boolean = false,
+
+    var isDate: Boolean = false
 
 ) : MessageContentType,
     MessageContentType.Image {
