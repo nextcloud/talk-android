@@ -102,7 +102,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 true,
                 viewThemeUtils
             )
-
             processedMessageText = messageUtils.processMessageParameters(
                 binding.messageText.context,
                 viewThemeUtils,
@@ -110,7 +109,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 message,
                 itemView
             )
-
             val messageParameters = message.messageParameters
             if (
                 (messageParameters == null || messageParameters.size <= 0) &&
@@ -120,7 +118,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 itemView.isSelected = true
                 binding.messageAuthor.visibility = View.GONE
             }
-
             binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             binding.messageText.text = processedMessageText
         } else {
@@ -192,8 +189,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             val checkBox = CheckBox(checkBoxContainer.context).apply {
                 text = taskText
                 this.isChecked = isChecked
-                this.isEnabled = (chatMessage.actorType == "bots" ||
-                    chatActivity.userAllowedByPrivilages(chatMessage))  && messageIsEditable
+                this.isEnabled = (
+                    chatMessage.actorType == "bots" ||
+                        chatActivity.userAllowedByPrivilages(chatMessage)
+                    ) && messageIsEditable
                 setOnCheckedChangeListener { _, _ ->
                     updateCheckboxStates(chatMessage, user, checkboxList)
                 }
@@ -367,5 +366,3 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
-
-
