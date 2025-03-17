@@ -264,7 +264,7 @@ class AccountVerificationActivity : BaseActivity() {
                 override fun onSuccess(user: User) {
                     internalAccountId = user.id!!
                     if (ClosedInterfaceImpl().isPushMessagingServiceAvailable(context)) {
-                        ClosedInterfaceImpl().registerWithServer(activityContext, user.username)
+                        ClosedInterfaceImpl().registerWithServer(activityContext, user.username, false)
                     } else {
                         Log.w(TAG, "Skipping push registration.")
                         runOnUiThread {

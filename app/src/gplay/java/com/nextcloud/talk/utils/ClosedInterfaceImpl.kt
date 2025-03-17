@@ -67,7 +67,7 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         }
     }
 
-    override fun registerWithServer(context: Context, username: String?): Boolean {
+    override fun registerWithServer(context: Context, username: String?, forceChoose: Boolean): Boolean {
         val firebasePushTokenWorker = OneTimeWorkRequest.Builder(GetFirebasePushTokenWorker::class.java).build()
         WorkManager.getInstance().enqueue(firebasePushTokenWorker)
 

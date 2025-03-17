@@ -52,7 +52,7 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class MainActivity : BaseActivity(), ActionBarProvider {
-    class ProceedToConversationsListMessageEvent { }
+    class ProceedToConversationsListMessageEvent
 
     lateinit var binding: ActivityMainBinding
 
@@ -273,10 +273,13 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 override fun onSuccess(users: List<User>) {
                     if (users.isNotEmpty()) {
                         runOnUiThread {
-                            var needUIFeedbackFromUser = ClosedInterfaceImpl().registerWithServer(activityContext,
-                                users.first().username)
-                            // if push registration does not need to show a dialog, open the conversation list now
-                            if (needUIFeedbackFromUser == false) {
+                            if (
+                                !ClosedInterfaceImpl().registerWithServer(
+                                    activityContext,
+                                    users.first().username,
+                                    false)
+                            ) {
+                                // if push registration does not need to show a dialog, open the conversation list now
                                 openConversationList()
                             }
                         }

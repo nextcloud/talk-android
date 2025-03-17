@@ -15,6 +15,6 @@ interface ClosedInterface {
     fun isPushMessagingServiceAvailable(context: Context): Boolean
     fun pushMessagingProvider(): String
     fun providerInstallerInstallIfNeededAsync()
-    fun registerWithServer(context: Context, username: String?): Boolean
+    fun registerWithServer(context: Context, username: String?, forceChoose: Boolean): Boolean
     fun unregisterWithServer(context: Context, username: String?)
 }
