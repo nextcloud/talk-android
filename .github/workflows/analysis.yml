@@ -30,34 +30,45 @@ jobs:
         steps:
             -   name: Setup variables
                 id: get-vars
+                env:
+                    PR_REPO_FULL_NAME: ${{ github.event.pull_request.head.repo.full_name }}
+                    PR_NUMBER: ${{ github.event.pull_request.number }}
+                    GITHUB_REPO: ${{ github.repository }}
                 run: |
                     if [ -z "$GITHUB_HEAD_REF" ]; then
                         # push
                         {
                             echo "branch=$GITHUB_REF_NAME"
                             echo "pr=$GITHUB_RUN_ID"
-                            echo "repo=${{ github.repository }}"
+                            echo "repo=$GITHUB_REPO"
                         } >> "$GITHUB_OUTPUT"
                     else
                         # pull request
+                        SAFE_REPO_NAME=$(echo "$PR_REPO_FULL_NAME" | sed 's/[^a-zA-Z0-9._-]//g')
+                        SAFE_BRANCH=$(echo "$GITHUB_HEAD_REF" | sed 's/[^a-zA-Z0-9._-]//g')
+
                         {
-                            echo "branch=$GITHUB_HEAD_REF"
-                            echo "pr=${{ github.event.pull_request.number }}"
-                            echo "repo=${{ github.event.pull_request.head.repo.full_name }}"
+                            printf 'branch=%s\n' "$SAFE_BRANCH"
+                            printf 'pr=%s\n' "$PR_NUMBER"
+                            printf 'repo=%s\n' "$SAFE_REPO_NAME"
                         } >> "$GITHUB_OUTPUT"
                     fi
+
             -   uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
                 with:
                     repository: ${{ steps.get-vars.outputs.repo }}
                     ref: ${{ steps.get-vars.outputs.branch }}
+
             -   name: Set up JDK 17
                 uses: actions/setup-java@3a4f6e1af504cf6a31855fa899c6aa5355ba6c12 # v4.7.0
                 with:
                     distribution: "temurin"
                     java-version: 17
+
             -   name: Install dependencies
                 run: |
                     sudo apt install python3-defusedxml
+
             -   name: Run analysis wrapper
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
