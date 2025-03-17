@@ -856,11 +856,6 @@ How to translate with transifex:
     <string name="no_conversations_archived">No conversations archived</string>
     <string name="archived_conversation">Archived %1$s</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
-    <string name="unified_push_choose_distributor_title">Choose a UnifiedPush distributor to use for
-        notifications</string>
-    <string name="unified_push_no_distributors_dialog_title">You can use UnifiedPush</string>
-    <string name="unified_push_no_distributors_dialog_text">To enable push and chat notifications you need to install a
-        Unified Push distributor.\nFor more information visit https://unifiedpush.org</string>
     <string name="prefs_reset_push_title">Reset push notifications</string>
     <string name="prefs_reset_push_summary">Reset push notifications in case of push messaging issues</string>
     <string name="prefs_reset_push_done">Push notifications reset</string>

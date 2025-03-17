@@ -139,6 +139,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private lateinit var notificationManager: NotificationManagerCompat
 
     override fun doWork(): Result {
+        Log.d(TAG, "started work")
+
         sharedApplication!!.componentApplication.inject(this)
         context = applicationContext
 
@@ -147,21 +149,21 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 initDecryptedData(inputData)
             }
             Companion.BackendType.UNIFIED_PUSH.value -> {
-                pushMessage = LoganSquare.parse(inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT),
-                    DecryptedPushMessage::class.java)
+                pushMessage = LoganSquare.parse(
+                    inputData.getString(BundleKeys.KEY_NOTIFICATION_SUBJECT),
+                    DecryptedPushMessage::class.java
+                )
 
-                val messageUser = inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)
-                val users = userManager!!.users.blockingGet()
-                if (users != null && users.size > 0) {
-                    for (user in users) {
-                        if (user.username == messageUser) {
+                userManager.users.blockingGet()?.let {
+                    for (user in it) {
+                        if (user.username == inputData.getString(BundleKeys.KEY_NOTIFICATION_SIGNATURE)) {
                             signatureVerification = SignatureVerification(true, user)
                             break
                         }
                     }
                 }
-                if (signatureVerification === null)
-                    return Result.failure()
+
+                Log.d(TAG, "parsed UP message")
             }
             else -> {
                 // message not received from a valid backend

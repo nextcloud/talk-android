@@ -550,15 +550,11 @@ class SettingsActivity :
     private fun setupResetPushPreference() {
         binding.resetPushNotificationsWrapper.setOnClickListener {
             for (user in userManager.users.blockingGet()) {
-                ClosedInterfaceImpl().unregisterWithServer(binding.root.context, user.username)
+                ClosedInterfaceImpl().apply {
+                    unregisterWithServer(binding.root.context, user.username)
+                    registerWithServer(binding.root.context, user.username, true)
+                }
             }
-
-            Snackbar.make(
-                binding.root,
-                resources!!.getString(R.string.prefs_reset_push_done),
-                Snackbar.LENGTH_LONG
-            ).show()
-            true
         }
     }
 
