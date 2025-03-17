@@ -96,6 +96,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         processMessage(message, hasCheckboxes)
     }
 
+    @Suppress("Detekt.LongMethod")
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var isBubbled = true
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
