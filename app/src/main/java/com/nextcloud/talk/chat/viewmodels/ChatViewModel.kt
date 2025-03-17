@@ -667,8 +667,13 @@ class ChatViewModel @Inject constructor(
         audioFocusRequestManager.audioFocusRequest(request, callback)
     }
 
-    fun handleOrientationChange() {
+    fun handleSavedInstance() {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
+        mediaRecorderManager.lockRecording(true)
+    }
+
+    fun handleRestoreInstance() {
+        mediaRecorderManager.lockRecording(false)
     }
 
     fun getMessageById(url: String, conversationModel: ConversationModel, messageId: Long): Flow<ChatMessage> =
