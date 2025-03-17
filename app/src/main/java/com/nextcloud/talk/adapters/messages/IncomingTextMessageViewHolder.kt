@@ -28,8 +28,10 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ChatMessageUtils
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.MessageUtils
@@ -121,8 +123,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
             binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
             binding.messageText.text = processedMessageText
-
-        }else{
+        } else {
             binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE
         }
@@ -164,6 +165,12 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             .createdAt
             .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE))
 
+        val messageIsEditable = hasSpreedFeatureCapability(
+            user.capabilities?.spreedCapability!!,
+            SpreedFeatures.EDIT_MESSAGES
+        ) &&
+            !isOlderThanTwentyFourHours
+
         checkBoxContainer.removeAllViews()
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
         val matches = regex.findAll(message)
@@ -185,8 +192,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             val checkBox = CheckBox(checkBoxContainer.context).apply {
                 text = taskText
                 this.isChecked = isChecked
-                this.isEnabled = !isOlderThanTwentyFourHours &&  chatMessage.actorType == "bots" || chatActivity
-                    .userAllowedByPrivilages(chatMessage)
+                this.isEnabled = (chatMessage.actorType == "bots" ||
+                    chatActivity.userAllowedByPrivilages(chatMessage))  && messageIsEditable
                 setOnCheckedChangeListener { _, _ ->
                     updateCheckboxStates(chatMessage, user, checkboxList)
                 }
@@ -195,7 +202,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             checkboxList.add(checkBox)
             viewThemeUtils.platform.themeCheckbox(checkBox)
         }
-        checkBoxContainer.visibility = View.VISIBLE
         return true
     }
 
@@ -206,9 +212,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     user.capabilities?.spreedCapability!!,
                     intArrayOf(1)
                 )
-
                 val updatedMessage = updateMessageWithCheckboxStates(chatMessage.message!!, checkboxes)
-
                 chatRepository.editChatMessage(
                     user.getCredentials(),
                     ApiUtils.getUrlForChatMessage(apiVersion, user.baseUrl!!, chatMessage.token!!, chatMessage.id),
