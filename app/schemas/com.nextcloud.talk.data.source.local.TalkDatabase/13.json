@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 13,
-    "identityHash": "a521f027909f69f4c7d1855f84a2e67f",
+    "identityHash": "f58d9b51b48ddc5c6f4dc4c742eb5f3f",
     "entities": [
       {
         "tableName": "User",
@@ -738,12 +738,52 @@
             ]
           }
         ]
+      },
+      {
+        "tableName": "user_circles",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`displayName` TEXT NOT NULL, PRIMARY KEY(`displayName`))",
+        "fields": [
+          {
+            "fieldPath": "displayName",
+            "columnName": "displayName",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "displayName"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "user_groups",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`groups` TEXT NOT NULL, PRIMARY KEY(`groups`))",
+        "fields": [
+          {
+            "fieldPath": "groups",
+            "columnName": "groups",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "groups"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a521f027909f69f4c7d1855f84a2e67f')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f58d9b51b48ddc5c6f4dc4c742eb5f3f')"
     ]
   }
 }

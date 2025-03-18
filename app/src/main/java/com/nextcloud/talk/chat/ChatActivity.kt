@@ -619,10 +619,6 @@ class ChatActivity :
                             }
                         }
 
-                        conversationUser?.let { user ->
-                            chatViewModel.fetchUserData(user)
-                        }
-
                         updateRoomTimerHandler(MILLIS_250)
 
                         val urlForChatting =
@@ -1080,17 +1076,6 @@ class ChatActivity :
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
                     }
                 }
-            }
-        }
-
-        lifecycleScope.launch {
-            chatViewModel.userGroups.collect { userGroups ->
-                messageUtils.setUserGroups(userGroups)
-            }
-        }
-        lifecycleScope.launch {
-            chatViewModel.userCircles.collect { userCircles ->
-                messageUtils.setUserCircles(userCircles)
             }
         }
     }
