@@ -82,7 +82,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.contacts.ContactsActivityCompose
+import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.RoomUiState
@@ -131,7 +131,6 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_HIDE_SOURCE_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NEW_CONVERSATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
@@ -1253,8 +1252,7 @@ class ConversationsListActivity :
             conversation.type === ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
 
     private fun showNewConversationsScreen() {
-        val intent = Intent(context, ContactsActivityCompose::class.java)
-        intent.putExtra(KEY_NEW_CONVERSATION, true)
+        val intent = Intent(context, ContactsActivity::class.java)
         startActivity(intent)
     }
 
