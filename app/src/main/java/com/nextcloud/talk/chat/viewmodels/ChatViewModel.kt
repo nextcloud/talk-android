@@ -50,9 +50,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -236,12 +233,6 @@ class ChatViewModel @Inject constructor(
     val leaveRoomViewState: LiveData<ViewState>
         get() = _leaveRoomViewState
 
-    private val _userGroups = MutableStateFlow<Set<String>>(emptySet())
-    val userGroups: StateFlow<Set<String>> = _userGroups.asStateFlow()
-
-    private val _userCircles = MutableStateFlow<Set<String>>(emptySet())
-    val userCircles: StateFlow<Set<String>> = _userCircles.asStateFlow()
-
     object ChatMessageInitialState : ViewState
     object ChatMessageStartState : ViewState
     object ChatMessageUpdateState : ViewState
@@ -362,13 +353,6 @@ class ChatViewModel @Inject constructor(
 
     fun overrideReminderState() {
         _getReminderExistState.value = GetReminderStateSet
-    }
-
-    fun fetchUserData(user: User) {
-        viewModelScope.launch {
-            _userGroups.value = chatNetworkDataSource.getUserGroups(user)
-            _userCircles.value = chatNetworkDataSource.getUserCircles(user)
-        }
     }
 
     fun deleteReminder(user: User, roomToken: String, messageId: String, chatApiVersion: Int) {

@@ -1212,17 +1212,6 @@ class ChatActivity :
                 }
             }
         }
-
-        lifecycleScope.launch {
-            chatViewModel.userGroups.collect { userGroups ->
-                messageUtils.setUserGroups(userGroups)
-            }
-        }
-        lifecycleScope.launch {
-            chatViewModel.userCircles.collect { userCircles ->
-                messageUtils.setUserCircles(userCircles)
-            }
-        }
     }
 
     private fun removeUnreadMessagesMarker() {
