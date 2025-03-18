@@ -10,6 +10,7 @@ package com.nextcloud.talk.dagger.modules
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.UserCirclesOrGroupsDao
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import dagger.Module
 import dagger.Provides
@@ -24,4 +25,7 @@ internal object DaosModule {
 
     @Provides
     fun providesChatBlocksDao(database: TalkDatabase): ChatBlocksDao = database.chatBlocksDao()
+
+    @Provides
+    fun providesUserCirclesOrGroups(database: TalkDatabase): UserCirclesOrGroupsDao = database.userCirclesOrGroupsDao()
 }

@@ -66,6 +66,4 @@ interface ChatNetworkDataSource {
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
     suspend fun getOutOfOfficeStatusForUser(credentials: String, baseUrl: String, userId: String): UserAbsenceOverall
-    suspend fun getUserGroups(user: User): Set<String>
-    suspend fun getUserCircles(user: User): Set<String>
 }

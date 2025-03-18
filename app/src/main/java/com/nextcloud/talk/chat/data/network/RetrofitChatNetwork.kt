@@ -195,25 +195,4 @@ class RetrofitChatNetwork(
             ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
         )
     }
-
-    override suspend fun getUserGroups(user: User): Set<String> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        val response = ncApiCoroutines.getUserGroups(
-            credentials,
-            ApiUtils.getUrlForUserGroups(
-                user.baseUrl!!,
-                user.userId!!
-            )
-        )
-        return response.ocs?.data?.groups?.toSet() ?: emptySet()
-    }
-
-    override suspend fun getUserCircles(user: User): Set<String> {
-        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
-        val response = ncApiCoroutines.getUserCircles(
-            credentials,
-            ApiUtils.getUrlForUserCircles(user.baseUrl!!)
-        )
-        return response.ocs?.data?.map { it.displayName!! }?.toSet() ?: emptySet()
-    }
 }

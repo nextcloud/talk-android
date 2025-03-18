@@ -21,6 +21,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
@@ -30,6 +31,7 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
@@ -46,6 +48,7 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -57,6 +60,9 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var userGroupsOrCirclesRepository: UserGroupsCirclesRepository
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -146,6 +152,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     private fun handleActionFromContact(intent: Intent) {
+        lifecycleScope.launch {
+            val initialized = userGroupsOrCirclesRepository.initialize()
+            Log.d("MainActivity", "$initialized")
+        }
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 
