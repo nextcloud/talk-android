@@ -49,6 +49,9 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.toColorInt
+import androidx.core.net.toUri
+import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -1262,7 +1265,7 @@ class CallActivity : CallBaseActivity() {
             .subHeadingTvColor(resources.getColor(R.color.bg_default, null))
             .subHeadingTvSize(SPOTLIGHT_SUBHEADING_SIZE)
             .subHeadingTvText(resources.getString(R.string.nc_push_to_talk_desc))
-            .maskColor(Color.parseColor("#dc000000"))
+            .maskColor("#dc000000".toColorInt())
             .target(binding!!.microphoneButton)
             .lineAnimDuration(FADE_IN_ANIMATION_DURATION)
             .enableDismissAfterShown(true)
@@ -2532,7 +2535,7 @@ class CallActivity : CallBaseActivity() {
             val screenWidthPx = displayMetrics.widthPixels
             val screenWidthDp = DisplayUtils.convertPixelToDp(screenWidthPx.toFloat(), applicationContext).toInt()
             var newXafterRotate = 0f
-            val newYafterRotate: Float = if (binding!!.callInfosLinearLayout.visibility == View.VISIBLE) {
+            val newYafterRotate: Float = if (binding!!.callInfosLinearLayout.isVisible) {
                 Y_POS_CALL_INFO
             } else {
                 Y_POS_NO_CALL_INFO
@@ -2825,7 +2828,7 @@ class CallActivity : CallBaseActivity() {
         val ringtoneUri: Uri? = if (isIncomingCallFromNotification) {
             getCallRingtoneUri(applicationContext, appPreferences)
         } else {
-            Uri.parse("android.resource://" + applicationContext.packageName + "/raw/tr110_1_kap8_3_freiton1")
+            ("android.resource://" + applicationContext.packageName + "/raw/tr110_1_kap8_3_freiton1").toUri()
         }
         if (ringtoneUri != null) {
             mediaPlayer = MediaPlayer()

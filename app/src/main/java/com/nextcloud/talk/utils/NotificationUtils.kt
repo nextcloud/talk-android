@@ -18,6 +18,7 @@ import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.net.toUri
 import coil.executeBlocking
 import coil.imageLoader
 import coil.request.ImageRequest
@@ -287,14 +288,14 @@ object NotificationUtils {
         // Ringtone uris are required to register the notification channels -> get uri from preferences.
 
         return if (TextUtils.isEmpty(ringtonePreferencesString)) {
-            Uri.parse(defaultRingtoneUri)
+            defaultRingtoneUri.toUri()
         } else {
             try {
                 val ringtoneSettings =
                     LoganSquare.parse(ringtonePreferencesString, RingtoneSettings::class.java)
                 ringtoneSettings.ringtoneUri
             } catch (exception: IOException) {
-                Uri.parse(defaultRingtoneUri)
+                defaultRingtoneUri.toUri()
             }
         }
     }

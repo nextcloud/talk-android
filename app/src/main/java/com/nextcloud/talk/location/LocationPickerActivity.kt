@@ -13,7 +13,6 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.ColorDrawable
 import android.location.Location
 import android.location.LocationListener
 import android.location.LocationManager
@@ -28,6 +27,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.PermissionChecker
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.view.MenuItemCompat
 import androidx.preference.PreferenceManager
 import autodagger.AutoInjector
@@ -178,7 +178,7 @@ class LocationPickerActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
         supportActionBar?.title = context.getString(R.string.nc_share_location)
         viewThemeUtils.material.themeToolbar(binding.locationPickerToolbar)
     }

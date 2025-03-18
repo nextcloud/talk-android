@@ -11,13 +11,13 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -130,7 +130,7 @@ class TranslateActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         supportActionBar?.title = resources!!.getString(R.string.translation)
         viewThemeUtils.material.themeToolbar(binding.translationToolbar)
     }

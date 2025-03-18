@@ -19,6 +19,7 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import androidx.core.net.toUri
 import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
@@ -110,7 +111,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             require(sourceFile.isNotEmpty())
             checkNotNull(roomToken)
 
-            val sourceFileUri = Uri.parse(sourceFile)
+            val sourceFileUri = sourceFile.toUri()
             fileName = FileUtils.getFileName(sourceFileUri, context)
             file = FileUtils.getFileFromUri(context, sourceFileUri)
             val remotePath = getRemotePath(currentUser)

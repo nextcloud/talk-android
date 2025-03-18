@@ -8,7 +8,6 @@
 package com.nextcloud.talk.conversationinfoedit
 
 import android.app.Activity
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.TextUtils
@@ -18,6 +17,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toFile
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.ViewModelProvider
@@ -252,7 +252,7 @@ class ConversationInfoEditActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
         supportActionBar?.title = resources!!.getString(R.string.nc_conversation_menu_conversation_info)
 
         viewThemeUtils.material.themeToolbar(binding.conversationInfoEditToolbar)
@@ -319,7 +319,7 @@ class ConversationInfoEditActivity : BaseActivity() {
                     conversation!!.name
                 )
             ) {
-                conversation!!.name?.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
+                conversation!!.name.let { binding.avatarImage.loadUserAvatar(conversationUser, it, true, false) }
             }
 
             ConversationEnums.ConversationType.ROOM_GROUP_CALL, ConversationEnums.ConversationType.ROOM_PUBLIC_CALL -> {

@@ -11,8 +11,6 @@ package com.nextcloud.talk.profile
 
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -27,7 +25,9 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toFile
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.RecyclerView
 import autodagger.AutoInjector
@@ -208,7 +208,7 @@ class ProfileActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
         supportActionBar?.title = context.getString(R.string.nc_profile_personal_info_title)
         viewThemeUtils.material.themeToolbar(binding.profileToolbar)
     }
@@ -313,7 +313,7 @@ class ProfileActivity : BaseActivity() {
 
     private fun showUserProfile() {
         if (currentUser!!.baseUrl != null) {
-            binding.userinfoBaseurl.text = Uri.parse(currentUser!!.baseUrl!!).host
+            binding.userinfoBaseurl.text = currentUser!!.baseUrl!!.toUri().host
         }
         DisplayUtils.loadAvatarImage(currentUser, binding.avatarImage, false)
         if (!TextUtils.isEmpty(userInfo?.displayName)) {

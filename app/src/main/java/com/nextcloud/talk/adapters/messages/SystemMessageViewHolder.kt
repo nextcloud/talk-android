@@ -9,7 +9,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.TextPaint
@@ -18,13 +17,14 @@ import android.text.style.ClickableSpan
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
-import com.nextcloud.talk.databinding.ItemSystemMessageBinding
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.databinding.ItemSystemMessageBinding
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -96,7 +96,7 @@ class SystemMessageViewHolder(itemView: View) : MessageHolders
                         if (newStartIndex != -1) {
                             val clickableSpan = object : ClickableSpan() {
                                 override fun onClick(widget: View) {
-                                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+                                    val browserIntent = Intent(Intent.ACTION_VIEW, link.toUri())
                                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                     context?.startActivity(browserIntent)
                                 }

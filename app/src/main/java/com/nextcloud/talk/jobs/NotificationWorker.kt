@@ -15,7 +15,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -33,6 +32,7 @@ import androidx.core.app.Person
 import androidx.core.app.RemoteInput
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.net.toUri
 import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
 import androidx.work.Worker
@@ -272,7 +272,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
             val soundUri = getCallRingtoneUri(applicationContext, appPreferences)
             val notificationChannelId = NotificationUtils.NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
-            val uri = Uri.parse(signatureVerification.user!!.baseUrl!!)
+            val uri = signatureVerification.user!!.baseUrl!!.toUri()
             val baseUrl = uri.host
 
             val notification =
@@ -499,7 +499,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             0
         }
         val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag)
-        val uri = Uri.parse(signatureVerification.user!!.baseUrl!!)
+        val uri = signatureVerification.user!!.baseUrl!!.toUri()
         val baseUrl = uri.host
 
         var contentTitle: CharSequence? = ""

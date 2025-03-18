@@ -20,7 +20,6 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.PorterDuff
-import android.graphics.drawable.ColorDrawable
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
@@ -35,6 +34,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.work.OneTimeWorkRequest
@@ -199,7 +200,7 @@ class SettingsActivity :
         registerChangeListeners()
 
         if (currentUser != null) {
-            binding.domainText.text = Uri.parse(currentUser!!.baseUrl).host
+            binding.domainText.text = currentUser!!.baseUrl!!.toUri().host
             setupServerAgeWarning()
             if (currentUser!!.displayName != null) {
                 binding.nameText.text = currentUser!!.displayName
@@ -260,7 +261,7 @@ class SettingsActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
         supportActionBar?.title = context.getString(R.string.nc_settings)
         viewThemeUtils.material.themeToolbar(binding.settingsToolbar)
     }
@@ -441,7 +442,7 @@ class SettingsActivity :
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse(resources.getString(R.string.notification_checklist_url))
+                            resources.getString(R.string.notification_checklist_url).toUri()
                         )
                     )
                 }
@@ -449,7 +450,7 @@ class SettingsActivity :
                     startActivity(
                         Intent(
                             Intent.ACTION_VIEW,
-                            Uri.parse(resources.getString(R.string.dontkillmyapp_url))
+                            resources.getString(R.string.dontkillmyapp_url).toUri()
                         )
                     )
                 }
@@ -503,7 +504,7 @@ class SettingsActivity :
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(resources!!.getString(R.string.nc_source_code_url))
+                        resources!!.getString(R.string.nc_source_code_url).toUri()
                     )
                 )
             }
@@ -525,7 +526,7 @@ class SettingsActivity :
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(resources!!.getString(R.string.nc_privacy_url))
+                        resources!!.getString(R.string.nc_privacy_url).toUri()
                     )
                 )
             }
@@ -540,7 +541,7 @@ class SettingsActivity :
                 startActivity(
                     Intent(
                         Intent.ACTION_VIEW,
-                        Uri.parse(resources!!.getString(R.string.nc_gpl3_url))
+                        resources!!.getString(R.string.nc_gpl3_url).toUri()
                     )
                 )
             }

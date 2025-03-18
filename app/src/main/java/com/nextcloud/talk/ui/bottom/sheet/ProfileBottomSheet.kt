@@ -12,16 +12,17 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import androidx.core.net.toUri
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.bottomsheet.items.BasicListItemWithImage
 import com.nextcloud.talk.bottomsheet.items.listItemsWithImage
-import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.hovercard.HoverCardAction
 import com.nextcloud.talk.models.json.hovercard.HoverCardOverall
@@ -161,14 +162,14 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
     private fun composeEmail(address: String, context: Context) {
         val addresses = arrayListOf(address)
         val intent = Intent(Intent.ACTION_SENDTO).apply {
-            data = Uri.parse("mailto:") // only email apps should handle this
+            data = "mailto:".toUri() // only email apps should handle this
             putExtra(Intent.EXTRA_EMAIL, addresses)
         }
         context.startActivity(intent)
     }
 
     private fun openProfile(hyperlink: String, context: Context) {
-        val webpage: Uri = Uri.parse(hyperlink)
+        val webpage: Uri = hyperlink.toUri()
         val intent = Intent(Intent.ACTION_VIEW, webpage)
         context.startActivity(intent)
     }

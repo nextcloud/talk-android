@@ -8,13 +8,13 @@ package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import coil.load
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.databinding.ReferenceInsideMessageBinding
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.databinding.ReferenceInsideMessageBinding
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observer
@@ -82,7 +82,7 @@ class LinkPreview {
                             }
 
                             binding.referenceWrapper.setOnClickListener {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(referenceLink))
+                                val browserIntent = Intent(Intent.ACTION_VIEW, referenceLink!!.toUri())
                                 browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                                 context.startActivity(browserIntent)
                             }

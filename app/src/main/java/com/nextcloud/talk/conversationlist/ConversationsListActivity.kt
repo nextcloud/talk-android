@@ -19,9 +19,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -42,6 +40,8 @@ import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -638,7 +638,7 @@ class ConversationsListActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         supportActionBar?.title = resources!!.getString(R.string.nc_app_product_name)
         viewThemeUtils.material.themeToolbar(binding.conversationListToolbar)
     }
@@ -1473,7 +1473,7 @@ class ConversationsListActivity :
         if (platformPermissionUtil.isFilesPermissionGranted()) {
             val fileNamesWithLineBreaks = StringBuilder("\n")
             for (file in filesToShare!!) {
-                val filename = FileUtils.getFileName(Uri.parse(file), context)
+                val filename = FileUtils.getFileName(file.toUri(), context)
                 fileNamesWithLineBreaks.append(filename).append("\n")
             }
             val confirmationQuestion: String = if (filesToShare!!.size == 1) {
@@ -1900,11 +1900,11 @@ class ConversationsListActivity :
                 .setPositiveButton(R.string.nc_dialog_outdated_client_option_update) { _, _ ->
                     try {
                         startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse(CLIENT_UPGRADE_MARKET_LINK + packageName))
+                            Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_MARKET_LINK + packageName).toUri())
                         )
                     } catch (e: ActivityNotFoundException) {
                         startActivity(
-                            Intent(Intent.ACTION_VIEW, Uri.parse(CLIENT_UPGRADE_GPLAY_LINK + packageName))
+                            Intent(Intent.ACTION_VIEW, (CLIENT_UPGRADE_GPLAY_LINK + packageName).toUri())
                         )
                     }
                 }

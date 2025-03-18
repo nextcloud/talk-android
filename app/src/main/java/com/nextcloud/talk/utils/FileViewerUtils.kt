@@ -16,6 +16,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.emoji2.widget.EmojiTextView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -23,13 +24,13 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
+import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.fullscreenfile.FullScreenImageActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenMediaActivity
 import com.nextcloud.talk.fullscreenfile.FullScreenTextViewerActivity
-import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
-import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.utils.AccountUtils.canWeOpenFilesApp
 import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
@@ -212,7 +213,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         } else {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(link)
+                link.toUri()
             )
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(browserIntent)

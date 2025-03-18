@@ -10,7 +10,6 @@ import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.Build.MANUFACTURER
 import android.os.Build.MODEL
@@ -28,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -35,8 +35,8 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
-import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.components.SetupSystemBars
+import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -151,7 +151,7 @@ class DiagnoseActivity : BaseActivity() {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
             val appName = context.resources.getString(R.string.nc_app_product_name)
 
-            data = Uri.parse("mailto:")
+            data = "mailto:".toUri()
             putExtra(Intent.EXTRA_SUBJECT, appName)
             putExtra(Intent.EXTRA_TEXT, text)
         }
@@ -166,7 +166,7 @@ class DiagnoseActivity : BaseActivity() {
         startActivity(
             Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(resources!!.getString(R.string.nc_talk_android_issues_url))
+                resources!!.getString(R.string.nc_talk_android_issues_url).toUri()
             )
         )
     }

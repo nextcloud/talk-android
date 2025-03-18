@@ -8,9 +8,9 @@
 package com.nextcloud.talk.adapters.items
 
 import android.accounts.Account
-import android.net.Uri
 import android.text.TextUtils
 import android.view.View
+import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.AdvancedUserItem.UserItemViewHolder
@@ -75,9 +75,9 @@ class AdvancedUserItem(
             holder.binding.userName.text = model.displayName
         }
         if (user != null && !TextUtils.isEmpty(user.baseUrl)) {
-            val host = Uri.parse(user.baseUrl).host
+            val host = user.baseUrl!!.toUri().host
             if (!TextUtils.isEmpty(host)) {
-                holder.binding.account.text = Uri.parse(user.baseUrl).host
+                holder.binding.account.text = user.baseUrl!!.toUri().host
             } else {
                 holder.binding.account.text = user.baseUrl
             }

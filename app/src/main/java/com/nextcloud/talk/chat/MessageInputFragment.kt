@@ -8,7 +8,6 @@
 package com.nextcloud.talk.chat
 
 import android.content.res.Resources
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
@@ -40,6 +39,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
 import androidx.fragment.app.Fragment
@@ -476,7 +477,7 @@ class MessageInputFragment : Fragment() {
 
             binding.fragmentMessageInputView.messageSendButton.visibility =
                 if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
-                    binding.fragmentEditView.editMessageView.visibility == View.VISIBLE
+                    binding.fragmentEditView.editMessageView.isVisible
                 ) {
                     View.GONE
                 } else {
@@ -608,7 +609,7 @@ class MessageInputFragment : Fragment() {
     private fun setupMentionAutocomplete() {
         val elevation = MENTION_AUTO_COMPLETE_ELEVATION
         resources.let {
-            val backgroundDrawable = ColorDrawable(it.getColor(R.color.bg_default, null))
+            val backgroundDrawable = it.getColor(R.color.bg_default, null).toDrawable()
             val presenter = MentionAutocompletePresenter(
                 requireContext(),
                 chatActivity.roomToken,
