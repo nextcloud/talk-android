@@ -9,13 +9,13 @@ package com.nextcloud.talk.utils.message
 import android.content.Context
 import android.content.Intent
 import android.graphics.Typeface
-import android.net.Uri
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
+import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -139,7 +139,7 @@ class MessageUtils(val context: Context) {
 
                     "file" -> {
                         itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
+                            val browserIntent = Intent(Intent.ACTION_VIEW, individualHashMap["link"]!!.toUri())
                             context.startActivity(browserIntent)
                         }
                     }

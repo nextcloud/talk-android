@@ -12,8 +12,8 @@ import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import androidx.core.graphics.drawable.toDrawable
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -21,6 +21,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.adapters.items.AdvancedUserItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySwitchAccountBinding
 import com.nextcloud.talk.models.ImportAccount
@@ -38,7 +39,6 @@ import eu.davidea.flexibleadapter.items.AbstractFlexibleItem
 import org.osmdroid.config.Configuration
 import java.net.CookieManager
 import javax.inject.Inject
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 
 /**
  * Parts related to account import were either copied from or inspired by the great work done by David Luhmer at:
@@ -108,7 +108,7 @@ class SwitchAccountActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         supportActionBar?.title = resources!!.getString(R.string.nc_select_an_account)
     }
 

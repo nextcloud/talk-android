@@ -11,7 +11,6 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.util.TypedValue
 import android.view.MotionEvent
@@ -19,6 +18,7 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.net.toUri
 import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
@@ -160,7 +160,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 return if (url != null && UriUtils.hasHttpProtocolPrefixed(url)
                 ) {
-                    view?.context?.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+                    view?.context?.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
                     true
                 } else {
                     false
@@ -259,7 +259,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
     private fun openGeoLink() {
         if (!locationGeoLink.isNullOrEmpty()) {
             val geoLinkWithMarker = addMarkerToGeoLink(locationGeoLink!!)
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(geoLinkWithMarker))
+            val browserIntent = Intent(Intent.ACTION_VIEW, geoLinkWithMarker.toUri())
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(browserIntent)
         } else {

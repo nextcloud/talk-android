@@ -10,11 +10,11 @@ package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint
 import android.app.Dialog
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
@@ -78,7 +78,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
         if (user != null) {
             binding!!.currentAccount.userName.text = user.displayName
             binding!!.currentAccount.ticker.visibility = View.GONE
-            binding!!.currentAccount.account.text = Uri.parse(user.baseUrl!!).host
+            binding!!.currentAccount.account.text = user.baseUrl!!.toUri().host
             viewThemeUtils!!.platform.colorImageView(binding!!.currentAccount.accountMenu, ColorRole.PRIMARY)
             if (user.baseUrl != null &&
                 (user.baseUrl!!.startsWith("http://") || user.baseUrl!!.startsWith("https://"))

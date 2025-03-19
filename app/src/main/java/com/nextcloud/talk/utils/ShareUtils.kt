@@ -9,7 +9,7 @@ package com.nextcloud.talk.utils
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 import com.nextcloud.talk.R
 
 object ShareUtils {
@@ -26,7 +26,7 @@ object ShareUtils {
             return
         }
 
-        val uriBuilder = Uri.parse(baseUrl)
+        val uriBuilder = baseUrl.toUri()
             .buildUpon()
 
         if (!canGeneratePrettyURL) {

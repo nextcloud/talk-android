@@ -11,12 +11,12 @@ package com.nextcloud.talk.adapters.messages
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import autodagger.AutoInjector
 import coil.load
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -121,7 +121,7 @@ class OutcomingDeckCardViewHolder(
         binding.checkMark.contentDescription = readStatusContentDescriptionString
 
         binding.cardView.setOnClickListener {
-            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(cardLink))
+            val browserIntent = Intent(Intent.ACTION_VIEW, cardLink!!.toUri())
             browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(browserIntent)
         }

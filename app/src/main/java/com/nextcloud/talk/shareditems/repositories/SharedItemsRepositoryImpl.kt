@@ -7,8 +7,8 @@
  */
 package com.nextcloud.talk.shareditems.repositories
 
-import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -135,7 +135,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                     actorParameters["id"]!!,
                     actorParameters["name"]!!,
                     dateTime,
-                    Uri.parse(objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q="))
+                    objectParameters["id"]!!.replace("geo:", "geo:0,0?z=11&q=").toUri()
                 )
             }
 
@@ -146,7 +146,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
                     actorParameters["id"]!!,
                     actorParameters["name"]!!,
                     dateTime,
-                    Uri.parse(objectParameters["link"]!!)
+                    objectParameters["link"]!!.toUri()
                 )
             }
 
@@ -168,7 +168,7 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
 
         return ncApi.getSharedItemsOverview(
             credentials,
-            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl!!, parameters.roomToken),
+            ApiUtils.getUrlForChatSharedItemsOverview(1, parameters.baseUrl, parameters.roomToken),
             1
         ).map {
             val types = mutableSetOf<SharedItemType>()

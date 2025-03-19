@@ -12,7 +12,6 @@ import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.net.Uri
 import android.os.Bundle
 import android.security.KeyChain
 import android.text.TextUtils
@@ -22,22 +21,24 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.core.net.toUri
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.databinding.ActivityServerSelectionBinding
 import com.nextcloud.talk.models.json.capabilities.CapabilitiesOverall
 import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.AccountUtils
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_ACCOUNT_IMPORT
-import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.singletons.ApplicationWideMessageHolder
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -45,7 +46,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.security.cert.CertificateException
 import javax.inject.Inject
-import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ServerSelectionActivity : BaseActivity() {
@@ -198,10 +198,7 @@ class ServerSelectionActivity : BaseActivity() {
         binding.importOrChooseProviderText.setOnClickListener {
             val browserIntent = Intent(
                 Intent.ACTION_VIEW,
-                Uri.parse(
-                    resources!!
-                        .getString(R.string.nc_providers_url)
-                )
+                resources!!.getString(R.string.nc_providers_url).toUri()
             )
             startActivity(browserIntent)
         }

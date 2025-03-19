@@ -11,18 +11,17 @@
 package com.nextcloud.talk.extensions
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toDrawable
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
 import coil.load
@@ -326,7 +325,7 @@ fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
     val layers = arrayOfNulls<Drawable>(2)
-    layers[0] = ColorDrawable(context.getColor(R.color.black))
+    layers[0] = context.getColor(R.color.black).toDrawable()
     layers[1] = TextDrawable(context, ">")
     val layerDrawable = LayerDrawable(layers)
     val data: Any = layerDrawable
@@ -386,7 +385,7 @@ fun ImageView.loadGuestAvatar(baseUrl: String, name: String, big: Boolean): io.r
 @Suppress("MagicNumber")
 private fun createTextDrawable(context: Context, letter: String): Drawable {
     val size = 100
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(size, size)
     val canvas = Canvas(bitmap)
 
     val paint = Paint().apply {
@@ -406,7 +405,7 @@ private fun createTextDrawable(context: Context, letter: String): Drawable {
     val yPos = (canvas.height / 2 - (textPaint.descent() + textPaint.ascent()) / 2)
     canvas.drawText(letter.take(1), xPos, yPos, textPaint)
 
-    return BitmapDrawable(context.resources, bitmap)
+    return bitmap.toDrawable(context.resources)
 }
 
 private class DisposableWrapper(private val disposable: coil.request.Disposable) : io.reactivex.disposables

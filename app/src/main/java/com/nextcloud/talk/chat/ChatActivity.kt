@@ -24,8 +24,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Build
@@ -58,6 +56,8 @@ import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
+import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.text.bold
 import androidx.emoji2.text.EmojiCompat
@@ -1022,24 +1022,20 @@ class ChatActivity :
                     }
 
                     if (uiState.userAbsence.replacementUserDisplayName != null) {
-                        var imageUri = Uri.parse(
-                            ApiUtils.getUrlForAvatar(
+                        var imageUri = ApiUtils.getUrlForAvatar(
+                            conversationUser?.baseUrl,
+                            uiState.userAbsence
+                                .replacementUserId,
+                            false
+                        ).toUri()
+                        if (DisplayUtils.isDarkModeOn(context)) {
+                            imageUri = ApiUtils.getUrlForAvatarDarkTheme(
                                 conversationUser?.baseUrl,
-                                uiState.userAbsence
+                                uiState
+                                    .userAbsence
                                     .replacementUserId,
                                 false
-                            )
-                        )
-                        if (DisplayUtils.isDarkModeOn(context)) {
-                            imageUri = Uri.parse(
-                                ApiUtils.getUrlForAvatarDarkTheme(
-                                    conversationUser?.baseUrl,
-                                    uiState
-                                        .userAbsence
-                                        .replacementUserId,
-                                    false
-                                )
-                            )
+                            ).toUri()
                         }
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.absenceReplacement).text =
                             context.resources.getString(R.string.user_absence_replacement)
@@ -1168,7 +1164,7 @@ class ChatActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
         viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
@@ -1511,7 +1507,7 @@ class ChatActivity :
                             )
                             viewThemeUtils.talk.themeStatusDrawable(context, status)
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_avatar)
-                                .setImageDrawable(BitmapDrawable(resources, bitmap))
+                                .setImageDrawable(bitmap.toDrawable(resources))
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status)
                                 .setImageDrawable(status)
                             binding.chatToolbar.findViewById<ImageView>(R.id.chat_toolbar_status).contentDescription =
@@ -1967,7 +1963,7 @@ class ChatActivity :
             val filenamesWithLineBreaks = StringBuilder("\n")
 
             for (file in filesToUpload) {
-                val filename = FileUtils.getFileName(Uri.parse(file), context)
+                val filename = FileUtils.getFileName(file.toUri(), context)
                 filenamesWithLineBreaks.append(filename).append("\n")
             }
 
@@ -2043,7 +2039,7 @@ class ChatActivity :
                 val filenamesWithLineBreaks = StringBuilder("\n")
 
                 for (file in filesToUpload) {
-                    val filename = FileUtils.getFileName(Uri.parse(file), context)
+                    val filename = FileUtils.getFileName(file.toUri(), context)
                     filenamesWithLineBreaks.append(filename).append("\n")
                 }
 

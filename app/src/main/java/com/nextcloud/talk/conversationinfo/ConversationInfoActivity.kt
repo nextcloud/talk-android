@@ -13,7 +13,6 @@ package com.nextcloud.talk.conversationinfo
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -27,6 +26,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.drawable.toDrawable
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -321,7 +321,7 @@ class ConversationInfoActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(android.R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(android.R.color.transparent, null).toDrawable())
         supportActionBar?.title = if (hasAvatarSpacing) {
             " " + resources!!.getString(R.string.nc_conversation_menu_conversation_info)
         } else {

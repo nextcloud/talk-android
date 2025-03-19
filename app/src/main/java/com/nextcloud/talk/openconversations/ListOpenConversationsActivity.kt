@@ -7,9 +7,9 @@
 package com.nextcloud.talk.openconversations
 
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.View
+import androidx.core.graphics.drawable.toDrawable
 import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -143,7 +143,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         viewThemeUtils.material.themeToolbar(binding.openConversationsToolbar)
     }
 }

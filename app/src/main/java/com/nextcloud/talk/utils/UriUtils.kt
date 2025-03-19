@@ -7,7 +7,7 @@
  */
 package com.nextcloud.talk.utils
 
-import android.net.Uri
+import androidx.core.net.toUri
 
 class UriUtils {
     companion object {
@@ -17,7 +17,7 @@ class UriUtils {
 
         fun extractInstanceInternalFileFileId(url: String): String {
             // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41
-            return Uri.parse(url).getQueryParameter("fileid").toString()
+            return url.toUri().getQueryParameter("fileid").toString()
         }
 
         fun isInstanceInternalFileShareUrl(baseUrl: String, url: String): Boolean {
@@ -35,12 +35,12 @@ class UriUtils {
 
         fun extractInstanceInternalFileShareFileId(url: String): String {
             // https://cloud.nextcloud.com/f/41
-            return Uri.parse(url).lastPathSegment ?: ""
+            return url.toUri().lastPathSegment ?: ""
         }
 
         fun extractRoomTokenFromTalkUrl(url: String): String {
             // https://cloud.nextcloud.com/call/123456789
-            return Uri.parse(url).lastPathSegment ?: ""
+            return url.toUri().lastPathSegment ?: ""
         }
 
         fun isInstanceInternalFileUrl(baseUrl: String, url: String): Boolean {
@@ -49,7 +49,7 @@ class UriUtils {
                 url.startsWith("$baseUrl/apps/files/") ||
                     url.startsWith("$baseUrl/index.php/apps/files/")
                 ) &&
-                Uri.parse(url).queryParameterNames.contains("fileid") &&
+                url.toUri().queryParameterNames.contains("fileid") &&
                 Regex(""".*fileid=\d*""").matches(url)
         }
 
@@ -61,7 +61,7 @@ class UriUtils {
 
         fun extractInstanceInternalFileFileIdNew(url: String): String {
             // https://cloud.nextcloud.com/apps/files/files/41?dir=/
-            return Uri.parse(url).lastPathSegment ?: ""
+            return url.toUri().lastPathSegment ?: ""
         }
     }
 }

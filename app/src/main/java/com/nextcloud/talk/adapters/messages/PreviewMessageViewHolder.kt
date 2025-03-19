@@ -13,7 +13,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Handler
 import android.util.Base64
 import android.util.Log
@@ -21,6 +20,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
 import com.google.android.material.card.MaterialCardView
@@ -29,12 +29,12 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.filebrowser.models.BrowserFile
-import com.nextcloud.talk.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
+import com.nextcloud.talk.filebrowser.models.BrowserFile
+import com.nextcloud.talk.filebrowser.webdav.ReadFilesystemOperation
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
@@ -140,7 +140,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         } else {
             if (message.messageType == ChatMessage.MessageType.SINGLE_LINK_IMAGE_MESSAGE.name) {
                 clickView!!.setOnClickListener {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(message.imageUrl))
+                    val browserIntent = Intent(Intent.ACTION_VIEW, message.imageUrl!!.toUri())
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     context!!.startActivity(browserIntent)
                 }

@@ -20,7 +20,6 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.Spanned
@@ -46,7 +45,9 @@ import androidx.annotation.XmlRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.net.toUri
 import androidx.emoji2.text.EmojiCompat
 import coil.Coil.imageLoader
 import coil.request.ImageRequest
@@ -87,12 +88,12 @@ object DisplayUtils {
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
-    fun setClickableString(string: String, url: String?, textView: TextView) {
+    fun setClickableString(string: String, url: String, textView: TextView) {
         val spannableString = SpannableString(string)
         spannableString.setSpan(
             object : ClickableSpan() {
                 override fun onClick(widget: View) {
-                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    val browserIntent = Intent(Intent.ACTION_VIEW, url.toUri())
                     browserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     sharedApplication!!.applicationContext.startActivity(browserIntent)
                 }
@@ -111,11 +112,7 @@ object DisplayUtils {
     }
 
     fun getBitmap(drawable: Drawable): Bitmap {
-        val bitmap = Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888
-        )
+        val bitmap = createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight)
         val canvas = Canvas(bitmap)
         drawable.setBounds(0, 0, canvas.width, canvas.height)
         drawable.draw(canvas)

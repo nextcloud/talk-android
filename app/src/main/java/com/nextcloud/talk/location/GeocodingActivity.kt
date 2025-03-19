@@ -9,7 +9,6 @@ package com.nextcloud.talk.location
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.InputType
 import android.util.Log
@@ -17,6 +16,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.ViewModelProvider
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -132,7 +132,7 @@ class GeocodingActivity :
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
-        supportActionBar?.setIcon(ColorDrawable(resources!!.getColor(R.color.transparent, null)))
+        supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         supportActionBar?.title = ""
         viewThemeUtils.material.themeToolbar(binding.geocodingToolbar)
     }

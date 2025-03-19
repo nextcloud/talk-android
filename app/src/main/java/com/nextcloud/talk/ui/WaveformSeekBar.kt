@@ -14,16 +14,17 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
 import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.core.graphics.toColorInt
 import com.nextcloud.talk.utils.AudioUtils
 import kotlin.math.roundToInt
 
 class WaveformSeekBar : AppCompatSeekBar {
 
     @ColorInt
-    private var primary: Int = Color.parseColor("#679ff5")
+    private var primary: Int = "#679ff5".toColorInt()
 
     @ColorInt
-    private var secondary: Int = Color.parseColor("#a6c6f7")
+    private var secondary: Int = "#a6c6f7".toColorInt()
     private var rawData: FloatArray = floatArrayOf()
     private var waveData: FloatArray = floatArrayOf()
     private var savedMeasure: Int = 0
