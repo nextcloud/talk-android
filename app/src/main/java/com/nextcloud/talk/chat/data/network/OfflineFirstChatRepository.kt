@@ -800,6 +800,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override fun handleOnPause() {
         itIsPaused = true
+        if (this::scope.isInitialized) {
+            scope.cancel()
+        }
     }
 
     override fun handleOnResume() {
@@ -807,9 +810,7 @@ class OfflineFirstChatRepository @Inject constructor(
     }
 
     override fun handleOnStop() {
-        if (this::scope.isInitialized) {
-            scope.cancel()
-        }
+        // not used
     }
 
     @Suppress("LongParameterList")
