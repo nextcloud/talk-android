@@ -98,7 +98,7 @@ class MessageUtils(val context: Context) {
         return processedMessageText
     }
 
-    @Suppress("NestedBlockDepth", "LongParameterList")
+    @Suppress("NestedBlockDepth", "LongParameterList", "Detekt.LongMethod")
     private fun processMessageParameters(
         themingContext: Context,
         viewThemeUtils: ViewThemeUtils,

@@ -164,7 +164,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     private fun handleActionFromContact(intent: Intent) {
-
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 

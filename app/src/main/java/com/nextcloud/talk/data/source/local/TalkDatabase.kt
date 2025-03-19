@@ -51,7 +51,7 @@ import java.util.Locale
         ConversationEntity::class,
         ChatMessageEntity::class,
         ChatBlockEntity::class,
-        UserCirclesEntity:: class,
+        UserCirclesEntity::class,
         UserGroupsEntity::class
     ],
     version = 16,
