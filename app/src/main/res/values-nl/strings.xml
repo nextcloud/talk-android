@@ -32,7 +32,6 @@
     <string name="close_icon">Sluiten pictogram</string>
     <string name="connection_established">Verbinding tot stand gebracht</string>
     <string name="connection_lost">Verbinding verbroken</string>
-    <string name="connection_lost_queued">Verbinding verbroken - %1$d in de wachtrij</string>
     <string name="connection_lost_sent_messages_are_queued">Verbinding verbroken - Verzonden berichten in de wachtrij geplaatst</string>
     <string name="continuous_voice_message_recording">Zet opname vast voor doorlopende opname van de spraak</string>
     <string name="conversation_is_read_only">Gesprek is alleen-lezen</string>

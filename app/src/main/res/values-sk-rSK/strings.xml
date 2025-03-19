@@ -33,7 +33,6 @@
     <string name="close_icon">Ikona Zavrieť</string>
     <string name="connection_established">Pripojenie vytvorené</string>
     <string name="connection_lost">Pripojenie bolo stratené</string>
-    <string name="connection_lost_queued">Pripojenie bolo stratené - %1$d čaká v rade</string>
     <string name="connection_lost_sent_messages_are_queued">Pripojenie bolo stratené - Odoslané správy počkajú v rade</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
     <string name="conversation_is_read_only">Konverzácia je len na čítanie</string>

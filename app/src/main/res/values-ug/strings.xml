@@ -31,7 +31,6 @@
     <string name="close_icon">سىنبەلگە تاقاش</string>
     <string name="connection_established">ئۇلىنىش قۇرۇلدى</string>
     <string name="connection_lost">ئۇلىنىش يوقاپ كەتتى</string>
-    <string name="connection_lost_queued">ئۇلىنىش يوقاپ كەتتى -%1$d ئۆچرەتتە</string>
     <string name="connection_lost_sent_messages_are_queued">ئۇلىنىش يوقاپ كەتتى - ئەۋەتىلگەن ئۇچۇرلار ئۆچرەتتە تۇرىدۇ</string>
     <string name="continuous_voice_message_recording">ئاۋاز ئۇچۇرىنى ئۇدا خاتىرىلەش ئۈچۈن قۇلۇپ خاتىرىلەش</string>
     <string name="conversation_is_read_only">سۆھبەت پەقەت ئوقۇلىدۇ</string>
