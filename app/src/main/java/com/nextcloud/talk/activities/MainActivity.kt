@@ -48,6 +48,7 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -60,6 +61,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @Inject
     lateinit var userManager: UserManager
+    private var job: Job? = null
 
     @Inject
     lateinit var userGroupsOrCirclesRepository: UserGroupsCirclesRepository
@@ -91,6 +93,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         setSupportActionBar(binding.toolbar)
 
         handleIntent(intent)
+
+        job = lifecycleScope.launch {
+            val initialized = userGroupsOrCirclesRepository.initialize()
+            Log.d("MainActivity", "$initialized")
+        }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -144,6 +151,11 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onStop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        job?.cancel()
+    }
+
     private fun openConversationList() {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -152,10 +164,7 @@ class MainActivity : BaseActivity(), ActionBarProvider {
     }
 
     private fun handleActionFromContact(intent: Intent) {
-        lifecycleScope.launch {
-            val initialized = userGroupsOrCirclesRepository.initialize()
-            Log.d("MainActivity", "$initialized")
-        }
+
         if (intent.action == Intent.ACTION_VIEW && intent.data != null) {
             val cursor = contentResolver.query(intent.data!!, null, null, null, null)
 
