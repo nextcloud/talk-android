@@ -51,7 +51,7 @@ import javax.inject.Inject
 class ContextChatCompose(val bundle: Bundle) {
 
     companion object {
-        const val LIMIT = 12
+        const val LIMIT = 50
     }
 
     @Inject

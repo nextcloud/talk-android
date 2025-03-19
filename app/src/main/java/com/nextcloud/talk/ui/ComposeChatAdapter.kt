@@ -12,6 +12,8 @@ import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,6 +29,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -49,6 +52,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -83,7 +87,6 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import java.util.Date
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -136,6 +139,7 @@ class ComposeChatAdapter(
     private val items = mutableStateListOf<ChatMessage>()
     private val colorScheme = viewThemeUtils.getColorScheme(context)
     private val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
+    private var listState: LazyListState = LazyListState()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -149,19 +153,46 @@ class ComposeChatAdapter(
             }
         }
 
-        processedMessages.addDates()
+        // processedMessages.addDates()
         if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
     }
 
+    private fun searchMessages(searchId: String): Int {
+        items.forEachIndexed { index, message ->
+            if (message.id == searchId) return index
+        }
+        return -1
+    }
+
+    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun GetView() {
-        val listState = rememberLazyListState()
+        // TODO should this be global
+        listState = rememberLazyListState()
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
             state = listState,
             modifier = Modifier.padding(16.dp)
         ) {
+            stickyHeader {
+                val timestamp = items[listState.firstVisibleItemIndex].timestamp
+                val dateString = DateUtils(context).getLocalDateTimeStringFromTimestamp(timestamp * LONG_1000)
+                val color = Color(highEmphasisColorInt)
+                Row(horizontalArrangement = Arrangement.Absolute.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Text(dateString,
+                        fontSize = AUTHOR_TEXT_SIZE,
+                        color = color,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .background(color = colorScheme.onBackground, shape = RoundedCornerShape(8.dp)))
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+
             items(items) { message ->
                 message.activeUser = currentUser
                 when (val type = message.getCalculateMessageType()) {
@@ -192,9 +223,7 @@ class ComposeChatAdapter(
                     }
 
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-                        if (message.isDate) {
-                            GenericDate(message)
-                        } else if (message.isLinkPreview()) {
+                        if (message.isLinkPreview()) {
                             LinkMessage(message)
                         } else {
                             TextMessage(message)
@@ -212,8 +241,9 @@ class ComposeChatAdapter(
         if (messageId != null && state.value.totalItemsCount > 0) {
             LaunchedEffect(Dispatchers.Main) {
                 delay(SCROLL_DELAY)
-                val pos = (listState.layoutInfo.totalItemsCount / 2)
+                val pos = searchMessages(messageId!!)
                 listState.animateScrollToItem(pos)
+                // TODO trigger a cool one-time ripple animation
             }
         }
     }
@@ -238,37 +268,6 @@ class ComposeChatAdapter(
         systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
-
-    private fun List<ChatMessage>.addDates(): List<ChatMessage> {
-        val newList = mutableListOf<ChatMessage>()
-        var lastDate = Date(this.first().timestamp * LONG_1000)
-        for (message in this) {
-            val currentDate = Date(message.timestamp * LONG_1000)
-            if (!DateUtils(context).isSameDate(lastDate, currentDate)) {
-                newList.add(
-                    ChatMessage().apply {
-                        isDate = true
-                        timestamp = message.timestamp
-                    }
-                )
-                lastDate = currentDate
-            }
-            newList.add(message)
-        }
-
-        return newList
-    }
-
-    @Composable
-    private fun GenericDate(message: ChatMessage) {
-        val dateString = DateUtils(context).getLocalDateTimeStringFromTimestamp(message.timestamp * LONG_1000)
-        val color = colorScheme.onBackground
-        Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
-            Spacer(modifier = Modifier.weight(1f))
-            Text(dateString, fontSize = AUTHOR_TEXT_SIZE, modifier = Modifier.padding(8.dp), color = color)
-            Spacer(modifier = Modifier.weight(1f))
-        }
-    }
 
     @Composable
     private fun CommonMessageQuote(context: Context, message: ChatMessage) {
@@ -380,7 +379,7 @@ class ComposeChatAdapter(
                 viewThemeUtils
             )
 
-            // Note: - this link is read only now, but should be refactored to be clickable
+            // TODO: - this link is read only now, but should be refactored to be clickable and add mentions
             // processedMessageText = messageUtils.processMessageParameters(
             //     ctx, viewThemeUtils, processedMessageText!!, message, null
             // )
@@ -452,7 +451,8 @@ class ComposeChatAdapter(
                     model = loadedImage,
                     contentDescription = stringResource(R.string.nc_sent_an_image),
                     modifier = Modifier
-                        .fillMaxHeight(height)
+                        .fillMaxHeight(height),
+                    contentScale = ContentScale.Fit
                 )
                 Text(
                     message.text,
@@ -515,7 +515,7 @@ class ComposeChatAdapter(
     }
 
     @Composable
-    fun OpenStreetMap(latitude: Double, longitude: Double) {
+    private fun OpenStreetMap(latitude: Double, longitude: Double) {
         AndroidView(
             modifier = Modifier
                 .fillMaxHeight()
