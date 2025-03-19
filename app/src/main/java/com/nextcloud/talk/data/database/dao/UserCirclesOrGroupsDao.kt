@@ -18,10 +18,10 @@ import com.nextcloud.talk.data.database.model.UserGroupsEntity
 interface UserCirclesOrGroupsDao {
 
     @Query("SELECT groups FROM user_groups")
-    fun getUserGroups():List<UserGroupsEntity>
+    fun getUserGroups(): List<UserGroupsEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUserGroups(groups:List<UserGroupsEntity>)
+    suspend fun insertUserGroups(groups: List<UserGroupsEntity>)
 
     @Query("SELECT displayName FROM user_circles")
     fun getUserCircles(): List<UserCirclesEntity>
@@ -34,5 +34,4 @@ interface UserCirclesOrGroupsDao {
 
     @Query("DELETE FROM user_circles")
     suspend fun deleteAllUserCircles()
-
 }
