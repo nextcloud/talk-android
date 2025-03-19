@@ -60,6 +60,14 @@ class PowerManagerUtils {
         orientation = context!!.resources.configuration.orientation
     }
 
+    fun acquireTimedPartialLock(msTimeout: Long): PowerManager.WakeLock {
+        // wakelock will be auto-released after the given time
+        val pm = context!!.getSystemService(POWER_SERVICE) as PowerManager
+        val wakeLock = pm!!.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "nctalk:timedPartialwakelock")
+        wakeLock!!.acquire(msTimeout)
+        return wakeLock
+    }
+
     fun isIgnoringBatteryOptimizations(): Boolean {
         val packageName = context!!.packageName
         val pm = context!!.getSystemService(POWER_SERVICE) as PowerManager
