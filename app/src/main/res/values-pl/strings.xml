@@ -33,7 +33,6 @@
     <string name="close_icon">Ikona zamknięcia</string>
     <string name="connection_established">Połączenie nawiązane</string>
     <string name="connection_lost">Utracone połączenie</string>
-    <string name="connection_lost_queued">Utracono połączenie - %1$d są w kolejce</string>
     <string name="connection_lost_sent_messages_are_queued">Utracono połączenie - wysłane wiadomości są w kolejce</string>
     <string name="continuous_voice_message_recording">Zablokuj nagrywanie w celu ciągłego nagrywania wiadomości głosowej</string>
     <string name="conversation_is_read_only">Rozmowa jest tylko do odczytu</string>

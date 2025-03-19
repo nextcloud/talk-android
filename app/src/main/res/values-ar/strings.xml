@@ -33,7 +33,6 @@
     <string name="close_icon">أيقونة الإغلاق</string>
     <string name="connection_established">تم الاتصال</string>
     <string name="connection_lost">انقطع الاتصال</string>
-    <string name="connection_lost_queued">إنقَطَع الاتصال - %1$d وُضِعَت في قائمة انتظار</string>
     <string name="connection_lost_sent_messages_are_queued">انقطع الاتصال - الرسالة المطلوب إرسالها تمّ تحضيرها للإرسال في قائمة بحسب الأولوية</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
@@ -153,6 +152,7 @@
     <string name="nc_common_disabled">مُعطّل</string>
     <string name="nc_common_dismiss">تجاهل</string>
     <string name="nc_common_error_sorry">حدث خطأ ما!</string>
+    <string name="nc_common_more_options">خيارات أخرى</string>
     <string name="nc_common_set">تعيين</string>
     <string name="nc_common_skip">تخطى</string>
     <string name="nc_common_unknown">غير معروف</string>

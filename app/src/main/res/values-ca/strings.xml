@@ -33,7 +33,6 @@
     <string name="close_icon">Tanca la icona</string>
     <string name="connection_established">S\'ha establert la connexió</string>
     <string name="connection_lost">S\'ha perdut la connexió</string>
-    <string name="connection_lost_queued">S\'ha perdut la connexió: %1$d a la cua</string>
     <string name="connection_lost_sent_messages_are_queued">S\'ha perdut la connexió: els missatges enviats s\'han posat a la cua</string>
     <string name="continuous_voice_message_recording">Bloqueja l\'enregistrament per a l\'enregistrament continu del missatge de veu</string>
     <string name="conversation_is_read_only">La conversa és només de lectura</string>
@@ -152,6 +151,7 @@
     <string name="nc_common_disabled">Inhabilitat</string>
     <string name="nc_common_dismiss">Descarta</string>
     <string name="nc_common_error_sorry">Disculpeu, alguna cosa ha anat malament!</string>
+    <string name="nc_common_more_options">Més opcions</string>
     <string name="nc_common_set">Estableix</string>
     <string name="nc_common_skip">Omet</string>
     <string name="nc_common_unknown">Desconegut</string>

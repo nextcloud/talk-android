@@ -33,7 +33,6 @@
     <string name="close_icon">Ikona zavření</string>
     <string name="connection_established">Spojení navázáno</string>
     <string name="connection_lost">Spojení ztraceno</string>
-    <string name="connection_lost_queued">Spojení ztraceno – %1$d jsou zařazené do fronty</string>
     <string name="connection_lost_sent_messages_are_queued">Spojení ztraceno – odeslané zprávy jsou zařazené do fronty</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
     <string name="conversation_is_read_only">Konverzace je pouze pro čtení</string>
@@ -153,6 +152,7 @@
     <string name="nc_common_disabled">Vypnuto</string>
     <string name="nc_common_dismiss">Zavřít</string>
     <string name="nc_common_error_sorry">Omlouváme se, něco se pokazilo!</string>
+    <string name="nc_common_more_options">Další volby</string>
     <string name="nc_common_set">Nastavit</string>
     <string name="nc_common_skip">Přeskočit</string>
     <string name="nc_common_unknown">Neznámé</string>

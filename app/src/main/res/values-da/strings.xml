@@ -33,7 +33,6 @@
     <string name="close_icon">Luk ikon</string>
     <string name="connection_established">Forbindelse oprettet</string>
     <string name="connection_lost">Forbindelse mistet</string>
-    <string name="connection_lost_queued">Forbindelsen afbrudt - %1$d er i kø</string>
     <string name="connection_lost_sent_messages_are_queued">Forbindelse mistet - Sendte beskeder er i kø</string>
     <string name="continuous_voice_message_recording">Lås optagelse for kontinuerlig optagelse af talebeskeden</string>
     <string name="conversation_is_read_only">Samtalen er skrivebeskyttet</string>
