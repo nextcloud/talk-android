@@ -15,5 +15,5 @@ import androidx.room.PrimaryKey
 data class UserCirclesEntity(
     @PrimaryKey
     @ColumnInfo(name = "displayName")
-    var displayName: String,
+    var displayName: String
 )

@@ -14,5 +14,5 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "user_groups")
 data class UserGroupsEntity(
     @PrimaryKey
-    @ColumnInfo (name="groups") var groups: String,
+    @ColumnInfo(name = "groups") var groups: String
 )
