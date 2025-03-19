@@ -30,6 +30,7 @@ class UserGroupsCirclesRepository @Inject constructor(
 
             coroutineScope {
                 launch {
+                   userCirclesOrGroupsDao.deleteAllUserGroups()
                     val response = ncApiCoroutines.getUserGroups(
                         credentials,
                         ApiUtils.getUrlForUserGroups(
@@ -38,7 +39,7 @@ class UserGroupsCirclesRepository @Inject constructor(
                         )
                     )
                     val groups = response.ocs?.data?.groups?: emptyList()
-
+                    Log.d("UserDataRepo","$groups")
                     userCirclesOrGroupsDao.insertUserGroups(
                         groups.map{
                             UserGroupsEntity(it)
@@ -47,12 +48,13 @@ class UserGroupsCirclesRepository @Inject constructor(
                 }
 
                 launch {
-
+                    userCirclesOrGroupsDao.deleteAllUserCircles()
                     val response = ncApiCoroutines.getUserCircles(
                         credentials,
                         ApiUtils.getUrlForUserCircles(user.baseUrl!!)
                     )
                     val circles = response.ocs?.data?.map { it.displayName!! }?: emptyList()
+                    Log.d("UserDataRepo","$circles")
                     userCirclesOrGroupsDao.insertUserCircles(
                         circles.map{
                             UserCirclesEntity(it)
@@ -66,13 +68,14 @@ class UserGroupsCirclesRepository @Inject constructor(
             Log.e("UserDataRepo", "Error initializing user data", e)
             return@withContext false
         }
+
     }
 
-    fun getUserGroups(): List<UserGroupsEntity> {
+   fun getUserGroups(): List<UserGroupsEntity> {
         return userCirclesOrGroupsDao.getUserGroups()
     }
 
-    fun getUserCircles(): List<UserCirclesEntity> {
+   fun getUserCircles(): List<UserCirclesEntity>{
         return userCirclesOrGroupsDao.getUserCircles()
     }
 }

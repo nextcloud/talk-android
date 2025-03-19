@@ -199,8 +199,8 @@ class RepositoryModule {
     fun provideUserGroupsCirclesRepository(
         userCirclesOrGroupsDao: UserCirclesOrGroupsDao,
         ncApiCoroutines: NcApiCoroutines,
-        userProvider: CurrentUserProviderNew
+        currentUserProvider: CurrentUserProviderNew
     ): UserGroupsCirclesRepository {
-        return UserGroupsCirclesRepository(userCirclesOrGroupsDao, ncApiCoroutines, userProvider)
+        return UserGroupsCirclesRepository(userCirclesOrGroupsDao, ncApiCoroutines, currentUserProvider)
     }
 }
