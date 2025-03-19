@@ -42,13 +42,16 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
@@ -75,6 +78,7 @@ import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -87,7 +91,11 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
+import kotlin.math.min
 import kotlin.random.Random
 
 @Suppress("FunctionNaming", "TooManyFunctions", "LongMethod")
@@ -109,7 +117,7 @@ class ComposeChatAdapter(
         private val TIME_TEXT_SIZE = 12.sp
         private val AUTHOR_TEXT_SIZE = 12.sp
         private const val LONG_1000 = 1000
-        private const val SCROLL_DELAY = 50L
+        private const val SCROLL_DELAY = 20L
         private const val QUOTE_SHAPE_OFFSET = 6
         private const val LINE_SPACING = 1.2f
         private const val CAPTION_WEIGHT = 0.8f
@@ -157,7 +165,8 @@ class ComposeChatAdapter(
         if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
     }
 
-    private fun searchMessages(searchId: String): Int {
+    // TODO should this be private?
+    fun searchMessages(searchId: String): Int {
         items.forEachIndexed { index, message ->
             if (message.id == searchId) return index
         }
@@ -176,9 +185,12 @@ class ComposeChatAdapter(
             modifier = Modifier.padding(16.dp)
         ) {
             stickyHeader {
+                if (items.size == 0) return@stickyHeader
+
                 val timestamp = items[listState.firstVisibleItemIndex].timestamp
-                val dateString = DateUtils(context).getLocalDateTimeStringFromTimestamp(timestamp * LONG_1000)
+                val dateString = formatTime(timestamp * LONG_1000)
                 val color = Color(highEmphasisColorInt)
+                val backgroundColor = context.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
                 Row(horizontalArrangement = Arrangement.Absolute.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -188,7 +200,9 @@ class ComposeChatAdapter(
                         color = color,
                         modifier = Modifier
                             .padding(8.dp)
-                            .background(color = colorScheme.onBackground, shape = RoundedCornerShape(8.dp)))
+                            .background(color = Color(backgroundColor), shape = RoundedCornerShape(8.dp))
+                            .padding(8.dp)
+                    )
                     Spacer(modifier = Modifier.weight(1f))
                 }
             }
@@ -237,13 +251,13 @@ class ComposeChatAdapter(
             }
         }
 
-        val state = remember { derivedStateOf { listState.layoutInfo } }
-        if (messageId != null && state.value.totalItemsCount > 0) {
+        if (messageId != null && items.size > 0) {
             LaunchedEffect(Dispatchers.Main) {
                 delay(SCROLL_DELAY)
                 val pos = searchMessages(messageId!!)
-                listState.animateScrollToItem(pos)
-                // TODO trigger a cool one-time ripple animation
+                if (pos > 0) {
+                    listState.scrollToItem(pos)
+                }
             }
         }
     }
@@ -268,6 +282,13 @@ class ComposeChatAdapter(
         systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+
+    private fun formatTime(timestampMillis: Long): String {
+        val instant = Instant.ofEpochMilli(timestampMillis)
+        val dateTime = instant.atZone(ZoneId.systemDefault()).toLocalDate() // Or specify a ZoneId if needed
+        val formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy")
+        return dateTime.format(formatter)
+    }
 
     @Composable
     private fun CommonMessageQuote(context: Context, message: ChatMessage) {
@@ -324,7 +345,9 @@ class ComposeChatAdapter(
         }
         val shape = if (incoming) incomingShape else outgoingShape
 
-        Row(modifier = Modifier.fillMaxWidth(1f)) {
+        Row(modifier = (if(message.id == messageId) Modifier.withCustomAnimation() else Modifier)
+            .fillMaxWidth(1f)
+        ) {
             if (incoming) {
                 val imageUri = message.actorId?.let { contactsViewModel.getImageUri(it, true) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
@@ -342,7 +365,7 @@ class ComposeChatAdapter(
             }
 
             Surface(
-                modifier = Modifier
+                modifier = Modifier //(if(message.id == messageId) Modifier.withCustomAnimation() else Modifier)
                     .defaultMinSize(60.dp, 40.dp)
                     .widthIn(60.dp, 280.dp)
                     .heightIn(40.dp, 450.dp),
@@ -361,9 +384,43 @@ class ComposeChatAdapter(
                     Row {
                         content()
                         Spacer(modifier = Modifier.size(8.dp))
-                        Text(timeString, fontSize = TIME_TEXT_SIZE, textAlign = TextAlign.End)
+                        Text(timeString, fontSize = TIME_TEXT_SIZE, textAlign = TextAlign.End,
+                            modifier = Modifier.align(Alignment.CenterVertically))
+                        if (message.readStatus == ReadStatus.NONE) {
+                            val sent = painterResource(R.drawable.ic_check_black_24dp)
+                            val read = painterResource(R.drawable.ic_check_all)
+                            val painter = if (message.readStatus == ReadStatus.READ) read else sent
+                            Icon(sent, "", modifier = Modifier
+                                .padding(start = 2.dp)
+                                .size(12.dp)
+                                .align(Alignment.CenterVertically))
+                        }
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun Modifier.withCustomAnimation() : Modifier {
+        val state = remember { mutableFloatStateOf(1f) }
+        return this.drawWithCache {
+            val brush = Brush.linearGradient(
+                listOf(
+                    Color(0xFF26D0CE),
+                    Color(0xFF1A2980),
+                )
+            )
+            onDrawWithContent {
+                drawContent()
+                drawRoundRect(
+                    brush,
+                    size = Size(min(16f + state.floatValue, 64f), this.size.height),
+                    topLeft = Offset(state.floatValue, 0f),
+                    cornerRadius = CornerRadius(16.dp.toPx()),
+                    alpha = 0.7f
+                )
+                state.value *= 1.5f
             }
         }
     }
