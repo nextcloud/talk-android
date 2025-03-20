@@ -28,8 +28,9 @@ import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
 import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
+import javax.inject.Inject
 
-class MessageUtils(val context: Context) {
+class MessageUtils @Inject constructor(val context: Context) {
 
     fun enrichChatReplyMessageText(
         context: Context,
@@ -81,7 +82,9 @@ class MessageUtils(val context: Context) {
         viewThemeUtils: ViewThemeUtils,
         spannedText: Spanned,
         message: ChatMessage,
-        itemView: View?
+        itemView: View?,
+        userGroups: List<String>?,
+        userCircles: List<String>?
     ): Spanned {
         var processedMessageText = spannedText
         val messageParameters = message.messageParameters
@@ -92,7 +95,10 @@ class MessageUtils(val context: Context) {
                 messageParameters,
                 message,
                 processedMessageText,
-                itemView
+                itemView,
+                userGroups ?: emptyList(),
+                userCircles ?: emptyList()
+
             )
         }
         return processedMessageText
@@ -105,16 +111,21 @@ class MessageUtils(val context: Context) {
         messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
         messageString: Spanned,
-        itemView: View?
+        itemView: View?,
+        userGroups: List<String>,
+        userCircles: List<String>
     ): Spanned {
         var messageStringInternal = messageString
         for (key in messageParameters.keys) {
             val individualHashMap = message.messageParameters?.get(key)
             if (individualHashMap != null) {
-
                 when (individualHashMap["type"]) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
-                        val chip = if (individualHashMap["id"]?.equals(message.activeUser?.userId) == true) {
+                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId ||
+                            userGroups.any { it == individualHashMap["name"] } ||
+                            userCircles.any { it == individualHashMap["name"] } ||
+                            individualHashMap["type"] == "call"
+                        ) {
                             R.xml.chip_you
                         } else {
                             R.xml.chip_others

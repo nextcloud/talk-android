@@ -60,7 +60,9 @@ public class OutcomingPreviewMessageViewHolder extends PreviewMessageViewHolder 
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    binding.outgoingPreviewMessageBubble);
+                    binding.outgoingPreviewMessageBubble,
+                    null,
+                    null);
             }
             binding.outgoingPreviewMessageBubble.setOnClickListener(null);
 

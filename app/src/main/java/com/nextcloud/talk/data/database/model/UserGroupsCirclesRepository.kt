@@ -14,6 +14,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,12 +24,12 @@ class UserGroupsCirclesRepository @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
     private val currentUserProvider: CurrentUserProviderNew
 ) {
-    val user = currentUserProvider.currentUser.blockingGet()
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun initialize(): Boolean =
         withContext(Dispatchers.IO) {
             try {
+                val user = currentUserProvider.currentUser.blockingGet()
                 val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
 
                 coroutineScope {
@@ -45,7 +46,7 @@ class UserGroupsCirclesRepository @Inject constructor(
                         Log.d("UserDataRepo", "$groups")
                         userCirclesOrGroupsDao.insertUserGroups(
                             groups.map {
-                                UserGroupsEntity(it)
+                                UserGroupsEntity(id = 0, it)
                             }
                         )
                     }
@@ -60,24 +61,17 @@ class UserGroupsCirclesRepository @Inject constructor(
                         Log.d("UserDataRepo", "$circles")
                         userCirclesOrGroupsDao.insertUserCircles(
                             circles.map {
-                                UserCirclesEntity(it)
+                                UserCirclesEntity(id = 0, it)
                             }
                         )
                     }
                 }
-
                 return@withContext true
             } catch (e: Exception) {
                 Log.e("UserDataRepo", "Error initializing user data", e)
                 return@withContext false
             }
         }
-
-    fun getUserGroups(): List<UserGroupsEntity> {
-        return userCirclesOrGroupsDao.getUserGroups()
-    }
-
-    fun getUserCircles(): List<UserCirclesEntity> {
-        return userCirclesOrGroupsDao.getUserCircles()
-    }
+    fun getUserGroups(): Flow<List<UserGroupsEntity>> = userCirclesOrGroupsDao.getUserGroups()
+    fun getUserCircles(): Flow<List<UserCirclesEntity>> = userCirclesOrGroupsDao.getUserCircles()
 }

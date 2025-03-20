@@ -27,6 +27,7 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -43,6 +44,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -75,6 +78,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     lateinit var commonMessageInterface: CommonMessageInterface
 
     @Inject
+    lateinit var userGroupsCirclesRepository: UserGroupsCirclesRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+    @Inject
     lateinit var chatRepository: ChatMessageRepository
 
     private var job: Job? = null
@@ -95,7 +103,14 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
-        if (!hasCheckboxes) {
+        coroutineScope.launch {
+            val userGroups = userGroupsCirclesRepository.getUserGroups()
+                .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
+
+            val userCircles = userGroupsCirclesRepository.getUserCircles()
+                .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
+
+            if (!hasCheckboxes) {
             binding.messageText.visibility = View.VISIBLE
             binding.checkboxContainer.visibility = View.GONE
             var processedMessageText = messageUtils.enrichChatMessageText(
@@ -132,7 +147,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 viewThemeUtils,
                 processedMessageText,
                 message,
-                itemView
+                itemView,
+                userGroups,
+                userCircles
             )
             val messageParameters = message.messageParameters
             if (
@@ -178,6 +195,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             viewThemeUtils
         )
     }
+        }
 
     private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
         val chatActivity = commonMessageInterface as ChatActivity

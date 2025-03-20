@@ -29,6 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
@@ -47,6 +48,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -85,6 +88,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private var job: Job? = null
 
+    @Inject
+    lateinit var userGroupsCirclesRepository: UserGroupsCirclesRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     @Suppress("Detekt.LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -106,6 +114,13 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             realView.isSelected = false
             layoutParams.isWrapBefore = false
             viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+        coroutineScope.launch {
+            val userGroups = userGroupsCirclesRepository.getUserGroups()
+                .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
+
+            val userCircles = userGroupsCirclesRepository.getUserCircles()
+                .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
 
             binding.messageText.visibility = View.VISIBLE
             binding.checkboxContainer.visibility = View.GONE
@@ -114,7 +129,8 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 binding.messageText.context,
                 message,
                 false,
-                viewThemeUtils
+                viewThemeUtils,
+
             )
 
             val spansFromString: Array<Any> = processedMessageText!!.getSpans(
@@ -144,8 +160,13 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 viewThemeUtils,
                 processedMessageText,
                 message,
-                itemView
+                itemView,
+                userGroups,
+                userCircles
             )
+            binding.messageText.text = processedMessageText
+        }
+
 
             if (
                 (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
@@ -219,6 +240,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             isBubbled
         )
     }
+
 
     private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
         val chatActivity = commonMessageInterface as ChatActivity
