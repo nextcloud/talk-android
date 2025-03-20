@@ -507,6 +507,7 @@
     <string name="nc_show_notification_warning_description">Када обавештења нису исправно подешена, прикажи уобичајено упозорење</string>
     <string name="nc_show_notification_warning_title">Прикажи уобичајено упозорење о обавештењу</string>
     <string name="nc_sort_by">Разврстај</string>
+    <string name="nc_start_group_chat">Покрени групни чет</string>
     <string name="nc_start_time">Време почетка</string>
     <string name="nc_switch_account">Пребаци налог</string>
     <string name="nc_team">Тим</string>

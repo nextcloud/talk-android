@@ -507,6 +507,7 @@
     <string name="nc_show_notification_warning_description">عندما لا تكون الإشعارات مهيأة بالصورة الصحيحة، أظهِر التحذيرات الاعتيادية.</string>
     <string name="nc_show_notification_warning_title">أظِهر تحذيراً بالإشعارات الاعتيادية</string>
     <string name="nc_sort_by">رتِّب حسب</string>
+    <string name="nc_start_group_chat">إبدأ الدردشة الجماعية</string>
     <string name="nc_start_time">وقت البدء</string>
     <string name="nc_switch_account">تبديل الحساب</string>
     <string name="nc_team">الفريق</string>

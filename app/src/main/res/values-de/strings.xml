@@ -507,6 +507,7 @@
     <string name="nc_show_notification_warning_description">Wenn Benachrichtigungen nicht korrekt konfiguriert sind, zeige regelmäßig eine Warnung</string>
     <string name="nc_show_notification_warning_title">Zeige regelmäßige Benachrichtigungswarnung</string>
     <string name="nc_sort_by">Sortiere nach</string>
+    <string name="nc_start_group_chat">Gruppenchat starten</string>
     <string name="nc_start_time">Startzeit</string>
     <string name="nc_switch_account">Konto wechseln</string>
     <string name="nc_team">Team</string>
