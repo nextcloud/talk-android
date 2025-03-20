@@ -83,7 +83,9 @@ class OutcomingLinkPreviewMessageViewHolder(outcomingView: View, payload: Any) :
             viewThemeUtils,
             processedMessageText!!,
             message,
-            itemView
+            itemView,
+            null,
+            null
         )
 
         binding.messageText.text = processedMessageText

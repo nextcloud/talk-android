@@ -21,7 +21,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
@@ -31,7 +30,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
-import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityMainBinding
 import com.nextcloud.talk.invitation.InvitationsActivity
@@ -48,8 +46,6 @@ import io.reactivex.SingleObserver
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -61,10 +57,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     @Inject
     lateinit var userManager: UserManager
-    private var job: Job? = null
-
-    @Inject
-    lateinit var userGroupsOrCirclesRepository: UserGroupsCirclesRepository
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -93,11 +85,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         setSupportActionBar(binding.toolbar)
 
         handleIntent(intent)
-
-        job = lifecycleScope.launch {
-            val initialized = userGroupsOrCirclesRepository.initialize()
-            Log.d("MainActivity", "$initialized")
-        }
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
@@ -153,7 +140,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
 
     override fun onDestroy() {
         super.onDestroy()
-        job?.cancel()
     }
 
     private fun openConversationList() {
