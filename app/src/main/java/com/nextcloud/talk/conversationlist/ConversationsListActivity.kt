@@ -280,7 +280,7 @@ class ConversationsListActivity :
 
         job = lifecycleScope.launch {
             val initialized = userGroupsOrCirclesRepository.initialize()
-            Log.d("MainActivity", "$initialized")
+            Log.d(TAG, "user groups and circles - $initialized ")
         }
 
         initObservers()
