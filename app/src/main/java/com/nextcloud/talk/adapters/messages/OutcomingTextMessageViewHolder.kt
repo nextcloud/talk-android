@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.CheckBox
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.text.toSpanned
 import androidx.lifecycle.lifecycleScope
@@ -148,6 +149,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
+        binding.messageTime.setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
         setBubbleOnChatMessage(message)
         // parent message handling
         if (!message.isDeleted && message.parentMessageId != null) {
@@ -236,6 +238,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 text = taskText
                 this.isChecked = isChecked
                 this.isEnabled = messageIsEditable || isNoTimeLimitOnNoteToSelf
+
+                setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+
                 setOnCheckedChangeListener { _, _ ->
                     updateCheckboxStates(chatMessage, user, checkboxList)
                 }

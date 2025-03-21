@@ -14,6 +14,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.widget.CheckBox
+import androidx.core.content.ContextCompat
 import androidx.core.text.toSpanned
 import autodagger.AutoInjector
 import coil.load
@@ -132,6 +133,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
+        binding.messageTime.setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
         // parent message handling
         if (!message.isDeleted && message.parentMessageId != null) {
             processParentMessage(message)
@@ -193,6 +195,9 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     chatMessage.actorType == "bots" ||
                         chatActivity.userAllowedByPrivilages(chatMessage)
                     ) && messageIsEditable
+
+                setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+
                 setOnCheckedChangeListener { _, _ ->
                     updateCheckboxStates(chatMessage, user, checkboxList)
                 }
