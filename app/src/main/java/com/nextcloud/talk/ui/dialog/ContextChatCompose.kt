@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Info
@@ -91,9 +90,7 @@ class ContextChatCompose(val bundle: Bundle) {
                     usePlatformDefaultWidth = false
                 )
             ) {
-                Surface(
-                    shape = RoundedCornerShape(8.dp)
-                ) {
+                Surface {
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()

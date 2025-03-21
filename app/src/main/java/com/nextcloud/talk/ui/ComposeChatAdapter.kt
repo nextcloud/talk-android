@@ -12,8 +12,15 @@ import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
+import androidx.compose.animation.animateColor
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,7 +36,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,16 +48,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
@@ -95,7 +100,6 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-import kotlin.math.min
 import kotlin.random.Random
 
 @Suppress("FunctionNaming", "TooManyFunctions", "LongMethod")
@@ -147,7 +151,6 @@ class ComposeChatAdapter(
     private val items = mutableStateListOf<ChatMessage>()
     private val colorScheme = viewThemeUtils.getColorScheme(context)
     private val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
-    private var listState: LazyListState = LazyListState()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -161,23 +164,13 @@ class ComposeChatAdapter(
             }
         }
 
-        // processedMessages.addDates()
         if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
-    }
-
-    // TODO should this be private?
-    fun searchMessages(searchId: String): Int {
-        items.forEachIndexed { index, message ->
-            if (message.id == searchId) return index
-        }
-        return -1
     }
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun GetView() {
-        // TODO should this be global
-        listState = rememberLazyListState()
+        val listState = rememberLazyListState()
 
         LazyColumn(
             verticalArrangement = Arrangement.spacedBy(8.dp),
@@ -290,6 +283,13 @@ class ComposeChatAdapter(
         return dateTime.format(formatter)
     }
 
+    private fun searchMessages(searchId: String): Int {
+        items.forEachIndexed { index, message ->
+            if (message.id == searchId) return index
+        }
+        return -1
+    }
+
     @Composable
     private fun CommonMessageQuote(context: Context, message: ChatMessage) {
         val color = colorResource(R.color.high_emphasis_text)
@@ -345,7 +345,8 @@ class ComposeChatAdapter(
         }
         val shape = if (incoming) incomingShape else outgoingShape
 
-        Row(modifier = (if(message.id == messageId) Modifier.withCustomAnimation() else Modifier)
+
+        Row(modifier = (if(message.id == messageId) Modifier.withCustomAnimation(incoming) else Modifier)
             .fillMaxWidth(1f)
         ) {
             if (incoming) {
@@ -365,7 +366,7 @@ class ComposeChatAdapter(
             }
 
             Surface(
-                modifier = Modifier //(if(message.id == messageId) Modifier.withCustomAnimation() else Modifier)
+                modifier = Modifier
                     .defaultMinSize(60.dp, 40.dp)
                     .widthIn(60.dp, 280.dp)
                     .heightIn(40.dp, 450.dp),
@@ -387,10 +388,8 @@ class ComposeChatAdapter(
                         Text(timeString, fontSize = TIME_TEXT_SIZE, textAlign = TextAlign.End,
                             modifier = Modifier.align(Alignment.CenterVertically))
                         if (message.readStatus == ReadStatus.NONE) {
-                            val sent = painterResource(R.drawable.ic_check_black_24dp)
                             val read = painterResource(R.drawable.ic_check_all)
-                            val painter = if (message.readStatus == ReadStatus.READ) read else sent
-                            Icon(sent, "", modifier = Modifier
+                            Icon(read, "", modifier = Modifier
                                 .padding(start = 2.dp)
                                 .size(12.dp)
                                 .align(Alignment.CenterVertically))
@@ -402,27 +401,30 @@ class ComposeChatAdapter(
     }
 
     @Composable
-    private fun Modifier.withCustomAnimation() : Modifier {
-        val state = remember { mutableFloatStateOf(1f) }
-        return this.drawWithCache {
-            val brush = Brush.linearGradient(
-                listOf(
-                    Color(0xFF26D0CE),
-                    Color(0xFF1A2980),
-                )
-            )
-            onDrawWithContent {
-                drawContent()
-                drawRoundRect(
-                    brush,
-                    size = Size(min(16f + state.floatValue, 64f), this.size.height),
-                    topLeft = Offset(state.floatValue, 0f),
-                    cornerRadius = CornerRadius(16.dp.toPx()),
-                    alpha = 0.7f
-                )
-                state.value *= 1.5f
-            }
+    private fun Modifier.withCustomAnimation(incoming: Boolean) : Modifier {
+        var isBlinking by remember { mutableStateOf(true) }
+        val infiniteTransition = rememberInfiniteTransition()
+        val borderColor by infiniteTransition.animateColor(
+            initialValue = colorScheme.primary,
+            targetValue = colorScheme.background,
+            animationSpec = infiniteRepeatable(
+                animation = tween(500, easing = LinearEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "animation"
+        )
+
+        LaunchedEffect(true) {
+            delay(2500)
+            isBlinking = false
+            infiniteTransition.animations.toMutableList().removeIf { it.label == "animation" }
         }
+
+        return if (isBlinking) this.border(
+            width = 4.dp,
+            color = borderColor,
+            shape = if (incoming) incomingShape else outgoingShape
+        ) else this
     }
 
     @Composable
@@ -436,18 +438,19 @@ class ComposeChatAdapter(
                 viewThemeUtils
             )
 
-            // TODO: - this link is read only now, but should be refactored to be clickable and add mentions
-            // processedMessageText = messageUtils.processMessageParameters(
-            //     ctx, viewThemeUtils, processedMessageText!!, message, null
-            // )
+            processedMessageText = messageUtils.processMessageParameters(
+                ctx, viewThemeUtils, processedMessageText!!, message, null
+            )
 
             androidx.emoji2.widget.EmojiTextView(ctx).apply {
-                layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                val params = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
+                params.topMargin = 8
+                layoutParams = params
                 setLineSpacing(0F, LINE_SPACING)
                 textAlignment = TEXT_ALIGNMENT_VIEW_START
                 text = processedMessageText
             }
-        }, modifier = Modifier)
+        }, modifier = Modifier.padding(top = 8.dp))
     }
 
     @Composable
