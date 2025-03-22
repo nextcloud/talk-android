@@ -507,6 +507,7 @@
     <string name="nc_show_notification_warning_description">Pokud notifikace nejsou správně nastavené, zobrazit pravidelné varování</string>
     <string name="nc_show_notification_warning_title">Zobrazovat pravidelné varování ohledně notifikací</string>
     <string name="nc_sort_by">Řadit podle</string>
+    <string name="nc_start_group_chat">Zahájit skupinový chat</string>
     <string name="nc_start_time">Čas zahájení</string>
     <string name="nc_switch_account">Přepnout účet</string>
     <string name="nc_team">Tým</string>
