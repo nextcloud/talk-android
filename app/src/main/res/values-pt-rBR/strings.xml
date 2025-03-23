@@ -7,6 +7,7 @@
     <string name="archive_conversation">Arquive conversa</string>
     <string name="archive_hint">Quando uma conversa for arquivada, ela ficará oculta por padrão. Selecione o filtro \"Arquivado\" para visualizar as conversas arquivadas. As menções diretas ainda serão recebidas.</string>
     <string name="archived">Arquivado</string>
+    <string name="archived_conversation">%1$s arquivado</string>
     <string name="audio_call">Chamada de áudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de áudio</string>
@@ -310,6 +311,7 @@
     <string name="nc_message_offline">Desligada</string>
     <string name="nc_message_quote_cancel_reply">Cancelar resposta</string>
     <string name="nc_message_read">Leitura de mensagem</string>
+    <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensagem enviada</string>
     <string name="nc_microphone_permission_hint">Para ativar a comunicação por voz, conceda a permissão \"Microfone\".</string>
     <string name="nc_missed_call">Você perdeu uma chamada de %s</string>
@@ -386,6 +388,7 @@
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_immediate">Imediato</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -538,6 +541,8 @@
     <string name="polls_end_poll_confirm">Você realmente quer terminar esta enquete? Isto não pode ser desfeito.</string>
     <string name="polls_max_votes_reached">Você não pode votar com mais opções para esta enquete.</string>
     <string name="polls_multiple_answers">Várias respostas</string>
+    <string name="polls_option_delete">Excluir opção %1$d</string>
+    <string name="polls_option_hint">Opção %1$d</string>
     <string name="polls_options">Opções</string>
     <string name="polls_private_poll">Enquete privada</string>
     <string name="polls_question">Pergunta</string>
@@ -566,6 +571,7 @@
     <string name="recording_settings_title">Gravação</string>
     <string name="removed_from_favorites">Conversa removida %1$s dos favoritos</string>
     <string name="renamed_conversation">Conversação %1$s foi renomeada</string>
+    <string name="resend_message">Reenviar</string>
     <string name="reset_status">Reinicie o status</string>
     <string name="restrict_join_other_room_while_call">It\'s not possible to join other rooms while being in a call</string>
     <string name="save">Salvar</string>
@@ -640,6 +646,7 @@
     <string name="typing_x_others">e %1$s outros estão digitando...</string>
     <string name="unarchive_conversation">Conversa Desarquiva</string>
     <string name="unarchive_hint">Uma vez que uma conversa não for marcada, ela será mostrada por padrão novamente.</string>
+    <string name="unarchived_conversation">%1$s desarquivado</string>
     <string name="unban">Proibir</string>
     <string name="unread">Não lido</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
