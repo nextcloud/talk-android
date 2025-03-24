@@ -66,7 +66,7 @@ import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.jobs.AddParticipantsToConversation
+import com.nextcloud.talk.jobs.AddParticipantsToConversationWorker
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -734,7 +734,7 @@ class ConversationInfoActivity :
         data.putStringArray(BundleKeys.KEY_SELECTED_EMAILS, emailIdsArray.toTypedArray())
         data.putStringArray(BundleKeys.KEY_SELECTED_CIRCLES, circleIdsArray.toTypedArray())
         val addParticipantsToConversationWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(
-            AddParticipantsToConversation::class.java
+            AddParticipantsToConversationWorker::class.java
         ).setInputData(data.build()).build()
         WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
 
