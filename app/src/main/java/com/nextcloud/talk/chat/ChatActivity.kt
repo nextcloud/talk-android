@@ -45,6 +45,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -1598,16 +1599,18 @@ class ChatActivity :
         if (conversationUser != null) {
             runOnUiThread {
                 if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
-                    Snackbar.make(
-                        binding.root,
+                    // do not replace with snackbar, as it would disappear with the activity switch
+                    Toast.makeText(
+                        context,
                         context.resources.getString(R.string.switch_to_main_room),
-                        Snackbar.LENGTH_LONG
+                        Toast.LENGTH_LONG
                     ).show()
                 } else {
-                    Snackbar.make(
-                        binding.root,
+                    // do not replace with snackbar, as it would disappear with the activity switch
+                    Toast.makeText(
+                        context,
                         context.resources.getString(R.string.switch_to_breakout_room),
-                        Snackbar.LENGTH_LONG
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
