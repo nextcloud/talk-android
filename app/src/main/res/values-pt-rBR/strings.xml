@@ -193,6 +193,7 @@
     <string name="nc_diagnose_app_users_amount">Usuários registrados</string>
     <string name="nc_diagnose_app_version_title">Versão do aplicativo</string>
     <string name="nc_diagnose_battery_optimization_ignored">A otimização da bateria é ignorada, tudo bem</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">A otimização da bateria está ativada, o que pode causar problemas. Você deve desativar a otimização da bateria!</string>
     <string name="nc_diagnose_battery_optimization_title">Configurações da bateria</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
     <string name="nc_diagnose_dialog_open_checklist">Abrir lista de verificação de solução de problemas</string>
@@ -338,6 +339,7 @@
     <string name="nc_notification_channel_uploads">Enviados</string>
     <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do envio do arquivo</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
+    <string name="nc_notification_warning">As notificações não estão configuradas corretamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">A permissão de notificação e as configurações da bateria estão configuradas corretamente para receber notificações. Se você tiver problemas para receber notificações mesmo assim, verifique se os canais de notificação para chamadas e mensagens estão habilitados. Mais ajuda pode ser encontrada em DontKillMyApp.com ou na lista de verificação de solução de problemas. Se isso não ajudar, vá para a tela de diagnóstico e envie um relatório de bug.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Solução de problemas de notificação</string>
     <string name="nc_notify_me_always">Sempre notificar</string>
@@ -436,6 +438,7 @@
     <string name="nc_settings_advanced_title">Avançada</string>
     <string name="nc_settings_appearance">Aparência</string>
     <string name="nc_settings_call_ringtone">Chamadas</string>
+    <string name="nc_settings_contact_admin_of">Por favor, entre em contato com o administrador de</string>
     <string name="nc_settings_diagnose_subtitle">Abra a tela de diagnóstico para verificar as configurações ou criar um relatório de bug</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Instrui o teclado para desativar o aprendizado personalizado (sem garantias)</string>
@@ -475,6 +478,7 @@
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Aplicativo de notificações do servidor não instalado</string>
     <string name="nc_settings_theme_battery_saver">Definido por Battery Saver</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>
@@ -500,7 +504,10 @@
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
     <string name="nc_shared_items_location">Localização</string>
     <string name="nc_shared_location">Localização compartilhada</string>
+    <string name="nc_show_notification_warning_description">Quando as notificações não estiverem configuradas corretamente, mostre um aviso regular</string>
+    <string name="nc_show_notification_warning_title">Mostrar aviso de notificação regular</string>
     <string name="nc_sort_by">Ordenar por</string>
+    <string name="nc_start_group_chat">Iniciar o bate-papo em grupo</string>
     <string name="nc_start_time">Hora de início</string>
     <string name="nc_switch_account">Mudar de conta</string>
     <string name="nc_team">Equipe</string>
@@ -528,6 +535,7 @@
     <string name="nc_yes">Sim</string>
     <string name="new_conversation_creation_icon">Novo ícone de criação de conversa</string>
     <string name="next_week">Próxima semana</string>
+    <string name="no_offline_messages_saved">Nenhuma mensagem offline foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
     <string name="online">Online</string>
@@ -535,6 +543,7 @@
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir Arquivos no aplicativo</string>
     <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>
+    <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="polls_add_option">Adicionar opção</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Encerrar enquete</string>
@@ -650,6 +659,8 @@
     <string name="unban">Proibir</string>
     <string name="unread">Não lido</string>
     <string name="upload_new_avatar_from_device">Carregar novo avatar do dispositivo</string>
+    <string name="user_absence">%1$s está fora do escritório e pode não responder</string>
+    <string name="user_absence_for_one_day">%1$s está fora do escritório hoje</string>
     <string name="user_absence_replacement">Substituição: </string>
     <string name="user_avatar">Avatar do usuário</string>
     <string name="user_info_address">Endereço</string>
