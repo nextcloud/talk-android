@@ -207,6 +207,7 @@ class ConversationInfoActivity :
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
         binding.addParticipantsAction.setOnClickListener { selectParticipantsToAdd() }
+        binding.startGroupChat.setOnClickListener { startGroupChat() }
         binding.listBansButton.setOnClickListener { listBans() }
 
         viewModel.getRoom(conversationUser, conversationToken)
@@ -672,6 +673,10 @@ class ConversationInfoActivity :
             .commit()
     }
 
+    private fun startGroupChat() {
+        Snackbar.make(binding.root, "TODO: start group chat...", Snackbar.LENGTH_LONG).show()
+    }
+
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
         if (result.resultCode == Activity.RESULT_OK) {
             onResult(result.data)
@@ -865,7 +870,10 @@ class ConversationInfoActivity :
             binding.sharedItems.visibility = GONE
         }
 
-        if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
+        if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+            binding.addParticipantsAction.visibility = GONE
+            binding.startGroupChat.visibility = VISIBLE
+        } else if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
             binding.addParticipantsAction.visibility = VISIBLE
             if (hasSpreedFeatureCapability(
                     spreedCapabilities,
