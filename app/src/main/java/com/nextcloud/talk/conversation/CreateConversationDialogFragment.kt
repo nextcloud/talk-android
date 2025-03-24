@@ -36,7 +36,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.conversation.viewmodel.ConversationViewModel
 import com.nextcloud.talk.databinding.DialogCreateConversationBinding
-import com.nextcloud.talk.jobs.AddParticipantsToConversation
+import com.nextcloud.talk.jobs.AddParticipantsToConversationWorker
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
@@ -224,7 +224,7 @@ class CreateConversationDialogFragment : DialogFragment() {
         data.putStringArray(BundleKeys.KEY_SELECTED_CIRCLES, circlesToInvite.toTypedArray())
 
         val addParticipantsToConversationWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(
-            AddParticipantsToConversation::class.java
+            AddParticipantsToConversationWorker::class.java
         )
             .setInputData(data.build())
             .build()
