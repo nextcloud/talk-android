@@ -535,6 +535,7 @@
     <string name="nc_yes">Sim</string>
     <string name="new_conversation_creation_icon">Novo ícone de criação de conversa</string>
     <string name="next_week">Próxima semana</string>
+    <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem offline foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
@@ -675,6 +676,11 @@
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="video_call">Video Chamada</string>
     <string name="whats_your_status">Qual é o seu status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Veja %d mensagem semelhante</item>
+        <item quantity="many">Veja %d mensagens semelhantes</item>
+        <item quantity="other">Veja %d mensagens semelhantes</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d votos</item>
         <item quantity="many">%d voto</item>
