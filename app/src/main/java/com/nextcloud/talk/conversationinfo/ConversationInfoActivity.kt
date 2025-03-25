@@ -142,6 +142,8 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private var startGroupChat: Boolean = false
+
     private lateinit var optionsMenu: Menu
 
     private val workerData: Data?
@@ -163,7 +165,12 @@ class ConversationInfoActivity :
                 intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
                     ?: emptyList()
             val participants = selectedParticipants.toMutableList()
-            addParticipantsToConversation(participants)
+
+            if (startGroupChat) {
+                Snackbar.make(binding.root, "TODO: start group chat...", Snackbar.LENGTH_LONG).show()
+            } else {
+                addParticipantsToConversation(participants)
+            }
         }
     }
 
@@ -206,8 +213,14 @@ class ConversationInfoActivity :
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
-        binding.addParticipantsAction.setOnClickListener { selectParticipantsToAdd() }
-        binding.startGroupChat.setOnClickListener { startGroupChat() }
+        binding.addParticipantsAction.setOnClickListener {
+            startGroupChat = false
+            selectParticipantsToAdd()
+        }
+        binding.startGroupChat.setOnClickListener {
+            startGroupChat = true
+            selectParticipantsToAdd()
+        }
         binding.listBansButton.setOnClickListener { listBans() }
 
         viewModel.getRoom(conversationUser, conversationToken)
@@ -671,10 +684,6 @@ class ConversationInfoActivity :
             .add(android.R.id.content, newFragment)
             .addToBackStack(null)
             .commit()
-    }
-
-    private fun startGroupChat() {
-        Snackbar.make(binding.root, "TODO: start group chat...", Snackbar.LENGTH_LONG).show()
     }
 
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
