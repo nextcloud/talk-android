@@ -120,6 +120,9 @@ class ConversationInfoViewModel @Inject constructor(
             ?.subscribe(GetRoomObserver())
     }
 
+    fun createRoom() {
+    }
+
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
 

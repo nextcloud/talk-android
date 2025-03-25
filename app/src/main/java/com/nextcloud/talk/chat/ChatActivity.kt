@@ -3137,12 +3137,10 @@ class ChatActivity :
         val apiVersion =
             ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            conversationUser?.baseUrl!!,
-            "1",
-            null,
-            message?.user?.id?.substring(INVITE_LENGTH),
-            null
+            version = apiVersion,
+            baseUrl = conversationUser?.baseUrl!!,
+            roomType = "1",
+            invite = message?.user?.id?.substring(INVITE_LENGTH)
         )
         chatViewModel.createRoom(
             credentials!!,
@@ -3570,12 +3568,10 @@ class ChatActivity :
             }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                apiVersion,
-                conversationUser?.baseUrl!!,
-                "1",
-                null,
-                userMentionClickEvent.userId,
-                null
+                version = apiVersion,
+                baseUrl = conversationUser?.baseUrl!!,
+                roomType = "1",
+                invite = userMentionClickEvent.userId
             )
 
             chatViewModel.createRoom(
@@ -3682,12 +3678,11 @@ class ChatActivity :
         val apiVersion =
             ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            conversationUser?.baseUrl!!,
-            ROOM_TYPE_ONE_TO_ONE,
-            ACTOR_TYPE,
-            userId,
-            null
+            version = apiVersion,
+            baseUrl = conversationUser?.baseUrl!!,
+            roomType = ROOM_TYPE_ONE_TO_ONE,
+            source = ACTOR_TYPE,
+            invite = userId
         )
         chatViewModel.createRoom(
             credentials!!,

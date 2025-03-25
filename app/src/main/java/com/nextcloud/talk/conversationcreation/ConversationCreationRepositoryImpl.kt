@@ -97,12 +97,10 @@ class ConversationCreationRepositoryImpl @Inject constructor(
 
     override suspend fun createRoom(roomType: String, conversationName: String?): RoomOverall {
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            _currentUser.baseUrl,
-            roomType,
-            null,
-            null,
-            conversationName
+            version = apiVersion,
+            baseUrl = _currentUser.baseUrl,
+            roomType = roomType,
+            conversationName = conversationName
         )
         val response = ncApiCoroutines.createRoom(
             credentials,
