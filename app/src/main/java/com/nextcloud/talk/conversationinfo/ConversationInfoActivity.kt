@@ -168,6 +168,7 @@ class ConversationInfoActivity :
 
             if (startGroupChat) {
                 Snackbar.make(binding.root, "TODO: start group chat...", Snackbar.LENGTH_LONG).show()
+                viewModel.createRoom()
             } else {
                 addParticipantsToConversation(participants)
             }
