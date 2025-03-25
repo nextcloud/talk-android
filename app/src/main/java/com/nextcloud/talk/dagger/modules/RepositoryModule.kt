@@ -17,8 +17,6 @@ import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
-import com.nextcloud.talk.conversation.repository.ConversationRepository
-import com.nextcloud.talk.conversation.repository.ConversationRepositoryImpl
 import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
 import com.nextcloud.talk.conversationcreation.ConversationCreationRepositoryImpl
 import com.nextcloud.talk.conversationinfoedit.data.ConversationInfoEditRepository
@@ -141,10 +139,6 @@ class RepositoryModule {
     ): ConversationInfoEditRepository {
         return ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
     }
-
-    @Provides
-    fun provideConversationRepository(ncApi: NcApi, userProvider: CurrentUserProviderNew): ConversationRepository =
-        ConversationRepositoryImpl(ncApi, userProvider)
 
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
