@@ -142,23 +142,6 @@ class ConversationCreationViewModel @Inject constructor(
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
         return repository.getImageUri(avatarId, requestBigSize)
     }
-
-    @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createRoom(roomType: String, conversationName: String?) {
-        viewModelScope.launch {
-            try {
-                val room = repository.createRoom(
-                    roomType,
-                    conversationName
-                )
-
-                val conversation: Conversation? = room.ocs?.data
-                roomViewState.value = RoomUIState.Success(conversation)
-            } catch (exception: Exception) {
-                roomViewState.value = RoomUIState.Error(exception.message ?: "")
-            }
-        }
-    }
 }
 
 sealed class AllowGuestsUiState {
