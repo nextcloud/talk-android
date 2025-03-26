@@ -60,7 +60,9 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
                     viewThemeUtils,
                     processedMessageText,
                     message,
-                    binding.incomingPreviewMessageBubble);
+                    binding.incomingPreviewMessageBubble,
+                    null,
+                    null);
             }
             binding.incomingPreviewMessageBubble.setOnClickListener(null);
 

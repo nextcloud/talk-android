@@ -87,6 +87,7 @@ import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.RoomUiState
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivityConversationsBinding
@@ -146,6 +147,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -195,6 +197,11 @@ class ConversationsListActivity :
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
+
+    private var job: Job? = null
+
+    @Inject
+    lateinit var userGroupsOrCirclesRepository: UserGroupsCirclesRepository
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -263,6 +270,11 @@ class ConversationsListActivity :
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        job = lifecycleScope.launch {
+            val initialized = userGroupsOrCirclesRepository.initialize()
+            Log.d(TAG, "user groups and circles - $initialized ")
+        }
 
         initObservers()
     }
@@ -1293,6 +1305,7 @@ class ConversationsListActivity :
         if (searchViewDisposable != null && !searchViewDisposable!!.isDisposed) {
             searchViewDisposable!!.dispose()
         }
+        job?.cancel()
     }
 
     private fun onQueryTextChange(newText: String?) {
