@@ -7,6 +7,8 @@
  */
 package com.nextcloud.talk.repositories.conversations
 
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import io.reactivex.Observable
@@ -42,4 +44,6 @@ interface ConversationsRepository {
     suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall
 
     suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall
+
+    suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall
 }

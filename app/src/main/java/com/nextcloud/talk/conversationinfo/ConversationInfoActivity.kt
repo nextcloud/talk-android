@@ -11,7 +11,6 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -161,16 +160,18 @@ class ConversationInfoActivity :
         ActivityResultContracts.StartActivityForResult()
     ) {
         executeIfResultOk(it) { intent ->
-            val selectedParticipants =
+            val selectedAutocompleteUsers =
                 intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
                     ?: emptyList()
-            val participants = selectedParticipants.toMutableList()
 
             if (startGroupChat) {
-                Snackbar.make(binding.root, "TODO: start group chat...", Snackbar.LENGTH_LONG).show()
-                viewModel.createRoom()
+                viewModel.createRoomFromOneToOne(
+                    conversationUser,
+                    selectedAutocompleteUsers,
+                    conversationToken
+                )
             } else {
-                addParticipantsToConversation(participants)
+                addParticipantsToConversation(selectedAutocompleteUsers)
             }
         }
     }
@@ -244,6 +245,21 @@ class ConversationInfoActivity :
                     spreedCapabilities = state.spreedCapabilities
 
                     handleConversation()
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.createRoomViewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.CreateRoomUIState.Success -> {
+                    // for now noting is done here.
+                    // the breakout room signaling message should be triggered and conversation should be switched.
+                }
+
+                is ConversationInfoViewModel.CreateRoomUIState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 }
 
                 else -> {}
@@ -688,7 +704,7 @@ class ConversationInfoActivity :
     }
 
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             onResult(result.data)
         } else {
             Log.e(ChatActivity.TAG, "resultCode for received intent was != ok")
@@ -721,17 +737,17 @@ class ConversationInfoActivity :
         addParticipantsResult.launch(intent)
     }
 
-    private fun addParticipantsToConversation(participants: List<AutocompleteUser>) {
+    private fun addParticipantsToConversation(autocompleteUsers: List<AutocompleteUser>) {
         val groupIdsArray: MutableSet<String> = HashSet()
         val emailIdsArray: MutableSet<String> = HashSet()
         val circleIdsArray: MutableSet<String> = HashSet()
         val userIdsArray: MutableSet<String> = HashSet()
 
-        participants.forEach { participant ->
+        autocompleteUsers.forEach { participant ->
             when (participant.source) {
-                Participant.ActorType.GROUPS.name.lowercase() -> groupIdsArray.add(participant.id!!)
+                GROUPS.name.lowercase() -> groupIdsArray.add(participant.id!!)
                 Participant.ActorType.EMAILS.name.lowercase() -> emailIdsArray.add(participant.id!!)
-                Participant.ActorType.CIRCLES.name.lowercase() -> circleIdsArray.add(participant.id!!)
+                CIRCLES.name.lowercase() -> circleIdsArray.add(participant.id!!)
                 else -> userIdsArray.add(participant.id!!)
             }
         }
