@@ -298,25 +298,19 @@ object ApiUtils {
     @Suppress("LongParameterList")
     fun getRetrofitBucketForCreateRoom(
         version: Int,
-        baseUrl: String?,
         roomType: String,
-        source: String?,
-        invite: String?,
-        conversationName: String?
+        baseUrl: String? = null,
+        source: String? = null,
+        invite: String? = null,
+        conversationName: String? = null
     ): RetrofitBucket {
         val retrofitBucket = RetrofitBucket()
         retrofitBucket.url = getUrlForRooms(version, baseUrl)
         val queryMap: MutableMap<String, String> = HashMap()
         queryMap["roomType"] = roomType
-        if (invite != null) {
-            queryMap["invite"] = invite
-        }
-        if (source != null) {
-            queryMap["source"] = source
-        }
-        if (conversationName != null) {
-            queryMap["roomName"] = conversationName
-        }
+        invite?.let { queryMap["invite"] = it }
+        source?.let { queryMap["source"] = it }
+        conversationName?.let { queryMap["roomName"] = it }
         retrofitBucket.queryMap = queryMap
         return retrofitBucket
     }

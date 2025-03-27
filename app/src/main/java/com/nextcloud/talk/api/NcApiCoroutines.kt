@@ -2,11 +2,13 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+ * SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
 package com.nextcloud.talk.api
 
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
@@ -54,6 +56,13 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String?,
         @Url url: String?,
         @QueryMap options: Map<String, String>?
+    ): RoomOverall
+
+    @POST
+    suspend fun createRoomWithBody(
+        @Header("Authorization") authorization: String?,
+        @Url url: String?,
+        @Body roomRequest: CreateRoomRequest
     ): RoomOverall
 
     /*
