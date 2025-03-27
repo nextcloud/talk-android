@@ -1598,21 +1598,17 @@ class ChatActivity :
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
             runOnUiThread {
-                if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
-                    // do not replace with snackbar, as it would disappear with the activity switch
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.switch_to_main_room),
-                        Toast.LENGTH_LONG
-                    ).show()
+                val toastInfo = if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
+                    context.resources.getString(R.string.switch_to_main_room)
                 } else {
-                    // do not replace with snackbar, as it would disappear with the activity switch
-                    Toast.makeText(
-                        context,
-                        context.resources.getString(R.string.switch_to_breakout_room),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    context.resources.getString(R.string.switch_to_breakout_room)
                 }
+                // do not replace with snackbar, as it would disappear with the activity switch
+                Toast.makeText(
+                    context,
+                    toastInfo,
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
             val bundle = Bundle()
