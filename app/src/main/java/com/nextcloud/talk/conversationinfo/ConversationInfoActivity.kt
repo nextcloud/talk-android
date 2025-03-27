@@ -92,6 +92,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -254,8 +255,12 @@ class ConversationInfoActivity :
         viewModel.createRoomViewState.observe(this) { state ->
             when (state) {
                 is ConversationInfoViewModel.CreateRoomUIState.Success -> {
-                    // for now noting is done here.
-                    // the breakout room signaling message should be triggered and conversation should be switched.
+                    state.room.ocs?.data?.token?.let { token ->
+                        val chatIntent = Intent(context, ChatActivity::class.java).apply {
+                            putExtra(KEY_ROOM_TOKEN, token)
+                        }
+                        startActivity(chatIntent)
+                    }
                 }
 
                 is ConversationInfoViewModel.CreateRoomUIState.Error -> {
