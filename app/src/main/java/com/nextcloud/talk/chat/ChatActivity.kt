@@ -47,6 +47,8 @@ import android.widget.PopupMenu
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -213,6 +215,7 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.collections.set
 import kotlin.math.roundToInt
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -334,6 +337,8 @@ class ChatActivity :
 
     private var videoURI: Uri? = null
 
+    private lateinit var pickMultipleMedia: ActivityResultLauncher<PickVisualMediaRequest>
+
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
@@ -429,6 +434,14 @@ class ChatActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
+
+        pickMultipleMedia = registerForActivityResult(
+            ActivityResultContracts.PickMultipleVisualMedia(5)
+        ) { uris ->
+            if (uris.isNotEmpty()) {
+                onChooseFileResult(uris)
+            }
+        }
     }
 
     private fun getMessageInputFragment(): MessageInputFragment {
@@ -1943,33 +1956,47 @@ class ChatActivity :
         }
     }
 
-    @Throws(IllegalStateException::class)
     private fun onChooseFileResult(intent: Intent?) {
         try {
             checkNotNull(intent)
-            filesToUpload.clear()
+            val fileUris = mutableListOf<Uri>()
             intent.clipData?.let {
                 for (index in 0 until it.itemCount) {
-                    filesToUpload.add(it.getItemAt(index).uri.toString())
+                    fileUris.add(it.getItemAt(index).uri)
                 }
             } ?: run {
                 checkNotNull(intent.data)
                 intent.data.let {
-                    filesToUpload.add(intent.data.toString())
+                    fileUris.add(intent.data!!)
                 }
             }
+            onChooseFileResult(fileUris)
+        } catch (e: IllegalStateException) {
+            context.resources?.getString(R.string.nc_upload_failed)?.let {
+                Snackbar.make(
+                    binding.root,
+                    it,
+                    Snackbar.LENGTH_LONG
+                ).show()
+            }
+            Log.e(javaClass.simpleName, "Something went wrong when trying to upload file", e)
+        }
+    }
+
+    private fun onChooseFileResult(filesToUpload: List<Uri>) {
+        try {
             require(filesToUpload.isNotEmpty())
 
             val filenamesWithLineBreaks = StringBuilder("\n")
 
             for (file in filesToUpload) {
-                val filename = FileUtils.getFileName(file.toUri(), context)
+                val filename = FileUtils.getFileName(file, context)
                 filenamesWithLineBreaks.append(filename).append("\n")
             }
 
             val newFragment = FileAttachmentPreviewFragment.newInstance(
                 filenamesWithLineBreaks.toString(),
-                filesToUpload
+                filesToUpload.map { it.toString() }.toMutableList()
             )
             newFragment.setListener { files, caption ->
                 uploadFiles(files, caption)
@@ -2221,6 +2248,10 @@ class ChatActivity :
         if (token == "") room = roomToken else room = token
 
         chatViewModel.uploadFile(fileUri, room, currentConversation?.displayName!!, metaData)
+    }
+
+    fun showGalleryPicker() {
+        pickMultipleMedia.launch(PickVisualMediaRequest(PickVisualMedia.ImageAndVideo))
     }
 
     private fun showLocalFilePicker() {
