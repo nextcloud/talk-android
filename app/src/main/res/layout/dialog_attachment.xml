@@ -123,7 +123,7 @@
             android:layout_gravity="start|center_vertical"
             android:paddingStart="@dimen/standard_double_padding"
             android:paddingEnd="@dimen/zero"
-            android:text="Gallery"
+            android:text="@string/nc_gallery"
             android:textAlignment="viewStart"
             android:textColor="@color/high_emphasis_text"
             android:textSize="@dimen/bottom_sheet_text_size" />
