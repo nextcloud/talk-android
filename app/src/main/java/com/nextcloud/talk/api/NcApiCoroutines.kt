@@ -17,6 +17,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
+import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -237,6 +238,12 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): UserAbsenceOverall
+
+    @POST
+    suspend fun testPushNotifications(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): TestNotificationOverall
 
     @GET
     suspend fun getContextOfChatMessage(
