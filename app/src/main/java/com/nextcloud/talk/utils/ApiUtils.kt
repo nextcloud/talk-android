@@ -273,6 +273,10 @@ object ApiUtils {
         return getUrlForApi(version, baseUrl) + "/signaling"
     }
 
+    fun getUrlForTestPushNotifications(baseUrl: String): String  {
+        return "$baseUrl$OCS_API_VERSION/apps/notifications/api/v3/test/self"
+    }
+
     @JvmStatic
     fun getUrlForSignalingBackend(version: Int, baseUrl: String?): String {
         return getUrlForSignaling(version, baseUrl) + "/backend"
