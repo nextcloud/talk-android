@@ -9,10 +9,12 @@ package com.nextcloud.talk.chat.data.network
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import io.reactivex.Observable
@@ -66,4 +68,12 @@ interface ChatNetworkDataSource {
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
     suspend fun getOutOfOfficeStatusForUser(credentials: String, baseUrl: String, userId: String): UserAbsenceOverall
+    suspend fun getContextForChatMessage(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String,
+        limit: Int
+    ): List<ChatMessageJson>
+    suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
 }

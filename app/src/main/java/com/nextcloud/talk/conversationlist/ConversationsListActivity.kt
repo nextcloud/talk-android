@@ -39,7 +39,9 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.os.bundleOf
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.view.MenuItemCompat
@@ -109,6 +111,7 @@ import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
+import com.nextcloud.talk.ui.dialog.ContextChatCompose
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.users.UserManager
@@ -1374,9 +1377,25 @@ class ConversationsListActivity :
             when (item.itemViewType) {
                 MessageResultItem.VIEW_TYPE -> {
                     val messageItem: MessageResultItem = item as MessageResultItem
-                    val conversationToken = messageItem.messageEntry.conversationToken
-                    selectedMessageId = messageItem.messageEntry.messageId
-                    showConversationByToken(conversationToken)
+                    val token = messageItem.messageEntry.conversationToken
+                    val conversationName = (
+                        conversationItems.first {
+                            (it is ConversationItem) && it.model.token == token
+                        } as ConversationItem
+                        ).model.displayName
+
+                    binding.genericComposeView.apply {
+                        val shouldDismiss = mutableStateOf(false)
+                        setContent {
+                            val bundle = bundleOf()
+                            bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
+                            bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
+                            bundle.putString(KEY_ROOM_TOKEN, token)
+                            bundle.putString(BundleKeys.KEY_MESSAGE_ID, messageItem.messageEntry.messageId)
+                            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversationName)
+                            ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+                        }
+                    }
                 }
 
                 LoadMoreResultsItem.VIEW_TYPE -> {

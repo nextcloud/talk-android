@@ -79,7 +79,7 @@ class MessageUtils(val context: Context) {
         viewThemeUtils: ViewThemeUtils,
         spannedText: Spanned,
         message: ChatMessage,
-        itemView: View
+        itemView: View?
     ): Spanned {
         var processedMessageText = spannedText
         val messageParameters = message.messageParameters
@@ -103,15 +103,15 @@ class MessageUtils(val context: Context) {
         messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage,
         messageString: Spanned,
-        itemView: View
+        itemView: View?
     ): Spanned {
         var messageStringInternal = messageString
         for (key in messageParameters.keys) {
-            val individualHashMap = message.messageParameters!![key]
+            val individualHashMap = message.messageParameters?.get(key)
             if (individualHashMap != null) {
                 when (individualHashMap["type"]) {
                     "user", "guest", "call", "user-group", "email", "circle" -> {
-                        val chip = if (individualHashMap["id"] == message.activeUser!!.userId) {
+                        val chip = if (individualHashMap["id"]?.equals(message.activeUser?.userId) == true) {
                             R.xml.chip_you
                         } else {
                             R.xml.chip_others
@@ -122,15 +122,20 @@ class MessageUtils(val context: Context) {
                             individualHashMap["id"]
                         }
 
+                        val name = individualHashMap["name"]
+                        val type = individualHashMap["type"]
+                        val user = message.activeUser
+                        if (user == null || key == null || id == null || name == null || type == null) break
+
                         messageStringInternal = DisplayUtils.searchAndReplaceWithMentionSpan(
-                            key!!,
+                            key,
                             themingContext,
                             messageStringInternal,
-                            id!!,
+                            id,
                             message.token,
-                            individualHashMap["name"]!!,
-                            individualHashMap["type"]!!,
-                            message.activeUser!!,
+                            name,
+                            type,
+                            user,
                             chip,
                             viewThemeUtils,
                             individualHashMap["server"] != null
@@ -138,8 +143,8 @@ class MessageUtils(val context: Context) {
                     }
 
                     "file" -> {
-                        itemView.setOnClickListener { v ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, individualHashMap["link"]!!.toUri())
+                        itemView?.setOnClickListener { v ->
+                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(individualHashMap["link"]))
                             context.startActivity(browserIntent)
                         }
                     }
