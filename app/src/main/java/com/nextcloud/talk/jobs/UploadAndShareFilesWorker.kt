@@ -89,16 +89,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        if (!platformPermissionUtil.isFilesPermissionGranted()) {
-            Log.w(
-                TAG,
-                "Storage permission is not granted. As a developer please make sure you check for" +
-                    "permissions via UploadAndShareFilesWorker.isStoragePermissionGranted() and " +
-                    "UploadAndShareFilesWorker.requestStoragePermission() beforehand. If you already " +
-                    "did but end up with this warning, the user most likely revoked the permission"
-            )
-        }
-
         return try {
             currentUser = currentUserProvider.currentUser.blockingGet()
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
