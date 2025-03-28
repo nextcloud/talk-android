@@ -541,6 +541,7 @@ How to translate with transifex:
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
     <string name="nc_upload_in_progess">Uploading</string>
     <string name="nc_upload_from_device">Upload from device</string>
+    <string name="nc_gallery">Gallery</string>
 
     <string name="nc_upload_notification_text">%1$s to %2$s - %3$s\%%</string>
     <string name="nc_upload_failed_notification_title">Failure</string>

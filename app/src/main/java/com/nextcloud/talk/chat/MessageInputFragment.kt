@@ -402,6 +402,11 @@ class MessageInputFragment : Fragment() {
             AttachmentDialog(requireActivity(), requireActivity() as ChatActivity).show()
         }
 
+        binding.fragmentMessageInputView.attachmentButton.setOnLongClickListener {
+            chatActivity.showGalleryPicker()
+            true
+        }
+
         binding.fragmentMessageInputView.button?.setOnClickListener {
             submitMessage(false)
         }
