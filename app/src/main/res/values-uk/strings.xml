@@ -143,7 +143,7 @@
     <string name="nc_diagnose_account_server">Сервер</string>
     <string name="nc_diagnose_account_user_name">Користувач</string>
     <string name="nc_diagnose_app_category_title">Застосунок</string>
-    <string name="nc_diagnose_app_name_title">Дайте назву застосунку</string>
+    <string name="nc_diagnose_app_name_title">Зазначте назву застосунку</string>
     <string name="nc_diagnose_battery_optimization_title">Налаштування батареї</string>
     <string name="nc_diagnose_device_name_title">Пристрій</string>
     <string name="nc_diagnose_signaling_mode_extern">Зовнішнє</string>
