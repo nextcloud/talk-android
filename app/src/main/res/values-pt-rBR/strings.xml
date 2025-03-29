@@ -409,8 +409,8 @@
     <string name="nc_sent_an_audio_you">Você enviou um áudio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou uma imagem.</string>
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s enviei uma carta deck</string>
-    <string name="nc_sent_deck_card_you">Você enviou uma carta de deck</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviei um cartão de Deck</string>
+    <string name="nc_sent_deck_card_you">Você enviou um cartão de Deck</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou um local.</string>
     <string name="nc_sent_poll" formatted="true">%1$s enviou uma enquete.</string>
@@ -499,7 +499,7 @@
     <string name="nc_share_this_location">Compartilhe este local</string>
     <string name="nc_share_to_choose_account">Escolha a conta </string>
     <string name="nc_shared_items">Itens compartilhados</string>
-    <string name="nc_shared_items_deck_card">Cartão de deck</string>
+    <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
     <string name="nc_shared_items_location">Localização</string>
