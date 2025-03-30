@@ -94,7 +94,7 @@
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo </string>
-    <string name="nc_account_chooser_add_account">Adicionar Conta</string>
+    <string name="nc_account_chooser_add_account">Adicionar conta</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
     <string name="nc_add_attachment">Adicionar anexo</string>
