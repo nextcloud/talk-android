@@ -47,6 +47,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 
+@Suppress("LongMethod")
 @Composable
 fun DiagnoseContentComposable(
     data: State<List<DiagnoseActivity.DiagnoseElement>>,
@@ -114,68 +115,80 @@ fun DiagnoseContentComposable(
                 }
             }
         }
-        if (isLoading.value) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularProgressIndicator()
-            }
+        ShowNotificationData(isLoading.value, showDialog.value, context, message.value, diagnoseViewModel)
+    }
+}
+
+@Composable
+@Suppress("LongMethod")
+fun ShowNotificationData(
+    isLoading: Boolean,
+    showDialog: Boolean,
+    context: Context,
+    message: String,
+    diagnoseViewModel: DiagnoseViewModel
+) {
+    if (isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
         }
-        if (showDialog.value) {
-            Dialog(
-                onDismissRequest = { diagnoseViewModel.dismissDialog() },
-                properties = DialogProperties(
-                    dismissOnClickOutside = true,
-                    usePlatformDefaultWidth = false
-                )
+    }
+    if (showDialog) {
+        Dialog(
+            onDismissRequest = { diagnoseViewModel.dismissDialog() },
+            properties = DialogProperties(
+                dismissOnClickOutside = true,
+                usePlatformDefaultWidth = false
+            )
+        ) {
+            Surface(
+                shape = MaterialTheme.shapes.medium,
+                tonalElevation = 8.dp,
+                modifier = Modifier
+                    .wrapContentSize()
+                    .padding(16.dp)
             ) {
-                Surface(
-                    shape = MaterialTheme.shapes.medium,
-                    tonalElevation = 8.dp,
-                    modifier = Modifier
-                        .wrapContentSize()
-                        .padding(16.dp)
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(R.string.nc_test_results),
+                        style = MaterialTheme.typography
+                            .titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f, fill = false)
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Text(
-                            text = stringResource(R.string.nc_test_results),
-                            style = MaterialTheme.typography
-                                .titleMedium
+                            modifier = Modifier.padding(top = 8.dp),
+                            text = message
                         )
-                        Spacer(modifier = Modifier.height(12.dp))
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f, fill = false)
-                                .verticalScroll(rememberScrollState())
-                        ) {
-                            Text(
-                                modifier = Modifier.padding(top = 8.dp),
-                                text = message.value
-                            )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        TextButton(onClick = { diagnoseViewModel.dismissDialog() }) {
+                            Text(text = stringResource(R.string.nc_cancel))
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Row(
-                            horizontalArrangement = Arrangement.SpaceEvenly,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            TextButton(onClick = { diagnoseViewModel.dismissDialog() }) {
-                                Text(text = stringResource(R.string.nc_cancel))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        TextButton(onClick = {
+                            val clipboard =
+                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText("Push Message", message)
+                            clipboard.setPrimaryClip(clip)
+                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                                Toast.makeText(context, R.string.message_copied, Toast.LENGTH_SHORT).show()
                             }
-                            Spacer(modifier = Modifier.width(8.dp))
-                            TextButton(onClick = {
-                                val clipboard =
-                                    context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                val clip = ClipData.newPlainText("Push Message", message.value)
-                                clipboard.setPrimaryClip(clip)
-                                if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-                                    Toast.makeText(context, R.string.message_copied, Toast.LENGTH_SHORT).show()
-                                }
-                                diagnoseViewModel.dismissDialog()
-                            }) {
-                                Text(text = stringResource(R.string.nc_common_copy))
-                            }
+                            diagnoseViewModel.dismissDialog()
+                        }) {
+                            Text(text = stringResource(R.string.nc_common_copy))
                         }
                     }
                 }
