@@ -230,6 +230,7 @@ How to translate with transifex:
     <string name="nc_diagnose_flavor" translatable="false">Build flavor</string>
     <string name="nc_test_push_button">"Test push notifications</string>
     <string name="nc_test_results">Test results</string>
+    <string name="message_copied">Message copied</string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
