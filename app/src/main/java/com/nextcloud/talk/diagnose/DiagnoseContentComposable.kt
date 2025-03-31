@@ -11,7 +11,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,6 +24,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,19 +65,28 @@ fun DiagnoseContentComposable(
             when (element) {
                 is DiagnoseActivity.DiagnoseElement.DiagnoseHeadline -> {
                     if (element.headline == "Test push notifications") {
-                        Text(
-                            text = element.headline,
+                        Button(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 16.dp)
-                                .clickable { diagnoseViewModel.fetchTestPushResult() },
-                            color = MaterialTheme.colorScheme.secondary,
-                            fontSize = LocalDensity.current.run {
-                                dimensionResource(R.dimen.headline_text_size).toPx().toSp()
-                            },
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Start
-                        )
+                                .wrapContentSize()
+                                .padding(vertical = 8.dp),
+                            onClick = {
+                                diagnoseViewModel.fetchTestPushResult()
+                            }
+
+                        ) {
+                            Text(
+                                text = element.headline,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 8.dp),
+                                color = colorResource(R.color.high_emphasis_text),
+                                fontSize = LocalDensity.current.run {
+                                    dimensionResource(R.dimen.headline_text_size).toPx().toSp()
+                                },
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     } else {
                         Text(
                             modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
@@ -137,7 +147,11 @@ fun DiagnoseContentComposable(
                                 .padding(16.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Push Test Result", style = MaterialTheme.typography.titleMedium)
+                                Text(
+                                    text = stringResource(R.string.nc_test_results),
+                                    style = MaterialTheme.typography
+                                        .titleMedium
+                                )
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Box(
                                     modifier = Modifier
@@ -145,7 +159,10 @@ fun DiagnoseContentComposable(
                                         .weight(1f, fill = false)
                                         .verticalScroll(rememberScrollState())
                                 ) {
-                                    Text(message.value)
+                                    Text(
+                                        modifier = Modifier.padding(top = 8.dp),
+                                        text = message.value
+                                    )
                                 }
                                 Spacer(modifier = Modifier.height(16.dp))
                                 Row(
@@ -153,19 +170,19 @@ fun DiagnoseContentComposable(
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     TextButton(onClick = { diagnoseViewModel.dismissDialog() }) {
-                                        Text("Cancel")
+                                        Text(text = stringResource(R.string.nc_cancel))
                                     }
                                     Spacer(modifier = Modifier.width(8.dp))
                                     TextButton(onClick = {
                                         val clipboard =
                                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                                        val clip = ClipData.newPlainText("PushMessage", message.value)
+                                        val clip = ClipData.newPlainText("Push Message", message.value)
                                         clipboard.setPrimaryClip(clip)
-                                        Toast.makeText(context, "Message copied to clipboard", Toast.LENGTH_SHORT)
+                                        Toast.makeText(context, "Message copied", Toast.LENGTH_SHORT)
                                             .show()
                                         diagnoseViewModel.dismissDialog()
                                     }) {
-                                        Text("Copy")
+                                        Text(text = stringResource(R.string.nc_common_copy))
                                     }
                                 }
                             }
@@ -176,17 +193,3 @@ fun DiagnoseContentComposable(
         }
     }
 }
-
-// @Preview(showBackground = true)
-// @Composable
-// fun DiagnoseContentPreview() {
-//     val state = remember {
-//         mutableStateOf(
-//             listOf(
-//                 DiagnoseActivity.DiagnoseElement.DiagnoseHeadline("Headline"),
-//                 DiagnoseActivity.DiagnoseElement.DiagnoseEntry("Key", "Value")
-//             )
-//         )
-//     }
-//     DiagnoseContentComposable(state)
-// }
