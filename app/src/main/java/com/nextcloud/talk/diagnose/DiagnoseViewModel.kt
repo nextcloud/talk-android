@@ -17,6 +17,7 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@Suppress("TooGenericExceptionCaught")
 class DiagnoseViewModel @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
     private val currentUserProvider: CurrentUserProviderNew
