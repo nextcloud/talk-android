@@ -10,7 +10,6 @@ package com.nextcloud.talk.diagnose
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -178,8 +177,6 @@ fun DiagnoseContentComposable(
                                             context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                                         val clip = ClipData.newPlainText("Push Message", message.value)
                                         clipboard.setPrimaryClip(clip)
-                                        Toast.makeText(context, "Message copied", Toast.LENGTH_SHORT)
-                                            .show()
                                         diagnoseViewModel.dismissDialog()
                                     }) {
                                         Text(text = stringResource(R.string.nc_common_copy))
