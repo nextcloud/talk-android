@@ -141,8 +141,8 @@ class DiagnoseActivity : BaseActivity() {
         setupMetaValues()
         setupPhoneValues()
         setupAppValues()
-        testPushNotification()
         setupAccountValues()
+        testPushNotification()
 
         diagnoseDataState.value = diagnoseData.toList()
     }
@@ -197,7 +197,7 @@ class DiagnoseActivity : BaseActivity() {
         ).show()
     }
 
-    private fun testPushNotification()  {
+    private fun testPushNotification() {
         addHeadline(context.resources.getString(R.string.nc_test_push_button))
     }
 

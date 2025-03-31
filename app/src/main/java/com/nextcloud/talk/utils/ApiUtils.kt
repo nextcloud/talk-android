@@ -273,7 +273,7 @@ object ApiUtils {
         return getUrlForApi(version, baseUrl) + "/signaling"
     }
 
-    fun getUrlForTestPushNotifications(baseUrl: String): String  {
+    fun getUrlForTestPushNotifications(baseUrl: String): String {
         return "$baseUrl$OCS_API_VERSION/apps/notifications/api/v3/test/self"
     }
 
