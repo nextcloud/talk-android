@@ -43,6 +43,7 @@ class ConversationEnums {
         DEFAULT,
         SHARE_PASSWORD,
         FILE,
-        ROOM
+        ROOM,
+        EVENT
     }
 }
