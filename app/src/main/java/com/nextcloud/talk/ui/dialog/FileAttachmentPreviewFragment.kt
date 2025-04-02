@@ -17,7 +17,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.databinding.DialogFileAttachmentPreviewBinding
-import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import javax.inject.Inject
@@ -70,12 +69,8 @@ class FileAttachmentPreviewFragment : DialogFragment() {
         }
 
         binding.buttonSend.setOnClickListener {
-            if (permissionUtil.isFilesPermissionGranted()) {
-                val caption: String = binding.dialogFileAttachmentPreviewCaption.text.toString()
-                uploadFiles(filesList, caption)
-            } else {
-                UploadAndShareFilesWorker.requestStoragePermission(requireActivity())
-            }
+            val caption: String = binding.dialogFileAttachmentPreviewCaption.text.toString()
+            uploadFiles(filesList, caption)
             dismiss()
         }
     }
