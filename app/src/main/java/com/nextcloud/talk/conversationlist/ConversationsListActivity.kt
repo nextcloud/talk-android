@@ -2035,6 +2035,8 @@ class ConversationsListActivity :
                 if (results.hasMore) {
                     adapterItems.add(LoadMoreResultsItem)
                 }
+
+                @SuppressLint()
                 adapter?.addItems(-1, adapterItems)
                 binding.recyclerView.scrollToPosition(0)
             }
