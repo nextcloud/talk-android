@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
     <string name="nc_forward_to_three_dots">Enviar para …</string>
+    <string name="nc_gallery">Galeria</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
     <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_group">Grupo</string>

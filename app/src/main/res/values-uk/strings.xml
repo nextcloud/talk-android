@@ -175,6 +175,7 @@
     <string name="nc_formatted_message_you">Ви: %1$s</string>
     <string name="nc_forward_message">Переслати</string>
     <string name="nc_forward_to_three_dots">Переслати …</string>
+    <string name="nc_gallery">Галерея</string>
     <string name="nc_get_from_provider">Ще не маєте сервера?\nНатисніть тут щоб отримати в провайдера</string>
     <string name="nc_get_source_code">Отримати вихідний код</string>
     <string name="nc_group">Група</string>
