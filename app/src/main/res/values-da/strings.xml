@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">Dig: %1$s</string>
     <string name="nc_forward_message">Videresend</string>
     <string name="nc_forward_to_three_dots">Forward til ...</string>
+    <string name="nc_gallery">Galleri</string>
     <string name="nc_get_from_provider">Har du ikke en server endnu?\nKlik her for at skaffe en udbyder</string>
     <string name="nc_get_source_code">Hent kildekode</string>
     <string name="nc_group">Gruppe</string>
