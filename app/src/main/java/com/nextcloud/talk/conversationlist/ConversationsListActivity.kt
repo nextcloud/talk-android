@@ -2035,9 +2035,8 @@ class ConversationsListActivity :
                 if (results.hasMore) {
                     adapterItems.add(LoadMoreResultsItem)
                 }
-
-                adapter?.addItems(0, adapterItems)
-                binding.recyclerView?.scrollToPosition(0)
+                adapter?.addItems(-1, adapterItems)
+                binding.recyclerView.scrollToPosition(0)
             }
         }
         binding.swipeRefreshLayoutView.isRefreshing = false
@@ -2045,7 +2044,7 @@ class ConversationsListActivity :
 
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        binding.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView.isRefreshing = false
     }
 
     fun updateFilterState(mention: Boolean, unread: Boolean) {
