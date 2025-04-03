@@ -113,7 +113,7 @@ import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlin.random.Random
 
-@Suppress("FunctionNaming", "TooManyFunctions", "LongMethod", "StaticFieldLeak")
+@Suppress("FunctionNaming", "TooManyFunctions", "LongMethod", "StaticFieldLeak", "LargeClass")
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
     private var messageId: String? = null
