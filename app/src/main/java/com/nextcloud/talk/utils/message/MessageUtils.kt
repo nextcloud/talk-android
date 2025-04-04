@@ -65,7 +65,7 @@ class MessageUtils(val context: Context) {
         }
     }
 
-    private fun enrichChatMessageText(
+    fun enrichChatMessageText(
         context: Context,
         message: String,
         incoming: Boolean,
