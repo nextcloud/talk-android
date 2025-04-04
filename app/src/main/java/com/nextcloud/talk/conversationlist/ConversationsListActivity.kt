@@ -411,7 +411,7 @@ class ConversationsListActivity :
                     is RoomUiState.Success -> {
                         val conversation = state.conversation
                         val bundle = Bundle()
-                        bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversation?.token)
+                        bundle.putString(KEY_ROOM_TOKEN, conversation?.token)
                         val chatIntent = Intent(context, ChatActivity::class.java)
                         chatIntent.putExtras(bundle)
                         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
@@ -827,7 +827,7 @@ class ConversationsListActivity :
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    binding.swipeRefreshLayoutView?.isEnabled = false
+                    binding.swipeRefreshLayoutView.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
                 }
@@ -2021,14 +2021,12 @@ class ConversationsListActivity :
             if (entries.isNotEmpty()) {
                 val adapterItems: MutableList<AbstractFlexibleItem<*>> = ArrayList(entries.size + 1)
                 for (i in entries.indices) {
-                    val showHeader = i == 0
                     adapterItems.add(
                         MessageResultItem(
                             context,
                             currentUser!!,
                             entries[i],
-                            showHeader,
-                            viewThemeUtils
+                            viewThemeUtils = viewThemeUtils
                         )
                     )
                 }
@@ -2036,8 +2034,14 @@ class ConversationsListActivity :
                     adapterItems.add(LoadMoreResultsItem)
                 }
 
-                @SuppressLint()
-                adapter?.addItems(-1, adapterItems)
+
+                adapter?.addItems(Int.MAX_VALUE, adapterItems)
+                val pos = adapter?.currentItems?.indexOfFirst { it is MessageResultItem }
+                val item = (adapter?.currentItems?.get(pos!!) as MessageResultItem).apply { showHeader = true  }
+                adapter?.addItem(pos!!, item)
+                adapter?.notifyItemInserted(pos!!)
+                adapter?.removeItem(pos!! - 1)
+                adapter?.notifyItemRemoved(pos!! - 1)
                 binding.recyclerView.scrollToPosition(0)
             }
         }

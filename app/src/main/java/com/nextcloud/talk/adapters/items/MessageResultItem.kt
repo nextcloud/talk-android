@@ -25,11 +25,11 @@ import eu.davidea.flexibleadapter.items.IFlexible
 import eu.davidea.flexibleadapter.items.ISectionable
 import eu.davidea.viewholders.FlexibleViewHolder
 
-data class MessageResultItem constructor(
+data class MessageResultItem(
     private val context: Context,
     private val currentUser: User,
     val messageEntry: SearchMessageEntry,
-    private val showHeader: Boolean = false,
+    var showHeader: Boolean = false,
     private val viewThemeUtils: ViewThemeUtils
 ) :
     AbstractFlexibleItem<MessageResultItem.ViewHolder>(),
