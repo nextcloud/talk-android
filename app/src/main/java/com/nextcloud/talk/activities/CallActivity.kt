@@ -38,6 +38,7 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.util.Log
 import android.view.MotionEvent
+import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
@@ -51,7 +52,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
-import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -1032,7 +1032,7 @@ class CallActivity : CallBaseActivity() {
     private fun prepareCall() {
         basicInitialization()
         initViews()
-        updateSelfVideoViewPosition()
+        updateSelfVideoViewPosition(true)
         checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
@@ -1326,7 +1326,10 @@ class CallActivity : CallBaseActivity() {
         if (video) {
             if (enable) {
                 binding!!.cameraButton.alpha = OPACITY_ENABLED
-                startVideoCapture()
+                startVideoCapture(
+                    isPortrait = true
+                )
+                setupOrientationListener(context)
             } else {
                 binding!!.cameraButton.alpha = OPACITY_DISABLED
                 if (videoCapturer != null) {
@@ -2158,10 +2161,44 @@ class CallActivity : CallBaseActivity() {
             })
     }
 
-    private fun startVideoCapture() {
-        if (videoCapturer != null) {
-            videoCapturer!!.startCapture(WIDTH, HEIGHT, FRAME_RATE)
+    private fun startVideoCapture(isPortrait: Boolean) {
+        val (width, height) = if (isPortrait) {
+            WIDTH_4_TO_3_RATIO to HEIGHT_4_TO_3_RATIO
+        } else {
+            WIDTH_16_TO_9_RATIO to HEIGHT_16_TO_9_RATIO
         }
+
+        videoCapturer?.let {
+            it.stopCapture()
+            it.startCapture(width, height, FRAME_RATE)
+        }
+        updateSelfVideoViewPosition(isPortrait)
+    }
+
+    private fun setupOrientationListener(context: Context) {
+        var lastAspectRatio = ""
+
+        val orientationEventListener = object : OrientationEventListener(context) {
+            override fun onOrientationChanged(orientation: Int) {
+                when (orientation) {
+                    in ANGLE_0..ANGLE_PORTRAIT_RIGHT_THRESHOLD,
+                    in ANGLE_PORTRAIT_LEFT_THRESHOLD..ANGLE_FULL -> {
+                        if (lastAspectRatio != RATIO_4_TO_3) {
+                            lastAspectRatio = RATIO_4_TO_3
+                            startVideoCapture(true)
+                        }
+                    }
+                    in ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MIN..ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MAX,
+                    in ANGLE_LANDSCAPE_LEFT_THRESHOLD_MIN..ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX -> {
+                        if (lastAspectRatio != RATIO_16_TO_9) {
+                            lastAspectRatio = RATIO_16_TO_9
+                            startVideoCapture(false)
+                        }
+                    }
+                }
+            }
+        }
+        orientationEventListener.enable()
     }
 
     @Suppress("Detekt.ComplexMethod")
@@ -2515,7 +2552,6 @@ class CallActivity : CallBaseActivity() {
     fun onMessageEvent(configurationChangeEvent: ConfigurationChangeEvent?) {
         powerManagerUtils!!.setOrientation(Objects.requireNonNull(resources).configuration.orientation)
         initGridAdapter()
-        updateSelfVideoViewPosition()
     }
 
     private fun updateSelfVideoViewIceConnectionState(iceConnectionState: IceConnectionState) {
@@ -2532,40 +2568,26 @@ class CallActivity : CallBaseActivity() {
         }
     }
 
-    private fun updateSelfVideoViewPosition() {
+    private fun updateSelfVideoViewPosition(isPortrait: Boolean) {
         Log.d(TAG, "updateSelfVideoViewPosition")
         if (!isInPipMode) {
             val layoutParams = binding!!.selfVideoRenderer.layoutParams as FrameLayout.LayoutParams
-            val displayMetrics = applicationContext.resources.displayMetrics
-            val screenWidthPx = displayMetrics.widthPixels
-            val screenWidthDp = DisplayUtils.convertPixelToDp(screenWidthPx.toFloat(), applicationContext).toInt()
-            var newXafterRotate = 0f
-            val newYafterRotate: Float = if (binding!!.callInfosLinearLayout.isVisible) {
-                Y_POS_CALL_INFO
+            if (!isPortrait) {
+                layoutParams.height =
+                    DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
+                layoutParams.width =
+                    DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
+                binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_LANDSCAPE
+                binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_LANDSCAPE
             } else {
-                Y_POS_NO_CALL_INFO
-            }
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layoutParams.height = resources.getDimension(R.dimen.call_self_video_short_side_length).toInt()
-                layoutParams.width = resources.getDimension(R.dimen.call_self_video_long_side_length).toInt()
-                newXafterRotate =
-                    (
-                        screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) *
-                            BY_80_PERCENT
-                        ).toFloat()
-            } else if (resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                layoutParams.height = resources.getDimension(R.dimen.call_self_video_long_side_length).toInt()
-                layoutParams.width = resources.getDimension(R.dimen.call_self_video_short_side_length).toInt()
-                newXafterRotate =
-                    (
-                        screenWidthDp - resources.getDimension(R.dimen.call_self_video_short_side_length) *
-                            BY_50_PERCENT
-                        ).toFloat()
+                layoutParams.height =
+                    DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
+                layoutParams.width =
+                    DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
+                binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_PORTRAIT
+                binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_PORTRAIT
             }
             binding!!.selfVideoRenderer.layoutParams = layoutParams
-            val newXafterRotatePx = DisplayUtils.convertDpToPixel(newXafterRotate, applicationContext).toInt()
-            binding!!.selfVideoViewWrapper.y = newYafterRotate
-            binding!!.selfVideoViewWrapper.x = newXafterRotatePx.toFloat()
         }
     }
 
@@ -3276,8 +3298,31 @@ class CallActivity : CallBaseActivity() {
         private const val MICROPHONE_VALUE_SLEEP: Long = 1000
 
         private const val FRAME_RATE: Int = 30
-        private const val WIDTH: Int = 1280
-        private const val HEIGHT: Int = 720
+        private const val WIDTH_16_TO_9_RATIO: Int = 1280
+        private const val HEIGHT_16_TO_9_RATIO: Int = 720
+        private const val WIDTH_4_TO_3_RATIO: Int = 640
+        private const val HEIGHT_4_TO_3_RATIO: Int = 480
+
+        private const val RATIO_4_TO_3 = "RATIO_4_TO_3"
+        private const val RATIO_16_TO_9 = "RATIO_16_TO_9"
+        private const val ANGLE_0 = 0
+        private const val ANGLE_FULL = 360
+        private const val ANGLE_PORTRAIT_RIGHT_THRESHOLD = 30
+        private const val ANGLE_PORTRAIT_LEFT_THRESHOLD = 330
+        private const val ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MIN = 80
+        private const val ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MAX = 100
+        private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MIN = 260
+        private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX = 280
+
+        private const val SELFVIDEO_WIDTH_4_TO_3_RATIO = 80
+        private const val SELFVIDEO_HEIGHT_4_TO_3_RATIO = 104
+        private const val SELFVIDEO_WIDTH_16_TO_9_RATIO = 136
+        private const val SELFVIDEO_HEIGHT_16_TO_9_RATIO = 80
+
+        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 100F
+        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 100F
+        private const val SELFVIDEO_POSITION_X_PORTRAIT = 300F
+        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 100F
 
         private const val FIVE_SECONDS: Long = 5000
         private const val CALLING_TIMEOUT: Long = 45000
