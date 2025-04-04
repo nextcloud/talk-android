@@ -2034,10 +2034,11 @@ class ConversationsListActivity :
                     adapterItems.add(LoadMoreResultsItem)
                 }
 
-
                 adapter?.addItems(Int.MAX_VALUE, adapterItems)
-                val pos = adapter?.currentItems?.indexOfFirst { it is MessageResultItem }
-                val item = (adapter?.currentItems?.get(pos!!) as MessageResultItem).apply { showHeader = true  }
+                val pos = adapter?.currentItems?.indexOfFirst {
+                    it is MessageResultItem
+                }
+                val item = (adapter?.currentItems?.get(pos!!) as MessageResultItem).apply { showHeader = true }
                 adapter?.addItem(pos!!, item)
                 adapter?.notifyItemInserted(pos!!)
                 adapter?.removeItem(pos!! - 1)
