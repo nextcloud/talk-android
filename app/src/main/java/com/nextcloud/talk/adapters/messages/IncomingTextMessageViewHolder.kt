@@ -20,6 +20,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
@@ -32,6 +33,8 @@ import com.stfalcon.chatkit.messages.MessageHolders
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -59,6 +62,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
+    @Inject
+    lateinit var userGroupsCirclesRepository: UserGroupsCirclesRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
@@ -69,21 +77,34 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         itemView.isSelected = false
 
         var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
+        coroutineScope.launch {
+            val userGroups = userGroupsCirclesRepository.getUserGroups()
+                .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
 
-        var processedMessageText = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            message,
-            true,
-            viewThemeUtils
-        )
+            val userCircles = userGroupsCirclesRepository.getUserCircles()
+                .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
 
-        processedMessageText = messageUtils.processMessageParameters(
-            binding.messageText.context,
-            viewThemeUtils,
-            processedMessageText!!,
-            message,
-            itemView
-        )
+            var processedMessageText = messageUtils.enrichChatMessageText(
+                binding.messageText.context,
+                message,
+                true,
+                viewThemeUtils
+            )
+
+            processedMessageText = messageUtils.processMessageParameters(
+                binding.messageText.context,
+                viewThemeUtils,
+                processedMessageText!!,
+                message,
+                itemView,
+                userGroups,
+                userCircles
+            )
+
+            binding.messageText.text = processedMessageText
+            binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
+            binding.messageText.text = processedMessageText
+        }
 
         val messageParameters = message.messageParameters
         if (
@@ -94,9 +115,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             itemView.isSelected = true
             binding.messageAuthor.visibility = View.GONE
         }
-
-        binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-        binding.messageText.text = processedMessageText
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE

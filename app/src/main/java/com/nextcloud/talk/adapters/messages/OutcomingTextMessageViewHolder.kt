@@ -24,6 +24,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -36,6 +37,8 @@ import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHold
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -65,6 +68,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     lateinit var commonMessageInterface: CommonMessageInterface
 
+    @Inject
+    lateinit var userGroupsCirclesRepository: UserGroupsCirclesRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     @Suppress("Detekt.LongMethod")
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
@@ -74,20 +82,30 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         layoutParams.isWrapBefore = false
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+        coroutineScope.launch {
+            val userGroups = userGroupsCirclesRepository.getUserGroups()
+                .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
 
-        var processedMessageText = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            message,
-            false,
-            viewThemeUtils
-        )
-        processedMessageText = messageUtils.processMessageParameters(
-            binding.messageText.context,
-            viewThemeUtils,
-            processedMessageText!!,
-            message,
-            itemView
-        )
+            val userCircles = userGroupsCirclesRepository.getUserCircles()
+                .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
+
+            var processedMessageText = messageUtils.enrichChatMessageText(
+                binding.messageText.context,
+                message,
+                false,
+                viewThemeUtils
+            )
+            processedMessageText = messageUtils.processMessageParameters(
+                binding.messageText.context,
+                viewThemeUtils,
+                processedMessageText!!,
+                message,
+                itemView,
+                userGroups,
+                userCircles
+            )
+            binding.messageText.text = processedMessageText
+        }
 
         var isBubbled = true
         if (
@@ -105,7 +123,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
         binding.messageTime.layoutParams = layoutParams
         viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
-        binding.messageText.text = processedMessageText
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
             binding.messageEditIndicator.visibility = View.VISIBLE
