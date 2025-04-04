@@ -143,7 +143,7 @@
     <string name="nc_diagnose_account_server">Сервер</string>
     <string name="nc_diagnose_account_user_name">Користувач</string>
     <string name="nc_diagnose_app_category_title">Застосунок</string>
-    <string name="nc_diagnose_app_name_title">Дайте назву застосунку</string>
+    <string name="nc_diagnose_app_name_title">Зазначте назву застосунку</string>
     <string name="nc_diagnose_battery_optimization_title">Налаштування батареї</string>
     <string name="nc_diagnose_device_name_title">Пристрій</string>
     <string name="nc_diagnose_signaling_mode_extern">Зовнішнє</string>
@@ -175,6 +175,7 @@
     <string name="nc_formatted_message_you">Ви: %1$s</string>
     <string name="nc_forward_message">Переслати</string>
     <string name="nc_forward_to_three_dots">Переслати …</string>
+    <string name="nc_gallery">Галерея</string>
     <string name="nc_get_from_provider">Ще не маєте сервера?\nНатисніть тут щоб отримати в провайдера</string>
     <string name="nc_get_source_code">Отримати вихідний код</string>
     <string name="nc_group">Група</string>

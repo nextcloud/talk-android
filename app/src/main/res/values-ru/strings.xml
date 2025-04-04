@@ -223,6 +223,7 @@
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Переслать</string>
     <string name="nc_forward_to_three_dots">Вперёд к …</string>
+    <string name="nc_gallery">Галерея</string>
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
     <string name="nc_get_source_code">Исходный код</string>
     <string name="nc_group">Группа</string>

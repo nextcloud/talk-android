@@ -11,7 +11,7 @@
 buildscript {
 
     ext {
-      kotlinVersion = '2.1.10'
+      kotlinVersion = '2.1.20'
     }
 
     repositories {
@@ -21,7 +21,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.9.0'
+        classpath 'com.android.tools.build:gradle:8.9.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
         classpath "org.jetbrains.kotlin:kotlin-serialization:${kotlinVersion}"
         classpath 'com.github.spotbugs.snom:spotbugs-gradle-plugin:6.1.7'

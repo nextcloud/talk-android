@@ -94,7 +94,7 @@
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo </string>
-    <string name="nc_account_chooser_add_account">Adicionar Conta</string>
+    <string name="nc_account_chooser_add_account">Adicionar conta</string>
     <string name="nc_account_scheduled_for_deletion">A conta está agendada para exclusão e não pode ser alterada</string>
     <string name="nc_action_open_main_menu">Abrir menu principal</string>
     <string name="nc_add_attachment">Adicionar anexo</string>
@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
     <string name="nc_forward_to_three_dots">Enviar para …</string>
+    <string name="nc_gallery">Galeria</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
     <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_group">Grupo</string>
@@ -409,8 +410,8 @@
     <string name="nc_sent_an_audio_you">Você enviou um áudio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou uma imagem.</string>
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s enviei uma carta deck</string>
-    <string name="nc_sent_deck_card_you">Você enviou uma carta de deck</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviei um cartão de Deck</string>
+    <string name="nc_sent_deck_card_you">Você enviou um cartão de Deck</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou um local.</string>
     <string name="nc_sent_poll" formatted="true">%1$s enviou uma enquete.</string>
@@ -499,7 +500,7 @@
     <string name="nc_share_this_location">Compartilhe este local</string>
     <string name="nc_share_to_choose_account">Escolha a conta </string>
     <string name="nc_shared_items">Itens compartilhados</string>
-    <string name="nc_shared_items_deck_card">Cartão de deck</string>
+    <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
     <string name="nc_shared_items_empty">Nenhum item compartilhado</string>
     <string name="nc_shared_items_location">Localização</string>
@@ -535,6 +536,7 @@
     <string name="nc_yes">Sim</string>
     <string name="new_conversation_creation_icon">Novo ícone de criação de conversa</string>
     <string name="next_week">Próxima semana</string>
+    <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem offline foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
@@ -675,6 +677,11 @@
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
     <string name="video_call">Video Chamada</string>
     <string name="whats_your_status">Qual é o seu status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Veja %d mensagem semelhante</item>
+        <item quantity="many">Veja %d mensagens semelhantes</item>
+        <item quantity="other">Veja %d mensagens semelhantes</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d votos</item>
         <item quantity="many">%d voto</item>

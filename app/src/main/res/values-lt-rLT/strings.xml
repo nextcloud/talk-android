@@ -151,6 +151,7 @@
     <string name="nc_formatted_message_you">Jūs: %1$s</string>
     <string name="nc_forward_message">Persiųsti</string>
     <string name="nc_forward_to_three_dots">Persiunčiama į …</string>
+    <string name="nc_gallery">Galerija</string>
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
     <string name="nc_get_source_code">Gauti išeities kodą</string>
     <string name="nc_group">Grupė</string>

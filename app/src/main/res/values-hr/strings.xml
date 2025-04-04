@@ -145,6 +145,7 @@
     <string name="nc_formatted_message_you">Vi: %1$s</string>
     <string name="nc_forward_message">Proslijedi</string>
     <string name="nc_forward_to_three_dots">Proslijedi…</string>
+    <string name="nc_gallery">Galerija</string>
     <string name="nc_get_from_provider">Nemate poslužitelj?\nKliknite ovdje kako biste ga dobili od davatelja usluge</string>
     <string name="nc_get_source_code">Preuzmi izvorni kod</string>
     <string name="nc_group">Grupa</string>
