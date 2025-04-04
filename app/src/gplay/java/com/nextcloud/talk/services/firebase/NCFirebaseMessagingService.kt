@@ -50,6 +50,10 @@ class NCFirebaseMessagingService : FirebaseMessagingService() {
             val messageData = Data.Builder()
                 .putString(BundleKeys.KEY_NOTIFICATION_SUBJECT, subject)
                 .putString(BundleKeys.KEY_NOTIFICATION_SIGNATURE, signature)
+                .putInt(
+                    BundleKeys.KEY_NOTIFICATION_BACKEND_TYPE,
+                    NotificationWorker.Companion.BackendType.FIREBASE_CLOUD_MESSAGING.value
+                )
                 .build()
             val notificationWork =
                 OneTimeWorkRequest.Builder(NotificationWorker::class.java).setInputData(messageData)
