@@ -10,7 +10,6 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
 
 enum class ReceiverFlag(val value: Int) {
     Exported(
@@ -26,5 +25,5 @@ enum class ReceiverFlag(val value: Int) {
         } else {
             0
         }
-    ),
+    )
 }
