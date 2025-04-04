@@ -28,7 +28,7 @@ import autodagger.AutoInjector;
 import io.reactivex.schedulers.Schedulers;
 
 @AutoInjector(NextcloudTalkApplication.class)
-public class AddParticipantsToConversation extends Worker {
+public class AddParticipantsToConversationWorker extends Worker {
     @Inject
     NcApi ncApi;
 
@@ -38,7 +38,7 @@ public class AddParticipantsToConversation extends Worker {
     @Inject
     EventBus eventBus;
 
-    public AddParticipantsToConversation(@NonNull Context context, @NonNull WorkerParameters workerParams) {
+    public AddParticipantsToConversationWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
         NextcloudTalkApplication.Companion.getSharedApplication().getComponentApplication().inject(this);
     }
