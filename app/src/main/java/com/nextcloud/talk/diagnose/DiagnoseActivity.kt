@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.ViewModelProvider
 import androidx.core.net.toUri
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
@@ -35,8 +36,8 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
-import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -55,6 +56,9 @@ class DiagnoseActivity : BaseActivity() {
 
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var ncApi: NcApi
@@ -78,6 +82,10 @@ class DiagnoseActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val diagnoseViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[DiagnoseViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
@@ -113,7 +121,7 @@ class DiagnoseActivity : BaseActivity() {
                                 .background(backgroundColor)
                                 .fillMaxSize()
                         ) {
-                            DiagnoseContentComposable(diagnoseDataState)
+                            DiagnoseContentComposable(diagnoseDataState, diagnoseViewModel)
                         }
                     }
                 )
@@ -133,6 +141,7 @@ class DiagnoseActivity : BaseActivity() {
         setupPhoneValues()
         setupAppValues()
         setupAccountValues()
+        testPushNotification()
 
         diagnoseDataState.value = diagnoseData.toList()
     }
@@ -185,6 +194,10 @@ class DiagnoseActivity : BaseActivity() {
             context.resources.getString(R.string.nc_common_copy_success),
             Toast.LENGTH_LONG
         ).show()
+    }
+
+    private fun testPushNotification() {
+        addHeadline(context.resources.getString(R.string.nc_test_push_button))
     }
 
     private fun setupMetaValues() {
