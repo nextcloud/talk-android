@@ -169,7 +169,7 @@
     <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_create_new_conversation">Criar uma nova conversa</string>
-    <string name="nc_create_poll">Criar pesquisa</string>
+    <string name="nc_create_poll">Criar enquete</string>
     <string name="nc_date_header_today">Hoje</string>
     <string name="nc_date_header_yesterday">Ontem</string>
     <string name="nc_delete">Excluir</string>
@@ -421,7 +421,7 @@
     <string name="nc_server_connect">Testar configuração do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
-    <string name="nc_server_helper_text">O link para sua %1$s interface web quando você abre no navegador.</string>
+    <string name="nc_server_helper_text">O link da interface da web do seu %1$s quando você o abre no navegador.</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
     <string name="nc_server_import_account_plain">Importar conta</string>
     <string name="nc_server_import_accounts">Importar contas do aplicativo %1$s</string>
@@ -613,7 +613,7 @@
     <string name="share_link_to_conversation">Participe da conversa %1$s em %2$s</string>
     <string name="shared_items_audio">Áudio</string>
     <string name="shared_items_file">Arquivo</string>
-    <string name="shared_items_media">Meios de comunicação</string>
+    <string name="shared_items_media">Mídia</string>
     <string name="shared_items_other">Outro</string>
     <string name="shared_items_poll">Enquete</string>
     <string name="shared_items_recording">Call recording</string>
@@ -683,8 +683,8 @@
         <item quantity="other">Veja %d mensagens semelhantes</item>
     </plurals>
     <plurals name="polls_amount_voters">
-        <item quantity="one">%d votos</item>
-        <item quantity="many">%d voto</item>
+        <item quantity="one">%d voto</item>
+        <item quantity="many">%d votos</item>
         <item quantity="other">%d votos</item>
     </plurals>
 </resources>
