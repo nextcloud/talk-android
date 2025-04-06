@@ -338,7 +338,7 @@
     <string name="nc_notification_channel_messages">Mensagens</string>
     <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_channel_uploads">Enviados</string>
-    <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do envio do arquivo</string>
+    <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do upload do arquivo</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notification_warning">As notificações não estão configuradas corretamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">A permissão de notificação e as configurações da bateria estão configuradas corretamente para receber notificações. Se você tiver problemas para receber notificações mesmo assim, verifique se os canais de notificação para chamadas e mensagens estão habilitados. Mais ajuda pode ser encontrada em DontKillMyApp.com ou na lista de verificação de solução de problemas. Se isso não ajudar, vá para a tela de diagnóstico e envie um relatório de bug.</string>
@@ -498,7 +498,7 @@
     <string name="nc_share_link">Compartilhar link</string>
     <string name="nc_share_location">Compartilhar localização</string>
     <string name="nc_share_this_location">Compartilhe este local</string>
-    <string name="nc_share_to_choose_account">Escolha a conta </string>
+    <string name="nc_share_to_choose_account">Escolha uma conta</string>
     <string name="nc_shared_items">Itens compartilhados</string>
     <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
@@ -516,7 +516,7 @@
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
-    <string name="nc_upload_failed">Desculpe, falha no envio</string>
+    <string name="nc_upload_failed">Desculpe, falha no upload</string>
     <string name="nc_upload_failed_notification_text">Falhou ao se enviado %1$s</string>
     <string name="nc_upload_failed_notification_title">Falha</string>
     <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
