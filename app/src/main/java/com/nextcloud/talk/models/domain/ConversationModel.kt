@@ -33,6 +33,7 @@ class ConversationModel(
     var unreadMention: Boolean = false,
     var lastMessage: ChatMessageJson? = null,
     var objectType: ConversationEnums.ObjectType,
+    var objectId: String = "",
     var notificationLevel: ConversationEnums.NotificationLevel,
     var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState,
     var lobbyState: ConversationEnums.LobbyState,

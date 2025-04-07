@@ -9,35 +9,55 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/conversation_event_icon"
+        android:icon="@drawable/calendar_clock"
+        android:orderInCategory="0"
+        android:title="@string/nc_event_conversation_menu"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item
+                android:id="@+id/action_option_one"
+                android:title="Scheduled event" />
+
+            <item
+                android:id="@+id/action_option_two"
+                android:title="@string/nc_delete_call"
+                android:icon = "@drawable/ic_delete"/>
+        </menu>
+
+    </item>
+
+    <item
         android:id="@+id/conversation_voice_call"
         android:icon="@drawable/ic_call_white_24dp"
-        android:orderInCategory="0"
+        android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_voice_call"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/conversation_video_call"
         android:icon="@drawable/ic_videocam_white_24px"
-        android:orderInCategory="1"
+        android:orderInCategory="2"
         android:title="@string/nc_conversation_menu_video_call"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/conversation_search"
         android:icon="@drawable/ic_search_white_24dp"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/nc_search"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/conversation_info"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/nc_conversation_menu_conversation_info"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/shared_items"
-        android:orderInCategory="4"
+        android:orderInCategory="5"
         android:title="@string/nc_shared_items"
         app:showAsAction="never" />
 </menu>
