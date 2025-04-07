@@ -292,7 +292,7 @@ public class WebRtcBluetoothManager {
             apprtcContext,
             receiver,
             filter,
-            ReceiverFlag.NotExported);
+            ReceiverFlag.Exported);
     }
 
     protected void unregisterReceiver(BroadcastReceiver receiver) {

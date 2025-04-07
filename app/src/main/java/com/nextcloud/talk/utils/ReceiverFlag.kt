@@ -10,13 +10,20 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.os.Build
-import androidx.annotation.RequiresApi
 
-enum class ReceiverFlag {
-    NotExported;
-
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    fun getId(): Int {
-        return Context.RECEIVER_NOT_EXPORTED
-    }
+enum class ReceiverFlag(val value: Int) {
+    Exported(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Context.RECEIVER_EXPORTED
+        } else {
+            0
+        }
+    ),
+    NotExported(
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Context.RECEIVER_NOT_EXPORTED
+        } else {
+            0
+        }
+    )
 }
