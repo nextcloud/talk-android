@@ -323,6 +323,7 @@ class ChatActivity :
 
     private var conversationVoiceCallMenuItem: MenuItem? = null
     private var conversationVideoMenuItem: MenuItem? = null
+    private var eventConversationMenuItem: MenuItem? = null
 
     var webSocketInstance: WebSocketInstance? = null
     var signalingMessageSender: SignalingMessageSender? = null
@@ -567,6 +568,7 @@ class ChatActivity :
 
                         invalidateOptionsMenu()
                         checkShowCallButtons()
+                        isEventConversation()
                         checkLobbyState()
                         updateRoomTimerHandler()
                     } else {
@@ -600,6 +602,7 @@ class ChatActivity :
                         setupSwipeToReply()
                         setActionBarTitle()
                         checkShowCallButtons()
+                        isEventConversation()
                         checkLobbyState()
                         if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
                             currentConversation?.status == "dnd"
@@ -1890,6 +1893,17 @@ class ChatActivity :
         }
     }
 
+    private fun isEventConversation()  {
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+            if (eventConversationMenuItem != null) {
+                eventConversationMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
+                eventConversationMenuItem?.isEnabled = true
+            }
+        } else {
+            eventConversationMenuItem?.isEnabled = false
+        }
+    }
+
     private fun isReadOnlyConversation(): Boolean =
         currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
@@ -2854,6 +2868,11 @@ class ChatActivity :
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+            eventConversationMenuItem = menu.findItem(R.id.conversation_event_icon)
+        } else {
+            menu.removeItem(R.id.conversation_event_icon)
+        }
         return true
     }
 
@@ -2869,12 +2888,6 @@ class ChatActivity :
 
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
                 currentConversation!!.remoteServer.isNullOrEmpty()
-
-            if (currentConversation!!.remoteServer != null ||
-                !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
-            ) {
-                menu.removeItem(R.id.shared_items)
-            }
 
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
