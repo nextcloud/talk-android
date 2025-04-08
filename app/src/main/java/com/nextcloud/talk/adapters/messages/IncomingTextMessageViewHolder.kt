@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.text.toSpanned
 import autodagger.AutoInjector
 import coil.load
+import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -103,10 +104,33 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 true,
                 viewThemeUtils
             )
+
+            val spansFromString: Array<Any> = processedMessageText!!.getSpans(
+                0,
+                processedMessageText.length,
+                Any::class.java
+            )
+
+            if (spansFromString.isNotEmpty()) {
+                binding.bubble.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.MATCH_PARENT
+                }
+                binding.messageText.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.MATCH_PARENT
+                }
+            } else {
+                binding.bubble.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.WRAP_CONTENT
+                }
+                binding.messageText.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.WRAP_CONTENT
+                }
+            }
+
             processedMessageText = messageUtils.processMessageParameters(
                 binding.messageText.context,
                 viewThemeUtils,
-                processedMessageText!!,
+                processedMessageText,
                 message,
                 itemView
             )
