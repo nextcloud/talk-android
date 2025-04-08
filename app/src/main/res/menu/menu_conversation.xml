@@ -9,22 +9,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/conversation_event_icon"
+        android:id="@+id/conversation_event"
         android:icon="@drawable/calendar_clock"
         android:orderInCategory="0"
         android:title="@string/nc_event_conversation_menu"
         app:showAsAction="ifRoom">
-
-        <menu>
-            <item
-                android:id="@+id/action_option_one"
-                android:title="Scheduled event" />
-
-            <item
-                android:id="@+id/action_option_two"
-                android:title="@string/nc_delete_call"
-                android:icon = "@drawable/ic_delete"/>
-        </menu>
 
     </item>
 

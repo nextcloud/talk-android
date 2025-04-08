@@ -89,6 +89,7 @@ class ConversationModel(
                 unreadMention = conversation.unreadMention,
                 lastMessage = conversation.lastMessage,
                 objectType = conversation.objectType.let { ConversationEnums.ObjectType.valueOf(it.name) },
+                objectId = conversation.objectId,
                 notificationLevel = conversation.notificationLevel.let {
                     ConversationEnums.NotificationLevel.valueOf(
                         it.name
