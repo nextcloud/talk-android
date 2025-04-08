@@ -185,6 +185,11 @@ class ConversationInfoEditActivity : BaseActivity() {
                         binding.conversationDescription.isEnabled = false
                     }
 
+                    if (conversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+                        binding.conversationName.isEnabled = false
+                        binding.conversationDescription.isEnabled = false
+                    }
+
                     loadConversationAvatar()
                 }
 
@@ -266,6 +271,7 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
+
         return true
     }
 

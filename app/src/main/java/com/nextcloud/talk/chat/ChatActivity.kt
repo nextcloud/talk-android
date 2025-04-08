@@ -38,12 +38,14 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -51,6 +53,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.mutableStateOf
@@ -82,6 +85,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -127,6 +131,7 @@ import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
+import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -210,11 +215,14 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 
@@ -1892,7 +1900,7 @@ class ChatActivity :
         }
     }
 
-    private fun isEventConversation()  {
+    private fun isEventConversation() {
         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
             if (eventConversationMenuItem != null) {
                 eventConversationMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
@@ -2870,10 +2878,11 @@ class ChatActivity :
             setActionBarTitle()
         }
         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
-            eventConversationMenuItem = menu.findItem(R.id.conversation_event_icon)
+            eventConversationMenuItem = menu.findItem(R.id.conversation_event)
         } else {
-            menu.removeItem(R.id.conversation_event_icon)
+            menu.removeItem(R.id.conversation_event)
         }
+
         return true
     }
 
@@ -2922,7 +2931,6 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_voice_call)
             }
         }
-
         return true
     }
 
@@ -2953,8 +2961,138 @@ class ChatActivity :
                 true
             }
 
+            R.id.conversation_event -> {
+                val anchorView = findViewById<View>(R.id.conversation_event)
+                showPopupWindow(anchorView)
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun showPopupWindow(anchorView: View) {
+        val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
+
+        val titleTextView = popupView.findViewById<TextView>(R.id.event_scheduled)
+        val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
+        val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
+
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupWindow.isOutsideTouchable = true
+        popupWindow.isFocusable = true
+        popupWindow.showAsDropDown(anchorView, 0, -anchorView.height)
+
+        val meetingStatus = showEventSchedule()
+
+        titleTextView.text = "Scheduled"
+        subtitleTextView.text = meetingStatus
+
+        if (meetingStatus == "Meeting Ended" && currentConversation?.canDeleteConversation == true) {
+            deleteConversation.visibility = View.VISIBLE
+
+            deleteConversation.setOnClickListener {
+                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+                    )
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(R.string.nc_delete_conversation_more)
+                    .setPositiveButton(R.string.nc_delete) { _, _ ->
+                        currentConversation?.let { conversation ->
+                            deleteConversation(conversation)
+                        }
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    }
+
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+            }
+        } else {
+            deleteConversation.visibility = View.GONE
+        }
+    }
+
+    private fun deleteConversation(conversation: ConversationModel) {
+        val data = Data.Builder()
+        data.putLong(
+            KEY_INTERNAL_USER_ID,
+            conversationUser?.id!!
+        )
+        data.putString(KEY_ROOM_TOKEN, conversation.token)
+
+        val deleteConversationWorker =
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data.build()).build()
+        WorkManager.getInstance().enqueue(deleteConversationWorker)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val successMessage = String.format(
+                                context.resources.getString(R.string.deleted_conversation),
+                                conversation.displayName
+                            )
+                            Snackbar.make(binding.root, successMessage, Snackbar.LENGTH_LONG).show()
+                            finish()
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            val errorMessage = context.resources.getString(R.string.nc_common_error_sorry)
+                            Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun showEventSchedule(): String {
+        val objectId = currentConversation?.objectId ?: ""
+        val status = getMeetingSchedule(objectId)
+        return status
+    }
+
+    private fun getMeetingSchedule(objectId: String): String {
+        val timestamps = objectId.split("#")
+        if (timestamps.size != 2) return "Invalid Time"
+
+        val startEpoch = timestamps[0].toLong()
+        val endEpoch = timestamps[1].toLong()
+
+        val startDateTime = Instant.ofEpochSecond(startEpoch).atZone(ZoneId.systemDefault())
+        val endDateTime = Instant.ofEpochSecond(endEpoch).atZone(ZoneId.systemDefault())
+        val now = ZonedDateTime.now(ZoneId.systemDefault())
+
+        return when {
+            now.isBefore(startDateTime) -> {
+                val isToday = startDateTime.toLocalDate().isEqual(now.toLocalDate())
+                val isTomorrow = startDateTime.toLocalDate().isEqual(now.toLocalDate().plusDays(1))
+                when {
+                    isToday -> "Today at ${startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                    isTomorrow -> "Tomorrow at ${startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                    else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
+                }
+            }
+            now.isAfter(endDateTime) -> "Meeting Ended"
+            else -> "Ongoing"
+        }
+    }
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
