@@ -8,6 +8,7 @@ package com.nextcloud.talk.utils.message
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.Typeface
 import android.text.SpannableString
 import android.text.SpannableStringBuilder
@@ -25,8 +26,10 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
+import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
+import io.noties.markwon.utils.Dip
 
 class MessageUtils(val context: Context) {
     fun enrichChatReplyMessageText(
@@ -189,6 +192,15 @@ class MessageUtils(val context: Context) {
             }
         })
             .usePlugin(TaskListPlugin.create(drawable))
+            .usePlugin(TablePlugin.create { builder ->
+                val dip = Dip.create(context)
+                builder.apply {
+                    // TODO the layout is broken -_-
+                    tableBorderWidth(dip.toPx(2))
+                    tableBorderColor(Color.GRAY)
+                    tableCellPadding(dip.toPx(0))
+                }
+            })
             .usePlugin(StrikethroughPlugin.create()).build()
         return markwon.toMarkdown(markdown)
     }
