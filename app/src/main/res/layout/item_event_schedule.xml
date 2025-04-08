@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kota@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="32dp"
+    android:background="@color/bg_bottom_sheet">
+
+    <TextView
+        android:id="@+id/event_scheduled"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scheduled"
+        android:textStyle="bold"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/meetingTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="14sp"
+        android:text="Meeting at 8:00 pm"/>
+
+    <TextView
+        android:id="@+id/delete_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Conversation"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility = "gone"
+        android:paddingTop="16dp"/>
+</LinearLayout>
