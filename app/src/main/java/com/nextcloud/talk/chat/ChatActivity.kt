@@ -230,6 +230,7 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
     BaseActivity(),
@@ -989,8 +990,10 @@ class ChatActivity :
                     val newString = state.messageEdited.ocs?.data?.parentMessage?.message ?: "(null)"
                     val id = state.messageEdited.ocs?.data?.parentMessage?.id.toString()
                     val index = adapter?.getMessagePositionById(id) ?: 0
-                    val message = adapter?.items?.get(index)?.item as ChatMessage
-                    setMessageAsEdited(message, newString)
+                    val item = adapter?.items?.get(index)?.item
+                    item?.let {
+                        setMessageAsEdited(item as ChatMessage, newString)
+                    }
                 }
 
                 is MessageInputViewModel.EditMessageErrorState -> {

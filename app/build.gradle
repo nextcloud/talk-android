@@ -291,6 +291,7 @@ dependencies {
     implementation "io.noties.markwon:core:$markwonVersion"
     implementation "io.noties.markwon:ext-strikethrough:$markwonVersion"
     implementation "io.noties.markwon:ext-tasklist:$markwonVersion"
+    implementation "io.noties.markwon:ext-tables:$markwonVersion"
 
     implementation 'com.github.nextcloud-deps:ImagePicker:2.1.0.2'
     implementation 'io.github.elye:loaderviewlibrary:3.0.0'
