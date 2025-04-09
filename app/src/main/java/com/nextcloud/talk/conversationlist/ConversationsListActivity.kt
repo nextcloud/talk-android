@@ -557,11 +557,11 @@ class ConversationsListActivity :
     }
 
     private fun futureEvent(conversation: ConversationModel): Boolean {
-        if(!conversation.objectId.contains("#")){
+        if (!conversation.objectId.contains("#")) {
             return false
         }
         return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
-            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / 1000)) >
+            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / LONG_1000)) >
             AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
     }
 
@@ -2138,5 +2138,6 @@ class ConversationsListActivity :
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 86400
+        const val LONG_1000: Long = 1000
     }
 }

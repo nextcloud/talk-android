@@ -2989,11 +2989,11 @@ class ChatActivity :
         popupWindow.showAsDropDown(anchorView, 0, -anchorView.height)
 
         val meetingStatus = showEventSchedule()
-
-        titleTextView.text = "Scheduled"
         subtitleTextView.text = meetingStatus
 
-        if (meetingStatus == "Meeting Ended" && currentConversation?.canDeleteConversation == true) {
+        if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
+            currentConversation?.canDeleteConversation == true
+        ) {
             deleteConversation.visibility = View.VISIBLE
 
             deleteConversation.setOnClickListener {
@@ -3063,34 +3063,41 @@ class ChatActivity :
     }
 
     private fun showEventSchedule(): String {
-        val objectId = currentConversation?.objectId ?: ""
-        val status = getMeetingSchedule(objectId)
+        val meetingTimeStamp = currentConversation?.objectId ?: ""
+        val status = getMeetingSchedule(meetingTimeStamp)
         return status
     }
 
-    private fun getMeetingSchedule(objectId: String): String {
-        val timestamps = objectId.split("#")
-        if (timestamps.size != 2) return "Invalid Time"
+    private fun getMeetingSchedule(meetingTimeStamp: String): String {
+        val timestamps = meetingTimeStamp.split("#")
+        if (timestamps.size != 2) return context.resources.getString(R.string.nc_invalid_time)
 
-        val startEpoch = timestamps[0].toLong()
-        val endEpoch = timestamps[1].toLong()
+        val startEpoch = timestamps[ZERO_INDEX].toLong()
+        val endEpoch = timestamps[ONE_INDEX].toLong()
 
         val startDateTime = Instant.ofEpochSecond(startEpoch).atZone(ZoneId.systemDefault())
         val endDateTime = Instant.ofEpochSecond(endEpoch).atZone(ZoneId.systemDefault())
-        val now = ZonedDateTime.now(ZoneId.systemDefault())
+        val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
 
         return when {
-            now.isBefore(startDateTime) -> {
-                val isToday = startDateTime.toLocalDate().isEqual(now.toLocalDate())
-                val isTomorrow = startDateTime.toLocalDate().isEqual(now.toLocalDate().plusDays(1))
+            currentTime.isBefore(startDateTime) -> {
+                val isToday = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate())
+                val isTomorrow = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate().plusDays(1))
                 when {
-                    isToday -> "Today at ${startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
-                    isTomorrow -> "Tomorrow at ${startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))}"
+                    isToday -> String.format(
+                        context.resources.getString(R.string.nc_today_meeting),
+                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    )
+
+                    isTomorrow -> String.format(
+                        context.resources.getString(R.string.nc_tomorrow_meeting),
+                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    )
                     else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
                 }
             }
-            now.isAfter(endDateTime) -> "Meeting Ended"
-            else -> "Ongoing"
+            currentTime.isAfter(endDateTime) -> context.resources.getString(R.string.nc_meeting_ended)
+            else -> context.resources.getString(R.string.nc_ongoing_meeting)
         }
     }
 
@@ -3951,5 +3958,7 @@ class ChatActivity :
         const val VOICE_MESSAGE_PLAY_ADD_THRESHOLD = 0.1
         const val VOICE_MESSAGE_MARK_PLAYED_FACTOR = 20
         const val OUT_OF_OFFICE_ALPHA = 76
+        const val ZERO_INDEX = 0
+        const val ONE_INDEX = 1
     }
 }

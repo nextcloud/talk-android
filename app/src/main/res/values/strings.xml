@@ -245,6 +245,11 @@ How to translate with transifex:
     <string name="nc_event_schedule">Schedule</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_all">Delete all</string>
+    <string name="nc_ongoing_meeting">Ongoing meeting</string>
+    <string name="nc_meeting_ended">Meeting ended</string>
+    <string name="nc_invalid_time">Invalid time</string>
+    <string name="nc_today_meeting">Today at %1$s</string>
+    <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
 
     <string name="nc_new_conversation">New conversation</string>
