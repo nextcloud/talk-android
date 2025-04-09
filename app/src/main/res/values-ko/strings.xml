@@ -167,6 +167,7 @@
     <string name="nc_formatted_message_you">나: %1$s</string>
     <string name="nc_forward_message">전달</string>
     <string name="nc_forward_to_three_dots">...에 전달</string>
+    <string name="nc_gallery">갤러리</string>
     <string name="nc_get_from_provider">서버가 없으신가요?\n공급자를 알아보려면 누르십시오</string>
     <string name="nc_get_source_code">소스 코드 얻기</string>
     <string name="nc_group">그룹</string>

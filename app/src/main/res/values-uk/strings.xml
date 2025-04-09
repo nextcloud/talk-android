@@ -175,6 +175,7 @@
     <string name="nc_formatted_message_you">Ви: %1$s</string>
     <string name="nc_forward_message">Переслати</string>
     <string name="nc_forward_to_three_dots">Переслати …</string>
+    <string name="nc_gallery">Галерея</string>
     <string name="nc_get_from_provider">Ще не маєте сервера?\nНатисніть тут щоб отримати в провайдера</string>
     <string name="nc_get_source_code">Отримати вихідний код</string>
     <string name="nc_group">Група</string>
@@ -440,7 +441,7 @@
     <string name="scope_local_description">Видно лише користувачам цієї хмари та гостям</string>
     <string name="scope_local_title">Локально</string>
     <string name="scope_private_description">Відображається лише людям, зіставленим за допомогою інтеграції номера телефону через Talk на мобільному пристрої</string>
-    <string name="scope_private_title">Закритий</string>
+    <string name="scope_private_title">Приватно</string>
     <string name="scope_published_description">Синхронізація з надійними серверами та глобальною та загальнодоступною адресною книгою</string>
     <string name="scope_published_title">Опубліковано</string>
     <string name="secondsAgo">секунд тому</string>

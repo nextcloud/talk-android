@@ -169,7 +169,7 @@
     <string name="nc_conversations_empty_details">Diga olá para seus amigos e colegas!</string>
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_create_new_conversation">Criar uma nova conversa</string>
-    <string name="nc_create_poll">Criar pesquisa</string>
+    <string name="nc_create_poll">Criar enquete</string>
     <string name="nc_date_header_today">Hoje</string>
     <string name="nc_date_header_yesterday">Ontem</string>
     <string name="nc_delete">Excluir</string>
@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
     <string name="nc_forward_to_three_dots">Enviar para …</string>
+    <string name="nc_gallery">Galeria</string>
     <string name="nc_get_from_provider">Não tem servidor ainda?\nClique aqui para obter um</string>
     <string name="nc_get_source_code">Obtenha o código-fonte</string>
     <string name="nc_group">Grupo</string>
@@ -337,7 +338,7 @@
     <string name="nc_notification_channel_messages">Mensagens</string>
     <string name="nc_notification_channel_messages_description">Notificar sobre mensagens recebidas</string>
     <string name="nc_notification_channel_uploads">Enviados</string>
-    <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do envio do arquivo</string>
+    <string name="nc_notification_channel_uploads_description">Notificar sobre o progresso do upload do arquivo</string>
     <string name="nc_notification_settings">Configurações de notificação</string>
     <string name="nc_notification_warning">As notificações não estão configuradas corretamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">A permissão de notificação e as configurações da bateria estão configuradas corretamente para receber notificações. Se você tiver problemas para receber notificações mesmo assim, verifique se os canais de notificação para chamadas e mensagens estão habilitados. Mais ajuda pode ser encontrada em DontKillMyApp.com ou na lista de verificação de solução de problemas. Se isso não ajudar, vá para a tela de diagnóstico e envie um relatório de bug.</string>
@@ -420,7 +421,7 @@
     <string name="nc_server_connect">Testar configuração do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
-    <string name="nc_server_helper_text">O link para sua %1$s interface web quando você abre no navegador.</string>
+    <string name="nc_server_helper_text">O link da interface da web do seu %1$s quando você o abre no navegador.</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
     <string name="nc_server_import_account_plain">Importar conta</string>
     <string name="nc_server_import_accounts">Importar contas do aplicativo %1$s</string>
@@ -497,7 +498,7 @@
     <string name="nc_share_link">Compartilhar link</string>
     <string name="nc_share_location">Compartilhar localização</string>
     <string name="nc_share_this_location">Compartilhe este local</string>
-    <string name="nc_share_to_choose_account">Escolha a conta </string>
+    <string name="nc_share_to_choose_account">Escolha uma conta</string>
     <string name="nc_shared_items">Itens compartilhados</string>
     <string name="nc_shared_items_deck_card">Cartão de Deck</string>
     <string name="nc_shared_items_description">Imagens, arquivos, mensagens de voz …</string>
@@ -515,10 +516,10 @@
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
-    <string name="nc_upload_failed">Desculpe, falha no envio</string>
+    <string name="nc_upload_failed">Desculpe, falha no upload</string>
     <string name="nc_upload_failed_notification_text">Falhou ao se enviado %1$s</string>
     <string name="nc_upload_failed_notification_title">Falha</string>
-    <string name="nc_upload_from_cloud">Compartilhar de 1%1$s</string>
+    <string name="nc_upload_from_cloud">Compartilhar de %1$s</string>
     <string name="nc_upload_from_device">Enviar do dispositivo</string>
     <string name="nc_upload_in_progess">Enviando</string>
     <string name="nc_upload_notification_text">%1$s para %2$s - %3$s\%%</string>
@@ -612,7 +613,7 @@
     <string name="share_link_to_conversation">Participe da conversa %1$s em %2$s</string>
     <string name="shared_items_audio">Áudio</string>
     <string name="shared_items_file">Arquivo</string>
-    <string name="shared_items_media">Meios de comunicação</string>
+    <string name="shared_items_media">Mídia</string>
     <string name="shared_items_other">Outro</string>
     <string name="shared_items_poll">Enquete</string>
     <string name="shared_items_recording">Call recording</string>
@@ -667,7 +668,7 @@
     <string name="user_info_address">Endereço</string>
     <string name="user_info_displayname">Nome completo</string>
     <string name="user_info_email">E-mail</string>
-    <string name="user_info_phone">Número do Telefone</string>
+    <string name="user_info_phone">Número do telefone</string>
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Website</string>
     <string name="user_status">Status</string>
@@ -682,8 +683,8 @@
         <item quantity="other">Veja %d mensagens semelhantes</item>
     </plurals>
     <plurals name="polls_amount_voters">
-        <item quantity="one">%d votos</item>
-        <item quantity="many">%d voto</item>
+        <item quantity="one">%d voto</item>
+        <item quantity="many">%d votos</item>
         <item quantity="other">%d votos</item>
     </plurals>
 </resources>

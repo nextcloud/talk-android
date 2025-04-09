@@ -259,6 +259,7 @@
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
     <string name="nc_forward_to_three_dots">Doorsturen aan …</string>
+    <string name="nc_gallery">Galerij</string>
     <string name="nc_get_from_provider">Heb je nog geen server?\n
 Kies er eentje van een provider.</string>
     <string name="nc_get_source_code">Download sourcecode</string>

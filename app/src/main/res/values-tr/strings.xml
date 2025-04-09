@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">Siz: %1$s</string>
     <string name="nc_forward_message">İlet</string>
     <string name="nc_forward_to_three_dots">Şuraya ilet …</string>
+    <string name="nc_gallery">Galeri</string>
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
     <string name="nc_get_source_code">Kaynak kodu alın</string>
     <string name="nc_group">Grup</string>

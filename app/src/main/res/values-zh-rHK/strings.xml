@@ -261,6 +261,7 @@
     <string name="nc_formatted_message_you">你： %1$s</string>
     <string name="nc_forward_message">轉寄</string>
     <string name="nc_forward_to_three_dots">轉寄給 …</string>
+    <string name="nc_gallery">相簿</string>
     <string name="nc_get_from_provider">您沒有自己的伺服器嗎？\n點這裡向服務供應商購買</string>
     <string name="nc_get_source_code">取得原始碼</string>
     <string name="nc_group">群組</string>
