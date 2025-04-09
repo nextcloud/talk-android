@@ -18,7 +18,6 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
@@ -122,15 +121,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
                 .observeOn(AndroidSchedulers.mainThread())
                 .blockingSingle()
 
-            val currentTime = System.currentTimeMillis() / 1000
-
-            val conversationListWithoutEvents = conversationsList.filterNot { conversation ->
-
-                conversation.objectType == ConversationEnums.ObjectType.EVENT &&
-                    conversation.objectId.split("#")[0].toLong() - currentTime >
-                    AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
-            }
-            conversationsFromSync = conversationListWithoutEvents.map {
+            conversationsFromSync = conversationsList.map {
                 it.asEntity(user.id!!)
             }
 
@@ -165,6 +156,5 @@ class OfflineFirstConversationsRepository @Inject constructor(
 
     companion object {
         val TAG = OfflineFirstConversationsRepository::class.simpleName
-        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 86400
     }
 }

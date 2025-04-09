@@ -519,9 +519,15 @@ class ConversationsListActivity :
         // Update Conversations
         conversationItems.clear()
         conversationItemsWithHeader.clear()
+        searchableConversationItems.clear()
+
         for (conversation in list) {
-            addToConversationItems(conversation)
+            if (!FutureEvent(conversation)) {
+                addToConversationItems(conversation)
+            }
+            addToSearchableConversationItems(conversation)
         }
+
         sortConversations(conversationItems)
         sortConversations(conversationItemsWithHeader)
 
@@ -548,6 +554,21 @@ class ConversationsListActivity :
         }
 
         return false
+    }
+
+    private fun FutureEvent(conversation: ConversationModel): Boolean {
+        return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
+            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / 1000)) > AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
+    }
+
+    private fun addToSearchableConversationItems(conversation: ConversationModel) {
+        val headerTitle = resources!!.getString(R.string.conversations)
+        val headerItem = callHeaderItems.getOrPut(headerTitle) {
+            GenericTextHeaderItem(headerTitle, viewThemeUtils)
+        }
+
+        val conversationItem = ConversationItem(conversation, currentUser!!, this, headerItem, viewThemeUtils)
+        searchableConversationItems.add(conversationItem)
     }
 
     fun filterConversation() {
@@ -1069,8 +1090,6 @@ class ConversationsListActivity :
     }
 
     private fun fetchOpenConversations(apiVersion: Int) {
-        searchableConversationItems.clear()
-        searchableConversationItems.addAll(conversationItemsWithHeader)
         if (hasSpreedFeatureCapability(
                 currentUser!!.capabilities!!.spreedCapability!!,
                 SpreedFeatures.LISTABLE_ROOMS
@@ -2114,5 +2133,6 @@ class ConversationsListActivity :
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
+        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 86400
     }
 }
