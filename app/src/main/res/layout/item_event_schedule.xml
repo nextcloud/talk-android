@@ -10,7 +10,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="32dp"
+    android:padding="8dp"
     android:background="@color/bg_bottom_sheet">
 
     <TextView
