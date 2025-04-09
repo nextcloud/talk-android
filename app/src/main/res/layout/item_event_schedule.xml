@@ -9,6 +9,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
     android:background="@color/dialog_background">
@@ -17,7 +18,7 @@
         android:id="@+id/event_scheduled"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Scheduled"
+        android:text="@string/nc_event_schedule"
         android:textStyle="bold"
         android:textSize="16sp" />
 
@@ -27,13 +28,13 @@
         android:layout_height="wrap_content"
         android:textColor="?android:attr/textColorSecondary"
         android:textSize="14sp"
-        android:text="Meeting at 8:00 pm"/>
+        tools:text="Meeting at 8:00 pm"/>
 
     <TextView
         android:id="@+id/delete_conversation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Delete Conversation"
+        android:text="@string/nc_delete_call"
         android:textColor="@android:color/holo_red_dark"
         android:visibility = "gone"
         android:paddingTop="16dp"/>
