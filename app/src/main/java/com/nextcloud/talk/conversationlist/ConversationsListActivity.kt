@@ -557,6 +557,9 @@ class ConversationsListActivity :
     }
 
     private fun futureEvent(conversation: ConversationModel): Boolean {
+        if(!conversation.objectId.contains("#")){
+            return false
+        }
         return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
             (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / 1000)) >
             AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
