@@ -522,7 +522,7 @@ class ConversationsListActivity :
         searchableConversationItems.clear()
 
         for (conversation in list) {
-            if (!FutureEvent(conversation)) {
+            if (!futureEvent(conversation)) {
                 addToConversationItems(conversation)
             }
             addToSearchableConversationItems(conversation)
@@ -556,9 +556,10 @@ class ConversationsListActivity :
         return false
     }
 
-    private fun FutureEvent(conversation: ConversationModel): Boolean {
+    private fun futureEvent(conversation: ConversationModel): Boolean {
         return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
-            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / 1000)) > AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
+            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / 1000)) >
+            AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
     }
 
     private fun addToSearchableConversationItems(conversation: ConversationModel) {
