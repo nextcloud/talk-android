@@ -271,14 +271,15 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
-
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.save) {
-            saveConversationNameAndDescription()
-        }
+            if (item.itemId == R.id.save) {
+                if (conversation?.objectType != ConversationEnums.ObjectType.EVENT) {
+                    saveConversationNameAndDescription()
+                }
+            }
         return true
     }
 
