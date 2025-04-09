@@ -225,6 +225,8 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
+import com.nextcloud.talk.models.json.participants.Participant
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -262,6 +264,8 @@ class ChatActivity :
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var chatViewModel: ChatViewModel
+
+    lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
     private val startSelectContactForResult = registerForActivityResult(
@@ -426,6 +430,8 @@ class ChatActivity :
         handleIntent(intent)
 
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
+
+        conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
         val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
@@ -2976,6 +2982,7 @@ class ChatActivity :
         val titleTextView = popupView.findViewById<TextView>(R.id.event_scheduled)
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
         val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
+        val archiveConversation = popupView.findViewById<TextView>(R.id.archive_conversation)
 
         val popupWindow = PopupWindow(
             popupView,
@@ -3019,9 +3026,29 @@ class ChatActivity :
                     dialog.getButton(AlertDialog.BUTTON_POSITIVE),
                     dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
                 )
+                popupWindow.dismiss()
             }
         } else {
             deleteConversation.visibility = View.GONE
+        }
+
+        if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
+            (
+                Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
+                    Participant.ParticipantType.OWNER == currentConversation?.participantType
+                ) &&
+            currentConversation?.hasArchived == false
+        ) {
+            archiveConversation.visibility = View.VISIBLE
+            archiveConversation.setOnClickListener {
+                this.lifecycleScope.launch {
+                    conversationInfoViewModel.archiveConversation(conversationUser!!, currentConversation?.token!!)
+                    Snackbar.make(binding.root, R.string.conversation_archived, Snackbar.LENGTH_LONG).show()
+                }
+                popupWindow.dismiss()
+            }
+        } else {
+            archiveConversation.visibility = View.GONE
         }
     }
 
