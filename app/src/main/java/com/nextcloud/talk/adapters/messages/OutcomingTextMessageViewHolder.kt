@@ -116,10 +116,25 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 false,
                 viewThemeUtils
             )
+
+            val spansFromString: Array<Any> = processedMessageText!!.getSpans(
+                0, processedMessageText.length,
+                Any::class.java
+            )
+
+            if (spansFromString.isNotEmpty()) {
+                binding.bubble.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.MATCH_PARENT
+                }
+                binding.messageText.layoutParams.apply {
+                    width = FlexboxLayout.LayoutParams.MATCH_PARENT
+                }
+            }
+
             processedMessageText = messageUtils.processMessageParameters(
                 binding.messageText.context,
                 viewThemeUtils,
-                processedMessageText!!,
+                processedMessageText,
                 message,
                 itemView
             )
