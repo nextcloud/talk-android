@@ -185,6 +185,11 @@ class ConversationInfoEditActivity : BaseActivity() {
                         binding.conversationDescription.isEnabled = false
                     }
 
+                    if (conversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+                        binding.conversationName.isEnabled = false
+                        binding.conversationDescription.isEnabled = false
+                    }
+
                     loadConversationAvatar()
                 }
 
@@ -271,7 +276,9 @@ class ConversationInfoEditActivity : BaseActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.save) {
-            saveConversationNameAndDescription()
+            if (conversation?.objectType != ConversationEnums.ObjectType.EVENT) {
+                saveConversationNameAndDescription()
+            }
         }
         return true
     }

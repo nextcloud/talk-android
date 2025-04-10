@@ -79,6 +79,9 @@ data class Conversation(
     @JsonField(name = ["objectType"], typeConverter = ConversationObjectTypeConverter::class)
     var objectType: ConversationEnums.ObjectType = ConversationEnums.ObjectType.DEFAULT,
 
+    @JsonField(name = ["objectId"])
+    var objectId: String = "",
+
     @JsonField(name = ["notificationLevel"], typeConverter = EnumNotificationLevelConverter::class)
     var notificationLevel: ConversationEnums.NotificationLevel = ConversationEnums.NotificationLevel.DEFAULT,
 
