@@ -619,4 +619,8 @@ object ApiUtils {
     fun getUrlForOutOfOffice(baseUrl: String, userId: String): String {
         return "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
     }
+
+    fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String {
+        return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"
+    }
 }
