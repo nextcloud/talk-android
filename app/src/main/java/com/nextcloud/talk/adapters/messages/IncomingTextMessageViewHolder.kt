@@ -106,7 +106,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             )
 
             val spansFromString: Array<Any> = processedMessageText!!.getSpans(
-                0, processedMessageText.length,
+                0,
+                processedMessageText.length,
                 Any::class.java
             )
 
