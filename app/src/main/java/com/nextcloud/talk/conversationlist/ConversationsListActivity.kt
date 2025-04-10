@@ -513,6 +513,9 @@ class ConversationsListActivity :
     }
 
     private fun setConversationList(list: List<ConversationModel>) {
+        // Refreshes conversation messages in the background asynchronously
+        conversationsListViewModel.updateRoomMessages(list)
+
         // Update Conversations
         conversationItems.clear()
         conversationItemsWithHeader.clear()
@@ -827,7 +830,7 @@ class ConversationsListActivity :
                     if (!hasFilterEnabled()) filterableConversationItems = searchableConversationItems
                     adapter!!.updateDataSet(filterableConversationItems, false)
                     adapter!!.showAllHeaders()
-                    binding.swipeRefreshLayoutView?.isEnabled = false
+                    binding.swipeRefreshLayoutView.isEnabled = false
                     searchBehaviorSubject.onNext(true)
                     return true
                 }
@@ -2045,7 +2048,8 @@ class ConversationsListActivity :
 
     private fun onMessageSearchError(throwable: Throwable) {
         handleHttpExceptions(throwable)
-        binding.swipeRefreshLayoutView?.isRefreshing = false
+        binding.swipeRefreshLayoutView.isRefreshing = false
+        showErrorDialog()
     }
 
     fun updateFilterState(mention: Boolean, unread: Boolean) {
