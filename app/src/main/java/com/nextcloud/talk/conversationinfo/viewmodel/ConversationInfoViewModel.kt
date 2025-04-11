@@ -30,6 +30,7 @@ import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
+import com.nextcloud.talk.utils.DisplayUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -172,20 +173,12 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     private fun createConversationNameByParticipants(autocompleteUsers: List<AutocompleteUser>): String {
-        fun cutOffString(input: String, maxLength: Int): String {
-            return if (input.length > maxLength) {
-                input.take(maxLength)
-            } else {
-                input
-            }
-        }
-
         val conversationName = autocompleteUsers
             .sortedBy { it.label?.lowercase() }
             .mapNotNull { it.label }
             .joinToString(NEW_CONVERSATION_PARTICIPANTS_SEPARATOR)
 
-        return cutOffString(conversationName, MAX_ROOM_NAME_LENGTH)
+        return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
     }
 
     private fun convertAutocompleteUserToParticipant(autocompleteUsers: List<AutocompleteUser>): Participants {
