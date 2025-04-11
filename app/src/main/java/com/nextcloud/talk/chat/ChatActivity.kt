@@ -45,6 +45,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -1597,19 +1598,17 @@ class ChatActivity :
     private fun switchToRoom(token: String, startCallAfterRoomSwitch: Boolean, isVoiceOnlyCall: Boolean) {
         if (conversationUser != null) {
             runOnUiThread {
-                if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.switch_to_main_room),
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                val toastInfo = if (currentConversation?.objectType == ConversationEnums.ObjectType.ROOM) {
+                    context.resources.getString(R.string.switch_to_main_room)
                 } else {
-                    Snackbar.make(
-                        binding.root,
-                        context.resources.getString(R.string.switch_to_breakout_room),
-                        Snackbar.LENGTH_LONG
-                    ).show()
+                    context.resources.getString(R.string.switch_to_breakout_room)
                 }
+                // do not replace with snackbar, as it would disappear with the activity switch
+                Toast.makeText(
+                    context,
+                    toastInfo,
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
             val bundle = Bundle()
@@ -3165,12 +3164,10 @@ class ChatActivity :
         val apiVersion =
             ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            conversationUser?.baseUrl!!,
-            "1",
-            null,
-            message?.user?.id?.substring(INVITE_LENGTH),
-            null
+            version = apiVersion,
+            baseUrl = conversationUser?.baseUrl!!,
+            roomType = "1",
+            invite = message?.user?.id?.substring(INVITE_LENGTH)
         )
         chatViewModel.createRoom(
             credentials!!,
@@ -3598,12 +3595,10 @@ class ChatActivity :
             }
 
             val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-                apiVersion,
-                conversationUser?.baseUrl!!,
-                "1",
-                null,
-                userMentionClickEvent.userId,
-                null
+                version = apiVersion,
+                baseUrl = conversationUser?.baseUrl!!,
+                roomType = "1",
+                invite = userMentionClickEvent.userId
             )
 
             chatViewModel.createRoom(
@@ -3710,12 +3705,11 @@ class ChatActivity :
         val apiVersion =
             ApiUtils.getConversationApiVersion(conversationUser!!, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            conversationUser?.baseUrl!!,
-            ROOM_TYPE_ONE_TO_ONE,
-            ACTOR_TYPE,
-            userId,
-            null
+            version = apiVersion,
+            baseUrl = conversationUser?.baseUrl!!,
+            roomType = ROOM_TYPE_ONE_TO_ONE,
+            source = ACTOR_TYPE,
+            invite = userId
         )
         chatViewModel.createRoom(
             credentials!!,

@@ -392,6 +392,34 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/startGroupChat"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/standard_quarter_margin"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding"
+                    android:visibility="gone"
+                    tools:visibility="visible">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_people_group_black_24px"
+                        app:tint="@color/grey_600" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/nc_start_group_chat"
+                        android:textSize="@dimen/two_line_primary_text_size" />
+
+                </LinearLayout>
+
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_view"
                     android:layout_width="match_parent"
