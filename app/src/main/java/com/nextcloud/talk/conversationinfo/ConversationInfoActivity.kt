@@ -901,7 +901,9 @@ class ConversationInfoActivity :
             binding.sharedItems.visibility = GONE
         }
 
-        if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CONVERSATION_CREATION_ALL)
+        ) {
             binding.addParticipantsAction.visibility = GONE
             binding.startGroupChat.visibility = VISIBLE
         } else if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
