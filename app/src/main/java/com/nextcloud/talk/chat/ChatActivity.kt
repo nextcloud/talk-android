@@ -506,8 +506,13 @@ class ChatActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        chatViewModel.handleOrientationChange()
+        chatViewModel.handleSavedInstance()
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        chatViewModel.handleRestoreInstance()
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onStop() {
