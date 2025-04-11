@@ -190,9 +190,7 @@ class MessageUtils(val context: Context) {
             }
         })
             .usePlugin(TaskListPlugin.create(drawable))
-            .usePlugin(TablePlugin.create { _ ->
-                // no styling
-            })
+            .usePlugin(TablePlugin.create { _ -> })
             .usePlugin(StrikethroughPlugin.create()).build()
         return markwon.toMarkdown(markdown)
     }
