@@ -120,6 +120,9 @@ class ConversationInfoViewModel @Inject constructor(
             ?.subscribe(GetRoomObserver())
     }
 
+    fun getRoomBlocking(user: User, token: String): ConversationModel =
+        chatNetworkDataSource.getRoom(user, token).blockingFirst()
+
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
         _getCapabilitiesViewState.value = GetCapabilitiesStartState
 
@@ -147,6 +150,14 @@ class ConversationInfoViewModel @Inject constructor(
                         // unused atm
                     }
                 })
+        }
+    }
+
+    fun getCapabilitiesBlocking(user: User, token: String, conversationModel: ConversationModel): SpreedCapability {
+        return if (conversationModel.remoteServer.isNullOrEmpty()) {
+            user.capabilities!!.spreedCapability!!
+        } else {
+            chatNetworkDataSource.getCapabilities(user, token).blockingFirst()
         }
     }
 
