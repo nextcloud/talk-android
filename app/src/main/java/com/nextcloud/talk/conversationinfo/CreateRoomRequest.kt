@@ -61,12 +61,12 @@ data class CreateRoomRequest(
         0,
         0,
         0,
-        255,
+        0,
         0,
         0,
         "",
-        "string",
-        "string",
+        "",
+        "",
         Participants()
     )
 }
