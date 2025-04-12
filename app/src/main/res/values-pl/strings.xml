@@ -508,6 +508,7 @@
     <string name="nc_show_notification_warning_description">Gdy powiadomienia nie są poprawnie skonfigurowane, wyświetlaj regularne ostrzeżenie</string>
     <string name="nc_show_notification_warning_title">Pokaż regularne ostrzeżenie o powiadomieniu</string>
     <string name="nc_sort_by">Sortuj według</string>
+    <string name="nc_start_group_chat">Rozpocznij czat grupowy</string>
     <string name="nc_start_time">Czas rozpoczęcia</string>
     <string name="nc_switch_account">Przełącz konto</string>
     <string name="nc_team">Zespół</string>
