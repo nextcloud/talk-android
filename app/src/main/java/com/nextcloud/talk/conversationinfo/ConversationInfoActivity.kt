@@ -238,22 +238,70 @@ class ConversationInfoActivity :
         initObservers()
     }
 
-    @Suppress("Detekt.LongMethod")
     private fun initObservers() {
         initViewStateObserver()
+        initCapabilitiesObersver()
+        initRoomOberserver()
+        initBanActorObserver()
+        initConversationReadOnlyObserver()
+        initClearChatHistoryObserver()
+    }
 
-        viewModel.getCapabilitiesViewState.observe(this) { state ->
+    private fun initClearChatHistoryObserver() {
+        viewModel.clearChatHistoryViewState.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.ClearChatHistoryViewState.None -> {
+                }
+
+                is ConversationInfoViewModel.ClearChatHistoryViewState.Success -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_clear_history_success),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+
+                is ConversationInfoViewModel.ClearChatHistoryViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to clear chat history", uiState.exception)
+                }
+            }
+        }
+    }
+
+    private fun initConversationReadOnlyObserver() {
+        viewModel.getConversationReadOnlyState.observe(this) { state ->
             when (state) {
-                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
-                    spreedCapabilities = state.spreedCapabilities
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
+                }
 
-                    handleConversation()
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
+                }
+
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
+                }
+            }
+        }
+    }
+
+    private fun initBanActorObserver() {
+        viewModel.getBanActorState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.BanActorSuccessState -> {
+                    getListOfParticipants() // Refresh the list of participants
+                }
+
+                ConversationInfoViewModel.BanActorErrorState -> {
+                    Snackbar.make(binding.root, "Error banning actor", Snackbar.LENGTH_SHORT).show()
                 }
 
                 else -> {}
             }
         }
+    }
 
+    private fun initRoomOberserver() {
         viewModel.createRoomViewState.observe(this) { state ->
             when (state) {
                 is ConversationInfoViewModel.CreateRoomUIState.Success -> {
@@ -272,52 +320,18 @@ class ConversationInfoActivity :
                 else -> {}
             }
         }
+    }
 
-        viewModel.getBanActorState.observe(this) { state ->
+    private fun initCapabilitiesObersver() {
+        viewModel.getCapabilitiesViewState.observe(this) { state ->
             when (state) {
-                is ConversationInfoViewModel.BanActorSuccessState -> {
-                    getListOfParticipants() // Refresh the list of participants
-                }
+                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
+                    spreedCapabilities = state.spreedCapabilities
 
-                ConversationInfoViewModel.BanActorErrorState -> {
-                    Snackbar.make(binding.root, "Error banning actor", Snackbar.LENGTH_SHORT).show()
+                    handleConversation()
                 }
 
                 else -> {}
-            }
-        }
-
-        viewModel.getConversationReadOnlyState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
-                }
-
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
-                    Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
-                }
-
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
-                }
-            }
-        }
-
-        viewModel.clearChatHistoryViewState.observe(this) { uiState ->
-            when (uiState) {
-                is ConversationInfoViewModel.ClearChatHistoryViewState.None -> {
-                }
-
-                is ConversationInfoViewModel.ClearChatHistoryViewState.Success -> {
-                    Snackbar.make(
-                        binding.root,
-                        context.getString(R.string.nc_clear_history_success),
-                        Snackbar.LENGTH_LONG
-                    ).show()
-                }
-
-                is ConversationInfoViewModel.ClearChatHistoryViewState.Error -> {
-                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    Log.e(TAG, "failed to clear chat history", uiState.exception)
-                }
             }
         }
     }
