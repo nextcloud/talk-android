@@ -2890,7 +2890,6 @@ class ChatActivity :
             setActionBarTitle()
         }
 
-
         return true
     }
 
@@ -2983,9 +2982,6 @@ class ChatActivity :
 
         val titleTextView = popupView.findViewById<TextView>(R.id.event_scheduled)
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
-        val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
-        val archiveConversation = popupView.findViewById<TextView>(R.id.archive_conversation)
-        val unarchiveConversation = popupView.findViewById<TextView>(R.id.unarchive_conversation)
 
         val popupWindow = PopupWindow(
             popupView,
@@ -3001,6 +2997,12 @@ class ChatActivity :
         val meetingStatus = showEventSchedule()
         subtitleTextView.text = meetingStatus
 
+        deleteEventConversation(meetingStatus, popupWindow, popupView)
+        archiveEventConversation(meetingStatus, popupWindow, popupView)
+    }
+
+    private fun deleteEventConversation(meetingStatus: String, popupWindow: PopupWindow, popupView: View) {
+        val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
         if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
             currentConversation?.canDeleteConversation == true
         ) {
@@ -3034,9 +3036,14 @@ class ChatActivity :
         } else {
             deleteConversation.visibility = View.GONE
         }
+    }
 
+    private fun archiveEventConversation(meetingStatus: String, popupWindow: PopupWindow, popupView: View) {
+        val archiveConversation = popupView.findViewById<TextView>(R.id.archive_conversation)
+        val unarchiveConversation = popupView.findViewById<TextView>(R.id.unarchive_conversation)
         if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
-            (Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
+            (
+                Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
                     Participant.ParticipantType.OWNER == currentConversation?.participantType
                 )
         ) {
@@ -3077,7 +3084,6 @@ class ChatActivity :
                     }
                     popupWindow.dismiss()
                 }
-
             }
         } else {
             archiveConversation.visibility = View.GONE
