@@ -211,6 +211,7 @@ class ChatMessagesDaoTest {
             lobbyState = ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY,
             lobbyTimer = 0,
             objectType = ConversationEnums.ObjectType.FILE,
+            objectId = "",
             statusIcon = null,
             description = "",
             displayName = "",
