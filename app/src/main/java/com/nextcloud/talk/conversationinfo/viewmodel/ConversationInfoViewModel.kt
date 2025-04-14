@@ -22,6 +22,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.FEDERATED
@@ -135,7 +136,12 @@ class ConversationInfoViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createRoomFromOneToOne(user: User, autocompleteUsers: List<AutocompleteUser>, roomToken: String) {
+    fun createRoomFromOneToOne(
+        user: User,
+        userItems: List<Participant>,
+        autocompleteUsers: List<AutocompleteUser>,
+        roomToken: String
+    ) {
         val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
         val url = getUrlForRooms(apiVersion, user.baseUrl!!)
         val credentials = ApiUtils.getCredentials(user.username, user.token)!!
@@ -143,7 +149,10 @@ class ConversationInfoViewModel @Inject constructor(
         val participantsBody = convertAutocompleteUserToParticipant(autocompleteUsers)
 
         val body = CreateRoomRequest(
-            roomName = createConversationNameByParticipants(autocompleteUsers),
+            roomName = createConversationNameByParticipants(
+                userItems.map { it.displayName },
+                autocompleteUsers.map { it.label }
+            ),
             roomType = GROUP_CONVERSATION_TYPE,
             readOnly = 0,
             listable = 1,
@@ -170,15 +179,6 @@ class ConversationInfoViewModel @Inject constructor(
                 _createRoomViewState.value = CreateRoomUIState.Error(e)
             }
         }
-    }
-
-    private fun createConversationNameByParticipants(autocompleteUsers: List<AutocompleteUser>): String {
-        val conversationName = autocompleteUsers
-            .sortedBy { it.label?.lowercase() }
-            .mapNotNull { it.label }
-            .joinToString(NEW_CONVERSATION_PARTICIPANTS_SEPARATOR)
-
-        return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
     }
 
     private fun convertAutocompleteUserToParticipant(autocompleteUsers: List<AutocompleteUser>): Participants {
@@ -362,6 +362,22 @@ class ConversationInfoViewModel @Inject constructor(
         private const val EXTENDED_CONVERSATION = "extended_conversation"
         private const val GROUP_CONVERSATION_TYPE = "2"
         private const val MAX_ROOM_NAME_LENGTH = 255
+
+        fun createConversationNameByParticipants(
+            originalParticipants: List<String?>,
+            allParticipants: List<String?>
+        ): String {
+            fun List<String?>.sortedJoined() =
+                sortedBy { it?.lowercase() }
+                    .joinToString(NEW_CONVERSATION_PARTICIPANTS_SEPARATOR)
+
+            val addedParticipants = allParticipants - originalParticipants.toSet()
+            val conversationName = originalParticipants.mapNotNull { it }.sortedJoined() +
+                NEW_CONVERSATION_PARTICIPANTS_SEPARATOR +
+                addedParticipants.mapNotNull { it }.sortedJoined()
+
+            return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
+        }
     }
 
     sealed class ClearChatHistoryViewState {

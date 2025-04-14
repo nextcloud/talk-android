@@ -159,7 +159,7 @@ class ConversationInfoActivity :
 
     private val addParticipantsResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
+    ) { it ->
         executeIfResultOk(it) { intent ->
             val selectedAutocompleteUsers =
                 intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
@@ -168,6 +168,7 @@ class ConversationInfoActivity :
             if (startGroupChat) {
                 viewModel.createRoomFromOneToOne(
                     conversationUser,
+                    userItems.map { it.model },
                     selectedAutocompleteUsers,
                     conversationToken
                 )
@@ -237,6 +238,7 @@ class ConversationInfoActivity :
         initObservers()
     }
 
+    @Suppress("Detekt.LongMethod")
     private fun initObservers() {
         initViewStateObserver()
 
