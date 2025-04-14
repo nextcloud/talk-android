@@ -9,6 +9,7 @@
 package com.nextcloud.talk.data.user.model
 
 import android.os.Parcelable
+import android.util.Log
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.json.capabilities.Capabilities
 import com.nextcloud.talk.models.json.capabilities.ServerVersion
@@ -37,6 +38,13 @@ data class User(
     fun getCredentials(): String = ApiUtils.getCredentials(username, token)!!
 
     fun hasSpreedFeatureCapability(capabilityName: String): Boolean {
+        if (capabilities == null) {
+            Log.e(TAG, "Capabilities are null in hasSpreedFeatureCapability. false is returned for capability check")
+        }
         return capabilities?.spreedCapability?.features?.contains(capabilityName) ?: false
+    }
+
+    companion object {
+        private val TAG = User::class.simpleName
     }
 }
