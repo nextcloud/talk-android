@@ -582,8 +582,8 @@ class ChatActivity :
                         participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                         invalidateOptionsMenu()
-                        checkShowCallButtons()
                         isEventConversation()
+                        checkShowCallButtons()
                         checkLobbyState()
                         updateRoomTimerHandler()
                     } else {
@@ -616,8 +616,8 @@ class ChatActivity :
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
                         setActionBarTitle()
-                        checkShowCallButtons()
                         isEventConversation()
+                        checkShowCallButtons()
                         checkLobbyState()
                         if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
                             currentConversation?.status == "dnd"
@@ -2877,17 +2877,19 @@ class ChatActivity :
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_conversation, menu)
 
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+            eventConversationMenuItem = menu.findItem(R.id.conversation_event)
+        } else {
+            menu.removeItem(R.id.conversation_event)
+        }
+
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
-        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
-            eventConversationMenuItem = menu.findItem(R.id.conversation_event)
-        } else {
-            menu.removeItem(R.id.conversation_event)
-        }
+
 
         return true
     }
@@ -2983,6 +2985,7 @@ class ChatActivity :
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
         val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
         val archiveConversation = popupView.findViewById<TextView>(R.id.archive_conversation)
+        val unarchiveConversation = popupView.findViewById<TextView>(R.id.unarchive_conversation)
 
         val popupWindow = PopupWindow(
             popupView,
@@ -3033,22 +3036,52 @@ class ChatActivity :
         }
 
         if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
-            (
-                Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
+            (Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
                     Participant.ParticipantType.OWNER == currentConversation?.participantType
-                ) &&
-            currentConversation?.hasArchived == false
+                )
         ) {
-            archiveConversation.visibility = View.VISIBLE
-            archiveConversation.setOnClickListener {
-                this.lifecycleScope.launch {
-                    conversationInfoViewModel.archiveConversation(conversationUser!!, currentConversation?.token!!)
-                    Snackbar.make(binding.root, R.string.conversation_archived, Snackbar.LENGTH_LONG).show()
+            if (currentConversation?.hasArchived == false) {
+                unarchiveConversation.visibility = View.GONE
+                archiveConversation.visibility = View.VISIBLE
+                archiveConversation.setOnClickListener {
+                    this.lifecycleScope.launch {
+                        conversationInfoViewModel.archiveConversation(conversationUser!!, currentConversation?.token!!)
+                        Snackbar.make(
+                            binding.root,
+                            String.format(
+                                context.resources.getString(R.string.archived_conversation),
+                                currentConversation?.displayName
+                            ),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    popupWindow.dismiss()
                 }
-                popupWindow.dismiss()
+            } else {
+                unarchiveConversation.visibility = View.VISIBLE
+                archiveConversation.visibility = View.GONE
+                unarchiveConversation.setOnClickListener {
+                    this.lifecycleScope.launch {
+                        conversationInfoViewModel.unarchiveConversation(
+                            conversationUser!!,
+                            currentConversation?.token!!
+                        )
+                        Snackbar.make(
+                            binding.root,
+                            String.format(
+                                context.resources.getString(R.string.unarchived_conversation),
+                                currentConversation?.displayName
+                            ),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    popupWindow.dismiss()
+                }
+
             }
         } else {
             archiveConversation.visibility = View.GONE
+            unarchiveConversation.visibility = View.GONE
         }
     }
 

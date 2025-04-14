@@ -46,4 +46,12 @@
         android:text="@string/archive_conversation"
         android:visibility = "gone"
         android:paddingTop="16dp"/>
+
+    <TextView
+        android:id="@+id/unarchive_conversation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/unarchive_conversation"
+        android:visibility = "gone"
+        android:paddingTop="16dp"/>
 </LinearLayout>
