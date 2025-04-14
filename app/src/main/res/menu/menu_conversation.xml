@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/conversation_event"
-        android:icon="@drawable/calendar_clock"
+        android:icon="@drawable/baseline_calendar_today_24"
         android:orderInCategory="0"
         android:title="@string/nc_event_conversation_menu"
         app:showAsAction="ifRoom">
