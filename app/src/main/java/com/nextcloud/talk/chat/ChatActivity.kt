@@ -3103,21 +3103,23 @@ class ChatActivity :
         DateFormatter.isSameDay(message1.createdAt, message2.createdAt)
 
     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-        val id = (
-            adapter?.items?.last {
-                it.item is ChatMessage
-            }?.item as ChatMessage
-            ).jsonMessageId
+        val messageId = (
+            adapter?.items
+                ?.lastOrNull { it.item is ChatMessage }
+                ?.item as? ChatMessage
+            )?.jsonMessageId
 
-        val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
+        messageId?.let {
+            val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
 
-        chatViewModel.loadMoreMessages(
-            beforeMessageId = id.toLong(),
-            withUrl = urlForChatting,
-            withCredentials = credentials!!,
-            withMessageLimit = MESSAGE_PULL_LIMIT,
-            roomToken = currentConversation!!.token
-        )
+            chatViewModel.loadMoreMessages(
+                beforeMessageId = it.toLong(),
+                withUrl = urlForChatting,
+                withCredentials = credentials!!,
+                withMessageLimit = MESSAGE_PULL_LIMIT,
+                roomToken = currentConversation!!.token
+            )
+        }
     }
 
     override fun format(date: Date): String =
