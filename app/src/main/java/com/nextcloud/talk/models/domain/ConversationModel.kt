@@ -67,6 +67,7 @@ class ConversationModel(
 ) {
 
     companion object {
+        @Suppress("LongMethod")
         fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel {
             return ConversationModel(
                 internalId = user.id!!.toString() + "@" + conversation.token,
