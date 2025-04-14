@@ -42,6 +42,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
@@ -847,13 +848,17 @@ class OfflineFirstChatRepository @Inject constructor(
             .catch { e ->
                 Log.e(TAG, "Error when sending message", e)
 
-                val failedMessage = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-                failedMessage.sendingFailed = true
-                chatDao.updateChatMessage(failedMessage)
+                val failedMessage = chatDao.getTempMessageForConversation(
+                    internalConversationId,
+                    referenceId
+                ).firstOrNull()
+                failedMessage?.let {
+                    it.sendingFailed = true
+                    chatDao.updateChatMessage(it)
 
-                val failedMessageModel = failedMessage.asModel()
-                _updateMessageFlow.emit(failedMessageModel)
-
+                    val failedMessageModel = it.asModel()
+                    _updateMessageFlow.emit(failedMessageModel)
+                }
                 emit(Result.failure(e))
             }
     }
