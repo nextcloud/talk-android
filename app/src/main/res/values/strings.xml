@@ -231,6 +231,8 @@ How to translate with transifex:
     <string name="nc_test_push_button">"Test push notifications</string>
     <string name="nc_test_results">Test results</string>
     <string name="message_copied">Message copied</string>
+    <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive
+        a notification on this device with the title \'Testing push notifications\'  </string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
