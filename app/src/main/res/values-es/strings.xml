@@ -4,17 +4,23 @@
     <string name="add_to_notes">Añadir a Notas</string>
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
+    <string name="archive_conversation">Archivar Conversación</string>
+    <string name="archive_hint">Una vez que una conversación es archivada, estará escondida por defecto. Seleccione el filtro \"Archivadas\" para ver las conversaciones archivadas. Cualquier mención directa seguirá siendo recibida.</string>
     <string name="archived">Archivada</string>
-    <string name="archived_conversation">%1$s archivada</string>
+    <string name="archived_conversation">%1$s Archivada</string>
     <string name="audio_call">Llamada de Audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
     <string name="audio_output_phone">Teléfono</string>
     <string name="audio_output_speaker">Altavoz</string>
     <string name="audio_output_wired_headset">Auricular con cable</string>
-    <string name="automatic_status_set">Su estado fue definido automáticamente</string>
+    <string name="automatic_status_set">Su estado fue establecido automáticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="back_button">Botón atras</string>
+    <string name="ban">Bloquear</string>
+    <string name="ban_participant">Bloquear participante</string>
+    <string name="bans_list">Lista de bloqueados</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
     <string name="call_running_since_one_hour">La llamada ha estado activa por una hora.</string>
@@ -24,14 +30,19 @@
     <string name="clear_status_message">Borrar el mensaje de estado</string>
     <string name="clear_status_message_after">Borrar el mensaje de estado después de</string>
     <string name="close">Cerrar</string>
+    <string name="close_icon">Ícono de cerrar</string>
     <string name="connection_established">Conexión establecida</string>
+    <string name="connection_lost">Se perdió la conexión</string>
+    <string name="connection_lost_sent_messages_are_queued">Se perdió la conexión - Los mensajes a enviar se encuentran encolados</string>
     <string name="continuous_voice_message_recording">Bloquear grabación para grabación continua del mensaje de voz</string>
     <string name="conversation_is_read_only">La conversación es de sólo lectura</string>
+    <string name="conversation_read_only_failed">Fallo al establecer la conversación como de sólo lectura.</string>
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear conversación</string>
     <string name="create_issue">Crear informe de fallo</string>
     <string name="custom">Personalizado</string>
     <string name="danger_zone">Zona de peligro</string>
+    <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Borrar avatar</string>
     <string name="deleted_conversation">Se eliminó la conversación %1$s</string>
     <string name="dnd">No molestar</string>
@@ -44,6 +55,7 @@
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
     <string name="error_loading_chats">Hubo un problema cargando sus chats</string>
+    <string name="error_unbanning">Ocurrió un error al desbloquear al participante</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Cargando …</string>
@@ -51,11 +63,13 @@
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Fallo al obtener invitaciones pendientes</string>
     <string name="hint_edited_message">(editado)</string>
+    <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisible</string>
+    <string name="join_open_conversations_icon">Ícono de Unirse a Conversaciones Abiertas</string>
     <string name="languages_error_message">Los lenguajes no pudieron ser recuperados</string>
     <string name="languages_error_title">Recuperación fallida</string>
     <string name="later_today">Más tarde hoy</string>
-    <string name="leave_call">Dejar llamada</string>
+    <string name="leave_call">Abandonar llamada</string>
     <string name="left_conversation">Ud. Abandonó la conversación %1$s</string>
     <string name="load_more_results">Cargar más resultados</string>
     <string name="lock_conversation">Bloquear conversación</string>
@@ -135,7 +149,7 @@
     <string name="nc_common_copy">Copiar</string>
     <string name="nc_common_copy_success">Copiado al portapapeles</string>
     <string name="nc_common_create">Crear</string>
-    <string name="nc_common_disabled">Desactivado</string>
+    <string name="nc_common_disabled">Deshabilitado</string>
     <string name="nc_common_dismiss">Descartar</string>
     <string name="nc_common_error_sorry">Lo sentimos, algo ha ido mal.</string>
     <string name="nc_common_more_options">Más opciones</string>
@@ -179,7 +193,8 @@
     <string name="nc_diagnose_app_users_amount">Usuarios registrados</string>
     <string name="nc_diagnose_app_version_title">Versión de la App</string>
     <string name="nc_diagnose_battery_optimization_ignored">La optimización de batería se está ignorando, todo bien</string>
-    <string name="nc_diagnose_battery_optimization_title">Ajustes de batería</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">La optimización de batería está activada, lo que podría causar problemas. ¡Debería deshabilitar la optimización de batería!</string>
+    <string name="nc_diagnose_battery_optimization_title">Ajustes de la batería</string>
     <string name="nc_diagnose_device_name_title">Dispositivo</string>
     <string name="nc_diagnose_dialog_open_checklist">Abrir la lista de verificación de solución de problemas</string>
     <string name="nc_diagnose_dialog_open_diagnose">Abrir pantalla de diagnóstico</string>
@@ -298,6 +313,7 @@
     <string name="nc_message_offline">Fuera de línea</string>
     <string name="nc_message_quote_cancel_reply">Cancelar respuesta</string>
     <string name="nc_message_read">Mensajes leídos</string>
+    <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensaje enviado</string>
     <string name="nc_microphone_permission_hint">Para habilitar la comunicación por voz, por favor, otorgue el permiso \"Micrófono\".</string>
     <string name="nc_missed_call">Perdió una llamada de %s</string>
@@ -324,6 +340,7 @@
     <string name="nc_notification_channel_uploads">Subidas</string>
     <string name="nc_notification_channel_uploads_description">Notificar el progreso de la subida</string>
     <string name="nc_notification_settings">Configuración de las notificaciones</string>
+    <string name="nc_notification_warning">Las notificaciones no están configuradas correctamente</string>
     <string name="nc_notifications_troubleshooting_dialog_text">Los permisos de notificaciones y las configuraciones de batería están correctamente definidas para recibir notificaciones. Si de igual manera tiene problemas para recibir notificaciones, por favor, chequee si los canales de notificación para llamadas y mensajes están habilitados. Se puede conseguir ayuda adicional en DontKillMyApp.com, o, en la lista de verificación de solución de problemas. Si esto no es de ayuda, por favor, vaya a la pantalla de diagnósticos y envíe un reporte de fallos.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Solución de problemas para las notificaciones</string>
     <string name="nc_notify_me_always">Notificar siempre</string>
@@ -362,6 +379,7 @@
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
+    <string name="nc_remove_password">Quitar Contraseña</string>
     <string name="nc_remove_team_and_members">Eliminar equipo y miembros</string>
     <string name="nc_rename">Renombrar conversación</string>
     <string name="nc_rename_confirm">Renombrar</string>
@@ -373,6 +391,7 @@
     <string name="nc_screen_lock_timeout_300">5 minutos</string>
     <string name="nc_screen_lock_timeout_60">1 minuto</string>
     <string name="nc_screen_lock_timeout_600">10 minutos</string>
+    <string name="nc_screen_lock_timeout_immediate">Inmediato</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
@@ -391,6 +410,8 @@
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$senvió una tarjeta de deck</string>
+    <string name="nc_sent_deck_card_you">Ud. Envió una tarjeta de deck</string>
     <string name="nc_sent_location" formatted="true">%1$s envió una ubicación.</string>
     <string name="nc_sent_location_you">Usted envió una ubicación.</string>
     <string name="nc_sent_poll" formatted="true">%1$s ha enviado una encuesta.</string>
@@ -412,11 +433,13 @@
     <string name="nc_server_url">Dirección del servidor https://…</string>
     <string name="nc_server_version">%1$s sólo trabaja con %2$s 13 y superior</string>
     <string name="nc_set_new_password">Establecer contraseña nueva</string>
+    <string name="nc_set_password">Establecer Contraseña</string>
     <string name="nc_settings">Configuración</string>
     <string name="nc_settings_account_updated">Tu cuenta ya existente ha sido actualizada en lugar de añadir una nueva</string>
     <string name="nc_settings_advanced_title">Avanzado</string>
     <string name="nc_settings_appearance">Apariencia</string>
     <string name="nc_settings_call_ringtone">Llamadas</string>
+    <string name="nc_settings_contact_admin_of">Por favor contacte al administrador de</string>
     <string name="nc_settings_diagnose_subtitle">Abrir la pantalla de diagnóstico para verificar los ajustes o para crear un informe de fallos</string>
     <string name="nc_settings_diagnose_title">Diagnóstico</string>
     <string name="nc_settings_incognito_keyboard_desc">Indica que el teclado tendrá desactivado el aprendizaje personalizado (no hay garantías)</string>
@@ -457,6 +480,7 @@
     <string name="nc_settings_server_almost_eol">¡La versión del servidor es muy antigua y no será compatible con la próxima versión!</string>
     <string name="nc_settings_server_eol">La versión del servidor es demasiado antigua y no es compatible con esta versión de la app para Android</string>
     <string name="nc_settings_server_eol_title">Servidor no soportado</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">La app de notificaciones del servidor no está instalada</string>
     <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
     <string name="nc_settings_theme_follow_system">Usar valores predeterminados del sistema</string>
@@ -485,6 +509,7 @@
     <string name="nc_show_notification_warning_description">Cuando las notificaciones no están configuradas correctamente, mostrar un aviso periódico</string>
     <string name="nc_show_notification_warning_title">Mostrar aviso periódico sobre notificaciones</string>
     <string name="nc_sort_by">Ordenar por</string>
+    <string name="nc_start_group_chat">Iniciar chat grupal</string>
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_switch_account">Cambiar cuenta</string>
     <string name="nc_team">Equipo</string>
@@ -510,8 +535,10 @@
     <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sí</string>
+    <string name="new_conversation_creation_icon">Ícono de Creación de Nueva Conversación </string>
     <string name="next_week">Semana siguiente</string>
     <string name="no_conversations_archived">No hay conversaciones archivadas</string>
+    <string name="no_offline_messages_saved">No hay mensajes fuera de línea guardados</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
@@ -519,12 +546,14 @@
     <string name="openConversations">Conversaciones abiertas</string>
     <string name="open_in_files_app">Abrir en app Archivos</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
+    <string name="playback_speed_control">Control de velocidad de reproducción</string>
     <string name="polls_add_option">Añadir opción</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Cerrar la encuesta</string>
     <string name="polls_end_poll_confirm">¿Está seguro de que quiere cerrar esta encuesta? Esta acción no se puede deshacer.</string>
     <string name="polls_max_votes_reached">No puede votar con más opciones para esta encuesta.</string>
     <string name="polls_multiple_answers">Múltiples respuestas</string>
+    <string name="polls_option_delete">Borrar opción %1$d</string>
     <string name="polls_option_hint">Opción %1$d</string>
     <string name="polls_options">Opciones</string>
     <string name="polls_private_poll">Encuesta privada</string>
@@ -550,11 +579,12 @@
     <string name="recording_consent_description">La grabación podría incluir su voz, vídeo de su cámara y la pantalla compartida. Se requiere su consentimiento antes de unirse a la llamada. ¿Da Ud. su consentimiento?</string>
     <string name="recording_consent_for_conversation_description">Obtener consentimiento para grabar antes de unirse a llamadas en esta conversación</string>
     <string name="recording_consent_for_conversation_title">Consentimiento de grabación</string>
-    <string name="recording_consent_title">La llamada puede ser grabada.</string>
+    <string name="recording_consent_title">La llamada podría ser grabada.</string>
     <string name="recording_settings_title">Grabando</string>
     <string name="removed_from_favorites">Se quitó la conversación %1$s de los favoritos</string>
     <string name="renamed_conversation">La conversación %1$s fue renombrada</string>
-    <string name="reset_status">Re-inicializar estado</string>
+    <string name="resend_message">Reenviar</string>
+    <string name="reset_status">Restablecer estado</string>
     <string name="restrict_join_other_room_while_call">No es posible unirse a otras salas mientras está en una llamada</string>
     <string name="save">Guardar</string>
     <string name="scope_federated_description">Sincronizar solo con servidores de confianza</string>
@@ -568,9 +598,10 @@
     <string name="scope_toggle">Alternar vista</string>
     <string name="scope_toggle_description">Cambiar el nivel de privacidad de %1$s</string>
     <string name="scroll_to_bottom">Ir al final</string>
+    <string name="search_icon">Ícono de búsqueda</string>
     <string name="secondsAgo">hace segundos</string>
     <string name="selected_list_item">Seleccionado</string>
-    <string name="send_email">Enviar email</string>
+    <string name="send_email">Enviar correo electrónico</string>
     <string name="send_to">Enviar a</string>
     <string name="send_to_forbidden">No tiene permiso para compartir contenido a este chat</string>
     <string name="send_to_three_dots">Enviar a …</string>
@@ -588,10 +619,13 @@
     <string name="shared_items_poll">Encuesta</string>
     <string name="shared_items_recording">Grabación de llamada</string>
     <string name="shared_items_voice">Voz</string>
+    <string name="show_ban_reason">Mostrar razón de bloqueo</string>
+    <string name="show_banned_participants">Mostrar participantes bloqueados</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No está autorizado a iniciar una llamada</string>
     <string name="started_a_call">inició una llamada</string>
     <string name="status_message">Mensaje de estado</string>
+    <string name="status_reverted">El estado ha sido revertido</string>
     <string name="switch_to_breakout_room">Cambiar a sala de grupos</string>
     <string name="switch_to_main_room">Cambiar a la sala principal</string>
     <string name="take_photo">Tomar una foto</string>
@@ -622,11 +656,16 @@
     <string name="typing_are_typing">están escribiendo ...</string>
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
-    <string name="unarchived_conversation">%1$s desarchivada</string>
+    <string name="unarchive_conversation">Desarchivar conversación </string>
+    <string name="unarchive_hint">Una vez que se desarchiva una conversación, se volverá a mostrar por defecto.</string>
+    <string name="unarchived_conversation">%1$s Desarchivada</string>
     <string name="unban">Desbloquear</string>
     <string name="unread">No leído</string>
     <string name="upload_new_avatar_from_device">Subir avatar desde dispositivo</string>
-    <string name="user_avatar">Usar avatar</string>
+    <string name="user_absence">%1$s está fuera de la oficina y es posible que no responda</string>
+    <string name="user_absence_for_one_day">%1$s está fuera de la oficina hoy</string>
+    <string name="user_absence_replacement">Reemplazo:</string>
+    <string name="user_avatar">Avatar del usuario</string>
     <string name="user_info_address">Dirección</string>
     <string name="user_info_displayname">Nombre completo</string>
     <string name="user_info_email">Email</string>
@@ -639,6 +678,11 @@
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
     <string name="video_call">Llamada de Video</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Ver %d mensaje similar</item>
+        <item quantity="many">Ver %d mensajes similares</item>
+        <item quantity="other">Ver %d mensajes similares</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
         <item quantity="many">%d votos</item>
