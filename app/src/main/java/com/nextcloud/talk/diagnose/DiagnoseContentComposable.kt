@@ -50,6 +50,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 
+@Suppress("LongParameterList")
 @Composable
 fun DiagnoseContentComposable(
     data: State<List<DiagnoseActivity.DiagnoseElement>>,
