@@ -9,6 +9,62 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [21.0.1] - 2025-04-15
+
+### Fixed
+- No sound transmitted from android device in initial call after granting microphone permission
+- Duplicated chat messages are shown (e.g. after taking a picture)
+- Crashes
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/95?closed=1
+
+## [21.0.0] - 2025-02-24
+
+### Added
+- Sending status for text messages
+- "Retry" button for messages where sending failed
+- Playback speed control for voice messages (@arkascha)
+- Auto play consecutive voice messages (@Ruggero1912)
+- Show info in offline mode when no chat messages are available for a conversation
+- Archive/unarchive conversation from context menu
+- Search in main screen shows open conversations and contacts
+
+### Changed
+- Edit & delete buttons for an offline written message (queued state) are moved to the context menu
+- Move archive conversation button in conversation-info screen to "Danger zone"
+
+### Fixed
+- Duplicated chat messages are shown after screen rotation
+- Chat loading animation overlays with chat messages
+- Wrong reaction backgrounds
+- Mentioned teams are not rendered in chat
+- Crashes
+- Minor bugs
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/92?closed=1
+
+## [20.1.1] - 2025-01-16
+
+### Added
+- Display conversation avatars for open conversations search
+
+### Changed
+- play ".webm" videos in internal player
+
+### Fixed
+- Video is not shown in android to android calls
+- App crashes
+- Send and voice-message icons overlay
+- minor bugs
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/93?closed=1
+
 ## [20.1.0] - 2024-12-03
 
 ### Added
