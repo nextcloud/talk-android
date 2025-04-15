@@ -121,7 +121,14 @@ class DiagnoseActivity : BaseActivity() {
                                 .background(backgroundColor)
                                 .fillMaxSize()
                         ) {
-                            DiagnoseContentComposable(diagnoseDataState, diagnoseViewModel)
+                            DiagnoseContentComposable(
+                                diagnoseDataState,
+                                isLoading = diagnoseViewModel.isLoading.value,
+                                showDialog = diagnoseViewModel.showDialog.value,
+                                message = diagnoseViewModel.notificationMessage.value,
+                                onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
+                                onDismissDialog = { diagnoseViewModel.dismissDialog() }
+                            )
                         }
                     }
                 )
@@ -141,7 +148,6 @@ class DiagnoseActivity : BaseActivity() {
         setupPhoneValues()
         setupAppValues()
         setupAccountValues()
-        testPushNotification()
 
         diagnoseDataState.value = diagnoseData.toList()
     }
@@ -194,10 +200,6 @@ class DiagnoseActivity : BaseActivity() {
             context.resources.getString(R.string.nc_common_copy_success),
             Toast.LENGTH_LONG
         ).show()
-    }
-
-    private fun testPushNotification() {
-        addHeadline(context.resources.getString(R.string.nc_test_push_button))
     }
 
     private fun setupMetaValues() {

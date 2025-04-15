@@ -33,6 +33,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -42,21 +44,22 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
 
-@Suppress("LongMethod")
 @Composable
 fun DiagnoseContentComposable(
     data: State<List<DiagnoseActivity.DiagnoseElement>>,
-    diagnoseViewModel: DiagnoseViewModel
+    isLoading: Boolean,
+    showDialog: Boolean,
+    message: String,
+    onTestPushClick: () -> Unit,
+    onDismissDialog: () -> Unit
 ) {
     val context = LocalContext.current
-    val message = diagnoseViewModel.notificationMessage
-    val isLoading = diagnoseViewModel.isLoading
-    val showDialog = diagnoseViewModel.showDialog
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,39 +69,15 @@ fun DiagnoseContentComposable(
         data.value.forEach { element ->
             when (element) {
                 is DiagnoseActivity.DiagnoseElement.DiagnoseHeadline -> {
-                    if (element.headline == "Test push notifications") {
-                        Button(
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(vertical = 8.dp),
-                            onClick = {
-                                diagnoseViewModel.fetchTestPushResult()
-                            }
-                        ) {
-                            Text(
-                                text = element.headline,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp),
-                                color = colorResource(R.color.high_emphasis_text),
-                                fontSize = LocalDensity.current.run {
-                                    dimensionResource(R.dimen.headline_text_size).toPx().toSp()
-                                },
-                                fontWeight = FontWeight.Bold,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    } else {
-                        Text(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
-                            text = element.headline,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontSize = LocalDensity.current.run {
-                                dimensionResource(R.dimen.headline_text_size).toPx().toSp()
-                            },
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
+                    Text(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 16.dp),
+                        text = element.headline,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontSize = LocalDensity.current.run {
+                            dimensionResource(R.dimen.headline_text_size).toPx().toSp()
+                        },
+                        fontWeight = FontWeight.Bold
+                    )
                 }
 
                 is DiagnoseActivity.DiagnoseElement.DiagnoseEntry -> {
@@ -115,30 +94,84 @@ fun DiagnoseContentComposable(
                 }
             }
         }
-        ShowNotificationData(isLoading.value, showDialog.value, context, message.value, diagnoseViewModel)
+        ShowTestPushButton(onTestPushClick)
+        ShowNotificationData(isLoading, showDialog, context, message, onDismissDialog)
     }
 }
 
 @Composable
-@Suppress("LongMethod")
+fun ShowTestPushButton(onTestPushClick: () -> Unit) {
+    Button(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(vertical = 8.dp),
+        onClick = {
+            onTestPushClick()
+        }
+    ) {
+        Text(
+            text = stringResource(R.string.nc_test_push_button),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            fontSize = LocalDensity.current.run {
+                dimensionResource(R.dimen.headline_text_size).toPx().toSp()
+            },
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+fun ShowOptions(onDismissDialog: () -> Unit, message: String, context: Context) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        TextButton(onClick = { onDismissDialog() }) {
+            Text(text = stringResource(R.string.nc_cancel))
+        }
+        Spacer(modifier = Modifier.width(8.dp))
+        TextButton(onClick = {
+            val clipboard =
+                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("Push Message", message)
+            clipboard.setPrimaryClip(clip)
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+                Toast.makeText(context, R.string.message_copied, Toast.LENGTH_SHORT).show()
+            }
+            onDismissDialog()
+        }) {
+            Text(text = stringResource(R.string.nc_common_copy))
+        }
+    }
+}
+
+@Composable
+fun LoadingIndicator() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
 fun ShowNotificationData(
     isLoading: Boolean,
     showDialog: Boolean,
     context: Context,
     message: String,
-    diagnoseViewModel: DiagnoseViewModel
+    onDismissDialog: () -> Unit
 ) {
     if (isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
-        }
+        LoadingIndicator()
     }
     if (showDialog) {
         Dialog(
-            onDismissRequest = { diagnoseViewModel.dismissDialog() },
+            onDismissRequest = { onDismissDialog() },
             properties = DialogProperties(
                 dismissOnClickOutside = true,
                 usePlatformDefaultWidth = false
@@ -157,42 +190,48 @@ fun ShowNotificationData(
                         style = MaterialTheme.typography
                             .titleMedium
                     )
-                    Spacer(modifier = Modifier.height(12.dp))
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f, fill = false)
                             .verticalScroll(rememberScrollState())
                     ) {
-                        Text(
-                            modifier = Modifier.padding(top = 8.dp),
-                            text = message
-                        )
+                        Column(modifier = Modifier.padding(top = 12.dp)) {
+                            Text(
+                                text = stringResource(R.string.nc_push_notification_message),
+                                color = colorResource(R.color.colorPrimary)
+                            )
+                            Text(
+                                modifier = Modifier.padding(top = 12.dp),
+                                text = message
+                            )
+                        }
                     }
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceEvenly,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        TextButton(onClick = { diagnoseViewModel.dismissDialog() }) {
-                            Text(text = stringResource(R.string.nc_cancel))
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                        TextButton(onClick = {
-                            val clipboard =
-                                context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText("Push Message", message)
-                            clipboard.setPrimaryClip(clip)
-                            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-                                Toast.makeText(context, R.string.message_copied, Toast.LENGTH_SHORT).show()
-                            }
-                            diagnoseViewModel.dismissDialog()
-                        }) {
-                            Text(text = stringResource(R.string.nc_common_copy))
-                        }
-                    }
+                    ShowOptions(onDismissDialog, message, context)
                 }
             }
         }
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DiagnoseContentPreview() {
+    val state = remember {
+        mutableStateOf(
+            listOf(
+                DiagnoseActivity.DiagnoseElement.DiagnoseHeadline("Headline"),
+                DiagnoseActivity.DiagnoseElement.DiagnoseEntry("Key", "Value")
+            )
+        )
+    }
+    DiagnoseContentComposable(
+        state,
+        false,
+        true,
+        "Testing Push Messages",
+        {},
+        {}
+    )
 }
