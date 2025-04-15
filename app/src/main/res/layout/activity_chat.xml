@@ -91,6 +91,12 @@
             </LinearLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/chat_separator" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
