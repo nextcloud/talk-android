@@ -73,6 +73,9 @@ class ListOpenConversationsActivity : BaseActivity() {
             if (!text.isNullOrBlank()) {
                 openConversationsViewModel.updateSearchTerm(text.toString())
                 openConversationsViewModel.fetchConversations()
+            } else {
+                openConversationsViewModel.updateSearchTerm("")
+                openConversationsViewModel.fetchConversations()
             }
         }
         initObservers()
