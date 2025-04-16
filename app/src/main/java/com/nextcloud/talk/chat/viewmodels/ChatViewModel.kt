@@ -31,10 +31,12 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
@@ -145,6 +147,18 @@ class ChatViewModel @Inject constructor(
     private val _outOfOfficeViewState = MutableLiveData<OutOfOfficeUIState>(OutOfOfficeUIState.None)
     val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
         get() = _outOfOfficeViewState
+
+    private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
+    val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
+        get() = _voiceMessagePlaybackSpeedPreferences
+
+    private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
+    val getContextChatMessages: LiveData<List<ChatMessageJson>>
+        get() = _getContextChatMessages
+
+    val getOpenGraph: LiveData<Reference>
+        get() = _getOpenGraph
+    private val _getOpenGraph: MutableLiveData<Reference> = MutableLiveData()
 
     val getMessageFlow = chatRepository.messageFlow
         .onEach {
@@ -835,6 +849,26 @@ class ChatViewModel @Inject constructor(
                     Log.e(TAG, "resend failed")
                 }
             }
+        }
+    }
+
+    fun getContextForChatMessages(credentials: String, baseUrl: String, token: String, messageId: String, limit: Int) {
+        viewModelScope.launch {
+            val messages = chatNetworkDataSource.getContextForChatMessage(
+                credentials,
+                baseUrl,
+                token,
+                messageId,
+                limit
+            )
+
+            _getContextChatMessages.value = messages
+        }
+    }
+
+    fun getOpenGraph(credentials: String, baseUrl: String, urlToPreview: String) {
+        viewModelScope.launch {
+            _getOpenGraph.value = chatNetworkDataSource.getOpenGraph(credentials, baseUrl, urlToPreview)
         }
     }
 

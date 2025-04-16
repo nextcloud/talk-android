@@ -11,10 +11,12 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
@@ -194,5 +196,29 @@ class RetrofitChatNetwork(
             credentials,
             ApiUtils.getUrlForOutOfOffice(baseUrl, userId)
         )
+    }
+
+    override suspend fun getContextForChatMessage(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String,
+        limit: Int
+    ): List<ChatMessageJson> {
+        val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
+        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit).ocs?.data ?: listOf()
+    }
+
+    override suspend fun getOpenGraph(
+        credentials: String,
+        baseUrl: String,
+        extractedLinkToPreview: String
+    ): Reference? {
+        val openGraphLink = ApiUtils.getUrlForOpenGraph(baseUrl)
+        return ncApi.getOpenGraph(
+            credentials,
+            openGraphLink,
+            extractedLinkToPreview
+        ).blockingFirst().ocs?.data?.references?.entries?.iterator()?.next()?.value
     }
 }
