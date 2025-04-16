@@ -77,6 +77,7 @@ class MessageUtils @Inject constructor(val context: Context) {
         return viewThemeUtils.talk.themeMarkdown(context, message, incoming)
     }
 
+    @Suppress("LongParameterList")
     fun processMessageParameters(
         themingContext: Context,
         viewThemeUtils: ViewThemeUtils,

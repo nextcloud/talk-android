@@ -94,23 +94,33 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         colorizeMessageBubble(message)
         itemView.isSelected = false
         val user = currentUserProvider.currentUser.blockingGet()
-        val hasCheckboxes = processCheckboxes(
-            message,
-            user
-        )
-        processMessage(message, hasCheckboxes)
-    }
-
-    private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
-        var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
+        lateinit var userGroups: List<String>
+        lateinit var userCircles: List<String>
         coroutineScope.launch {
-            val userGroups = userGroupsCirclesRepository.getUserGroups()
+            userGroups = userGroupsCirclesRepository.getUserGroups()
                 .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
 
-            val userCircles = userGroupsCirclesRepository.getUserCircles()
+            userCircles = userGroupsCirclesRepository.getUserCircles()
                 .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
 
-            if (!hasCheckboxes) {
+            val hasCheckboxes = processCheckboxes(
+                message,
+                user
+            )
+            processMessage(message, hasCheckboxes, userGroups, userCircles)
+        }
+    }
+
+    @Suppress("Detekt.LongMethod")
+    private fun processMessage(
+        message: ChatMessage,
+        hasCheckboxes: Boolean,
+        userGroups: List<String>,
+        userCircles: List<String>
+    ) {
+        var textSize = context.resources!!.getDimension(R.dimen.chat_text_size)
+
+        if (!hasCheckboxes) {
             binding.messageText.visibility = View.VISIBLE
             binding.checkboxContainer.visibility = View.GONE
             var processedMessageText = messageUtils.enrichChatMessageText(
@@ -195,7 +205,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             viewThemeUtils
         )
     }
-        }
 
     private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
         val chatActivity = commonMessageInterface as ChatActivity
