@@ -55,6 +55,7 @@ public class WebRtcAudioManager {
 
     private AudioDevice userSelectedAudioDevice;
     private AudioDevice currentAudioDevice;
+    private AudioDevice defaultAudioDevice;
 
     private ProximitySensor proximitySensor = null;
 
@@ -215,6 +216,7 @@ public class WebRtcAudioManager {
         // Set initial device states.
         userSelectedAudioDevice = AudioDevice.NONE;
         currentAudioDevice = AudioDevice.NONE;
+        defaultAudioDevice = AudioDevice.NONE;
         audioDevices.clear();
 
         startBluetoothManager();
@@ -297,6 +299,15 @@ public class WebRtcAudioManager {
     /**
      * Changes selection of the currently active audio device.
      */
+    public void selectDefaultAudioDevice(AudioDevice device) {
+        ThreadUtils.checkIsOnMainThread();
+        if (!audioDevices.contains(device)) {
+            Log.e(TAG, "Can not select default " + device + " from available " + audioDevices);
+        }
+        defaultAudioDevice = device;
+        updateAudioDeviceState();
+    }
+
     public void selectAudioDevice(AudioDevice device) {
         ThreadUtils.checkIsOnMainThread();
         if (!audioDevices.contains(device)) {
@@ -493,7 +504,10 @@ public class WebRtcAudioManager {
             // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
             // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
             // depending on the user's selection.
-            newCurrentAudioDevice = userSelectedAudioDevice;
+            if ((userSelectedAudioDevice == AudioDevice.NONE) && (defaultAudioDevice != AudioDevice.NONE))
+                newCurrentAudioDevice = defaultAudioDevice;
+            else
+                newCurrentAudioDevice = userSelectedAudioDevice;
         }
         // Switch to new device but only if there has been any changes.
         if (newCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated) {
