@@ -344,6 +344,7 @@
     <string name="user_info_website">Veebileht</string>
     <string name="user_status">Staatus</string>
     <string name="userinfo_no_info_headline">Isiklikud andmed on kirjeldamata</string>
+    <string name="userinfo_no_info_text">Lisa oma profiili lehele nimi, pilt ja kontaktteave. </string>
     <string name="whats_your_status">Mis on su staatus?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Vaata %d sarnast sõnumit</item>
