@@ -1016,7 +1016,7 @@ class ChatActivity :
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
                             String.format(
                                 context.resources.getString(R.string.user_absence_for_one_day),
-                                uiState.userAbsence.userId
+                                currentConversation?.displayName
                             )
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).visibility =
                             View.GONE
@@ -1027,7 +1027,7 @@ class ChatActivity :
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsenceShortMessage).text =
                             String.format(
                                 context.resources.getString(R.string.user_absence),
-                                uiState.userAbsence.userId
+                                currentConversation?.displayName
                             )
 
                         binding.outOfOfficeContainer.findViewById<TextView>(R.id.userAbsencePeriod).text =
