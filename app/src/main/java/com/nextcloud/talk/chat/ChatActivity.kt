@@ -51,6 +51,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.mutableStateOf
@@ -214,10 +215,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
     BaseActivity(),
@@ -941,8 +941,10 @@ class ChatActivity :
                     val newString = state.messageEdited.ocs?.data?.parentMessage?.message ?: "(null)"
                     val id = state.messageEdited.ocs?.data?.parentMessage?.id.toString()
                     val index = adapter?.getMessagePositionById(id) ?: 0
-                    val message = adapter?.items?.get(index)?.item as ChatMessage
-                    setMessageAsEdited(message, newString)
+                    val item = adapter?.items?.get(index)?.item
+                    item?.let {
+                        setMessageAsEdited(item as ChatMessage, newString)
+                    }
                 }
 
                 is MessageInputViewModel.EditMessageErrorState -> {
