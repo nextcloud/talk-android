@@ -50,6 +50,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.mutableStateOf
@@ -62,6 +63,8 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.text.bold
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
@@ -215,7 +218,6 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.collections.set
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -410,7 +412,23 @@ class ChatActivity :
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
+            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+            val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+            val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
+
+            view.setPadding(
+                view.paddingLeft,
+                statusBarInsets.top,
+                view.paddingRight,
+                bottomPadding
+            )
+            WindowInsetsCompat.CONSUMED
+        }
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
         handleIntent(intent)
@@ -1179,7 +1197,7 @@ class ChatActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
-        viewThemeUtils.material.themeToolbar(binding.chatToolbar)
+        // viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
     private fun initAdapter() {
