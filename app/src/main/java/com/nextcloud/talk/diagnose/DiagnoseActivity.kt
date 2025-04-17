@@ -23,6 +23,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
@@ -88,6 +89,7 @@ class DiagnoseActivity : BaseActivity() {
         )[DiagnoseViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
+        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
@@ -115,6 +117,7 @@ class DiagnoseActivity : BaseActivity() {
                         )
                     },
                     content = {
+                        val viewState = diagnoseViewModel.notificationViewState.collectAsState().value
                         Column(
                             Modifier
                                 .padding(it)
@@ -125,9 +128,10 @@ class DiagnoseActivity : BaseActivity() {
                                 diagnoseDataState,
                                 isLoading = diagnoseViewModel.isLoading.value,
                                 showDialog = diagnoseViewModel.showDialog.value,
-                                message = diagnoseViewModel.notificationMessage.value,
+                                viewState = viewState,
                                 onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
-                                onDismissDialog = { diagnoseViewModel.dismissDialog() }
+                                onDismissDialog = { diagnoseViewModel.dismissDialog() },
+                                isGooglePlayServicesAvailable = isGooglePlayServicesAvailable
                             )
                         }
                     }
@@ -140,8 +144,6 @@ class DiagnoseActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
-
-        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
 
         diagnoseData.clear()
         setupMetaValues()
