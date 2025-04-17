@@ -11,7 +11,6 @@
 package com.nextcloud.talk.conversationinfo
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
@@ -66,7 +65,7 @@ import com.nextcloud.talk.extensions.loadConversationAvatar
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
 import com.nextcloud.talk.extensions.loadSystemAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
-import com.nextcloud.talk.jobs.AddParticipantsToConversation
+import com.nextcloud.talk.jobs.AddParticipantsToConversationWorker
 import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -93,6 +92,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.ShareUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
@@ -142,6 +142,8 @@ class ConversationInfoActivity :
     private var adapter: FlexibleAdapter<ParticipantItem>? = null
     private var userItems: MutableList<ParticipantItem> = ArrayList()
 
+    private var startGroupChat: Boolean = false
+
     private lateinit var optionsMenu: Menu
 
     private val workerData: Data?
@@ -157,13 +159,22 @@ class ConversationInfoActivity :
 
     private val addParticipantsResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
-    ) {
+    ) { it ->
         executeIfResultOk(it) { intent ->
-            val selectedParticipants =
+            val selectedAutocompleteUsers =
                 intent?.getParcelableArrayListExtraProvider<AutocompleteUser>("selectedParticipants")
                     ?: emptyList()
-            val participants = selectedParticipants.toMutableList()
-            addParticipantsToConversation(participants)
+
+            if (startGroupChat) {
+                viewModel.createRoomFromOneToOne(
+                    conversationUser,
+                    userItems.map { it.model },
+                    selectedAutocompleteUsers,
+                    conversationToken
+                )
+            } else {
+                addParticipantsToConversation(selectedAutocompleteUsers)
+            }
         }
     }
 
@@ -206,7 +217,14 @@ class ConversationInfoActivity :
         binding.deleteConversationAction.setOnClickListener { showDeleteConversationDialog() }
         binding.leaveConversationAction.setOnClickListener { leaveConversation() }
         binding.clearConversationHistory.setOnClickListener { showClearHistoryDialog() }
-        binding.addParticipantsAction.setOnClickListener { selectParticipantsToAdd() }
+        binding.addParticipantsAction.setOnClickListener {
+            startGroupChat = false
+            selectParticipantsToAdd()
+        }
+        binding.startGroupChat.setOnClickListener {
+            startGroupChat = true
+            selectParticipantsToAdd()
+        }
         binding.listBansButton.setOnClickListener { listBans() }
 
         viewModel.getRoom(conversationUser, conversationToken)
@@ -222,47 +240,14 @@ class ConversationInfoActivity :
 
     private fun initObservers() {
         initViewStateObserver()
+        initCapabilitiesObersver()
+        initRoomOberserver()
+        initBanActorObserver()
+        initConversationReadOnlyObserver()
+        initClearChatHistoryObserver()
+    }
 
-        viewModel.getCapabilitiesViewState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
-                    spreedCapabilities = state.spreedCapabilities
-
-                    handleConversation()
-                }
-
-                else -> {}
-            }
-        }
-
-        viewModel.getBanActorState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.BanActorSuccessState -> {
-                    getListOfParticipants() // Refresh the list of participants
-                }
-
-                ConversationInfoViewModel.BanActorErrorState -> {
-                    Snackbar.make(binding.root, "Error banning actor", Snackbar.LENGTH_SHORT).show()
-                }
-
-                else -> {}
-            }
-        }
-
-        viewModel.getConversationReadOnlyState.observe(this) { state ->
-            when (state) {
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
-                }
-
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
-                    Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
-                }
-
-                is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
-                }
-            }
-        }
-
+    private fun initClearChatHistoryObserver() {
         viewModel.clearChatHistoryViewState.observe(this) { uiState ->
             when (uiState) {
                 is ConversationInfoViewModel.ClearChatHistoryViewState.None -> {
@@ -280,6 +265,73 @@ class ConversationInfoActivity :
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     Log.e(TAG, "failed to clear chat history", uiState.exception)
                 }
+            }
+        }
+    }
+
+    private fun initConversationReadOnlyObserver() {
+        viewModel.getConversationReadOnlyState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Success -> {
+                }
+
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.conversation_read_only_failed, Snackbar.LENGTH_LONG).show()
+                }
+
+                is ConversationInfoViewModel.SetConversationReadOnlyViewState.None -> {
+                }
+            }
+        }
+    }
+
+    private fun initBanActorObserver() {
+        viewModel.getBanActorState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.BanActorSuccessState -> {
+                    getListOfParticipants() // Refresh the list of participants
+                }
+
+                ConversationInfoViewModel.BanActorErrorState -> {
+                    Snackbar.make(binding.root, "Error banning actor", Snackbar.LENGTH_SHORT).show()
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun initRoomOberserver() {
+        viewModel.createRoomViewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.CreateRoomUIState.Success -> {
+                    state.room.ocs?.data?.token?.let { token ->
+                        val chatIntent = Intent(context, ChatActivity::class.java).apply {
+                            putExtra(KEY_ROOM_TOKEN, token)
+                        }
+                        startActivity(chatIntent)
+                    }
+                }
+
+                is ConversationInfoViewModel.CreateRoomUIState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+    }
+
+    private fun initCapabilitiesObersver() {
+        viewModel.getCapabilitiesViewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
+                    spreedCapabilities = state.spreedCapabilities
+
+                    handleConversation()
+                }
+
+                else -> {}
             }
         }
     }
@@ -673,7 +725,7 @@ class ConversationInfoActivity :
     }
 
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             onResult(result.data)
         } else {
             Log.e(ChatActivity.TAG, "resultCode for received intent was != ok")
@@ -706,17 +758,17 @@ class ConversationInfoActivity :
         addParticipantsResult.launch(intent)
     }
 
-    private fun addParticipantsToConversation(participants: List<AutocompleteUser>) {
+    private fun addParticipantsToConversation(autocompleteUsers: List<AutocompleteUser>) {
         val groupIdsArray: MutableSet<String> = HashSet()
         val emailIdsArray: MutableSet<String> = HashSet()
         val circleIdsArray: MutableSet<String> = HashSet()
         val userIdsArray: MutableSet<String> = HashSet()
 
-        participants.forEach { participant ->
+        autocompleteUsers.forEach { participant ->
             when (participant.source) {
-                Participant.ActorType.GROUPS.name.lowercase() -> groupIdsArray.add(participant.id!!)
+                GROUPS.name.lowercase() -> groupIdsArray.add(participant.id!!)
                 Participant.ActorType.EMAILS.name.lowercase() -> emailIdsArray.add(participant.id!!)
-                Participant.ActorType.CIRCLES.name.lowercase() -> circleIdsArray.add(participant.id!!)
+                CIRCLES.name.lowercase() -> circleIdsArray.add(participant.id!!)
                 else -> userIdsArray.add(participant.id!!)
             }
         }
@@ -729,7 +781,7 @@ class ConversationInfoActivity :
         data.putStringArray(BundleKeys.KEY_SELECTED_EMAILS, emailIdsArray.toTypedArray())
         data.putStringArray(BundleKeys.KEY_SELECTED_CIRCLES, circleIdsArray.toTypedArray())
         val addParticipantsToConversationWorker: OneTimeWorkRequest = OneTimeWorkRequest.Builder(
-            AddParticipantsToConversation::class.java
+            AddParticipantsToConversationWorker::class.java
         ).setInputData(data.build()).build()
         WorkManager.getInstance().enqueue(addParticipantsToConversationWorker)
 
@@ -865,7 +917,12 @@ class ConversationInfoActivity :
             binding.sharedItems.visibility = GONE
         }
 
-        if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
+        if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CONVERSATION_CREATION_ALL)
+        ) {
+            binding.addParticipantsAction.visibility = GONE
+            binding.startGroupChat.visibility = VISIBLE
+        } else if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
             binding.addParticipantsAction.visibility = VISIBLE
             if (hasSpreedFeatureCapability(
                     spreedCapabilities,

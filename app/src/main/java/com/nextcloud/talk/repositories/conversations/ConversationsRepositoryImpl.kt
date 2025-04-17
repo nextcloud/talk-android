@@ -9,7 +9,9 @@ package com.nextcloud.talk.repositories.conversations
 
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
@@ -103,6 +105,15 @@ class ConversationsRepositoryImpl(
             credentials,
             ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
         )
+    }
+
+    override suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall {
+        val response = coroutineApi.createRoomWithBody(
+            credentials,
+            url,
+            body
+        )
+        return response
     }
 
     override suspend fun banActor(

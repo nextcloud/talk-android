@@ -71,12 +71,12 @@ class ContactsRepositoryImpl @Inject constructor(
             }
 
         val retrofitBucket: RetrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            _currentUser.baseUrl,
-            roomType,
-            sourceType,
-            userId,
-            conversationName
+            version = apiVersion,
+            baseUrl = _currentUser.baseUrl,
+            roomType = roomType,
+            source = sourceType,
+            invite = userId,
+            conversationName = conversationName
         )
         val response = ncApiCoroutines.createRoom(
             credentials,

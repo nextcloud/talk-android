@@ -15,12 +15,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.conversationinfo.Participants
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.CIRCLES
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.FEDERATED
+import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
+import com.nextcloud.talk.utils.DisplayUtils
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -112,12 +123,79 @@ class ConversationInfoViewModel @Inject constructor(
     val getConversationReadOnlyState: LiveData<SetConversationReadOnlyViewState>
         get() = _getConversationReadOnlyState
 
+    private val _createRoomViewState = MutableLiveData<CreateRoomUIState>(CreateRoomUIState.None)
+    val createRoomViewState: LiveData<CreateRoomUIState>
+        get() = _createRoomViewState
+
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
         chatNetworkDataSource.getRoom(user, token)
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(GetRoomObserver())
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun createRoomFromOneToOne(
+        user: User,
+        userItems: List<Participant>,
+        autocompleteUsers: List<AutocompleteUser>,
+        roomToken: String
+    ) {
+        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, 1))
+        val url = getUrlForRooms(apiVersion, user.baseUrl!!)
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
+
+        val participantsBody = convertAutocompleteUserToParticipant(autocompleteUsers)
+
+        val body = CreateRoomRequest(
+            roomName = createConversationNameByParticipants(
+                userItems.map { it.displayName },
+                autocompleteUsers.map { it.label }
+            ),
+            roomType = GROUP_CONVERSATION_TYPE,
+            readOnly = 0,
+            listable = 1,
+            lobbyTimer = 0,
+            sipEnabled = 0,
+            permissions = 0,
+            recordingConsent = 0,
+            mentionPermissions = 0,
+            participants = participantsBody,
+            objectType = EXTENDED_CONVERSATION,
+            objectId = roomToken
+        )
+
+        viewModelScope.launch {
+            try {
+                val roomOverall = conversationsRepository.createRoom(
+                    credentials,
+                    url,
+                    body
+                )
+                _createRoomViewState.value = CreateRoomUIState.Success(roomOverall)
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to create room", e)
+                _createRoomViewState.value = CreateRoomUIState.Error(e)
+            }
+        }
+    }
+
+    private fun convertAutocompleteUserToParticipant(autocompleteUsers: List<AutocompleteUser>): Participants {
+        val participants = Participants()
+
+        autocompleteUsers.forEach { autocompleteUser ->
+            when (autocompleteUser.source) {
+                GROUPS.name.lowercase() -> participants.groups.add(autocompleteUser.id!!)
+                EMAILS.name.lowercase() -> participants.emails.add(autocompleteUser.id!!)
+                CIRCLES.name.lowercase() -> participants.teams.add(autocompleteUser.id!!)
+                FEDERATED.name.lowercase() -> participants.federatedUsers.add(autocompleteUser.id!!)
+                "phones".lowercase() -> participants.phones.add(autocompleteUser.id!!)
+                else -> participants.users.add(autocompleteUser.id!!)
+            }
+        }
+
+        return participants
     }
 
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
@@ -280,6 +358,26 @@ class ConversationInfoViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationInfoViewModel::class.simpleName
+        private const val NEW_CONVERSATION_PARTICIPANTS_SEPARATOR = ", "
+        private const val EXTENDED_CONVERSATION = "extended_conversation"
+        private const val GROUP_CONVERSATION_TYPE = "2"
+        private const val MAX_ROOM_NAME_LENGTH = 255
+
+        fun createConversationNameByParticipants(
+            originalParticipants: List<String?>,
+            allParticipants: List<String?>
+        ): String {
+            fun List<String?>.sortedJoined() =
+                sortedBy { it?.lowercase() }
+                    .joinToString(NEW_CONVERSATION_PARTICIPANTS_SEPARATOR)
+
+            val addedParticipants = allParticipants - originalParticipants.toSet()
+            val conversationName = originalParticipants.mapNotNull { it }.sortedJoined() +
+                NEW_CONVERSATION_PARTICIPANTS_SEPARATOR +
+                addedParticipants.mapNotNull { it }.sortedJoined()
+
+            return DisplayUtils.ellipsize(conversationName, MAX_ROOM_NAME_LENGTH)
+        }
     }
 
     sealed class ClearChatHistoryViewState {
@@ -298,6 +396,12 @@ class ConversationInfoViewModel @Inject constructor(
         data object None : AllowGuestsUIState()
         data class Success(val allow: Boolean) : AllowGuestsUIState()
         data class Error(val exception: Exception) : AllowGuestsUIState()
+    }
+
+    sealed class CreateRoomUIState {
+        data object None : CreateRoomUIState()
+        data class Success(val room: RoomOverall) : CreateRoomUIState()
+        data class Error(val exception: Exception) : CreateRoomUIState()
     }
 
     sealed class PasswordUiState {

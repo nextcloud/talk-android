@@ -118,12 +118,10 @@ class ProfileBottomSheet(val ncApi: NcApi, val userModel: User, val viewThemeUti
         val apiVersion =
             ApiUtils.getConversationApiVersion(userModel, intArrayOf(ApiUtils.API_V4, 1))
         val retrofitBucket = ApiUtils.getRetrofitBucketForCreateRoom(
-            apiVersion,
-            userModel.baseUrl!!,
-            "1",
-            null,
-            userId,
-            null
+            version = apiVersion,
+            baseUrl = userModel.baseUrl!!,
+            roomType = "1",
+            invite = userId
         )
         val credentials = ApiUtils.getCredentials(userModel.username, userModel.token)
         ncApi.createRoom(
