@@ -170,16 +170,7 @@ fun ShowNotificationData(
     viewState: NotificationUiState,
     onDismissDialog: () -> Unit
 ) {
-    val message = when (viewState) {
-        is NotificationUiState.Success -> viewState.testNotification ?: context.getString(
-            R.string.nc_push_notification_fetch_error
-        )
-        is NotificationUiState.Error -> String.format(
-            context.getString(R.string.nc_push_notification_error),
-            viewState.message
-        )
-        else -> context.getString(R.string.nc_common_error_sorry)
-    }
+    val message = getMessage(context, viewState)
 
     if (isLoading) {
         LoadingIndicator()
@@ -229,6 +220,19 @@ fun ShowNotificationData(
                 }
             }
         }
+    }
+}
+
+fun getMessage(context: Context, viewState: NotificationUiState): String {
+    return when (viewState) {
+        is NotificationUiState.Success ->
+            viewState.testNotification ?: context.getString(R.string.nc_push_notification_fetch_error)
+
+        is NotificationUiState.Error ->
+            context.getString(R.string.nc_push_notification_error, viewState.message)
+
+        else ->
+            context.getString(R.string.nc_common_error_sorry)
     }
 }
 
