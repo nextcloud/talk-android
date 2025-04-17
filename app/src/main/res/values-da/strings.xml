@@ -508,6 +508,7 @@
     <string name="nc_show_notification_warning_description">Når notifikationer ikke er opsat korrekt, så vis en regulær advarsel</string>
     <string name="nc_show_notification_warning_title">Vis regulær notifikationsadvarsel</string>
     <string name="nc_sort_by">Sorter efter</string>
+    <string name="nc_start_group_chat">Start gruppechat</string>
     <string name="nc_start_time">Start tid</string>
     <string name="nc_switch_account">Skift konto</string>
     <string name="nc_team">Team</string>
@@ -676,6 +677,10 @@
     <string name="userinfo_no_info_text">Tilføj navn, billede og kontakt information på din profilside.</string>
     <string name="video_call">Videokald</string>
     <string name="whats_your_status">Hvad er din status</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Se %d lignende besked</item>
+        <item quantity="other">Se %d lignende beskeder</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d stemme</item>
         <item quantity="other">%d stemmer</item>
