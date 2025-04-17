@@ -14,6 +14,8 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -26,8 +28,8 @@ class DiagnoseViewModel @Inject constructor(
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
 
-    private val _notificationMessage = mutableStateOf("")
-    val notificationMessage = _notificationMessage
+    private val _notificationViewState = MutableStateFlow<NotificationUiState>(NotificationUiState.None)
+    val notificationViewState: StateFlow<NotificationUiState> = _notificationViewState
 
     private val _isLoading = mutableStateOf(false)
     val isLoading = _isLoading
@@ -44,9 +46,10 @@ class DiagnoseViewModel @Inject constructor(
                     ApiUtils
                         .getUrlForTestPushNotifications(_currentUser.baseUrl ?: "")
                 )
-                _notificationMessage.value = response.ocs?.data?.message ?: "Error while fetching test push message"
+                val notificationMessage = response.ocs?.data?.message
+                _notificationViewState.value = NotificationUiState.Success(notificationMessage)
             } catch (e: Exception) {
-                _notificationMessage.value = "Exception: ${e.localizedMessage}"
+                _notificationViewState.value = NotificationUiState.Error(e.message ?: "")
             } finally {
                 _isLoading.value = false
                 _showDialog.value = true
@@ -57,4 +60,10 @@ class DiagnoseViewModel @Inject constructor(
     fun dismissDialog() {
         _showDialog.value = false
     }
+}
+
+sealed class NotificationUiState {
+    data object None : NotificationUiState()
+    data class Success(val testNotification: String?) : NotificationUiState()
+    data class Error(val message: String) : NotificationUiState()
 }

@@ -56,9 +56,10 @@ fun DiagnoseContentComposable(
     data: State<List<DiagnoseActivity.DiagnoseElement>>,
     isLoading: Boolean,
     showDialog: Boolean,
-    message: String,
+    viewState: NotificationUiState,
     onTestPushClick: () -> Unit,
-    onDismissDialog: () -> Unit
+    onDismissDialog: () -> Unit,
+    isGooglePlayServicesAvailable: Boolean
 ) {
     val context = LocalContext.current
     Column(
@@ -95,8 +96,10 @@ fun DiagnoseContentComposable(
                 }
             }
         }
-        ShowTestPushButton(onTestPushClick)
-        ShowNotificationData(isLoading, showDialog, context, message, onDismissDialog)
+        if (isGooglePlayServicesAvailable) {
+            ShowTestPushButton(onTestPushClick)
+        }
+        ShowNotificationData(isLoading, showDialog, context, viewState, onDismissDialog)
     }
 }
 
@@ -164,9 +167,20 @@ fun ShowNotificationData(
     isLoading: Boolean,
     showDialog: Boolean,
     context: Context,
-    message: String,
+    viewState: NotificationUiState,
     onDismissDialog: () -> Unit
 ) {
+    val message = when (viewState) {
+        is NotificationUiState.Success -> viewState.testNotification ?: context.getString(
+            R.string.nc_push_notification_fetch_error
+        )
+        is NotificationUiState.Error -> String.format(
+            context.getString(R.string.nc_push_notification_error),
+            viewState.message
+        )
+        else -> context.getString(R.string.nc_common_error_sorry)
+    }
+
     if (isLoading) {
         LoadingIndicator()
     }
@@ -198,10 +212,12 @@ fun ShowNotificationData(
                             .verticalScroll(rememberScrollState())
                     ) {
                         Column(modifier = Modifier.padding(top = 12.dp)) {
-                            Text(
-                                text = stringResource(R.string.nc_push_notification_message),
-                                color = colorResource(R.color.colorPrimary)
-                            )
+                            if (viewState is NotificationUiState.Success) {
+                                Text(
+                                    text = stringResource(R.string.nc_push_notification_message),
+                                    color = colorResource(R.color.colorPrimary)
+                                )
+                            }
                             Text(
                                 modifier = Modifier.padding(top = 12.dp),
                                 text = message
@@ -231,8 +247,9 @@ fun DiagnoseContentPreview() {
         state,
         false,
         true,
-        "Testing Push Messages",
+        NotificationUiState.Success("Test notification successful"),
         {},
-        {}
+        {},
+        true
     )
 }
