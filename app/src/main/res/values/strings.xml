@@ -2,7 +2,8 @@
 How to work with translations as a developer:
 - Only add new translations to values/stings.xml, don't do this for other languages (it will be done via transifex).
 - Never change the key of a translation. If it really has to be changed, delete it and create a new entry instead.
-- If you change a value in values/strings.xml, also backport this to all stable branches.
+- Values in values/strings.xml are allowed to be modified. For bigger changes consider to add a new key-value pair.
+- Only the first letter of a sentence should be uppercase, all following words should be lowercase.
 - Translations are synced every night (or when manually triggered):
    - New entries are added to transifex.com
    - Updated translations from transifex are added via Nextcloud bot to this repo.
@@ -118,7 +119,7 @@ How to translate with transifex:
     <string name="nc_settings_theme_follow_system_key" translatable="false">follow_system</string>
     <string name="nc_settings_theme_light_key" translatable="false">night_no</string>
     <string name="nc_settings_theme_follow_system">Use system default</string>
-    <string name="nc_settings_theme_battery_saver">Set by Battery Saver</string>
+    <string name="nc_settings_theme_battery_saver">Set by battery saver</string>
     <string name="nc_settings_theme_light">Light</string>
     <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_privacy">Privacy</string>
@@ -775,8 +776,8 @@ How to translate with transifex:
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_error_message">Could not detect language</string>
     <string name="translation_copy_translated_text">Copy translated text</string>
-    <string name="danger_zone">Danger Zone</string>
-    <string name="nc_filter">Filter Conversations</string>
+    <string name="danger_zone">Danger zone</string>
+    <string name="nc_filter">Filter conversations</string>
     <string name="mentioned">Mentioned</string>
     <string name="unread">Unread</string>
     <string name="nc_settings_http_value" translatable="false">3128</string>
@@ -792,26 +793,26 @@ How to translate with transifex:
     <string name="custom">Custom</string>
     <string name="set">Set</string>
     <string name="calendar">Calendar</string>
-    <string name="video_call">Video Call</string>
-    <string name="audio_call">Audio Call</string>
+    <string name="video_call">Video call</string>
+    <string name="audio_call">Audio call</string>
     <string name="started_a_call">started a call</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Error 429 Too Many Requests</string>
     <string name="nc_caption">Caption</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
-    <string name="edit_message_icon_description">Edit Message Icon</string>
+    <string name="edit_message_icon_description">Edit message</string>
     <string name="nc_edit_message">Edit</string>
-    <string name="nc_send_edit_message">Send Edit Message</string>
-    <string name="nc_clear_edit_message">Clear Edit Message</string>
-    <string name="edit_error_24_hours_old_message">Cannot Edit Messages older than 24 hours</string>
+    <string name="nc_send_edit_message">Update message</string>
+    <string name="nc_clear_edit_message">Cancel editing</string>
+    <string name="edit_error_24_hours_old_message">Messages older than 24 hours can not be edited</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
-    <string name="nc_edit_message_text">Edit Message Text</string>
+    <string name="nc_edit_message_text">Edit message</string>
     <string name="hint_edited_message">(edited)</string>
     <string name="nc_conversation_not_found">Conversation not found</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
-    <string name="nc_clear_edit_button">Clear Edit Button</string>
-    <string name="nc_edit_icon">Edit Icon</string>
+    <string name="nc_clear_edit_button">Cancel editing</string>
+    <string name="nc_edit_icon">Edit</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="message_last_edited_by">Edited by %1$s</string>
     <string name="share_link_to_conversation">Join conversation %1$s at %2$s</string>
@@ -827,9 +828,9 @@ How to translate with transifex:
     <string name="ban">Ban</string>
     <string name="show_ban_reason">Show ban reason</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>
-    <string name="connection_lost">Connection lost</string>
-    <string name="archive_conversation">Archive Conversation</string>
-    <string name="unarchive_conversation">Unarchive Conversation</string>
+    <string name="connection_lost">No connection to server</string>
+    <string name="archive_conversation">Archive conversation</string>
+    <string name="unarchive_conversation">Unarchive conversation</string>
     <string name="archived">Archived</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
@@ -843,7 +844,7 @@ How to translate with transifex:
     <string name="user_absence_for_one_day">%1$s is out of office today</string>
     <string name="user_absence_replacement">Replacement: </string>
     <string name="resend_message">Resend</string>
-    <string name="no_conversations_archived">No conversations archived</string>
+    <string name="no_conversations_archived">No archived conversations</string>
     <string name="archived_conversation">Archived %1$s</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
 </resources>
