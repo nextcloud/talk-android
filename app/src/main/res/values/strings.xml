@@ -67,6 +67,8 @@ How to translate with transifex:
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s not available (not installed or restricted by admin)</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
+    <string name="nc_push_notification_error"> Sorry something went wrong, error is %1$s</string>
+    <string name="nc_push_notification_fetch_error">Sorry something went wrong, cannot fetch test push message</string>
 
     <string name="nc_search">Search</string>
 
@@ -228,6 +230,11 @@ How to translate with transifex:
     <string name="send_email">Send email</string>
     <string name="create_issue">Create issue</string>
     <string name="nc_diagnose_flavor" translatable="false">Build flavor</string>
+    <string name="nc_test_push_button">"Test push notifications</string>
+    <string name="nc_test_results">Test results</string>
+    <string name="message_copied">Message copied</string>
+    <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive
+        a notification on this device with the title \'Testing push notifications\'  </string>
 
     <!-- Conversation menu -->
     <string name="nc_leave">Leave conversation</string>
