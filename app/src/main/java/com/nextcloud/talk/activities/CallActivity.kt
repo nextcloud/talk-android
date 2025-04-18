@@ -836,7 +836,7 @@ class CallActivity : CallBaseActivity() {
 
     fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
         if (audioManager != null) {
-            audioManager!!.selectDefaultAudioDevice(selectedAudioDevice)
+            audioManager!!.setDefaultAudioDevice(selectedAudioDevice)
             updateAudioOutputButton(audioManager!!.currentAudioDevice)
         }
     }
