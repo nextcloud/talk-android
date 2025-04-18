@@ -8,6 +8,7 @@
 package com.nextcloud.talk.chat.viewmodels
 
 import android.content.Context
+import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -15,6 +16,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.chat.ChatActivity.Companion.CONVERSATION_INTERNAL_ID
+import com.nextcloud.talk.chat.MessageInputFragment
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
@@ -45,9 +48,17 @@ class MessageInputViewModel @Inject constructor(
     lateinit var chatRepository: ChatMessageRepository
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
+    var messageInputFragment: MessageInputFragment? = null
 
-    fun setData(chatMessageRepository: ChatMessageRepository) {
+    fun setData(chatMessageRepository: ChatMessageRepository, internalId: String) {
         chatRepository = chatMessageRepository
+        if (messageInputFragment == null) {
+            messageInputFragment = MessageInputFragment().apply {
+                arguments = Bundle().apply {
+                    putString(CONVERSATION_INTERNAL_ID, internalId)
+                }
+            }
+        }
     }
 
     override fun onResume(owner: LifecycleOwner) {
