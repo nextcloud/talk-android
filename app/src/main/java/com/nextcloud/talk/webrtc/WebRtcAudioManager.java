@@ -55,10 +55,13 @@ public class WebRtcAudioManager {
 
     private AudioDevice userSelectedAudioDevice;
     private AudioDevice currentAudioDevice;
+    private AudioDevice defaultAudioDevice;
 
     private ProximitySensor proximitySensor = null;
 
     private Set<AudioDevice> audioDevices = new HashSet<>();
+
+    private Set<AudioDevice> internalAudioDevices = new HashSet<>();
 
     private final BroadcastReceiver wiredHeadsetReceiver;
     private AudioManager.OnAudioFocusChangeListener audioFocusChangeListener;
@@ -215,7 +218,9 @@ public class WebRtcAudioManager {
         // Set initial device states.
         userSelectedAudioDevice = AudioDevice.NONE;
         currentAudioDevice = AudioDevice.NONE;
+        defaultAudioDevice = AudioDevice.NONE;
         audioDevices.clear();
+        internalAudioDevices.clear();
 
         startBluetoothManager();
 
@@ -292,6 +297,18 @@ public class WebRtcAudioManager {
             }
             currentAudioDevice = audioDevice;
         }
+    }
+
+    /**
+     * Sets the default audio device to use if selection algo has no other option
+     */
+    public void setDefaultAudioDevice(AudioDevice device) {
+        ThreadUtils.checkIsOnMainThread();
+        if (!audioDevices.contains(device)) {
+            Log.e(TAG, "Can not select default " + device + " from available " + audioDevices);
+        }
+        defaultAudioDevice = device;
+        updateAudioDeviceState();
     }
 
     /**
@@ -392,7 +409,9 @@ public class WebRtcAudioManager {
             + "wired headset=" + hasWiredHeadset + ", "
             + "BT state=" + bluetoothManager.getState());
         Log.d(TAG, "Device status: "
-            + "available=" + audioDevices + ", "
+            + "internally available=" + internalAudioDevices + ", "
+            + "externally available=" + audioDevices + ", "
+            + "default=" + defaultAudioDevice + ", "
             + "current=" + currentAudioDevice + ", "
             + "user selected=" + userSelectedAudioDevice);
 
@@ -402,27 +421,27 @@ public class WebRtcAudioManager {
             bluetoothManager.updateDevice();
         }
 
-        Set<AudioDevice> newAudioDevices = new HashSet<>();
+        Set<AudioDevice> newInternalAudioDevices = new HashSet<>();
 
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE) {
-            newAudioDevices.add(AudioDevice.BLUETOOTH);
+            newInternalAudioDevices.add(AudioDevice.BLUETOOTH);
+        }
+
+        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
+            newInternalAudioDevices.add(AudioDevice.BLUETOOTH_SCO);
         }
 
         if (hasWiredHeadset) {
             // If a wired headset is connected, then it is the only possible option.
-            newAudioDevices.add(AudioDevice.WIRED_HEADSET);
+            newInternalAudioDevices.add(AudioDevice.WIRED_HEADSET);
         } else {
-            newAudioDevices.add(AudioDevice.SPEAKER_PHONE);
+            newInternalAudioDevices.add(AudioDevice.SPEAKER_PHONE);
             if (hasEarpiece()) {
-                newAudioDevices.add(AudioDevice.EARPIECE);
+                newInternalAudioDevices.add(AudioDevice.EARPIECE);
             }
         }
-
-        boolean audioDeviceSetUpdated = !audioDevices.equals(newAudioDevices);
-        audioDevices = newAudioDevices;
-
 
         // Correct user selected audio devices if needed.
         if (userSelectedAudioDevice == AudioDevice.BLUETOOTH
@@ -439,14 +458,14 @@ public class WebRtcAudioManager {
 
         // Need to start Bluetooth if it is available and user either selected it explicitly or
         // user did not select any output device.
-        boolean needBluetoothAudioStart =
+        boolean needBluetoothScoStart =
             bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
                 && (userSelectedAudioDevice == AudioDevice.NONE
                 || userSelectedAudioDevice == AudioDevice.BLUETOOTH);
 
         // Need to stop Bluetooth audio if user selected different device and
         // Bluetooth SCO connection is established or in the process.
-        boolean needBluetoothAudioStop =
+        boolean needBluetoothScoStop =
             (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED
                 || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING)
                 && (userSelectedAudioDevice != AudioDevice.NONE
@@ -455,52 +474,60 @@ public class WebRtcAudioManager {
         if (bluetoothManager.getState() == WebRtcBluetoothManager.State.HEADSET_AVAILABLE
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTING
             || bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
-            Log.d(TAG, "Need BT audio: start=" + needBluetoothAudioStart + ", "
-                + "stop=" + needBluetoothAudioStop + ", "
+            Log.d(TAG, "Need BT audio: start=" + needBluetoothScoStart + ", "
+                + "stop=" + needBluetoothScoStop + ", "
                 + "BT state=" + bluetoothManager.getState());
         }
 
         // Start or stop Bluetooth SCO connection given states set earlier.
-        if (needBluetoothAudioStop) {
+        if (needBluetoothScoStop) {
             bluetoothManager.stopScoAudio();
             bluetoothManager.updateDevice();
+        } else if (needBluetoothScoStart && !bluetoothManager.startScoAudio()) {
+            // Remove BLUETOOTH and BLUETOOTH_SCO from list of available devices since SCO start has
+            // reported no longer available or too many failed attempts.
+            newInternalAudioDevices.remove(AudioDevice.BLUETOOTH);
+            newInternalAudioDevices.remove(AudioDevice.BLUETOOTH_SCO);
         }
 
-        // Attempt to start Bluetooth SCO audio (takes a few second to start).
-        if (needBluetoothAudioStart &&
-            !needBluetoothAudioStop &&
-            !bluetoothManager.startScoAudio()) {
-            // Remove BLUETOOTH from list of available devices since SCO failed.
-            audioDevices.remove(AudioDevice.BLUETOOTH);
-            audioDeviceSetUpdated = true;
-        }
+        boolean audioDeviceSetUpdated = !internalAudioDevices.equals(newInternalAudioDevices);
+        internalAudioDevices = newInternalAudioDevices;
+        // BLUETOOTH_SCO isn't allowed to be in the externally accessible list of devices
+        audioDevices = new HashSet<>(internalAudioDevices);
+        audioDevices.remove(AudioDevice.BLUETOOTH_SCO);
 
 
         // Update selected audio device.
         AudioDevice newCurrentAudioDevice;
 
-        if (bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED) {
-            // If a Bluetooth is connected, then it should be used as output audio
-            // device. Note that it is not sufficient that a headset is available;
-            // an active SCO channel must also be up and running.
+        if ((bluetoothManager.getState() == WebRtcBluetoothManager.State.SCO_CONNECTED)
+            && newInternalAudioDevices.contains(AudioDevice.BLUETOOTH_SCO))
+        {
+            // If Bluetooth SCO is connected and available to use, then it has been selected by user or
+            // auto-selected and it should be used as output audio device.
             newCurrentAudioDevice = AudioDevice.BLUETOOTH;
         } else if (hasWiredHeadset) {
-            // If a wired headset is connected, but Bluetooth is not, then wired headset is used as
+            // If a wired headset is connected, but Bluetooth SCO is not, then wired headset is used as
             // audio device.
             newCurrentAudioDevice = AudioDevice.WIRED_HEADSET;
         } else {
-            // No wired headset and no Bluetooth, hence the audio-device list can contain speaker
+            // No wired headset and no Bluetooth SCO, hence the audio-device list can contain speaker
             // phone (on a tablet), or speaker phone and earpiece (on mobile phone).
-            // |defaultAudioDevice| contains either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
-            // depending on the user's selection.
-            newCurrentAudioDevice = userSelectedAudioDevice;
+            // |userSelectedAudioDevice| may contain either AudioDevice.SPEAKER_PHONE or AudioDevice.EARPIECE
+            // depending on the user's selection. |defaultAudioDevice|, which is set in code depending on
+            // call is audio only or video, to be used if user hasn't made an explicit selection
+            if ((userSelectedAudioDevice == AudioDevice.NONE) && (defaultAudioDevice != AudioDevice.NONE))
+                newCurrentAudioDevice = defaultAudioDevice;
+            else
+                newCurrentAudioDevice = userSelectedAudioDevice;
         }
         // Switch to new device but only if there has been any changes.
         if (newCurrentAudioDevice != currentAudioDevice || audioDeviceSetUpdated) {
             // Do the required device switch.
             setAudioDeviceInternal(newCurrentAudioDevice);
             Log.d(TAG, "New device status: "
-                + "available=" + audioDevices + ", "
+                + "internally available=" + internalAudioDevices + ", "
+                + "externally available=" + audioDevices + ", "
                 + "current(new)=" + newCurrentAudioDevice);
             if (audioManagerListener != null) {
                 // Notify a listening client that audio device has been changed.
@@ -514,7 +541,8 @@ public class WebRtcAudioManager {
      * AudioDevice is the names of possible audio devices that we currently support.
      */
     public enum AudioDevice {
-        SPEAKER_PHONE, WIRED_HEADSET, EARPIECE, BLUETOOTH, NONE
+        SPEAKER_PHONE, WIRED_HEADSET, EARPIECE, BLUETOOTH, NONE,
+        BLUETOOTH_SCO // BLUETOOTH_SCO is only valid internal to this class
     }
 
     /**

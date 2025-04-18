@@ -805,9 +805,9 @@ class CallActivity : CallBaseActivity() {
             )
         }
         if (isVoiceOnlyCall) {
-            setAudioOutputChannel(AudioDevice.EARPIECE)
+            setDefaultAudioOutputChannel(AudioDevice.EARPIECE)
         } else {
-            setAudioOutputChannel(AudioDevice.SPEAKER_PHONE)
+            setDefaultAudioOutputChannel(AudioDevice.SPEAKER_PHONE)
         }
         iceServers = ArrayList()
 
@@ -832,6 +832,13 @@ class CallActivity : CallBaseActivity() {
             cameraInitialization()
         }
         microphoneInitialization()
+    }
+
+    fun setDefaultAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
+        if (audioManager != null) {
+            audioManager!!.setDefaultAudioDevice(selectedAudioDevice)
+            updateAudioOutputButton(audioManager!!.currentAudioDevice)
+        }
     }
 
     fun setAudioOutputChannel(selectedAudioDevice: AudioDevice?) {
