@@ -142,13 +142,13 @@ class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
         buildComponent()
         DavUtils.registerCustomFactories()
 
+        Security.insertProviderAt(Conscrypt.newProvider(), 1)
+
         componentApplication.inject(this)
 
         Coil.setImageLoader(buildDefaultImageLoader())
         setAppTheme(appPreferences.theme)
         super.onCreate()
-
-        Security.insertProviderAt(Conscrypt.newProvider(), 1)
 
         ClosedInterfaceImpl().providerInstallerInstallIfNeededAsync()
         DeviceUtils.ignoreSpecialBatteryFeatures()
