@@ -281,6 +281,10 @@ class ChatViewModel @Inject constructor(
         conversationRepository.getRoom(token)
     }
 
+    suspend fun isMessageSaved(messageId: Long): Boolean {
+        return chatRepository.checkIfMessageIsSaved(messageId)
+    }
+
     fun getCapabilities(user: User, token: String, conversationModel: ConversationModel) {
         Log.d(TAG, "Remote server ${conversationModel.remoteServer}")
         if (conversationModel.remoteServer.isNullOrEmpty()) {

@@ -7,7 +7,10 @@
 
 package com.nextcloud.talk.ui.dialog
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -94,6 +97,15 @@ class ContextChatCompose(val bundle: Bundle) {
         }
     }
 
+    private fun Context.requireActivity(): Activity {
+        var context = this
+        while (context is ContextWrapper) {
+            if (context is Activity) return context
+            context = context.baseContext
+        }
+        throw IllegalStateException("No activity was present but it is required.")
+    }
+
     @Composable
     fun GetDialogView(
         shouldDismiss: MutableState<Boolean>,
@@ -101,9 +113,11 @@ class ContextChatCompose(val bundle: Bundle) {
         contextViewModel: ContextChatComposeViewModel = ContextChatComposeViewModel()
     ) {
         if (shouldDismiss.value) {
+            context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
             return
         }
 
+        context.requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LOCKED
         val colorScheme = contextViewModel.viewThemeUtils.getColorScheme(context)
         MaterialTheme(colorScheme) {
             Dialog(
