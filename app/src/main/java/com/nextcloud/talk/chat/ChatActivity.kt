@@ -153,6 +153,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
+import com.nextcloud.talk.ui.dialog.ContextChatCompose
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -208,6 +209,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -296,7 +298,33 @@ class ChatActivity :
     private val startMessageSearchForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             executeIfResultOk(it) { intent ->
-                onMessageSearchResult(intent)
+                runBlocking {
+                    val id = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+                    id?.let {
+                        val long = id.toLong()
+                        val isSaved = chatViewModel.isMessageSaved(id.toLong())
+                        if (isSaved) {
+                            onMessageSearchResult(intent)
+                        } else {
+                            binding.genericComposeView.apply {
+                                val shouldDismiss = mutableStateOf(false)
+                                setContent {
+                                    val bundle = bundleOf()
+                                    bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
+                                    bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
+                                    bundle.putString(KEY_ROOM_TOKEN, roomToken)
+                                    bundle.putString(BundleKeys.KEY_MESSAGE_ID, id)
+                                    bundle.putString(
+                                        BundleKeys.KEY_CONVERSATION_NAME,
+                                        currentConversation!!.displayName
+                                    )
+                                    ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+                                }
+                            }
+                            Log.d("Julius", "Should open something else")
+                        }
+                    }
+                }
             }
         }
 
