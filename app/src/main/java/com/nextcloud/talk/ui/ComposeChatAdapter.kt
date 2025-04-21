@@ -84,6 +84,7 @@ import coil.compose.AsyncImage
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder.Companion.KEY_MIMETYPE
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -99,6 +100,7 @@ import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -646,8 +648,9 @@ class ComposeChatAdapter(
             Column {
                 message.activeUser = viewModel.currentUser
                 val imageUri = message.imageUrl
-                val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                val loadedImage = load(imageUri, viewModel.context, errorPlaceholderImage)
+                val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+                val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
+                val loadedImage = load(imageUri, viewModel.context, drawableResourceId)
 
                 AsyncImage(
                     model = loadedImage,
