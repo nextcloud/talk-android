@@ -5,7 +5,6 @@
     <string name="added_to_favorites">La conversación «%1$s» metióse en Favoritos</string>
     <string name="appbar_search_in">Buscar en: %s</string>
     <string name="archived">Archivóse</string>
-    <string name="audio_call">Llamada d\'audiu</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida d\'audiu</string>
     <string name="audio_output_phone">Teléfonu</string>
@@ -25,13 +24,11 @@
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear una conversación</string>
     <string name="custom">Personalizar</string>
-    <string name="danger_zone">Zona de peligru</string>
     <string name="delete_avatar">Desaniciar l\'avatar</string>
     <string name="deleted_conversation">Desanicióse la conversación «%1$s»</string>
     <string name="dnd">Nun molestar</string>
     <string name="dontClear">Nun borrar</string>
     <string name="edit">Editar</string>
-    <string name="edit_error_24_hours_old_message">Nun se puen editar los mensaxes dempués de 24 hores</string>
     <string name="emoji_category_recent">De recién</string>
     <string name="encrypted">Cifróse</string>
     <string name="error_loading_chats">Hebo un problema al cargar les charres</string>
@@ -154,6 +151,7 @@
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Avanzar</string>
+    <string name="nc_gallery">Galería</string>
     <string name="nc_get_source_code">Consiguir el códigu fonte</string>
     <string name="nc_group">Grupu</string>
     <string name="nc_groups">Grupos</string>
@@ -354,5 +352,6 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Sitiu web</string>
     <string name="user_status">Estáu</string>
+    <string name="video_call">Videllamada</string>
     <string name="whats_your_status">¿Cuál ye\'l to estáu?</string>
     </resources>

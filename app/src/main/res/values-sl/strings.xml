@@ -24,10 +24,12 @@
     <string name="conversations">Pogovori</string>
     <string name="create_conversation">Ustvari pogovor</string>
     <string name="custom">Po meri</string>
+    <string name="danger_zone">Nevarno območje</string>
     <string name="delete_avatar">Izbriši podobo</string>
     <string name="dnd">Ne moti</string>
     <string name="dontClear">Ne počisti</string>
     <string name="edit">Uredi</string>
+    <string name="edit_message_icon_description">Uredi sporočilo</string>
     <string name="emoji_backspace">povratnica</string>
     <string name="emoji_category_recent">Nedavno</string>
     <string name="encrypted">Šifrirano</string>
@@ -100,6 +102,8 @@
     <string name="nc_certificate_error">Nastavitve SSL onemogočajo vzpostavitev povezave</string>
     <string name="nc_change_cert_auth">Spremeni potrdilo za overitev</string>
     <string name="nc_change_password">Spremeni geslo</string>
+    <string name="nc_clear_edit_button">Prekliči urejanje</string>
+    <string name="nc_clear_edit_message">Prekliči urejanje</string>
     <string name="nc_clear_history">Izbriši vsa sporočila</string>
     <string name="nc_clear_history_success">Vsa sporočilo so izbrisana</string>
     <string name="nc_clear_history_warning">Ali res želite izbrisati vsa sporočila tega pogovora?</string>
@@ -160,7 +164,9 @@
     <string name="nc_dialog_save_to_storage_yes">Da</string>
     <string name="nc_display_name_not_fetched">Prikaznega imena ni mogoče pridobiti; opravilo je prekinjeno.</string>
     <string name="nc_display_name_not_stored">Prikaznega imena ni mogoče shraniti; opravilo je prekinjeno.</string>
+    <string name="nc_edit_icon">Uredi</string>
     <string name="nc_edit_message">Uredi</string>
+    <string name="nc_edit_message_text">Uredi sporočilo</string>
     <string name="nc_email">Elektronski naslov</string>
     <string name="nc_expire_message_eight_hours">8 ur</string>
     <string name="nc_expire_message_four_weeks">4 tedni</string>
@@ -370,7 +376,6 @@
     <string name="nc_settings_server_almost_eol">Različica strežnika je zastarela in ne bo več podprta z naslenjo različico programa.</string>
     <string name="nc_settings_server_eol">Različica strežnika je zastarela in ni več podprta v tej različici programa za okolje Android.</string>
     <string name="nc_settings_server_eol_title">Nepodprta različica strežnika</string>
-    <string name="nc_settings_theme_battery_saver">Nastavljeno prek zunanjega programa</string>
     <string name="nc_settings_theme_dark">Temna</string>
     <string name="nc_settings_theme_follow_system">Uporabi sistemsko privzeto možnost</string>
     <string name="nc_settings_theme_key">tema</string>

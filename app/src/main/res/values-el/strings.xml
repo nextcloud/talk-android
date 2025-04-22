@@ -17,6 +17,7 @@
     <string name="conversations">Συνομιλίες</string>
     <string name="create_conversation">Δημιουργία συνομιλίας</string>
     <string name="custom">Προσαρμοσμένο</string>
+    <string name="danger_zone">Επικίνδυνη ζώνη</string>
     <string name="delete_avatar">Διαγραφή εικόνας προφίλ</string>
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>
@@ -75,6 +76,7 @@
     <string name="nc_certificate_error">Η ρύθμιση SSL απέτρεψε την σύνδεση</string>
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_password">Αλλαγή συνθηματικού</string>
+    <string name="nc_clear_edit_button">Ακύρωση επεξεργασίας</string>
     <string name="nc_clear_history">Διαγραφή όλων των μηνυμάτων</string>
     <string name="nc_clear_history_success">Όλα τα μηνύματα διαγράφηκαν</string>
     <string name="nc_clear_history_warning">Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα σε αυτήν τη συνομιλία;</string>
@@ -313,7 +315,6 @@
     <string name="nc_settings_server_almost_eol">Η έκδοση διακομιστή είναι πολύ παλιά και δεν θα υποστηρίζεται στην επόμενη έκδοση!</string>
     <string name="nc_settings_server_eol">Η έκδοση διακομιστή είναι πολύ παλιά και δεν υποστηρίζεται από αυτήν την έκδοση της εφαρμογής Android</string>
     <string name="nc_settings_server_eol_title">Μη υποστηριζόμενος διακομιστής</string>
-    <string name="nc_settings_theme_battery_saver">Ορισμός από Διαχείριση Μπαταρίας</string>
     <string name="nc_settings_theme_dark">Σκούρο</string>
     <string name="nc_settings_theme_follow_system">Χρησιμοποιήστε το προεπιλεγμένο σύστημα</string>
     <string name="nc_settings_theme_key">θέμα</string>

@@ -8,7 +8,6 @@
     <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
     <string name="archived">Arquivada</string>
     <string name="archived_conversation">%1$s foi arquivada</string>
-    <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de son</string>
     <string name="audio_output_phone">Teléfono</string>
@@ -32,7 +31,6 @@
     <string name="close">Pechar</string>
     <string name="close_icon">Icona «Pechar»</string>
     <string name="connection_established">Estabeleceuse a conexión</string>
-    <string name="connection_lost">Perdeuse a conexión</string>
     <string name="connection_lost_sent_messages_are_queued">Perdeuse a conexión – As mensaxes enviadas póñense en cola</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversation_is_read_only">A conversa é só de lectura</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
-    <string name="edit_error_24_hours_old_message">Non é posíbel editar mensaxes de hai máis de 24 horas</string>
-    <string name="edit_message_icon_description">Icona de Editar mensaxe</string>
+    <string name="edit_message_icon_description">Editar a mensaxe</string>
     <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
     <string name="nc_change_password">Cambiar o contrasinal</string>
     <string name="nc_check_your_internet">Comprobe a conexión á Internet</string>
-    <string name="nc_clear_edit_button">Botón de limpar a edición</string>
-    <string name="nc_clear_edit_message">Limpar a mensaxe de edición</string>
+    <string name="nc_clear_edit_button">Cancelar a edición</string>
+    <string name="nc_clear_edit_message">Cancelar a edición</string>
     <string name="nc_clear_history">Eliminar todas as mensaxes</string>
     <string name="nc_clear_history_success">Elimináronse todas as mensaxes</string>
     <string name="nc_clear_history_warning">Confirma que quere eliminar todas as mensaxes desta conversa?</string>
@@ -235,9 +232,8 @@
     <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
-    <string name="nc_edit_icon">Icona de edición</string>
     <string name="nc_edit_message">Editar</string>
-    <string name="nc_edit_message_text">Editar o texto da mensaxe</string>
+    <string name="nc_edit_message_text">Editar a mensaxe</string>
     <string name="nc_edited_by_admin">Editado por alguén de administración</string>
     <string name="nc_email">Correo-e</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -256,7 +252,6 @@
     <string name="nc_federation_pending_invitation_hint">Vde. ten convites pendentes</string>
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_file_storage_permission">Precísase de permiso para acceder ao ficheiro</string>
-    <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vde.: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>
@@ -399,7 +394,6 @@
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_select_participants">Seleccionar participantes</string>
-    <string name="nc_send_edit_message">Enviar a mensaxe editada</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
     <string name="nc_sent_a_gif_you">Vde. enviou un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou un vídeo.</string>
@@ -480,7 +474,6 @@
     <string name="nc_settings_server_eol">A versión do servidor é demasiado antiga e non é compatíbel con esta versión da aplicación para Android</string>
     <string name="nc_settings_server_eol_title">Servidor non admitido</string>
     <string name="nc_settings_server_notification_app_not_installed_title">A aplicación de notificacións do servidor non está instalada</string>
-    <string name="nc_settings_theme_battery_saver">Estabelecido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o predeterminado do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -535,7 +528,6 @@
     <string name="nc_yes">Si</string>
     <string name="new_conversation_creation_icon">conversaNew Conversation Creation IconNova icona de Icona «Creación de nova conversa»</string>
     <string name="next_week">Semana seguinte</string>
-    <string name="no_conversations_archived">Non hai ningunha conversa arquivada</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
     <string name="oneHour">1 hora</string>
@@ -654,7 +646,6 @@
     <string name="typing_are_typing">están a escribiren…</string>
     <string name="typing_is_typing">está a escribir…</string>
     <string name="typing_x_others">e %1$s máis están a escribiren…</string>
-    <string name="unarchive_conversation">Desarquivar a conversa</string>
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
     <string name="unarchived_conversation">%1$s foi desarquivada</string>
     <string name="unban">Retirar a expulsión</string>

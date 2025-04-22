@@ -4,11 +4,9 @@
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
-    <string name="archive_conversation">Archive Conversation</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
     <string name="archived_conversation">Archived %1$s</string>
-    <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Phone</string>
@@ -32,7 +30,6 @@
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
     <string name="connection_established">Connection established</string>
-    <string name="connection_lost">Connection lost</string>
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
@@ -41,15 +38,13 @@
     <string name="create_conversation">Create conversation</string>
     <string name="create_issue">Create issue</string>
     <string name="custom">Custom</string>
-    <string name="danger_zone">Danger Zone</string>
+    <string name="danger_zone">Danger zone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Delete avatar</string>
     <string name="deleted_conversation">Deleted conversation %1$s</string>
     <string name="dnd">Do not disturb</string>
     <string name="dontClear">Don\'t clear</string>
     <string name="edit">Edit</string>
-    <string name="edit_error_24_hours_old_message">Cannot Edit Messages older than 24 hours</string>
-    <string name="edit_message_icon_description">Edit Message Icon</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
@@ -138,8 +133,7 @@
     <string name="nc_change_cert_auth">Change authentication certificate</string>
     <string name="nc_change_password">Change Password</string>
     <string name="nc_check_your_internet">Please check your internet connection</string>
-    <string name="nc_clear_edit_button">Clear Edit Button</string>
-    <string name="nc_clear_edit_message">Clear Edit Message</string>
+    <string name="nc_clear_edit_button">Cancel editing</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
@@ -235,9 +229,7 @@
     <string name="nc_dialog_save_to_storage_yes">Yes</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
-    <string name="nc_edit_icon">Edit Icon</string>
     <string name="nc_edit_message">Edit</string>
-    <string name="nc_edit_message_text">Edit Message Text</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
@@ -256,7 +248,6 @@
     <string name="nc_federation_pending_invitation_hint">You have pending invitations</string>
     <string name="nc_file_browser_back">Back</string>
     <string name="nc_file_storage_permission">Permission for file access is required</string>
-    <string name="nc_filter">Filter Conversations</string>
     <string name="nc_following_link">User following a public link</string>
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_forward_message">Forward</string>
@@ -399,7 +390,6 @@
     <string name="nc_search">Search</string>
     <string name="nc_select_an_account">Select an account</string>
     <string name="nc_select_participants">Select participants</string>
-    <string name="nc_send_edit_message">Send Edit Message</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
     <string name="nc_sent_a_gif_you">You sent a GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
@@ -480,7 +470,6 @@
     <string name="nc_settings_server_eol">The server version is too old and not supported by this version of the Android app</string>
     <string name="nc_settings_server_eol_title">Unsupported server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notifications app not installed</string>
-    <string name="nc_settings_theme_battery_saver">Set by Battery Saver</string>
     <string name="nc_settings_theme_dark">Dark</string>
     <string name="nc_settings_theme_follow_system">Use system default</string>
     <string name="nc_settings_theme_key">theme</string>
@@ -536,7 +525,6 @@
     <string name="nc_yes">Yes</string>
     <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
     <string name="next_week">Next week</string>
-    <string name="no_conversations_archived">No conversations archived</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="oneHour">1 hour</string>
@@ -655,7 +643,6 @@
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_x_others">and %1$s others are typing …</string>
-    <string name="unarchive_conversation">Unarchive Conversation</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="unban">Unban</string>
@@ -675,7 +662,6 @@
     <string name="userinfo_error_text">Failed to retrieve personal user information.</string>
     <string name="userinfo_no_info_headline">No personal info set</string>
     <string name="userinfo_no_info_text">Add name, picture and contact details on your profile page.</string>
-    <string name="video_call">Video Call</string>
     <string name="whats_your_status">What is your status?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>

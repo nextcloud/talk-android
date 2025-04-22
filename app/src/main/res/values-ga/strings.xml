@@ -4,11 +4,10 @@
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
-    <string name="archive_conversation">Comhrá Cartlainne</string>
+    <string name="archive_conversation">Comhrá cartlainne</string>
     <string name="archive_hint">Nuair a bheidh comhrá curtha i gcartlann, cuirfear i bhfolach é de réir réamhshocraithe. Roghnaigh an scagaire \"Cartlannaithe\" chun féachaint ar chomhráite cartlainne. Gheofar tagairtí díreacha fós.</string>
     <string name="archived">Cartlannaithe</string>
     <string name="archived_conversation">Cartlannaithe %1$s</string>
-    <string name="audio_call">Glao Fuaime</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Aschur fuaime</string>
     <string name="audio_output_phone">Fón</string>
@@ -32,7 +31,6 @@
     <string name="close">Dún</string>
     <string name="close_icon">Dún Deilbhín</string>
     <string name="connection_established">Ceangal bunaithe</string>
-    <string name="connection_lost">Ceangal caillte</string>
     <string name="connection_lost_sent_messages_are_queued">Ceangal caillte - Tá na teachtaireachtaí seolta i scuaine</string>
     <string name="continuous_voice_message_recording">Taifeadadh glas chun an teachtaireacht gutha a thaifeadadh go leanúnach</string>
     <string name="conversation_is_read_only">Tá an comhrá léite amháin</string>
@@ -41,15 +39,14 @@
     <string name="create_conversation">Cruthaigh comhrá</string>
     <string name="create_issue">Cruthaigh saincheist</string>
     <string name="custom">Saincheaptha</string>
-    <string name="danger_zone">Crios Contúirte</string>
+    <string name="danger_zone">Crios contúirte</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Scrios an avatar</string>
     <string name="deleted_conversation">Scriosadh comhrá %1$s</string>
     <string name="dnd">Ná cur as</string>
     <string name="dontClear">Ná soiléir</string>
     <string name="edit">Cuir in eagar</string>
-    <string name="edit_error_24_hours_old_message">Ní féidir Teachtaireachtaí atá níos sine ná 24 huaire a chur in Eagar</string>
-    <string name="edit_message_icon_description">Cuir Deilbhín na Teachtaireachta in Eagar</string>
+    <string name="edit_message_icon_description">Cuir teachtaireacht in eagar</string>
     <string name="emoji_backspace">Cúlspás</string>
     <string name="emoji_category_recent">le déanaí</string>
     <string name="encrypted">Criptithe</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Athraigh teastas fíordheimhnithe</string>
     <string name="nc_change_password">Athraigh do phasfhocal</string>
     <string name="nc_check_your_internet">Seiceáil do nasc idirlín le do thoil</string>
-    <string name="nc_clear_edit_button">Glan an Cnaipe Eagar</string>
-    <string name="nc_clear_edit_message">Glan an Teachtaireacht in Eagar</string>
+    <string name="nc_clear_edit_button">Cealaigh eagarthóireacht</string>
+    <string name="nc_clear_edit_message">Cealaigh eagarthóireacht</string>
     <string name="nc_clear_history">Scrios gach teachtaireacht</string>
     <string name="nc_clear_history_success">Scriosadh gach teachtaireacht</string>
     <string name="nc_clear_history_warning">An bhfuil tú cinnte gur mhaith leat gach teachtaireacht sa chomhrá seo a scriosadh?</string>
@@ -235,9 +232,8 @@
     <string name="nc_dialog_save_to_storage_yes">Tá</string>
     <string name="nc_display_name_not_fetched">Níorbh fhéidir an t-ainm taispeána a fháil, ag éirí as</string>
     <string name="nc_display_name_not_stored">Níorbh fhéidir an t-ainm taispeána a stóráil, ag cur deireadh leis</string>
-    <string name="nc_edit_icon">Cuir Deilbhín in Eagar</string>
     <string name="nc_edit_message">Cuir in eagar</string>
-    <string name="nc_edit_message_text">Cuir Téacs na Teachtaireachta in Eagar</string>
+    <string name="nc_edit_message_text">Cuir teachtaireacht in eagar</string>
     <string name="nc_edited_by_admin">Arna chur in eagar ag riarthóir</string>
     <string name="nc_email">Ríomhphost</string>
     <string name="nc_expire_message_eight_hours">8 n-uaire</string>
@@ -256,7 +252,6 @@
     <string name="nc_federation_pending_invitation_hint">Tá cuirí ar feitheamh agat</string>
     <string name="nc_file_browser_back">Ar ais</string>
     <string name="nc_file_storage_permission">Teastaíonn cead chun comhaid a rochtain</string>
-    <string name="nc_filter">Scagaire Comhráite</string>
     <string name="nc_following_link">Úsáideoir ag leanúint nasc poiblí</string>
     <string name="nc_formatted_message_you">Tusa: %1$s</string>
     <string name="nc_forward_message">Ar aghaidh</string>
@@ -399,7 +394,6 @@
     <string name="nc_search">Cuardach</string>
     <string name="nc_select_an_account">Roghnaigh cuntas</string>
     <string name="nc_select_participants">Roghnaigh rannpháirtithe</string>
-    <string name="nc_send_edit_message">Seol Teachtaireacht in Eagar</string>
     <string name="nc_sent_a_gif" formatted="true">Sheol %1$s GIF.</string>
     <string name="nc_sent_a_gif_you">Sheol tú GIF.</string>
     <string name="nc_sent_a_video" formatted="true">Sheol %1$s físeán.</string>
@@ -480,7 +474,6 @@
     <string name="nc_settings_server_eol">Tá leagan an fhreastalaí ró-shean agus ní thacaíonn an leagan seo den aip Android leis</string>
     <string name="nc_settings_server_eol_title">Freastalaí nach dtacaítear leis</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Níl aip fógraí freastalaí suiteáilte</string>
-    <string name="nc_settings_theme_battery_saver">Socraithe ag Scáileán Battery</string>
     <string name="nc_settings_theme_dark">Dorcha</string>
     <string name="nc_settings_theme_follow_system">Úsáid réamhshocraithe an chórais</string>
     <string name="nc_settings_theme_key">téama</string>
@@ -536,7 +529,6 @@
     <string name="nc_yes">Tá</string>
     <string name="new_conversation_creation_icon">Deilbhín Cruthaithe Comhrá Nua</string>
     <string name="next_week">An tseachtain seo chugainn</string>
-    <string name="no_conversations_archived">Níor cuireadh aon chomhrá sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
     <string name="no_phone_book_integration_due_to_permissions">Níl aon chomhtháthú uimhir theileafóin mar gheall ar cheadanna in easnamh</string>
     <string name="oneHour">1 uair</string>
@@ -655,7 +647,6 @@
     <string name="typing_are_typing">ag clóscríobh…</string>
     <string name="typing_is_typing">ag clóscríobh…</string>
     <string name="typing_x_others">agus %1$s eile ag clóscríobh …</string>
-    <string name="unarchive_conversation">Comhrá Díchartlann</string>
     <string name="unarchive_hint">Nuair a bheidh comhrá gan chartlannú, taispeánfar arís é de réir réamhshocraithe.</string>
     <string name="unarchived_conversation">Gan chartlann %1$s</string>
     <string name="unban">Dícosc</string>
@@ -675,7 +666,7 @@
     <string name="userinfo_error_text">Theip ar aisghabháil faisnéise pearsanta úsáideora.</string>
     <string name="userinfo_no_info_headline">Níl aon tacar faisnéise pearsanta ann</string>
     <string name="userinfo_no_info_text">Cuir ainm, pictiúr agus sonraí teagmhála ar do leathanach próifíle.</string>
-    <string name="video_call">Glao Físe</string>
+    <string name="video_call">Glao físe</string>
     <string name="whats_your_status">Cad é do stádas?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Féach ar %d teachtaireacht dá samhail</item>

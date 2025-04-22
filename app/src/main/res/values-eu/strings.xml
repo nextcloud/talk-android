@@ -6,7 +6,6 @@
     <string name="appbar_search_in">Bilatu %s(e)n</string>
     <string name="archive_conversation">Artxibatu elkarrizketa</string>
     <string name="archived">Artxibatuta</string>
-    <string name="audio_call">Audio deia</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio irteera</string>
     <string name="audio_output_phone">Telefonoa</string>
@@ -38,6 +37,7 @@
     <string name="dnd">Ez molestatu</string>
     <string name="dontClear">Ez garbitu</string>
     <string name="edit">Editatu</string>
+    <string name="edit_message_icon_description">Editatu mezua</string>
     <string name="emoji_backspace">Atzera</string>
     <string name="emoji_category_recent">Azkenak</string>
     <string name="encrypted">Zifratua</string>
@@ -121,6 +121,8 @@
     <string name="nc_certificate_error">Zure SSL konfigurazioak konexioa eragotzi du</string>
     <string name="nc_change_cert_auth">Aldatu autentifikazio ziurtagiria</string>
     <string name="nc_change_password">Aldatu pasahitza</string>
+    <string name="nc_clear_edit_button">Utzi editatzeari</string>
+    <string name="nc_clear_edit_message">Utzi editatzeari</string>
     <string name="nc_clear_history">Ezabatu mezu guztiak</string>
     <string name="nc_clear_history_success">Mezu guztiak ezabatu dira</string>
     <string name="nc_clear_history_warning">Ziur zaude elkarrizketa honen mezu guztiak ezabatu nahi dituzula?</string>
@@ -195,7 +197,6 @@
     <string name="nc_dialog_save_to_storage_yes">Bai</string>
     <string name="nc_display_name_not_fetched">Ezin izan da erakusteko izena lortu, bertan behera uzten</string>
     <string name="nc_display_name_not_stored">Ezin izan da erakusteko izena biltegiratu, bertan behera uzten</string>
-    <string name="nc_edit_icon">Editatu ikonoa</string>
     <string name="nc_edit_message">Aldatu</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 ordu</string>
@@ -212,7 +213,6 @@
     <string name="nc_federation_no_invitations">Ez duzu gonbidapenik zain</string>
     <string name="nc_file_browser_back">Itzuli</string>
     <string name="nc_file_storage_permission">Fitxategietan sartzeko baimena behar da</string>
-    <string name="nc_filter">Iragazi elkarrizketa</string>
     <string name="nc_following_link">Erabiltzailea esteka publiko bat jarraitzen ari da</string>
     <string name="nc_formatted_message_you">Zu: %1$s</string>
     <string name="nc_forward_message">Birbidali</string>
@@ -418,7 +418,6 @@
     <string name="nc_settings_server_almost_eol">Zerbitzariaren bertsioa zaharregia da eta ez da hurrengo argitalpenean onartuko!</string>
     <string name="nc_settings_server_eol">Zerbitzariaren bertsioa zaharregia da eta Android aplikazio honek ez du onartzen</string>
     <string name="nc_settings_server_eol_title">Ez da zerbitzaria onartzen</string>
-    <string name="nc_settings_theme_battery_saver">Bateria aurrezleak ezarrita</string>
     <string name="nc_settings_theme_dark">Iluna</string>
     <string name="nc_settings_theme_follow_system">Erabili sistemaren lehenetsia</string>
     <string name="nc_settings_theme_key">Gaia</string>

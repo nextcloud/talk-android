@@ -16,6 +16,7 @@
     <string name="conversations">Cunversatziones</string>
     <string name="create_conversation">Crea resonada</string>
     <string name="custom">Personaliza</string>
+    <string name="danger_zone">Zona de perìgulu</string>
     <string name="delete_avatar">Cantzella s\'avatar</string>
     <string name="dnd">No istorbes</string>
     <string name="edit">Modìfica</string>
@@ -130,6 +131,7 @@
     <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Errore in su recùperu de su nùmene ammustradu, annullende</string>
     <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
+    <string name="nc_edit_icon">Modìfica</string>
     <string name="nc_edit_message">Modìfica</string>
     <string name="nc_email">Posta eletrònica</string>
     <string name="nc_expire_message_off">Istudadu</string>
@@ -301,7 +303,6 @@
     <string name="nc_settings_server_almost_eol">Sa versione de su serbidore est betza meda e no at a èssere suportada in sa versione imbeniente!</string>
     <string name="nc_settings_server_eol">Sa versione de su serbidore est betza meda e non suportada dae custa versione de aplicatzione Android</string>
     <string name="nc_settings_server_eol_title">Serbidore non suportadu</string>
-    <string name="nc_settings_theme_battery_saver">Cunfiguradu dae su sarva-bateria</string>
     <string name="nc_settings_theme_dark">Iscuru</string>
     <string name="nc_settings_theme_follow_system">Imprea cunfiguratziones predefinidas de sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -407,5 +408,6 @@
     <string name="userinfo_error_text">No at fatu a otènnere informatziones personales de s\'utente</string>
     <string name="userinfo_no_info_headline">Nissuna cunfiguratzione de datos personales</string>
     <string name="userinfo_no_info_text">Agiunghe nùmene, fotografia e detàllios de cuntatu in su profilu tuo.</string>
+    <string name="video_call">Mutida de vìdeo</string>
     <string name="whats_your_status">Cale est s\'istadu tuo?</string>
     </resources>

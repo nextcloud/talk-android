@@ -8,7 +8,6 @@
     <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \"Arşivlenmiş\" süzgecini seçin. Doğrudan anmalar yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
     <string name="archived_conversation">%1$s arşivlendi</string>
-    <string name="audio_call">Sesli çağrı</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Ses çıkışı</string>
     <string name="audio_output_phone">Telefon</string>
@@ -32,7 +31,6 @@
     <string name="close">Kapat</string>
     <string name="close_icon">Kapatma simgesi</string>
     <string name="connection_established">Bağlantı kuruldu</string>
-    <string name="connection_lost">Bağlantı kesildi</string>
     <string name="connection_lost_sent_messages_are_queued">Bağlantı kesildi. Gönderilen iletiler kuyruğa alındı</string>
     <string name="continuous_voice_message_recording">Sesli iletinin sürekli olarak kaydedilmesi için kaydı kilitleyin</string>
     <string name="conversation_is_read_only">Görüşme salt okunur</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Rahatsız etmeyin</string>
     <string name="dontClear">Kaldırılmasın</string>
     <string name="edit">Düzenle</string>
-    <string name="edit_error_24_hours_old_message">24 saatten eski iletiler düzenlenemez</string>
-    <string name="edit_message_icon_description">İleti düzenleme simgesi</string>
+    <string name="edit_message_icon_description">İletiyi düzenle</string>
     <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
     <string name="nc_change_password">Parolayı değiştir</string>
     <string name="nc_check_your_internet">Lütfen İnternet bağlantınızı denetleyin</string>
-    <string name="nc_clear_edit_button">Düzenlemeyi temizle düğmesi</string>
-    <string name="nc_clear_edit_message">Düzenlemeyi temizle iletisi</string>
+    <string name="nc_clear_edit_button">Düzenlemeyi iptal et</string>
+    <string name="nc_clear_edit_message">Düzenlemeyi iptal et</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
     <string name="nc_clear_history_success">Tüm iletiler silindi</string>
     <string name="nc_clear_history_warning">Bu görüşmedeki tüm iletileri silmek istediğinize emin misiniz?</string>
@@ -235,9 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Evet</string>
     <string name="nc_display_name_not_fetched">Görüntülenecek ad alınamadı, vazgeçiliyor</string>
     <string name="nc_display_name_not_stored">Görüntülenecek ad kaydedilemedi, vazgeçiliyor</string>
-    <string name="nc_edit_icon">Düzenle simgesi</string>
+    <string name="nc_edit_icon">Düzenle</string>
     <string name="nc_edit_message">Düzenle</string>
-    <string name="nc_edit_message_text">İletiyi düzenle metni</string>
+    <string name="nc_edit_message_text">İletiyi düzenle</string>
     <string name="nc_edited_by_admin">Yönetici tarafından düzenlendi</string>
     <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
@@ -256,7 +253,6 @@
     <string name="nc_federation_pending_invitation_hint">Bekleyen davetleriniz var</string>
     <string name="nc_file_browser_back">Geri</string>
     <string name="nc_file_storage_permission">Dosyalara erişme izni gereklidir</string>
-    <string name="nc_filter">Görüşmeleri süz</string>
     <string name="nc_following_link">Herkese açık bir bağlantıyı izleyen kullanıcı</string>
     <string name="nc_formatted_message_you">Siz: %1$s</string>
     <string name="nc_forward_message">İlet</string>
@@ -399,7 +395,6 @@
     <string name="nc_search">Arama</string>
     <string name="nc_select_an_account">Bir hesap seçin</string>
     <string name="nc_select_participants">Katılımcıları seçin</string>
-    <string name="nc_send_edit_message">Düzenleme iletisi gönder</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>
     <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
@@ -480,7 +475,6 @@
     <string name="nc_settings_server_eol">Sunucu sürümü çok eski ve bu Android uygulaması tarafından desteklenmiyor</string>
     <string name="nc_settings_server_eol_title">Sunucu desteklenmiyor</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Sunucu bildirimleri uygulaması kurulmamış</string>
-    <string name="nc_settings_theme_battery_saver">Pil koruyucu tarafından ayarlandı</string>
     <string name="nc_settings_theme_dark">Koyu</string>
     <string name="nc_settings_theme_follow_system">Sistem varsayılanı kullanılsın</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -535,7 +529,6 @@
     <string name="nc_yes">Evet</string>
     <string name="new_conversation_creation_icon">Yeni görüşme oluştur simgesi</string>
     <string name="next_week">Sonraki hafta</string>
-    <string name="no_conversations_archived">Arşivlenmiş bir yazışma yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
     <string name="oneHour">1 saat</string>

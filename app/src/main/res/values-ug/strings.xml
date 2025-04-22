@@ -4,9 +4,8 @@
     <string name="add_to_notes">ئىزاھاتقا قوشۇڭ</string>
     <string name="added_to_favorites">ياقتۇرىدىغانلارغا %1$s پاراڭ قوشۇلدى</string>
     <string name="appbar_search_in">%s دىن ئىزدەڭ</string>
-    <string name="archive_conversation">ئارخىپ سۆھبەت</string>
+    <string name="archive_conversation">ئارخىپ سۆھبىتى</string>
     <string name="archived">ئارخىپلاشتۇرۇلغان</string>
-    <string name="audio_call">Audio Call</string>
     <string name="audio_output_bluetooth">كۆك چىش</string>
     <string name="audio_output_dialog_headline">ئاۋاز چىقىرىش</string>
     <string name="audio_output_phone">تېلېفون</string>
@@ -30,7 +29,6 @@
     <string name="close">تاقاش</string>
     <string name="close_icon">سىنبەلگە تاقاش</string>
     <string name="connection_established">ئۇلىنىش قۇرۇلدى</string>
-    <string name="connection_lost">ئۇلىنىش يوقاپ كەتتى</string>
     <string name="connection_lost_sent_messages_are_queued">ئۇلىنىش يوقاپ كەتتى - ئەۋەتىلگەن ئۇچۇرلار ئۆچرەتتە تۇرىدۇ</string>
     <string name="continuous_voice_message_recording">ئاۋاز ئۇچۇرىنى ئۇدا خاتىرىلەش ئۈچۈن قۇلۇپ خاتىرىلەش</string>
     <string name="conversation_is_read_only">سۆھبەت پەقەت ئوقۇلىدۇ</string>
@@ -45,8 +43,7 @@
     <string name="dnd">ئاۋارە قىلماڭ</string>
     <string name="dontClear">ئېنىق ئەمەس</string>
     <string name="edit">تەھرىر</string>
-    <string name="edit_error_24_hours_old_message">24 سائەتتىن چوڭ ئۇچۇرلارنى تەھرىرلىيەلمەيدۇ</string>
-    <string name="edit_message_icon_description">ئۇچۇر سىنبەلگىسىنى تەھرىرلەش</string>
+    <string name="edit_message_icon_description">ئۇچۇرنى تەھرىرلەش</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">يېقىنقى</string>
     <string name="encrypted">شىفىرلانغان</string>
@@ -135,8 +132,8 @@
     <string name="nc_change_cert_auth">دەلىللەش گۇۋاھنامىسىنى ئۆزگەرتىڭ</string>
     <string name="nc_change_password">پارولنى ئۆزگەرتىش</string>
     <string name="nc_check_your_internet">تور ئۇلىنىشىڭىزنى تەكشۈرۈپ بېقىڭ</string>
-    <string name="nc_clear_edit_button">تەھرىرلەش كۇنۇپكىسىنى تازىلاش</string>
-    <string name="nc_clear_edit_message">تەھرىرلەش ئۇچۇرىنى تازىلاش</string>
+    <string name="nc_clear_edit_button">تەھرىرلەشنى ئەمەلدىن قالدۇرۇڭ</string>
+    <string name="nc_clear_edit_message">تەھرىرلەشنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="nc_clear_history">بارلىق ئۇچۇرلارنى ئۆچۈرۈڭ</string>
     <string name="nc_clear_history_success">بارلىق ئۇچۇرلار ئۆچۈرۈلدى</string>
     <string name="nc_clear_history_warning">بۇ سۆھبەتتىكى بارلىق ئۇچۇرلارنى ئۆچۈرمەكچىمۇ؟</string>
@@ -231,9 +228,9 @@
     <string name="nc_dialog_save_to_storage_yes">ھەئە</string>
     <string name="nc_display_name_not_fetched">كۆرسىتىش نامىنى تاپقىلى بولمايدۇ ، ئەمەلدىن قالدۇرىدۇ</string>
     <string name="nc_display_name_not_stored">كۆرسىتىش نامىنى ساقلىيالمىدى ، ئەمەلدىن قالدۇرۇلدى</string>
-    <string name="nc_edit_icon">سىنبەلگىنى تەھرىرلەش</string>
+    <string name="nc_edit_icon">تەھرىر</string>
     <string name="nc_edit_message">تەھرىر</string>
-    <string name="nc_edit_message_text">ئۇچۇر تېكىستىنى تەھرىرلەش</string>
+    <string name="nc_edit_message_text">ئۇچۇرنى تەھرىرلەش</string>
     <string name="nc_edited_by_admin">باشقۇرغۇچى تەرىپىدىن تەھرىرلەندى</string>
     <string name="nc_email">ئېلخەت</string>
     <string name="nc_expire_message_eight_hours">8 سائەت</string>
@@ -252,7 +249,6 @@
     <string name="nc_federation_pending_invitation_hint">تەكلىپنامىڭىز ساقلىنىۋاتىدۇ</string>
     <string name="nc_file_browser_back">قايتىش</string>
     <string name="nc_file_storage_permission">ھۆججەتلەرنى زىيارەت قىلىش ئىجازەتنامىسى تەلەپ قىلىنىدۇ</string>
-    <string name="nc_filter">سۈزگۈچ سۆھبەت</string>
     <string name="nc_following_link">ئاممىۋى ئۇلىنىشقا ئەگىشىدىغان ئىشلەتكۈچى</string>
     <string name="nc_formatted_message_you">سىز:%1$s</string>
     <string name="nc_forward_message">ئالدىغا</string>
@@ -392,7 +388,6 @@
     <string name="nc_search">ئىزدەش</string>
     <string name="nc_select_an_account">ھېسابات تاللاڭ</string>
     <string name="nc_select_participants">قاتناشقۇچىلارنى تاللاڭ</string>
-    <string name="nc_send_edit_message">تەھرىرلەش ئۇچۇرى ئەۋەتىڭ</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s s GIF ئەۋەتتى.</string>
     <string name="nc_sent_a_gif_you">سىز بىر سوۋغات ئەۋەتتىڭىز.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s سىن ئەۋەتتى.</string>
@@ -471,7 +466,6 @@
     <string name="nc_settings_server_almost_eol">مۇلازىمېتىر نۇسخىسى ناھايىتى كونا بولۇپ ، كېيىنكى نەشرىدە قوللىمايدۇ!</string>
     <string name="nc_settings_server_eol">مۇلازىمېتىر نۇسخىسى بەك كونا بولۇپ ، ئاندىرويىد دېتالىنىڭ بۇ نەشرىنى قوللىمايدۇ</string>
     <string name="nc_settings_server_eol_title">قوللىمايدىغان مۇلازىمېتىر</string>
-    <string name="nc_settings_theme_battery_saver">باتارېيە ساقلىغۇچى تەرىپىدىن تەڭشەلدى</string>
     <string name="nc_settings_theme_dark">قاراڭغۇ</string>
     <string name="nc_settings_theme_follow_system">سىستېما سۈكۈتتىكى ھالىتىنى ئىشلىتىڭ</string>
     <string name="nc_settings_theme_key">تېما</string>
@@ -636,7 +630,7 @@
     <string name="typing_are_typing">are typing…</string>
     <string name="typing_is_typing">يېزىۋاتىدۇ…</string>
     <string name="typing_x_others">ۋە%1$s باشقىلار يېزىۋاتىدۇ…</string>
-    <string name="unarchive_conversation">تەرتىپسىز سۆھبەت</string>
+    <string name="unarchive_conversation">قالايمىقان سۆھبەت</string>
     <string name="unarchive_hint">سۆھبەت بىر تەرەپ قىلىنمىغاندىن كېيىن ، سۈكۈتتىكى ھالەتتە يەنە كۆرسىتىلىدۇ.</string>
     <string name="unban">Unban</string>
     <string name="unread">ئوقۇمىغان</string>
@@ -653,7 +647,7 @@
     <string name="userinfo_error_text">شەخسىي ئىشلەتكۈچى ئۇچۇرىغا ئېرىشەلمىدى.</string>
     <string name="userinfo_no_info_headline">شەخسىي ئۇچۇر يوق</string>
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>
-    <string name="video_call">Video Call</string>
+    <string name="video_call">سىنلىق تېلېفون</string>
     <string name="whats_your_status">ئەھۋالىڭىز نېمە؟</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>

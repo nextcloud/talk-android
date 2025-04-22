@@ -22,9 +22,11 @@
     <string name="conversations">Keskustelut</string>
     <string name="create_conversation">Luo keskustelu</string>
     <string name="custom">Omavalintainen</string>
+    <string name="danger_zone">Vaaravyöhyke</string>
     <string name="dnd">Älä häiritse</string>
     <string name="dontClear">Älä tyhjennä</string>
     <string name="edit">Muokkaa</string>
+    <string name="edit_message_icon_description">Muokkaa viestiä</string>
     <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="encrypted">Salattu</string>
     <string name="end_call_for_everyone">Päätä puhelu kaikkien osalta</string>
@@ -76,6 +78,8 @@
     <string name="nc_certificate_error">SSL-asetukset esti yhteyden</string>
     <string name="nc_change_cert_auth">Vaihda tunnistautumisvarmenne</string>
     <string name="nc_change_password">Vaihda salasana</string>
+    <string name="nc_clear_edit_button">Peruuta muokkaus</string>
+    <string name="nc_clear_edit_message">Peruuta muokkaus</string>
     <string name="nc_clear_history">Poista kaikki viestit</string>
     <string name="nc_clear_history_success">Kaikki viestit poistettiin</string>
     <string name="nc_clear_history_warning">Haluatko varmasti poistaa kaikki viestit tästä keskustelusta?</string>
@@ -313,7 +317,6 @@
     <string name="nc_settings_screen_security_desc">Estää näyttökuvat viimeisimmät listassa sovelluksen sisällä</string>
     <string name="nc_settings_screen_security_title">Näytön turvallisuus</string>
     <string name="nc_settings_server_eol_title">Palvelin ei ole tuettu</string>
-    <string name="nc_settings_theme_battery_saver">Asetettu akunsäästäjän toimesta</string>
     <string name="nc_settings_theme_dark">Tumma</string>
     <string name="nc_settings_theme_follow_system">Käytä järjestelmän oletusta</string>
     <string name="nc_settings_theme_key">teema</string>

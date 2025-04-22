@@ -4,11 +4,9 @@
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
-    <string name="archive_conversation">أرشفة المحادثة</string>
     <string name="archive_hint">رد أرشفة محادثة، سيتم إخفاؤها افتراضياً. حدِّد الفلتر \"مُؤرشَفة\" لعرض المحادثات المؤرشفة. الإشارات المباشرة ستظل قابلة ليُشار إليها حتى بعد الأرشفة.</string>
     <string name="archived">مؤرشفة</string>
     <string name="archived_conversation">مؤرشفة %1$s</string>
-    <string name="audio_call">مكالمة صوتية</string>
     <string name="audio_output_bluetooth">البلوتوث</string>
     <string name="audio_output_dialog_headline">مَخِرج الصوت</string>
     <string name="audio_output_phone">الهاتف</string>
@@ -32,7 +30,6 @@
     <string name="close">إغلاق</string>
     <string name="close_icon">أيقونة الإغلاق</string>
     <string name="connection_established">تم الاتصال</string>
-    <string name="connection_lost">انقطع الاتصال</string>
     <string name="connection_lost_sent_messages_are_queued">انقطع الاتصال - الرسالة المطلوب إرسالها تمّ تحضيرها للإرسال في قائمة بحسب الأولوية</string>
     <string name="continuous_voice_message_recording">قَفْل التسجيل للتسجيل المستمر للرسالة الصوتية</string>
     <string name="conversation_is_read_only">المحادثة للقراءة فقط</string>
@@ -41,15 +38,12 @@
     <string name="create_conversation">انشاء محادثة</string>
     <string name="create_issue">تكوين إشكالية </string>
     <string name="custom">مخصص</string>
-    <string name="danger_zone">منطقة خطر</string>
     <string name="deck_card_description">%1$s في %2$s</string>
     <string name="delete_avatar">إمسح صورة الملف الشخصي الرمزية</string>
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
     <string name="edit">تعديل</string>
-    <string name="edit_error_24_hours_old_message">لا يمكن تحرير رسائل أقدم من 24 ساعة</string>
-    <string name="edit_message_icon_description">تحرير أيقونة الرسالة</string>
     <string name="emoji_backspace">سهم خلفي backspace</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
     <string name="encrypted">مُشفّر</string>
@@ -138,8 +132,6 @@
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_check_your_internet">رجاءً، تحقَّق من اتصالك بالإنترنت</string>
-    <string name="nc_clear_edit_button">محو زر التحرير</string>
-    <string name="nc_clear_edit_message">محو تحرير الرسالة</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تمّ مسح جميع الرسائل</string>
     <string name="nc_clear_history_warning">هل تريد مسح جميع الرسائل في هذه المحادثة؟</string>
@@ -235,9 +227,7 @@
     <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
-    <string name="nc_edit_icon">أيقونة التحرير</string>
     <string name="nc_edit_message">تحرير</string>
-    <string name="nc_edit_message_text">نص تحرير الرسالة</string>
     <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المدير</string>
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
@@ -256,11 +246,11 @@
     <string name="nc_federation_pending_invitation_hint">لديك دعوات معلقة</string>
     <string name="nc_file_browser_back">العودة</string>
     <string name="nc_file_storage_permission">إذن الوصول إلى الملف مطلوب</string>
-    <string name="nc_filter">فرز المحادثات</string>
     <string name="nc_following_link">المستخدم يتابع رابط عام</string>
     <string name="nc_formatted_message_you">أنت: %1$s</string>
     <string name="nc_forward_message">إعادة توجيه</string>
     <string name="nc_forward_to_three_dots">إعادة توجيه لـ…</string>
+    <string name="nc_gallery">معرض الصور</string>
     <string name="nc_get_from_provider">ليس لديك خادم حتى الآن ؟\nإضغط هنا للحصول على واحد من أحد المزودين</string>
     <string name="nc_get_source_code">الحصول على الشفرة المصدرية</string>
     <string name="nc_group">المجموعة</string>
@@ -398,7 +388,6 @@
     <string name="nc_search">البحث</string>
     <string name="nc_select_an_account">اختيار حساب</string>
     <string name="nc_select_participants">إختَر مُشارِكين</string>
-    <string name="nc_send_edit_message">إرسال تحرير الرسالة</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ارسل GIF.</string>
     <string name="nc_sent_a_gif_you">لقد قمت بارسال GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$sارسل فيديو.</string>
@@ -479,7 +468,6 @@
     <string name="nc_settings_server_eol">نسخة الخادوم قديمةٌ جداً وغير مدعومة من هذه النسخة من تطبيق الأندرويد</string>
     <string name="nc_settings_server_eol_title">خادم غير مدعوم</string>
     <string name="nc_settings_server_notification_app_not_installed_title">تطبيق الإشعارات غير مُثبَّت على الخادوم</string>
-    <string name="nc_settings_theme_battery_saver">تم تعيين توفير شحن البطارية</string>
     <string name="nc_settings_theme_dark">ليلي</string>
     <string name="nc_settings_theme_follow_system">استخدم النظام الافتراضي</string>
     <string name="nc_settings_theme_key">المظهر</string>
@@ -535,7 +523,6 @@
     <string name="nc_yes">نعم</string>
     <string name="new_conversation_creation_icon">أيقونة إنشاء محادثة جديدة</string>
     <string name="next_week">الأسبوع القادم</string>
-    <string name="no_conversations_archived">لم تتم أرشفة أي محادثات</string>
     <string name="no_offline_messages_saved">لم يتم حفظ أي رسائل غير متصلة بالإنترنت</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
     <string name="oneHour">1 ساعة</string>
@@ -654,7 +641,6 @@
     <string name="typing_are_typing">يكتبون ...</string>
     <string name="typing_is_typing">يكتب...</string>
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
-    <string name="unarchive_conversation">إرجاع المحادثة من الأرشيف</string>
     <string name="unarchive_hint">بمجرد إعادة المحادثة من الأرشيف، سوف تظهر مجدداً بشكل تلقائي.</string>
     <string name="unarchived_conversation">غير مؤرشفة %1$s</string>
     <string name="unban">رفع الحظر</string>
@@ -674,7 +660,6 @@
     <string name="userinfo_error_text">فشل في استرداد المعلومات الشخصية للمستخدم</string>
     <string name="userinfo_no_info_headline">لم يتم تعيين أي معلومات شخصية</string>
     <string name="userinfo_no_info_text">إضافة الاسم والصورة وتفاصيل الاتصال في صفحة ملفك الشخصي.</string>
-    <string name="video_call">مكالمة مرئية</string>
     <string name="whats_your_status">ماهي حالتك؟</string>
     <plurals name="see_similar_system_messages">
         <item quantity="zero">أنظُر %d رسالة مشابهة</item>

@@ -4,11 +4,9 @@
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
     <string name="appbar_search_in">Søg i %s</string>
-    <string name="archive_conversation">Arkiver samtale</string>
     <string name="archive_hint">Når en samtale er arkiveret, vil den blive skjult som standard. Vælg filteret \"Arkiveret\" for at se arkiverede samtaler. Direkte omtaler vil stadig blive modtaget.</string>
     <string name="archived">Arkiveret</string>
     <string name="archived_conversation">Arkiverede %1$s</string>
-    <string name="audio_call">Lyd opkald</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Lydudgang</string>
     <string name="audio_output_phone">Telefon</string>
@@ -32,7 +30,6 @@
     <string name="close">Luk</string>
     <string name="close_icon">Luk ikon</string>
     <string name="connection_established">Forbindelse oprettet</string>
-    <string name="connection_lost">Forbindelse mistet</string>
     <string name="connection_lost_sent_messages_are_queued">Forbindelse mistet - Sendte beskeder er i kø</string>
     <string name="continuous_voice_message_recording">Lås optagelse for kontinuerlig optagelse af talebeskeden</string>
     <string name="conversation_is_read_only">Samtalen er skrivebeskyttet</string>
@@ -41,15 +38,13 @@
     <string name="create_conversation">Opret samtale</string>
     <string name="create_issue">Opret problem</string>
     <string name="custom">Brugerdefineret</string>
-    <string name="danger_zone">Danger Zone</string>
+    <string name="danger_zone">Farezone</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Slet avatar</string>
     <string name="deleted_conversation">Slettede samtale %1$s</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Rediger</string>
-    <string name="edit_error_24_hours_old_message">Kan ikke redigere beskeder, der er ældre end 24 timer</string>
-    <string name="edit_message_icon_description">Rediger meddelelsesikon</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nylige</string>
     <string name="encrypted">Krypteret</string>
@@ -138,8 +133,6 @@
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
     <string name="nc_change_password">Skift adgangskode</string>
     <string name="nc_check_your_internet">Kontroller venligst din internetforbindelse</string>
-    <string name="nc_clear_edit_button">Ryd knappen rediger</string>
-    <string name="nc_clear_edit_message">Ryd rediger besked</string>
     <string name="nc_clear_history">Slet alle beskeder</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_clear_history_warning">Ønsker du virkelig at slette alle beskeder i denne samtale?</string>
@@ -235,9 +228,7 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
-    <string name="nc_edit_icon">Redigeringsikon</string>
     <string name="nc_edit_message">Rediger</string>
-    <string name="nc_edit_message_text">Rediger besked tekst</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 timer</string>
@@ -256,7 +247,6 @@
     <string name="nc_federation_pending_invitation_hint">Du har afventende invitationer</string>
     <string name="nc_file_browser_back">Tilbage</string>
     <string name="nc_file_storage_permission">Tilladelse til filadgang er krævet</string>
-    <string name="nc_filter">Filtrer samtaler</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
     <string name="nc_formatted_message_you">Dig: %1$s</string>
     <string name="nc_forward_message">Videresend</string>
@@ -399,7 +389,6 @@
     <string name="nc_search">Søg</string>
     <string name="nc_select_an_account">Vælg konto</string>
     <string name="nc_select_participants">Vælg deltagere</string>
-    <string name="nc_send_edit_message">Send rediger besked</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
     <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>
@@ -480,7 +469,6 @@
     <string name="nc_settings_server_eol">Serverversionen er for gammel og er ikke understøttet af denne version af Android app\'en</string>
     <string name="nc_settings_server_eol_title">Ikke understøttet server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notifikations app ikke installeret</string>
-    <string name="nc_settings_theme_battery_saver">Sat af batteri-spare funktion</string>
     <string name="nc_settings_theme_dark">Mørk</string>
     <string name="nc_settings_theme_follow_system">Brug system default</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -536,7 +524,6 @@
     <string name="nc_yes">Ja</string>
     <string name="new_conversation_creation_icon">Ikon for ny samtaleoprettelse</string>
     <string name="next_week">Næste uge</string>
-    <string name="no_conversations_archived">Ingen samtaler arkiveret</string>
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegration på grund af manglende rettigheder</string>
     <string name="oneHour">1 time</string>
@@ -655,7 +642,6 @@
     <string name="typing_are_typing">indtaster ...</string>
     <string name="typing_is_typing">indtaster ..</string>
     <string name="typing_x_others">og %1$s andre indtaster …</string>
-    <string name="unarchive_conversation">Genaktiver samtale</string>
     <string name="unarchive_hint">Når en samtale er genaktiveret, så vil den som standard vises igen.</string>
     <string name="unarchived_conversation">Genaktiver %1$s</string>
     <string name="unban">Fjern blokering</string>
@@ -675,7 +661,7 @@
     <string name="userinfo_error_text">Kunne ikke hente personlig brugerinformation.</string>
     <string name="userinfo_no_info_headline">Personlig information ikke konfigureret</string>
     <string name="userinfo_no_info_text">Tilføj navn, billede og kontakt information på din profilside.</string>
-    <string name="video_call">Videokald</string>
+    <string name="video_call">Video opkald</string>
     <string name="whats_your_status">Hvad er din status</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Se %d lignende besked</item>

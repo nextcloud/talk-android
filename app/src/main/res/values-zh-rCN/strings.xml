@@ -3,8 +3,8 @@
     <string name= "nc_edit">编辑</string>
     <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
+    <string name="archive_conversation">存档对话</string>
     <string name="archived">已存档</string>
-    <string name="audio_call">语音通话</string>
     <string name="audio_output_bluetooth">蓝牙</string>
     <string name="audio_output_dialog_headline">音频输出</string>
     <string name="audio_output_phone">电话</string>
@@ -33,6 +33,7 @@
     <string name="dnd">不要打扰</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">编辑</string>
+    <string name="edit_message_icon_description">编辑消息</string>
     <string name="emoji_backspace">退格</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">已加密</string>
@@ -113,6 +114,8 @@
     <string name="nc_certificate_error">您的 SSL 设置阻止了连接</string>
     <string name="nc_change_cert_auth">更换验证证书</string>
     <string name="nc_change_password">更改密码</string>
+    <string name="nc_clear_edit_button">取消编辑</string>
+    <string name="nc_clear_edit_message">取消编辑</string>
     <string name="nc_clear_history">删除所有消息</string>
     <string name="nc_clear_history_success">已删除所有消息</string>
     <string name="nc_clear_history_warning">你真想删除对话中的所有信息吗?</string>
@@ -179,7 +182,9 @@
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">无法获取显示名，中止</string>
     <string name="nc_display_name_not_stored">无法储存显示名称，正在终止</string>
+    <string name="nc_edit_icon">编辑</string>
     <string name="nc_edit_message">编辑</string>
+    <string name="nc_edit_message_text">编辑消息</string>
     <string name="nc_email">电子邮件</string>
     <string name="nc_expire_message_eight_hours">8小时</string>
     <string name="nc_expire_message_four_weeks">4 星期</string>
@@ -195,7 +200,6 @@
     <string name="nc_federation_no_invitations">没有待处理的邀请</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要文件访问权限</string>
-    <string name="nc_filter">筛选对话</string>
     <string name="nc_following_link">使用公共链接的用户</string>
     <string name="nc_formatted_message_you">您：%1$s</string>
     <string name="nc_forward_message">转发</string>
@@ -399,7 +403,6 @@
     <string name="nc_settings_server_almost_eol">服务器版本很旧，下一个版本将不受支持!</string>
     <string name="nc_settings_server_eol">服务器版本太旧，不受这个版本的安卓应用程序支持</string>
     <string name="nc_settings_server_eol_title">不受支持的服务器</string>
-    <string name="nc_settings_theme_battery_saver">由电池电源管理决定</string>
     <string name="nc_settings_theme_dark">深色主题</string>
     <string name="nc_settings_theme_follow_system">系统默认</string>
     <string name="nc_settings_theme_key">主题</string>
@@ -559,6 +562,7 @@
     <string name="typing_are_typing">正在输入...</string>
     <string name="typing_is_typing">正在输入...</string>
     <string name="typing_x_others">以及另外 %1$s 个人正在输入...</string>
+    <string name="unarchive_conversation">取消归档对话</string>
     <string name="unban">解除封禁</string>
     <string name="unread">未读</string>
     <string name="upload_new_avatar_from_device">从设备上传新头像</string>
@@ -574,7 +578,6 @@
     <string name="userinfo_error_text">检索个人用户信息失败</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
-    <string name="video_call">视频通话</string>
     <string name="whats_your_status">你什么状态？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>

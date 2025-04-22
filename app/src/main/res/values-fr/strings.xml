@@ -4,11 +4,10 @@
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
-    <string name="archive_conversation">Conversation Archiver</string>
+    <string name="archive_conversation">Archiver la conversation</string>
     <string name="archive_hint">Lorsqu\'une conversation est archivée, elle est cachée par défaut. Choisissez le filtre \"Archivés\" pour voir les conversations archivées. Les mentions directes seront toujours bien reçues.</string>
     <string name="archived">Archivé</string>
     <string name="archived_conversation">%1$s archivée</string>
-    <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortie audio</string>
     <string name="audio_output_phone">Téléphone</string>
@@ -32,7 +31,6 @@
     <string name="close">Fermer</string>
     <string name="close_icon">Icône de fermeture</string>
     <string name="connection_established">Connexion établie</string>
-    <string name="connection_lost">Connexion perdue</string>
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
     <string name="edit">Modifier</string>
-    <string name="edit_error_24_hours_old_message">Impossible de modifier des messages plus anciens que 24 heures</string>
-    <string name="edit_message_icon_description">Modifier l\'icône du message</string>
+    <string name="edit_message_icon_description">Modifier le message</string>
     <string name="emoji_backspace">Retour arrière</string>
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Modifier le certificat d\'authentification</string>
     <string name="nc_change_password">Changer son mot de passe</string>
     <string name="nc_check_your_internet">Veuillez vérifier votre connexion Internet</string>
-    <string name="nc_clear_edit_button">Effacer le bouton Modifier</string>
-    <string name="nc_clear_edit_message">Effacer Modifier le message</string>
+    <string name="nc_clear_edit_button">Annuler la modification</string>
+    <string name="nc_clear_edit_message">Annuler la modification</string>
     <string name="nc_clear_history">Supprimer tous les messages</string>
     <string name="nc_clear_history_success">Tous les messages ont été supprimés</string>
     <string name="nc_clear_history_warning">Voulez-vous vraiment supprimer tous les messages de cette conversation ?</string>
@@ -235,9 +232,7 @@
     <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
-    <string name="nc_edit_icon">Icône édition</string>
     <string name="nc_edit_message">Modifier</string>
-    <string name="nc_edit_message_text">Modifier le texte du message</string>
     <string name="nc_edited_by_admin">Modifié par un administrateur</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
@@ -256,7 +251,6 @@
     <string name="nc_federation_pending_invitation_hint">Vous avez des invitations en attente</string>
     <string name="nc_file_browser_back">Retour</string>
     <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
-    <string name="nc_filter">Filtrer les conversations</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
     <string name="nc_forward_message">Transférer</string>
@@ -400,7 +394,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_search">Recherche</string>
     <string name="nc_select_an_account">Choisissez un compte</string>
     <string name="nc_select_participants">Sélectionner des participants</string>
-    <string name="nc_send_edit_message">Envoyer le message modifier </string>
     <string name="nc_sent_a_gif" formatted="true">%1$s a envoyé un GIF.</string>
     <string name="nc_sent_a_gif_you">Vous avez envoyé un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s a envoyé une vidéo.</string>
@@ -481,7 +474,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_settings_server_eol">La version du serveur est trop ancienne et n\'est pas supporté par cette version de l\'application android</string>
     <string name="nc_settings_server_eol_title">Serveur non pris en charge</string>
     <string name="nc_settings_server_notification_app_not_installed_title">L\'application de notifications n\'est pas installée sur le serveur</string>
-    <string name="nc_settings_theme_battery_saver">Défini par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>
     <string name="nc_settings_theme_key">thème</string>
@@ -536,7 +528,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_yes">Oui</string>
     <string name="new_conversation_creation_icon">Icône de création d\'une nouvelle conversation</string>
     <string name="next_week">Semaine suivante</string>
-    <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="oneHour">1 heure</string>
@@ -655,7 +646,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
     <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
-    <string name="unarchive_conversation">Conversation Désarchiver </string>
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>
@@ -675,7 +665,6 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="userinfo_error_text">Impossible de récupérer les informations personnelles de l\'utilisateur.</string>
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
-    <string name="video_call">Appel vidéo</string>
     <string name="whats_your_status">Quel est votre état ?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Voir %d message similaire</item>

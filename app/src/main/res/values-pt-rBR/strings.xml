@@ -4,11 +4,10 @@
     <string name="add_to_notes">Adicionar às Notas</string>
     <string name="added_to_favorites">Conversa adicionada %1$s para favoritos</string>
     <string name="appbar_search_in">Pesquisar em %s</string>
-    <string name="archive_conversation">Arquive conversa</string>
+    <string name="archive_conversation">Arquivamento de conversa</string>
     <string name="archive_hint">Quando uma conversa for arquivada, ela ficará oculta por padrão. Selecione o filtro \"Arquivado\" para visualizar as conversas arquivadas. As menções diretas ainda serão recebidas.</string>
     <string name="archived">Arquivado</string>
     <string name="archived_conversation">%1$s arquivado</string>
-    <string name="audio_call">Chamada de áudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de áudio</string>
     <string name="audio_output_phone">Celular</string>
@@ -32,7 +31,6 @@
     <string name="close">Fechar</string>
     <string name="close_icon">Fechar ícone</string>
     <string name="connection_established">Conexão estabelecida</string>
-    <string name="connection_lost">Conexão perdida</string>
     <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas estão na fila</string>
     <string name="continuous_voice_message_recording">Gravação de bloqueio para gravação contínua da mensagem de voz</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Não perturbe</string>
     <string name="dontClear">Não limpe</string>
     <string name="edit">Editar</string>
-    <string name="edit_error_24_hours_old_message">Não é possível editar mensagens com mais de 24 horas</string>
-    <string name="edit_message_icon_description">Editar ícone de mensagem</string>
+    <string name="edit_message_icon_description">Editar mensagem</string>
     <string name="emoji_backspace">Retroceder</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Criptografado</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Alterar certificado de autenticação</string>
     <string name="nc_change_password">Alterar senha</string>
     <string name="nc_check_your_internet">Por favor, verifique sua conexão à internet</string>
-    <string name="nc_clear_edit_button">Botão Limpar Editar</string>
-    <string name="nc_clear_edit_message">Limpar Editar Mensagem</string>
+    <string name="nc_clear_edit_button">Cancelar edição</string>
+    <string name="nc_clear_edit_message">Cancelar edição</string>
     <string name="nc_clear_history">Excluir todas as mensagens </string>
     <string name="nc_clear_history_success">Todas as mensagens foram apagadas </string>
     <string name="nc_clear_history_warning">Tem certeza de que deseja excluir todas as mensagens desta conversa? </string>
@@ -235,9 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Sim</string>
     <string name="nc_display_name_not_fetched">Nome de exibição não obtido, interrompendo</string>
     <string name="nc_display_name_not_stored">Não foi possível armazenar o nome de exibição, cancelando</string>
-    <string name="nc_edit_icon">Editar ícone</string>
+    <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
-    <string name="nc_edit_message_text">Editar texto da mensagem</string>
+    <string name="nc_edit_message_text">Editar mensagem</string>
     <string name="nc_edited_by_admin">Editado pelo administrador</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -256,7 +253,6 @@
     <string name="nc_federation_pending_invitation_hint">Você tem convites pendentes</string>
     <string name="nc_file_browser_back">Voltar</string>
     <string name="nc_file_storage_permission">É necessária permissão para acessar o arquivo</string>
-    <string name="nc_filter">Filter Conversations</string>
     <string name="nc_following_link">Usuário seguindo um link público</string>
     <string name="nc_formatted_message_you">Você: %1$s</string>
     <string name="nc_forward_message">Enviar</string>
@@ -296,10 +292,10 @@
     <string name="nc_license_title">Licença</string>
     <string name="nc_limit_hit">O limite de %s caracteres foi atingido</string>
     <string name="nc_list_open_conversations">List open conversations</string>
-    <string name="nc_lobby">Lobby</string>
+    <string name="nc_lobby">Sala de Espera</string>
     <string name="nc_lobby_start_date">Esta reunião está agendada para %1$s</string>
     <string name="nc_lobby_start_soon">A reunião vai começar em breve</string>
-    <string name="nc_lobby_waiting">Você está esperando no lobby no momento.</string>
+    <string name="nc_lobby_waiting">No momento, você está esperando na sala de espera.</string>
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_permission_required">permissão de localização é necessária</string>
     <string name="nc_location_unknown">Posição desconhecida </string>
@@ -399,7 +395,6 @@
     <string name="nc_search">Pesquisar</string>
     <string name="nc_select_an_account">Selecionar uma conta</string>
     <string name="nc_select_participants">Selecionar participantes</string>
-    <string name="nc_send_edit_message">Enviar Editar Mensagem</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou um GIF.</string>
     <string name="nc_sent_a_gif_you">Você enviou um GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou um vídeo.</string>
@@ -480,7 +475,6 @@
     <string name="nc_settings_server_eol">A versão do servidor é muito antiga e não suporta esta versão do aplicativo para Android</string>
     <string name="nc_settings_server_eol_title">Servidor sem suporte</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Aplicativo de notificações do servidor não instalado</string>
-    <string name="nc_settings_theme_battery_saver">Definido por Battery Saver</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Use o padrão do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -536,7 +530,6 @@
     <string name="nc_yes">Sim</string>
     <string name="new_conversation_creation_icon">Novo ícone de criação de conversa</string>
     <string name="next_week">Próxima semana</string>
-    <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem offline foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
@@ -655,7 +648,7 @@
     <string name="typing_are_typing">estão digitando…</string>
     <string name="typing_is_typing">está digitando …</string>
     <string name="typing_x_others">e %1$s outros estão digitando...</string>
-    <string name="unarchive_conversation">Conversa Desarquiva</string>
+    <string name="unarchive_conversation">Desarquivar conversa</string>
     <string name="unarchive_hint">Uma vez que uma conversa não for marcada, ela será mostrada por padrão novamente.</string>
     <string name="unarchived_conversation">%1$s desarquivado</string>
     <string name="unban">Proibir</string>
@@ -675,7 +668,7 @@
     <string name="userinfo_error_text">Falha ao recuperar informações pessoais do usuário.</string>
     <string name="userinfo_no_info_headline">Nenhuma informação pessoal definida</string>
     <string name="userinfo_no_info_text">Adicione nome, foto e detalhes de contato em sua página de perfil.</string>
-    <string name="video_call">Video Chamada</string>
+    <string name="video_call">Vídeo chamada</string>
     <string name="whats_your_status">Qual é o seu status?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Veja %d mensagem semelhante</item>

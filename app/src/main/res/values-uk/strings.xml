@@ -2,7 +2,6 @@
   <resources>
     <string name= "nc_edit">Редагувати</string>
     <string name="appbar_search_in">Пошук у %s</string>
-    <string name="audio_call">Голосовий виклик</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Вивід аудіо</string>
     <string name="audio_output_phone">Телефон</string>
@@ -23,10 +22,12 @@
     <string name="conversations">Розмови</string>
     <string name="create_conversation">Створити розмову</string>
     <string name="custom">Власне</string>
+    <string name="danger_zone">Небезпечна зона</string>
     <string name="delete_avatar">Вилучити світлину</string>
     <string name="dnd">Не турбувати</string>
     <string name="dontClear">Не очищати</string>
     <string name="edit">Редагувати</string>
+    <string name="edit_message_icon_description">Редагувати повідомлення</string>
     <string name="emoji_backspace">Повернутися</string>
     <string name="emoji_category_recent">Нещодавні</string>
     <string name="encrypted">Зашифровано</string>
@@ -98,6 +99,8 @@
     <string name="nc_certificate_error">Ваші налаштування SSL завадили з’єднанню</string>
     <string name="nc_change_cert_auth">Змінити сертифікат авторизації</string>
     <string name="nc_change_password">Змінити Пароль</string>
+    <string name="nc_clear_edit_button">Скасувати редагування</string>
+    <string name="nc_clear_edit_message">Скасувати редагування</string>
     <string name="nc_clear_history">Вилучити усі повідомлення</string>
     <string name="nc_clear_history_success">Всі повідомлення видалено</string>
     <string name="nc_clear_history_warning">Ви дійсно бажаєте вилучити усі повідомлення у цій розмові?</string>
@@ -156,7 +159,9 @@
     <string name="nc_dialog_save_to_storage_yes">Так</string>
     <string name="nc_display_name_not_fetched">Ім\'я для показу не вдалося розпізнати. Скасування</string>
     <string name="nc_display_name_not_stored">Неможливо отримати ім\'я для показу. Скасування</string>
+    <string name="nc_edit_icon">Редагувати</string>
     <string name="nc_edit_message">Редагувати</string>
+    <string name="nc_edit_message_text">Редагувати повідомлення</string>
     <string name="nc_email">Електронна пошта</string>
     <string name="nc_expire_message_eight_hours">8 годин</string>
     <string name="nc_expire_message_four_weeks">4 тижні</string>
@@ -360,7 +365,6 @@
     <string name="nc_settings_server_almost_eol">Ця версія серверу дуже застаріла і не буде підтримуватися в наступному випуску!</string>
     <string name="nc_settings_server_eol">Версія сервера застаріла і не підтримується цією версією застосунку для Android</string>
     <string name="nc_settings_server_eol_title">Непідтримуваний сервер</string>
-    <string name="nc_settings_theme_battery_saver">Встановлено режимом збереження батареї</string>
     <string name="nc_settings_theme_dark">Темна</string>
     <string name="nc_settings_theme_follow_system">Використовуйте системний за замовчуванням</string>
     <string name="nc_settings_theme_key">тема</string>
@@ -482,5 +486,6 @@
     <string name="user_status">Статус</string>
     <string name="userinfo_no_info_headline">Відсутня особиста інформація</string>
     <string name="userinfo_no_info_text">Додайте назву, зображення та деталі контакту на сторінці вашого профілю.</string>
+    <string name="video_call">Відеодзвінок</string>
     <string name="whats_your_status">Який твій статус?</string>
     </resources>

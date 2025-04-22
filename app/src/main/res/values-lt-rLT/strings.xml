@@ -3,7 +3,6 @@
     <string name= "nc_edit">Taisyti</string>
     <string name="appbar_search_in">Ieškoti %s</string>
     <string name="archived">Archyvuota</string>
-    <string name="audio_call">Garso skambutis</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Garso išvestis</string>
     <string name="audio_output_phone">Telefonas</string>
@@ -16,14 +15,15 @@
     <string name="clear_status_message_after">Išvalyti būsenos žinutę po</string>
     <string name="close">Užverti</string>
     <string name="connection_established">Ryšys užmegztas</string>
-    <string name="connection_lost">Ryšys nutrūko</string>
     <string name="conversation_is_read_only">Pokalbis yra tik skaitymui</string>
     <string name="conversations">Pokalbiai</string>
     <string name="create_conversation">Sukurti pokalbį</string>
     <string name="custom">Tinkinti</string>
+    <string name="danger_zone">Pavojinga zona</string>
     <string name="dnd">Netrukdyti</string>
     <string name="dontClear">Neišvalyti</string>
     <string name="edit">Taisyti</string>
+    <string name="edit_message_icon_description">Taisyti laišką</string>
     <string name="emoji_category_recent">Paskiausi</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
     <string name="file_list_folder">aplankas</string>
@@ -136,8 +136,9 @@
     <string name="nc_dialog_save_to_storage_continue">Tęsti?</string>
     <string name="nc_dialog_save_to_storage_no">Ne</string>
     <string name="nc_dialog_save_to_storage_yes">Taip</string>
-    <string name="nc_edit_icon">Taisyti piktogramą</string>
+    <string name="nc_edit_icon">Taisyti</string>
     <string name="nc_edit_message">Taisyti</string>
+    <string name="nc_edit_message_text">Taisyti laišką</string>
     <string name="nc_email">El. paštas</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
     <string name="nc_expire_message_off">Išjungta</string>
@@ -288,7 +289,6 @@
     <string name="nc_settings_screen_security_desc">Neleidžia daryti ekrano kopijų paskiausiųjų sąraše ir programėlės viduje</string>
     <string name="nc_settings_screen_security_title">Ekrano saugumas</string>
     <string name="nc_settings_server_eol_title">Nepalaikomas serveris</string>
-    <string name="nc_settings_theme_battery_saver">Nustatytas baterijos taupytojo</string>
     <string name="nc_settings_theme_dark">Tamsus</string>
     <string name="nc_settings_theme_follow_system">Naudoti sistemos numatytąjį</string>
     <string name="nc_settings_theme_key">apipavidalinimas</string>
@@ -389,7 +389,6 @@
     <string name="user_status">Būsena</string>
     <string name="userinfo_no_info_headline">Asmeninės informacijos nėra</string>
     <string name="userinfo_no_info_text">Pridėkite vardą, nuotrauką ir kontaktinę informaciją savo profilio puslapyje.</string>
-    <string name="video_call">Vaizdo skambutis</string>
     <string name="whats_your_status">Kokia jūsų būsena?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d balsas</item>

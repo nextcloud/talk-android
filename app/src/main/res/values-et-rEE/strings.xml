@@ -7,7 +7,6 @@
     <string name="archive_conversation">Arhiveeri vestlus</string>
     <string name="archived">Arhiveeritud</string>
     <string name="archived_conversation">Arhiveeritud %1$s</string>
-    <string name="audio_call">Häälkõne</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Heliväljund</string>
     <string name="audio_output_phone">Telefon</string>
@@ -27,18 +26,18 @@
     <string name="close">Sulge</string>
     <string name="close_icon">Sulgemise ikoon</string>
     <string name="connection_established">Saadi ühendus</string>
-    <string name="connection_lost">Ühendus on katkenud</string>
     <string name="connection_lost_sent_messages_are_queued">Ühendus on katkenud - saadetud sõnumid on edasisaatmise ootejärjekorras</string>
+    <string name="conversation_read_only_failed">Ei õnnestunud muuta vestlust ainult loetavaks</string>
     <string name="conversations">Vestlused</string>
     <string name="create_conversation">Loo vestlus</string>
     <string name="custom">Kohandatud</string>
+    <string name="deck_card_description">%1$s:  %2$s</string>
     <string name="delete_avatar">Kustuta tunnuspilt</string>
     <string name="deleted_conversation">%1$s vestlus on kustutatud</string>
     <string name="dnd">Ära sega</string>
     <string name="dontClear">Ära tühjenda</string>
     <string name="edit">Muuda</string>
-    <string name="edit_error_24_hours_old_message">Sa ei saa muuta sõnumeid, mis on vanemad, kui 24 tundi</string>
-    <string name="edit_message_icon_description">Sõnumi muutmise ikoon</string>
+    <string name="edit_message_icon_description">Muuda sõnumit</string>
     <string name="emoji_category_recent">Hiljutised</string>
     <string name="encrypted">Krüptitud</string>
     <string name="end_call_for_everyone">Lõpeta kõne kõigi jaoks</string>
@@ -87,6 +86,9 @@
     <string name="nc_call_name">Vestluse nimi</string>
     <string name="nc_cancel">Loobu</string>
     <string name="nc_change_password">Muuda salasõna</string>
+    <string name="nc_check_your_internet">Palun kontrolli nutiseadme internetiühenduse toimimist</string>
+    <string name="nc_clear_edit_button">Katkesta muutmine</string>
+    <string name="nc_clear_edit_message">Katkesta muutmine</string>
     <string name="nc_common_copy">Kopeeri</string>
     <string name="nc_common_copy_success">Kopeeritud lõikepuhvrisse</string>
     <string name="nc_common_create">Lisa</string>
@@ -100,6 +102,7 @@
     <string name="nc_conversation_menu_video_call">Videokõne</string>
     <string name="nc_conversation_menu_voice_call">Häälkõne</string>
     <string name="nc_conversation_not_found">Vestlust ei leidu</string>
+    <string name="nc_conversation_settings">Vesrtluse seadistused</string>
     <string name="nc_copy_message">Kopeeri</string>
     <string name="nc_create_new_conversation">Loo uus vestlus</string>
     <string name="nc_create_poll">Loo küsitlus</string>
@@ -117,6 +120,7 @@
     <string name="nc_diagnose_app_category_title">Rakendus</string>
     <string name="nc_diagnose_app_name_title">Rakenduse nimi</string>
     <string name="nc_diagnose_app_version_title">Rakenduse versioon</string>
+    <string name="nc_diagnose_battery_optimization_not_ignored">Akukasutuse optimeerimine on sisse lülitatud. Võimalike probleemide vältimiseks lülita ta selle rakenduse jaoks välja!</string>
     <string name="nc_diagnose_battery_optimization_title">Akuseaded</string>
     <string name="nc_diagnose_device_name_title">Seade</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Firebase\'i tõuketeenuste tunnusloa viimane laadimine</string>
@@ -136,9 +140,11 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_edit_message">Redigeeri</string>
     <string name="nc_email">Epost</string>
+    <string name="nc_expire_message_off">Pole kasutusel</string>
     <string name="nc_expire_message_one_day">1 päev</string>
     <string name="nc_expire_message_one_hour">1 tund</string>
     <string name="nc_expire_message_one_week">1 nädal</string>
+    <string name="nc_expire_messages_explanation">Vestluse sõnumid saad määrata kustuma etteantud aja järel. Palun arvesta, et sel juhul vestluses jagatud failid jäävad omaniku jaoks nähtavaks, aga pole enam vestluse jaoks jagatud.</string>
     <string name="nc_federation_invitation_accept">Nõustu</string>
     <string name="nc_federation_invitation_reject">Keeldu</string>
     <string name="nc_file_browser_back">Tagasi</string>
@@ -155,7 +161,9 @@
     <string name="nc_guest_access_password_summary">Määra salasõna, millega saad piirata avaliku lingi kasutajaid.</string>
     <string name="nc_guest_access_password_title">Kaitstud salasõnaga</string>
     <string name="nc_guest_access_password_weak_alert_title">Nõrk salasõna</string>
+    <string name="nc_guest_access_resend_invitations">Saada kutsed uuesti</string>
     <string name="nc_last_moderator_leaving_room_warning">Pead määrtama uue moderaatori enne, kui saad siis vestlusest lahkuda</string>
+    <string name="nc_leave">Lahku vestlusest</string>
     <string name="nc_license_title">Litsents</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
@@ -174,6 +182,7 @@
     <string name="nc_notification_channel_messages">Sõnumid</string>
     <string name="nc_notification_channel_uploads">Üleslaadimised</string>
     <string name="nc_notification_settings">Teavituse seadistused</string>
+    <string name="nc_notification_warning">Teavitused pole korrektselt seadistatud</string>
     <string name="nc_ok">OK</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka külalisrakenduse kasutajatele</string>
@@ -241,8 +250,10 @@
     <string name="nc_settings_advanced_title">Täiendavad seadistused</string>
     <string name="nc_settings_appearance">Välimus</string>
     <string name="nc_settings_call_ringtone">Kõned</string>
+    <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri administraatoriga - </string>
     <string name="nc_settings_notification_sounds_post_oreo">Teavitused</string>
     <string name="nc_settings_other_notifications_ringtone">Sõnumid</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Sisesta telefoninumber</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoninumber</string>
     <string name="nc_settings_privacy">Privaatsus</string>
     <string name="nc_settings_proxy_host_title">Proksiserveri aadress</string>
@@ -252,6 +263,7 @@
     <string name="nc_settings_proxy_username_title">Proksiserveri kasutajanimi</string>
     <string name="nc_settings_remove">Eemalda</string>
     <string name="nc_settings_remove_account">Eemalda konto</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Serveriteavituste rakendus pole paigaldatud</string>
     <string name="nc_settings_theme_dark">Hele</string>
     <string name="nc_settings_theme_light">Tume</string>
     <string name="nc_settings_theme_title">Teema</string>
@@ -271,7 +283,7 @@
     <string name="nc_visible">Nähtav</string>
     <string name="nc_yes">Jah</string>
     <string name="next_week">Järgmine nädal</string>
-    <string name="no_conversations_archived">Ühtegi vestlust pole arhiveeritud</string>
+    <string name="no_offline_messages_saved">Ühtegi vallasrežiimis salvestatud sõnumit ei leidu</string>
     <string name="oneHour">1 tund</string>
     <string name="online">Online</string>
     <string name="online_status">Võrgus staatus</string>
@@ -290,6 +302,7 @@
     <string name="scope_federated_title">Federated</string>
     <string name="scope_local_title">Kohalik</string>
     <string name="scope_private_title">Privaatne</string>
+    <string name="search_icon">Otsinguikoon</string>
     <string name="secondsAgo">sekundit tagasi</string>
     <string name="selected_list_item">Valitud</string>
     <string name="send_email">Saada e-kiri</string>
@@ -297,6 +310,7 @@
     <string name="set_status">Määra staatus</string>
     <string name="set_status_message">Sea staatuse sõnum</string>
     <string name="share">Jaga</string>
+    <string name="share_link_to_conversation">Liitu „%1$s“ vestkusega: %2$s</string>
     <string name="shared_items_audio">Helid</string>
     <string name="shared_items_file">Fail</string>
     <string name="shared_items_media">Meedia</string>
@@ -326,7 +340,6 @@
     <string name="typing_are_typing">kirjutavad…</string>
     <string name="typing_is_typing">kirjutab…</string>
     <string name="typing_x_others">ja veel %1$s osalejat kirjutavad…</string>
-    <string name="unarchive_conversation">Võta vestlus arhiivist välja</string>
     <string name="unarchive_hint">Kui vestlus on arhiivist välja võetud, siis on ta jälle vaikimisi näha.</string>
     <string name="unarchived_conversation">%1$s on arhiivist välja võetud</string>
     <string name="unban">Eemalda suhtluskeeld</string>
@@ -345,6 +358,7 @@
     <string name="user_status">Staatus</string>
     <string name="userinfo_no_info_headline">Isiklikud andmed on kirjeldamata</string>
     <string name="userinfo_no_info_text">Lisa oma profiili lehele nimi, pilt ja kontaktteave. </string>
+    <string name="video_call">Videokõne</string>
     <string name="whats_your_status">Mis on su staatus?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Vaata %d sarnast sõnumit</item>

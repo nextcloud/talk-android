@@ -7,7 +7,6 @@
     <string name="archive_conversation">Archiveer gesprek</string>
     <string name="archive_hint">Wanneer een gesprek wordt gearchiveerd is het standaard verborgen. Selecteer de filter \"Gearchiveerd\" om gearchiveerdde gesprekken te zien. Directe vermeldingen worden nog steeds ontvangen.</string>
     <string name="archived">Gearchiveerd</string>
-    <string name="audio_call">Audiogesprek</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Telefoon</string>
@@ -31,7 +30,6 @@
     <string name="close">Sluit</string>
     <string name="close_icon">Sluiten pictogram</string>
     <string name="connection_established">Verbinding tot stand gebracht</string>
-    <string name="connection_lost">Verbinding verbroken</string>
     <string name="connection_lost_sent_messages_are_queued">Verbinding verbroken - Verzonden berichten in de wachtrij geplaatst</string>
     <string name="continuous_voice_message_recording">Zet opname vast voor doorlopende opname van de spraak</string>
     <string name="conversation_is_read_only">Gesprek is alleen-lezen</string>
@@ -47,8 +45,7 @@
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
     <string name="edit">Bewerken</string>
-    <string name="edit_error_24_hours_old_message">Kan berichten ouder dan 24 uur niet wijzigen</string>
-    <string name="edit_message_icon_description">Bewerk bericht pictogram</string>
+    <string name="edit_message_icon_description">Bewerk bericht</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Versleuteld</string>
@@ -136,8 +133,8 @@
     <string name="nc_change_cert_auth">Authenticatiecertificaat veranderen</string>
     <string name="nc_change_password">Wijzig wachtwoord</string>
     <string name="nc_check_your_internet">Controleer je internetverbinding s.v.p.</string>
-    <string name="nc_clear_edit_button">Bewerk-knop wissen</string>
-    <string name="nc_clear_edit_message">Bewerk-bericht wissen</string>
+    <string name="nc_clear_edit_button">Annuleer bewerken</string>
+    <string name="nc_clear_edit_message">Annuleer bewerken</string>
     <string name="nc_clear_history">Alle berichten verwijderen</string>
     <string name="nc_clear_history_success">Alle berichten zijn verwijderd</string>
     <string name="nc_clear_history_warning">Wil je echt dit alle andere berichten in dit gesprek echt verwijderen?</string>
@@ -233,9 +230,9 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Weergave kon niet worden opgehaald, afgebroken</string>
     <string name="nc_display_name_not_stored">Kon weergavenaam niet opslaan, afbreken</string>
-    <string name="nc_edit_icon">Pictogram bewerken</string>
+    <string name="nc_edit_icon">Bewerken</string>
     <string name="nc_edit_message">Bewerken</string>
-    <string name="nc_edit_message_text">Berichttekst bewerken</string>
+    <string name="nc_edit_message_text">Bewerk bericht</string>
     <string name="nc_edited_by_admin">Bewerkt door admin</string>
     <string name="nc_email">E-mailadres</string>
     <string name="nc_expire_message_eight_hours">8 uur</string>
@@ -254,7 +251,6 @@
     <string name="nc_federation_pending_invitation_hint">Je hebt wachtende uitnodigingen</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_storage_permission">Toestemming voor bestandstoegang is vereist</string>
-    <string name="nc_filter">Filter gesprekken</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
@@ -477,7 +473,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
     <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notificatie-app niet geïnstalleerd</string>
-    <string name="nc_settings_theme_battery_saver">Ingesteld door Accubespraring</string>
     <string name="nc_settings_theme_dark">Donker</string>
     <string name="nc_settings_theme_follow_system">Gebruik systeem standaarden</string>
     <string name="nc_settings_theme_key">thema</string>
@@ -664,7 +659,6 @@ Kies er eentje van een provider.</string>
     <string name="userinfo_error_text">Kon persoonlijke informatie niet ophalen.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
-    <string name="video_call">Videogesprek</string>
     <string name="whats_your_status">Wat is jouw status?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d stem</item>

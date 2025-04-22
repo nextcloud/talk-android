@@ -8,7 +8,6 @@
     <string name="archive_hint">對話封存後，預設會隱藏。選取篩選條件「已封存」可檢視已封存的對話。仍會收到直接提及。</string>
     <string name="archived">已封存</string>
     <string name="archived_conversation">已封存 %1$s</string>
-    <string name="audio_call">音頻通話</string>
     <string name="audio_output_bluetooth">藍牙</string>
     <string name="audio_output_dialog_headline">音頻輸出</string>
     <string name="audio_output_phone">電話</string>
@@ -32,7 +31,6 @@
     <string name="close">關閉</string>
     <string name="close_icon">關閉圖示</string>
     <string name="connection_established">連線已建立</string>
-    <string name="connection_lost">連線已中斷</string>
     <string name="connection_lost_sent_messages_are_queued">連線已中斷 - 已發送的訊息已排隊等待傳送</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製音頻訊息</string>
     <string name="conversation_is_read_only">對話是唯讀</string>
@@ -48,8 +46,7 @@
     <string name="dnd">請勿打擾</string>
     <string name="dontClear">不要清除</string>
     <string name="edit">編輯</string>
-    <string name="edit_error_24_hours_old_message">不能編輯舊於24小時的訊息</string>
-    <string name="edit_message_icon_description">編輯訊息圖示</string>
+    <string name="edit_message_icon_description">編輯訊息</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">最新</string>
     <string name="encrypted">已加密</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">更改驗證證書</string>
     <string name="nc_change_password">變更密碼</string>
     <string name="nc_check_your_internet">請檢查您的網際網路連線</string>
-    <string name="nc_clear_edit_button">清除編輯按鈕</string>
-    <string name="nc_clear_edit_message">清除編輯訊息</string>
+    <string name="nc_clear_edit_button">取消編輯</string>
+    <string name="nc_clear_edit_message">取消編輯</string>
     <string name="nc_clear_history">刪除所有訊息</string>
     <string name="nc_clear_history_success">已刪除所有訊息</string>
     <string name="nc_clear_history_warning">您確定要刪除對話內所有的訊息嗎？</string>
@@ -235,9 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">是</string>
     <string name="nc_display_name_not_fetched">無法取得顯示名稱，將停止操作。</string>
     <string name="nc_display_name_not_stored">無法儲存顯示名稱，操作中斷。</string>
-    <string name="nc_edit_icon">編輯圖示</string>
+    <string name="nc_edit_icon">編輯</string>
     <string name="nc_edit_message">編輯</string>
-    <string name="nc_edit_message_text">編輯訊息文字</string>
+    <string name="nc_edit_message_text">編輯訊息</string>
     <string name="nc_edited_by_admin">編輯由管理員完成</string>
     <string name="nc_email">電郵地址</string>
     <string name="nc_expire_message_eight_hours">8 小时</string>
@@ -256,7 +253,6 @@
     <string name="nc_federation_pending_invitation_hint">您有擱置的邀請</string>
     <string name="nc_file_browser_back">返回</string>
     <string name="nc_file_storage_permission">需要檔案存取權限</string>
-    <string name="nc_filter">過濾對話</string>
     <string name="nc_following_link">用戶關注公共連結</string>
     <string name="nc_formatted_message_you">你： %1$s</string>
     <string name="nc_forward_message">轉寄</string>
@@ -399,7 +395,6 @@
     <string name="nc_search">搜尋</string>
     <string name="nc_select_an_account">選擇一個賬號</string>
     <string name="nc_select_participants">選擇參與者</string>
-    <string name="nc_send_edit_message">傳送編輯訊息</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF。</string>
     <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>
@@ -480,7 +475,6 @@
     <string name="nc_settings_server_eol">伺服器版本太舊，此版本的Android應用程式不支持該伺服器版本</string>
     <string name="nc_settings_server_eol_title">不支援伺服器</string>
     <string name="nc_settings_server_notification_app_not_installed_title">伺服器通知應用程式未安裝</string>
-    <string name="nc_settings_theme_battery_saver">由省電模式設定</string>
     <string name="nc_settings_theme_dark">深色</string>
     <string name="nc_settings_theme_follow_system">使用系統預設</string>
     <string name="nc_settings_theme_key">佈景主題</string>
@@ -536,7 +530,6 @@
     <string name="nc_yes">是</string>
     <string name="new_conversation_creation_icon">新對話建立圖示</string>
     <string name="next_week">下星期</string>
-    <string name="no_conversations_archived">尚無已封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
     <string name="no_phone_book_integration_due_to_permissions">由於缺少權限而無法集成電話號碼</string>
     <string name="oneHour">1 小時</string>
@@ -675,7 +668,6 @@
     <string name="userinfo_error_text">無法檢索個人用戶資訊。</string>
     <string name="userinfo_no_info_headline">未設定個人資訊</string>
     <string name="userinfo_no_info_text">在您的個人檔案中新增名字、頭像和聯絡資訊</string>
-    <string name="video_call">視像通話</string>
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
     <plurals name="see_similar_system_messages">
         <item quantity="other">檢視 %d 則類似的訊息</item>

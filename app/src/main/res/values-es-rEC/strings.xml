@@ -24,11 +24,12 @@
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear conversación</string>
     <string name="custom">Personalizado</string>
-    <string name="danger_zone">Zona de peligro</string>
+    <string name="danger_zone">Zona peligrosa</string>
     <string name="delete_avatar">Borrar avatar</string>
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
+    <string name="edit_message_icon_description">Editar mensaje</string>
     <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
@@ -101,6 +102,8 @@
     <string name="nc_certificate_error">Tu configuración de SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar el certificado de atuenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
+    <string name="nc_clear_edit_button">Cancelar edición</string>
+    <string name="nc_clear_edit_message">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Todos los mensajes se han eliminado</string>
     <string name="nc_clear_history_warning">¿Realmente quieres borrar todos los mensajes de esta conversación?</string>
@@ -176,7 +179,6 @@
     <string name="nc_federation_invitation_reject">Rechazar</string>
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_file_storage_permission">Se requiere permiso para acceder a archivos</string>
-    <string name="nc_filter">Filtrar conversaciones</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tú: %1$s</string>
     <string name="nc_forward_message">Adelante</string>
@@ -365,7 +367,6 @@
     <string name="nc_settings_server_almost_eol">¡La versión del servidor es muy antigua y no será compatible en la próxima versión!</string>
     <string name="nc_settings_server_eol">¡La versión del servidor es demasiado antigua y no es compatible con esta versión de la aplicación de Android!</string>
     <string name="nc_settings_server_eol_title">Servidor no compatible</string>
-    <string name="nc_settings_theme_battery_saver">Establecido por el ahorro de batería</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
     <string name="nc_settings_theme_follow_system">Usar configuración predeterminada del sistema</string>
     <string name="nc_settings_theme_key">tema</string>

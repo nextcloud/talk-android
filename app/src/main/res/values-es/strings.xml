@@ -4,11 +4,10 @@
     <string name="add_to_notes">Añadir a Notas</string>
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
-    <string name="archive_conversation">Archivar Conversación</string>
+    <string name="archive_conversation">Archivar conversación</string>
     <string name="archive_hint">Una vez que una conversación es archivada, estará escondida por defecto. Seleccione el filtro \"Archivadas\" para ver las conversaciones archivadas. Cualquier mención directa seguirá siendo recibida.</string>
     <string name="archived">Archivada</string>
     <string name="archived_conversation">%1$s Archivada</string>
-    <string name="audio_call">Llamada de Audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
     <string name="audio_output_phone">Teléfono</string>
@@ -32,7 +31,6 @@
     <string name="close">Cerrar</string>
     <string name="close_icon">Ícono de cerrar</string>
     <string name="connection_established">Conexión establecida</string>
-    <string name="connection_lost">Se perdió la conexión</string>
     <string name="connection_lost_sent_messages_are_queued">Se perdió la conexión - Los mensajes a enviar se encuentran encolados</string>
     <string name="continuous_voice_message_recording">Bloquear grabación para grabación continua del mensaje de voz</string>
     <string name="conversation_is_read_only">La conversación es de sólo lectura</string>
@@ -48,8 +46,7 @@
     <string name="dnd">No molestar</string>
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
-    <string name="edit_error_24_hours_old_message">No se pueden editar mensajes de más de 24 horas de antigüedad</string>
-    <string name="edit_message_icon_description">Editar icono de mensaje</string>
+    <string name="edit_message_icon_description">Editar mensaje</string>
     <string name="emoji_backspace">Tecla de retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
     <string name="nc_check_your_internet">Por favor, verifique su conexión a internet</string>
-    <string name="nc_clear_edit_button">Limpiar botón de edición</string>
-    <string name="nc_clear_edit_message">Limpiar mensaje de edición</string>
+    <string name="nc_clear_edit_button">Cancelar edición</string>
+    <string name="nc_clear_edit_message">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
     <string name="nc_clear_history_success">Se han eliminado todos los mensajes</string>
     <string name="nc_clear_history_warning">¿Seguro que quieres borrar todos los mensajes en esta conversación?</string>
@@ -235,9 +232,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
-    <string name="nc_edit_icon">Ícono de edición</string>
     <string name="nc_edit_message">Editar</string>
-    <string name="nc_edit_message_text">Editar texto del mensaje</string>
     <string name="nc_edited_by_admin">Editado por admin</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -256,7 +251,6 @@
     <string name="nc_federation_pending_invitation_hint">Tiene invitaciones pendientes</string>
     <string name="nc_file_browser_back">Volver</string>
     <string name="nc_file_storage_permission">Se requieren permisos para acceso a archivos</string>
-    <string name="nc_filter">Filtrar Conversaciones</string>
     <string name="nc_following_link">Usuario que sigue un enlace público</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>
@@ -399,7 +393,6 @@
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Selecciona una cuenta</string>
     <string name="nc_select_participants">Selecciona participantes</string>
-    <string name="nc_send_edit_message">Enviar mensaje de edición</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviado un GIF.</string>
     <string name="nc_sent_a_gif_you">Has enviado un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviado un vídeo.</string>
@@ -481,7 +474,6 @@
     <string name="nc_settings_server_eol">La versión del servidor es demasiado antigua y no es compatible con esta versión de la app para Android</string>
     <string name="nc_settings_server_eol_title">Servidor no soportado</string>
     <string name="nc_settings_server_notification_app_not_installed_title">La app de notificaciones del servidor no está instalada</string>
-    <string name="nc_settings_theme_battery_saver">Ajustar Ahorro de batería</string>
     <string name="nc_settings_theme_dark">Oscuro</string>
     <string name="nc_settings_theme_follow_system">Usar valores predeterminados del sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -537,7 +529,6 @@
     <string name="nc_yes">Sí</string>
     <string name="new_conversation_creation_icon">Ícono de Creación de Nueva Conversación </string>
     <string name="next_week">Semana siguiente</string>
-    <string name="no_conversations_archived">No hay conversaciones archivadas</string>
     <string name="no_offline_messages_saved">No hay mensajes fuera de línea guardados</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
     <string name="oneHour">1 hora</string>
@@ -656,7 +647,6 @@
     <string name="typing_are_typing">están escribiendo ...</string>
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
-    <string name="unarchive_conversation">Desarchivar conversación </string>
     <string name="unarchive_hint">Una vez que se desarchiva una conversación, se volverá a mostrar por defecto.</string>
     <string name="unarchived_conversation">%1$s Desarchivada</string>
     <string name="unban">Desbloquear</string>
@@ -676,7 +666,7 @@
     <string name="userinfo_error_text">Fallo al obtener la información personal del usuario.</string>
     <string name="userinfo_no_info_headline">No se ha configurado la información personal</string>
     <string name="userinfo_no_info_text">Añade tu nombre, imagen y detalles de contacto en tu página de perfil.</string>
-    <string name="video_call">Llamada de Video</string>
+    <string name="video_call">Videollamada</string>
     <string name="whats_your_status">¿Cuál es su estado?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Ver %d mensaje similar</item>

@@ -4,11 +4,9 @@
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
-    <string name="archive_conversation">Arxiva la conversa</string>
     <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="archived_conversation">S\'ha arxivat %1$s</string>
-    <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
     <string name="audio_output_phone">Telèfon</string>
@@ -32,7 +30,6 @@
     <string name="close">Tanca</string>
     <string name="close_icon">Tanca la icona</string>
     <string name="connection_established">S\'ha establert la connexió</string>
-    <string name="connection_lost">S\'ha perdut la connexió</string>
     <string name="connection_lost_sent_messages_are_queued">S\'ha perdut la connexió: els missatges enviats s\'han posat a la cua</string>
     <string name="continuous_voice_message_recording">Bloqueja l\'enregistrament per a l\'enregistrament continu del missatge de veu</string>
     <string name="conversation_is_read_only">La conversa és només de lectura</string>
@@ -41,15 +38,12 @@
     <string name="create_conversation">Crea una conversa</string>
     <string name="create_issue">Crea un error</string>
     <string name="custom">Personalitzat</string>
-    <string name="danger_zone">Zona de perill</string>
     <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="deleted_conversation">Conversa suprimida %1$s</string>
     <string name="dnd">No molesteu</string>
     <string name="dontClear">No l\'esborris</string>
     <string name="edit">Editar</string>
-    <string name="edit_error_24_hours_old_message">No es poden editar missatges de més de 24 hores</string>
-    <string name="edit_message_icon_description">Editeu la icona del missatge</string>
     <string name="emoji_backspace">Retrocés</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>
@@ -138,7 +132,6 @@
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
     <string name="nc_check_your_internet">Comproveu la connexió a Internet</string>
-    <string name="nc_clear_edit_button">Esborra el botó Edita</string>
     <string name="nc_clear_history">Suprimeix tots els missatges</string>
     <string name="nc_clear_history_success">S\'han suprimit tots els missatges</string>
     <string name="nc_clear_history_warning">Segur que voleu suprimir tots els missatges d\'aquesta conversa?</string>
@@ -230,9 +223,7 @@
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
-    <string name="nc_edit_icon">Edita la icona</string>
     <string name="nc_edit_message">Edició</string>
-    <string name="nc_edit_message_text">Edita el missatge de text</string>
     <string name="nc_edited_by_admin">Editat per l\'administrador</string>
     <string name="nc_email">Correu</string>
     <string name="nc_expire_message_eight_hours">8 hores</string>
@@ -250,11 +241,11 @@
     <string name="nc_federation_pending_invitation_hint">Teniu invitacions pendents</string>
     <string name="nc_file_browser_back">Enrere</string>
     <string name="nc_file_storage_permission">Cal permís per accedir als fitxers</string>
-    <string name="nc_filter">Filtra les converses</string>
     <string name="nc_following_link">Usuari que segueix un enllaç públic</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
     <string name="nc_forward_message">Reenvia</string>
     <string name="nc_forward_to_three_dots">Reenvia a…</string>
+    <string name="nc_gallery">Galeria</string>
     <string name="nc_get_from_provider">Encara no teniu cap servidor?\nFeu clic aquí per obtenir-ne un d\'un proveïdor</string>
     <string name="nc_get_source_code">Obté el codi font</string>
     <string name="nc_group">Grup</string>
@@ -467,7 +458,6 @@
     <string name="nc_settings_server_eol">La versió del servidor és massa antiga i no és compatible amb versió de l\'aplicació Android</string>
     <string name="nc_settings_server_eol_title">El servidor no és compatible</string>
     <string name="nc_settings_server_notification_app_not_installed_title">L\'aplicació de notificacions del servidor no s\'ha instal·lat</string>
-    <string name="nc_settings_theme_battery_saver">Configura l\'Estalvi de Bateria</string>
     <string name="nc_settings_theme_dark">Fosc</string>
     <string name="nc_settings_theme_follow_system">Fes servir el predeterminat del sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -637,7 +627,6 @@
     <string name="typing_are_typing">estan escrivint…</string>
     <string name="typing_is_typing">està escrivint…</string>
     <string name="typing_x_others">i %1$s més estan escrivint…</string>
-    <string name="unarchive_conversation">Anul·la l\'arxivament de la conversa</string>
     <string name="unarchive_hint">Quan s\'hagi anul·lat l\'arxivament d\'una conversa, es tornarà a mostrar per defecte.</string>
     <string name="unban">Anul·la la prohibició</string>
     <string name="unread">Per llegir</string>

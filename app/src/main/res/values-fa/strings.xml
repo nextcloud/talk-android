@@ -5,7 +5,6 @@
     <string name="added_to_favorites">گفتگوی %1$sبه علاقه‌مندی‌ها افزوده شد</string>
     <string name="appbar_search_in">جستجو در %s</string>
     <string name="archived">Archived</string>
-    <string name="audio_call">تماس شنیداری</string>
     <string name="audio_output_bluetooth">بلوتوث</string>
     <string name="audio_output_dialog_headline">خروجی صدا</string>
     <string name="audio_output_phone">شماره تلفن</string>
@@ -27,11 +26,12 @@
     <string name="conversations">گفتگو</string>
     <string name="create_conversation">ایجاد گفتگو</string>
     <string name="custom">Custom</string>
-    <string name="danger_zone">منطقهٔ خطر</string>
+    <string name="danger_zone">Danger zone</string>
     <string name="delete_avatar">آواتار را پاک کن</string>
     <string name="dnd">مزاحم نشوید</string>
     <string name="dontClear">پاک نکن</string>
     <string name="edit">ویرایش</string>
+    <string name="edit_message_icon_description">Edit message</string>
     <string name="emoji_category_recent">اخیر</string>
     <string name="encrypted">Encrypted</string>
     <string name="end_call_for_everyone">End call for everyone</string>
@@ -91,6 +91,8 @@
     <string name="nc_certificate_error">راه اندازی SSL شما مانع از اتصال شد</string>
     <string name="nc_change_cert_auth">گواهی تأیید اعتبار را تغییر دهید</string>
     <string name="nc_change_password">تغییر گذرواژه</string>
+    <string name="nc_clear_edit_button">Cancel editing</string>
+    <string name="nc_clear_edit_message">Cancel editing</string>
     <string name="nc_clear_history">حذف تمام پیام‌ها</string>
     <string name="nc_clear_history_success">تمام پیام‌ها حذف شدند</string>
     <string name="nc_clear_history_warning">آیا واقعا می‌خواهید تمام پیام‌ها را در این مکالمه حذف کنید؟</string>
@@ -315,7 +317,6 @@
     <string name="nc_settings_screen_lock_title">قفل صفحه</string>
     <string name="nc_settings_screen_security_desc">از گرفتن عکسهای صفحه در لیست اخیر و داخل برنامه جلوگیری می کند</string>
     <string name="nc_settings_screen_security_title">امنیت صفحه نمایش</string>
-    <string name="nc_settings_theme_battery_saver">تنظیم شده توسط ذخیره نیرو</string>
     <string name="nc_settings_theme_dark">تیره</string>
     <string name="nc_settings_theme_follow_system">از پیش‌فرض سیستم استفاده کنید</string>
     <string name="nc_settings_theme_key">پوسته</string>

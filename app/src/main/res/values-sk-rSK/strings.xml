@@ -4,11 +4,10 @@
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
-    <string name="archive_conversation">Archivovať Konverzáciu</string>
+    <string name="archive_conversation">Archivovať konverzáciu</string>
     <string name="archive_hint">Keď je konverzácia archivovaná, bude predvolene skrytá. Ak chcete zobraziť archivované konverzácie, vyberte filter „Archivované“. Priame zmienky budú stále prijímané.</string>
     <string name="archived">Archivované</string>
     <string name="archived_conversation">Archivované %1$s</string>
-    <string name="audio_call">Audio hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
     <string name="audio_output_phone">Telefón</string>
@@ -32,7 +31,6 @@
     <string name="close">Zatvoriť</string>
     <string name="close_icon">Ikona Zavrieť</string>
     <string name="connection_established">Pripojenie vytvorené</string>
-    <string name="connection_lost">Pripojenie bolo stratené</string>
     <string name="connection_lost_sent_messages_are_queued">Pripojenie bolo stratené - Odoslané správy počkajú v rade</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
     <string name="conversation_is_read_only">Konverzácia je len na čítanie</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
-    <string name="edit_error_24_hours_old_message">Nemôžete upravovať správy staršie ako 24 hodín.</string>
-    <string name="edit_message_icon_description">Upraviť ikonu správy</string>
+    <string name="edit_message_icon_description">Upraviť správu</string>
     <string name="emoji_backspace">Spätná lomka</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Zmeniť autentifikačný certifikát</string>
     <string name="nc_change_password">Zmeniť heslo</string>
     <string name="nc_check_your_internet">Prosím, skontrolujte vaše pripojenie k internetu</string>
-    <string name="nc_clear_edit_button">Tlačidlo  Vymazať úpravy</string>
-    <string name="nc_clear_edit_message">Správa vymazať úpravy</string>
+    <string name="nc_clear_edit_button">Zrušiť úpravy</string>
+    <string name="nc_clear_edit_message">Zrušiť úpravy</string>
     <string name="nc_clear_history">Vymazať všetky správy</string>
     <string name="nc_clear_history_success">Všetky správy boli vymazané</string>
     <string name="nc_clear_history_warning">Naozaj chcete vymazať všetky správy v tejto konverzácii?</string>
@@ -235,9 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Áno</string>
     <string name="nc_display_name_not_fetched">Zobrazované meno sa nedalo načítať, ruším</string>
     <string name="nc_display_name_not_stored">Nedá sa uložiť zobrazované meno, ruším</string>
-    <string name="nc_edit_icon">Upraviť Ikonu</string>
+    <string name="nc_edit_icon">Upraviť</string>
     <string name="nc_edit_message">Úprava</string>
-    <string name="nc_edit_message_text">Upraviť text správy</string>
+    <string name="nc_edit_message_text">Upraviť správu</string>
     <string name="nc_edited_by_admin">Upravené adminom</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 hodín</string>
@@ -256,7 +253,6 @@
     <string name="nc_federation_pending_invitation_hint">Máte čakajúce pozvánky</string>
     <string name="nc_file_browser_back">Späť</string>
     <string name="nc_file_storage_permission">Vyžaduje sa oprávnenie na prístup k súborom</string>
-    <string name="nc_filter">Filtrovať konverzácie</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Preposlať</string>
@@ -399,7 +395,6 @@
     <string name="nc_search">Hľadať</string>
     <string name="nc_select_an_account">Zvoľte si účet</string>
     <string name="nc_select_participants">Vybrať účastníkov</string>
-    <string name="nc_send_edit_message">Odoslať upravenú správu</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a)  GIF.</string>
     <string name="nc_sent_a_gif_you">Odoslali ste GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
@@ -480,7 +475,6 @@
     <string name="nc_settings_server_eol">Verzia tohoto serveru je veľmi stará a nebude podporovaná v ďalšej verzii Android aplikácie!</string>
     <string name="nc_settings_server_eol_title">Nepodporovaný server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Aplikácia upozornení zo servera nie je nainštalovaná</string>
-    <string name="nc_settings_theme_battery_saver">Nastavené pomocou Šetriča batérie</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_theme_follow_system">Použiť systémové nastavenia</string>
     <string name="nc_settings_theme_key">motív vzhľadu</string>
@@ -536,7 +530,6 @@
     <string name="nc_yes">Áno</string>
     <string name="new_conversation_creation_icon">Ikona vytvorenia novej konverzácie</string>
     <string name="next_week">Nasledujúci týždeň</string>
-    <string name="no_conversations_archived">Žiadne konverzácie neboli archivované</string>
     <string name="no_offline_messages_saved">Žiadne správy pri odpojení neboli uložené</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre chýbajúce oprávnenia</string>
     <string name="oneHour">1 hodina</string>
@@ -655,7 +648,7 @@
     <string name="typing_are_typing">píšu...</string>
     <string name="typing_is_typing">píše...</string>
     <string name="typing_x_others">a %1$s ďalších píšu...</string>
-    <string name="unarchive_conversation">Zrušiť archiváciu Konverzácie</string>
+    <string name="unarchive_conversation">Zrušiť archiváciu konverzácie</string>
     <string name="unarchive_hint">Keď bude zrušená archivácia konverzácie, bude predvolene znova zobrazená.</string>
     <string name="unarchived_conversation">Zrušená archivácia %1$s</string>
     <string name="unban">Zrušiť zákaz</string>
@@ -675,7 +668,6 @@
     <string name="userinfo_error_text">Zlyhalo načítanie osobných údajov používateľa.</string>
     <string name="userinfo_no_info_headline">Osobné informácie neboli nastavené</string>
     <string name="userinfo_no_info_text">Pridaj meno, obrázok a kontakt na profilovú stránku.</string>
-    <string name="video_call">Video hovor</string>
     <string name="whats_your_status">Aký je váš stav?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Zobraziť %d podobnú správu</item>

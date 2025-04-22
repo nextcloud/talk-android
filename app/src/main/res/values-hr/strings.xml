@@ -16,6 +16,7 @@
     <string name="conversations">Razgovori</string>
     <string name="create_conversation">Stvori razgovor</string>
     <string name="custom">Prilagođeno</string>
+    <string name="danger_zone">Zona opasnosti</string>
     <string name="delete_avatar">Izbriši avatar</string>
     <string name="dnd">Ne ometaj</string>
     <string name="dontClear">Ne briši</string>
@@ -311,7 +312,6 @@
     <string name="nc_settings_server_almost_eol">Inačica poslužitelja je vrlo stara i neće biti podržana u sljedećem izdanju!</string>
     <string name="nc_settings_server_eol">Inačica poslužitelja je prestara i nije podržana u ovoj inačici aplikacije za Android</string>
     <string name="nc_settings_server_eol_title">Nepodržan poslužitelj</string>
-    <string name="nc_settings_theme_battery_saver">Postavlja alat za uštedu baterije</string>
     <string name="nc_settings_theme_dark">Tamno</string>
     <string name="nc_settings_theme_follow_system">Koristi zadanu postavku sustava</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -415,5 +415,6 @@
     <string name="userinfo_error_text">Dohvaćanje osobnih korisničkih podataka nije uspjelo.</string>
     <string name="userinfo_no_info_headline">Nisu postavljeni osobni podaci</string>
     <string name="userinfo_no_info_text">Dodajte ime, sliku i kontaktne podatke na stranicu profila.</string>
+    <string name="video_call">Video poziv</string>
     <string name="whats_your_status">Koji je vaš status?</string>
     </resources>
