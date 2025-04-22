@@ -36,11 +36,10 @@ import com.nextcloud.talk.R
 @Composable
 fun SearchComponent(text: String, onTextChange: (String) -> Unit, onDisableSearch: () -> Unit) {
     val keyboardController = LocalSoftwareKeyboardController.current
-
     TextField(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
+            .fillMaxWidth(0.85f)
             .height(60.dp),
         value = text,
         onValueChange = { onTextChange(it) },
