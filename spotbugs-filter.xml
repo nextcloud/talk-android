@@ -46,6 +46,7 @@
 	    <Or>
             <Class name="~.*\..*.*Factory" />
 		    <Class name="~.*\..*.*Factory_Impl" />
+			<Class name="~.*\..*.*_MembersInjector" />
 		</Or>
         <Bug pattern="IICU_INCORRECT_INTERNAL_CLASS_USE" />
     </Match>
