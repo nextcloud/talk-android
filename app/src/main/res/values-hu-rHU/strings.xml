@@ -4,7 +4,6 @@
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="archived">Archiválva</string>
-    <string name="audio_call">Audio hívás</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Hangkimenet</string>
     <string name="audio_output_phone">Telefon</string>
@@ -24,19 +23,18 @@
     <string name="close">Bezárás</string>
     <string name="close_icon">Bezárás ikon</string>
     <string name="connection_established">A kapcsolat létrejött</string>
-    <string name="connection_lost">Kapcsolat elveszett</string>
     <string name="continuous_voice_message_recording">Felvétel zárolása a hangüzenet folyamatos rögzítéséhez</string>
     <string name="conversations">Beszélgetések</string>
     <string name="create_conversation">Beszélgetés létrehozása</string>
     <string name="create_issue">Hibajegy létrehozása</string>
     <string name="custom">Egyéni</string>
-    <string name="danger_zone">Veszély zóna</string>
+    <string name="danger_zone">Veszélyes területet</string>
     <string name="delete_avatar">Profilkép törlése</string>
     <string name="deleted_conversation">%1$s beszélgetés törlése</string>
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
-    <string name="edit_message_icon_description">Üzenet szerkesztése ikon</string>
+    <string name="edit_message_icon_description">Üzenet szerkesztése</string>
     <string name="emoji_backspace">Visszatörlés</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
     <string name="encrypted">Titkosított</string>
@@ -115,6 +113,8 @@
     <string name="nc_certificate_error">Az SSL beállítás megakadályozta a kapcsolódást</string>
     <string name="nc_change_cert_auth">Hitelesítési tanúsítvány módosítása</string>
     <string name="nc_change_password">Jelszó módosítása</string>
+    <string name="nc_clear_edit_button">Szerkesztés megszakítása</string>
+    <string name="nc_clear_edit_message">Szerkesztés megszakítása</string>
     <string name="nc_clear_history">Összes üzenet törlése</string>
     <string name="nc_clear_history_success">Az összes üzenet törölve lett</string>
     <string name="nc_clear_history_warning">Biztos, hogy törli a beszélgetés összes üzenetét?</string>
@@ -178,7 +178,9 @@
     <string name="nc_dialog_save_to_storage_yes">Igen</string>
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
+    <string name="nc_edit_icon">Szerkesztés</string>
     <string name="nc_edit_message">Szerkesztés</string>
+    <string name="nc_edit_message_text">Üzenet szerkesztése</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 óra</string>
     <string name="nc_expire_message_four_weeks">4 hét</string>
@@ -193,7 +195,6 @@
     <string name="nc_federation_invitation_reject">Elutasítás</string>
     <string name="nc_file_browser_back">Vissza</string>
     <string name="nc_file_storage_permission">Fájlelérési jogosultság szükséges</string>
-    <string name="nc_filter">Beszélgetések szűrése</string>
     <string name="nc_following_link">Nyilvános hivatkozást használó felhasználó</string>
     <string name="nc_formatted_message_you">Ön: %1$s</string>
     <string name="nc_forward_message">Továbbítás</string>
@@ -395,7 +396,6 @@
     <string name="nc_settings_server_almost_eol">A kiszolgáló verziója nagyon régi, és nem lesz támogatott a következő kiadásban!</string>
     <string name="nc_settings_server_eol">A kiszolgáló verziója túl régi, és az androidos alkalmazás ezen verziója nem támogatja</string>
     <string name="nc_settings_server_eol_title">Nem támogatott kiszolgáló</string>
-    <string name="nc_settings_theme_battery_saver">Energiagazdálkodás által beállítva</string>
     <string name="nc_settings_theme_dark">Sötét</string>
     <string name="nc_settings_theme_follow_system">Rendszer alapértelmezésének használata</string>
     <string name="nc_settings_theme_key">téma</string>
@@ -565,7 +565,7 @@
     <string name="userinfo_error_text">Nem sikerült beolvasni a személyes felhasználói adatokat.</string>
     <string name="userinfo_no_info_headline">Nincs személyes információ beállítva</string>
     <string name="userinfo_no_info_text">Adja meg a nevét, profilképét és kapcsolati adatait a profil oldalán.</string>
-    <string name="video_call">Video hívás</string>
+    <string name="video_call">Videóhívás</string>
     <string name="whats_your_status">Mi az állapota?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d szavazat</item>

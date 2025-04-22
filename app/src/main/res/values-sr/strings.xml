@@ -8,7 +8,6 @@
     <string name="archive_hint">Када се разговор архивира, подразумевано ће бити сакривен. Да бисте видели архивиране разговоре, изаберите филтер „Архивирано”. И даље ће се примати директна помињања.</string>
     <string name="archived">Архивирано</string>
     <string name="archived_conversation">%1$s је архивиран</string>
-    <string name="audio_call">Гласовни позив</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудио излаз</string>
     <string name="audio_output_phone">Телефон</string>
@@ -32,7 +31,6 @@
     <string name="close">Затвори</string>
     <string name="close_icon">Икона затвори</string>
     <string name="connection_established">Веза успостављена</string>
-    <string name="connection_lost">Веза је прекинута</string>
     <string name="connection_lost_sent_messages_are_queued">Веза је прекинута - Послате поруке су стављене у ред</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
     <string name="conversation_is_read_only">Овај разговор је само-за-читање</string>
@@ -48,8 +46,7 @@
     <string name="dnd">Не узнемиравај</string>
     <string name="dontClear">Не бриши</string>
     <string name="edit">Измени</string>
-    <string name="edit_error_24_hours_old_message">Не могу да се уређују поруке старије од 24 часова</string>
-    <string name="edit_message_icon_description">Уреди икону поруке</string>
+    <string name="edit_message_icon_description">Уреди поруку</string>
     <string name="emoji_backspace">Брисање улево</string>
     <string name="emoji_category_recent">Недавно</string>
     <string name="encrypted">Шифровано</string>
@@ -138,8 +135,8 @@
     <string name="nc_change_cert_auth">Измени сертификат за пријаву</string>
     <string name="nc_change_password">Промени лозинку</string>
     <string name="nc_check_your_internet">Молимо вас да проверите везу са интернетом</string>
-    <string name="nc_clear_edit_button">Обриши дугме за уређивање</string>
-    <string name="nc_clear_edit_message">Обриши Уреди поруку</string>
+    <string name="nc_clear_edit_button">Откажи уређивање</string>
+    <string name="nc_clear_edit_message">Откажи уређивање</string>
     <string name="nc_clear_history">Обриши све поруке</string>
     <string name="nc_clear_history_success">Обрисане су све поруке</string>
     <string name="nc_clear_history_warning">Да ли заиста желите да обришете све поруке у овом разговору?</string>
@@ -235,9 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Име за приказ се не може добавити. Прекидам</string>
     <string name="nc_display_name_not_stored">Не могу да сачувам име за приказ. Прекидам</string>
-    <string name="nc_edit_icon">Уреди икону</string>
+    <string name="nc_edit_icon">Измени</string>
     <string name="nc_edit_message">Измени</string>
-    <string name="nc_edit_message_text">Уреди текст поруке</string>
+    <string name="nc_edit_message_text">Уреди поруку</string>
     <string name="nc_edited_by_admin">Уредио је админ</string>
     <string name="nc_email">Е-пошта</string>
     <string name="nc_expire_message_eight_hours">8 сати</string>
@@ -256,7 +253,6 @@
     <string name="nc_federation_pending_invitation_hint">Имате позивнице на чекању</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Потребна је дозвола за приступ фајлу</string>
-    <string name="nc_filter">Филтрирај разговоре</string>
     <string name="nc_following_link">Корисник који је пратио јавну везу</string>
     <string name="nc_formatted_message_you">Ти: %1$s</string>
     <string name="nc_forward_message">Проследи</string>
@@ -399,7 +395,6 @@
     <string name="nc_search">Тражи</string>
     <string name="nc_select_an_account">Изаберите налог</string>
     <string name="nc_select_participants">Изабери учеснике</string>
-    <string name="nc_send_edit_message">Пошаљи уређену поруку</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s је послао GIF.</string>
     <string name="nc_sent_a_gif_you">Послали сте GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s је послао видео.</string>
@@ -480,7 +475,6 @@
     <string name="nc_settings_server_eol">Верзија сервера је врло стара и није подржана у овој верзији Андроид апликације</string>
     <string name="nc_settings_server_eol_title">Неподржани сервер</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Апликација серверских обавештења није инсталирана</string>
-    <string name="nc_settings_theme_battery_saver">Поставља штедња батерије</string>
     <string name="nc_settings_theme_dark">Тамна</string>
     <string name="nc_settings_theme_follow_system">Користи системске подразумеване</string>
     <string name="nc_settings_theme_key">тема</string>
@@ -536,7 +530,6 @@
     <string name="nc_yes">Да</string>
     <string name="new_conversation_creation_icon">Икона Креирање новог разговора</string>
     <string name="next_week">Наредне недеље</string>
-    <string name="no_conversations_archived">Није архивиран ниједан разговор</string>
     <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
     <string name="oneHour">1 сат</string>
@@ -675,7 +668,6 @@
     <string name="userinfo_error_text">Није успело добављање личних података о кориснику.</string>
     <string name="userinfo_no_info_headline">Нису постављени лични подаци</string>
     <string name="userinfo_no_info_text">Додајте име, слику и детаље за контакт на страницу профила.</string>
-    <string name="video_call">Видео позив</string>
     <string name="whats_your_status">Који је ваш статус?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Погледајте %d сличну поруку</item>

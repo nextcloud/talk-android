@@ -24,10 +24,12 @@
     <string name="conversations">Conversazioni</string>
     <string name="create_conversation">Crea conversazione</string>
     <string name="custom">Personalizzato</string>
+    <string name="danger_zone">Zona pericolosa</string>
     <string name="delete_avatar">Elimina avatar</string>
     <string name="dnd">Non disturbare</string>
     <string name="dontClear">Non cancellare</string>
     <string name="edit">Modifica</string>
+    <string name="edit_message_icon_description">Modifica messaggio</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recenti</string>
     <string name="encrypted">Cifrato</string>
@@ -152,7 +154,9 @@
     <string name="nc_dialog_save_to_storage_yes">Sì</string>
     <string name="nc_display_name_not_fetched">Il nome visualizzato non può essere recuperato, interruzione in corso</string>
     <string name="nc_display_name_not_stored">Nome visualizzato non memorizzato, interruzione in corso</string>
+    <string name="nc_edit_icon">Modifica</string>
     <string name="nc_edit_message">Modifica</string>
+    <string name="nc_edit_message_text">Modifica messaggio</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 ore</string>
     <string name="nc_expire_message_four_weeks">4 settimane</string>
@@ -345,7 +349,6 @@
     <string name="nc_settings_server_almost_eol">La versione del server è molto datata e non sarà più supportata nella prossima versione!</string>
     <string name="nc_settings_server_eol">La versione del server è troppo datata e non supportata da questa versione dell\'applicazione Android</string>
     <string name="nc_settings_server_eol_title">Server non supportato</string>
-    <string name="nc_settings_theme_battery_saver">Impostato dal risparmio della batteria</string>
     <string name="nc_settings_theme_dark">Scuro</string>
     <string name="nc_settings_theme_follow_system">Usa valori predefiniti di sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -391,7 +394,6 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sì</string>
     <string name="next_week">Settimana successiva</string>
-    <string name="no_conversations_archived">Nessuna conversazione archiviata</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In linea</string>

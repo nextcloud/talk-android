@@ -3,8 +3,8 @@
     <string name= "nc_edit">Редактирование</string>
     <string name="add_to_notes">Добавить в заметки</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="archive_conversation">Архивировать обсуждение</string>
     <string name="archived">В архиве</string>
-    <string name="audio_call">Аудиозвонок</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Аудиовыход</string>
     <string name="audio_output_phone">Телефон</string>
@@ -23,7 +23,6 @@
     <string name="clear_status_message_after">Очищать статус после</string>
     <string name="close">Закрыть</string>
     <string name="connection_established">Соединение установлено</string>
-    <string name="connection_lost">Соединение потеряно</string>
     <string name="connection_lost_sent_messages_are_queued">Соединение потеряно - отправленные сообщения ставятся в очередь</string>
     <string name="continuous_voice_message_recording">Блокировка записи для непрерывной записи голосового сообщения</string>
     <string name="conversation_is_read_only">Разговор доступен только для чтения</string>
@@ -36,7 +35,7 @@
     <string name="dnd">Не беспокоить</string>
     <string name="dontClear">Не очищать</string>
     <string name="edit">Редактировать</string>
-    <string name="edit_error_24_hours_old_message">Невозможно редактировать сообщения старше 24 часов.</string>
+    <string name="edit_message_icon_description">Редактировать сообщение</string>
     <string name="emoji_backspace">Вернуться</string>
     <string name="emoji_category_recent">Недавние</string>
     <string name="encrypted">Зашифровано</string>
@@ -122,6 +121,8 @@
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
     <string name="nc_change_password">Изменить пароль</string>
     <string name="nc_check_your_internet">Проверьте подключение к Интернету.</string>
+    <string name="nc_clear_edit_button">Отменить редактирование</string>
+    <string name="nc_clear_edit_message">Отменить редактирование</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
     <string name="nc_clear_history_success">Все сообщения были удалены</string>
     <string name="nc_clear_history_warning">Вы действительно хотите удалить все сообщения в этой беседе?</string>
@@ -200,7 +201,9 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Не удалось получить отображаемое имя, продолжение невозможно</string>
     <string name="nc_display_name_not_stored">Не удалось сохранить отображаемое имя, продолжение невозможно</string>
+    <string name="nc_edit_icon">Редактирование</string>
     <string name="nc_edit_message">Редактирование</string>
+    <string name="nc_edit_message_text">Редактировать сообщение</string>
     <string name="nc_edited_by_admin">Изменено администратором</string>
     <string name="nc_email">Эл. почта</string>
     <string name="nc_expire_message_eight_hours">8 часов</string>
@@ -218,7 +221,6 @@
     <string name="nc_federation_pending_invitation_hint">У вас есть ожидающие приглашения</string>
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Требуется разрешение на доступ к файлу</string>
-    <string name="nc_filter">Фильтровать разговоры</string>
     <string name="nc_following_link">Пользователь, вошедший по ссылке</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Переслать</string>
@@ -429,7 +431,6 @@
     <string name="nc_settings_server_almost_eol">Версия сервера очень старая и не будет поддерживаться в следующем релизе!</string>
     <string name="nc_settings_server_eol">Версия сервера слишком старая и не поддерживается данной версией приложения Android</string>
     <string name="nc_settings_server_eol_title">Неподдерживаемый сервер</string>
-    <string name="nc_settings_theme_battery_saver">Установлено режимом сохранения батареи</string>
     <string name="nc_settings_theme_dark">Тёмное</string>
     <string name="nc_settings_theme_follow_system">Как в системе</string>
     <string name="nc_settings_theme_key">стиль оформления</string>
@@ -586,6 +587,7 @@
     <string name="typing_are_typing">печатают...</string>
     <string name="typing_is_typing">печатает...</string>
     <string name="typing_x_others">и ещё %1$s собеседника печатают...</string>
+    <string name="unarchive_conversation">Разархивировать обсуждение</string>
     <string name="unban">Разбанить</string>
     <string name="unread">Непрочитанное</string>
     <string name="upload_new_avatar_from_device">Загрузить новый аватар с устройства</string>

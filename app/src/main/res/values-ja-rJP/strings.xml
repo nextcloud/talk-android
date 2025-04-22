@@ -4,8 +4,8 @@
     <string name="add_to_notes">メモに追加する</string>
     <string name="added_to_favorites">%1$s会話をお気に入りに追加した</string>
     <string name="appbar_search_in">%sを検索</string>
+    <string name="archive_conversation">会話をアーカイブ</string>
     <string name="archived">アーカイブ済み</string>
-    <string name="audio_call">音声</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">音声の出力</string>
     <string name="audio_output_phone">携帯</string>
@@ -30,14 +30,13 @@
     <string name="create_conversation">会話を作成</string>
     <string name="create_issue">問題を作成する</string>
     <string name="custom">カスタム</string>
-    <string name="danger_zone">危険ゾーン</string>
+    <string name="danger_zone">危険区域</string>
     <string name="delete_avatar">アバターを削除</string>
     <string name="deleted_conversation">会話%1$sは削除済みです</string>
     <string name="dnd">取り込み中</string>
     <string name="dontClear">消去しない</string>
     <string name="edit">編集</string>
-    <string name="edit_error_24_hours_old_message">24時間以上前のメッセージは編集できません</string>
-    <string name="edit_message_icon_description">メッセージアイコンを編集する</string>
+    <string name="edit_message_icon_description">メッセージを編集</string>
     <string name="emoji_backspace">バックスペース</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">暗号化済み</string>
@@ -123,8 +122,8 @@
     <string name="nc_change_cert_auth">認証証明書を変更する</string>
     <string name="nc_change_password">パスワードを変更</string>
     <string name="nc_check_your_internet">あなたのインターネット接続をチェックしてください</string>
-    <string name="nc_clear_edit_button">編集ボタンを削除</string>
-    <string name="nc_clear_edit_message">編集メッセージを削除</string>
+    <string name="nc_clear_edit_button">編集をキャンセル</string>
+    <string name="nc_clear_edit_message">編集をキャンセル</string>
     <string name="nc_clear_history">すべてのメッセージを削除</string>
     <string name="nc_clear_history_success">すべてのメッセージが削除されたました。</string>
     <string name="nc_clear_history_warning">本当にこの会話の全てのメッセージを削除してもよろしいですか？</string>
@@ -219,9 +218,9 @@
     <string name="nc_dialog_save_to_storage_yes">はい</string>
     <string name="nc_display_name_not_fetched">表示名を取得できませんでした。</string>
     <string name="nc_display_name_not_stored">表示名を保存できませんでした。</string>
-    <string name="nc_edit_icon">アイコンを編集する</string>
+    <string name="nc_edit_icon">編集</string>
     <string name="nc_edit_message">編集</string>
-    <string name="nc_edit_message_text">メッセージテキストを編集</string>
+    <string name="nc_edit_message_text">メッセージを編集</string>
     <string name="nc_edited_by_admin">管理者に編集されました</string>
     <string name="nc_email">メール</string>
     <string name="nc_expire_message_eight_hours">8時間</string>
@@ -240,7 +239,6 @@
     <string name="nc_federation_pending_invitation_hint">保留中の招待があります</string>
     <string name="nc_file_browser_back">戻る</string>
     <string name="nc_file_storage_permission">ファイルアクセスの権限が必要です</string>
-    <string name="nc_filter">会話フィルター</string>
     <string name="nc_following_link">公開リンクをたどっているユーザー</string>
     <string name="nc_formatted_message_you">あなた：%1$s</string>
     <string name="nc_forward_message">転送</string>
@@ -375,7 +373,6 @@
     <string name="nc_search">検索</string>
     <string name="nc_select_an_account">アカウントを選択</string>
     <string name="nc_select_participants">参加者を選択</string>
-    <string name="nc_send_edit_message">編集メッセージを送信する</string>
     <string name="nc_sent_a_gif" formatted="true">%1$sがGIFを送信しました。</string>
     <string name="nc_sent_a_gif_you">GIFを送信しました。</string>
     <string name="nc_sent_a_video" formatted="true">%1$sが動画ファイルを送信しました。</string>
@@ -451,7 +448,6 @@
     <string name="nc_settings_server_almost_eol">サーバーバージョンが古すぎるため、次のリリースのバージョンではサポートされません。</string>
     <string name="nc_settings_server_eol">サーバーのバージョンが古く、このAndroidバージョンで対応していません。</string>
     <string name="nc_settings_server_eol_title">サポートされてないサーバーです</string>
-    <string name="nc_settings_theme_battery_saver">バッテリーの使用を節約する</string>
     <string name="nc_settings_theme_dark">ダーク</string>
     <string name="nc_settings_theme_follow_system">デフォルトの設定を使用する</string>
     <string name="nc_settings_theme_key">テーマ</string>
@@ -624,7 +620,6 @@
     <string name="userinfo_error_text">ユーザー情報を取得できませんでした</string>
     <string name="userinfo_no_info_headline">個人情報はありません</string>
     <string name="userinfo_no_info_text">プロフィールページに名前、写真、連絡先の詳細を追加します。</string>
-    <string name="video_call">ビデオ</string>
     <string name="whats_your_status">現在のオンラインステータスは？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d投票数</item>
