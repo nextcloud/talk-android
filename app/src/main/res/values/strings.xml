@@ -41,6 +41,7 @@ How to translate with transifex:
 
     <!-- Bottom Navigation -->
     <string name="nc_settings">Settings</string>
+    <string name="add_participants">Add</string>
 
     <!-- Server selection -->
     <string name="nc_server_connect">Test server connection</string>
