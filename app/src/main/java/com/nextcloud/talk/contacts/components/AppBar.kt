@@ -20,8 +20,10 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -54,23 +56,25 @@ fun AppBar(
             }
         },
         actions = {
-            IconButton(onClick = onEnableSearch) {
-                Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
-            }
-            if (isAddParticipants) {
-                Text(
-                    text = stringResource(id = R.string.nc_contacts_done),
-                    modifier = Modifier.clickable {
-                        val resultIntent = Intent().apply {
-                            putParcelableArrayListExtra(
-                                "selectedParticipants",
-                                ArrayList(autocompleteUsers)
-                            )
+            if (!isSearchActive) {
+                IconButton(onClick = onEnableSearch) {
+                    Icon(Icons.Filled.Search, contentDescription = stringResource(R.string.search_icon))
+                }
+                if (isAddParticipants) {
+                    Text(
+                        text = stringResource(id = R.string.nc_contacts_done),
+                        modifier = Modifier.clickable {
+                            val resultIntent = Intent().apply {
+                                putParcelableArrayListExtra(
+                                    "selectedParticipants",
+                                    ArrayList(autocompleteUsers)
+                                )
+                            }
+                            (context as? Activity)?.setResult(Activity.RESULT_OK, resultIntent)
+                            (context as? Activity)?.finish()
                         }
-                        (context as? Activity)?.setResult(Activity.RESULT_OK, resultIntent)
-                        (context as? Activity)?.finish()
-                    }
-                )
+                    )
+                }
             }
         }
     )
@@ -84,6 +88,18 @@ fun AppBar(
                 },
                 onDisableSearch = onDisableSearch
             )
+
+            if (searchQuery.isNotEmpty() && isAddParticipants) {
+                TextButton(
+                    modifier = Modifier.align(Alignment.CenterVertically),
+                    onClick = {
+                        onDisableSearch()
+                        onUpdateSearchQuery("")
+                    }
+                ) {
+                    Text(text = "Add")
+                }
+            }
         }
     }
 }
