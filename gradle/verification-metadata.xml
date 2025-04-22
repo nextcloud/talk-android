@@ -277,6 +277,7 @@
          <trusted-key id="D410F787672BA63BC2DD192B0C907617691418AE" group="org.greenrobot"/>
          <trusted-key id="D6F1BC78607808EC8E9F69437A8860944FAD5F62" group="org.apache.commons" name="commons-parent"/>
          <trusted-key id="D75E25B78EBB19E47C0A99BCA7764F502A938C99" group="com.google.protobuf"/>
+         <trusted-key id="D878D4A823EAE731B729D1A8D2151178A123C97F" group="com.github.spotbugs.snom" name="spotbugs-gradle-plugin" version="6.1.9"/>
          <trusted-key id="DA7A1BB85B19E4FB05073431205C8673DC742C7C" group="org.apache" name="apache" version="9"/>
          <trusted-key id="DB0597E3144342256BC81E3EC727D053C4481CF5" group="org.tensorflow" name="tensorflow-lite-metadata"/>
          <trusted-key id="DBD5E1CF4A7FF3D8CA7459D8C020E96222A31FB3" group="net.swiftzer.semver" name="semver" version="1.1.1"/>
