@@ -97,7 +97,7 @@ fun AppBar(
                         onUpdateSearchQuery("")
                     }
                 ) {
-                    Text(text = "Add")
+                    Text(text = context.getString(R.string.add_participants))
                 }
             }
         }

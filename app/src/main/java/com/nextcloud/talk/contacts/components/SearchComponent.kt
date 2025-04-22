@@ -39,7 +39,7 @@ fun SearchComponent(text: String, onTextChange: (String) -> Unit, onDisableSearc
     TextField(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth(0.85f)
+            .fillMaxWidth(SearchComponentCompanionClass.WIDTH_RATIO)
             .height(60.dp),
         value = text,
         onValueChange = { onTextChange(it) },
@@ -100,3 +100,9 @@ fun searchKeyboardActions(text: String, keyboardController: SoftwareKeyboardCont
             }
         }
     )
+
+class SearchComponentCompanionClass() {
+    companion object {
+        const val WIDTH_RATIO = 0.85f
+    }
+}
