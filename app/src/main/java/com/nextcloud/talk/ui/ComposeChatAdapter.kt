@@ -68,6 +68,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -145,7 +146,7 @@ class ComposeChatAdapter(
         val items = mutableStateListOf<ChatMessage>()
 
         init {
-            sharedApplication!!.componentApplication.inject(this)
+            sharedApplication?.componentApplication?.inject(this)
         }
 
         val currentUser: User = userManager.currentUser.blockingGet()
@@ -175,7 +176,7 @@ class ComposeChatAdapter(
 
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
     private var outgoingShape: RoundedCornerShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
-    private val viewModel = ComposeChatAdapterViewModel()
+    val viewModel = ComposeChatAdapterViewModel()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -217,7 +218,7 @@ class ComposeChatAdapter(
                     val dateString = formatTime(timestamp * LONG_1000)
                     val color = Color(viewModel.highEmphasisColorInt)
                     val backgroundColor =
-                        viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                        LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
                     Row(
                         horizontalArrangement = Arrangement.Absolute.Center,
                         verticalAlignment = Alignment.CenterVertically
@@ -385,9 +386,9 @@ class ComposeChatAdapter(
         val incoming = message.actorId != viewModel.currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
-                viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
+                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
             } else {
-                viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
             }
         } else {
             if (message.isDeleted) {
@@ -407,7 +408,7 @@ class ComposeChatAdapter(
             if (incoming) {
                 val imageUri = message.actorId?.let { viewModel.contactsViewModel.getImageUri(it, true) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-                val loadedImage = loadImage(imageUri, viewModel.context, errorPlaceholderImage)
+                val loadedImage = loadImage(imageUri, LocalContext.current, errorPlaceholderImage)
                 AsyncImage(
                     model = loadedImage,
                     contentDescription = stringResource(R.string.user_avatar),
@@ -429,13 +430,13 @@ class ComposeChatAdapter(
                 color = Color(color),
                 shape = shape
             ) {
-                val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+                val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
                 val modifier = if (includePadding) Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp) else Modifier
                 Column(modifier = modifier) {
                     if (message.parentMessageId != null && !message.isDeleted && messagesJson != null) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
-                            ?.parentMessage!!.asModel().let { CommonMessageQuote(viewModel.context, it) }
+                            ?.parentMessage!!.asModel().let { CommonMessageQuote(LocalContext.current, it) }
                     }
 
                     if (incoming) {
@@ -594,14 +595,14 @@ class ComposeChatAdapter(
     }
 
     @Composable
-    private fun SystemMessage(message: ChatMessage) {
+    fun SystemMessage(message: ChatMessage) {
         val similarMessages = sharedApplication!!.resources.getQuantityString(
             R.plurals.see_similar_system_messages,
             message.expandableChildrenAmount,
             message.expandableChildrenAmount
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+            val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
             Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -643,14 +644,14 @@ class ComposeChatAdapter(
     private fun ImageMessage(message: ChatMessage, state: MutableState<Boolean>) {
         val hasCaption = (message.message != "{file}")
         val incoming = message.actorId != viewModel.currentUser.userId
-        val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+        val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
         CommonMessageBody(message, includePadding = false, playAnimation = state.value) {
             Column {
                 message.activeUser = viewModel.currentUser
                 val imageUri = message.imageUrl
                 val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
                 val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
-                val loadedImage = load(imageUri, viewModel.context, drawableResourceId)
+                val loadedImage = load(imageUri, LocalContext.current, drawableResourceId)
 
                 AsyncImage(
                     model = loadedImage,
@@ -831,7 +832,7 @@ class ComposeChatAdapter(
                         it.link?.let { Text(it, fontSize = TIME_TEXT_SIZE) }
                         it.thumb?.let {
                             val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                            val loadedImage = loadImage(it, viewModel.context, errorPlaceholderImage)
+                            val loadedImage = loadImage(it, LocalContext.current, errorPlaceholderImage)
                             AsyncImage(
                                 model = loadedImage,
                                 contentDescription = stringResource(R.string.nc_sent_an_image),
@@ -885,7 +886,7 @@ class ComposeChatAdapter(
 
                             if (cardName?.isNotEmpty() == true) {
                                 val cardDescription = String.format(
-                                    viewModel.context.resources.getString(R.string.deck_card_description),
+                                    LocalContext.current.resources.getString(R.string.deck_card_description),
                                     stackName,
                                     boardName
                                 )
@@ -902,3 +903,119 @@ class ComposeChatAdapter(
         }
     }
 }
+
+// @Preview(showBackground = true, widthDp = 380, heightDp = 800)
+// @Composable
+// fun AllMessageTypesPreview() {
+//     // 1. Basic Setup
+//     val context = LocalContext.current
+//     val dummyCurrentUser = User().apply { userId = "currentUser"; displayName = "Me" }
+//     val dummyOtherUser = User().apply { userId = "otherUser"; displayName = "Alice" }
+//
+//     // 2. Instantiate Adapter and Manually Configure ViewModel
+//     //    This bypasses Dagger/Hilt injection for the preview.
+//     val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null) }
+//     val viewModel = adapter.viewModel // Get the inner ViewModel instance
+//
+//     // Manually assign fake dependencies to the ViewModel instance
+//     // NOTE: This uses reflection or requires making fields non-private or having setters,
+//     // OR relies on the init block *not* crashing (e.g., by providing a fake Application context if needed).
+//     // A simpler way for preview might be to make ViewModel fields `internal` or pass dependencies
+//     // directly to Composables if refactoring is an option.
+//     // Assuming we can set them (you might need to adjust visibility or use other techniques):
+//     remember {
+//         // It's tricky because fields are lateinit Inject.
+//         // Best bet for PREVIEW ONLY: Modify ViewModel temporarily or use a factory if possible.
+//         // If you can't easily set them, the preview might fail.
+//         // Let's *assume* for the preview setup you can somehow provide these:
+//         viewModel.viewThemeUtils = FakeViewThemeUtils()
+//         viewModel.messageUtils = FakeMessageUtils()
+//         viewModel.contactsViewModel = FakeContactsViewModel()
+//         viewModel.chatViewModel = FakeChatViewModel()
+//         viewModel.context = context
+//         viewModel.userManager = FakeUserManager()
+//         // The `currentUser` and `colorScheme` vals will likely use these fakes now.
+//     }
+//
+//     // 3. Create Sample ChatMessage Objects
+//     val sampleMessages = remember {
+//         listOf(
+//             // --- Incoming Messages ---
+//             ChatMessage().apply {
+//                 id = "sys1"; actorId = "system"; message = "User joined"; timestamp = System.currentTimeMillis() / 1000 - 600; actorDisplayName = "System"; systemMessageType = ChatMessage.SystemMessageType.MEMBER_JOINED
+//             },
+//             ChatMessage().apply {
+//                 id = "inc1"; actorId = dummyOtherUser.userId; message = "Hello! This is an incoming text message."; timestamp = System.currentTimeMillis() / 1000 - 500; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
+//             },
+//             ChatMessage().apply { // Incoming Quote
+//                 id = "incQuote"; actorId = dummyOtherUser.userId; message = "This replies to message 'out1'."; timestamp = System.currentTimeMillis() / 1000 - 490; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; parentMessageId = "out1" // ID of the message being replied to
+//             },
+//             ChatMessage().apply { // Incoming Image
+//                 id = "inc2"; actorId = dummyOtherUser.userId; message = "{file}"; timestamp = System.currentTimeMillis() / 1000 - 400; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/jpeg"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}" // Use a placeholder drawable
+//                 // Simulate attachment info if needed by getCalculateMessageType()
+//                 messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/jpeg"))
+//             },
+//             ChatMessage().apply { // Incoming Image with Caption
+//                 id = "inc3"; actorId = dummyOtherUser.userId; message = "Look at this placeholder!"; timestamp = System.currentTimeMillis() / 1000 - 390; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/jpeg"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}" // Use a placeholder drawable
+//                 messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/jpeg", "name" to "placeholder.jpg")) // Ensure message isn't "{file}"
+//             },
+//             ChatMessage().apply { // Incoming Voice
+//                 id = "inc4"; actorId = dummyOtherUser.userId; message = "Voice message"; timestamp = System.currentTimeMillis() / 1000 - 300; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
+//                 // Simulate voice info if needed by getCalculateMessageType()
+//                 messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "audio/ogg")) // Assuming voice is identified by mimetype
+//             },
+//             ChatMessage().apply { // Incoming Geolocation
+//                 id = "inc5"; actorId = dummyOtherUser.userId; message = "Location shared"; timestamp = System.currentTimeMillis() / 1000 - 250; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
+//                 messageParameters = mutableMapOf("geo_0" to mapOf("type" to "geo-location", "latitude" to "41.8781", "longitude" to "-87.6298")) // Chicago coordinates
+//             },
+//             ChatMessage().apply { // Incoming Poll
+//                 id = "inc6"; actorId = dummyOtherUser.userId; message = "Poll created"; timestamp = System.currentTimeMillis() / 1000 - 200; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
+//                 messageParameters = mutableMapOf("poll_0" to mapOf("type" to "talk-poll", "id" to "poll123", "name" to "Favorite Compose Feature?"))
+//             },
+//             ChatMessage().apply { // Incoming Deck Card
+//                 id = "inc7"; actorId = dummyOtherUser.userId; message = "Deck card shared"; timestamp = System.currentTimeMillis() / 1000 - 150; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
+//                 messageParameters = mutableMapOf("deck_0" to mapOf("type" to "deck-card", "id" to "card456", "name" to "Implement Preview", "stackname" to "To Do", "boardname" to "Compose Project", "link" to "http://example.com/deck/card/456"))
+//             },
+//             ChatMessage().apply { // Incoming Link Preview
+//                 id = "inc8"; actorId = dummyOtherUser.userId; message = "Check this out: https://www.example.com"; timestamp = System.currentTimeMillis() / 1000 - 100; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; extractedUrlToPreview = "https://www.example.com"
+//             },
+//
+//
+//             // --- Outgoing Messages ---
+//             ChatMessage().apply {
+//                 id = "out1"; actorId = dummyCurrentUser.userId; message = "Hi there! This is an outgoing message."; timestamp = System.currentTimeMillis() / 1000 - 50; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT // Or ReadStatus.NONE
+//             },
+//             ChatMessage().apply { // Outgoing Image
+//                 id = "out2"; actorId = dummyCurrentUser.userId; message = "{file}"; timestamp = System.currentTimeMillis() / 1000 - 40; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/png"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}"
+//                 messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/png"))
+//             },
+//             ChatMessage().apply { // Outgoing Voice
+//                 id = "out3"; actorId = dummyCurrentUser.userId; message = "Outgoing Voice"; timestamp = System.currentTimeMillis() / 1000 - 30; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT
+//                 messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "audio/ogg"))
+//             },
+//             ChatMessage().apply { // Outgoing Link Preview
+//                 id = "out4"; actorId = dummyCurrentUser.userId; message = "My link: http://google.com"; timestamp = System.currentTimeMillis() / 1000 - 20; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; extractedUrlToPreview = "http://google.com"
+//             },
+//             ChatMessage().apply { // Outgoing Deleted Message
+//                 id = "out5"; actorId = dummyCurrentUser.userId; message = "This message will be deleted."; timestamp = System.currentTimeMillis() / 1000 - 10; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; isDeleted = true
+//             }
+//         )
+//     }
+//
+//     // 4. Populate ViewModel's items
+//     LaunchedEffect(sampleMessages) { // Use LaunchedEffect or similar to update state once
+//         if (viewModel.items.isEmpty()) { // Prevent adding multiple times on recomposition
+//             // Ensure the ViewModel's currentUser is set correctly if needed by addMessages/internals
+//             // The 'remember' block above should handle the fake UserManager providing it.
+//             adapter.addMessages(sampleMessages.toMutableList(), append = false) // Add messages
+//         }
+//     }
+//
+//
+//     // 5. Display using GetView
+//     MaterialTheme(colorScheme = viewModel.colorScheme) { // Use the (potentially faked) color scheme
+//         Box(modifier = Modifier.fillMaxSize()) { // Provide a container
+//             adapter.GetView() // Call the main Composable
+//         }
+//     }
+// }
