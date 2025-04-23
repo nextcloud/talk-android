@@ -256,6 +256,8 @@ class ChatActivity :
     lateinit var chatViewModel: ChatViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
+    private var noteToSelfRoomToken: String = ""
+
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
@@ -433,6 +435,24 @@ class ChatActivity :
         binding.progressBar.visibility = View.VISIBLE
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
+
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            conversationUser!!,
+            intArrayOf(
+                ApiUtils.API_V4,
+                ApiUtils
+                    .API_V3,
+                1
+            )
+        )
+        chatViewModel.checkForNoteToSelf(
+            ApiUtils.getCredentials(conversationUser?.username, conversationUser?.token)!!,
+            ApiUtils.getUrlForRooms(
+                apiVersion,
+                conversationUser?.baseUrl
+            ),
+            false
+        )
 
         initObservers()
 
@@ -766,6 +786,19 @@ class ChatActivity :
                 }
 
                 else -> {}
+            }
+        }
+
+        chatViewModel.getNoteToSelfAvailability.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.NoteToSelfAvailableState -> {
+                    this.lifecycleScope.launch {
+                        noteToSelfRoomToken = state.roomToken
+                    }
+                }
+                else -> {
+                    noteToSelfRoomToken = ""
+                }
             }
         }
 
@@ -3126,7 +3159,8 @@ class ChatActivity :
                 currentConversation,
                 isShowMessageDeletionButton(message),
                 participantPermissions.hasChatPermission(),
-                spreedCapabilities
+                spreedCapabilities,
+                noteToSelfRoomToken
             ).show()
         }
     }
