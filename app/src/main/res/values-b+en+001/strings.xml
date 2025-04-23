@@ -4,6 +4,7 @@
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
+    <string name="archive_conversation">Archive conversation</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
     <string name="archived_conversation">Archived %1$s</string>
@@ -45,6 +46,7 @@
     <string name="dnd">Do not disturb</string>
     <string name="dontClear">Don\'t clear</string>
     <string name="edit">Edit</string>
+    <string name="edit_message_icon_description">Edit message</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
@@ -134,6 +136,7 @@
     <string name="nc_change_password">Change Password</string>
     <string name="nc_check_your_internet">Please check your internet connection</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
+    <string name="nc_clear_edit_message">Cancel editing</string>
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
@@ -229,7 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Yes</string>
     <string name="nc_display_name_not_fetched">Display name couldn\'t be fetched, aborting</string>
     <string name="nc_display_name_not_stored">Could not store display name, aborting</string>
+    <string name="nc_edit_icon">Edit</string>
     <string name="nc_edit_message">Edit</string>
+    <string name="nc_edit_message_text">Edit message</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
@@ -643,6 +648,7 @@
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>
     <string name="typing_x_others">and %1$s others are typing …</string>
+    <string name="unarchive_conversation">Unarchive conversation</string>
     <string name="unarchive_hint">Once a conversation is unarchived, it will be shown by default again.</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="unban">Unban</string>

@@ -232,7 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Oui</string>
     <string name="nc_display_name_not_fetched">Le nom d’affichage n’a pas pu être récupéré, annulation</string>
     <string name="nc_display_name_not_stored">Impossible d\'enregistrer le nom d\'affichage, abandon</string>
+    <string name="nc_edit_icon">Éditer</string>
     <string name="nc_edit_message">Modifier</string>
+    <string name="nc_edit_message_text">Modifier le message</string>
     <string name="nc_edited_by_admin">Modifié par un administrateur</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
@@ -646,6 +648,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
     <string name="typing_x_others">et %1$s autres sont en train de taper…</string>
+    <string name="unarchive_conversation">Désarchiver la conversation</string>
     <string name="unarchive_hint">Une fois qu\'une conversation est désarchivée, elle sera à nouveau affichée par défaut.</string>
     <string name="unarchived_conversation">%1$s non archivée</string>
     <string name="unban">Retirer le ban</string>

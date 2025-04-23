@@ -4,6 +4,7 @@
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
     <string name="appbar_search_in">Søg i %s</string>
+    <string name="archive_conversation">Arkiv samtale</string>
     <string name="archive_hint">Når en samtale er arkiveret, vil den blive skjult som standard. Vælg filteret \"Arkiveret\" for at se arkiverede samtaler. Direkte omtaler vil stadig blive modtaget.</string>
     <string name="archived">Arkiveret</string>
     <string name="archived_conversation">Arkiverede %1$s</string>
@@ -228,6 +229,7 @@
     <string name="nc_dialog_save_to_storage_yes">Ja</string>
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
+    <string name="nc_edit_icon">Rediger</string>
     <string name="nc_edit_message">Rediger</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
     <string name="nc_email">E-mail</string>
@@ -642,6 +644,7 @@
     <string name="typing_are_typing">indtaster ...</string>
     <string name="typing_is_typing">indtaster ..</string>
     <string name="typing_x_others">og %1$s andre indtaster …</string>
+    <string name="unarchive_conversation">Fjern samtale fra arkiv</string>
     <string name="unarchive_hint">Når en samtale er genaktiveret, så vil den som standard vises igen.</string>
     <string name="unarchived_conversation">Genaktiver %1$s</string>
     <string name="unban">Fjern blokering</string>

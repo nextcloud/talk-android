@@ -24,11 +24,13 @@
     <string name="conversations">Conversaciones</string>
     <string name="create_conversation">Crear una conversación</string>
     <string name="custom">Personalizar</string>
+    <string name="danger_zone">Zona de peligru</string>
     <string name="delete_avatar">Desaniciar l\'avatar</string>
     <string name="deleted_conversation">Desanicióse la conversación «%1$s»</string>
     <string name="dnd">Nun molestar</string>
     <string name="dontClear">Nun borrar</string>
     <string name="edit">Editar</string>
+    <string name="edit_message_icon_description">Editar el mensaxe</string>
     <string name="emoji_category_recent">De recién</string>
     <string name="encrypted">Cifróse</string>
     <string name="error_loading_chats">Hebo un problema al cargar les charres</string>
@@ -136,7 +138,9 @@
     <string name="nc_dialog_save_to_storage_continue">¿Quies siguir?</string>
     <string name="nc_dialog_save_to_storage_no">Non</string>
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
+    <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
+    <string name="nc_edit_message_text">Editar el mensaxe</string>
     <string name="nc_email">Corréu electrónicu</string>
     <string name="nc_expire_message_eight_hours">8 hores</string>
     <string name="nc_expire_message_four_weeks">4 selmanes</string>

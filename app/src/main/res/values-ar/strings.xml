@@ -4,6 +4,7 @@
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
+    <string name="archive_conversation">أرشفة المحادثة</string>
     <string name="archive_hint">رد أرشفة محادثة، سيتم إخفاؤها افتراضياً. حدِّد الفلتر \"مُؤرشَفة\" لعرض المحادثات المؤرشفة. الإشارات المباشرة ستظل قابلة ليُشار إليها حتى بعد الأرشفة.</string>
     <string name="archived">مؤرشفة</string>
     <string name="archived_conversation">مؤرشفة %1$s</string>
@@ -38,12 +39,14 @@
     <string name="create_conversation">انشاء محادثة</string>
     <string name="create_issue">تكوين إشكالية </string>
     <string name="custom">مخصص</string>
+    <string name="danger_zone">منطقة خطر</string>
     <string name="deck_card_description">%1$s في %2$s</string>
     <string name="delete_avatar">إمسح صورة الملف الشخصي الرمزية</string>
     <string name="deleted_conversation">محادثة محذوفة %1$s</string>
     <string name="dnd">الرجاء عدم الإزعاج</string>
     <string name="dontClear">لا تمحُ</string>
     <string name="edit">تعديل</string>
+    <string name="edit_message_icon_description">تحرير رسالة</string>
     <string name="emoji_backspace">سهم خلفي backspace</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
     <string name="encrypted">مُشفّر</string>
@@ -132,6 +135,8 @@
     <string name="nc_change_cert_auth">تغيير شهادة المصادقة</string>
     <string name="nc_change_password">تعديل الكلمة السرية</string>
     <string name="nc_check_your_internet">رجاءً، تحقَّق من اتصالك بالإنترنت</string>
+    <string name="nc_clear_edit_button">إلغاء التحرير</string>
+    <string name="nc_clear_edit_message">إلغاء التحرير</string>
     <string name="nc_clear_history">مسح جميع الرسائل</string>
     <string name="nc_clear_history_success">تمّ مسح جميع الرسائل</string>
     <string name="nc_clear_history_warning">هل تريد مسح جميع الرسائل في هذه المحادثة؟</string>
@@ -227,7 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">نعم</string>
     <string name="nc_display_name_not_fetched">لايمكن عرض الاسم، جارِ إلالغاء</string>
     <string name="nc_display_name_not_stored">تعذر تخزين اسم العرض ، جارِ إلالغاء</string>
+    <string name="nc_edit_icon">تحرير</string>
     <string name="nc_edit_message">تحرير</string>
+    <string name="nc_edit_message_text">تحرير رسالة</string>
     <string name="nc_edited_by_admin">تمّ التحرير من قِبَل المدير</string>
     <string name="nc_email">البريد الإلكتروني</string>
     <string name="nc_expire_message_eight_hours">8 ساعات</string>
@@ -641,6 +648,7 @@
     <string name="typing_are_typing">يكتبون ...</string>
     <string name="typing_is_typing">يكتب...</string>
     <string name="typing_x_others">و%1$s آخرون يقومون بالكتابة...</string>
+    <string name="unarchive_conversation">استرجاع المحادثة من الأرشيف</string>
     <string name="unarchive_hint">بمجرد إعادة المحادثة من الأرشيف، سوف تظهر مجدداً بشكل تلقائي.</string>
     <string name="unarchived_conversation">غير مؤرشفة %1$s</string>
     <string name="unban">رفع الحظر</string>

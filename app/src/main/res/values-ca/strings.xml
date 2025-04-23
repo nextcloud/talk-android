@@ -4,6 +4,7 @@
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
+    <string name="archive_conversation">Arxiva la conversa</string>
     <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="archived_conversation">S\'ha arxivat %1$s</string>
@@ -38,12 +39,14 @@
     <string name="create_conversation">Crea una conversa</string>
     <string name="create_issue">Crea un error</string>
     <string name="custom">Personalitzat</string>
+    <string name="danger_zone">Zona perillosa</string>
     <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Suprimeix l\'avatar</string>
     <string name="deleted_conversation">Conversa suprimida %1$s</string>
     <string name="dnd">No molesteu</string>
     <string name="dontClear">No l\'esborris</string>
     <string name="edit">Editar</string>
+    <string name="edit_message_icon_description">Edició del missatge</string>
     <string name="emoji_backspace">Retrocés</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>
@@ -132,6 +135,8 @@
     <string name="nc_change_cert_auth">Canvia el certificat d’autenticació</string>
     <string name="nc_change_password">Canvia la contrasenya</string>
     <string name="nc_check_your_internet">Comproveu la connexió a Internet</string>
+    <string name="nc_clear_edit_button">Cancel·la l\'edició</string>
+    <string name="nc_clear_edit_message">Cancel·la l\'edició</string>
     <string name="nc_clear_history">Suprimeix tots els missatges</string>
     <string name="nc_clear_history_success">S\'han suprimit tots els missatges</string>
     <string name="nc_clear_history_warning">Segur que voleu suprimir tots els missatges d\'aquesta conversa?</string>
@@ -223,7 +228,9 @@
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">No s’ha pogut obtenir el nom de visualització, s\'està avortant</string>
     <string name="nc_display_name_not_stored">No s\'ha pogut emmagatzemar el nom de visualització, s\'està avortant</string>
+    <string name="nc_edit_icon">Edició</string>
     <string name="nc_edit_message">Edició</string>
+    <string name="nc_edit_message_text">Edició del missatge</string>
     <string name="nc_edited_by_admin">Editat per l\'administrador</string>
     <string name="nc_email">Correu</string>
     <string name="nc_expire_message_eight_hours">8 hores</string>
@@ -627,6 +634,7 @@
     <string name="typing_are_typing">estan escrivint…</string>
     <string name="typing_is_typing">està escrivint…</string>
     <string name="typing_x_others">i %1$s més estan escrivint…</string>
+    <string name="unarchive_conversation">Desarxiva la conversa</string>
     <string name="unarchive_hint">Quan s\'hagi anul·lat l\'arxivament d\'una conversa, es tornarà a mostrar per defecte.</string>
     <string name="unban">Anul·la la prohibició</string>
     <string name="unread">Per llegir</string>

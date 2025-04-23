@@ -22,6 +22,7 @@
     <string name="dnd">Μην ενοχλείτε</string>
     <string name="dontClear">Να μη γίνεται εκκαθάριση</string>
     <string name="edit">Επεξεργασία</string>
+    <string name="edit_message_icon_description">Επεξεργασία μηνύματος</string>
     <string name="emoji_category_recent">Πρόσφατα</string>
     <string name="encrypted">Κρυπτογραφημένο</string>
     <string name="failed_to_save">Αποτυχία αποθήκευσης %1$s</string>
@@ -77,6 +78,7 @@
     <string name="nc_change_cert_auth">Αλλαγή πιστοποιητικού πιστοποίησης</string>
     <string name="nc_change_password">Αλλαγή συνθηματικού</string>
     <string name="nc_clear_edit_button">Ακύρωση επεξεργασίας</string>
+    <string name="nc_clear_edit_message">Ακύρωση επεξεργασίας</string>
     <string name="nc_clear_history">Διαγραφή όλων των μηνυμάτων</string>
     <string name="nc_clear_history_success">Όλα τα μηνύματα διαγράφηκαν</string>
     <string name="nc_clear_history_warning">Θέλετε πραγματικά να διαγράψετε όλα τα μηνύματα σε αυτήν τη συνομιλία;</string>
@@ -135,7 +137,9 @@
     <string name="nc_dialog_save_to_storage_yes">Ναι</string>
     <string name="nc_display_name_not_fetched">Το εμφανιζόμενο όνομα δεν ήταν δυνατό να ληφθεί, ματαίωση</string>
     <string name="nc_display_name_not_stored">Το εμφανιζόμενο όνομα δεν μπορεί να αποθηκευτεί, ματαίωση</string>
+    <string name="nc_edit_icon">Επεξεργασία</string>
     <string name="nc_edit_message">Επεξεργασία</string>
+    <string name="nc_edit_message_text">Επεξεργασία μηνύματος</string>
     <string name="nc_email">Ηλ. ταχυδρομείο</string>
     <string name="nc_expire_message_eight_hours">8 ώρες</string>
     <string name="nc_expire_message_off">Απενεργοποίηση </string>

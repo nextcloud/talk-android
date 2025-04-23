@@ -232,6 +232,7 @@
     <string name="nc_dialog_save_to_storage_yes">Tá</string>
     <string name="nc_display_name_not_fetched">Níorbh fhéidir an t-ainm taispeána a fháil, ag éirí as</string>
     <string name="nc_display_name_not_stored">Níorbh fhéidir an t-ainm taispeána a stóráil, ag cur deireadh leis</string>
+    <string name="nc_edit_icon">Cuir in eagar</string>
     <string name="nc_edit_message">Cuir in eagar</string>
     <string name="nc_edit_message_text">Cuir teachtaireacht in eagar</string>
     <string name="nc_edited_by_admin">Arna chur in eagar ag riarthóir</string>
@@ -647,6 +648,7 @@
     <string name="typing_are_typing">ag clóscríobh…</string>
     <string name="typing_is_typing">ag clóscríobh…</string>
     <string name="typing_x_others">agus %1$s eile ag clóscríobh …</string>
+    <string name="unarchive_conversation">Comhrá gan chartlann</string>
     <string name="unarchive_hint">Nuair a bheidh comhrá gan chartlannú, taispeánfar arís é de réir réamhshocraithe.</string>
     <string name="unarchived_conversation">Gan chartlann %1$s</string>
     <string name="unban">Dícosc</string>

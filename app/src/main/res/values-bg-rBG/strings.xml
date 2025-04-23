@@ -23,10 +23,12 @@
     <string name="conversations">Разговори</string>
     <string name="create_conversation">Създаване на разговор</string>
     <string name="custom">Персонализиран</string>
+    <string name="danger_zone">Зона на опасност</string>
     <string name="delete_avatar">Изтриване на аватар</string>
     <string name="dnd">Не безпокойте</string>
     <string name="dontClear">Да не се изчиства</string>
     <string name="edit">Променяне</string>
+    <string name="edit_message_icon_description">Редактиране на съобщение</string>
     <string name="emoji_backspace">Backspace /Назад/</string>
     <string name="emoji_category_recent">Скорошни</string>
     <string name="encrypted">Криптиран</string>
@@ -98,6 +100,8 @@
     <string name="nc_certificate_error">Вашата настройка на SSL, предотврати връзката </string>
     <string name="nc_change_cert_auth">Променете сертификата за удостоверяване</string>
     <string name="nc_change_password">Промяна на парола</string>
+    <string name="nc_clear_edit_button">Отказ на редактирането</string>
+    <string name="nc_clear_edit_message">Отказ на редактирането</string>
     <string name="nc_clear_history">Изтриване на всички съобщения</string>
     <string name="nc_clear_history_success">Всички съобщения бяха изтрити </string>
     <string name="nc_clear_history_warning">Сигурни ли сте, че искате да изтриете всички съобщения в този разговор?</string>
@@ -155,7 +159,9 @@
     <string name="nc_dialog_save_to_storage_yes">Да</string>
     <string name="nc_display_name_not_fetched">Показваното име  не може да бъде извлечено, прекъсване</string>
     <string name="nc_display_name_not_stored">Името за визуализация не може да бъде записано, прекратяване</string>
+    <string name="nc_edit_icon">Редактиране</string>
     <string name="nc_edit_message">Редактиране</string>
+    <string name="nc_edit_message_text">Редактиране на съобщение</string>
     <string name="nc_email">Имейл</string>
     <string name="nc_expire_message_eight_hours">8 часа</string>
     <string name="nc_expire_message_four_weeks">4 седмици</string>

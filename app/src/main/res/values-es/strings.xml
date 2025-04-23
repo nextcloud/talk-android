@@ -232,7 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Sí</string>
     <string name="nc_display_name_not_fetched">Nombre para mostrar no pudo ser obtenido, abortando</string>
     <string name="nc_display_name_not_stored">No se ha podido almacenar el nombre para mostrar. Abortando</string>
+    <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
+    <string name="nc_edit_message_text">Editar mensaje</string>
     <string name="nc_edited_by_admin">Editado por admin</string>
     <string name="nc_email">Email</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
@@ -647,6 +649,7 @@
     <string name="typing_are_typing">están escribiendo ...</string>
     <string name="typing_is_typing">está escribiendo ...</string>
     <string name="typing_x_others">y %1$s otros están escribiendo ...</string>
+    <string name="unarchive_conversation">Desarchivar conversación</string>
     <string name="unarchive_hint">Una vez que se desarchiva una conversación, se volverá a mostrar por defecto.</string>
     <string name="unarchived_conversation">%1$s Desarchivada</string>
     <string name="unban">Desbloquear</string>

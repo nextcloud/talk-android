@@ -4,6 +4,7 @@
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
+    <string name="archive_conversation">Archivovat konverzaci</string>
     <string name="archive_hint">Jakmile je konverzace archivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
     <string name="archived">Archivováno</string>
     <string name="archived_conversation">Archivováno %1$s</string>
@@ -38,12 +39,14 @@
     <string name="create_conversation">Vytvořit konverzaci</string>
     <string name="create_issue">Nahlásit problém</string>
     <string name="custom">Uživatelsky určený</string>
+    <string name="danger_zone">Nebezpečná zóna</string>
     <string name="deck_card_description">%1$s v %2$s</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
     <string name="deleted_conversation">Konverzace %1$s smazána</string>
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
+    <string name="edit_message_icon_description">Upravit zprávu</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
     <string name="encrypted">Šifrované</string>
@@ -132,6 +135,8 @@
     <string name="nc_change_cert_auth">Změnit certifikát sloužící pro ověřování se</string>
     <string name="nc_change_password">Změnit heslo</string>
     <string name="nc_check_your_internet">Zkontrolujte své připojení k Internetu</string>
+    <string name="nc_clear_edit_button">Zrušit upravování</string>
+    <string name="nc_clear_edit_message">Zrušit upravování</string>
     <string name="nc_clear_history">Smazat všechny zprávy</string>
     <string name="nc_clear_history_success">Všechny zprávy byly vymazány</string>
     <string name="nc_clear_history_warning">Opravdu chcete všechny zprávy v této konverzaci smazat?</string>
@@ -227,7 +232,9 @@
     <string name="nc_dialog_save_to_storage_yes">Ano</string>
     <string name="nc_display_name_not_fetched">Nepodařilo se získat zobrazované jméno, přerušuje se</string>
     <string name="nc_display_name_not_stored">Nepodařilo se uložit zobrazované jméno, přerušuje se</string>
+    <string name="nc_edit_icon">Upravit</string>
     <string name="nc_edit_message">Upravit</string>
+    <string name="nc_edit_message_text">Upravit zprávu</string>
     <string name="nc_edited_by_admin">Upraveno správcem</string>
     <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 hodin</string>
@@ -641,6 +648,7 @@
     <string name="typing_are_typing">píší…</string>
     <string name="typing_is_typing">píše…</string>
     <string name="typing_x_others">a %1$s ostatní píší…</string>
+    <string name="unarchive_conversation">Zrušit archivaci konverzace</string>
     <string name="unarchive_hint">Jakmile je zrušeno archivování konverzace, znovu bude zobrazováná už ve výchozí stavu.</string>
     <string name="unarchived_conversation">Zrušena archivace %1$s</string>
     <string name="unban">Zrušit vyloučení</string>

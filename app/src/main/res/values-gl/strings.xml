@@ -232,6 +232,7 @@
     <string name="nc_dialog_save_to_storage_yes">Si</string>
     <string name="nc_display_name_not_fetched">Non foi posíbel recuperar o nome para amosar, interrompendo</string>
     <string name="nc_display_name_not_stored">Non foi posíbel almacenar o nome para amosar, interrompendo</string>
+    <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar a mensaxe</string>
     <string name="nc_edited_by_admin">Editado por alguén de administración</string>
@@ -646,6 +647,7 @@
     <string name="typing_are_typing">están a escribiren…</string>
     <string name="typing_is_typing">está a escribir…</string>
     <string name="typing_x_others">e %1$s máis están a escribiren…</string>
+    <string name="unarchive_conversation">Desarquivar a conversa</string>
     <string name="unarchive_hint">Cando se desarquiva unha conversa, de xeito predeterminado esta volverá ser amosada.</string>
     <string name="unarchived_conversation">%1$s foi desarquivada</string>
     <string name="unban">Retirar a expulsión</string>

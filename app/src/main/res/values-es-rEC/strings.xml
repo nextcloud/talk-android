@@ -164,7 +164,9 @@
     <string name="nc_dialog_reauth_or_delete">¿Quieres volver a autorizar o eliminar esta cuenta?</string>
     <string name="nc_display_name_not_fetched">No se pudo obtener el nombre a desplegar, abortando</string>
     <string name="nc_display_name_not_stored">No se pudo almacenar el nombre a desplegar, abortando</string>
+    <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
+    <string name="nc_edit_message_text">Editar mensaje</string>
     <string name="nc_email">Correo electrónico</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
