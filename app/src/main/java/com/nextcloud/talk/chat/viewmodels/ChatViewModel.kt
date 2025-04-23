@@ -34,14 +34,12 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
-import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -538,8 +536,8 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
-        chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
+    fun checkForNoteToSelf(user: User) {
+        chatNetworkDataSource.checkForNoteToSelf(user).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(CheckForNoteToSelfObserver())
     }
@@ -784,25 +782,13 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    inner class CheckForNoteToSelfObserver : Observer<RoomsOverall> {
+    inner class CheckForNoteToSelfObserver : Observer<RoomOverall> {
         override fun onSubscribe(d: Disposable) {
             disposableSet.add(d)
         }
 
-        override fun onNext(roomsOverall: RoomsOverall) {
-            val rooms = roomsOverall.ocs?.data
-            rooms?.let {
-                try {
-                    val noteToSelf = rooms.first {
-                        val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
-                        ConversationUtils.isNoteToSelfConversation(model)
-                    }
-                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token)
-                } catch (e: NoSuchElementException) {
-                    _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
-                    Log.e(TAG, "Note to self not found $e")
-                }
-            }
+        override fun onNext(roomOverall: RoomOverall) {
+            val room = roomOverall.ocs?.data
         }
 
         override fun onError(e: Throwable) {

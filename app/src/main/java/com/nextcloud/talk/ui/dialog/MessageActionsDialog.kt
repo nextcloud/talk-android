@@ -60,8 +60,7 @@ class MessageActionsDialog(
     private val currentConversation: ConversationModel?,
     private val showMessageDeletionButton: Boolean,
     private val hasChatPermission: Boolean,
-    private val spreedCapabilities: SpreedCapability,
-    private val noteToSelfRoomToken: String
+    private val spreedCapabilities: SpreedCapability
 ) : BottomSheetDialog(chatActivity) {
 
     @Inject
@@ -125,8 +124,7 @@ class MessageActionsDialog(
         initMenuAddToNote(
             networkMonitor.isOnline.value &&
                 !message.isDeleted &&
-                currentConversation?.type != ConversationEnums.ConversationType.NOTE_TO_SELF,
-            noteToSelfRoomToken
+                currentConversation?.type != ConversationEnums.ConversationType.NOTE_TO_SELF
         )
 
         initMenuItems(networkMonitor.isOnline.value)
@@ -452,10 +450,12 @@ class MessageActionsDialog(
     private fun initMenuAddToNote(visible: Boolean, roomToken: String = "") {
         if (visible) {
             dialogMessageActionsBinding.menuShareToNote.setOnClickListener {
+                chatActivity.chatViewModel.checkForNoteToSelf(user!!)
                 chatActivity.shareToNotes(message, roomToken)
                 dismiss()
             }
         }
+
         dialogMessageActionsBinding.menuShareToNote.visibility = getVisibility(visible)
     }
 
