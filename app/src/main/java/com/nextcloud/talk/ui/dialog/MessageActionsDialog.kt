@@ -25,6 +25,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
@@ -70,6 +71,9 @@ class MessageActionsDialog(
     lateinit var reactionsRepository: ReactionsRepository
 
     @Inject
+    lateinit var chatViewModel: ChatViewModel
+
+    @Inject
     lateinit var dateUtils: DateUtils
 
     @Inject
@@ -96,6 +100,8 @@ class MessageActionsDialog(
             .EDIT_MESSAGES_NOTE_TO_SELF
     ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
+    private var noteToSelfRoomToken: String = ""
+
     private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && (
         message.isOneToOneConversation ||
             message.isFormerOneToOneConversation
@@ -118,6 +124,7 @@ class MessageActionsDialog(
 
         viewThemeUtils.material.colorBottomSheetBackground(dialogMessageActionsBinding.root)
         viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
+        initObservers()
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
 
@@ -126,7 +133,6 @@ class MessageActionsDialog(
                 !message.isDeleted &&
                 currentConversation?.type != ConversationEnums.ConversationType.NOTE_TO_SELF
         )
-
         initMenuItems(networkMonitor.isOnline.value)
     }
 
@@ -173,6 +179,27 @@ class MessageActionsDialog(
         }
     }
 
+    fun initObservers() {
+        chatViewModel.noteToSelfViewState.observe(this) { state ->
+
+            when (state) {
+                is ChatViewModel.NoteToSelfErrorState -> {
+                }
+                ChatViewModel.NoteToSelfStartState -> {
+                }
+                is ChatViewModel.NoteToSelfSuccessState -> {
+                    val roomOverall = state.roomOverall
+                    noteToSelfRoomToken = roomOverall.ocs?.data?.token!!
+                }
+
+                is ChatViewModel.NoteToSelfNotAvailableState -> {
+                }
+
+                else -> {
+                }
+            }
+        }
+    }
     override fun onStart() {
         super.onStart()
         val bottomSheet = findViewById<View>(R.id.design_bottom_sheet)
@@ -447,11 +474,11 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.menuSaveMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuAddToNote(visible: Boolean, roomToken: String = "") {
+    private fun initMenuAddToNote(visible: Boolean) {
         if (visible) {
+            chatViewModel.checkForNoteToSelf(user!!)
             dialogMessageActionsBinding.menuShareToNote.setOnClickListener {
-                chatActivity.chatViewModel.checkForNoteToSelf(user!!)
-                chatActivity.shareToNotes(message, roomToken)
+                chatActivity.shareToNotes(message, noteToSelfRoomToken)
                 dismiss()
             }
         }

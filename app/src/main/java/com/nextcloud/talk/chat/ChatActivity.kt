@@ -256,6 +256,8 @@ class ChatActivity :
     lateinit var chatViewModel: ChatViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
+    private lateinit var noteToSelfRoomToken: String
+
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
@@ -637,6 +639,27 @@ class ChatActivity :
                 }
 
                 else -> {}
+            }
+        }
+
+        chatViewModel.noteToSelfViewState.observe(this) { state ->
+
+            when (state) {
+                is ChatViewModel.NoteToSelfErrorState -> {
+                    Snackbar.make(binding.root, "Unable to send message to note to self", Snackbar.LENGTH_LONG).show()
+                }
+                ChatViewModel.NoteToSelfStartState -> {
+                }
+                is ChatViewModel.NoteToSelfSuccessState -> {
+                    val roomOverall = state.roomOverall
+                    noteToSelfRoomToken = roomOverall.ocs?.data?.token!!
+                }
+
+                is ChatViewModel.NoteToSelfNotAvailableState -> {
+                }
+
+                else -> {
+                }
             }
         }
 

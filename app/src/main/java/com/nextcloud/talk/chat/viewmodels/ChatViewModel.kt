@@ -275,6 +275,14 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
+    object NoteToSelfStartState : ViewState
+    class NoteToSelfErrorState(val message: String) : ViewState
+    class NoteToSelfSuccessState(val roomOverall: RoomOverall) : ViewState
+
+    private val _noteToSelfViewState: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfStartState)
+    val noteToSelfViewState: LiveData<ViewState>
+        get() = _noteToSelfViewState
+
     fun initData(credentials: String, urlForChatting: String, roomToken: String) {
         chatRepository.initData(credentials, urlForChatting, roomToken)
     }
@@ -539,7 +547,24 @@ class ChatViewModel @Inject constructor(
     fun checkForNoteToSelf(user: User) {
         chatNetworkDataSource.checkForNoteToSelf(user).subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(CheckForNoteToSelfObserver())
+            ?. subscribe(object : Observer<RoomOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    disposableSet.add(d)
+                }
+
+                override fun onNext(roomOverall: RoomOverall) {
+                    _noteToSelfViewState.value = NoteToSelfSuccessState(roomOverall)
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Error when sharing location to notes $e")
+                    _noteToSelfViewState.value = NoteToSelfErrorState(e.localizedMessage ?: "")
+                }
+
+                override fun onComplete() {
+                    // unused atm
+                }
+            })
     }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
@@ -775,24 +800,6 @@ class ChatViewModel @Inject constructor(
         override fun onError(e: Throwable) {
             Log.d(TAG, "Error when getting reminder $e")
             _getReminderExistState.value = GetReminderStartState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
-    inner class CheckForNoteToSelfObserver : Observer<RoomOverall> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(roomOverall: RoomOverall) {
-            val room = roomOverall.ocs?.data
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "Error when getting rooms for Note to Self Observer $e")
         }
 
         override fun onComplete() {
