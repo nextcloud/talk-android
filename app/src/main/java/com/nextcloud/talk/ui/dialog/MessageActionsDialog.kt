@@ -192,9 +192,6 @@ class MessageActionsDialog(
                     noteToSelfRoomToken = roomOverall.ocs?.data?.token!!
                 }
 
-                is ChatViewModel.NoteToSelfNotAvailableState -> {
-                }
-
                 else -> {
                 }
             }

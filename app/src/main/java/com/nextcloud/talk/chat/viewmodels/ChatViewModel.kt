@@ -557,7 +557,7 @@ class ChatViewModel @Inject constructor(
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Error when sharing location to notes $e")
+                    Log.e(TAG, "Error when getting note to self room $e")
                     _noteToSelfViewState.value = NoteToSelfErrorState(e.localizedMessage ?: "")
                 }
 
