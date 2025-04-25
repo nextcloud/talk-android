@@ -130,6 +130,7 @@
     <string name="nc_diagnose_phone_category_title">Telefonas</string>
     <string name="nc_diagnose_server_version">Serverio versija</string>
     <string name="nc_diagnose_signaling_mode_extern">Išorinė</string>
+    <string name="nc_diagnose_signaling_mode_intern">Vidinis</string>
     <string name="nc_dialog_invalid_password">Neteisingas slaptažodis</string>
     <string name="nc_dialog_maintenance_mode">Techninės priežiūros veiksena</string>
     <string name="nc_dialog_outdated_client_option_update">Atnaujinti</string>
