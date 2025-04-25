@@ -159,6 +159,20 @@ class ComposeChatAdapter(
         val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
     }
 
+    inner class ComposeChatAdapterPreviewViewModel(
+        val viewThemeUtils: ViewThemeUtils,
+        val contactsViewModel: ContactsViewModel,
+        val chatViewModel: ChatViewModel,
+        val context: Context,
+        val userManager: UserManager
+    ) : ViewModel() {
+        val items = mutableStateListOf<ChatMessage>()
+
+        val currentUser: User = userManager.currentUser.blockingGet()
+        val colorScheme = viewThemeUtils.getColorScheme(context)
+        val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
+    }
+
     companion object {
         val TAG: String = ComposeChatAdapter::class.java.simpleName
         private val REGULAR_TEXT_SIZE = 16.sp
@@ -916,18 +930,8 @@ fun AllMessageTypesPreview() {
     val dummyOtherUser = User().apply { userId = "otherUser"; displayName = "Alice" }
 
     val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null) }
-    val viewModel = adapter.viewModel.apply {
-        viewThemeUtils = ComposePreviewUtils.viewThemeUtils
-        messageUtils = ComposePreviewUtils.messageUtils
-        context = LocalContext.current
-        userManager = ComposePreviewUtils.userManager
-    }
-
-    // TODO error here, perhaps I should reimplement the viewModel as well and have a special preview view model
-    //
-    // remember {
-    //     viewModel.viewThemeUtils = ComposePreviewUtils.viewThemeUtils
-    // }
+    val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
+    val viewModel = adapter.viewModel
 
     val sampleMessages = remember {
         listOf(
