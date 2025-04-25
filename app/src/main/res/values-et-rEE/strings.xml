@@ -209,6 +209,7 @@
     <string name="nc_last_moderator_leaving_room_warning">Pead määrtama uue moderaatori enne, kui saad siis vestlusest lahkuda</string>
     <string name="nc_leave">Lahku vestlusest</string>
     <string name="nc_license_title">Litsents</string>
+    <string name="nc_locked">Lukus</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
     <string name="nc_message_failed">Ebaõnnestus</string>

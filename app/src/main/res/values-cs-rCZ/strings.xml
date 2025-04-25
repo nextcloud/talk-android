@@ -48,6 +48,7 @@
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
     <string name="edit">Upravit</string>
+    <string name="edit_error_24_hours_old_message">Zprávy starší než 24 hodin není možné upravovat</string>
     <string name="edit_message_icon_description">Upravit zprávu</string>
     <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Nedávné</string>
