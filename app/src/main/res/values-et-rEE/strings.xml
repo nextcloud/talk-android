@@ -246,7 +246,8 @@
     <string name="nc_remove_group_and_members">Eemalda gruppe ja liikmeid</string>
     <string name="nc_remove_participant">Eemalda osalejaid</string>
     <string name="nc_remove_password">Eemalda salasõna</string>
-    <string name="nc_remove_team_and_members">Eemalda tiime ja liikmeid</string>
+    <string name="nc_remove_team_and_members">Eemalda tiim ja liikmed</string>
+    <string name="nc_rename">Muuda vestluse nime</string>
     <string name="nc_rename_confirm">Muuda nime</string>
     <string name="nc_reply">Vasta</string>
     <string name="nc_reply_privately">Vasta privaatselt</string>
@@ -264,6 +265,7 @@
     <string name="nc_search">Otsi</string>
     <string name="nc_select_an_account">Otsi kasutajakontot</string>
     <string name="nc_select_participants">Vali osalejaid</string>
+    <string name="nc_send_edit_message">Uuenda sõnumit</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s saatis gif-faili.</string>
     <string name="nc_sent_a_gif_you">Sina saatsid gif-faili.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s saatis video.</string>
@@ -283,12 +285,18 @@
     <string name="nc_sent_voice" formatted="true">%1$s saatis häälsõnumi.</string>
     <string name="nc_sent_voice_you">Sina saatsid häälsõnumi.</string>
     <string name="nc_server_connect">Testi ühendust serveriga</string>
+    <string name="nc_server_db_upgrade_needed">Palun uuenda oma %1$si andmebaasi</string>
+    <string name="nc_server_failed_to_import_account">Valitud kasutajakonto importimine ei õnnestunud</string>
     <string name="nc_server_helper_text">See on sinu %1$s kasutajaliidese veebiaadress, kui sa avad ta veebibrauseris.</string>
+    <string name="nc_server_import_account">Impordi kasutajakonto rakendusest %1$s</string>
     <string name="nc_server_import_account_plain">Impordi kasutajakonto</string>
     <string name="nc_server_import_accounts">Impordi kasutajakontod rakendusest %1$s</string>
     <string name="nc_server_import_accounts_plain">Impordi kasutajakontod</string>
+    <string name="nc_server_maintenance">Palun lõpeta oma %1$si hooldusrežiim</string>
+    <string name="nc_server_not_installed">Palun lõpeta oma %1$si paigaldus</string>
     <string name="nc_server_testing_connection">Ühenduse testimine</string>
     <string name="nc_server_url">Serveri aadress https://…</string>
+    <string name="nc_server_version">%1$s toimib vaid siis, kui kasutusel on %2$s 13 ja uuem</string>
     <string name="nc_set_new_password">Määra uus salasõna</string>
     <string name="nc_set_password">Määra salasõna</string>
     <string name="nc_settings">Seadistused</string>
@@ -298,8 +306,13 @@
     <string name="nc_settings_contact_admin_of">Palun võta ühendust serveri administraatoriga - </string>
     <string name="nc_settings_notification_sounds_post_oreo">Teavitused</string>
     <string name="nc_settings_other_notifications_ringtone">Sõnumid</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_429">Viga 429 - liiga palju päringuid</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Võid lisada oma telefoninumbri, mille alusel teised kasutajad saavad sind leida</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Sisesta telefoninumber</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Vigane telefoninumber</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefoninumbri lisamine õnnestus</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefoninumber</string>
+    <string name="nc_settings_phone_book_integration_title">Telefoninumbri lõiming</string>
     <string name="nc_settings_privacy">Privaatsus</string>
     <string name="nc_settings_proxy_host_title">Proksiserveri aadress</string>
     <string name="nc_settings_proxy_password_title">Proksiserveri salasõna</string>
@@ -309,10 +322,13 @@
     <string name="nc_settings_remove">Eemalda</string>
     <string name="nc_settings_remove_account">Eemalda konto</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Serveriteavituste rakendus pole paigaldatud</string>
-    <string name="nc_settings_theme_dark">Hele</string>
-    <string name="nc_settings_theme_light">Tume</string>
-    <string name="nc_settings_theme_title">Teema</string>
+    <string name="nc_settings_theme_dark">Tume kujundus</string>
+    <string name="nc_settings_theme_follow_system">Kasuta süsteemi kujundust</string>
+    <string name="nc_settings_theme_key">kujundus</string>
+    <string name="nc_settings_theme_light">Hele kujundus</string>
+    <string name="nc_settings_theme_title">Kujundus</string>
     <string name="nc_settings_warning">Hoiatus</string>
+    <string name="nc_share_contact">Jaga kontakti</string>
     <string name="nc_share_link">Jaga linki</string>
     <string name="nc_share_to_choose_account">Vali konto</string>
     <string name="nc_shared_items_location">Asukoht</string>
