@@ -23,10 +23,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.ViewModelProvider
 import androidx.core.net.toUri
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
@@ -35,8 +37,8 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
-import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -55,6 +57,9 @@ class DiagnoseActivity : BaseActivity() {
 
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
     lateinit var ncApi: NcApi
@@ -78,8 +83,13 @@ class DiagnoseActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        val diagnoseViewModel = ViewModelProvider(
+            this,
+            viewModelFactory
+        )[DiagnoseViewModel::class.java]
 
         val colorScheme = viewThemeUtils.getColorScheme(this)
+        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
@@ -107,13 +117,22 @@ class DiagnoseActivity : BaseActivity() {
                         )
                     },
                     content = {
+                        val viewState = diagnoseViewModel.notificationViewState.collectAsState().value
                         Column(
                             Modifier
                                 .padding(it)
                                 .background(backgroundColor)
                                 .fillMaxSize()
                         ) {
-                            DiagnoseContentComposable(diagnoseDataState)
+                            DiagnoseContentComposable(
+                                diagnoseDataState,
+                                isLoading = diagnoseViewModel.isLoading.value,
+                                showDialog = diagnoseViewModel.showDialog.value,
+                                viewState = viewState,
+                                onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
+                                onDismissDialog = { diagnoseViewModel.dismissDialog() },
+                                isGooglePlayServicesAvailable = isGooglePlayServicesAvailable
+                            )
                         }
                     }
                 )
@@ -125,8 +144,6 @@ class DiagnoseActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
-
-        isGooglePlayServicesAvailable = ClosedInterfaceImpl().isGooglePlayServicesAvailable
 
         diagnoseData.clear()
         setupMetaValues()
