@@ -3339,7 +3339,11 @@ class ChatActivity :
         when (type) {
             ChatMessage.MessageType.VOICE_MESSAGE -> {
                 uploadFile(shareUri.toString(), true, token = roomToken)
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                snackBar.view.setOnClickListener {
+                 openNoteToSelfConversation(roomToken)
+                }
+                snackBar.show()
             }
 
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
@@ -3348,12 +3352,20 @@ class ChatActivity :
                     try {
                         context.contentResolver.openInputStream(shareUri)?.close()
                         uploadFile(shareUri.toString(), false, caption!!, roomToken)
-                        Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                        val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                        snackBar.view.setOnClickListener {
+                            openNoteToSelfConversation(roomToken)
+                        }
+                        snackBar.show()
                     } catch (e: java.lang.Exception) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri")
                         downloadFileToCache(message, false) {
                             uploadFile(shareUri.toString(), false, caption!!, roomToken)
-                            Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                           val snackBar =  Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                            snackBar.view.setOnClickListener {
+                                openNoteToSelfConversation(roomToken)
+                            }
+                            snackBar.show()
                         }
                     }
                 }
@@ -3368,7 +3380,11 @@ class ChatActivity :
                     objectId,
                     metaData
                 )
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                snackBar.view.setOnClickListener {
+                    openNoteToSelfConversation(roomToken)
+                }
+                snackBar.show()
             }
 
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
@@ -3379,13 +3395,24 @@ class ChatActivity :
                     message.message!!,
                     conversationUser!!.displayName!!
                 )
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                snackBar.view.setOnClickListener {
+                    openNoteToSelfConversation(roomToken)
+                }
+                snackBar.show()
             }
-
             else -> {}
         }
     }
 
+    fun openNoteToSelfConversation(noteToSelfRoomToken:String){
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, noteToSelfRoomToken)
+        val chatIntent = Intent(context, ChatActivity::class.java)
+        chatIntent.putExtras(bundle)
+        chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        startActivity(chatIntent)
+    }
     fun openInFilesApp(message: ChatMessage) {
         val keyID = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]
         val link = message.selectedIndividualHashMap!!["link"]
