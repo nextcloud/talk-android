@@ -42,6 +42,7 @@
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.0"/>
+            <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.1"/>
             <trusting group="androidx.room"/>
             <trusting group="androidx.sqlite"/>
             <trusting group="com.google.android.gms"/>
