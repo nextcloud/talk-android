@@ -4,10 +4,11 @@
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
-    <string name="archive_conversation">Arxiva la conversa</string>
+    <string name="archive_conversation">Arxivar la conversa</string>
     <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
     <string name="archived_conversation">S\'ha arxivat %1$s</string>
+    <string name="audio_call">Trucada d\'àudio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortida d\'àudio</string>
     <string name="audio_output_phone">Telèfon</string>
@@ -31,6 +32,7 @@
     <string name="close">Tanca</string>
     <string name="close_icon">Tanca la icona</string>
     <string name="connection_established">S\'ha establert la connexió</string>
+    <string name="connection_lost">No hi ha connexió al servidor</string>
     <string name="connection_lost_sent_messages_are_queued">S\'ha perdut la connexió: els missatges enviats s\'han posat a la cua</string>
     <string name="continuous_voice_message_recording">Bloqueja l\'enregistrament per a l\'enregistrament continu del missatge de veu</string>
     <string name="conversation_is_read_only">La conversa és només de lectura</string>
@@ -46,6 +48,7 @@
     <string name="dnd">No molesteu</string>
     <string name="dontClear">No l\'esborris</string>
     <string name="edit">Editar</string>
+    <string name="edit_error_24_hours_old_message">Els missatges mes antics de 24 hores no es poden editar</string>
     <string name="edit_message_icon_description">Edició del missatge</string>
     <string name="emoji_backspace">Retrocés</string>
     <string name="emoji_category_recent">Recent</string>
