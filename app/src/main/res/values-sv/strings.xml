@@ -8,6 +8,7 @@
     <string name="archive_hint">När en konversation väl har arkiverats döljs den som standard. Välj filtret \"Arkiverad\" för att se arkiverade konversationer. Direkta omnämnanden kommer fortfarande att tas emot.</string>
     <string name="archived">Arkiverad</string>
     <string name="archived_conversation">Arkiverad %1$s</string>
+    <string name="audio_call">Ljudsamtal</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Ljudutgång</string>
     <string name="audio_output_phone">Telefon</string>
@@ -30,6 +31,7 @@
     <string name="clear_status_message_after">Rensa statusmeddelande efter</string>
     <string name="close">Stäng</string>
     <string name="connection_established">Anslutning etablerad</string>
+    <string name="connection_lost">Ingen anslutning till servern</string>
     <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
     <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
@@ -45,6 +47,7 @@
     <string name="dnd">Stör ej</string>
     <string name="dontClear">Rensa inte</string>
     <string name="edit">Ändra</string>
+    <string name="edit_error_24_hours_old_message">Meddelanden som är äldre än 24 timmar kan inte redigeras</string>
     <string name="edit_message_icon_description">Redigera meddelande</string>
     <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
@@ -251,6 +254,7 @@
     <string name="nc_federation_pending_invitation_hint">Du har väntande inbjudningar</string>
     <string name="nc_file_browser_back">Tillbaka</string>
     <string name="nc_file_storage_permission">Tillstånd för filåtkomst krävs</string>
+    <string name="nc_filter">Filtrera konversationer</string>
     <string name="nc_following_link">Användare följer en offentlig länk</string>
     <string name="nc_formatted_message_you">Du: %1$s</string>
     <string name="nc_forward_message">Vidarebefordra</string>
@@ -393,6 +397,7 @@
     <string name="nc_search">Sök</string>
     <string name="nc_select_an_account">Välj ett konto</string>
     <string name="nc_select_participants">Välj deltagare</string>
+    <string name="nc_send_edit_message">Uppdatera meddelande</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
     <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>
@@ -473,6 +478,7 @@
     <string name="nc_settings_server_eol">Serverversionen är för gammal eller ej stödd av den här versionen av Andriod-appen</string>
     <string name="nc_settings_server_eol_title">Serverversion stöds inte</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Aviseringsappen är inte installerad på servern</string>
+    <string name="nc_settings_theme_battery_saver">Angivet av batterisparläge</string>
     <string name="nc_settings_theme_dark">Mörk</string>
     <string name="nc_settings_theme_follow_system">Använd systemets standard</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -527,6 +533,7 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Nästa vecka</string>
+    <string name="no_conversations_archived">Inga arkiverade konversationer</string>
     <string name="no_offline_messages_saved">Inga offlinemeddelanden sparade</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrering på grund av saknade behörigheter</string>
     <string name="oneHour">1 timme</string>
@@ -664,6 +671,7 @@
     <string name="userinfo_error_text">Kunde inte hämta personlig användarinformation.</string>
     <string name="userinfo_no_info_headline">Ingen personlig info inställd</string>
     <string name="userinfo_no_info_text">Lägg till namn, bild och kontaktuppgifter på din profilsida.</string>
+    <string name="video_call">Videosamtal</string>
     <string name="whats_your_status">Vad är din status?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Se %d liknande meddelande</item>

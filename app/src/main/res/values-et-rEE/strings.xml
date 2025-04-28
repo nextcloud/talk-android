@@ -244,6 +244,7 @@
     <string name="nc_participants">Osalejad</string>
     <string name="nc_participants_add">Lisa osalejaid</string>
     <string name="nc_password">Salasõna</string>
+    <string name="nc_phone_book_integration_account_not_found">Kasutajakontot ei leidu</string>
     <string name="nc_plain_old_messages">Sõnumid</string>
     <string name="nc_privacy">Privaatsus</string>
     <string name="nc_promote">Määra moderaatoriks</string>
@@ -377,9 +378,14 @@
     <string name="resend_message">Saada uuesti</string>
     <string name="reset_status">Lähesta olek</string>
     <string name="save">Salvesta</string>
+    <string name="scope_federated_description">Sünkrooni vaid usaldusväärsetesse serveritesse</string>
     <string name="scope_federated_title">Federated</string>
+    <string name="scope_local_description">Nähtav vaid selle serveri kasutajatele ja külalistele</string>
     <string name="scope_local_title">Kohalik</string>
+    <string name="scope_private_description">Nähtav vaid osalejatele, kes on läbi teinud tuvastamise telefoninumbri alusel kasutades Nextcloud Talk rakendust</string>
     <string name="scope_private_title">Privaatne</string>
+    <string name="scope_published_description">Sünkrooni usaldusväärsetesse serveritesse ning üldisesse ja avalikku aadressiraamatusse</string>
+    <string name="scope_published_title">Avaldatud</string>
     <string name="search_icon">Otsinguikoon</string>
     <string name="secondsAgo">sekundit tagasi</string>
     <string name="selected_list_item">Valitud</string>
