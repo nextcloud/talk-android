@@ -3341,7 +3341,7 @@ class ChatActivity :
                 uploadFile(shareUri.toString(), true, token = roomToken)
                 val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
                 snackBar.view.setOnClickListener {
-                 openNoteToSelfConversation(roomToken)
+                    openNoteToSelfConversation(roomToken)
                 }
                 snackBar.show()
             }
@@ -3361,7 +3361,7 @@ class ChatActivity :
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri")
                         downloadFileToCache(message, false) {
                             uploadFile(shareUri.toString(), false, caption!!, roomToken)
-                           val snackBar =  Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
+                            val snackBar = Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_LONG)
                             snackBar.view.setOnClickListener {
                                 openNoteToSelfConversation(roomToken)
                             }
@@ -3405,7 +3405,7 @@ class ChatActivity :
         }
     }
 
-    fun openNoteToSelfConversation(noteToSelfRoomToken:String){
+    fun openNoteToSelfConversation(noteToSelfRoomToken: String) {
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, noteToSelfRoomToken)
         val chatIntent = Intent(context, ChatActivity::class.java)
