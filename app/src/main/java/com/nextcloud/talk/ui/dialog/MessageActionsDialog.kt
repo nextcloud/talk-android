@@ -185,13 +185,13 @@ class MessageActionsDialog(
             when (state) {
                 is ChatViewModel.NoteToSelfErrorState -> {
                 }
-                ChatViewModel.NoteToSelfStartState -> {
+                is ChatViewModel.NoteToSelfStartState -> {
                 }
                 is ChatViewModel.NoteToSelfSuccessState -> {
                     val roomOverall = state.roomOverall
                     noteToSelfRoomToken = roomOverall.ocs?.data?.token!!
+                    chatActivity.shareToNotes(message, noteToSelfRoomToken)
                 }
-
                 else -> {
                 }
             }
@@ -473,13 +473,11 @@ class MessageActionsDialog(
 
     private fun initMenuAddToNote(visible: Boolean) {
         if (visible) {
-            chatViewModel.checkForNoteToSelf(user!!)
             dialogMessageActionsBinding.menuShareToNote.setOnClickListener {
                 chatActivity.shareToNotes(message, noteToSelfRoomToken)
                 dismiss()
             }
         }
-
         dialogMessageActionsBinding.menuShareToNote.visibility = getVisibility(visible)
     }
 
