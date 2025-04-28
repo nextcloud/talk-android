@@ -3358,7 +3358,7 @@ class ChatActivity :
         when (type) {
             ChatMessage.MessageType.VOICE_MESSAGE -> {
                 uploadFile(shareUri.toString(), true, token = roomToken)
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, R.string.nc_message_added_to_notes, Snackbar.LENGTH_SHORT).show()
             }
 
             ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE -> {
@@ -3367,12 +3367,16 @@ class ChatActivity :
                     try {
                         context.contentResolver.openInputStream(shareUri)?.close()
                         uploadFile(shareUri.toString(), false, caption!!, roomToken)
-                        Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                        Snackbar.make(binding.root, R.string.nc_message_added_to_notes, Snackbar.LENGTH_SHORT).show()
                     } catch (e: java.lang.Exception) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri")
                         downloadFileToCache(message, false) {
                             uploadFile(shareUri.toString(), false, caption!!, roomToken)
-                            Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                            Snackbar.make(
+                                binding.root,
+                                R.string.nc_message_added_to_notes,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
                         }
                     }
                 }
@@ -3387,7 +3391,7 @@ class ChatActivity :
                     objectId,
                     metaData
                 )
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, R.string.nc_message_added_to_notes, Snackbar.LENGTH_SHORT).show()
             }
 
             ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
@@ -3398,7 +3402,7 @@ class ChatActivity :
                     message.message!!,
                     conversationUser!!.displayName!!
                 )
-                Snackbar.make(binding.root, R.string.nc_message_sent, Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, R.string.nc_message_added_to_notes, Snackbar.LENGTH_SHORT).show()
             }
 
             else -> {}
