@@ -14,7 +14,6 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
@@ -124,11 +123,8 @@ class RetrofitChatNetwork(
             it
         }
 
-    override fun checkForNoteToSelf(
-        credentials: String,
-        url: String,
-        includeStatus: Boolean
-    ): Observable<RoomsOverall> = ncApi.getRooms(credentials, url, includeStatus).map { it }
+    override suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall =
+        ncApiCoroutines.getNoteToSelfRoom(credentials, url)
 
     override fun shareLocationToNotes(
         credentials: String,

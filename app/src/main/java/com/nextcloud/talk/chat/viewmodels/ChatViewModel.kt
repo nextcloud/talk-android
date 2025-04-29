@@ -34,14 +34,12 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
-import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -198,13 +196,6 @@ class ChatViewModel @Inject constructor(
 
     val getReminderExistState: LiveData<ViewState>
         get() = _getReminderExistState
-
-    object NoteToSelfNotAvailableState : ViewState
-    open class NoteToSelfAvailableState(val roomToken: String) : ViewState
-
-    private val _getNoteToSelfAvailability: MutableLiveData<ViewState> = MutableLiveData(NoteToSelfNotAvailableState)
-    val getNoteToSelfAvailability: LiveData<ViewState>
-        get() = _getNoteToSelfAvailability
 
     object GetRoomStartState : ViewState
     object GetRoomErrorState : ViewState
@@ -538,10 +529,17 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun checkForNoteToSelf(credentials: String, baseUrl: String, includeStatus: Boolean) {
-        chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl, includeStatus).subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(CheckForNoteToSelfObserver())
+    suspend fun checkForNoteToSelf(credentials: String, baseUrl: String): ConversationModel? {
+        val response = chatNetworkDataSource.checkForNoteToSelf(credentials, baseUrl)
+        if (response.ocs?.meta?.statusCode == HTTP_CODE_OK) {
+            val noteToSelfConversation = ConversationModel.mapToConversationModel(
+                response.ocs?.data!!,
+                userProvider.currentUser.blockingGet()
+            )
+            return noteToSelfConversation
+        } else {
+            return null
+        }
     }
 
     fun shareLocationToNotes(credentials: String, url: String, objectType: String, objectId: String, metadata: String) {
@@ -784,36 +782,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    inner class CheckForNoteToSelfObserver : Observer<RoomsOverall> {
-        override fun onSubscribe(d: Disposable) {
-            disposableSet.add(d)
-        }
-
-        override fun onNext(roomsOverall: RoomsOverall) {
-            val rooms = roomsOverall.ocs?.data
-            rooms?.let {
-                try {
-                    val noteToSelf = rooms.first {
-                        val model = ConversationModel.mapToConversationModel(it, userProvider.currentUser.blockingGet())
-                        ConversationUtils.isNoteToSelfConversation(model)
-                    }
-                    _getNoteToSelfAvailability.value = NoteToSelfAvailableState(noteToSelf.token)
-                } catch (e: NoSuchElementException) {
-                    _getNoteToSelfAvailability.value = NoteToSelfNotAvailableState
-                    Log.e(TAG, "Note to self not found $e")
-                }
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.d(TAG, "Error when getting rooms for Note to Self Observer $e")
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
-    }
-
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun outOfOfficeStatusOfUser(credentials: String, baseUrl: String, userId: String) {
         viewModelScope.launch {
@@ -875,6 +843,7 @@ class ChatViewModel @Inject constructor(
     companion object {
         private val TAG = ChatViewModel::class.simpleName
         const val JOIN_ROOM_RETRY_COUNT: Long = 3
+        const val HTTP_CODE_OK: Int = 200
     }
 
     sealed class OutOfOfficeUIState {

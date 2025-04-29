@@ -12,7 +12,6 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
@@ -42,7 +41,8 @@ interface ChatNetworkDataSource {
         displayName: String
     ): Observable<ChatOverallSingleMessage>
 
-    fun checkForNoteToSelf(credentials: String, url: String, includeStatus: Boolean): Observable<RoomsOverall>
+    suspend fun checkForNoteToSelf(credentials: String, url: String): RoomOverall
+
     fun shareLocationToNotes(
         credentials: String,
         url: String,

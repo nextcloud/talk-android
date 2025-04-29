@@ -251,4 +251,7 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("limit") limit: Int
     ): ChatOverall
+
+    @GET
+    suspend fun getNoteToSelfRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
 }
