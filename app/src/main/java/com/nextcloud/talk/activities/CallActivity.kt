@@ -1367,8 +1367,13 @@ class CallActivity : CallBaseActivity() {
             }
             if (enable) {
                 binding!!.selfVideoRenderer.visibility = View.VISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
+
+                initSelfVideoViewForNormalMode()
             } else {
                 binding!!.selfVideoRenderer.visibility = View.INVISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.INVISIBLE
+
                 binding!!.selfVideoRenderer.clearImage()
                 binding!!.selfVideoRenderer.release()
 
@@ -3233,6 +3238,7 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.selfVideoRenderer.release()
         if (participantDisplayItems!!.size > 1) {
+            binding!!.pipCallConversationNameTextView.text = conversationName
             binding!!.pipSelfVideoOverlay.visibility = View.VISIBLE
             initSelfVideoViewForPipMode()
         } else {

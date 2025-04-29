@@ -182,9 +182,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="50dp"
-                android:layout_marginBottom="50dp">
-            </RelativeLayout>
-
+                android:layout_marginBottom="50dp"/>
 
             <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/flexboxLayout"
@@ -227,8 +225,6 @@
                 tools:visibility = "visible"/>
 
         </com.google.android.flexbox.FlexboxLayout>
-
-
 
         </RelativeLayout>
 
@@ -330,7 +326,7 @@
         </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/pipSelfVideoOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -339,13 +335,37 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <TextView
+            android:id="@+id/pipCallConversationNameTextView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="40dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="-30dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textAlignment="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            tools:text="our group call" />
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerInParent="true"
+            app:srcCompat="@drawable/ic_circular_group"
+            tools:ignore="ContentDescription" />
+
         <org.webrtc.SurfaceViewRenderer
             android:id="@+id/pipSelfVideoRenderer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:clickable="false"
-            tools:visibility="visible" />
-    </LinearLayout>
+            tools:visibility="gone" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
