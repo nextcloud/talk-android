@@ -446,7 +446,7 @@
     <string name="scope_local_title">Локально</string>
     <string name="scope_private_description">Відображається лише людям, зіставленим за допомогою інтеграції номера телефону через Talk на мобільному пристрої</string>
     <string name="scope_private_title">Приватно</string>
-    <string name="scope_published_description">Синхронізація з надійними серверами та глобальною та загальнодоступною адресною книгою</string>
+    <string name="scope_published_description">Синхронізація з надійними серверами та глобальною та публічною адресною книгою</string>
     <string name="scope_published_title">Опубліковано</string>
     <string name="secondsAgo">секунд тому</string>
     <string name="selected_list_item">Selected</string>
