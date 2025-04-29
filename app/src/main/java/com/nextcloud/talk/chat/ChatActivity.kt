@@ -3295,37 +3295,61 @@ class ChatActivity :
         }
     }
 
-    fun shareToNotes(message: ChatMessage, roomToken: String) {
-        var shareUri: Uri? = null
-        val data: HashMap<String?, String?>?
-        var metaData: String = ""
-        var objectId: String = ""
-        if (message.hasFileAttachment()) {
-            val filename = message.selectedIndividualHashMap!!["name"]
-            path = applicationContext.cacheDir.absolutePath + "/" + filename
-            shareUri = FileProvider.getUriForFile(
-                this,
-                BuildConfig.APPLICATION_ID,
-                File(path)
-            )
+    fun shareToNotes(message: ChatMessage) {
+        val apiVersion = ApiUtils.getConversationApiVersion(
+            conversationUser!!,
+            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
+        )
+        chatViewModel.checkForNoteToSelf(
+            ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)!!,
+            ApiUtils.getUrlForRooms(
+                apiVersion,
+                conversationUser!!.baseUrl
+            ),
+            false
+        )
 
-            this.grantUriPermission(
-                applicationContext.packageName,
-                shareUri,
-                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
-            )
-        } else if (message.hasGeoLocation()) {
-            data = message.messageParameters?.get("object")
-            objectId = data?.get("id")!!
-            val name = data["name"]!!
-            val lat = data["latitude"]!!
-            val lon = data["longitude"]!!
-            metaData =
-                "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+        chatViewModel.getNoteToSelfAvailability.observe(this) { state ->
+            when (state) {
+                is ChatViewModel.NoteToSelfAvailableState -> {
+                    this.lifecycleScope.launch {
+                        var shareUri: Uri? = null
+                        val data: HashMap<String?, String?>?
+                        var metaData: String = ""
+                        var objectId: String = ""
+                        if (message.hasFileAttachment()) {
+                            val filename = message.selectedIndividualHashMap!!["name"]
+                            path = applicationContext.cacheDir.absolutePath + "/" + filename
+                            shareUri = FileProvider.getUriForFile(
+                                context,
+                                BuildConfig.APPLICATION_ID,
+                                File(path)
+                            )
+
+                            grantUriPermission(
+                                applicationContext.packageName,
+                                shareUri,
+                                Intent.FLAG_GRANT_WRITE_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            )
+                        } else if (message.hasGeoLocation()) {
+                            data = message.messageParameters?.get("object")
+                            objectId = data?.get("id")!!
+                            val name = data["name"]!!
+                            val lat = data["latitude"]!!
+                            val lon = data["longitude"]!!
+                            metaData =
+                                "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
+                                "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                        }
+
+                        shareToNotes(shareUri, state.roomToken, message, objectId, metaData)
+                    }
+                }
+                else -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+            }
         }
-
-        shareToNotes(shareUri, roomToken, message, objectId, metaData)
     }
 
     private fun shareToNotes(

@@ -25,7 +25,6 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageActionsBinding
@@ -36,7 +35,6 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
@@ -123,35 +121,6 @@ class MessageActionsDialog(
         viewThemeUtils.material.colorBottomSheetDragHandle(dialogMessageActionsBinding.bottomSheetDragHandle)
         initEmojiBar(hasChatPermission)
         initMenuItemCopy(!message.isDeleted)
-        val apiVersion = ApiUtils.getConversationApiVersion(user!!, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1))
-        chatActivity.chatViewModel.checkForNoteToSelf(
-            ApiUtils.getCredentials(user.username, user.token)!!,
-            ApiUtils.getUrlForRooms(
-                apiVersion,
-                user.baseUrl
-            ),
-            false
-        )
-        chatActivity.chatViewModel.getNoteToSelfAvailability.observe(this) { state ->
-            when (state) {
-                is ChatViewModel.NoteToSelfAvailableState -> {
-                    this.lifecycleScope.launch {
-                        initMenuAddToNote(
-                            !message.isDeleted &&
-                                !ConversationUtils.isNoteToSelfConversation(currentConversation) &&
-                                networkMonitor.isOnline.value,
-                            state.roomToken
-                        )
-                    }
-                }
-                else -> {
-                    initMenuAddToNote(
-                        false
-                    )
-                }
-            }
-        }
-
         initMenuItems(networkMonitor.isOnline.value)
     }
 
@@ -195,6 +164,11 @@ class MessageActionsDialog(
                     isOnline
             )
             initMenuItemSave(message.getCalculateMessageType() == ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE)
+            initMenuAddToNote(
+                !message.isDeleted &&
+                    !ConversationUtils.isNoteToSelfConversation(currentConversation) &&
+                    networkMonitor.isOnline.value
+            )
         }
     }
 
@@ -472,10 +446,10 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.menuSaveMessage.visibility = getVisibility(visible)
     }
 
-    private fun initMenuAddToNote(visible: Boolean, roomToken: String = "") {
+    private fun initMenuAddToNote(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuShareToNote.setOnClickListener {
-                chatActivity.shareToNotes(message, roomToken)
+                chatActivity.shareToNotes(message)
                 dismiss()
             }
         }
