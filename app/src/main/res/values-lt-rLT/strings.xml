@@ -142,6 +142,7 @@
     <string name="nc_edit_message_text">Taisyti laišką</string>
     <string name="nc_email">El. paštas</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
+    <string name="nc_expire_message_four_weeks">4 savaitės</string>
     <string name="nc_expire_message_off">Išjungta</string>
     <string name="nc_expire_message_one_day">1 diena</string>
     <string name="nc_expire_message_one_hour">1 valanda</string>

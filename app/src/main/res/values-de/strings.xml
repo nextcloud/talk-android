@@ -56,7 +56,7 @@
     <string name="end_call_for_everyone">Anruf für alle beenden</string>
     <string name="error_loading_chats">Beim Laden Ihrer Chats ist ein Problem aufgetreten</string>
     <string name="error_unbanning">Fehler beim Entsperren des Teilnehmers</string>
-    <string name="failed_to_save">Speichern von %1$s fehlgeschlagen</string>
+    <string name="failed_to_save">%1$s konnte nicht gespeichert werden</string>
     <string name="file_list_folder">Ordner</string>
     <string name="file_list_loading">Lade …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -130,7 +130,7 @@
     <string name="nc_call_voice">%s Sprachanruf</string>
     <string name="nc_camera_permission_hint">Um Videokommunikation zu ermöglichen, bitte die Berechtigung \"Kamera\" erteilen.</string>
     <string name="nc_cancel">Abbrechen</string>
-    <string name="nc_capabilities_failed">Fehler beim Abfragen der Fähigkeiten. Abbruch</string>
+    <string name="nc_capabilities_failed">Fähigkeiten konnten nicht abgefragt werden. Abbruch</string>
     <string name="nc_caption">Untertitel</string>
     <string name="nc_certificate_dialog_text">Soll dem bisher unbekannten SSL-Zertifikat, ausgestellt von %1$s für %2$s, gültig von %3$s bis %4$s, vertraut werden?</string>
     <string name="nc_certificate_dialog_title">Überprüfen Sie das Zertifikat</string>
@@ -248,7 +248,7 @@
     <string name="nc_expire_message_one_week">1 Woche</string>
     <string name="nc_expire_messages">Chatnachrichten ablaufen lassen</string>
     <string name="nc_expire_messages_explanation">Chatnachrichten können nach einer bestimmten Zeit gelöscht werden. Hinweis: Im Chat freigegebene Dateien werden für den Besitzer nicht gelöscht, aber sie werden nicht mehr in der Unterhaltung freigegeben.</string>
-    <string name="nc_external_server_failed">Konnte die Benachrichtigungseinstellungen nicht abrufen</string>
+    <string name="nc_external_server_failed">Benachrichtigungseinstellungen konnten nicht abgerufen werden</string>
     <string name="nc_federation_invitation_accept">Annehmen</string>
     <string name="nc_federation_invitation_reject">Ablehnen</string>
     <string name="nc_federation_invited_to_room">von %1$s um %2$s</string>
@@ -420,7 +420,7 @@
     <string name="nc_sent_voice_you">Sie haben eine Sprachnachricht gesendet.</string>
     <string name="nc_server_connect">Prüfe Verbindung zum Server</string>
     <string name="nc_server_db_upgrade_needed">Bitte aktualisieren Sie Ihre %1$s Datenbank</string>
-    <string name="nc_server_failed_to_import_account">Das Importieren des ausgewählten Kontos ist fehlgeschlagen</string>
+    <string name="nc_server_failed_to_import_account">Das ausgewählte Konto konnte nicht importiert werden</string>
     <string name="nc_server_helper_text">Der Link zu Ihrer %1$s Webseite, wenn Sie diese im Browser öffnen.</string>
     <string name="nc_server_import_account">Ein Konto aus der App %1$s importieren</string>
     <string name="nc_server_import_account_plain">Konto importieren</string>
@@ -517,7 +517,7 @@
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
     <string name="nc_upload_failed">Hochladen leider fehlgeschlagen</string>
-    <string name="nc_upload_failed_notification_text">Fehler beim Hochladen von %1$s</string>
+    <string name="nc_upload_failed_notification_text">%1$s konnte nicht hochgeladen werden</string>
     <string name="nc_upload_failed_notification_title">Fehler</string>
     <string name="nc_upload_from_cloud">Freigabe von %1$s</string>
     <string name="nc_upload_from_device">Von Gerät hochladen</string>
@@ -672,7 +672,7 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Webseite</string>
     <string name="user_status">Status</string>
-    <string name="userinfo_error_text">Fehler beim Laden der persönlichen Nutzerinformationen.</string>
+    <string name="userinfo_error_text">Persönliche Nutzerinformationen konnten nicht geladen werden</string>
     <string name="userinfo_no_info_headline">Keine persönlichen Informationen eingestellt</string>
     <string name="userinfo_no_info_text">Fügen Sie Name, Bild und Kontaktdaten auf Ihrer Profilseite hinzu.</string>
     <string name="video_call">Videoanruf</string>

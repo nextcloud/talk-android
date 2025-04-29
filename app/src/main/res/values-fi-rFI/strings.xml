@@ -136,7 +136,9 @@
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_dialog_save_to_storage_no">Ei</string>
     <string name="nc_dialog_save_to_storage_yes">Kyllä</string>
+    <string name="nc_edit_icon">Muokkaa</string>
     <string name="nc_edit_message">Muokkaa</string>
+    <string name="nc_edit_message_text">Muokkaa viestiä</string>
     <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
     <string name="nc_expire_message_four_weeks">4 viikkoa</string>
