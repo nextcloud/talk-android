@@ -257,10 +257,11 @@ class SetStatusDialogFragment :
         binding.clearStatusAfterSpinner.apply {
             this.adapter = createClearTimesArrayAdapter()
             onItemSelectedListener = object : OnItemSelectedListener {
-                override fun onItemSelected(parent: AdapterView<*>, view: View, position: Int, id: Long) {
-                    setClearStatusAfterValue(position)
+                override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                    view?.let {
+                        setClearStatusAfterValue(position)
+                    }
                 }
-
                 override fun onNothingSelected(parent: AdapterView<*>?) {
                     // nothing to do
                 }
