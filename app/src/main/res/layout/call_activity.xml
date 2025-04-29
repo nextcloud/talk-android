@@ -331,7 +331,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/pipGroupCallOverlay"
+        android:id="@+id/pipSelfVideoOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
@@ -339,27 +339,13 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <TextView
-            android:id="@+id/pipCallConversationNameTextView"
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/pipSelfVideoRenderer"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="-30dp"
-            android:layout_marginEnd="5dp"
-            android:layout_marginBottom="15dp"
-            android:ellipsize="end"
-            android:maxLines="3"
-            android:textAlignment="center"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            tools:text="our group call" />
-
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:srcCompat="@drawable/ic_circular_group"
-            tools:ignore="ContentDescription" />
-
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:clickable="false"
+            tools:visibility="visible" />
     </LinearLayout>
 
 </RelativeLayout>

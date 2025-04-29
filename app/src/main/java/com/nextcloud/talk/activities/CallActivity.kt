@@ -901,7 +901,7 @@ class CallActivity : CallBaseActivity() {
             if (cameraEnumerator!!.deviceNames.size < 2) {
                 binding!!.switchSelfVideoButton.visibility = View.GONE
             }
-            initSelfVideoView()
+            initSelfVideoViewForNormalMode()
         }
         binding!!.gridview.setOnTouchListener { _, me ->
             val action = me.actionMasked
@@ -924,7 +924,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun initSelfVideoView() {
+    private fun initSelfVideoViewForNormalMode() {
         try {
             binding!!.selfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
         } catch (e: IllegalStateException) {
@@ -935,6 +935,20 @@ class CallActivity : CallBaseActivity() {
         binding!!.selfVideoRenderer.setEnableHardwareScaler(false)
         binding!!.selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
         binding!!.selfVideoRenderer.setOnTouchListener(SelfVideoTouchListener())
+    }
+
+    private fun initSelfVideoViewForPipMode() {
+        try {
+            binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
+        } catch (e: IllegalStateException) {
+            Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+        }
+        binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
+        // disabled because it causes some devices to crash
+        binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
+        binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+
+        localVideoTrack!!.addSink(binding!!.pipSelfVideoRenderer)
     }
 
     private fun initGridAdapter() {
@@ -3211,17 +3225,20 @@ class CallActivity : CallBaseActivity() {
         binding!!.callInfosLinearLayout.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
-        if (participantDisplayItems!!.size > 1) {
-            binding!!.pipCallConversationNameTextView.text = conversationName
-            binding!!.pipGroupCallOverlay.visibility = View.VISIBLE
-        } else {
-            binding!!.pipGroupCallOverlay.visibility = View.GONE
-        }
+
         binding!!.selfVideoRenderer.release()
+        if (participantDisplayItems!!.size > 1) {
+            binding!!.pipSelfVideoOverlay.visibility = View.VISIBLE
+            initSelfVideoViewForPipMode()
+        } else {
+            binding!!.pipSelfVideoOverlay.visibility = View.GONE
+        }
     }
 
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
+        binding!!.pipSelfVideoOverlay.visibility = View.GONE
+
         if (isVoiceOnlyCall) {
             binding!!.callControls.visibility = View.VISIBLE
         } else {
@@ -3231,7 +3248,6 @@ class CallActivity : CallBaseActivity() {
         initViews()
         binding!!.callInfosLinearLayout.visibility = View.VISIBLE
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
-        binding!!.pipGroupCallOverlay.visibility = View.GONE
     }
 
     override fun suppressFitsSystemWindows() {
