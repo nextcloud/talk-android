@@ -1369,6 +1369,11 @@ class CallActivity : CallBaseActivity() {
                 binding!!.selfVideoRenderer.visibility = View.VISIBLE
             } else {
                 binding!!.selfVideoRenderer.visibility = View.INVISIBLE
+                binding!!.selfVideoRenderer.clearImage()
+                binding!!.selfVideoRenderer.release()
+
+                binding!!.pipSelfVideoRenderer.clearImage()
+                binding!!.pipSelfVideoRenderer.release()
             }
         } else {
             if (enable) {
