@@ -406,23 +406,14 @@ How to translate with transifex:
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
     <string name="nc_new_messages">Unread messages</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s sent an attachment.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>
-    <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s sent a voice message.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
     <string name="nc_sent_a_gif_you">You sent a GIF.</string>
-    <string name="nc_sent_an_attachment_you">You sent an attachment.</string>
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
-    <string name="nc_sent_poll_you">You sent a poll.</string>
-    <string name="nc_sent_location_you">You sent a location.</string>
-    <string name="nc_sent_voice_you">You sent a voice message.</string>
-    <string name="nc_sent_deck_card_you">You sent a deck card</string>
     <string name="nc_formatted_message" translatable="false">%1$s: %2$s</string>
     <string name="nc_message_quote_cancel_reply">Cancel reply</string>
     <!-- When translating to German, please use non-formal variant -->
