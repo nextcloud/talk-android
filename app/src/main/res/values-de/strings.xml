@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Größste zuerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste zuerst</string>
+    <string name="message_copied">Nachricht kopiert</string>
     <string name="message_deleted_by_you">Nachricht von Ihnen gelöscht</string>
     <string name="message_last_edited_by">Bearbeitet von %1$s</string>
     <string name="message_poll_tap_to_open">Tippen, um die Umfrage zu öffnen</string>
@@ -371,6 +372,9 @@
     <string name="nc_public_call_explanation">Zu öffentlichen Unterhaltungen können Personen über einen speziellen Link eingeladen werden.</string>
     <string name="nc_public_call_status">Öffentliche Unterhaltung</string>
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
+    <string name="nc_push_notification_error">Leider ist etwas schief gelaufen, der Fehler ist %1$s</string>
+    <string name="nc_push_notification_fetch_error">Leider ist etwas schief gelaufen, die Test-Push-Nachricht kann nicht abgerufen werden</string>
+    <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde erfolgreich gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel „Testen von Push-Benachrichtigungen“ erhalten.</string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
     <string name="nc_refresh">Aktualisieren</string>
@@ -513,6 +517,8 @@
     <string name="nc_switch_account">Konto wechseln</string>
     <string name="nc_team">Team</string>
     <string name="nc_teams">Teams</string>
+    <string name="nc_test_push_button">Push-Benachrichtigungen testen</string>
+    <string name="nc_test_results">Testergebnisse</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>
