@@ -442,9 +442,8 @@ class ConversationItem(
         viewThemeUtils.platform.colorDrawable(drawable!!, context.resources!!.getColor(R.color.low_emphasis_text, null))
 
         drawable?.let {
-            val scaleFactor = 0.7f
-            val desiredWidth = (it.intrinsicWidth * scaleFactor).toInt()
-            val desiredHeight = (it.intrinsicHeight * scaleFactor).toInt()
+            val desiredWidth = (it.intrinsicWidth * IMAGE_SCALE_FACTOR).toInt()
+            val desiredHeight = (it.intrinsicHeight * IMAGE_SCALE_FACTOR).toInt()
             it.setBounds(0, 0, desiredWidth, desiredHeight)
             val imageSpan = ImageSpan(it, ImageSpan.ALIGN_BOTTOM)
             val startImage = builder.length
@@ -469,5 +468,6 @@ class ConversationItem(
         private const val STATUS_SIZE_IN_DP = 9f
         private const val UNREAD_BUBBLE_STROKE_WIDTH = 6.0f
         private const val UNREAD_MESSAGES_TRESHOLD = 1000
+        private const val IMAGE_SCALE_FACTOR = 0.7f
     }
 }
