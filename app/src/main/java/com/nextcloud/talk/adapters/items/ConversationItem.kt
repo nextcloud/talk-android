@@ -242,7 +242,8 @@ class ConversationItem(
                 } else {
                     "${chatMessage.messageParameters?.get("actor")?.get("name")}:"
                 }
-                val lastMessage = setLastNameFortAttachmentDialog(name, R.drawable.baseline_image_24, attachmentName!!)
+
+                val lastMessage = setLastNameForAttachmentMessage(name, R.drawable.baseline_image_24, attachmentName!!)
                 holder.binding.dialogLastMessage.text = lastMessage
             } else {
                 chatMessage?.activeUser = user
@@ -433,11 +434,12 @@ class ConversationItem(
             return ""
         }
 
-    fun setLastNameFortAttachmentDialog(actor: String, icon: Int, attachmentName: String): SpannableStringBuilder {
+    fun setLastNameForAttachmentMessage(actor: String, icon: Int, attachmentName: String): SpannableStringBuilder {
         val builder = SpannableStringBuilder()
         builder.append(actor)
 
         val drawable = ContextCompat.getDrawable(context, icon)
+        viewThemeUtils.platform.colorDrawable(drawable!!, context.resources!!.getColor(R.color.low_emphasis_text, null))
 
         drawable?.let {
             val scaleFactor = 0.7f
