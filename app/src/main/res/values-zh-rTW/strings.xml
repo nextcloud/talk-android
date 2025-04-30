@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">最大優先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小優先</string>
+    <string name="message_copied">已複製訊息</string>
     <string name="message_deleted_by_you">訊息已被您刪除</string>
     <string name="message_last_edited_by">由 %1$s 編輯</string>
     <string name="message_poll_tap_to_open">點按開啟投票</string>
@@ -371,6 +372,9 @@
     <string name="nc_public_call_explanation">公開對話可讓您透過特製的連結邀請外部夥伴。</string>
     <string name="nc_public_call_status">公開對話</string>
     <string name="nc_push_disabled">取消推送通知</string>
+    <string name="nc_push_notification_error"> 抱歉，發生了一點問題，錯誤為 %1$s</string>
+    <string name="nc_push_notification_fetch_error">抱歉，發生了一點問題，無法擷取測試推播訊息</string>
+    <string name="nc_push_notification_message">已成功傳送推播通知。現在您應該會在此裝置上收到標題為「測試推播通知」的通知。</string>
     <string name="nc_push_to_talk">按住以說話</string>
     <string name="nc_push_to_talk_desc">在停用麥克風的情況下，點擊並按住即可使用按住以說話</string>
     <string name="nc_refresh">重新整理</string>
@@ -513,6 +517,8 @@
     <string name="nc_switch_account">切換帳號</string>
     <string name="nc_team">團隊</string>
     <string name="nc_teams">團隊</string>
+    <string name="nc_test_push_button">測試推播通知</string>
+    <string name="nc_test_results">測試結果</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">傳送這些檔案給 %1$s？</string>
     <string name="nc_upload_confirm_send_single">傳送檔案給 %1$s？</string>

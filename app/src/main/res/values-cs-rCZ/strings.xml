@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
+    <string name="message_copied">Zpráva zkopírována</string>
     <string name="message_deleted_by_you">Zprávu jste smazali</string>
     <string name="message_last_edited_by">Upraveno %1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
@@ -371,6 +372,9 @@
     <string name="nc_public_call_explanation">Veřejné konverzace umožňují zvát osoby zvenčí prostřednictvím k tomu vytvořeného odkazu.</string>
     <string name="nc_public_call_status">Veřejná konverzace</string>
     <string name="nc_push_disabled">Push upozorňování vypnutá</string>
+    <string name="nc_push_notification_error">Omlouváme se, něco se pokazilo – chyba je %1$s</string>
+    <string name="nc_push_notification_fetch_error">Omlouváme se, něco se pokazilo – nebylo možné stáhnout si testovací push zprávu</string>
+    <string name="nc_push_notification_message">Push upozornění úspěšně odesláno. Nyní byste měli obdržet upozornění na tomto zařízení s nadpisem „Testování push upozorňování“</string>
     <string name="nc_push_to_talk">Vysílačka</string>
     <string name="nc_push_to_talk_desc">Při vypnutém mikrofonu, klikněte a dokud držíte, můžete mluvit – jako u vysílačky</string>
     <string name="nc_refresh">Znovu načíst</string>
@@ -513,6 +517,8 @@
     <string name="nc_switch_account">Přepnout účet</string>
     <string name="nc_team">Tým</string>
     <string name="nc_teams">Týmy</string>
+    <string name="nc_test_push_button">Vyzkoušet push notifikace</string>
+    <string name="nc_test_results">Výsledky testu</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>

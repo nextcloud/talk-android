@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Ш - А</string>
     <string name="menu_item_sort_by_size_biggest_first">Прво највеће</string>
     <string name="menu_item_sort_by_size_smallest_first">Прво најмање</string>
+    <string name="message_copied">Порука је копирана</string>
     <string name="message_deleted_by_you">Обрисали сте поруку</string>
     <string name="message_last_edited_by">Уредио је %1$s</string>
     <string name="message_poll_tap_to_open">Тапните да отворите гласање</string>
@@ -371,6 +372,9 @@
     <string name="nc_public_call_explanation">Јавни разговори омогућавају да позовете људе споља кроз посебно направљену везу за њих.</string>
     <string name="nc_public_call_status">Јавни разговор</string>
     <string name="nc_push_disabled">Брза обавештења су искључена</string>
+    <string name="nc_push_notification_error">Жао нам је, нешто је пошло наопако. Грешка је %1$s</string>
+    <string name="nc_push_notification_fetch_error">Жао нам је, нешто је пошло наопако, тест брзо обавештење не може да се преузме</string>
+    <string name="nc_push_notification_message">Брзо обавештење је успешно послато. Сада би требало да примите обавештење на овај уређај под називом ’Тестирање брзих обавештења’</string>
     <string name="nc_push_to_talk">Притисни за разговор</string>
     <string name="nc_push_to_talk_desc">Са онемогућеним микрофоном, кликните &amp; држите да користите притисак за разговор</string>
     <string name="nc_refresh">Освежи</string>
@@ -513,6 +517,8 @@
     <string name="nc_switch_account">Пребаци налог</string>
     <string name="nc_team">Тим</string>
     <string name="nc_teams">Тимови</string>
+    <string name="nc_test_push_button">Тестирање брзих обавештења</string>
+    <string name="nc_test_results">Резултати теста</string>
     <string name="nc_upload_choose_local_files">Изаберите фајлове</string>
     <string name="nc_upload_confirm_send_multiple">Да ли да пошаљем ове фајлове %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да ли да пошаљем овај фајл %1$s?</string>
