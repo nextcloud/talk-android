@@ -435,6 +435,8 @@ How to translate with transifex:
     <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_add_attachment">Add attachment</string>
+    <string name="emoji_category_recent">Recent</string>
+    <string name="nc_current_user">You:</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
