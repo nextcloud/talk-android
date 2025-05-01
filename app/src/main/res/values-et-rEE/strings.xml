@@ -141,12 +141,14 @@
     <string name="nc_common_more_options">Täiendavad valikud</string>
     <string name="nc_common_skip">Jäta vahele</string>
     <string name="nc_common_unknown">Teadmata</string>
+    <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
     <string name="nc_conversation_menu_video_call">Videokõne</string>
     <string name="nc_conversation_menu_voice_call">Häälkõne</string>
     <string name="nc_conversation_not_found">Vestlust ei leidu</string>
     <string name="nc_conversation_settings">Vesrtluse seadistused</string>
+    <string name="nc_conversations_empty_details">Ütle tere oma sõpradele ja kolleegidele!</string>
     <string name="nc_copy_message">Kopeeri</string>
     <string name="nc_create_new_conversation">Loo uus vestlus</string>
     <string name="nc_create_poll">Loo küsitlus</string>
@@ -419,6 +421,7 @@
     <string name="scope_private_title">Privaatne</string>
     <string name="scope_published_description">Sünkrooni usaldusväärsetesse serveritesse ning üldisesse ja avalikku aadressiraamatusse</string>
     <string name="scope_published_title">Avaldatud</string>
+    <string name="scroll_to_bottom">Keri alla äärde</string>
     <string name="search_icon">Otsinguikoon</string>
     <string name="secondsAgo">sekundit tagasi</string>
     <string name="selected_list_item">Valitud</string>
