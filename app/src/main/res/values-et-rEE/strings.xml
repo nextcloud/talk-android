@@ -219,6 +219,7 @@
     <string name="nc_group">Grupp</string>
     <string name="nc_groups">Grupid</string>
     <string name="nc_guest">Külaline</string>
+    <string name="nc_guest_access">Ligipääs külalistele</string>
     <string name="nc_guest_access_password_dialog_hint">Sisesta salasõna</string>
     <string name="nc_guest_access_password_dialog_title">Salasõna külalisele</string>
     <string name="nc_guest_access_password_failed">Viga salasõna salvestamisel või eemaldamisel.</string>
@@ -370,6 +371,8 @@
     <string name="nc_share_contact">Jaga kontakti</string>
     <string name="nc_share_link">Jaga linki</string>
     <string name="nc_share_to_choose_account">Vali konto</string>
+    <string name="nc_shared_items">Jagatud objektid</string>
+    <string name="nc_shared_items_empty">Jaosmeediat ei leidu</string>
     <string name="nc_shared_items_location">Asukoht</string>
     <string name="nc_show_notification_warning_description">Näita tavalist hoiatust, kui teavitused pole korrektselt seadistatud</string>
     <string name="nc_show_notification_warning_title">Näita tavalist teavituse hoiatust</string>
@@ -381,6 +384,7 @@
     <string name="nc_test_push_button">Tõuketeavituse test</string>
     <string name="nc_test_results">Testi tulemused</string>
     <string name="nc_upload_choose_local_files">Vali failid</string>
+    <string name="nc_upload_from_cloud">Jaga  teenusest %1$s</string>
     <string name="nc_upload_from_device">Laadi üles seadmest</string>
     <string name="nc_upload_in_progess">Üleslaadimine</string>
     <string name="nc_upload_picture_from_cam">Pildista</string>
@@ -402,13 +406,17 @@
     <string name="online_status">Võrgus staatus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
     <string name="polls_add_option">Lisa valik</string>
+    <string name="polls_end_poll">Lõpeta küsitlus</string>
+    <string name="polls_multiple_answers">Mitu vastust</string>
     <string name="polls_option_delete">Kustuta %1$d valik</string>
     <string name="polls_option_hint">%1$d valik</string>
     <string name="polls_options">Sätted</string>
+    <string name="polls_private_poll">Privaatne küsitlus</string>
     <string name="polls_question">Küsimus</string>
     <string name="polls_results_subtitle">Tulemused</string>
     <string name="polls_settings">Seaded</string>
     <string name="previously_set">Varasemalt seatud</string>
+    <string name="raise_hand">Anna käega märku</string>
     <string name="reactions_tab_all">Kõik</string>
     <string name="resend_message">Saada uuesti</string>
     <string name="reset_status">Lähesta olek</string>
@@ -426,6 +434,7 @@
     <string name="secondsAgo">sekundit tagasi</string>
     <string name="selected_list_item">Valitud</string>
     <string name="send_email">Saada e-kiri</string>
+    <string name="send_without_notification">Saada ilma teavituseta</string>
     <string name="set_avatar_from_camera">Lisa tunnuspilt kaamera abil</string>
     <string name="set_status">Määra staatus</string>
     <string name="set_status_message">Sea staatuse sõnum</string>
@@ -435,6 +444,7 @@
     <string name="shared_items_file">Fail</string>
     <string name="shared_items_media">Meedia</string>
     <string name="shared_items_other">Muu</string>
+    <string name="shared_items_poll">Küsitlus</string>
     <string name="shared_items_voice">Hääl</string>
     <string name="show_ban_reason">Näita suhtluskeelu seadmise põhjus</string>
     <string name="show_banned_participants">Näita suhtluskeelu saanud osalejaid</string>
