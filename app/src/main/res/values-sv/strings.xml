@@ -82,6 +82,7 @@
     <string name="menu_item_sort_by_name_z_a">Ö - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
+    <string name="message_copied">Meddelandet kopierat</string>
     <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
     <string name="message_poll_tap_to_open">Tryck för att öppna omröstningen</string>
@@ -369,6 +370,9 @@
     <string name="nc_public_call_explanation">Offentliga konversationer låter dig bjuda in externa användare via en speciellt utformad länk.</string>
     <string name="nc_public_call_status">Publik konversation</string>
     <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
+    <string name="nc_push_notification_error"> Tyvärr, något gick fel. Felet är %1$s</string>
+    <string name="nc_push_notification_fetch_error">Tyvärr, något gick fel. Kunde inte hämta testmeddelande för push-notis</string>
+    <string name="nc_push_notification_message">Push-notis skickades framgångsrikt. Du bör nu få en notis på den här enheten med titeln \'Testar push-notiser\'</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
     <string name="nc_refresh">Uppdatera</string>
@@ -511,6 +515,8 @@
     <string name="nc_switch_account">Växla konto</string>
     <string name="nc_team">Team</string>
     <string name="nc_teams">Teams</string>
+    <string name="nc_test_push_button">Testa pushnotiser</string>
+    <string name="nc_test_results">Testresultat</string>
     <string name="nc_upload_choose_local_files">Välj filer</string>
     <string name="nc_upload_confirm_send_multiple">Skicka dessa filer till %1$s?</string>
     <string name="nc_upload_confirm_send_single">Skicka denna fil till %1$s?</string>
