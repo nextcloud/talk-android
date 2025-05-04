@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">An ceann is mó ar dtús</string>
     <string name="menu_item_sort_by_size_smallest_first">Is lú ar dtús</string>
+    <string name="message_copied">Teachtaireacht cóipeáilte</string>
     <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
@@ -371,6 +372,9 @@
     <string name="nc_public_call_explanation">Ligeann comhráite poiblí duit cuireadh a thabhairt do dhaoine ón taobh amuigh trí nasc atá saindeartha.</string>
     <string name="nc_public_call_status">Comhrá poiblí</string>
     <string name="nc_push_disabled">Díchumasaíodh fógraí brúigh</string>
+    <string name="nc_push_notification_error">Tá brón orm gur tharla fadhb, is é %1$s an earráid</string>
+    <string name="nc_push_notification_fetch_error">Tá brón orm gur tharla rud éigin mícheart, ní féidir teachtaireacht tástála a fháil</string>
+    <string name="nc_push_notification_message">Tá fógra brú seolta go rathúil. Ba chóir duit fógra a fháil anois ar an ngléas seo leis an teideal \'Fógraí brú á dtástáil\'.</string>
     <string name="nc_push_to_talk">Brú-chun-caint</string>
     <string name="nc_push_to_talk_desc">Agus an micreafón díchumasaithe, cliceáil agus coinneáil chun Brúigh chun Caint a úsáid</string>
     <string name="nc_refresh">Athnuaigh</string>
@@ -513,6 +517,8 @@
     <string name="nc_switch_account">Athraigh cuntas</string>
     <string name="nc_team">Foireann</string>
     <string name="nc_teams">Foirne</string>
+    <string name="nc_test_push_button">Tástáil fógraí brú</string>
+    <string name="nc_test_results">Torthaí tástála</string>
     <string name="nc_upload_choose_local_files">Roghnaigh comhaid</string>
     <string name="nc_upload_confirm_send_multiple">An bhfuil fonn ort na comhaid seo a sheoladh chuig %1$s?</string>
     <string name="nc_upload_confirm_send_single">An bhfuil fonn ort an comhad seo a sheoladh chuig %1$s?</string>
