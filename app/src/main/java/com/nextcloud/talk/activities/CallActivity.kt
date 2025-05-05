@@ -303,7 +303,7 @@ class CallActivity : CallBaseActivity() {
     private var handler: Handler? = null
     private var currentCallStatus: CallStatus? = null
     private var mediaPlayer: MediaPlayer? = null
-    private var participantDisplayItems: MutableMap<String, ParticipantDisplayItem?>? = null
+    private var participantDisplayItems: MutableMap<String, ParticipantDisplayItem>? = null
     private var participantsAdapter: ParticipantsAdapter? = null
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
@@ -994,7 +994,7 @@ class CallActivity : CallBaseActivity() {
         }
         participantsAdapter = ParticipantsAdapter(
             this,
-            participantDisplayItems,
+            participantDisplayItems!!.toMap(),
             binding!!.conversationRelativeLayout,
             binding!!.callInfosLinearLayout,
             columns,
