@@ -45,6 +45,7 @@ import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
+import com.vanniktech.emoji.recent.RecentEmojiManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -246,29 +247,34 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
-            dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
+            val recentEmojiManager = RecentEmojiManager(context, 6)
+            val topEmojis = recentEmojiManager.getRecentEmojis()
+
+            val emojiTextViews = listOf(
+                dialogMessageActionsBinding.emojiThumbsUp,
+                dialogMessageActionsBinding.emojiThumbsDown,
+                dialogMessageActionsBinding.emojiHeart,
+                dialogMessageActionsBinding.emojiLaugh,
+                dialogMessageActionsBinding.emojiConfused,
+                dialogMessageActionsBinding.emojiSad
+            )
+
+            val fallbackEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢")
+            val emojisToDisplay = if (topEmojis.isNotEmpty()) {
+                topEmojis.map { it.unicode }
+            } else {
+                fallbackEmojis
             }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsDown)
-            dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiLaugh)
-            dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiHeart)
-            dialogMessageActionsBinding.emojiHeart.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiHeart.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiConfused)
-            dialogMessageActionsBinding.emojiConfused.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiConfused.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiSad)
-            dialogMessageActionsBinding.emojiSad.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiSad.text.toString())
+
+            emojiTextViews.forEachIndexed { index, textView ->
+                val emoji = emojisToDisplay.getOrNull(index)
+                if (emoji != null) {
+                    textView.text = emoji
+                    checkAndSetEmojiSelfReaction(textView)
+                    textView.setOnClickListener {
+                        clickOnEmoji(message, emoji)
+                    }
+                }
             }
 
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
