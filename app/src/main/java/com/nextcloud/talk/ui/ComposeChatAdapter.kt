@@ -46,6 +46,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -60,6 +61,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -124,53 +126,70 @@ import kotlin.random.Random
 @Suppress("FunctionNaming", "TooManyFunctions", "LongMethod", "StaticFieldLeak", "LargeClass")
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
-    private var messageId: String? = null
+    private var messageId: String? = null,
+    private val utils: ComposePreviewUtils? = null
+    // TODO Maybe move this to dependency Injection later to make it easier
 ) {
 
+    // TODO Maybe write a small annotation class to get generate code for this
+    interface PreviewAble {
+        val viewThemeUtils: ViewThemeUtils
+        val messageUtils: MessageUtils
+        val contactsViewModel: ContactsViewModel
+        val chatViewModel: ChatViewModel
+        val context: Context
+        val userManager: UserManager
+        val items: SnapshotStateList<ChatMessage>
+        val currentUser: User
+        val colorScheme: ColorScheme
+        val highEmphasisColorInt: Int
+    }
+
     @AutoInjector(NextcloudTalkApplication::class)
-    inner class ComposeChatAdapterViewModel : ViewModel() {
+    inner class ComposeChatAdapterViewModel : ViewModel(), PreviewAble {
 
         @Inject
-        lateinit var viewThemeUtils: ViewThemeUtils
+        override lateinit var viewThemeUtils: ViewThemeUtils
 
         @Inject
-        lateinit var messageUtils: MessageUtils
+        override lateinit var messageUtils: MessageUtils
 
         @Inject
-        lateinit var contactsViewModel: ContactsViewModel
+        override lateinit var contactsViewModel: ContactsViewModel
 
         @Inject
-        lateinit var chatViewModel: ChatViewModel
+        override lateinit var chatViewModel: ChatViewModel
 
         @Inject
-        lateinit var context: Context
+        override lateinit var context: Context
 
         @Inject
-        lateinit var userManager: UserManager
+        override lateinit var userManager: UserManager
 
-        val items = mutableStateListOf<ChatMessage>()
+        override val items = mutableStateListOf<ChatMessage>()
 
         init {
             sharedApplication?.componentApplication?.inject(this)
         }
 
-        val currentUser: User = userManager.currentUser.blockingGet()
-        val colorScheme = viewThemeUtils.getColorScheme(context)
-        val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
+        override val currentUser: User = userManager.currentUser.blockingGet()
+        override val colorScheme = viewThemeUtils.getColorScheme(context)
+        override val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
     }
 
     inner class ComposeChatAdapterPreviewViewModel(
-        val viewThemeUtils: ViewThemeUtils,
-        val contactsViewModel: ContactsViewModel,
-        val chatViewModel: ChatViewModel,
-        val context: Context,
-        val userManager: UserManager
-    ) : ViewModel() {
-        val items = mutableStateListOf<ChatMessage>()
+        override val viewThemeUtils: ViewThemeUtils,
+        override val messageUtils: MessageUtils,
+        override val contactsViewModel: ContactsViewModel,
+        override val chatViewModel: ChatViewModel,
+        override val context: Context,
+        override val userManager: UserManager
+    ) : ViewModel(), PreviewAble {
+        override val items = mutableStateListOf<ChatMessage>()
 
-        val currentUser: User = userManager.currentUser.blockingGet()
-        val colorScheme = viewThemeUtils.getColorScheme(context)
-        val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
+        override val currentUser: User = userManager.currentUser.blockingGet()
+        override val colorScheme = viewThemeUtils.getColorScheme(context)
+        override val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
     }
 
     companion object {
@@ -195,7 +214,16 @@ class ComposeChatAdapter(
 
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
     private var outgoingShape: RoundedCornerShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
-    val viewModel = ComposeChatAdapterViewModel()
+
+    // FIXME this code is whats causing the error, by init everytime class is init, even when not used
+    val viewModel: PreviewAble = if (utils != null) ComposeChatAdapterPreviewViewModel(
+        utils.viewThemeUtils,
+        utils.messageUtils,
+        utils.contactsViewModel,
+        utils.chatViewModel,
+        utils.context,
+        utils.userManager
+    ) else ComposeChatAdapterViewModel()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
@@ -929,8 +957,8 @@ fun AllMessageTypesPreview() {
     val dummyCurrentUser = User().apply { userId = "currentUser"; displayName = "Me" }
     val dummyOtherUser = User().apply { userId = "otherUser"; displayName = "Alice" }
 
-    val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null) }
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
+    val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null, previewUtils) }
     val viewModel = adapter.viewModel
 
     val sampleMessages = remember {
