@@ -84,6 +84,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Maior primeiro</string>
     <string name="menu_item_sort_by_size_smallest_first">Menor primeiro</string>
+    <string name="message_copied">Mensagem copiada</string>
     <string name="message_deleted_by_you">Mensagem excluída por você</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquete</string>
@@ -410,7 +411,7 @@
     <string name="nc_sent_an_audio_you">Você enviou um áudio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou uma imagem.</string>
     <string name="nc_sent_an_image_you">Você enviou uma imagem.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s enviei um cartão de Deck</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s enviou um cartão de Deck</string>
     <string name="nc_sent_deck_card_you">Você enviou um cartão de Deck</string>
     <string name="nc_sent_location" formatted="true">%1$s enviou uma localização.</string>
     <string name="nc_sent_location_you">Você enviou uma localização.</string>
