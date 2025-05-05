@@ -33,15 +33,15 @@
             android:visibility="visible"
             tools:visibility="visible">
 
-            <GridView
-                android:id="@+id/gridview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:numColumns="2"
-                android:scrollbars="vertical"
-                android:stretchMode="columnWidth"
-                tools:listitem="@layout/call_item" />
+<!--            <GridView-->
+<!--                android:id="@+id/gridview"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:gravity="center"-->
+<!--                android:numColumns="2"-->
+<!--                android:scrollbars="vertical"-->
+<!--                android:stretchMode="columnWidth"-->
+<!--                tools:listitem="@layout/call_item" />-->
 
             <FrameLayout
                 android:id="@+id/selfVideoViewWrapper"
@@ -367,5 +367,10 @@
             tools:visibility="gone" />
 
     </RelativeLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/composeParticipantGrid"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
