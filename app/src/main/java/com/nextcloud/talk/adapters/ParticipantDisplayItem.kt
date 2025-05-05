@@ -3,201 +3,201 @@
  *
  * SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2022 Daniel Calviño Sánchez <danxuliu@gmail.com>
- * SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.adapters;
+package com.nextcloud.talk.adapters
 
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.TextUtils;
+import android.content.Context
+import android.os.Handler
+import android.os.Looper
+import android.text.TextUtils
+import android.util.Log
+import android.view.ViewGroup
+import com.nextcloud.talk.call.CallParticipantModel
+import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.call.RaisedHand
+import com.nextcloud.talk.models.json.participants.Participant.ActorType
+import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
+import com.nextcloud.talk.utils.DisplayUtils.isDarkModeOn
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import org.webrtc.EglBase
+import org.webrtc.MediaStream
+import org.webrtc.PeerConnection.IceConnectionState
+import org.webrtc.SurfaceViewRenderer
 
-import com.nextcloud.talk.call.CallParticipantModel;
-import com.nextcloud.talk.call.RaisedHand;
-import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.DisplayUtils;
+class ParticipantDisplayItem(
+    private val context: Context,
+    private val baseUrl: String,
+    private val defaultGuestNick: String,
+    val rootEglBase: EglBase,
+    private val streamType: String,
+    private val roomToken: String,
+    private val callParticipantModel: CallParticipantModel
+) {
+    private val participantDisplayItemNotifier = ParticipantDisplayItemNotifier()
 
-import org.webrtc.EglBase;
-import org.webrtc.MediaStream;
-import org.webrtc.PeerConnection;
+    private val _uiStateFlow = MutableStateFlow(buildUiState())
+    val uiStateFlow: StateFlow<ParticipantUiState> = _uiStateFlow.asStateFlow()
 
-public class ParticipantDisplayItem {
+    private val session: String = callParticipantModel.sessionId
 
-    /**
-     * Shared handler to receive change notifications from the model on the main thread.
-     */
-    private static final Handler handler = new Handler(Looper.getMainLooper());
+    var actorType: ActorType? = null
+        private set
+    private var actorId: String? = null
+    private var userId: String? = null
+    private var iceConnectionState: IceConnectionState? = null
+    var nick: String? = null
+        get() = (if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(field)) defaultGuestNick else field)
 
-    private final ParticipantDisplayItemNotifier participantDisplayItemNotifier = new ParticipantDisplayItemNotifier();
+    var urlForAvatar: String? = null
+        private set
+    var mediaStream: MediaStream? = null
+        private set
+    var isStreamEnabled: Boolean = false
+        private set
+    var isAudioEnabled: Boolean = false
+        private set
+    var raisedHand: RaisedHand? = null
+        private set
+    var surfaceViewRenderer: SurfaceViewRenderer? = null
 
-    private final Context context;
+    val sessionKey: String
+        get() = "$session-$streamType"
 
-    private final String baseUrl;
-    private final String defaultGuestNick;
-    private final EglBase rootEglBase;
-
-    private final String session;
-    private final String streamType;
-
-    private final String roomToken;
-
-    private final CallParticipantModel callParticipantModel;
-
-    private Participant.ActorType actorType;
-    private String actorId;
-    private String userId;
-    private PeerConnection.IceConnectionState iceConnectionState;
-    private String nick;
-    private String urlForAvatar;
-    private MediaStream mediaStream;
-    private boolean streamEnabled;
-    private boolean isAudioEnabled;
-    private RaisedHand raisedHand;
-
-    public interface Observer {
-        void onChange();
+    interface Observer {
+        fun onChange()
     }
 
-    private final CallParticipantModel.Observer callParticipantModelObserver = new CallParticipantModel.Observer() {
-        @Override
-        public void onChange() {
-            updateFromModel();
+    private val callParticipantModelObserver: CallParticipantModel.Observer = object : CallParticipantModel.Observer {
+        override fun onChange() {
+            updateFromModel()
         }
 
-        @Override
-        public void onReaction(String reaction) {
+        override fun onReaction(reaction: String) {
         }
-    };
-
-    public ParticipantDisplayItem(Context context, String baseUrl, String defaultGuestNick, EglBase rootEglBase,
-                                  String streamType, String roomToken, CallParticipantModel callParticipantModel) {
-        this.context = context;
-
-        this.baseUrl = baseUrl;
-        this.defaultGuestNick = defaultGuestNick;
-        this.rootEglBase = rootEglBase;
-
-        this.session = callParticipantModel.getSessionId();
-        this.streamType = streamType;
-
-        this.roomToken = roomToken;
-
-        this.callParticipantModel = callParticipantModel;
-        this.callParticipantModel.addObserver(callParticipantModelObserver, handler);
-
-        updateFromModel();
     }
 
-    public void destroy() {
-        this.callParticipantModel.removeObserver(callParticipantModelObserver);
+    init {
+        callParticipantModel.addObserver(callParticipantModelObserver, handler)
+
+        updateFromModel()
     }
 
-    private void updateFromModel() {
-        actorType = callParticipantModel.getActorType();
-        actorId = callParticipantModel.getActorId();
-        userId = callParticipantModel.getUserId();
-        nick = callParticipantModel.getNick();
+    fun destroy() {
+        callParticipantModel.removeObserver(callParticipantModelObserver)
 
-        this.updateUrlForAvatar();
+        surfaceViewRenderer?.let { renderer ->
+            try {
+                mediaStream?.videoTracks?.firstOrNull()?.removeSink(renderer)
+                renderer.release()
+                (renderer.parent as? ViewGroup)?.removeView(renderer)
+            } catch (e: Exception) {
+                Log.w("ParticipantDisplayItem", "Error releasing renderer", e)
+            }
+        }
+        surfaceViewRenderer = null
+    }
 
-        if ("screen".equals(streamType)) {
-            iceConnectionState = callParticipantModel.getScreenIceConnectionState();
-            mediaStream = callParticipantModel.getScreenMediaStream();
-            isAudioEnabled = true;
-            streamEnabled = true;
+    private fun updateFromModel() {
+        actorType = callParticipantModel.actorType
+        actorId = callParticipantModel.actorId
+        userId = callParticipantModel.userId
+        nick = callParticipantModel.nick
+
+        updateUrlForAvatar()
+
+        if (streamType == "screen") {
+            iceConnectionState = callParticipantModel.screenIceConnectionState
+            mediaStream = callParticipantModel.screenMediaStream
+            isAudioEnabled = true
+            isStreamEnabled = true
         } else {
-            iceConnectionState = callParticipantModel.getIceConnectionState();
-            mediaStream = callParticipantModel.getMediaStream();
-            isAudioEnabled = callParticipantModel.isAudioAvailable() != null ?
-                callParticipantModel.isAudioAvailable() : false;
-            streamEnabled = callParticipantModel.isVideoAvailable() != null ?
-                callParticipantModel.isVideoAvailable() : false;
+            iceConnectionState = callParticipantModel.iceConnectionState
+            mediaStream = callParticipantModel.mediaStream
+            isAudioEnabled = callParticipantModel.isAudioAvailable ?: false
+            isStreamEnabled = callParticipantModel.isVideoAvailable ?: false
         }
 
-        raisedHand = callParticipantModel.getRaisedHand();
+        raisedHand = callParticipantModel.raisedHand
 
-        participantDisplayItemNotifier.notifyChange();
+        if (surfaceViewRenderer == null && mediaStream != null) {
+            val renderer = SurfaceViewRenderer(context).apply {
+                init(rootEglBase.eglBaseContext, null)
+                setEnableHardwareScaler(true)
+                setMirror(false)
+            }
+            surfaceViewRenderer = renderer
+            mediaStream?.videoTracks?.firstOrNull()?.addSink(renderer)
+        }
+
+        _uiStateFlow.value = buildUiState()
+        participantDisplayItemNotifier.notifyChange()
     }
 
-    private void updateUrlForAvatar() {
-        if (actorType == Participant.ActorType.FEDERATED) {
-            int darkTheme = DisplayUtils.INSTANCE.isDarkModeOn(context) ? 1 : 0;
-            urlForAvatar = ApiUtils.getUrlForFederatedAvatar(baseUrl, roomToken, actorId, darkTheme, true);
+    private fun buildUiState(): ParticipantUiState {
+        return ParticipantUiState(
+            sessionKey = sessionKey,
+            nick = nick ?: "Guest",
+            isConnected = isConnected,
+            isAudioEnabled = isAudioEnabled,
+            isStreamEnabled = isStreamEnabled,
+            raisedHand = raisedHand?.state == true,
+            avatarUrl = urlForAvatar,
+            surfaceViewRenderer = surfaceViewRenderer
+        )
+    }
+
+    private fun updateUrlForAvatar() {
+        if (actorType == ActorType.FEDERATED) {
+            val darkTheme = if (isDarkModeOn(context)) 1 else 0
+            urlForAvatar = getUrlForFederatedAvatar(baseUrl, roomToken, actorId!!, darkTheme, true)
         } else if (!TextUtils.isEmpty(userId)) {
-            urlForAvatar = ApiUtils.getUrlForAvatar(baseUrl, userId, true);
+            urlForAvatar = getUrlForAvatar(baseUrl, userId, true)
         } else {
-            urlForAvatar = ApiUtils.getUrlForGuestAvatar(baseUrl, getNick(), true);
+            urlForAvatar = getUrlForGuestAvatar(baseUrl, nick, true)
         }
     }
 
-    public boolean isConnected() {
-        return iceConnectionState == PeerConnection.IceConnectionState.CONNECTED ||
-            iceConnectionState == PeerConnection.IceConnectionState.COMPLETED ||
-            // If there is no connection state that means that no connection is needed, so it is a special case that is
-            // also seen as "connected".
-            iceConnectionState == null;
+    val isConnected: Boolean
+        get() = iceConnectionState == IceConnectionState.CONNECTED ||
+            iceConnectionState == IceConnectionState.COMPLETED ||
+            // If there is no connection state that means that no connection is needed,
+            // so it is a special case that is also seen as "connected".
+            iceConnectionState == null
+
+    fun addObserver(observer: Observer?) {
+        participantDisplayItemNotifier.addObserver(observer)
     }
 
-    public String getNick() {
-        if (TextUtils.isEmpty(userId) && TextUtils.isEmpty(nick)) {
-            return defaultGuestNick;
-        }
-
-        return nick;
+    fun removeObserver(observer: Observer?) {
+        participantDisplayItemNotifier.removeObserver(observer)
     }
 
-    public String getUrlForAvatar() {
-        return urlForAvatar;
-    }
-
-    public MediaStream getMediaStream() {
-        return mediaStream;
-    }
-
-    public boolean isStreamEnabled() {
-        return streamEnabled;
-    }
-
-    public EglBase getRootEglBase() {
-        return rootEglBase;
-    }
-
-    public boolean isAudioEnabled() {
-        return isAudioEnabled;
-    }
-
-    public RaisedHand getRaisedHand() {
-        return raisedHand;
-    }
-
-    public Participant.ActorType getActorType() {
-        return actorType;
-    }
-
-    public void addObserver(Observer observer) {
-        participantDisplayItemNotifier.addObserver(observer);
-    }
-
-    public void removeObserver(Observer observer) {
-        participantDisplayItemNotifier.removeObserver(observer);
-    }
-
-    @Override
-    public String toString() {
+    override fun toString(): String {
         return "ParticipantSession{" +
-                "userId='" + userId + '\'' +
-                ", actorType='" + actorType + '\'' +
-                ", actorId='" + actorId + '\'' +
-                ", session='" + session + '\'' +
-                ", nick='" + nick + '\'' +
-                ", urlForAvatar='" + urlForAvatar + '\'' +
-                ", mediaStream=" + mediaStream +
-                ", streamType='" + streamType + '\'' +
-                ", streamEnabled=" + streamEnabled +
-                ", rootEglBase=" + rootEglBase +
-                ", raisedHand=" + raisedHand +
-                '}';
+            "userId='" + userId + '\'' +
+            ", actorType='" + actorType + '\'' +
+            ", actorId='" + actorId + '\'' +
+            ", session='" + session + '\'' +
+            ", nick='" + nick + '\'' +
+            ", urlForAvatar='" + urlForAvatar + '\'' +
+            ", mediaStream=" + mediaStream +
+            ", streamType='" + streamType + '\'' +
+            ", streamEnabled=" + isStreamEnabled +
+            ", rootEglBase=" + rootEglBase +
+            ", raisedHand=" + raisedHand +
+            '}'
+    }
+
+    companion object {
+        /**
+         * Shared handler to receive change notifications from the model on the main thread.
+         */
+        private val handler = Handler(Looper.getMainLooper())
     }
 }
