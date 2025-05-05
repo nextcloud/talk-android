@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.call.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,10 +20,17 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.call.ParticipantUiState
 
 @Composable
-fun ParticipantGrid(participants: List<ParticipantUiState>, columns: Int = 2, modifier: Modifier = Modifier) {
+fun ParticipantGrid(
+    participants: List<ParticipantUiState>,
+    columns: Int = 2,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .clickable { onClick() },
         contentPadding = PaddingValues(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)

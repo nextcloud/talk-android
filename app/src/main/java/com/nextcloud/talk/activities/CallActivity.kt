@@ -739,14 +739,6 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
 
-        // binding!!.composeParticipantGrid.setOnClickListener {
-        //     animateCallControls(true, 0)
-        // }
-
-        // binding!!.composeParticipantGrid.onItemClickListener =
-        //     AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
-        //         animateCallControls(true, 0)
-        //     }
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
     }
@@ -930,6 +922,7 @@ class CallActivity : CallBaseActivity() {
         }
         animateCallControls(true, 0)
         initGrid()
+        binding!!.composeParticipantGrid.z = 0f
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -984,7 +977,9 @@ class CallActivity : CallBaseActivity() {
                 ParticipantGrid(
                     participants = participantUiStates.toList(),
                     columns = columns
-                )
+                ) {
+                    animateCallControls(true, 0)
+                }
             }
         }
 
