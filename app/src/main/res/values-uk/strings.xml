@@ -453,7 +453,7 @@
     <string name="send_email">Надіслати</string>
     <string name="set">Встановити</string>
     <string name="set_status">Встановити статус</string>
-    <string name="set_status_message">Встановити повідомлення про стан</string>
+    <string name="set_status_message">Оновити статус</string>
     <string name="share">Спільний доступ</string>
     <string name="shared_items_audio">Аудіо</string>
     <string name="shared_items_file">Файл</string>
