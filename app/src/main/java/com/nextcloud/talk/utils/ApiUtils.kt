@@ -181,6 +181,10 @@ object ApiUtils {
         return getUrlForApi(version, baseUrl) + "/room"
     }
 
+    fun getUrlForNoteToSelf(version: Int, baseUrl: String?): String {
+        return getUrlForApi(version, baseUrl) + "/room/note-to-self"
+    }
+
     @JvmStatic
     fun getUrlForRoom(version: Int, baseUrl: String?, token: String?): String {
         return getUrlForRooms(version, baseUrl) + "/" + token
