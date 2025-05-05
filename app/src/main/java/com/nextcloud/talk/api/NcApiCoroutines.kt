@@ -19,6 +19,8 @@ import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
+import com.nextcloud.talk.models.json.usercircles.UserCirclesOverall
+import com.nextcloud.talk.models.json.usergroups.UserGroupsOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -251,4 +253,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("limit") limit: Int
     ): ChatOverall
+
+    @GET
+    suspend fun getUserGroups(@Header("Authorization") authorization: String?, @Url url: String?): UserGroupsOverall
+
+    @GET
+    suspend fun getUserCircles(@Header("Authorization") authorization: String?, @Url url: String?): UserCirclesOverall
 }

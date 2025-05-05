@@ -28,6 +28,8 @@ import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNet
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.UserCirclesOrGroupsDao
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.source.local.TalkDatabase
 import com.nextcloud.talk.data.storage.ArbitraryStoragesRepository
@@ -186,4 +188,13 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         currentUserProviderNew: CurrentUserProviderNew
     ): ConversationCreationRepository = ConversationCreationRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
+
+    @Provides
+    fun provideUserGroupsCirclesRepository(
+        userCirclesOrGroupsDao: UserCirclesOrGroupsDao,
+        ncApiCoroutines: NcApiCoroutines,
+        currentUserProvider: CurrentUserProviderNew
+    ): UserGroupsCirclesRepository {
+        return UserGroupsCirclesRepository(userCirclesOrGroupsDao, ncApiCoroutines, currentUserProvider)
+    }
 }
