@@ -347,7 +347,7 @@
     <string name="nc_notify_me_always">Sempre notificar</string>
     <string name="nc_notify_me_mention">Notificar quando mencionado</string>
     <string name="nc_notify_me_never">Nunca notificar</string>
-    <string name="nc_offline">Offline no momento, cheque sua conectividade</string>
+    <string name="nc_offline">Off-line no momento, cheque sua conectividade</string>
     <string name="nc_ok">OK</string>
     <string name="nc_open_conversation_to_registered_users">Conversa aberta a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários convidados do aplicativo</string>
@@ -538,11 +538,11 @@
     <string name="new_conversation_creation_icon">Ícone de Criação de Nova Conversa</string>
     <string name="next_week">Próxima semana</string>
     <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
-    <string name="no_offline_messages_saved">Nenhuma mensagem offline foi salva</string>
+    <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="oneHour">1 hora</string>
-    <string name="online">Online</string>
-    <string name="online_status">Status online</string>
+    <string name="online">On-line</string>
+    <string name="online_status">Status on-line</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir no aplicativo Arquivos</string>
     <string name="play_pause_voice_message">Tocar/parar mensagem de voz</string>
