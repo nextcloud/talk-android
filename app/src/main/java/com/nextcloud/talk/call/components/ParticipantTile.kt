@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -46,7 +47,10 @@ fun ParticipantTile(
         if (participant.isStreamEnabled && participant.mediaStream != null) {
             WebRTCVideoView(participant, eglBase)
         } else {
-            AvatarWithFallback(participant)
+            AvatarWithFallback(
+                participant = participant,
+                modifier = Modifier.align(Alignment.Center)
+            )
         }
 
         if (participant.raisedHand) {
@@ -96,7 +100,7 @@ fun ParticipantTile(
 fun ParticipantTilePreview() {
     val participant = ParticipantUiState(
         sessionKey = "",
-        nick = "testuser",
+        nick = "testuser one",
         isConnected = true,
         isAudioEnabled = false,
         isStreamEnabled = true,
@@ -107,7 +111,8 @@ fun ParticipantTilePreview() {
     ParticipantTile(
         participant = participant,
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .height(300.dp),
         eglBase = null
     )
 }

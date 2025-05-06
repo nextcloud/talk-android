@@ -49,7 +49,7 @@ fun ParticipantGrid(
         } else {
             when (participants.size) {
                 1 -> 1
-                2 -> 2
+                2, 4 -> 2
                 else -> 3
             }
         }
@@ -238,7 +238,7 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
     for (i: Int in 1..numberOfParticipants) {
         val participant = ParticipantUiState(
             sessionKey = i.toString(),
-            nick = "testuser$i",
+            nick = "testuser$i Test",
             isConnected = true,
             isAudioEnabled = if (i == 3) true else false,
             isStreamEnabled = true,
