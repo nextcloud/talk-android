@@ -11,24 +11,26 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.max
 import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
+import kotlin.math.ceil
 
 @Composable
 fun ParticipantGrid(
@@ -69,43 +71,37 @@ fun ParticipantGrid(
 
         2, 3 -> {
             if (isPortrait) {
-                LazyColumn(
+                Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(vertical = 4.dp)
                         .clickable { onClick() },
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(
-                        items = participants,
-                        key = { it.sessionKey }
-                    ) { participant ->
+                    participants.forEach {
                         ParticipantTile(
-                            participant = participant,
+                            participant = it,
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(1.5f),
+                                .weight(1f)
+                                .fillMaxWidth(),
                             eglBase = eglBase
                         )
                     }
                 }
             } else {
-                LazyRow(
+                Row(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 4.dp)
                         .clickable { onClick() },
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    items(
-                        items = participants,
-                        key = { it.sessionKey }
-                    ) { participant ->
+                    participants.forEach {
                         ParticipantTile(
-                            participant = participant,
+                            participant = it,
                             modifier = Modifier
-                                .fillMaxHeight()
-                                .aspectRatio(1.5f),
+                                .weight(1f)
+                                .fillMaxHeight(),
                             eglBase = eglBase
                         )
                     }
@@ -114,24 +110,30 @@ fun ParticipantGrid(
         }
 
         else -> {
+            val columns = if (isPortrait) 2 else 3
+            val rows = ceil(participants.size / columns.toFloat()).toInt()
+            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+            val rawItemHeight = screenHeight / rows
+            val itemHeight = max(rawItemHeight, 120.dp)
+
             LazyVerticalGrid(
-                columns = GridCells.Fixed(if (isPortrait) 2 else 3),
+                columns = GridCells.Fixed(columns),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(8.dp)
+                    .padding(0.dp)
                     .clickable { onClick() },
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+                horizontalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 items(
-                    participants.sortedBy { it.isAudioEnabled }.asReversed(),
+                    participants,
                     key = { it.sessionKey }
                 ) { participant ->
                     ParticipantTile(
                         participant = participant,
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(1.5f),
+                            .height(itemHeight)
+                            .fillMaxWidth(),
                         eglBase = eglBase
                     )
                 }
@@ -140,28 +142,67 @@ fun ParticipantGrid(
     }
 }
 
-const val numberOfParticipants = 4
 
-@Preview(
-    showBackground = false
-)
+
+@Preview
 @Composable
 fun ParticipantGridPreview() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants),
+        participants = getTestParticipants(1),
         eglBase = null
     ) {}
 }
 
-@Preview(
-    showBackground = false,
-    heightDp = 902,
-    widthDp = 434
-)
+@Preview
 @Composable
-fun ParticipantGridPreviewPortrait2() {
+fun TwoParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants),
+        participants = getTestParticipants(2),
+        eglBase = null
+    ) {}
+}
+
+@Preview
+@Composable
+fun ThreeParticipants() {
+    ParticipantGrid(
+        participants = getTestParticipants(3),
+        eglBase = null
+    ) {}
+}
+
+@Preview
+@Composable
+fun FourParticipants() {
+    ParticipantGrid(
+        participants = getTestParticipants(4),
+        eglBase = null
+    ) {}
+}
+
+@Preview
+@Composable
+fun FiveParticipants() {
+    ParticipantGrid(
+        participants = getTestParticipants(5),
+        eglBase = null
+    ) {}
+}
+
+@Preview
+@Composable
+fun SevenParticipants() {
+    ParticipantGrid(
+        participants = getTestParticipants(7),
+        eglBase = null
+    ) {}
+}
+
+@Preview
+@Composable
+fun FiftyParticipants() {
+    ParticipantGrid(
+        participants = getTestParticipants(50),
         eglBase = null
     ) {}
 }
@@ -172,9 +213,74 @@ fun ParticipantGridPreviewPortrait2() {
     widthDp = 800
 )
 @Composable
-fun ParticipantGridPreviewLandscape1() {
+fun OneParticipantLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants),
+        participants = getTestParticipants(1),
+        eglBase = null
+    ) {}
+}
+
+@Preview(
+    showBackground = false,
+    heightDp = 360,
+    widthDp = 800
+)
+@Composable
+fun TwoParticipantsLandscape() {
+    ParticipantGrid(
+        participants = getTestParticipants(2),
+        eglBase = null
+    ) {}
+}
+
+@Preview(
+    showBackground = false,
+    heightDp = 360,
+    widthDp = 800
+)
+@Composable
+fun ThreeParticipantsLandscape() {
+    ParticipantGrid(
+        participants = getTestParticipants(3),
+        eglBase = null
+    ) {}
+}
+
+@Preview(
+    showBackground = false,
+    heightDp = 360,
+    widthDp = 800
+)
+@Composable
+fun FourParticipantsLandscape() {
+    ParticipantGrid(
+        participants = getTestParticipants(4),
+        eglBase = null
+    ) {}
+}
+
+@Preview(
+    showBackground = false,
+    heightDp = 360,
+    widthDp = 800
+)
+@Composable
+fun SevenParticipantsLandscape() {
+    ParticipantGrid(
+        participants = getTestParticipants(7),
+        eglBase = null
+    ) {}
+}
+
+@Preview(
+    showBackground = false,
+    heightDp = 360,
+    widthDp = 800
+)
+@Composable
+fun FiftyParticipantsLandscape() {
+    ParticipantGrid(
+        participants = getTestParticipants(50),
         eglBase = null
     ) {}
 }
