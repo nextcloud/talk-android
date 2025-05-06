@@ -40,6 +40,9 @@ fun ParticipantGrid(
 ) {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    val minItemHeight = 100.dp
+
     val columns =
         if (isPortrait) {
             when (participants.size) {
@@ -65,7 +68,7 @@ fun ParticipantGrid(
     val availableHeight = screenHeight - totalVerticalSpacing - totalVerticalPadding
 
     val rawItemHeight = availableHeight / rows
-    val itemHeight = maxOf(rawItemHeight, 100.dp)
+    val itemHeight = maxOf(rawItemHeight, minItemHeight)
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(columns),

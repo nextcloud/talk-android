@@ -9,7 +9,6 @@ package com.nextcloud.talk.call.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -23,15 +22,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
-import org.webrtc.SurfaceViewRenderer
 
 @Composable
 fun ParticipantTile(
@@ -82,9 +81,14 @@ fun ParticipantTile(
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .background(Color.Black.copy(alpha = 0.6f))
-                .padding(6.dp),
-            style = MaterialTheme.typography.bodyMedium
+                .padding(10.dp),
+            style = MaterialTheme.typography.bodyMedium.copy(
+                shadow = Shadow(
+                    color = Color.Black,
+                    offset = Offset(6f, 6f),
+                    blurRadius = 4f
+                )
+            )
         )
 
         if (!participant.isConnected) {
