@@ -41,6 +41,8 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.vanniktech.emoji.Emoji
+import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -248,7 +250,12 @@ class MessageActionsDialog(
             isReactableMessageType(message)
         ) {
             val recentEmojiManager = RecentEmojiManager(context, 6)
-            val topEmojis = recentEmojiManager.getRecentEmojis()
+            val recentEmojis = recentEmojiManager.getRecentEmojis().map { it.unicode }
+            val fallbackEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢")
+
+            val combinedEmojis = (recentEmojis + fallbackEmojis)
+                .distinct()
+                .take(6)
 
             val emojiTextViews = listOf(
                 dialogMessageActionsBinding.emojiThumbsUp,
@@ -259,21 +266,17 @@ class MessageActionsDialog(
                 dialogMessageActionsBinding.emojiSad
             )
 
-            val fallbackEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢")
-            val emojisToDisplay = if (topEmojis.isNotEmpty()) {
-                topEmojis.map { it.unicode }
-            } else {
-                fallbackEmojis
-            }
-
             emojiTextViews.forEachIndexed { index, textView ->
-                val emoji = emojisToDisplay.getOrNull(index)
+                val emoji = combinedEmojis.getOrNull(index)
                 if (emoji != null) {
                     textView.text = emoji
                     checkAndSetEmojiSelfReaction(textView)
                     textView.setOnClickListener {
                         clickOnEmoji(message, emoji)
                     }
+                    textView.visibility = View.VISIBLE
+                } else {
+                    textView.visibility = View.INVISIBLE
                 }
             }
 
