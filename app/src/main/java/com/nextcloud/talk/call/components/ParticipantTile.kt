@@ -9,6 +9,7 @@ package com.nextcloud.talk.call.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,18 +26,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.call.ParticipantUiState
+import org.webrtc.EglBase
+import org.webrtc.SurfaceViewRenderer
 
 @Composable
-fun ParticipantTile(participant: ParticipantUiState, modifier: Modifier = Modifier) {
+fun ParticipantTile(
+    participant: ParticipantUiState,
+    eglBase: EglBase?,
+    modifier: Modifier = Modifier
+) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color.DarkGray)
     ) {
-        if (participant.isStreamEnabled && participant.surfaceViewRenderer != null) {
-            WebRTCVideoView(participant.surfaceViewRenderer)
+        if (participant.isStreamEnabled && participant.mediaStream != null) {
+            WebRTCVideoView(participant, eglBase)
         } else {
             AvatarWithFallback(participant)
         }
@@ -94,11 +102,12 @@ fun ParticipantTilePreview() {
         isStreamEnabled = true,
         raisedHand = true,
         avatarUrl = "",
-        surfaceViewRenderer = null
+        mediaStream = null,
     )
     ParticipantTile(
         participant = participant,
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        eglBase = null
     )
 }

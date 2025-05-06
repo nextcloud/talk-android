@@ -7,7 +7,7 @@
 
 package com.nextcloud.talk.call
 
-import org.webrtc.SurfaceViewRenderer
+import org.webrtc.MediaStream
 
 data class ParticipantUiState(
     val sessionKey: String,
@@ -17,5 +17,5 @@ data class ParticipantUiState(
     val isStreamEnabled: Boolean,
     val raisedHand: Boolean,
     val avatarUrl: String?,
-    val surfaceViewRenderer: SurfaceViewRenderer? = null
+    val mediaStream: MediaStream?
 )

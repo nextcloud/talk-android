@@ -27,9 +27,15 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.call.ParticipantUiState
+import org.webrtc.EglBase
 
 @Composable
-fun ParticipantGrid(modifier: Modifier = Modifier, participants: List<ParticipantUiState>, onClick: () -> Unit) {
+fun ParticipantGrid(
+    modifier: Modifier = Modifier,
+    eglBase: EglBase?,
+    participants: List<ParticipantUiState>,
+    onClick: () -> Unit
+) {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
@@ -44,7 +50,8 @@ fun ParticipantGrid(modifier: Modifier = Modifier, participants: List<Participan
                     participant = participants[0],
                     modifier = Modifier
                         .fillMaxSize()
-                        .clickable { onClick() }
+                        .clickable { onClick() },
+                    eglBase = eglBase
                 )
             }
         }
@@ -63,7 +70,8 @@ fun ParticipantGrid(modifier: Modifier = Modifier, participants: List<Participan
                             participant = it,
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxWidth()
+                                .fillMaxWidth(),
+                            eglBase = eglBase
                         )
                     }
                 }
@@ -80,7 +88,8 @@ fun ParticipantGrid(modifier: Modifier = Modifier, participants: List<Participan
                             participant = it,
                             modifier = Modifier
                                 .weight(1f)
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            eglBase = eglBase
                         )
                     }
                 }
@@ -102,7 +111,8 @@ fun ParticipantGrid(modifier: Modifier = Modifier, participants: List<Participan
                         participant = participant,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(1.5f)
+                            .aspectRatio(1.5f),
+                        eglBase = eglBase
                     )
                 }
             }
@@ -118,7 +128,8 @@ const val numberOfParticipants = 4
 @Composable
 fun ParticipantGridPreview() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants)
+        participants = getTestParticipants(numberOfParticipants),
+        eglBase = null
     ) {}
 }
 
@@ -130,7 +141,8 @@ fun ParticipantGridPreview() {
 @Composable
 fun ParticipantGridPreviewPortrait2() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants)
+        participants = getTestParticipants(numberOfParticipants),
+        eglBase = null
     ) {}
 }
 
@@ -142,7 +154,8 @@ fun ParticipantGridPreviewPortrait2() {
 @Composable
 fun ParticipantGridPreviewLandscape1() {
     ParticipantGrid(
-        participants = getTestParticipants(numberOfParticipants)
+        participants = getTestParticipants(numberOfParticipants),
+        eglBase = null
     ) {}
 }
 
@@ -157,7 +170,7 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             isStreamEnabled = true,
             raisedHand = true,
             avatarUrl = "",
-            surfaceViewRenderer = null
+            mediaStream = null
         )
         participantList.add(participant)
     }
