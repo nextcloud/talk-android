@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -112,21 +113,30 @@ fun ParticipantGrid(
         else -> {
             val columns = if (isPortrait) 2 else 3
             val rows = ceil(participants.size / columns.toFloat()).toInt()
+
             val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-            val rawItemHeight = screenHeight / rows
-            val itemHeight = max(rawItemHeight, 120.dp)
+            val itemSpacing = 8.dp
+            val edgePadding = 8.dp
+
+            val totalVerticalSpacing = itemSpacing * (rows - 1)
+            val totalVerticalPadding = edgePadding * 2
+            val availableHeight = screenHeight - totalVerticalSpacing - totalVerticalPadding
+
+            val rawItemHeight = availableHeight / rows
+            val itemHeight = maxOf(rawItemHeight, 100.dp)
 
             LazyVerticalGrid(
                 columns = GridCells.Fixed(columns),
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(0.dp)
+                    .padding(horizontal = edgePadding) // Only horizontal outer padding here
                     .clickable { onClick() },
-                verticalArrangement = Arrangement.spacedBy(0.dp),
-                horizontalArrangement = Arrangement.spacedBy(0.dp)
+                verticalArrangement = Arrangement.spacedBy(itemSpacing),
+                horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+                contentPadding = PaddingValues(vertical = edgePadding) // vertical padding handled here
             ) {
                 items(
-                    participants,
+                    participants.sortedBy { it.isAudioEnabled }.asReversed(),
                     key = { it.sessionKey }
                 ) { participant ->
                     ParticipantTile(
