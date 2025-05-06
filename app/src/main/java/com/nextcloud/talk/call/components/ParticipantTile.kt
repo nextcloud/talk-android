@@ -9,7 +9,7 @@ package com.nextcloud.talk.call.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -29,10 +29,9 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.call.ParticipantUiState
 
 @Composable
-fun ParticipantTile(participant: ParticipantUiState) {
+fun ParticipantTile(participant: ParticipantUiState, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
-            .aspectRatio(3f / 4f)
+        modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color.DarkGray)
     ) {
@@ -97,5 +96,9 @@ fun ParticipantTilePreview() {
         avatarUrl = "",
         surfaceViewRenderer = null
     )
-    ParticipantTile(participant)
+    ParticipantTile(
+        participant = participant,
+        modifier = Modifier
+            .fillMaxWidth()
+    )
 }

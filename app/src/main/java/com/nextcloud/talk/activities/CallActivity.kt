@@ -956,27 +956,10 @@ class CallActivity : CallBaseActivity() {
     private fun initGrid() {
         Log.d(TAG, "initGrid")
 
-        val participantsInGrid = participantUiStates.size
-        val columns = when {
-            resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT -> {
-                if (participantsInGrid > 2) GRID_MAX_COLUMN_COUNT_PORTRAIT else GRID_MIN_COLUMN_COUNT_PORTRAIT
-            }
-            else -> {
-                if (participantsInGrid > 2) {
-                    GRID_MAX_COLUMN_COUNT_LANDSCAPE
-                } else if (participantsInGrid > 1) {
-                    GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE
-                } else {
-                    GRID_MIN_COLUMN_COUNT_LANDSCAPE
-                }
-            }
-        }
-
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
                 ParticipantGrid(
-                    participants = participantUiStates.toList(),
-                    columns = columns
+                    participants = participantUiStates.toList()
                 ) {
                     animateCallControls(true, 0)
                 }
