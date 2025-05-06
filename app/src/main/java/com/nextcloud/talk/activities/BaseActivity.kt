@@ -20,6 +20,7 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
@@ -81,6 +82,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
