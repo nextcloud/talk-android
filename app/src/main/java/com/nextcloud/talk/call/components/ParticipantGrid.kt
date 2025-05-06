@@ -11,16 +11,17 @@ import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -38,6 +39,16 @@ fun ParticipantGrid(
 ) {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
+
+    // Experimental: sort participants by audio/video enabled. Maybe only do this for many participants??
+    //
+    // val sortedParticipants = remember(participants) {
+    //     participants.sortedWith(
+    //         compareByDescending<ParticipantUiState> { it.isAudioEnabled && it.isStreamEnabled }
+    //             .thenByDescending { it.isAudioEnabled }
+    //             .thenByDescending { it.isStreamEnabled }
+    //     )
+    // }
 
     when (participants.size) {
         0 -> {}
@@ -58,37 +69,43 @@ fun ParticipantGrid(
 
         2, 3 -> {
             if (isPortrait) {
-                Column(
+                LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(vertical = 4.dp)
                         .clickable { onClick() },
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    participants.forEach {
+                    items(
+                        items = participants,
+                        key = { it.sessionKey }
+                    ) { participant ->
                         ParticipantTile(
-                            participant = it,
+                            participant = participant,
                             modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
+                                .fillMaxWidth()
+                                .aspectRatio(1.5f),
                             eglBase = eglBase
                         )
                     }
                 }
             } else {
-                Row(
+                LazyRow(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 4.dp)
                         .clickable { onClick() },
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    participants.forEach {
+                    items(
+                        items = participants,
+                        key = { it.sessionKey }
+                    ) { participant ->
                         ParticipantTile(
-                            participant = it,
+                            participant = participant,
                             modifier = Modifier
-                                .weight(1f)
-                                .fillMaxHeight(),
+                                .fillMaxHeight()
+                                .aspectRatio(1.5f),
                             eglBase = eglBase
                         )
                     }
@@ -106,7 +123,10 @@ fun ParticipantGrid(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(participants) { participant ->
+                items(
+                    participants.sortedBy { it.isAudioEnabled }.asReversed(),
+                    key = { it.sessionKey }
+                ) { participant ->
                     ParticipantTile(
                         participant = participant,
                         modifier = Modifier
