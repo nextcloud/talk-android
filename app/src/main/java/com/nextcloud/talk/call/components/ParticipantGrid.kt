@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,7 +27,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.max
 import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
@@ -42,117 +40,57 @@ fun ParticipantGrid(
 ) {
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-
-    // Experimental: sort participants by audio/video enabled. Maybe only do this for many participants??
-    //
-    // val sortedParticipants = remember(participants) {
-    //     participants.sortedWith(
-    //         compareByDescending<ParticipantUiState> { it.isAudioEnabled && it.isStreamEnabled }
-    //             .thenByDescending { it.isAudioEnabled }
-    //             .thenByDescending { it.isStreamEnabled }
-    //     )
-    // }
-
-    when (participants.size) {
-        0 -> {}
-        1 -> {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-            ) {
-                ParticipantTile(
-                    participant = participants[0],
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { onClick() },
-                    eglBase = eglBase
-                )
+    val columns =
+        if (isPortrait) {
+            when (participants.size) {
+                1, 2, 3 -> 1
+                else -> 2
+            }
+        } else {
+            when (participants.size) {
+                1 -> 1
+                2 -> 2
+                else -> 3
             }
         }
 
-        2, 3 -> {
-            if (isPortrait) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 4.dp)
-                        .clickable { onClick() },
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    participants.forEach {
-                        ParticipantTile(
-                            participant = it,
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxWidth(),
-                            eglBase = eglBase
-                        )
-                    }
-                }
-            } else {
-                Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 4.dp)
-                        .clickable { onClick() },
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    participants.forEach {
-                        ParticipantTile(
-                            participant = it,
-                            modifier = Modifier
-                                .weight(1f)
-                                .fillMaxHeight(),
-                            eglBase = eglBase
-                        )
-                    }
-                }
-            }
-        }
+    val rows = ceil(participants.size / columns.toFloat()).toInt()
 
-        else -> {
-            val columns = if (isPortrait) 2 else 3
-            val rows = ceil(participants.size / columns.toFloat()).toInt()
+    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val itemSpacing = 8.dp
+    val edgePadding = 8.dp
 
-            val screenHeight = LocalConfiguration.current.screenHeightDp.dp
-            val itemSpacing = 8.dp
-            val edgePadding = 8.dp
+    val totalVerticalSpacing = itemSpacing * (rows - 1)
+    val totalVerticalPadding = edgePadding * 2
+    val availableHeight = screenHeight - totalVerticalSpacing - totalVerticalPadding
 
-            val totalVerticalSpacing = itemSpacing * (rows - 1)
-            val totalVerticalPadding = edgePadding * 2
-            val availableHeight = screenHeight - totalVerticalSpacing - totalVerticalPadding
+    val rawItemHeight = availableHeight / rows
+    val itemHeight = maxOf(rawItemHeight, 100.dp)
 
-            val rawItemHeight = availableHeight / rows
-            val itemHeight = maxOf(rawItemHeight, 100.dp)
-
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(columns),
+    LazyVerticalGrid(
+        columns = GridCells.Fixed(columns),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = edgePadding) // Only horizontal outer padding here
+            .clickable { onClick() },
+        verticalArrangement = Arrangement.spacedBy(itemSpacing),
+        horizontalArrangement = Arrangement.spacedBy(itemSpacing),
+        contentPadding = PaddingValues(vertical = edgePadding) // vertical padding handled here
+    ) {
+        items(
+            participants.sortedBy { it.isAudioEnabled }.asReversed(),
+            key = { it.sessionKey }
+        ) { participant ->
+            ParticipantTile(
+                participant = participant,
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = edgePadding) // Only horizontal outer padding here
-                    .clickable { onClick() },
-                verticalArrangement = Arrangement.spacedBy(itemSpacing),
-                horizontalArrangement = Arrangement.spacedBy(itemSpacing),
-                contentPadding = PaddingValues(vertical = edgePadding) // vertical padding handled here
-            ) {
-                items(
-                    participants.sortedBy { it.isAudioEnabled }.asReversed(),
-                    key = { it.sessionKey }
-                ) { participant ->
-                    ParticipantTile(
-                        participant = participant,
-                        modifier = Modifier
-                            .height(itemHeight)
-                            .fillMaxWidth(),
-                        eglBase = eglBase
-                    )
-                }
-            }
+                    .height(itemHeight)
+                    .fillMaxWidth(),
+                eglBase = eglBase
+            )
         }
     }
 }
-
-
 
 @Preview
 @Composable
