@@ -959,7 +959,8 @@ class CallActivity : CallBaseActivity() {
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
                 ParticipantGrid(
-                    participants = participantUiStates.toList()
+                    participants = participantUiStates.toList(),
+                    eglBase = rootEglBase!!
                 ) {
                     animateCallControls(true, 0)
                 }
