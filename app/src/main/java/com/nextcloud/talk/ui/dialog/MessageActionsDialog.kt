@@ -249,25 +249,33 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            val recentEmojiManager = RecentEmojiManager(context, 8)
+            val recentEmojiManager = RecentEmojiManager(context, MAX_RECENTS)
             val recentEmojis = recentEmojiManager.getRecentEmojis()
             val searchEmojiManager = SearchEmojiManager()
 
-            val initialSearchKeywords = listOf("thumbsup", "thumbsdown", "heart", "joy", "confused", "cry","pray",
-                "fire")
+            val initialSearchKeywords = listOf(
+                "thumbsup",
+                "thumbsdown",
+                "heart",
+                "joy",
+                "confused",
+                "cry",
+                "pray",
+                "fire"
+            )
             val initialEmojisFromSearch = mutableSetOf<Emoji>()
 
             initialSearchKeywords.forEach { keyword ->
                 val searchResults = searchEmojiManager.search(keyword)
                 if (searchResults.isNotEmpty()) {
-                    initialEmojisFromSearch.add(searchResults[0].component1())
-                    recentEmojiManager.addEmoji(searchResults[0].component1())
+                    initialEmojisFromSearch.add(searchResults[ZERO_INDEX].component1())
+                    recentEmojiManager.addEmoji(searchResults[ZERO_INDEX].component1())
                 }
-                if (initialEmojisFromSearch.size >= 8) {
+                if (initialEmojisFromSearch.size >= MAX_RECENTS) {
                     return@forEach
                 }
             }
-            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(8)
+            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(MAX_RECENTS)
 
             val emojiSearchKeywords = mapOf(
                 "👍" to "thumbsup",
@@ -301,13 +309,11 @@ class MessageActionsDialog(
                         val keyword = emojiSearchKeywords[emoji] ?: ""
                         val result = SearchEmojiManager().search(keyword)
                         if (result.isNotEmpty()) {
-                            recentEmojiManager.addEmoji(result[0].component1())
+                            recentEmojiManager.addEmoji(result[ZERO_INDEX].component1())
                             recentEmojiManager.persist()
                         }
                     }
-
                     textView.visibility = View.VISIBLE
-
                 } else {
                     textView.visibility = View.GONE
                 }
@@ -512,7 +518,6 @@ class MessageActionsDialog(
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionDeletedObserver())
-
         } else {
             reactionsRepository.addReaction(currentConversation!!.token!!, message, emoji)
                 .subscribeOn(Schedulers.io())
@@ -574,5 +579,7 @@ class MessageActionsDialog(
         private const val DELAY: Long = 200
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
         private const val ACTOR_BOTS = "bots"
+        private const val ZERO_INDEX = 0
+        private const val MAX_RECENTS = 8
     }
 }
