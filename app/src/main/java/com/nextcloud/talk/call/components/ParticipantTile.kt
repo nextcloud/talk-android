@@ -38,7 +38,7 @@ fun ParticipantTile(
     participant: ParticipantUiState,
     eglBase: EglBase?,
     modifier: Modifier = Modifier,
-    isVoiceOnlyCall: Boolean,
+    isVoiceOnlyCall: Boolean
 ) {
     val colorInt = ColorGenerator.shared.usernameToColor(participant.nick)
 
