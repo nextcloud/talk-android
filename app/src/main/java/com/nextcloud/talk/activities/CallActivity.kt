@@ -937,6 +937,9 @@ class CallActivity : CallBaseActivity() {
         binding!!.selfVideoRenderer.setEnableHardwareScaler(false)
         binding!!.selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
         binding!!.selfVideoRenderer.setOnTouchListener(SelfVideoTouchListener())
+
+        binding!!.pipSelfVideoRenderer.clearImage()
+        binding!!.pipSelfVideoRenderer.release()
     }
 
     private fun initSelfVideoViewForPipMode() {
@@ -2090,6 +2093,9 @@ class CallActivity : CallBaseActivity() {
         }
         binding!!.selfVideoRenderer.clearImage()
         binding!!.selfVideoRenderer.release()
+
+        binding!!.pipSelfVideoRenderer.clearImage()
+        binding!!.pipSelfVideoRenderer.release()
         if (audioSource != null) {
             audioSource!!.dispose()
             audioSource = null
