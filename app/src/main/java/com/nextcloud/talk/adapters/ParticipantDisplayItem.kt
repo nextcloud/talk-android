@@ -94,6 +94,7 @@ class ParticipantDisplayItem(
         surfaceViewRenderer?.let { renderer ->
             try {
                 mediaStream?.videoTracks?.firstOrNull()?.removeSink(renderer)
+                renderer.clearImage()
                 renderer.release()
                 (renderer.parent as? ViewGroup)?.removeView(renderer)
             } catch (e: Exception) {
