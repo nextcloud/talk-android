@@ -3391,19 +3391,7 @@ class CallActivity : CallBaseActivity() {
         private const val SPOTLIGHT_HEADING_SIZE: Int = 20
         private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
 
-        private const val GRID_MAX_COLUMN_COUNT_PORTRAIT: Int = 2
-        private const val GRID_MIN_COLUMN_COUNT_PORTRAIT: Int = 1
-        private const val GRID_MAX_COLUMN_COUNT_LANDSCAPE: Int = 3
-        private const val GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE: Int = 2
-        private const val GRID_MIN_COLUMN_COUNT_LANDSCAPE: Int = 1
-
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
-
-        private const val BY_50_PERCENT = 0.5
-        private const val BY_80_PERCENT = 0.8
-
-        private const val Y_POS_CALL_INFO: Float = 250f
-        private const val Y_POS_NO_CALL_INFO: Float = 20f
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
     }
