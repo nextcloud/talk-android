@@ -249,11 +249,12 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            val recentEmojiManager = RecentEmojiManager(context, 6)
+            val recentEmojiManager = RecentEmojiManager(context, 8)
             val recentEmojis = recentEmojiManager.getRecentEmojis()
             val searchEmojiManager = SearchEmojiManager()
 
-            val initialSearchKeywords = listOf("thumbsup", "thumbsdown", "heart", "joy", "confused", "cry")
+            val initialSearchKeywords = listOf("thumbsup", "thumbsdown", "heart", "joy", "confused", "cry","pray",
+                "fire")
             val initialEmojisFromSearch = mutableSetOf<Emoji>()
 
             initialSearchKeywords.forEach { keyword ->
@@ -261,11 +262,11 @@ class MessageActionsDialog(
                 if (searchResults.isNotEmpty()) {
                     initialEmojisFromSearch.add(searchResults[0].component1())
                 }
-                if (initialEmojisFromSearch.size >= 6) {
+                if (initialEmojisFromSearch.size >= 8) {
                     return@forEach
                 }
             }
-            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(6)
+            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(8)
 
             val emojiSearchKeywords = mapOf(
                 "👍" to "thumbsup",
@@ -273,7 +274,9 @@ class MessageActionsDialog(
                 "❤️" to "heart",
                 "😂" to "joy",
                 "😕" to "confused",
-                "😢" to "cry"
+                "😢" to "cry",
+                "🙏" to "pray",
+                "🔥" to "fire"
             )
 
             val emojiTextViews = listOf(
@@ -282,7 +285,9 @@ class MessageActionsDialog(
                 dialogMessageActionsBinding.emojiHeart,
                 dialogMessageActionsBinding.emojiLaugh,
                 dialogMessageActionsBinding.emojiConfused,
-                dialogMessageActionsBinding.emojiCry
+                dialogMessageActionsBinding.emojiCry,
+                dialogMessageActionsBinding.emojiPray,
+                dialogMessageActionsBinding.emojiFire
             )
 
             emojiTextViews.forEachIndexed { index, textView ->
