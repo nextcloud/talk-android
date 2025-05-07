@@ -960,7 +960,8 @@ class CallActivity : CallBaseActivity() {
             MaterialTheme {
                 ParticipantGrid(
                     participants = participantUiStates.toList(),
-                    eglBase = rootEglBase!!
+                    eglBase = rootEglBase!!,
+                    isVoiceOnlyCall = isVoiceOnlyCall
                 ) {
                     animateCallControls(true, 0)
                 }

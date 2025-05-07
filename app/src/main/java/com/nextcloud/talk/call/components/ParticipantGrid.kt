@@ -10,11 +10,7 @@ package com.nextcloud.talk.call.components
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +32,7 @@ fun ParticipantGrid(
     modifier: Modifier = Modifier,
     eglBase: EglBase?,
     participants: List<ParticipantUiState>,
+    isVoiceOnlyCall: Boolean,
     onClick: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -59,13 +56,21 @@ fun ParticipantGrid(
 
     val rows = ceil(participants.size / columns.toFloat()).toInt()
 
-    val screenHeight = LocalConfiguration.current.screenHeightDp.dp
+    val heightForNonGridComponents = if (isVoiceOnlyCall) {
+        // this is a workaround for now. It should ~summarize the height of callInfosLinearLayout and callControls
+        // Once everything is migrated to jetpack, this workaround should be obsolete or solved in a better way
+        240.dp
+    } else {
+        0.dp
+    }
+
+    val gridHeight = LocalConfiguration.current.screenHeightDp.dp - heightForNonGridComponents
     val itemSpacing = 8.dp
     val edgePadding = 8.dp
 
     val totalVerticalSpacing = itemSpacing * (rows - 1)
     val totalVerticalPadding = edgePadding * 2
-    val availableHeight = screenHeight - totalVerticalSpacing - totalVerticalPadding
+    val availableHeight = gridHeight - totalVerticalSpacing - totalVerticalPadding
 
     val rawItemHeight = availableHeight / rows
     val itemHeight = maxOf(rawItemHeight, minItemHeight)
@@ -74,14 +79,14 @@ fun ParticipantGrid(
         columns = GridCells.Fixed(columns),
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = edgePadding) // Only horizontal outer padding here
+            .padding(horizontal = edgePadding)
             .clickable { onClick() },
         verticalArrangement = Arrangement.spacedBy(itemSpacing),
         horizontalArrangement = Arrangement.spacedBy(itemSpacing),
-        contentPadding = PaddingValues(vertical = edgePadding) // vertical padding handled here
+        contentPadding = PaddingValues(vertical = edgePadding)
     ) {
         items(
-            participants.sortedBy { it.isAudioEnabled }.asReversed(),
+            participants,
             key = { it.sessionKey }
         ) { participant ->
             ParticipantTile(
@@ -100,7 +105,8 @@ fun ParticipantGrid(
 fun ParticipantGridPreview() {
     ParticipantGrid(
         participants = getTestParticipants(1),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -109,7 +115,8 @@ fun ParticipantGridPreview() {
 fun TwoParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(2),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -118,7 +125,8 @@ fun TwoParticipants() {
 fun ThreeParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(3),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -127,7 +135,8 @@ fun ThreeParticipants() {
 fun FourParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(4),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -136,7 +145,8 @@ fun FourParticipants() {
 fun FiveParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(5),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -145,7 +155,8 @@ fun FiveParticipants() {
 fun SevenParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(7),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -154,7 +165,8 @@ fun SevenParticipants() {
 fun FiftyParticipants() {
     ParticipantGrid(
         participants = getTestParticipants(50),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -167,7 +179,8 @@ fun FiftyParticipants() {
 fun OneParticipantLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(1),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -180,7 +193,8 @@ fun OneParticipantLandscape() {
 fun TwoParticipantsLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(2),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -193,7 +207,8 @@ fun TwoParticipantsLandscape() {
 fun ThreeParticipantsLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(3),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -206,7 +221,8 @@ fun ThreeParticipantsLandscape() {
 fun FourParticipantsLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(4),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -219,7 +235,8 @@ fun FourParticipantsLandscape() {
 fun SevenParticipantsLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(7),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
@@ -232,7 +249,8 @@ fun SevenParticipantsLandscape() {
 fun FiftyParticipantsLandscape() {
     ParticipantGrid(
         participants = getTestParticipants(50),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     ) {}
 }
 
