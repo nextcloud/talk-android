@@ -3376,10 +3376,10 @@ class CallActivity : CallBaseActivity() {
         private const val SELFVIDEO_WIDTH_16_TO_9_RATIO = 136
         private const val SELFVIDEO_HEIGHT_16_TO_9_RATIO = 80
 
-        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 100F
-        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 100F
+        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 50F
+        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 50F
         private const val SELFVIDEO_POSITION_X_PORTRAIT = 300F
-        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 100F
+        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 50F
 
         private const val FIVE_SECONDS: Long = 5000
         private const val CALLING_TIMEOUT: Long = 45000
