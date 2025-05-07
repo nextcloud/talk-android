@@ -55,7 +55,7 @@ fun AvatarWithFallback(participant: ParticipantUiState, modifier: Modifier = Mod
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = if (initials.isNotEmpty()) initials else "?",
+                    text = initials.ifEmpty { "?" },
                     color = Color.Black,
                     fontSize = 24.sp
                 )

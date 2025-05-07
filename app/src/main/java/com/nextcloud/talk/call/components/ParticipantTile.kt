@@ -33,13 +33,18 @@ import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
 
 @Composable
-fun ParticipantTile(participant: ParticipantUiState, eglBase: EglBase?, modifier: Modifier = Modifier) {
+fun ParticipantTile(
+    participant: ParticipantUiState,
+    eglBase: EglBase?,
+    modifier: Modifier = Modifier,
+    isVoiceOnlyCall: Boolean,
+) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color.DarkGray)
     ) {
-        if (participant.isStreamEnabled && participant.mediaStream != null) {
+        if (!isVoiceOnlyCall && participant.isStreamEnabled && participant.mediaStream != null) {
             WebRTCVideoView(participant, eglBase)
         } else {
             AvatarWithFallback(
@@ -113,6 +118,7 @@ fun ParticipantTilePreview() {
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),
-        eglBase = null
+        eglBase = null,
+        isVoiceOnlyCall = false
     )
 }
