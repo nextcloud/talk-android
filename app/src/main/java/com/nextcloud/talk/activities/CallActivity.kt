@@ -2544,35 +2544,12 @@ class CallActivity : CallBaseActivity() {
         runOnUiThread { removeParticipantDisplayItem(sessionId, "video") }
     }
 
-    // private fun removeParticipantDisplayItem(sessionId: String?, videoStreamType: String) {
-    //     Log.d(TAG, "removeParticipantDisplayItem")
-    //     val participantDisplayItem = participantDisplayItems!!.remove("$sessionId-$videoStreamType") ?: return
-    //     participantDisplayItem.destroy()
-    //     if (!isDestroyed) {
-    //         initGridAdapter()
-    //     }
-    // }
-
-    // private fun removeParticipantDisplayItem(sessionId: String?, videoStreamType: String) {
-    //     val key = "$sessionId-$videoStreamType"
-    //
-    //     val participant = participantItems.find { it.sessionKey == key }
-    //     participant?.destroy()
-    //     participantItems.remove(participant)
-    //
-    //     initGrid()
-    // }
-
     private fun removeParticipantDisplayItem(sessionId: String?, videoStreamType: String) {
         val key = "$sessionId-$videoStreamType"
-
         val participant = participantItems.find { it.sessionKey == key }
         participant?.destroy()
         participantItems.removeAll { it.sessionKey == key }
-
-        // Also remove UI state
         participantUiStates.removeAll { it.sessionKey == key }
-
         initGrid()
     }
 
