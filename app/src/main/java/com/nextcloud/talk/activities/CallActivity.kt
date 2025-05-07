@@ -940,17 +940,22 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun initSelfVideoViewForPipMode() {
-        try {
-            binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
-        } catch (e: IllegalStateException) {
-            Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
-        }
-        binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
-        // disabled because it causes some devices to crash
-        binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
-        binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+        if (!isVoiceOnlyCall) {
+            binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
+            try {
+                binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
+            } catch (e: IllegalStateException) {
+                Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+            }
+            binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
+            // disabled because it causes some devices to crash
+            binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
+            binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
 
-        localVideoTrack!!.addSink(binding!!.pipSelfVideoRenderer)
+            localVideoTrack?.addSink(binding?.pipSelfVideoRenderer)
+        } else {
+            binding!!.pipSelfVideoRenderer.visibility = View.GONE
+        }
     }
 
     private fun initGrid() {
@@ -2187,6 +2192,7 @@ class CallActivity : CallBaseActivity() {
                             startVideoCapture(true)
                         }
                     }
+
                     in ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MIN..ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MAX,
                     in ANGLE_LANDSCAPE_LEFT_THRESHOLD_MIN..ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX -> {
                         if (lastAspectRatio != RATIO_16_TO_9) {
@@ -2718,6 +2724,7 @@ class CallActivity : CallBaseActivity() {
                     handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, CALLING_TIMEOUT)
                     handler!!.post { handleCallStateJoined() }
                 }
+
                 CallStatus.IN_CONVERSATION -> handler!!.post { handleCallStateInConversation() }
                 CallStatus.OFFLINE -> handler!!.post { handleCallStateOffline() }
                 CallStatus.LEAVING -> handler!!.post { handleCallStateLeaving() }
@@ -3241,21 +3248,30 @@ class CallActivity : CallBaseActivity() {
         binding!!.callInfosLinearLayout.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
+        binding!!.pipCallConversationNameTextView.text = conversationName
 
-        binding!!.selfVideoRenderer.clearImage()
-        binding!!.selfVideoRenderer.release()
-        if (participantItems.size > 1) {
-            binding!!.pipCallConversationNameTextView.text = conversationName
-            binding!!.pipSelfVideoOverlay.visibility = View.VISIBLE
-            initSelfVideoViewForPipMode()
+        if (isVoiceOnlyCall) {
+            if (participantItems.size > 1) {
+                binding!!.pipOverlay.visibility = View.VISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.GONE
+            } else {
+                binding!!.pipOverlay.visibility = View.GONE
+            }
         } else {
-            binding!!.pipSelfVideoOverlay.visibility = View.GONE
+            binding!!.selfVideoRenderer.clearImage()
+            binding!!.selfVideoRenderer.release()
+            if (participantItems.size > 1) {
+                binding!!.pipOverlay.visibility = View.VISIBLE
+                initSelfVideoViewForPipMode()
+            } else {
+                binding!!.pipOverlay.visibility = View.GONE
+            }
         }
     }
 
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
-        binding!!.pipSelfVideoOverlay.visibility = View.GONE
+        binding!!.pipOverlay.visibility = View.GONE
 
         if (isVoiceOnlyCall) {
             binding!!.callControls.visibility = View.VISIBLE

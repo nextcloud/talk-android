@@ -94,7 +94,8 @@ fun ParticipantGrid(
                 modifier = Modifier
                     .height(itemHeight)
                     .fillMaxWidth(),
-                eglBase = eglBase
+                eglBase = eglBase,
+                isVoiceOnlyCall = isVoiceOnlyCall
             )
         }
     }
@@ -261,7 +262,7 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             sessionKey = i.toString(),
             nick = "testuser$i Test",
             isConnected = true,
-            isAudioEnabled = if (i == 3) true else false,
+            isAudioEnabled = true,
             isStreamEnabled = true,
             raisedHand = true,
             avatarUrl = "",
