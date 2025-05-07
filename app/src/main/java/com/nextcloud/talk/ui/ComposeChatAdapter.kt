@@ -952,76 +952,22 @@ class ComposeChatAdapter(
 @Preview(showBackground = true, widthDp = 380, heightDp = 800)
 @Composable
 fun AllMessageTypesPreview() {
-    val dummyCurrentUser = User().apply { userId = "currentUser"; displayName = "Me" }
-    val dummyOtherUser = User().apply { userId = "otherUser"; displayName = "Alice" }
-
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
     val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null, previewUtils) }
-    val viewModel = adapter.viewModel
 
     val sampleMessages = remember {
         listOf(
-            // --- Incoming Messages ---
+            // Text Messages
             ChatMessage().apply {
-                jsonMessageId = 1; actorId = "system"; message = "User joined"; timestamp =
-                System.currentTimeMillis() / 1000 - 600; actorDisplayName = "System"; messageType =
+                jsonMessageId = 1; actorId = "user1"; message = "I love Nextcloud"; timestamp =
+                System.currentTimeMillis() / 1000 - 600; actorDisplayName = "User1"; messageType =
                 ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             },
-            //     ChatMessage().apply {
-            //         id = "inc1"; actorId = dummyOtherUser.userId; message = "Hello! This is an incoming text message."; timestamp = System.currentTimeMillis() / 1000 - 500; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
-            //     },
-            //     ChatMessage().apply { // Incoming Quote
-            //         id = "incQuote"; actorId = dummyOtherUser.userId; message = "This replies to message 'out1'."; timestamp = System.currentTimeMillis() / 1000 - 490; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; parentMessageId = "out1" // ID of the message being replied to
-            //     },
-            //     ChatMessage().apply { // Incoming Image
-            //         id = "inc2"; actorId = dummyOtherUser.userId; message = "{file}"; timestamp = System.currentTimeMillis() / 1000 - 400; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/jpeg"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}" // Use a placeholder drawable
-            //         // Simulate attachment info if needed by getCalculateMessageType()
-            //         messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/jpeg"))
-            //     },
-            //     ChatMessage().apply { // Incoming Image with Caption
-            //         id = "inc3"; actorId = dummyOtherUser.userId; message = "Look at this placeholder!"; timestamp = System.currentTimeMillis() / 1000 - 390; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/jpeg"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}" // Use a placeholder drawable
-            //         messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/jpeg", "name" to "placeholder.jpg")) // Ensure message isn't "{file}"
-            //     },
-            //     ChatMessage().apply { // Incoming Voice
-            //         id = "inc4"; actorId = dummyOtherUser.userId; message = "Voice message"; timestamp = System.currentTimeMillis() / 1000 - 300; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
-            //         // Simulate voice info if needed by getCalculateMessageType()
-            //         messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "audio/ogg")) // Assuming voice is identified by mimetype
-            //     },
-            //     ChatMessage().apply { // Incoming Geolocation
-            //         id = "inc5"; actorId = dummyOtherUser.userId; message = "Location shared"; timestamp = System.currentTimeMillis() / 1000 - 250; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
-            //         messageParameters = mutableMapOf("geo_0" to mapOf("type" to "geo-location", "latitude" to "41.8781", "longitude" to "-87.6298")) // Chicago coordinates
-            //     },
-            //     ChatMessage().apply { // Incoming Poll
-            //         id = "inc6"; actorId = dummyOtherUser.userId; message = "Poll created"; timestamp = System.currentTimeMillis() / 1000 - 200; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
-            //         messageParameters = mutableMapOf("poll_0" to mapOf("type" to "talk-poll", "id" to "poll123", "name" to "Favorite Compose Feature?"))
-            //     },
-            //     ChatMessage().apply { // Incoming Deck Card
-            //         id = "inc7"; actorId = dummyOtherUser.userId; message = "Deck card shared"; timestamp = System.currentTimeMillis() / 1000 - 150; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ
-            //         messageParameters = mutableMapOf("deck_0" to mapOf("type" to "deck-card", "id" to "card456", "name" to "Implement Preview", "stackname" to "To Do", "boardname" to "Compose Project", "link" to "http://example.com/deck/card/456"))
-            //     },
-            //     ChatMessage().apply { // Incoming Link Preview
-            //         id = "inc8"; actorId = dummyOtherUser.userId; message = "Check this out: https://www.example.com"; timestamp = System.currentTimeMillis() / 1000 - 100; actorDisplayName = dummyOtherUser.displayName; readStatus = ReadStatus.READ; extractedUrlToPreview = "https://www.example.com"
-            //     },
-            //
-            //
-            //     // --- Outgoing Messages ---
-            //     ChatMessage().apply {
-            //         id = "out1"; actorId = dummyCurrentUser.userId; message = "Hi there! This is an outgoing message."; timestamp = System.currentTimeMillis() / 1000 - 50; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT // Or ReadStatus.NONE
-            //     },
-            //     ChatMessage().apply { // Outgoing Image
-            //         id = "out2"; actorId = dummyCurrentUser.userId; message = "{file}"; timestamp = System.currentTimeMillis() / 1000 - 40; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; selectedIndividualHashMap = mapOf("KEY_MIMETYPE" to "image/png"); imageUrl = "android.resource://${context.packageName}/${R.drawable.ic_mimetype_image}"
-            //         messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "image/png"))
-            //     },
-            //     ChatMessage().apply { // Outgoing Voice
-            //         id = "out3"; actorId = dummyCurrentUser.userId; message = "Outgoing Voice"; timestamp = System.currentTimeMillis() / 1000 - 30; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT
-            //         messageParameters = mutableMapOf("attachment_0" to mapOf("type" to "file", "mimetype" to "audio/ogg"))
-            //     },
-            //     ChatMessage().apply { // Outgoing Link Preview
-            //         id = "out4"; actorId = dummyCurrentUser.userId; message = "My link: http://google.com"; timestamp = System.currentTimeMillis() / 1000 - 20; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; extractedUrlToPreview = "http://google.com"
-            //     },
-            //     ChatMessage().apply { // Outgoing Deleted Message
-            //         id = "out5"; actorId = dummyCurrentUser.userId; message = "This message will be deleted."; timestamp = System.currentTimeMillis() / 1000 - 10; actorDisplayName = dummyCurrentUser.displayName; readStatus = ReadStatus.SENT; isDeleted = true
-            //     }
+            ChatMessage().apply {
+                jsonMessageId = 2; actorId = "user1_id"; message = "I love Nextcloud"; timestamp =
+                System.currentTimeMillis() / 1000 - 600; actorDisplayName = "User2"; messageType =
+                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            }
         )
     }
 
