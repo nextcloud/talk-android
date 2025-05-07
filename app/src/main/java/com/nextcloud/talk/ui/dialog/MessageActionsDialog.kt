@@ -249,7 +249,7 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            val recentEmojiManager = RecentEmojiManager(context,6)
+            val recentEmojiManager = RecentEmojiManager(context, 6)
             val recentEmojis = recentEmojiManager.getRecentEmojis()
             val searchEmojiManager = SearchEmojiManager()
 
