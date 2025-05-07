@@ -41,11 +41,13 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.vanniktech.emoji.Emoji
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
 import com.vanniktech.emoji.recent.RecentEmojiManager
+import com.vanniktech.emoji.search.SearchEmojiManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -247,13 +249,32 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            val recentEmojiManager = RecentEmojiManager(context, 6)
-            val recentEmojis = recentEmojiManager.getRecentEmojis().map { it.unicode }
-            val fallbackEmojis = listOf("👍", "👎", "❤️", "😂", "😕", "😢")
+            val recentEmojiManager = RecentEmojiManager(context,6)
+            val recentEmojis = recentEmojiManager.getRecentEmojis()
+            val searchEmojiManager = SearchEmojiManager()
 
-            val combinedEmojis = (recentEmojis + fallbackEmojis)
-                .distinct()
-                .take(6)
+            val initialSearchKeywords = listOf("thumbsup", "thumbsdown", "heart", "joy", "confused", "cry")
+            val initialEmojisFromSearch = mutableSetOf<Emoji>()
+
+            initialSearchKeywords.forEach { keyword ->
+                val searchResults = searchEmojiManager.search(keyword)
+                if (searchResults.isNotEmpty()) {
+                    initialEmojisFromSearch.add(searchResults[0].component1())
+                }
+                if (initialEmojisFromSearch.size >= 6) {
+                    return@forEach
+                }
+            }
+            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(6)
+
+            val emojiSearchKeywords = mapOf(
+                "👍" to "thumbsup",
+                "👎" to "thumbsdown",
+                "❤️" to "heart",
+                "😂" to "joy",
+                "😕" to "confused",
+                "😢" to "cry"
+            )
 
             val emojiTextViews = listOf(
                 dialogMessageActionsBinding.emojiThumbsUp,
@@ -261,16 +282,21 @@ class MessageActionsDialog(
                 dialogMessageActionsBinding.emojiHeart,
                 dialogMessageActionsBinding.emojiLaugh,
                 dialogMessageActionsBinding.emojiConfused,
-                dialogMessageActionsBinding.emojiSad
+                dialogMessageActionsBinding.emojiCry
             )
 
             emojiTextViews.forEachIndexed { index, textView ->
-                val emoji = combinedEmojis.getOrNull(index)
+                val emoji = combinedEmojis.getOrNull(index)?.unicode
                 if (emoji != null) {
                     textView.text = emoji
                     checkAndSetEmojiSelfReaction(textView)
                     textView.setOnClickListener {
                         clickOnEmoji(message, emoji)
+                        val keyword = emojiSearchKeywords[emoji] ?: ""
+                        val result = SearchEmojiManager().search(keyword)
+                        if (result.isNotEmpty()) {
+                            recentEmojiManager.addEmoji(result[0].component1())
+                        }
                     }
                     textView.visibility = View.VISIBLE
                 } else {
