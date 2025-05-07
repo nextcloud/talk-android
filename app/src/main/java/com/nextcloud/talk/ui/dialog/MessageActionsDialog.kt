@@ -261,6 +261,7 @@ class MessageActionsDialog(
                 val searchResults = searchEmojiManager.search(keyword)
                 if (searchResults.isNotEmpty()) {
                     initialEmojisFromSearch.add(searchResults[0].component1())
+                    recentEmojiManager.addEmoji(searchResults[0].component1())
                 }
                 if (initialEmojisFromSearch.size >= 8) {
                     return@forEach
@@ -301,9 +302,12 @@ class MessageActionsDialog(
                         val result = SearchEmojiManager().search(keyword)
                         if (result.isNotEmpty()) {
                             recentEmojiManager.addEmoji(result[0].component1())
+                            recentEmojiManager.persist()
                         }
                     }
+
                     textView.visibility = View.VISIBLE
+
                 } else {
                     textView.visibility = View.GONE
                 }
@@ -508,6 +512,7 @@ class MessageActionsDialog(
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionDeletedObserver())
+
         } else {
             reactionsRepository.addReaction(currentConversation!!.token!!, message, emoji)
                 .subscribeOn(Schedulers.io())
