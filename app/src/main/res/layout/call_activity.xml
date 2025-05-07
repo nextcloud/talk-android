@@ -33,6 +33,17 @@
             android:visibility="visible"
             tools:visibility="visible">
 
+<!--            <org.webrtc.SurfaceViewRenderer-->
+<!--                android:id="@+id/screenshareRenderer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent"-->
+<!--                android:clickable="false" />-->
+
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/composeScreenshare"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
             <androidx.compose.ui.platform.ComposeView
                 android:id="@+id/composeParticipantGrid"
                 android:layout_width="match_parent"

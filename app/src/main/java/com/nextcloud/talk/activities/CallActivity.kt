@@ -76,6 +76,7 @@ import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ParticipantUiState
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.call.components.ScreenshareOverlay
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -978,6 +979,25 @@ class CallActivity : CallBaseActivity() {
 
         if (isInPipMode) {
             updateUiForPipMode()
+        }
+    }
+
+    private fun showScreenshare(callParticipantModel: CallParticipantModel) {
+        Log.d(TAG, "initGrid")
+
+        binding!!.composeParticipantGrid.visibility = View.GONE
+
+        binding!!.composeScreenshare.setContent {
+            MaterialTheme {
+                ScreenshareOverlay(
+                    callParticipantModel = callParticipantModel,
+                    eglBase = rootEglBase!!
+                ) {
+                    binding!!.composeParticipantGrid.visibility = View.VISIBLE
+                    binding!!.composeScreenshare.visibility = View.GONE
+                    initGrid()
+                }
+            }
         }
     }
 
@@ -2685,6 +2705,10 @@ class CallActivity : CallBaseActivity() {
                     }
                 }
             }
+        }
+
+        if (videoStreamType == "screen") {
+            showScreenshare(callParticipantModel)
         }
 
         initGrid()

@@ -29,6 +29,7 @@ fun WebRTCVideoView(participant: ParticipantUiState, eglBase: EglBase?) {
         modifier = Modifier.fillMaxSize(),
         onRelease = {
             participant.mediaStream?.videoTracks?.firstOrNull()?.removeSink(it)
+            it.clearImage()
             it.release()
         }
     )
