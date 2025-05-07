@@ -30,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
 @Composable
@@ -39,10 +40,12 @@ fun ParticipantTile(
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean,
 ) {
+    val colorInt = ColorGenerator.shared.usernameToColor(participant.nick)
+
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.DarkGray)
+            .background(Color(colorInt))
     ) {
         if (!isVoiceOnlyCall && participant.isStreamEnabled && participant.mediaStream != null) {
             WebRTCVideoView(participant, eglBase)
@@ -86,7 +89,7 @@ fun ParticipantTile(
             style = MaterialTheme.typography.bodyMedium.copy(
                 shadow = Shadow(
                     color = Color.Black,
-                    offset = Offset(6f, 6f),
+                    offset = Offset(4f, 4f),
                     blurRadius = 4f
                 )
             )
