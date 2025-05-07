@@ -3018,7 +3018,7 @@ class CallActivity : CallBaseActivity() {
                 return
             }
             val screenParticipantDisplayItem = participantItems.find { it.sessionKey == "$sessionId-screen" }
-            if (screenParticipantDisplayItem != null) {
+            if (screenParticipantDisplayItem == null) {
                 addParticipantDisplayItem(callParticipantModel, "screen")
             }
         }
