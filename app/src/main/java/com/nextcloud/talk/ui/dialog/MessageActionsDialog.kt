@@ -41,8 +41,6 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
-import com.vanniktech.emoji.Emoji
-import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
@@ -276,7 +274,7 @@ class MessageActionsDialog(
                     }
                     textView.visibility = View.VISIBLE
                 } else {
-                    textView.visibility = View.INVISIBLE
+                    textView.visibility = View.GONE
                 }
             }
 
