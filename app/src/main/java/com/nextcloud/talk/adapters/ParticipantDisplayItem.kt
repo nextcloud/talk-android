@@ -148,7 +148,7 @@ class ParticipantDisplayItem(
             isStreamEnabled = isStreamEnabled,
             raisedHand = raisedHand?.state == true,
             avatarUrl = urlForAvatar,
-            mediaStream = mediaStream,
+            mediaStream = mediaStream
         )
     }
 

@@ -18,7 +18,7 @@ import org.webrtc.SurfaceViewRenderer
 @Composable
 fun WebRTCVideoView(
     participant: ParticipantUiState,
-    eglBase: EglBase?,
+    eglBase: EglBase?
 ) {
     AndroidView(
         factory = { context ->

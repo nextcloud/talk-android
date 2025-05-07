@@ -33,11 +33,7 @@ import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
 
 @Composable
-fun ParticipantTile(
-    participant: ParticipantUiState,
-    eglBase: EglBase?,
-    modifier: Modifier = Modifier
-) {
+fun ParticipantTile(participant: ParticipantUiState, eglBase: EglBase?, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
@@ -110,7 +106,7 @@ fun ParticipantTilePreview() {
         isStreamEnabled = true,
         raisedHand = true,
         avatarUrl = "",
-        mediaStream = null,
+        mediaStream = null
     )
     ParticipantTile(
         participant = participant,
