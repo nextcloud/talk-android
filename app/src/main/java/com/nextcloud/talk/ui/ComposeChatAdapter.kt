@@ -106,10 +106,10 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ComposePreviewUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration

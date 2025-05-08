@@ -1,11 +1,11 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-package com.nextcloud.talk.utils
+package com.nextcloud.talk.utils.preview
 
 import android.content.Context
 import com.github.aurae.retrofit2.LoganSquareConverterFactory
