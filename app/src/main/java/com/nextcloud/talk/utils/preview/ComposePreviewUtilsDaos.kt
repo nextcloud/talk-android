@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -22,13 +22,13 @@ import io.reactivex.Single
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
-class DummyChatMessagesDaoImpl: ChatMessagesDao {
+class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun getNewestMessageId(internalConversationId: String): Long = 0L
 
     override fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> = flowOf()
 
-    override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
-    = flowOf()
+    override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
+        flowOf()
 
     override fun getTempMessageForConversation(
         internalConversationId: String,
@@ -170,7 +170,7 @@ class DummyUserDaoImpl : UsersDao() {
     }
 }
 
-class DummyConversationDaoImpl: ConversationsDao {
+class DummyConversationDaoImpl : ConversationsDao {
     override fun getConversationsForUser(accountId: Long): Flow<List<ConversationEntity>> = flowOf()
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
@@ -184,7 +184,7 @@ class DummyConversationDaoImpl: ConversationsDao {
     override fun clearAllConversationsForUser(accountId: Long) {}
 }
 
-class DummyChatBlocksDaoImpl: ChatBlocksDao {
+class DummyChatBlocksDaoImpl : ChatBlocksDao {
     override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) {}
 
     override fun getChatBlocks(internalConversationId: String): Flow<List<ChatBlockEntity>> = flowOf()

@@ -207,14 +207,16 @@ class ComposeChatAdapter(
                 utils.context,
                 utils.userManager
             )
-        } else ComposeChatAdapterViewModel()
+        } else {
+            ComposeChatAdapterViewModel()
+        }
 
     val items = mutableStateListOf<ChatMessage>()
     val currentUser: User = viewModel.userManager.currentUser.blockingGet()
     val colorScheme = viewModel.viewThemeUtils.getColorScheme(viewModel.context)
     val highEmphasisColorInt = viewModel.context.resources.getColor(R.color.high_emphasis_text, null)
 
-    fun Context.findMainActivityOrNull(): MainActivity?{
+    fun Context.findMainActivityOrNull(): MainActivity? {
         var context = this
         while (context is ContextWrapper) {
             if (context is MainActivity) return context
@@ -959,14 +961,20 @@ fun AllMessageTypesPreview() {
         listOf(
             // Text Messages
             ChatMessage().apply {
-                jsonMessageId = 1; actorId = "user1"; message = "I love Nextcloud"; timestamp =
-                System.currentTimeMillis() / 1000 - 600; actorDisplayName = "User1"; messageType =
-                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+                jsonMessageId = 1
+                actorId = "user1"
+                message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis() / 1000 - 600
+                actorDisplayName = "User1"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             },
             ChatMessage().apply {
-                jsonMessageId = 2; actorId = "user1_id"; message = "I love Nextcloud"; timestamp =
-                System.currentTimeMillis() / 1000 - 600; actorDisplayName = "User2"; messageType =
-                ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+                jsonMessageId = 2
+                actorId = "user1_id"
+                message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis() / 1000 - 600
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             }
         )
     }
@@ -976,7 +984,6 @@ fun AllMessageTypesPreview() {
             adapter.addMessages(sampleMessages.toMutableList(), append = false) // Add messages
         }
     }
-
 
     MaterialTheme(colorScheme = adapter.colorScheme) { // Use the (potentially faked) color scheme
         Box(modifier = Modifier.fillMaxSize()) { // Provide a container
