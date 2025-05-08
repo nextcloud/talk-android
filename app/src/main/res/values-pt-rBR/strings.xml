@@ -372,6 +372,9 @@
     <string name="nc_public_call_explanation">As conversas públicas permitem que você convide pessoas de fora por meio de um link especialmente criado.</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Notificações push desativadas</string>
+    <string name="nc_push_notification_error">Desculpe, algo deu errado, o erro é %1$s</string>
+    <string name="nc_push_notification_fetch_error">Desculpe, algo deu errado, não foi possível obter a mensagem push de teste</string>
+    <string name="nc_push_notification_message">A notificação push foi enviada com êxito. Agora você deve receber uma notificação nesse dispositivo com o título \'Testando notificações push\'</string>
     <string name="nc_push_to_talk">Pressione-para-falar</string>
     <string name="nc_push_to_talk_desc">Com o microfone desativado, clique&amp; para usar Pressione-para-falar</string>
     <string name="nc_refresh">Atualizar</string>
@@ -514,6 +517,8 @@
     <string name="nc_switch_account">Mudar de conta</string>
     <string name="nc_team">Equipe</string>
     <string name="nc_teams">Equipes</string>
+    <string name="nc_test_push_button">Testar notificações push</string>
+    <string name="nc_test_results">Resultados do teste</string>
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
