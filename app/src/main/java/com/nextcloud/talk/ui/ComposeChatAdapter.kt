@@ -8,6 +8,7 @@
 package com.nextcloud.talk.ui
 
 import android.content.Context
+import android.content.ContextWrapper
 import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -23,6 +24,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -46,6 +48,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -68,15 +71,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.graphics.ColorUtils
+import androidx.emoji2.widget.EmojiTextView
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
@@ -84,6 +90,8 @@ import coil.compose.AsyncImage
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
+import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder.Companion.KEY_MIMETYPE
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
@@ -99,7 +107,9 @@ import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
+import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration
@@ -116,40 +126,53 @@ import kotlin.random.Random
 @Suppress("FunctionNaming", "TooManyFunctions", "LongMethod", "StaticFieldLeak", "LargeClass")
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
-    private var messageId: String? = null
+    private var messageId: String? = null,
+    private val utils: ComposePreviewUtils? = null
 ) {
 
+    interface PreviewAble {
+        val viewThemeUtils: ViewThemeUtils
+        val messageUtils: MessageUtils
+        val contactsViewModel: ContactsViewModel
+        val chatViewModel: ChatViewModel
+        val context: Context
+        val userManager: UserManager
+    }
+
     @AutoInjector(NextcloudTalkApplication::class)
-    inner class ComposeChatAdapterViewModel : ViewModel() {
+    inner class ComposeChatAdapterViewModel : ViewModel(), PreviewAble {
 
         @Inject
-        lateinit var viewThemeUtils: ViewThemeUtils
+        override lateinit var viewThemeUtils: ViewThemeUtils
 
         @Inject
-        lateinit var messageUtils: MessageUtils
+        override lateinit var messageUtils: MessageUtils
 
         @Inject
-        lateinit var contactsViewModel: ContactsViewModel
+        override lateinit var contactsViewModel: ContactsViewModel
 
         @Inject
-        lateinit var chatViewModel: ChatViewModel
+        override lateinit var chatViewModel: ChatViewModel
 
         @Inject
-        lateinit var context: Context
+        override lateinit var context: Context
 
         @Inject
-        lateinit var userManager: UserManager
-
-        val items = mutableStateListOf<ChatMessage>()
+        override lateinit var userManager: UserManager
 
         init {
-            sharedApplication!!.componentApplication.inject(this)
+            sharedApplication?.componentApplication?.inject(this)
         }
-
-        val currentUser: User = userManager.currentUser.blockingGet()
-        val colorScheme = viewThemeUtils.getColorScheme(context)
-        val highEmphasisColorInt = context.resources.getColor(R.color.high_emphasis_text, null)
     }
+
+    inner class ComposeChatAdapterPreviewViewModel(
+        override val viewThemeUtils: ViewThemeUtils,
+        override val messageUtils: MessageUtils,
+        override val contactsViewModel: ContactsViewModel,
+        override val chatViewModel: ChatViewModel,
+        override val context: Context,
+        override val userManager: UserManager
+    ) : ViewModel(), PreviewAble
 
     companion object {
         val TAG: String = ComposeChatAdapter::class.java.simpleName
@@ -173,21 +196,48 @@ class ComposeChatAdapter(
 
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
     private var outgoingShape: RoundedCornerShape = RoundedCornerShape(20.dp, 2.dp, 20.dp, 20.dp)
-    private val viewModel = ComposeChatAdapterViewModel()
+
+    val viewModel: PreviewAble =
+        if (utils != null) {
+            ComposeChatAdapterPreviewViewModel(
+                utils.viewThemeUtils,
+                utils.messageUtils,
+                utils.contactsViewModel,
+                utils.chatViewModel,
+                utils.context,
+                utils.userManager
+            )
+        } else {
+            ComposeChatAdapterViewModel()
+        }
+
+    val items = mutableStateListOf<ChatMessage>()
+    val currentUser: User = viewModel.userManager.currentUser.blockingGet()
+    val colorScheme = viewModel.viewThemeUtils.getColorScheme(viewModel.context)
+    val highEmphasisColorInt = viewModel.context.resources.getColor(R.color.high_emphasis_text, null)
+
+    fun Context.findMainActivityOrNull(): MainActivity? {
+        var context = this
+        while (context is ContextWrapper) {
+            if (context is MainActivity) return context
+            context = context.baseContext
+        }
+        return null
+    }
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
 
         val processedMessages = messages.toMutableList()
-        if (viewModel.items.isNotEmpty()) {
+        if (items.isNotEmpty()) {
             if (append) {
-                processedMessages.add(viewModel.items.first())
+                processedMessages.add(items.first())
             } else {
-                processedMessages.add(viewModel.items.last())
+                processedMessages.add(items.last())
             }
         }
 
-        if (append) viewModel.items.addAll(processedMessages) else viewModel.items.addAll(0, processedMessages)
+        if (append) items.addAll(processedMessages) else items.addAll(0, processedMessages)
     }
 
     @OptIn(ExperimentalFoundationApi::class)
@@ -202,7 +252,7 @@ class ComposeChatAdapter(
             modifier = Modifier.padding(16.dp)
         ) {
             stickyHeader {
-                if (viewModel.items.size == 0) {
+                if (items.size == 0) {
                     Column(
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -211,11 +261,11 @@ class ComposeChatAdapter(
                         ShimmerGroup()
                     }
                 } else {
-                    val timestamp = viewModel.items[listState.firstVisibleItemIndex].timestamp
+                    val timestamp = items[listState.firstVisibleItemIndex].timestamp
                     val dateString = formatTime(timestamp * LONG_1000)
-                    val color = Color(viewModel.highEmphasisColorInt)
+                    val color = Color(highEmphasisColorInt)
                     val backgroundColor =
-                        viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                        LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
                     Row(
                         horizontalArrangement = Arrangement.Absolute.Center,
                         verticalAlignment = Alignment.CenterVertically
@@ -229,8 +279,8 @@ class ComposeChatAdapter(
                                 .padding(8.dp)
                                 .shadow(
                                     16.dp,
-                                    spotColor = viewModel.colorScheme.primary,
-                                    ambientColor = viewModel.colorScheme.primary
+                                    spotColor = colorScheme.primary,
+                                    ambientColor = colorScheme.primary
                                 )
                                 .background(color = Color(backgroundColor), shape = RoundedCornerShape(8.dp))
                                 .padding(8.dp)
@@ -240,8 +290,8 @@ class ComposeChatAdapter(
                 }
             }
 
-            items(viewModel.items) { message ->
-                message.activeUser = viewModel.currentUser
+            items(items) { message ->
+                message.activeUser = currentUser
                 when (val type = message.getCalculateMessageType()) {
                     ChatMessage.MessageType.SYSTEM_MESSAGE -> {
                         if (!message.shouldFilter()) {
@@ -284,7 +334,7 @@ class ComposeChatAdapter(
             }
         }
 
-        if (messageId != null && viewModel.items.size > 0) {
+        if (messageId != null && items.size > 0) {
             LaunchedEffect(Dispatchers.Main) {
                 delay(SCROLL_DELAY)
                 val pos = searchMessages(messageId!!)
@@ -326,7 +376,7 @@ class ComposeChatAdapter(
     }
 
     private fun searchMessages(searchId: String): Int {
-        viewModel.items.forEachIndexed { index, message ->
+        items.forEachIndexed { index, message ->
             if (message.id == searchId) return index
         }
         return -1
@@ -380,18 +430,18 @@ class ComposeChatAdapter(
         @Composable
         (RowScope.() -> Unit)
     ) {
-        val incoming = message.actorId != viewModel.currentUser.userId
+        val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
-                viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
+                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
             } else {
-                viewModel.context.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
             }
         } else {
             if (message.isDeleted) {
-                ColorUtils.setAlphaComponent(viewModel.colorScheme.surfaceVariant.toArgb(), HALF_OPACITY)
+                ColorUtils.setAlphaComponent(colorScheme.surfaceVariant.toArgb(), HALF_OPACITY)
             } else {
-                viewModel.colorScheme.surfaceVariant.toArgb()
+                colorScheme.surfaceVariant.toArgb()
             }
         }
         val shape = if (incoming) incomingShape else outgoingShape
@@ -405,7 +455,7 @@ class ComposeChatAdapter(
             if (incoming) {
                 val imageUri = message.actorId?.let { viewModel.contactsViewModel.getImageUri(it, true) }
                 val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-                val loadedImage = loadImage(imageUri, viewModel.context, errorPlaceholderImage)
+                val loadedImage = loadImage(imageUri, LocalContext.current, errorPlaceholderImage)
                 AsyncImage(
                     model = loadedImage,
                     contentDescription = stringResource(R.string.user_avatar),
@@ -427,13 +477,13 @@ class ComposeChatAdapter(
                 color = Color(color),
                 shape = shape
             ) {
-                val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+                val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
                 val modifier = if (includePadding) Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp) else Modifier
                 Column(modifier = modifier) {
                     if (message.parentMessageId != null && !message.isDeleted && messagesJson != null) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
-                            ?.parentMessage!!.asModel().let { CommonMessageQuote(viewModel.context, it) }
+                            ?.parentMessage!!.asModel().let { CommonMessageQuote(LocalContext.current, it) }
                     }
 
                     if (incoming) {
@@ -470,8 +520,8 @@ class ComposeChatAdapter(
     private fun Modifier.withCustomAnimation(incoming: Boolean): Modifier {
         val infiniteTransition = rememberInfiniteTransition()
         val borderColor by infiniteTransition.animateColor(
-            initialValue = viewModel.colorScheme.primary,
-            targetValue = viewModel.colorScheme.background,
+            initialValue = colorScheme.primary,
+            targetValue = colorScheme.background,
             animationSpec = infiniteRepeatable(
                 animation = tween(ANIMATED_BLINK, easing = LinearEasing),
                 repeatMode = RepeatMode.Reverse
@@ -542,7 +592,7 @@ class ComposeChatAdapter(
                     LoaderTextView(ctx).apply {
                         layoutParams = LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
                         val color = if (outgoing) {
-                            viewModel.colorScheme.primary.toArgb()
+                            colorScheme.primary.toArgb()
                         } else {
                             resources.getColor(R.color.nc_shimmer_default_color, null)
                         }
@@ -562,7 +612,7 @@ class ComposeChatAdapter(
     @Composable
     private fun EnrichedText(message: ChatMessage) {
         AndroidView(factory = { ctx ->
-            val incoming = message.actorId != viewModel.currentUser.userId
+            val incoming = message.actorId != currentUser.userId
             var processedMessageText = viewModel.messageUtils.enrichChatMessageText(
                 ctx,
                 message,
@@ -574,7 +624,7 @@ class ComposeChatAdapter(
                 ctx, viewModel.viewThemeUtils, processedMessageText!!, message, null
             )
 
-            androidx.emoji2.widget.EmojiTextView(ctx).apply {
+            EmojiTextView(ctx).apply {
                 layoutParams = LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
                 setLineSpacing(0F, LINE_SPACING)
                 textAlignment = TEXT_ALIGNMENT_VIEW_START
@@ -592,14 +642,14 @@ class ComposeChatAdapter(
     }
 
     @Composable
-    private fun SystemMessage(message: ChatMessage) {
+    fun SystemMessage(message: ChatMessage) {
         val similarMessages = sharedApplication!!.resources.getQuantityString(
             R.plurals.see_similar_system_messages,
             message.expandableChildrenAmount,
             message.expandableChildrenAmount
         )
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+            val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
             Row(horizontalArrangement = Arrangement.Absolute.Center, verticalAlignment = Alignment.CenterVertically) {
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
@@ -632,7 +682,7 @@ class ComposeChatAdapter(
             Text(
                 text,
                 fontSize = AUTHOR_TEXT_SIZE,
-                color = Color(viewModel.highEmphasisColorInt)
+                color = Color(highEmphasisColorInt)
             )
         }
     }
@@ -640,14 +690,15 @@ class ComposeChatAdapter(
     @Composable
     private fun ImageMessage(message: ChatMessage, state: MutableState<Boolean>) {
         val hasCaption = (message.message != "{file}")
-        val incoming = message.actorId != viewModel.currentUser.userId
-        val timeString = DateUtils(viewModel.context).getLocalTimeStringFromTimestamp(message.timestamp)
+        val incoming = message.actorId != currentUser.userId
+        val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
         CommonMessageBody(message, includePadding = false, playAnimation = state.value) {
             Column {
-                message.activeUser = viewModel.currentUser
+                message.activeUser = currentUser
                 val imageUri = message.imageUrl
-                val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                val loadedImage = load(imageUri, viewModel.context, errorPlaceholderImage)
+                val mimetype = message.selectedIndividualHashMap!![KEY_MIMETYPE]
+                val drawableResourceId = getDrawableResourceIdForMimeType(mimetype)
+                val loadedImage = load(imageUri, LocalContext.current, drawableResourceId)
 
                 AsyncImage(
                     model = loadedImage,
@@ -717,8 +768,8 @@ class ComposeChatAdapter(
                     WaveformSeekBar(ctx).apply {
                         setWaveData(FloatArray(DEFAULT_WAVE_SIZE) { Random.nextFloat() }) // READ ONLY for now
                         setColors(
-                            viewModel.colorScheme.inversePrimary.toArgb(),
-                            viewModel.colorScheme.onPrimaryContainer.toArgb()
+                            colorScheme.inversePrimary.toArgb(),
+                            colorScheme.onPrimaryContainer.toArgb()
                         )
                     }
                 },
@@ -793,8 +844,8 @@ class ComposeChatAdapter(
     private fun LinkMessage(message: ChatMessage, state: MutableState<Boolean>) {
         val color = colorResource(R.color.high_emphasis_text)
         viewModel.chatViewModel.getOpenGraph(
-            viewModel.currentUser.getCredentials(),
-            viewModel.currentUser.baseUrl!!,
+            currentUser.getCredentials(),
+            currentUser.baseUrl!!,
             message.extractedUrlToPreview!!
         )
         CommonMessageBody(message, playAnimation = state.value) {
@@ -828,7 +879,7 @@ class ComposeChatAdapter(
                         it.link?.let { Text(it, fontSize = TIME_TEXT_SIZE) }
                         it.thumb?.let {
                             val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                            val loadedImage = loadImage(it, viewModel.context, errorPlaceholderImage)
+                            val loadedImage = loadImage(it, LocalContext.current, errorPlaceholderImage)
                             AsyncImage(
                                 model = loadedImage,
                                 contentDescription = stringResource(R.string.nc_sent_an_image),
@@ -882,7 +933,7 @@ class ComposeChatAdapter(
 
                             if (cardName?.isNotEmpty() == true) {
                                 val cardDescription = String.format(
-                                    viewModel.context.resources.getString(R.string.deck_card_description),
+                                    LocalContext.current.resources.getString(R.string.deck_card_description),
                                     stackName,
                                     boardName
                                 )
@@ -896,6 +947,47 @@ class ComposeChatAdapter(
                     }
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true, widthDp = 380, heightDp = 800)
+@Composable
+fun AllMessageTypesPreview() {
+    val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
+    val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null, previewUtils) }
+
+    val sampleMessages = remember {
+        listOf(
+            // Text Messages
+            ChatMessage().apply {
+                jsonMessageId = 1
+                actorId = "user1"
+                message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User1"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 2
+                actorId = "user1_id"
+                message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            }
+        )
+    }
+
+    LaunchedEffect(sampleMessages) { // Use LaunchedEffect or similar to update state once
+        if (adapter.items.isEmpty()) { // Prevent adding multiple times on recomposition
+            adapter.addMessages(sampleMessages.toMutableList(), append = false) // Add messages
+        }
+    }
+
+    MaterialTheme(colorScheme = adapter.colorScheme) { // Use the (potentially faked) color scheme
+        Box(modifier = Modifier.fillMaxSize()) { // Provide a container
+            adapter.GetView() // Call the main Composable
         }
     }
 }
