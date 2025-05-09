@@ -103,6 +103,11 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.Calendar
 import java.util.Collections
 import java.util.Locale
@@ -150,7 +155,7 @@ class ConversationInfoActivity :
         get() {
             if (!TextUtils.isEmpty(conversationToken)) {
                 val data = Data.Builder()
-                data.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+                data.putString(KEY_ROOM_TOKEN, conversationToken)
                 data.putLong(BundleKeys.KEY_INTERNAL_USER_ID, conversationUser.id!!)
                 return data.build()
             }
@@ -192,7 +197,7 @@ class ConversationInfoActivity :
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
-        conversationToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
+        conversationToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         hasAvatarSpacing = intent.getBooleanExtra(BundleKeys.KEY_ROOM_ONE_TO_ONE, false)
         credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)!!
     }
@@ -335,6 +340,7 @@ class ConversationInfoActivity :
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initViewStateObserver() {
         viewModel.viewState.observe(this) { state ->
             when (state) {
@@ -354,10 +360,43 @@ class ConversationInfoActivity :
                             canGeneratePrettyURL
                         )
                     }
+
+                    if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                        viewModel.getProfileData(conversationUser, conversation!!.name)
+                    }
                 }
 
                 is ConversationInfoViewModel.GetRoomErrorState -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                }
+
+                else -> {}
+            }
+        }
+
+        viewModel.getProfileViewState.observe(this) { state ->
+            when (state) {
+                is ConversationInfoViewModel.GetProfileSuccessState -> {
+                    val profile = state.profile
+                    val pronouns = profile.pronouns ?: ""
+                    binding.pronouns.text = pronouns
+
+                    val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
+                    val role = profile.role ?: ""
+                    val company = profile.company ?: ""
+                    binding.professionCompany.text = "$role$concat1$company"
+
+                    val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
+                    val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
+                    val localTime = ZonedDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), profileZoneOffset)
+                    val localTimeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
+                    val concat2 = if (profile.address != null) " · " else ""
+                    val address = profile.address ?: ""
+                    binding.locationTime.text = "$localTimeString$concat2$address"
+
+                    binding.pronouns.visibility = VISIBLE
+                    binding.professionCompany.visibility = VISIBLE
+                    binding.locationTime.visibility = VISIBLE
                 }
 
                 else -> {}
@@ -404,7 +443,7 @@ class ConversationInfoActivity :
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.edit) {
             val bundle = Bundle()
-            bundle.putString(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+            bundle.putString(KEY_ROOM_TOKEN, conversationToken)
 
             val intent = Intent(this, ConversationInfoEditActivity::class.java)
             intent.putExtras(bundle)
@@ -445,7 +484,7 @@ class ConversationInfoActivity :
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         intent.putExtra(BundleKeys.KEY_CONVERSATION_NAME, conversation?.displayName)
-        intent.putExtra(BundleKeys.KEY_ROOM_TOKEN, conversationToken)
+        intent.putExtra(KEY_ROOM_TOKEN, conversationToken)
         intent.putExtra(
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             ConversationUtils.isParticipantOwnerOrModerator(conversation!!)
@@ -538,7 +577,7 @@ class ConversationInfoActivity :
         ) {
             binding.webinarInfoView.startTimeButtonSummary.text = (
                 dateUtils.getLocalDateTimeStringFromTimestamp(
-                    conversation!!.lobbyTimer!! * DateConstants.SECOND_DIVIDER
+                    conversation!!.lobbyTimer * DateConstants.SECOND_DIVIDER
                 )
                 )
         } else {
@@ -1039,7 +1078,7 @@ class ConversationInfoActivity :
 
             binding.displayNameText.text = conversation!!.displayName
 
-            if (conversation!!.description != null && conversation!!.description!!.isNotEmpty()) {
+            if (conversation!!.description != null && conversation!!.description.isNotEmpty()) {
                 binding.descriptionText.text = conversation!!.description
                 binding.conversationDescription.visibility = VISIBLE
             }
@@ -1185,7 +1224,7 @@ class ConversationInfoActivity :
                     val stringValue: String =
                         when (
                             DomainEnumNotificationLevelConverter()
-                                .convertToInt(conversation!!.notificationLevel!!)
+                                .convertToInt(conversation!!.notificationLevel)
                         ) {
                             NOTIFICATION_LEVEL_ALWAYS -> resources.getString(R.string.nc_notify_me_always)
                             NOTIFICATION_LEVEL_MENTION -> resources.getString(R.string.nc_notify_me_mention)
@@ -1234,7 +1273,7 @@ class ConversationInfoActivity :
                     conversation!!.name
                 )
             ) {
-                conversation!!.name?.let {
+                conversation!!.name.let {
                     binding.avatarImage.loadUserAvatar(
                         conversationUser,
                         it,
