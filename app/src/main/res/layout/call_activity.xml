@@ -33,15 +33,10 @@
             android:visibility="visible"
             tools:visibility="visible">
 
-            <GridView
-                android:id="@+id/gridview"
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/composeParticipantGrid"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:numColumns="2"
-                android:scrollbars="vertical"
-                android:stretchMode="columnWidth"
-                tools:listitem="@layout/call_item" />
+                android:layout_height="match_parent" />
 
             <FrameLayout
                 android:id="@+id/selfVideoViewWrapper"
@@ -327,7 +322,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/pipSelfVideoOverlay"
+        android:id="@+id/pipOverlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/black"
@@ -341,9 +336,8 @@
             android:layout_width="match_parent"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="5dp"
-            android:layout_marginBottom="-30dp"
             android:ellipsize="end"
             android:maxLines="3"
             android:textAlignment="center"
