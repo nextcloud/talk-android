@@ -51,6 +51,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.mutableStateOf
@@ -214,9 +215,7 @@ import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -348,8 +347,6 @@ class ChatActivity :
         }
     }
 
-    private lateinit var messageInputFragment: MessageInputFragment
-
     val typingParticipants = HashMap<String, TypingParticipant>()
 
     var callStarted = false
@@ -426,9 +423,9 @@ class ChatActivity :
             roomToken
         )
 
-        messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository())
+        val internalId = conversationUser!!.id.toString() + "@" + roomToken
+        messageInputViewModel.setData(chatViewModel.getChatRepository(), internalId)
 
         binding.progressBar.visibility = View.VISIBLE
 
@@ -441,15 +438,6 @@ class ChatActivity :
         ) { uris ->
             if (uris.isNotEmpty()) {
                 onChooseFileResult(uris)
-            }
-        }
-    }
-
-    private fun getMessageInputFragment(): MessageInputFragment {
-        val internalId = conversationUser!!.id.toString() + "@" + roomToken
-        return MessageInputFragment().apply {
-            arguments = Bundle().apply {
-                putString(CONVERSATION_INTERNAL_ID, internalId)
             }
         }
     }
@@ -507,8 +495,13 @@ class ChatActivity :
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        chatViewModel.handleOrientationChange()
+        chatViewModel.handleSavedInstance()
         super.onSaveInstanceState(outState)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        chatViewModel.handleRestoreInstance()
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onStop() {
@@ -584,9 +577,13 @@ class ChatActivity :
                         chatApiVersion = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
                         participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
-                        supportFragmentManager.commit {
-                            setReorderingAllowed(true) // optimizes out redundant replace operations
-                            replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                        if (chatViewModel.getVoiceRecordingLocked.value != true) {
+                            supportFragmentManager.commit {
+                                setReorderingAllowed(true) // optimizes out redundant replace operations
+                                messageInputViewModel.messageInputFragment?.let {
+                                    replace(R.id.fragment_container_activity_chat, it)
+                                }
+                            }
                         }
 
                         joinRoomWithPassword()
@@ -963,7 +960,9 @@ class ChatActivity :
             } else {
                 supportFragmentManager.commit {
                     setReorderingAllowed(true)
-                    replace(R.id.fragment_container_activity_chat, getMessageInputFragment())
+                    messageInputViewModel.messageInputFragment?.let {
+                        replace(R.id.fragment_container_activity_chat, it)
+                    }
                 }
             }
         }
