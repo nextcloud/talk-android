@@ -35,20 +35,25 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         referenceId: String
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>) {}
+    override suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>) { /* */
+    }
 
-    override suspend fun upsertChatMessage(chatMessage: ChatMessageEntity) {}
+    override suspend fun upsertChatMessage(chatMessage: ChatMessageEntity) { /* */
+    }
 
     override fun getChatMessageForConversation(
         internalConversationId: String,
         messageId: Long
     ): Flow<ChatMessageEntity> = flowOf()
 
-    override fun deleteChatMessages(internalIds: List<String>) {}
+    override fun deleteChatMessages(internalIds: List<String>) { /* */
+    }
 
-    override fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>) {}
+    override fun deleteTempChatMessages(internalConversationId: String, referenceIds: List<String>) { /* */
+    }
 
-    override fun updateChatMessage(message: ChatMessageEntity) {}
+    override fun updateChatMessage(message: ChatMessageEntity) { /* */
+    }
 
     override fun getMessagesFromIds(messageIds: List<Long>): Flow<List<ChatMessageEntity>> = flowOf()
 
@@ -75,16 +80,18 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
         newestMessageId: Long
     ): Int = 0
 
-    override fun clearAllMessagesForUser(pattern: String) {}
+    override fun clearAllMessagesForUser(pattern: String) { /* */
+    }
 
-    override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) {}
+    override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) { /* */
+    }
 }
 
 class DummyUserDaoImpl : UsersDao() {
     private val dummyUsers = mutableListOf(
         UserEntity(1L, "user1_id", "user1", "server1", "1"),
         UserEntity(2L, "user2_id", "user2", "server1", "2"),
-        UserEntity(3L, "user3_id", "user3", "server2", "3")
+        UserEntity(0L, "user3_id", "user3", "server2", "3")
     )
     private var activeUserId: Long? = 1L
 
@@ -175,17 +182,22 @@ class DummyConversationDaoImpl : ConversationsDao {
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
 
-    override fun upsertConversations(conversationEntities: List<ConversationEntity>) {}
+    override fun upsertConversations(conversationEntities: List<ConversationEntity>) { /* */
+    }
 
-    override fun deleteConversations(conversationIds: List<String>) {}
+    override fun deleteConversations(conversationIds: List<String>) { /* */
+    }
 
-    override fun updateConversation(conversationEntity: ConversationEntity) {}
+    override fun updateConversation(conversationEntity: ConversationEntity) { /* */
+    }
 
-    override fun clearAllConversationsForUser(accountId: Long) {}
+    override fun clearAllConversationsForUser(accountId: Long) { /* */
+    }
 }
 
 class DummyChatBlocksDaoImpl : ChatBlocksDao {
-    override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) {}
+    override fun deleteChatBlocks(blocks: List<ChatBlockEntity>) { /* */
+    }
 
     override fun getChatBlocks(internalConversationId: String): Flow<List<ChatBlockEntity>> = flowOf()
 
@@ -200,9 +212,12 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
         newestMessageId: Long
     ): Flow<List<ChatBlockEntity>> = flowOf()
 
-    override suspend fun upsertChatBlock(chatBlock: ChatBlockEntity) {}
+    override suspend fun upsertChatBlock(chatBlock: ChatBlockEntity) { /* */
+    }
 
-    override fun clearChatBlocksForUser(pattern: String) {}
+    override fun clearChatBlocksForUser(pattern: String) { /* */
+    }
 
-    override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) {}
+    override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) { /* */
+    }
 }

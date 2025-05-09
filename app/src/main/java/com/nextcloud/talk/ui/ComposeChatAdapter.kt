@@ -964,7 +964,7 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 1
                 actorId = "user1"
                 message = "I love Nextcloud"
-                timestamp = System.currentTimeMillis() / 1000 - 600
+                timestamp = System.currentTimeMillis()
                 actorDisplayName = "User1"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             },
@@ -972,7 +972,7 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 2
                 actorId = "user1_id"
                 message = "I love Nextcloud"
-                timestamp = System.currentTimeMillis() / 1000 - 600
+                timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             }
