@@ -13,8 +13,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.format.DateUtils
+import android.text.style.ImageSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -209,7 +212,6 @@ class ConversationItem(
                         R.drawable.ic_avatar_document
                     )
                 )
-
                 false
             }
 
@@ -229,7 +231,20 @@ class ConversationItem(
             if (!TextUtils.isEmpty(chatMessage?.systemMessage) ||
                 ConversationEnums.ConversationType.ROOM_SYSTEM === model.type
             ) {
-                holder.binding.dialogLastMessage.text = chatMessage?.text
+                holder.binding.dialogLastMessage.text = chatMessage.text
+            } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage.getCalculateMessageType()) {
+                var attachmentName = chatMessage.message
+                if (attachmentName == "{file}") {
+                    attachmentName = chatMessage.messageParameters?.get("file")?.get("name")
+                }
+                val name = if (chatMessage.messageParameters?.get("actor")?.get("name") == user.userId) {
+                    sharedApplication!!.resources.getString(R.string.nc_current_user)
+                } else {
+                    "${chatMessage.messageParameters?.get("actor")?.get("name")}:"
+                }
+
+                val lastMessage = setLastNameForAttachmentMessage(name, R.drawable.baseline_image_24, attachmentName!!)
+                holder.binding.dialogLastMessage.text = lastMessage
             } else {
                 chatMessage?.activeUser = user
 
@@ -351,15 +366,6 @@ class ConversationItem(
                             chatMessage?.getNullsafeActorDisplayName()
                         )
                     }
-                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_an_attachment_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
-                    }
                 } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == chatMessage?.getCalculateMessageType()) {
                     return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
                         sharedApplication!!.getString(R.string.nc_sent_location_you)
@@ -428,6 +434,26 @@ class ConversationItem(
             return ""
         }
 
+    fun setLastNameForAttachmentMessage(actor: String, icon: Int, attachmentName: String): SpannableStringBuilder {
+        val builder = SpannableStringBuilder()
+        builder.append(actor)
+
+        val drawable = ContextCompat.getDrawable(context, icon)
+        viewThemeUtils.platform.colorDrawable(drawable!!, context.resources!!.getColor(R.color.low_emphasis_text, null))
+
+        drawable?.let {
+            val desiredWidth = (it.intrinsicWidth * IMAGE_SCALE_FACTOR).toInt()
+            val desiredHeight = (it.intrinsicHeight * IMAGE_SCALE_FACTOR).toInt()
+            it.setBounds(0, 0, desiredWidth, desiredHeight)
+            val imageSpan = ImageSpan(it, ImageSpan.ALIGN_BOTTOM)
+            val startImage = builder.length
+            builder.append(" ")
+            builder.setSpan(imageSpan, startImage, startImage + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        }
+        builder.append(attachmentName)
+        return builder
+    }
+
     class ConversationItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
         var binding: RvItemConversationWithLastMessageBinding
 
@@ -442,5 +468,6 @@ class ConversationItem(
         private const val STATUS_SIZE_IN_DP = 9f
         private const val UNREAD_BUBBLE_STROKE_WIDTH = 6.0f
         private const val UNREAD_MESSAGES_TRESHOLD = 1000
+        private const val IMAGE_SCALE_FACTOR = 0.7f
     }
 }
