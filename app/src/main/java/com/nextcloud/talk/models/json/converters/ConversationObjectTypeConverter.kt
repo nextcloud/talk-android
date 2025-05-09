@@ -15,6 +15,7 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             "share:password" -> ConversationEnums.ObjectType.SHARE_PASSWORD
             "room" -> ConversationEnums.ObjectType.ROOM
             "file" -> ConversationEnums.ObjectType.FILE
+            "event" -> ConversationEnums.ObjectType.EVENT
             else -> ConversationEnums.ObjectType.DEFAULT
         }
     }
@@ -28,6 +29,7 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             ConversationEnums.ObjectType.SHARE_PASSWORD -> "share:password"
             ConversationEnums.ObjectType.ROOM -> "room"
             ConversationEnums.ObjectType.FILE -> "file"
+            ConversationEnums.ObjectType.EVENT -> "event"
             else -> ""
         }
     }

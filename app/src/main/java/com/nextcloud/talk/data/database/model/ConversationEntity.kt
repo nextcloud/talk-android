@@ -78,6 +78,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "notificationCalls") var notificationCalls: Int = 0,
     @ColumnInfo(name = "notificationLevel") var notificationLevel: ConversationEnums.NotificationLevel,
     @ColumnInfo(name = "objectType") var objectType: ConversationEnums.ObjectType,
+    @ColumnInfo(name = "objectId") var objectId: String,
     @ColumnInfo(name = "participantType") var participantType: Participant.ParticipantType,
     @ColumnInfo(name = "permissions") var permissions: Int = 0,
     @ColumnInfo(name = "readOnly") var conversationReadOnlyState: ConversationEnums.ConversationReadOnlyState,
