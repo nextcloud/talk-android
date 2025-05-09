@@ -327,7 +327,6 @@ class ConversationInfoActivity :
             when (state) {
                 is ConversationInfoViewModel.GetCapabilitiesSuccessState -> {
                     spreedCapabilities = state.spreedCapabilities
-
                     handleConversation()
                 }
 
@@ -905,8 +904,7 @@ class ConversationInfoActivity :
 
     @Suppress("LongMethod")
     private fun handleConversation() {
-        val conversationCopy = conversation!!
-
+        val conversationCopy = conversation ?: return
         setUpNotificationSettings(databaseStorageModule!!)
 
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RICH_OBJECT_LIST_MEDIA) &&
