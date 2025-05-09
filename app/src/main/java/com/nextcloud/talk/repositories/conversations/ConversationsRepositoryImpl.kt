@@ -14,6 +14,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -114,6 +115,10 @@ class ConversationsRepositoryImpl(
             body
         )
         return response
+    }
+
+    override suspend fun getProfile(credentials: String, url: String): Profile? {
+        return coroutineApi.getProfile(credentials, url).ocs?.data
     }
 
     override suspend fun banActor(

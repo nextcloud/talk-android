@@ -11,6 +11,7 @@ import com.nextcloud.talk.conversationinfo.CreateRoomRequest
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.profile.Profile
 import io.reactivex.Observable
 
 interface ConversationsRepository {
@@ -46,4 +47,6 @@ interface ConversationsRepository {
     suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall
 
     suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall
+
+    suspend fun getProfile(credentials: String, url: String): Profile?
 }
