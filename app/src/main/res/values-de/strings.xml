@@ -178,7 +178,7 @@
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
     <string name="nc_delete_message">Löschen</string>
-    <string name="nc_delete_message_leaked_to_matterbridge">Nachricht erfolgreich gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
+    <string name="nc_delete_message_leaked_to_matterbridge">Nachricht gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_deleted_user">Benutzer %1$s wurde entfernt</string>
     <string name="nc_demote">Moderator absetzen</string>
     <string name="nc_description_record_voice">Sprachnachricht aufnehmen</string>
@@ -374,7 +374,7 @@
     <string name="nc_push_disabled">Push-Benachrichtigungen sind deaktiviert</string>
     <string name="nc_push_notification_error">Leider ist etwas schief gelaufen, der Fehler ist %1$s</string>
     <string name="nc_push_notification_fetch_error">Leider ist etwas schief gelaufen, die Test-Push-Nachricht kann nicht abgerufen werden</string>
-    <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde erfolgreich gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel „Testen von Push-Benachrichtigungen“ erhalten.</string>
+    <string name="nc_push_notification_message">Die Push-Benachrichtigung wurde gesendet. Sie sollten nun auf diesem Gerät eine Benachrichtigung mit dem Titel „Testen von Push-Benachrichtigungen“ erhalten.</string>
     <string name="nc_push_to_talk">Funkgerät-Modus</string>
     <string name="nc_push_to_talk_desc">Bei deaktiviertem Mikrofon &amp;drücken. Halten Sie zum Senden die Sprechtaste gedrückt (Funkgerät-Modus)</string>
     <string name="nc_refresh">Aktualisieren</string>
@@ -390,7 +390,7 @@
     <string name="nc_reply">Antworten</string>
     <string name="nc_reply_privately">Privat antworten</string>
     <string name="nc_save_message">Speichern</string>
-    <string name="nc_save_success">Erfolgreich gespeichert</string>
+    <string name="nc_save_success">Gespeichert</string>
     <string name="nc_screen_lock_timeout_30">30 Sekunden</string>
     <string name="nc_screen_lock_timeout_300">5 Minuten</string>
     <string name="nc_screen_lock_timeout_60">1 Minute</string>
@@ -460,7 +460,7 @@
     <string name="nc_settings_phone_book_integration_phone_number_dialog_description">Sie können Ihre Telefonnummer so einstellen, dass andere Benutzer Sie finden können.</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_edit_text_hint">Telefonnummer eingeben</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_invalid">Ungültige Telefonnummer</string>
-    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummerneingabe erfolgreich</string>
+    <string name="nc_settings_phone_book_integration_phone_number_dialog_success">Telefonnummer festgelegt</string>
     <string name="nc_settings_phone_book_integration_phone_number_dialog_title">Telefonnummer</string>
     <string name="nc_settings_phone_book_integration_title">Rufnummernintegration</string>
     <string name="nc_settings_privacy">Datenschutz</string>
