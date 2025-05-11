@@ -675,7 +675,7 @@
     <string name="user_info_displayname">Vollständiger Name</string>
     <string name="user_info_email">E-Mail</string>
     <string name="user_info_phone">Telefonnummer</string>
-    <string name="user_info_twitter">Twitter</string>
+    <string name="user_info_twitter">X</string>
     <string name="user_info_website">Webseite</string>
     <string name="user_status">Status</string>
     <string name="userinfo_error_text">Persönliche Nutzerinformationen konnten nicht geladen werden</string>
