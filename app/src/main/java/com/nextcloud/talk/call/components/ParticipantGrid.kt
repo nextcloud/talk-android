@@ -27,6 +27,7 @@ import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
 
+@Suppress("MagicNumber", "TooManyFunctions")
 @Composable
 fun ParticipantGrid(
     modifier: Modifier = Modifier,
@@ -101,6 +102,7 @@ fun ParticipantGrid(
     }
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun ParticipantGridPreview() {
@@ -111,6 +113,7 @@ fun ParticipantGridPreview() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun TwoParticipants() {
@@ -121,6 +124,7 @@ fun TwoParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun ThreeParticipants() {
@@ -131,6 +135,7 @@ fun ThreeParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FourParticipants() {
@@ -141,6 +146,7 @@ fun FourParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FiveParticipants() {
@@ -151,6 +157,7 @@ fun FiveParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun SevenParticipants() {
@@ -161,6 +168,7 @@ fun SevenParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FiftyParticipants() {
@@ -171,6 +179,7 @@ fun FiftyParticipants() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -185,6 +194,7 @@ fun OneParticipantLandscape() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -199,6 +209,7 @@ fun TwoParticipantsLandscape() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -213,6 +224,7 @@ fun ThreeParticipantsLandscape() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -227,6 +239,7 @@ fun FourParticipantsLandscape() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -241,6 +254,7 @@ fun SevenParticipantsLandscape() {
     ) {}
 }
 
+@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,

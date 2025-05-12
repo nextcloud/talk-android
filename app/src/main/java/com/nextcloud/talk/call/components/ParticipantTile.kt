@@ -33,6 +33,9 @@ import com.nextcloud.talk.call.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
+const val NICK_OFFSET = 4f
+const val NICK_BLUR_RADIUS = 4f
+
 @Composable
 fun ParticipantTile(
     participant: ParticipantUiState,
@@ -89,8 +92,8 @@ fun ParticipantTile(
             style = MaterialTheme.typography.bodyMedium.copy(
                 shadow = Shadow(
                     color = Color.Black,
-                    offset = Offset(4f, 4f),
-                    blurRadius = 4f
+                    offset = Offset(NICK_OFFSET, NICK_OFFSET),
+                    blurRadius = NICK_BLUR_RADIUS
                 )
             )
         )

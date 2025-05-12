@@ -30,6 +30,7 @@ import org.webrtc.MediaStream
 import org.webrtc.PeerConnection.IceConnectionState
 import org.webrtc.SurfaceViewRenderer
 
+@Suppress("LongParameterList")
 class ParticipantDisplayItem(
     private val context: Context,
     private val baseUrl: String,
@@ -79,6 +80,7 @@ class ParticipantDisplayItem(
         }
 
         override fun onReaction(reaction: String) {
+            // unused
         }
     }
 
@@ -88,6 +90,7 @@ class ParticipantDisplayItem(
         updateFromModel()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun destroy() {
         callParticipantModel.removeObserver(callParticipantModelObserver)
 
