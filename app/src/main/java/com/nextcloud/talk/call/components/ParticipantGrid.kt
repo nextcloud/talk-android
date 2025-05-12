@@ -5,6 +5,8 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
+@file:Suppress("MagicNumber", "TooManyFunctions")
+
 package com.nextcloud.talk.call.components
 
 import android.content.res.Configuration
@@ -23,16 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
 
-@Suppress("MagicNumber", "TooManyFunctions")
 @Composable
 fun ParticipantGrid(
     modifier: Modifier = Modifier,
     eglBase: EglBase?,
-    participants: List<ParticipantUiState>,
+    participantUiStates: List<ParticipantUiState>,
     isVoiceOnlyCall: Boolean,
     onClick: () -> Unit
 ) {
@@ -43,19 +44,19 @@ fun ParticipantGrid(
 
     val columns =
         if (isPortrait) {
-            when (participants.size) {
+            when (participantUiStates.size) {
                 1, 2, 3 -> 1
                 else -> 2
             }
         } else {
-            when (participants.size) {
+            when (participantUiStates.size) {
                 1 -> 1
                 2, 4 -> 2
                 else -> 3
             }
         }
 
-    val rows = ceil(participants.size / columns.toFloat()).toInt()
+    val rows = ceil(participantUiStates.size / columns.toFloat()).toInt()
 
     val heightForNonGridComponents = if (isVoiceOnlyCall) {
         // this is a workaround for now. It should ~summarize the height of callInfosLinearLayout and callControls
@@ -87,11 +88,11 @@ fun ParticipantGrid(
         contentPadding = PaddingValues(vertical = edgePadding)
     ) {
         items(
-            participants,
+            participantUiStates,
             key = { it.sessionKey }
         ) { participant ->
             ParticipantTile(
-                participant = participant,
+                participantUiState = participant,
                 modifier = Modifier
                     .height(itemHeight)
                     .fillMaxWidth(),
@@ -102,84 +103,76 @@ fun ParticipantGrid(
     }
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun ParticipantGridPreview() {
     ParticipantGrid(
-        participants = getTestParticipants(1),
+        participantUiStates = getTestParticipants(1),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun TwoParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(2),
+        participantUiStates = getTestParticipants(2),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun ThreeParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(3),
+        participantUiStates = getTestParticipants(3),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FourParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(4),
+        participantUiStates = getTestParticipants(4),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FiveParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(5),
+        participantUiStates = getTestParticipants(5),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun SevenParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(7),
+        participantUiStates = getTestParticipants(7),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview
 @Composable
 fun FiftyParticipants() {
     ParticipantGrid(
-        participants = getTestParticipants(50),
+        participantUiStates = getTestParticipants(50),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -188,13 +181,12 @@ fun FiftyParticipants() {
 @Composable
 fun OneParticipantLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(1),
+        participantUiStates = getTestParticipants(1),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -203,13 +195,12 @@ fun OneParticipantLandscape() {
 @Composable
 fun TwoParticipantsLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(2),
+        participantUiStates = getTestParticipants(2),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -218,13 +209,12 @@ fun TwoParticipantsLandscape() {
 @Composable
 fun ThreeParticipantsLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(3),
+        participantUiStates = getTestParticipants(3),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -233,13 +223,12 @@ fun ThreeParticipantsLandscape() {
 @Composable
 fun FourParticipantsLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(4),
+        participantUiStates = getTestParticipants(4),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -248,13 +237,12 @@ fun FourParticipantsLandscape() {
 @Composable
 fun SevenParticipantsLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(7),
+        participantUiStates = getTestParticipants(7),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}
 }
 
-@Suppress("MagicNumber")
 @Preview(
     showBackground = false,
     heightDp = 360,
@@ -263,7 +251,7 @@ fun SevenParticipantsLandscape() {
 @Composable
 fun FiftyParticipantsLandscape() {
     ParticipantGrid(
-        participants = getTestParticipants(50),
+        participantUiStates = getTestParticipants(50),
         eglBase = null,
         isVoiceOnlyCall = false
     ) {}

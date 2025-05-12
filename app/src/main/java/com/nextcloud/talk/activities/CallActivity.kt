@@ -48,12 +48,12 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -73,7 +73,6 @@ import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
-import com.nextcloud.talk.call.ParticipantUiState
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.chat.ChatActivity
@@ -154,7 +153,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.launch
 import okhttp3.Cache
 import org.apache.commons.lang3.StringEscapeUtils
 import org.greenrobot.eventbus.Subscribe
@@ -308,8 +306,6 @@ class CallActivity : CallBaseActivity() {
     private var mediaPlayer: MediaPlayer? = null
 
     private val participantItems = mutableStateListOf<ParticipantDisplayItem>()
-    private val participantUiStates = mutableStateListOf<ParticipantUiState>()
-
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
     private var moreCallActionsDialog: MoreCallActionsDialog? = null
@@ -966,8 +962,9 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
+                val participantUiStates = participantItems.map { it.uiStateFlow.collectAsState().value }
                 ParticipantGrid(
-                    participants = participantUiStates.toList(),
+                    participantUiStates = participantUiStates,
                     eglBase = rootEglBase!!,
                     isVoiceOnlyCall = isVoiceOnlyCall
                 ) {
@@ -2555,7 +2552,6 @@ class CallActivity : CallBaseActivity() {
         val participant = participantItems.find { it.sessionKey == key }
         participant?.destroy()
         participantItems.removeAll { it.sessionKey == key }
-        participantUiStates.removeAll { it.sessionKey == key }
         initGrid()
     }
 
@@ -2674,17 +2670,6 @@ class CallActivity : CallBaseActivity() {
 
         if (participantItems.none { it.sessionKey == sessionKey }) {
             participantItems.add(participantDisplayItem)
-
-            lifecycleScope.launch {
-                participantDisplayItem.uiStateFlow.collect { uiState ->
-                    val index = participantUiStates.indexOfFirst { it.sessionKey == sessionKey }
-                    if (index >= 0) {
-                        participantUiStates[index] = uiState
-                    } else {
-                        participantUiStates.add(uiState)
-                    }
-                }
-            }
         }
 
         initGrid()

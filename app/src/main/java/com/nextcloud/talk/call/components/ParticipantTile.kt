@@ -29,7 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
-import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.adapters.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
@@ -38,28 +38,28 @@ const val NICK_BLUR_RADIUS = 4f
 
 @Composable
 fun ParticipantTile(
-    participant: ParticipantUiState,
+    participantUiState: ParticipantUiState,
     eglBase: EglBase?,
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean
 ) {
-    val colorInt = ColorGenerator.shared.usernameToColor(participant.nick)
+    val colorInt = ColorGenerator.shared.usernameToColor(participantUiState.nick)
 
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
             .background(Color(colorInt))
     ) {
-        if (!isVoiceOnlyCall && participant.isStreamEnabled && participant.mediaStream != null) {
-            WebRTCVideoView(participant, eglBase)
+        if (!isVoiceOnlyCall && participantUiState.isStreamEnabled && participantUiState.mediaStream != null) {
+            WebRTCVideoView(participantUiState, eglBase)
         } else {
             AvatarWithFallback(
-                participant = participant,
+                participant = participantUiState,
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
-        if (participant.raisedHand) {
+        if (participantUiState.raisedHand) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_hand_back_left),
                 contentDescription = "Raised Hand",
@@ -71,7 +71,7 @@ fun ParticipantTile(
             )
         }
 
-        if (!participant.isAudioEnabled) {
+        if (!participantUiState.isAudioEnabled) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
                 contentDescription = "Mic Off",
@@ -84,7 +84,7 @@ fun ParticipantTile(
         }
 
         Text(
-            text = participant.nick,
+            text = participantUiState.nick,
             color = Color.White,
             modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -98,7 +98,7 @@ fun ParticipantTile(
             )
         )
 
-        if (!participant.isConnected) {
+        if (!participantUiState.isConnected) {
             CircularProgressIndicator(
                 modifier = Modifier.align(Alignment.Center)
             )
@@ -120,7 +120,7 @@ fun ParticipantTilePreview() {
         mediaStream = null
     )
     ParticipantTile(
-        participant = participant,
+        participantUiState = participant,
         modifier = Modifier
             .fillMaxWidth()
             .height(300.dp),

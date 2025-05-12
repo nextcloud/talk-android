@@ -15,7 +15,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.ViewGroup
 import com.nextcloud.talk.call.CallParticipantModel
-import com.nextcloud.talk.call.ParticipantUiState
 import com.nextcloud.talk.call.RaisedHand
 import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
@@ -29,6 +28,17 @@ import org.webrtc.EglBase
 import org.webrtc.MediaStream
 import org.webrtc.PeerConnection.IceConnectionState
 import org.webrtc.SurfaceViewRenderer
+
+data class ParticipantUiState(
+    val sessionKey: String,
+    val nick: String,
+    val isConnected: Boolean,
+    val isAudioEnabled: Boolean,
+    val isStreamEnabled: Boolean,
+    val raisedHand: Boolean,
+    val avatarUrl: String?,
+    val mediaStream: MediaStream?
+)
 
 @Suppress("LongParameterList")
 class ParticipantDisplayItem(

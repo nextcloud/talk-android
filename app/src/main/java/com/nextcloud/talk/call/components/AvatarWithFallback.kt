@@ -22,7 +22,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.adapters.ParticipantUiState
 
 @Composable
 fun AvatarWithFallback(participant: ParticipantUiState, modifier: Modifier = Modifier) {

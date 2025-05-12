@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import org.webrtc.SurfaceViewRenderer
 
