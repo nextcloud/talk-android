@@ -2137,7 +2137,7 @@ class ConversationsListActivity :
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
-        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 86400
+        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 57600
         const val LONG_1000: Long = 1000
     }
 }
