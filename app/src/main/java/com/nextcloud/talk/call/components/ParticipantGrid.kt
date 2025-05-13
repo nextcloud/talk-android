@@ -99,7 +99,6 @@ fun ParticipantGrid(
                     .height(itemHeight)
                     .fillMaxWidth(),
                 eglBase = eglBase,
-                isInPipMode = isInPipMode,
                 isVoiceOnlyCall = isVoiceOnlyCall
             )
         }
@@ -278,9 +277,9 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
     for (i: Int in 1..numberOfParticipants) {
         val participant = ParticipantUiState(
             sessionKey = i.toString(),
-            nick = "testuser$i Test",
+            nick = "test$i user",
             isConnected = true,
-            isAudioEnabled = true,
+            isAudioEnabled = false,
             isStreamEnabled = true,
             raisedHand = true,
             avatarUrl = "",
