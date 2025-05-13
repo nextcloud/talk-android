@@ -36,10 +36,12 @@ import org.webrtc.EglBase
 const val NICK_OFFSET = 4f
 const val NICK_BLUR_RADIUS = 4f
 
+@Suppress("Detekt.LongMethod")
 @Composable
 fun ParticipantTile(
     participantUiState: ParticipantUiState,
     eglBase: EglBase?,
+    isInPipMode: Boolean,
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean
 ) {
@@ -53,9 +55,17 @@ fun ParticipantTile(
         if (!isVoiceOnlyCall && participantUiState.isStreamEnabled && participantUiState.mediaStream != null) {
             WebRTCVideoView(participantUiState, eglBase)
         } else {
+            val avatarSize = if (isInPipMode) {
+                100.dp
+            } else {
+                150.dp
+            }
+
             AvatarWithFallback(
                 participant = participantUiState,
-                modifier = Modifier.align(Alignment.Center)
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(avatarSize)
             )
         }
 
@@ -125,6 +135,7 @@ fun ParticipantTilePreview() {
             .fillMaxWidth()
             .height(300.dp),
         eglBase = null,
+        isInPipMode = false,
         isVoiceOnlyCall = false
     )
 }

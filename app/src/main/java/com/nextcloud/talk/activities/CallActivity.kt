@@ -938,35 +938,17 @@ class CallActivity : CallBaseActivity() {
         binding!!.pipSelfVideoRenderer.release()
     }
 
-    private fun initSelfVideoViewForPipMode() {
-        if (!isVoiceOnlyCall) {
-            binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
-            try {
-                binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
-            } catch (e: IllegalStateException) {
-                Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
-            }
-            binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
-            // disabled because it causes some devices to crash
-            binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
-            binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-
-            localVideoTrack?.addSink(binding?.pipSelfVideoRenderer)
-        } else {
-            binding!!.pipSelfVideoRenderer.visibility = View.GONE
-        }
-    }
-
     private fun initGrid() {
         Log.d(TAG, "initGrid")
-
+        binding!!.composeParticipantGrid.visibility = View.VISIBLE
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
                 val participantUiStates = participantItems.map { it.uiStateFlow.collectAsState().value }
                 ParticipantGrid(
                     participantUiStates = participantUiStates,
                     eglBase = rootEglBase!!,
-                    isVoiceOnlyCall = isVoiceOnlyCall
+                    isVoiceOnlyCall = isVoiceOnlyCall,
+                    isInPipMode = isInPipMode
                 ) {
                     animateCallControls(true, 0)
                 }
@@ -3206,33 +3188,38 @@ class CallActivity : CallBaseActivity() {
 
     override fun updateUiForPipMode() {
         Log.d(TAG, "updateUiForPipMode")
-        val params = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, 0, 0, 0)
-        binding!!.composeParticipantGrid.layoutParams = params
         binding!!.callControls.visibility = View.GONE
         binding!!.callInfosLinearLayout.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
         binding!!.pipCallConversationNameTextView.text = conversationName
 
-        if (isVoiceOnlyCall) {
-            if (participantItems.size > 1) {
+        binding!!.selfVideoRenderer.clearImage()
+        binding!!.selfVideoRenderer.release()
+
+        if (participantItems.size == 1) {
+            binding!!.pipOverlay.visibility = View.GONE
+        } else {
+            binding!!.composeParticipantGrid.visibility = View.GONE
+
+            if (localVideoTrack?.enabled() == true) {
+                binding!!.pipOverlay.visibility = View.VISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
+
+                try {
+                    binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
+                } catch (e: IllegalStateException) {
+                    Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+                }
+                binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
+                // disabled because it causes some devices to crash
+                binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
+                binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+
+                localVideoTrack?.addSink(binding?.pipSelfVideoRenderer)
+            } else {
                 binding!!.pipOverlay.visibility = View.VISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.GONE
-            } else {
-                binding!!.pipOverlay.visibility = View.GONE
-            }
-        } else {
-            binding!!.selfVideoRenderer.clearImage()
-            binding!!.selfVideoRenderer.release()
-            if (participantItems.size > 1) {
-                binding!!.pipOverlay.visibility = View.VISIBLE
-                initSelfVideoViewForPipMode()
-            } else {
-                binding!!.pipOverlay.visibility = View.GONE
             }
         }
     }
@@ -3240,6 +3227,7 @@ class CallActivity : CallBaseActivity() {
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
         binding!!.pipOverlay.visibility = View.GONE
+        binding!!.composeParticipantGrid.visibility = View.VISIBLE
 
         if (isVoiceOnlyCall) {
             binding!!.callControls.visibility = View.VISIBLE

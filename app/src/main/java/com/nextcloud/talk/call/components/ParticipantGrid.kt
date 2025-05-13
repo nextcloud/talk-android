@@ -29,12 +29,14 @@ import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
 
+@Suppress("LongParameterList")
 @Composable
 fun ParticipantGrid(
     modifier: Modifier = Modifier,
     eglBase: EglBase?,
     participantUiStates: List<ParticipantUiState>,
     isVoiceOnlyCall: Boolean,
+    isInPipMode: Boolean,
     onClick: () -> Unit
 ) {
     val configuration = LocalConfiguration.current
@@ -58,7 +60,7 @@ fun ParticipantGrid(
 
     val rows = ceil(participantUiStates.size / columns.toFloat()).toInt()
 
-    val heightForNonGridComponents = if (isVoiceOnlyCall) {
+    val heightForNonGridComponents = if (isVoiceOnlyCall && !isInPipMode) {
         // this is a workaround for now. It should ~summarize the height of callInfosLinearLayout and callControls
         // Once everything is migrated to jetpack, this workaround should be obsolete or solved in a better way
         240.dp
@@ -97,6 +99,7 @@ fun ParticipantGrid(
                     .height(itemHeight)
                     .fillMaxWidth(),
                 eglBase = eglBase,
+                isInPipMode = isInPipMode,
                 isVoiceOnlyCall = isVoiceOnlyCall
             )
         }
@@ -109,7 +112,8 @@ fun ParticipantGridPreview() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(1),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -119,7 +123,8 @@ fun TwoParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(2),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -129,7 +134,8 @@ fun ThreeParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(3),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -139,7 +145,8 @@ fun FourParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(4),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -149,7 +156,8 @@ fun FiveParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(5),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -159,7 +167,8 @@ fun SevenParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(7),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -169,7 +178,8 @@ fun FiftyParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(50),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -183,7 +193,8 @@ fun OneParticipantLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(1),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -197,7 +208,8 @@ fun TwoParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(2),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -211,7 +223,8 @@ fun ThreeParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(3),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -225,7 +238,8 @@ fun FourParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(4),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -239,7 +253,8 @@ fun SevenParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(7),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
@@ -253,7 +268,8 @@ fun FiftyParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(50),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        isInPipMode = false
     ) {}
 }
 
