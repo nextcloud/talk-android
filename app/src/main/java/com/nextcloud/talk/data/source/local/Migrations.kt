@@ -278,10 +278,10 @@ object Migrations {
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +
-                    "ADD COLUMN objectId TEXT ;"
+                    "ADD COLUMN objectId TEXT NOT NULL DEFAULT '';"
             )
-        } catch (e: Exception) {
-            Log.i("Migrations", "Something went wrong when adding column referenceId to table ChatMessages")
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column objectId to table Conversations")
         }
     }
 
