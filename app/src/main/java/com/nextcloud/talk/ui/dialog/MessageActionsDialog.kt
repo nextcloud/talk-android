@@ -41,10 +41,13 @@ import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.vanniktech.emoji.Emoji
 import com.vanniktech.emoji.EmojiPopup
 import com.vanniktech.emoji.EmojiTextView
 import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
+import com.vanniktech.emoji.recent.RecentEmojiManager
+import com.vanniktech.emoji.search.SearchEmojiManager
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -246,30 +249,35 @@ class MessageActionsDialog(
             isPermitted(hasChatPermission) &&
             isReactableMessageType(message)
         ) {
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsUp)
-            dialogMessageActionsBinding.emojiThumbsUp.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsUp.text.toString())
+            val recentEmojiManager = RecentEmojiManager(context, MAX_RECENTS)
+            val recentEmojis = recentEmojiManager.getRecentEmojis()
+            val searchEmojiManager = SearchEmojiManager()
+
+            val initialSearchKeywords = listOf(
+                "thumbsup",
+                "thumbsdown",
+                "heart",
+                "joy",
+                "confused",
+                "cry",
+                "pray",
+                "fire"
+            )
+            val initialEmojisFromSearch = mutableSetOf<Emoji>()
+
+            initialSearchKeywords.forEach { keyword ->
+                val searchResults = searchEmojiManager.search(keyword)
+                if (searchResults.isNotEmpty()) {
+                    initialEmojisFromSearch.add(searchResults[ZERO_INDEX].component1())
+                    recentEmojiManager.addEmoji(searchResults[ZERO_INDEX].component1())
+                }
+                if (initialEmojisFromSearch.size >= MAX_RECENTS) {
+                    return@forEach
+                }
             }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiThumbsDown)
-            dialogMessageActionsBinding.emojiThumbsDown.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiThumbsDown.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiLaugh)
-            dialogMessageActionsBinding.emojiLaugh.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiLaugh.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiHeart)
-            dialogMessageActionsBinding.emojiHeart.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiHeart.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiConfused)
-            dialogMessageActionsBinding.emojiConfused.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiConfused.text.toString())
-            }
-            checkAndSetEmojiSelfReaction(dialogMessageActionsBinding.emojiSad)
-            dialogMessageActionsBinding.emojiSad.setOnClickListener {
-                clickOnEmoji(message, dialogMessageActionsBinding.emojiSad.text.toString())
-            }
+            val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(MAX_RECENTS)
+
+            setupEmojiView(combinedEmojis, recentEmojiManager)
 
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
                 dismiss()
@@ -278,6 +286,50 @@ class MessageActionsDialog(
             dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
+        }
+    }
+
+    private fun setupEmojiView(combinedEmojis: List<Emoji>, recentEmojiManager: RecentEmojiManager) {
+        val emojiSearchKeywords = mapOf(
+            "👍" to "thumbsup",
+            "👎" to "thumbsdown",
+            "❤️" to "heart",
+            "😂" to "joy",
+            "😕" to "confused",
+            "😢" to "cry",
+            "🙏" to "pray",
+            "🔥" to "fire"
+        )
+
+        val emojiTextViews = listOf(
+            dialogMessageActionsBinding.emojiThumbsUp,
+            dialogMessageActionsBinding.emojiThumbsDown,
+            dialogMessageActionsBinding.emojiHeart,
+            dialogMessageActionsBinding.emojiLaugh,
+            dialogMessageActionsBinding.emojiConfused,
+            dialogMessageActionsBinding.emojiCry,
+            dialogMessageActionsBinding.emojiPray,
+            dialogMessageActionsBinding.emojiFire
+        )
+
+        emojiTextViews.forEachIndexed { index, textView ->
+            val emoji = combinedEmojis.getOrNull(index)?.unicode
+            if (emoji != null) {
+                textView.text = emoji
+                checkAndSetEmojiSelfReaction(textView)
+                textView.setOnClickListener {
+                    clickOnEmoji(message, emoji)
+                    val keyword = emojiSearchKeywords[emoji] ?: ""
+                    val result = SearchEmojiManager().search(keyword)
+                    if (result.isNotEmpty()) {
+                        recentEmojiManager.addEmoji(result[ZERO_INDEX].component1())
+                        recentEmojiManager.persist()
+                    }
+                }
+                textView.visibility = View.VISIBLE
+            } else {
+                textView.visibility = View.GONE
+            }
         }
     }
 
@@ -531,5 +583,7 @@ class MessageActionsDialog(
         private const val DELAY: Long = 200
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
         private const val ACTOR_BOTS = "bots"
+        private const val ZERO_INDEX = 0
+        private const val MAX_RECENTS = 8
     }
 }
