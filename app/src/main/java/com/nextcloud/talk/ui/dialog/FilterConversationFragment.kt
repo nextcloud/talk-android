@@ -100,7 +100,11 @@ class FilterConversationFragment : DialogFragment() {
         }
 
         binding.buttonClose.setOnClickListener {
-            val noFiltersActive = !(filterState[MENTION] == true || filterState[UNREAD] == true || filterState[ARCHIVE] == true)
+            val noFiltersActive = !(
+                filterState[MENTION] == true ||
+                    filterState[UNREAD] == true ||
+                    filterState[ARCHIVE] == true
+                )
             if (noFiltersActive) {
                 (requireActivity() as ConversationsListActivity).showOnlyNearFutureEvents()
             }
@@ -137,7 +141,11 @@ class FilterConversationFragment : DialogFragment() {
 
     override fun onDismiss(dialog: DialogInterface) {
         super.onDismiss(dialog)
-        val noFiltersActive = !(filterState[MENTION] == true || filterState[UNREAD] == true || filterState[ARCHIVE] == true)
+        val noFiltersActive = !(
+            filterState[MENTION] == true ||
+                filterState[UNREAD] == true ||
+                filterState[ARCHIVE] == true
+            )
         if (noFiltersActive) {
             (requireActivity() as ConversationsListActivity).showOnlyNearFutureEvents()
         }
