@@ -49,4 +49,8 @@
     <issue id="ObsoleteLintCustomCheck" severity="warning">
         <ignore path="**/jetified-annotation-experimental-1.**/**/lint.jar" />
     </issue>
+
+    <issue id="Aligned16KB" severity="error">
+        <ignore path="**/jetified-android-database-sqlcipher-4.5.4/**/libsqlcipher.so" />
+    </issue>
 </lint>
