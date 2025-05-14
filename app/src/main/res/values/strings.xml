@@ -175,7 +175,6 @@ How to translate with transifex:
 
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
-    <string name="nc_settings_notifications_declined_hint">Notifications are declined. Please allow notifications in Android settings</string>
 
     <!-- Diagnose -->
     <string name="nc_notifications_troubleshooting_dialog_title">Notification troubleshooting</string>
@@ -373,7 +372,6 @@ How to translate with transifex:
     <string name="dnd">Do not disturb</string>
     <string name="away">Away</string>
     <string name="invisible">Invisible</string>
-    <string name="divider" translatable="false">—</string>
     <string name="default_emoji" translatable="false">😃</string>
     <string name="emoji_thumbsUp" translatable="false">👍</string>
     <string name="emoji_thumbsDown" translatable="false">👎</string>
@@ -398,9 +396,6 @@ How to translate with transifex:
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="close">Close</string>
     <string name="close_icon">Close Icon</string>
-    <string name="nc_refresh">Refresh</string>
-    <string name="nc_check_your_internet">Please check your internet connection</string>
-    <string name="nc_visible">Visible</string>
 
     <!-- Chat -->
     <string name="nc_hint_enter_a_message">Enter a message …</string>
@@ -438,9 +433,7 @@ How to translate with transifex:
     <string name="nc_message_failed">Failed</string>
     <string name="nc_message_sending">Sending</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
-    <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_add_attachment">Add attachment</string>
-    <string name="emoji_category_recent">Recent</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
@@ -461,7 +454,6 @@ How to translate with transifex:
     <string name="nc_guest_access_password_dialog_title">Guest access password</string>
     <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
     <string name="nc_guest_access_password_failed">Error during setting/disabling the password.</string>
-    <string name="nc_guest_access_password_weak_alert_title">Weak password</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_guest_access_resend_invitations">Resend invitations</string>
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
@@ -477,11 +469,8 @@ How to translate with transifex:
 
     <!-- Other -->
     <string name="nc_limit_hit">%s characters limit has been hit</string>
-    <string name="nc_email">Email</string>
     <string name="nc_group">Group</string>
     <string name="nc_team">Team</string>
-    <string name="nc_groups">Groups</string>
-    <string name="nc_teams">Teams</string>
     <string name="nc_participants">Participants</string>
     <string name="nc_participants_add">Add participants</string>
     <string name="nc_start_group_chat">Start group chat</string>

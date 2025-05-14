@@ -42,13 +42,14 @@ import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
 import android.view.ViewGroup
-import android.view.ViewTreeObserver.OnGlobalLayoutListener
-import android.widget.AdapterView
 import android.widget.FrameLayout
 import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
@@ -59,7 +60,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ParticipantDisplayItem
-import com.nextcloud.talk.adapters.ParticipantsAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -74,6 +74,7 @@ import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
+import com.nextcloud.talk.call.components.ParticipantGrid
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -303,8 +304,8 @@ class CallActivity : CallBaseActivity() {
     private var handler: Handler? = null
     private var currentCallStatus: CallStatus? = null
     private var mediaPlayer: MediaPlayer? = null
-    private var participantDisplayItems: MutableMap<String, ParticipantDisplayItem?>? = null
-    private var participantsAdapter: ParticipantsAdapter? = null
+
+    private val participantItems = mutableStateListOf<ParticipantDisplayItem>()
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
     private var moreCallActionsDialog: MoreCallActionsDialog? = null
@@ -399,7 +400,6 @@ class CallActivity : CallBaseActivity() {
             .setRepeatCount(PulseAnimation.INFINITE)
             .setRepeatMode(PulseAnimation.REVERSE)
         callParticipants = HashMap()
-        participantDisplayItems = HashMap()
         reactionAnimator = ReactionAnimator(context, binding!!.reactionAnimationWrapper, viewThemeUtils)
 
         checkInitialDevicePermissions()
@@ -734,10 +734,7 @@ class CallActivity : CallBaseActivity() {
         }
 
         binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
-        binding!!.gridview.onItemClickListener =
-            AdapterView.OnItemClickListener { _: AdapterView<*>?, _: View?, _: Int, _: Long ->
-                animateCallControls(true, 0)
-            }
+
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
     }
@@ -890,20 +887,20 @@ class CallActivity : CallBaseActivity() {
             val callControlsHeight =
                 applicationContext.resources.getDimension(R.dimen.call_controls_height).roundToInt()
             params.setMargins(0, 0, 0, callControlsHeight)
-            binding!!.gridview.layoutParams = params
+            binding!!.composeParticipantGrid.layoutParams = params
         } else {
             val params = RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
             params.setMargins(0, 0, 0, 0)
-            binding!!.gridview.layoutParams = params
+            binding!!.composeParticipantGrid.layoutParams = params
             if (cameraEnumerator!!.deviceNames.size < 2) {
                 binding!!.switchSelfVideoButton.visibility = View.GONE
             }
             initSelfVideoViewForNormalMode()
         }
-        binding!!.gridview.setOnTouchListener { _, me ->
+        binding!!.composeParticipantGrid.setOnTouchListener { _, me ->
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
                 animateCallControls(true, 0)
@@ -920,7 +917,8 @@ class CallActivity : CallBaseActivity() {
             false
         }
         animateCallControls(true, 0)
-        initGridAdapter()
+        initGrid()
+        binding!!.composeParticipantGrid.z = 0f
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -935,72 +933,28 @@ class CallActivity : CallBaseActivity() {
         binding!!.selfVideoRenderer.setEnableHardwareScaler(false)
         binding!!.selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
         binding!!.selfVideoRenderer.setOnTouchListener(SelfVideoTouchListener())
+
+        binding!!.pipSelfVideoRenderer.clearImage()
+        binding!!.pipSelfVideoRenderer.release()
     }
 
-    private fun initSelfVideoViewForPipMode() {
-        try {
-            binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
-        } catch (e: IllegalStateException) {
-            Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
-        }
-        binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
-        // disabled because it causes some devices to crash
-        binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
-        binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-
-        localVideoTrack!!.addSink(binding!!.pipSelfVideoRenderer)
-    }
-
-    private fun initGridAdapter() {
-        Log.d(TAG, "initGridAdapter")
-        val columns: Int
-        val participantsInGrid = participantDisplayItems!!.size
-        columns = if (resources != null &&
-            resources.configuration.orientation == Configuration.ORIENTATION_PORTRAIT
-        ) {
-            if (participantsInGrid > 2) {
-                GRID_MAX_COLUMN_COUNT_PORTRAIT
-            } else {
-                GRID_MIN_COLUMN_COUNT_PORTRAIT
-            }
-        } else {
-            if (participantsInGrid > 2) {
-                GRID_MAX_COLUMN_COUNT_LANDSCAPE
-            } else if (participantsInGrid > 1) {
-                GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE
-            } else {
-                GRID_MIN_COLUMN_COUNT_LANDSCAPE
+    private fun initGrid() {
+        Log.d(TAG, "initGrid")
+        binding!!.composeParticipantGrid.visibility = View.VISIBLE
+        binding!!.composeParticipantGrid.setContent {
+            MaterialTheme {
+                val participantUiStates = participantItems.map { it.uiStateFlow.collectAsState().value }
+                ParticipantGrid(
+                    participantUiStates = participantUiStates,
+                    eglBase = rootEglBase!!,
+                    isVoiceOnlyCall = isVoiceOnlyCall,
+                    isInPipMode = isInPipMode
+                ) {
+                    animateCallControls(true, 0)
+                }
             }
         }
-        binding!!.gridview.numColumns = columns
-        binding!!.conversationRelativeLayout
-            .viewTreeObserver
-            .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding!!.conversationRelativeLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                    val height = binding!!.conversationRelativeLayout.measuredHeight
-                    binding!!.gridview.minimumHeight = height
-                }
-            })
-        binding!!.callInfosLinearLayout
-            .viewTreeObserver
-            .addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    binding!!.callInfosLinearLayout.viewTreeObserver.removeOnGlobalLayoutListener(this)
-                }
-            })
-        if (participantsAdapter != null) {
-            participantsAdapter!!.destroy()
-        }
-        participantsAdapter = ParticipantsAdapter(
-            this,
-            participantDisplayItems,
-            binding!!.conversationRelativeLayout,
-            binding!!.callInfosLinearLayout,
-            columns,
-            isVoiceOnlyCall
-        )
-        binding!!.gridview.adapter = participantsAdapter
+
         if (isInPipMode) {
             updateUiForPipMode()
         }
@@ -2116,7 +2070,11 @@ class CallActivity : CallBaseActivity() {
             videoCapturer!!.dispose()
             videoCapturer = null
         }
+        binding!!.selfVideoRenderer.clearImage()
         binding!!.selfVideoRenderer.release()
+
+        binding!!.pipSelfVideoRenderer.clearImage()
+        binding!!.pipSelfVideoRenderer.release()
         if (audioSource != null) {
             audioSource!!.dispose()
             audioSource = null
@@ -2219,6 +2177,7 @@ class CallActivity : CallBaseActivity() {
                             startVideoCapture(true)
                         }
                     }
+
                     in ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MIN..ANGLE_LANDSCAPE_RIGHT_THRESHOLD_MAX,
                     in ANGLE_LANDSCAPE_LEFT_THRESHOLD_MIN..ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX -> {
                         if (lastAspectRatio != RATIO_16_TO_9) {
@@ -2571,18 +2530,17 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun removeParticipantDisplayItem(sessionId: String?, videoStreamType: String) {
-        Log.d(TAG, "removeParticipantDisplayItem")
-        val participantDisplayItem = participantDisplayItems!!.remove("$sessionId-$videoStreamType") ?: return
-        participantDisplayItem.destroy()
-        if (!isDestroyed) {
-            initGridAdapter()
-        }
+        val key = "$sessionId-$videoStreamType"
+        val participant = participantItems.find { it.sessionKey == key }
+        participant?.destroy()
+        participantItems.removeAll { it.sessionKey == key }
+        initGrid()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(configurationChangeEvent: ConfigurationChangeEvent?) {
         powerManagerUtils!!.setOrientation(Objects.requireNonNull(resources).configuration.orientation)
-        initGridAdapter()
+        initGrid()
     }
 
     private fun updateSelfVideoViewIceConnectionState(iceConnectionState: IceConnectionState) {
@@ -2677,22 +2635,26 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun addParticipantDisplayItem(callParticipantModel: CallParticipantModel, videoStreamType: String) {
-        if (callParticipantModel.isInternal != null && callParticipantModel.isInternal) {
-            return
-        }
+        if (callParticipantModel.isInternal == true) return
+
         val defaultGuestNick = resources.getString(R.string.nc_nick_guest)
         val participantDisplayItem = ParticipantDisplayItem(
-            context,
-            baseUrl,
-            defaultGuestNick,
-            rootEglBase,
-            videoStreamType,
-            roomToken,
-            callParticipantModel
+            context = context,
+            baseUrl = baseUrl!!,
+            defaultGuestNick = defaultGuestNick,
+            rootEglBase = rootEglBase!!,
+            streamType = videoStreamType,
+            roomToken = roomToken!!,
+            callParticipantModel = callParticipantModel
         )
-        val sessionId = callParticipantModel.sessionId
-        participantDisplayItems!!["$sessionId-$videoStreamType"] = participantDisplayItem
-        initGridAdapter()
+
+        val sessionKey = participantDisplayItem.sessionKey
+
+        if (participantItems.none { it.sessionKey == sessionKey }) {
+            participantItems.add(participantDisplayItem)
+        }
+
+        initGrid()
     }
 
     private fun setCallState(callState: CallStatus) {
@@ -2712,6 +2674,7 @@ class CallActivity : CallBaseActivity() {
                     handler!!.postDelayed({ setCallState(CallStatus.CALLING_TIMEOUT) }, CALLING_TIMEOUT)
                     handler!!.post { handleCallStateJoined() }
                 }
+
                 CallStatus.IN_CONVERSATION -> handler!!.post { handleCallStateInConversation() }
                 CallStatus.OFFLINE -> handler!!.post { handleCallStateOffline() }
                 CallStatus.LEAVING -> handler!!.post { handleCallStateLeaving() }
@@ -2725,7 +2688,7 @@ class CallActivity : CallBaseActivity() {
             binding!!.callModeTextView.text = descriptionForCallType
             binding!!.callStates.callStateTextView.setText(R.string.nc_leaving_call)
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
-            binding!!.gridview.visibility = View.INVISIBLE
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
             binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
             binding!!.callStates.errorImageView.visibility = View.GONE
         }
@@ -2737,8 +2700,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
             binding!!.callStates.callStateProgressBar.visibility = View.GONE
@@ -2764,8 +2727,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
             binding!!.callStates.callStateProgressBar.visibility = View.GONE
         }
-        if (binding!!.gridview.visibility != View.VISIBLE) {
-            binding!!.gridview.visibility = View.VISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.VISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.VISIBLE
         }
         if (binding!!.callStates.errorImageView.visibility != View.GONE) {
             binding!!.callStates.errorImageView.visibility = View.GONE
@@ -2785,8 +2748,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
             binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         if (binding!!.callStates.errorImageView.visibility != View.GONE) {
             binding!!.callStates.errorImageView.visibility = View.GONE
@@ -2800,8 +2763,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
             binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
@@ -2818,8 +2781,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
             binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
@@ -2839,8 +2802,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateProgressBar.visibility != View.GONE) {
             binding!!.callStates.callStateProgressBar.visibility = View.GONE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         binding!!.callStates.errorImageView.setImageResource(R.drawable.ic_av_timer_timer_24dp)
         if (binding!!.callStates.errorImageView.visibility != View.VISIBLE) {
@@ -2860,8 +2823,8 @@ class CallActivity : CallBaseActivity() {
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
-        if (binding!!.gridview.visibility != View.INVISIBLE) {
-            binding!!.gridview.visibility = View.INVISIBLE
+        if (binding!!.composeParticipantGrid.visibility != View.INVISIBLE) {
+            binding!!.composeParticipantGrid.visibility = View.INVISIBLE
         }
         if (binding!!.callStates.callStateProgressBar.visibility != View.VISIBLE) {
             binding!!.callStates.callStateProgressBar.visibility = View.VISIBLE
@@ -3021,8 +2984,8 @@ class CallActivity : CallBaseActivity() {
                 removeParticipantDisplayItem(sessionId, "screen")
                 return
             }
-            val hasScreenParticipantDisplayItem = participantDisplayItems!!["$sessionId-screen"] != null
-            if (!hasScreenParticipantDisplayItem) {
+            val screenParticipantDisplayItem = participantItems.find { it.sessionKey == "$sessionId-screen" }
+            if (screenParticipantDisplayItem == null) {
                 addParticipantDisplayItem(callParticipantModel, "screen")
             }
         }
@@ -3225,30 +3188,46 @@ class CallActivity : CallBaseActivity() {
 
     override fun updateUiForPipMode() {
         Log.d(TAG, "updateUiForPipMode")
-        val params = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.setMargins(0, 0, 0, 0)
-        binding!!.gridview.layoutParams = params
         binding!!.callControls.visibility = View.GONE
         binding!!.callInfosLinearLayout.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
+        binding!!.pipCallConversationNameTextView.text = conversationName
 
+        binding!!.selfVideoRenderer.clearImage()
         binding!!.selfVideoRenderer.release()
-        if (participantDisplayItems!!.size > 1) {
-            binding!!.pipCallConversationNameTextView.text = conversationName
-            binding!!.pipSelfVideoOverlay.visibility = View.VISIBLE
-            initSelfVideoViewForPipMode()
+
+        if (participantItems.size == 1) {
+            binding!!.pipOverlay.visibility = View.GONE
         } else {
-            binding!!.pipSelfVideoOverlay.visibility = View.GONE
+            binding!!.composeParticipantGrid.visibility = View.GONE
+
+            if (localVideoTrack?.enabled() == true) {
+                binding!!.pipOverlay.visibility = View.VISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
+
+                try {
+                    binding!!.pipSelfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
+                } catch (e: IllegalStateException) {
+                    Log.d(TAG, "pipGroupVideoRenderer already initialized", e)
+                }
+                binding!!.pipSelfVideoRenderer.setZOrderMediaOverlay(true)
+                // disabled because it causes some devices to crash
+                binding!!.pipSelfVideoRenderer.setEnableHardwareScaler(false)
+                binding!!.pipSelfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
+
+                localVideoTrack?.addSink(binding?.pipSelfVideoRenderer)
+            } else {
+                binding!!.pipOverlay.visibility = View.VISIBLE
+                binding!!.pipSelfVideoRenderer.visibility = View.GONE
+            }
         }
     }
 
     override fun updateUiForNormalMode() {
         Log.d(TAG, "updateUiForNormalMode")
-        binding!!.pipSelfVideoOverlay.visibility = View.GONE
+        binding!!.pipOverlay.visibility = View.GONE
+        binding!!.composeParticipantGrid.visibility = View.VISIBLE
 
         if (isVoiceOnlyCall) {
             binding!!.callControls.visibility = View.VISIBLE
@@ -3353,10 +3332,10 @@ class CallActivity : CallBaseActivity() {
         private const val SELFVIDEO_WIDTH_16_TO_9_RATIO = 136
         private const val SELFVIDEO_HEIGHT_16_TO_9_RATIO = 80
 
-        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 100F
-        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 100F
+        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 50F
+        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 50F
         private const val SELFVIDEO_POSITION_X_PORTRAIT = 300F
-        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 100F
+        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 50F
 
         private const val FIVE_SECONDS: Long = 5000
         private const val CALLING_TIMEOUT: Long = 45000
@@ -3368,19 +3347,7 @@ class CallActivity : CallBaseActivity() {
         private const val SPOTLIGHT_HEADING_SIZE: Int = 20
         private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
 
-        private const val GRID_MAX_COLUMN_COUNT_PORTRAIT: Int = 2
-        private const val GRID_MIN_COLUMN_COUNT_PORTRAIT: Int = 1
-        private const val GRID_MAX_COLUMN_COUNT_LANDSCAPE: Int = 3
-        private const val GRID_MIN_GROUP_COLUMN_COUNT_LANDSCAPE: Int = 2
-        private const val GRID_MIN_COLUMN_COUNT_LANDSCAPE: Int = 1
-
         private const val DELAY_ON_ERROR_STOP_THRESHOLD: Int = 16
-
-        private const val BY_50_PERCENT = 0.5
-        private const val BY_80_PERCENT = 0.8
-
-        private const val Y_POS_CALL_INFO: Float = 250f
-        private const val Y_POS_NO_CALL_INFO: Float = 20f
 
         private const val SESSION_ID_PREFFIX_END: Int = 4
     }
