@@ -12,7 +12,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp"
-    android:background="@color/dialog_background">
+    android:background="@color/popup_menu_color">
 
     <TextView
         android:id="@+id/event_scheduled"
