@@ -102,7 +102,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 .getString(R.string.nc_app_product_name)
                 .lowercase(Locale.getDefault())
                 .replace(" ", "_")
-                .trim { it <= ' ' } +
+                .trim() +
                 ".sqlite"
 
             return Room

@@ -373,7 +373,7 @@ class MessageInputFragment : Fragment() {
                             if (editable.subSequence(
                                     editable.getSpanStart(mentionSpan),
                                     editable.getSpanEnd(mentionSpan)
-                                ).toString().trim { it <= ' ' } != mentionSpan.label
+                                ).toString().trim() != mentionSpan.label
                             ) {
                                 editable.removeSpan(mentionSpan)
                             }
