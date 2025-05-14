@@ -277,47 +277,7 @@ class MessageActionsDialog(
             }
             val combinedEmojis = (recentEmojis + initialEmojisFromSearch).toList().distinct().take(MAX_RECENTS)
 
-            val emojiSearchKeywords = mapOf(
-                "👍" to "thumbsup",
-                "👎" to "thumbsdown",
-                "❤️" to "heart",
-                "😂" to "joy",
-                "😕" to "confused",
-                "😢" to "cry",
-                "🙏" to "pray",
-                "🔥" to "fire"
-            )
-
-            val emojiTextViews = listOf(
-                dialogMessageActionsBinding.emojiThumbsUp,
-                dialogMessageActionsBinding.emojiThumbsDown,
-                dialogMessageActionsBinding.emojiHeart,
-                dialogMessageActionsBinding.emojiLaugh,
-                dialogMessageActionsBinding.emojiConfused,
-                dialogMessageActionsBinding.emojiCry,
-                dialogMessageActionsBinding.emojiPray,
-                dialogMessageActionsBinding.emojiFire
-            )
-
-            emojiTextViews.forEachIndexed { index, textView ->
-                val emoji = combinedEmojis.getOrNull(index)?.unicode
-                if (emoji != null) {
-                    textView.text = emoji
-                    checkAndSetEmojiSelfReaction(textView)
-                    textView.setOnClickListener {
-                        clickOnEmoji(message, emoji)
-                        val keyword = emojiSearchKeywords[emoji] ?: ""
-                        val result = SearchEmojiManager().search(keyword)
-                        if (result.isNotEmpty()) {
-                            recentEmojiManager.addEmoji(result[ZERO_INDEX].component1())
-                            recentEmojiManager.persist()
-                        }
-                    }
-                    textView.visibility = View.VISIBLE
-                } else {
-                    textView.visibility = View.GONE
-                }
-            }
+            setupEmojiView(combinedEmojis, recentEmojiManager)
 
             dialogMessageActionsBinding.emojiMore.setOnClickListener {
                 dismiss()
@@ -326,6 +286,50 @@ class MessageActionsDialog(
             dialogMessageActionsBinding.emojiBar.visibility = View.VISIBLE
         } else {
             dialogMessageActionsBinding.emojiBar.visibility = View.GONE
+        }
+    }
+
+    private fun setupEmojiView(combinedEmojis: List<Emoji>, recentEmojiManager: RecentEmojiManager) {
+        val emojiSearchKeywords = mapOf(
+            "👍" to "thumbsup",
+            "👎" to "thumbsdown",
+            "❤️" to "heart",
+            "😂" to "joy",
+            "😕" to "confused",
+            "😢" to "cry",
+            "🙏" to "pray",
+            "🔥" to "fire"
+        )
+
+        val emojiTextViews = listOf(
+            dialogMessageActionsBinding.emojiThumbsUp,
+            dialogMessageActionsBinding.emojiThumbsDown,
+            dialogMessageActionsBinding.emojiHeart,
+            dialogMessageActionsBinding.emojiLaugh,
+            dialogMessageActionsBinding.emojiConfused,
+            dialogMessageActionsBinding.emojiCry,
+            dialogMessageActionsBinding.emojiPray,
+            dialogMessageActionsBinding.emojiFire
+        )
+
+        emojiTextViews.forEachIndexed { index, textView ->
+            val emoji = combinedEmojis.getOrNull(index)?.unicode
+            if (emoji != null) {
+                textView.text = emoji
+                checkAndSetEmojiSelfReaction(textView)
+                textView.setOnClickListener {
+                    clickOnEmoji(message, emoji)
+                    val keyword = emojiSearchKeywords[emoji] ?: ""
+                    val result = SearchEmojiManager().search(keyword)
+                    if (result.isNotEmpty()) {
+                        recentEmojiManager.addEmoji(result[ZERO_INDEX].component1())
+                        recentEmojiManager.persist()
+                    }
+                }
+                textView.visibility = View.VISIBLE
+            } else {
+                textView.visibility = View.GONE
+            }
         }
     }
 
