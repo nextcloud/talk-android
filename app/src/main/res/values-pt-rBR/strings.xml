@@ -582,7 +582,7 @@
     <string name="record_stopping">Parando a gravação …</string>
     <string name="recording_consent_all">O consentimento de gravação é necessário para todas as chamadas</string>
     <string name="recording_consent_description">A gravação pode incluir sua voz, vídeo da câmera e compartilhamento de tela. Seu consentimento é necessário antes de entrar na chamada. Você consente?</string>
-    <string name="recording_consent_for_conversation_description">Exigir consentimento de gravação antes de participar da chamada nesta conversa</string>
+    <string name="recording_consent_for_conversation_description">Exigir consentimento de gravação antes de entrar em uma chamada nesta conversa</string>
     <string name="recording_consent_for_conversation_title">Consentimento de gravação</string>
     <string name="recording_consent_title">A chamada pode ser gravada.</string>
     <string name="recording_settings_title">Gravação</string>
