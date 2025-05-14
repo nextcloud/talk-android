@@ -319,7 +319,7 @@ class ConversationItem(
         return model.displayName != null &&
             Pattern
                 .compile(constraint!!, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                .matcher(model.displayName!!.trim { it <= ' ' })
+                .matcher(model.displayName.trim())
                 .find()
     }
 

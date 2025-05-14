@@ -401,14 +401,14 @@ object DisplayUtils {
         if (url!!.length >= HTTP_MIN_LENGTH &&
             HTTP_PROTOCOL.equals(url.substring(0, HTTP_MIN_LENGTH), ignoreCase = true)
         ) {
-            return url.substring(HTTP_PROTOCOL.length).trim { it <= ' ' }
+            return url.substring(HTTP_PROTOCOL.length).trim()
         }
         return if (url.length >= HTTPS_MIN_LENGTH &&
             HTTPS_PROTOCOL.equals(url.substring(0, HTTPS_MIN_LENGTH), ignoreCase = true)
         ) {
-            url.substring(HTTPS_PROTOCOL.length).trim { it <= ' ' }
+            url.substring(HTTPS_PROTOCOL.length).trim()
         } else {
-            url.trim { it <= ' ' }
+            url.trim()
         }
     }
 
@@ -420,7 +420,7 @@ object DisplayUtils {
      */
     fun beautifyTwitterHandle(handle: String?): String {
         return if (handle != null) {
-            val trimmedHandle = handle.trim { it <= ' ' }
+            val trimmedHandle = handle.trim()
             if (TextUtils.isEmpty(trimmedHandle)) {
                 return ""
             }

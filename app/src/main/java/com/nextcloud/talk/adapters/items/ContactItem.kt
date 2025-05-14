@@ -57,10 +57,10 @@ class ContactItem(
         return model.displayName != null &&
             (
                 Pattern.compile(constraint!!, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                    .matcher(model.displayName!!.trim { it <= ' ' })
+                    .matcher(model.displayName!!.trim())
                     .find() ||
                     Pattern.compile(constraint!!, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                        .matcher(model.calculatedActorId!!.trim { it <= ' ' })
+                        .matcher(model.calculatedActorId!!.trim())
                         .find()
                 )
     }

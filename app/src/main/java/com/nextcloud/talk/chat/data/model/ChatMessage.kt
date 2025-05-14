@@ -239,7 +239,7 @@ data class ChatMessage(
             }
         }
         return if (!messageTypesToIgnore.contains(getCalculateMessageType())) {
-            message!!.trim { it <= ' ' }
+            message!!.trim()
         } else {
             null
         }

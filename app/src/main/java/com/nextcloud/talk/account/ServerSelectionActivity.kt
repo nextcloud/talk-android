@@ -212,7 +212,7 @@ class ServerSelectionActivity : BaseActivity() {
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun checkServerAndProceed() {
         dispose()
-        var url: String = binding.serverEntryTextInputEditText.text.toString().trim { it <= ' ' }
+        var url: String = binding.serverEntryTextInputEditText.text.toString().trim()
         showserverEntryProgressBar()
         if (binding.importOrChooseProviderText.visibility != View.INVISIBLE) {
             binding.importOrChooseProviderText.visibility = View.INVISIBLE

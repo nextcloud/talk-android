@@ -36,9 +36,9 @@ class AdvancedUserItem(
     private val viewThemeUtils: ViewThemeUtils,
     private val actionRequiredCount: Int
 ) : AbstractFlexibleItem<UserItemViewHolder>(), IFilterable<String?> {
-    override fun equals(o: Any?): Boolean {
-        return if (o is AdvancedUserItem) {
-            model == o.model
+    override fun equals(other: Any?): Boolean {
+        return if (other is AdvancedUserItem) {
+            model == other.model
         } else {
             false
         }
@@ -98,7 +98,7 @@ class AdvancedUserItem(
         return model.displayName != null &&
             Pattern
                 .compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                .matcher(model.displayName!!.trim { it <= ' ' })
+                .matcher(model.displayName!!.trim())
                 .find()
     }
 
