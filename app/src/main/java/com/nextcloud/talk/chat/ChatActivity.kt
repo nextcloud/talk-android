@@ -2906,12 +2906,6 @@ class ChatActivity :
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
                 currentConversation!!.remoteServer.isNullOrEmpty()
 
-            if (currentConversation!!.remoteServer != null ||
-                !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
-            ) {
-                menu.removeItem(R.id.shared_items)
-            }
-
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
