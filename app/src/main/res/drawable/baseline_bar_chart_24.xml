@@ -1,0 +1,21 @@
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2025 Google LLC
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:height="24dp"
+    android:tint="#969696"
+    android:viewportHeight="24"
+    android:viewportWidth="24"
+    android:width="24dp">
+      
+    <path android:fillColor="#969696" android:pathData="M4,9h4v11h-4z"/>
+      
+    <path android:fillColor="#969696" android:pathData="M16,13h4v7h-4z"/>
+      
+    <path android:fillColor="#969696" android:pathData="M10,4h4v16h-4z"/>
+    
+</vector>

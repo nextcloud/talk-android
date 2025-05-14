@@ -13,14 +13,18 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.text.TextUtils
 import android.text.format.DateUtils
+import android.text.style.ImageSpan
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.model.ChatMessage.MessageType
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
@@ -209,7 +213,6 @@ class ConversationItem(
                         R.drawable.ic_avatar_document
                     )
                 )
-
                 false
             }
 
@@ -229,7 +232,7 @@ class ConversationItem(
             if (!TextUtils.isEmpty(chatMessage?.systemMessage) ||
                 ConversationEnums.ConversationType.ROOM_SYSTEM === model.type
             ) {
-                holder.binding.dialogLastMessage.text = chatMessage?.text
+                holder.binding.dialogLastMessage.text = chatMessage.text
             } else {
                 chatMessage?.activeUser = user
 
@@ -249,7 +252,7 @@ class ConversationItem(
         }
     }
 
-    private fun calculateRegularLastMessageText(appContext: Context): String {
+    private fun calculateRegularLastMessageText(appContext: Context): CharSequence {
         return if (chatMessage?.actorId == user.userId) {
             String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
@@ -331,7 +334,7 @@ class ConversationItem(
         this.header = header
     }
 
-    private val lastMessageDisplayText: String
+    private val lastMessageDisplayText: CharSequence
         get() {
             if (chatMessage?.getCalculateMessageType() == MessageType.REGULAR_TEXT_MESSAGE ||
                 chatMessage?.getCalculateMessageType() == MessageType.SYSTEM_MESSAGE ||
@@ -351,33 +354,21 @@ class ConversationItem(
                             chatMessage?.getNullsafeActorDisplayName()
                         )
                     }
-                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_an_attachment_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_an_attachment),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
-                    }
                 } else if (MessageType.SINGLE_NC_GEOLOCATION_MESSAGE == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_location_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_location),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
-                    }
+                    var locationName = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
+                    val author = authorName(chatMessage)
+                    val lastMessage =
+                        setLastNameForAttachmentMessage(author, R.drawable.baseline_location_pin_24, locationName)
+                    return lastMessage
                 } else if (MessageType.VOICE_MESSAGE == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_voice_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_voice),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
-                    }
+                    var voiceMessageName = chatMessage.messageParameters?.get("file")?.get("name") ?: ""
+                    val author = authorName(chatMessage)
+                    val lastMessage = setLastNameForAttachmentMessage(
+                        author,
+                        R.drawable.baseline_mic_24,
+                        voiceMessageName
+                    )
+                    return lastMessage
                 } else if (MessageType.SINGLE_LINK_AUDIO_MESSAGE == chatMessage?.getCalculateMessageType()) {
                     return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
                         sharedApplication!!.getString(R.string.nc_sent_an_audio_you)
@@ -406,27 +397,76 @@ class ConversationItem(
                         )
                     }
                 } else if (MessageType.POLL_MESSAGE == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_poll_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_poll),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
+                    var pollMessageTitle = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
+                    val author = authorName(chatMessage)
+                    val lastMessage = setLastNameForAttachmentMessage(
+                        author,
+                        R.drawable.baseline_bar_chart_24,
+                        pollMessageTitle
+                    )
+                    return lastMessage
+                } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage?.getCalculateMessageType()) {
+                    var attachmentName = chatMessage.message
+                    if (attachmentName == "{file}") {
+                        attachmentName = chatMessage.messageParameters?.get("file")?.get("name")
                     }
+                    val author = authorName(chatMessage)
+
+                    val drawable = chatMessage.messageParameters?.get("file")?.get("mimetype")?.let {
+                        when {
+                            it.contains("image") -> R.drawable.baseline_image_24
+                            it.contains("video") -> R.drawable.baseline_video_24
+                            it.contains("application") -> R.drawable.baseline_insert_drive_file_24
+                            it.contains("audio") -> R.drawable.baseline_audiotrack_24
+                            it.contains("text/vcard") -> R.drawable.baseline_contacts_24
+                            else -> null
+                        }
+                    }
+                    val lastMessage = setLastNameForAttachmentMessage(author, drawable, attachmentName!!)
+                    return lastMessage
                 } else if (MessageType.DECK_CARD == chatMessage?.getCalculateMessageType()) {
-                    return if (chatMessage?.actorId == chatMessage?.activeUser!!.userId) {
-                        sharedApplication!!.getString(R.string.nc_sent_deck_card_you)
-                    } else {
-                        String.format(
-                            sharedApplication!!.resources.getString(R.string.nc_sent_deck_card),
-                            chatMessage?.getNullsafeActorDisplayName()
-                        )
-                    }
+                    var deckTitle = chatMessage.messageParameters?.get("object")?.get("name") ?: ""
+                    val author = authorName(chatMessage)
+                    val lastMessage = setLastNameForAttachmentMessage(author, R.drawable.baseline_article_24, deckTitle)
+                    return lastMessage
                 }
             }
             return ""
         }
+
+    fun authorName(chatMessage: ChatMessage): String {
+        val name = if (chatMessage.actorId == chatMessage.activeUser!!.userId) {
+            sharedApplication!!.resources.getString(R.string.nc_current_user)
+        } else {
+            chatMessage.getNullsafeActorDisplayName()?.let { "$it:" } ?: ""
+        }
+        return name
+    }
+
+    fun setLastNameForAttachmentMessage(actor: String, icon: Int?, attachmentName: String): SpannableStringBuilder {
+        val builder = SpannableStringBuilder()
+        builder.append(actor)
+
+        val drawable = icon?.let { it -> ContextCompat.getDrawable(context, it) }
+        if (drawable != null) {
+            viewThemeUtils.platform.colorDrawable(
+                drawable,
+                context.resources.getColor(R.color.low_emphasis_text, null)
+            )
+            val desiredWidth = (drawable.intrinsicWidth * IMAGE_SCALE_FACTOR).toInt()
+            val desiredHeight = (drawable.intrinsicHeight * IMAGE_SCALE_FACTOR).toInt()
+            drawable.setBounds(0, 0, desiredWidth, desiredHeight)
+
+            val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BOTTOM)
+            val startImage = builder.length
+            builder.append(" ")
+            builder.setSpan(imageSpan, startImage, startImage + 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        } else {
+            builder.append(" ")
+        }
+        builder.append(attachmentName)
+        return builder
+    }
 
     class ConversationItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
         var binding: RvItemConversationWithLastMessageBinding
@@ -442,5 +482,6 @@ class ConversationItem(
         private const val STATUS_SIZE_IN_DP = 9f
         private const val UNREAD_BUBBLE_STROKE_WIDTH = 6.0f
         private const val UNREAD_MESSAGES_TRESHOLD = 1000
+        private const val IMAGE_SCALE_FACTOR = 0.7f
     }
 }
