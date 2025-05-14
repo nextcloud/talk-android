@@ -55,7 +55,7 @@ object Migrations {
         }
     }
 
-    val MIGRATION_13_14 = object:Migration(13,14) {
+    val MIGRATION_13_14 = object : Migration(13, 14) {
         override fun migrate(db: SupportSQLiteDatabase) {
             Log.i("Migrations", "Migrating 13 to 14")
             addObjectId(db)
@@ -272,9 +272,7 @@ object Migrations {
         }
     }
 
-
     fun addObjectId(db: SupportSQLiteDatabase) {
-
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +

@@ -7,6 +7,7 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.app.Dialog
+import android.content.DialogInterface
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -99,6 +100,10 @@ class FilterConversationFragment : DialogFragment() {
         }
 
         binding.buttonClose.setOnClickListener {
+            val noFiltersActive = !(filterState[MENTION] == true || filterState[UNREAD] == true || filterState[ARCHIVE] == true)
+            if (noFiltersActive) {
+                (requireActivity() as ConversationsListActivity).showOnlyNearFutureEvents()
+            }
             dismiss()
         }
     }
@@ -128,6 +133,14 @@ class FilterConversationFragment : DialogFragment() {
         arbitraryStorageManager.storeStorageSetting(accountId, ARCHIVE, archivedValue.toString(), "")
 
         (requireActivity() as ConversationsListActivity).filterConversation()
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        val noFiltersActive = !(filterState[MENTION] == true || filterState[UNREAD] == true || filterState[ARCHIVE] == true)
+        if (noFiltersActive) {
+            (requireActivity() as ConversationsListActivity).showOnlyNearFutureEvents()
+        }
     }
 
     companion object {

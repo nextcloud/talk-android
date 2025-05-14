@@ -572,6 +572,10 @@ class ConversationsListActivity :
             AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
     }
 
+    fun showOnlyNearFutureEvents() {
+        adapter?.updateDataSet(nearFutureEventConversationItems, false)
+    }
+
     private fun addToNearFutureEventConversationItems(conversation: ConversationModel) {
         val conversationItem = ConversationItem(conversation, currentUser!!, this, null, viewThemeUtils)
         nearFutureEventConversationItems.add(conversationItem)
