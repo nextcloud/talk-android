@@ -531,6 +531,7 @@ class ConversationsListActivity :
 
         sortConversations(conversationItems)
         sortConversations(conversationItemsWithHeader)
+        sortConversations(nearFutureEventConversationItems)
 
         if (!hasFilterEnabled() && searchBehaviorSubject.value == false) {
             adapter?.updateDataSet(nearFutureEventConversationItems, false)
