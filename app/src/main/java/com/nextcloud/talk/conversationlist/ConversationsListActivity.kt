@@ -574,7 +574,9 @@ class ConversationsListActivity :
     }
 
     fun showOnlyNearFutureEvents() {
+        sortConversations(nearFutureEventConversationItems)
         adapter?.updateDataSet(nearFutureEventConversationItems, false)
+        adapter?.smoothScrollToPosition(0)
     }
 
     private fun addToNearFutureEventConversationItems(conversation: ConversationModel) {
