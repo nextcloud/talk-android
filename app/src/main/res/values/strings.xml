@@ -429,6 +429,7 @@ How to translate with transifex:
     <string name="nc_formatted_message_you">You: %1$s</string>
     <string name="nc_message_read">Message read</string>
     <string name="nc_message_sent">Message sent</string>
+    <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_failed">Failed</string>
     <string name="nc_message_sending">Sending</string>
