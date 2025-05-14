@@ -35,6 +35,7 @@ class MediaRecorderManager : LifecycleAwareManager {
     }
 
     var currentVoiceRecordFile: String = ""
+    private var lockRecording = false
 
     enum class MediaRecorderState {
         INITIAL,
@@ -166,6 +167,12 @@ class MediaRecorderManager : LifecycleAwareManager {
     }
 
     override fun handleOnStop() {
-        stop()
+        if (!lockRecording) {
+            stop()
+        }
+    }
+
+    fun lockRecording(shouldLock: Boolean) {
+        lockRecording = shouldLock
     }
 }
