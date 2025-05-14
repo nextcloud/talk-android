@@ -210,6 +210,7 @@ class ConversationsListActivity :
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var nearFutureEventConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null
     private var chooseAccountItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -519,16 +520,29 @@ class ConversationsListActivity :
         // Update Conversations
         conversationItems.clear()
         conversationItemsWithHeader.clear()
+        nearFutureEventConversationItems.clear()
+
         for (conversation in list) {
+            if (!futureEvent(conversation)) {
+                addToNearFutureEventConversationItems(conversation)
+            }
             addToConversationItems(conversation)
         }
+
         sortConversations(conversationItems)
         sortConversations(conversationItemsWithHeader)
+        sortConversations(nearFutureEventConversationItems)
 
-        // Filter Conversations
-        if (!hasFilterEnabled()) filterableConversationItems = conversationItems
-        filterConversation()
-        adapter?.updateDataSet(filterableConversationItems, false)
+        if (!hasFilterEnabled() && searchBehaviorSubject.value == false) {
+            adapter?.updateDataSet(nearFutureEventConversationItems, false)
+        } else {
+            // Filter Conversations
+            if (!hasFilterEnabled()) {
+                filterableConversationItems = conversationItems
+            }
+            filterConversation()
+            adapter?.updateDataSet(filterableConversationItems, false)
+        }
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
         // Fetch Open Conversations
@@ -548,6 +562,26 @@ class ConversationsListActivity :
         }
 
         return false
+    }
+
+    private fun futureEvent(conversation: ConversationModel): Boolean {
+        if (!conversation.objectId.contains("#")) {
+            return false
+        }
+        return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
+            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / LONG_1000)) >
+            AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
+    }
+
+    fun showOnlyNearFutureEvents() {
+        sortConversations(nearFutureEventConversationItems)
+        adapter?.updateDataSet(nearFutureEventConversationItems, false)
+        adapter?.smoothScrollToPosition(0)
+    }
+
+    private fun addToNearFutureEventConversationItems(conversation: ConversationModel) {
+        val conversationItem = ConversationItem(conversation, currentUser!!, this, null, viewThemeUtils)
+        nearFutureEventConversationItems.add(conversationItem)
     }
 
     fun filterConversation() {
@@ -837,15 +871,19 @@ class ConversationsListActivity :
 
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter?.setHeadersShown(false)
+                    searchBehaviorSubject.onNext(false)
                     if (!hasFilterEnabled()) filterableConversationItems = conversationItemsWithHeader
-                    adapter?.updateDataSet(filterableConversationItems, false)
+                    if (!hasFilterEnabled()) {
+                        adapter?.updateDataSet(nearFutureEventConversationItems, false)
+                    } else {
+                        filterableConversationItems = conversationItems
+                    }
                     adapter?.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
                         searchHelper!!.cancelSearch()
                     }
                     binding.swipeRefreshLayoutView.isRefreshing = false
-                    searchBehaviorSubject.onNext(false)
                     binding.swipeRefreshLayoutView.isEnabled = true
                     searchView!!.onActionViewCollapsed()
 
@@ -2114,5 +2152,7 @@ class ConversationsListActivity :
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
+        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 57600
+        const val LONG_1000: Long = 1000
     }
 }

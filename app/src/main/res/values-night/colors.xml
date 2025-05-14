@@ -12,6 +12,7 @@
     <color name="colorPrimaryDark">#006AA3</color>
     <color name="colorAccent">@color/colorPrimary</color>
     <color name="disabled_text">#ff6F6F6F</color>
+    <color name="popup_menu_color">#FF37474F</color>
 
     <!-- App bar -->
     <color name="appbar">#1E1E1E</color>

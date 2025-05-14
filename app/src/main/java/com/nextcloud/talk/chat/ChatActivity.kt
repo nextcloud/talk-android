@@ -38,12 +38,14 @@ import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AbsListView
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupMenu
+import android.widget.PopupWindow
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -51,6 +53,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.runtime.mutableStateOf
@@ -82,6 +85,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
@@ -127,6 +131,7 @@ import com.nextcloud.talk.databinding.ActivityChatBinding
 import com.nextcloud.talk.events.UserMentionClickEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
 import com.nextcloud.talk.extensions.loadAvatarOrImagePreview
+import com.nextcloud.talk.jobs.DeleteConversationWorker
 import com.nextcloud.talk.jobs.DownloadFileToCacheWorker
 import com.nextcloud.talk.jobs.ShareOperationWorker
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -210,13 +215,18 @@ import java.io.File
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
-import kotlin.collections.set
 import kotlin.math.roundToInt
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
+import com.nextcloud.talk.models.json.participants.Participant
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -254,6 +264,8 @@ class ChatActivity :
     lateinit var networkMonitor: NetworkMonitor
 
     lateinit var chatViewModel: ChatViewModel
+
+    lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
     private val startSelectContactForResult = registerForActivityResult(
@@ -324,6 +336,7 @@ class ChatActivity :
 
     private var conversationVoiceCallMenuItem: MenuItem? = null
     private var conversationVideoMenuItem: MenuItem? = null
+    private var eventConversationMenuItem: MenuItem? = null
 
     var webSocketInstance: WebSocketInstance? = null
     var signalingMessageSender: SignalingMessageSender? = null
@@ -417,6 +430,8 @@ class ChatActivity :
         handleIntent(intent)
 
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
+
+        conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
 
         val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
         val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
@@ -567,6 +582,7 @@ class ChatActivity :
                         participantPermissions = ParticipantPermissions(spreedCapabilities, currentConversation!!)
 
                         invalidateOptionsMenu()
+                        isEventConversation()
                         checkShowCallButtons()
                         checkLobbyState()
                         updateRoomTimerHandler()
@@ -600,6 +616,7 @@ class ChatActivity :
                         loadAvatarForStatusBar()
                         setupSwipeToReply()
                         setActionBarTitle()
+                        isEventConversation()
                         checkShowCallButtons()
                         checkLobbyState()
                         if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
@@ -1889,6 +1906,17 @@ class ChatActivity :
         }
     }
 
+    private fun isEventConversation() {
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+            if (eventConversationMenuItem != null) {
+                eventConversationMenuItem?.icon?.alpha = FULLY_OPAQUE_INT
+                eventConversationMenuItem?.isEnabled = true
+            }
+        } else {
+            eventConversationMenuItem?.isEnabled = false
+        }
+    }
+
     private fun isReadOnlyConversation(): Boolean =
         currentConversation?.conversationReadOnlyState != null &&
             currentConversation?.conversationReadOnlyState ==
@@ -2849,12 +2877,19 @@ class ChatActivity :
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_conversation, menu)
 
+        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+            eventConversationMenuItem = menu.findItem(R.id.conversation_event)
+        } else {
+            menu.removeItem(R.id.conversation_event)
+        }
+
         if (conversationUser?.userId == "?") {
             menu.removeItem(R.id.conversation_info)
         } else {
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
+
         return true
     }
 
@@ -2870,12 +2905,6 @@ class ChatActivity :
 
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
                 currentConversation!!.remoteServer.isNullOrEmpty()
-
-            if (currentConversation!!.remoteServer != null ||
-                !CapabilitiesUtil.isSharedItemsAvailable(spreedCapabilities)
-            ) {
-                menu.removeItem(R.id.shared_items)
-            }
 
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
@@ -2909,7 +2938,6 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_voice_call)
             }
         }
-
         return true
     }
 
@@ -2940,8 +2968,204 @@ class ChatActivity :
                 true
             }
 
+            R.id.conversation_event -> {
+                val anchorView = findViewById<View>(R.id.conversation_event)
+                showPopupWindow(anchorView)
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
+
+    private fun showPopupWindow(anchorView: View) {
+        val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
+
+        val titleTextView = popupView.findViewById<TextView>(R.id.event_scheduled)
+        val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
+
+        val popupWindow = PopupWindow(
+            popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true
+        )
+
+        popupWindow.isOutsideTouchable = true
+        popupWindow.isFocusable = true
+        popupWindow.showAsDropDown(anchorView, 0, -anchorView.height)
+
+        val meetingStatus = showEventSchedule()
+        subtitleTextView.text = meetingStatus
+
+        deleteEventConversation(meetingStatus, popupWindow, popupView)
+        archiveEventConversation(meetingStatus, popupWindow, popupView)
+    }
+
+    private fun deleteEventConversation(meetingStatus: String, popupWindow: PopupWindow, popupView: View) {
+        val deleteConversation = popupView.findViewById<TextView>(R.id.delete_conversation)
+        if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
+            currentConversation?.canDeleteConversation == true
+        ) {
+            deleteConversation.visibility = View.VISIBLE
+
+            deleteConversation.setOnClickListener {
+                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+                    )
+                    .setTitle(R.string.nc_delete_call)
+                    .setMessage(R.string.nc_delete_conversation_more)
+                    .setPositiveButton(R.string.nc_delete) { _, _ ->
+                        currentConversation?.let { conversation ->
+                            deleteConversation(conversation)
+                        }
+                    }
+                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
+                    }
+
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
+                val dialog = dialogBuilder.show()
+                viewThemeUtils.platform.colorTextButtons(
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                )
+                popupWindow.dismiss()
+            }
+        } else {
+            deleteConversation.visibility = View.GONE
+        }
+    }
+
+    private fun archiveEventConversation(meetingStatus: String, popupWindow: PopupWindow, popupView: View) {
+        val archiveConversation = popupView.findViewById<TextView>(R.id.archive_conversation)
+        val unarchiveConversation = popupView.findViewById<TextView>(R.id.unarchive_conversation)
+        if (meetingStatus == context.resources.getString(R.string.nc_meeting_ended) &&
+            (
+                Participant.ParticipantType.MODERATOR == currentConversation?.participantType ||
+                    Participant.ParticipantType.OWNER == currentConversation?.participantType
+                )
+        ) {
+            if (currentConversation?.hasArchived == false) {
+                unarchiveConversation.visibility = View.GONE
+                archiveConversation.visibility = View.VISIBLE
+                archiveConversation.setOnClickListener {
+                    this.lifecycleScope.launch {
+                        conversationInfoViewModel.archiveConversation(conversationUser!!, currentConversation?.token!!)
+                        Snackbar.make(
+                            binding.root,
+                            String.format(
+                                context.resources.getString(R.string.archived_conversation),
+                                currentConversation?.displayName
+                            ),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    popupWindow.dismiss()
+                }
+            } else {
+                unarchiveConversation.visibility = View.VISIBLE
+                archiveConversation.visibility = View.GONE
+                unarchiveConversation.setOnClickListener {
+                    this.lifecycleScope.launch {
+                        conversationInfoViewModel.unarchiveConversation(
+                            conversationUser!!,
+                            currentConversation?.token!!
+                        )
+                        Snackbar.make(
+                            binding.root,
+                            String.format(
+                                context.resources.getString(R.string.unarchived_conversation),
+                                currentConversation?.displayName
+                            ),
+                            Snackbar.LENGTH_LONG
+                        ).show()
+                    }
+                    popupWindow.dismiss()
+                }
+            }
+        } else {
+            archiveConversation.visibility = View.GONE
+            unarchiveConversation.visibility = View.GONE
+        }
+    }
+
+    private fun deleteConversation(conversation: ConversationModel) {
+        val data = Data.Builder()
+        data.putLong(
+            KEY_INTERNAL_USER_ID,
+            conversationUser?.id!!
+        )
+        data.putString(KEY_ROOM_TOKEN, conversation.token)
+
+        val deleteConversationWorker =
+            OneTimeWorkRequest.Builder(DeleteConversationWorker::class.java).setInputData(data.build()).build()
+        WorkManager.getInstance().enqueue(deleteConversationWorker)
+
+        WorkManager.getInstance(context).getWorkInfoByIdLiveData(deleteConversationWorker.id)
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo != null) {
+                    when (workInfo.state) {
+                        WorkInfo.State.SUCCEEDED -> {
+                            val successMessage = String.format(
+                                context.resources.getString(R.string.deleted_conversation),
+                                conversation.displayName
+                            )
+                            Snackbar.make(binding.root, successMessage, Snackbar.LENGTH_LONG).show()
+                            finish()
+                        }
+
+                        WorkInfo.State.FAILED -> {
+                            val errorMessage = context.resources.getString(R.string.nc_common_error_sorry)
+                            Snackbar.make(binding.root, errorMessage, Snackbar.LENGTH_LONG).show()
+                        }
+
+                        else -> {
+                        }
+                    }
+                }
+            }
+    }
+
+    private fun showEventSchedule(): String {
+        val meetingTimeStamp = currentConversation?.objectId ?: ""
+        val status = getMeetingSchedule(meetingTimeStamp)
+        return status
+    }
+
+    private fun getMeetingSchedule(meetingTimeStamp: String): String {
+        val timestamps = meetingTimeStamp.split("#")
+        if (timestamps.size != 2) return context.resources.getString(R.string.nc_invalid_time)
+
+        val startEpoch = timestamps[ZERO_INDEX].toLong()
+        val endEpoch = timestamps[ONE_INDEX].toLong()
+
+        val startDateTime = Instant.ofEpochSecond(startEpoch).atZone(ZoneId.systemDefault())
+        val endDateTime = Instant.ofEpochSecond(endEpoch).atZone(ZoneId.systemDefault())
+        val currentTime = ZonedDateTime.now(ZoneId.systemDefault())
+
+        return when {
+            currentTime.isBefore(startDateTime) -> {
+                val isToday = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate())
+                val isTomorrow = startDateTime.toLocalDate().isEqual(currentTime.toLocalDate().plusDays(1))
+                when {
+                    isToday -> String.format(
+                        context.resources.getString(R.string.nc_today_meeting),
+                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    )
+
+                    isTomorrow -> String.format(
+                        context.resources.getString(R.string.nc_tomorrow_meeting),
+                        startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
+                    )
+                    else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
+                }
+            }
+            currentTime.isAfter(endDateTime) -> context.resources.getString(R.string.nc_meeting_ended)
+            else -> context.resources.getString(R.string.nc_ongoing_meeting)
+        }
+    }
 
     private fun showSharedItems() {
         val intent = Intent(this, SharedItemsActivity::class.java)
@@ -3800,5 +4024,7 @@ class ChatActivity :
         const val VOICE_MESSAGE_PLAY_ADD_THRESHOLD = 0.1
         const val VOICE_MESSAGE_MARK_PLAYED_FACTOR = 20
         const val OUT_OF_OFFICE_ALPHA = 76
+        const val ZERO_INDEX = 0
+        const val ONE_INDEX = 1
     }
 }

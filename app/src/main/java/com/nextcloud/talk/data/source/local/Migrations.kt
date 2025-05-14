@@ -55,6 +55,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_13_14 = object : Migration(13, 14) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 13 to 14")
+            addObjectId(db)
+        }
+    }
+
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +
@@ -262,6 +269,17 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "hasArchived already exists")
+        }
+    }
+
+    fun addObjectId(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD COLUMN objectId TEXT NOT NULL DEFAULT '';"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column objectId to table Conversations")
         }
     }
 
