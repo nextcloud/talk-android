@@ -60,7 +60,6 @@
     <string name="nc_add_to_favorites">Pridėti į mėgstamus</string>
     <string name="nc_all_ok_operation">Gerai, viskas atlikta!</string>
     <string name="nc_biometric_unlock">Atrakinti %1$s</string>
-    <string name="nc_call_button_content_description_advanced">Išplėstinės skambučio parinktys</string>
     <string name="nc_call_button_content_description_audio_output">Keisti garso išvestį</string>
     <string name="nc_call_button_content_description_camera">Perjungti kamerą</string>
     <string name="nc_call_button_content_description_hangup">Padėti ragelį</string>
@@ -132,7 +131,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Išorinė</string>
     <string name="nc_diagnose_signaling_mode_intern">Vidinis</string>
     <string name="nc_dialog_invalid_password">Neteisingas slaptažodis</string>
-    <string name="nc_dialog_maintenance_mode">Techninės priežiūros veiksena</string>
     <string name="nc_dialog_outdated_client_option_update">Atnaujinti</string>
     <string name="nc_dialog_save_to_storage_continue">Tęsti?</string>
     <string name="nc_dialog_save_to_storage_no">Ne</string>
@@ -140,7 +138,6 @@
     <string name="nc_edit_icon">Taisyti</string>
     <string name="nc_edit_message">Taisyti</string>
     <string name="nc_edit_message_text">Taisyti laišką</string>
-    <string name="nc_email">El. paštas</string>
     <string name="nc_expire_message_eight_hours">8 valandos</string>
     <string name="nc_expire_message_four_weeks">4 savaitės</string>
     <string name="nc_expire_message_off">Išjungta</string>
@@ -158,12 +155,10 @@
     <string name="nc_get_from_provider">Neturite serverio? Spauskite čia, kad galėtumėte pasirinkti vieną iš paslaugų teikėjų</string>
     <string name="nc_get_source_code">Gauti išeities kodą</string>
     <string name="nc_group">Grupė</string>
-    <string name="nc_groups">Grupės</string>
     <string name="nc_guest">Svečias</string>
     <string name="nc_guest_access_allow_title">Leisti svečius</string>
     <string name="nc_guest_access_password_dialog_hint">Enter a password</string>
     <string name="nc_guest_access_password_title">Apsauga slaptažodžiu</string>
-    <string name="nc_guest_access_password_weak_alert_title">Silpnas slaptažodis</string>
     <string name="nc_guest_access_resend_invitations">Siųsti pakvietimus iš naujo</string>
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
@@ -212,10 +207,8 @@
     <string name="nc_privacy">Privatumas</string>
     <string name="nc_profile_personal_info_title">Asmeninė informacija</string>
     <string name="nc_promote">Paaukštinti į moderatorius</string>
-    <string name="nc_public_call">Naujas viešas pokalbis</string>
     <string name="nc_public_call_status">Viešas pokalbis</string>
     <string name="nc_push_disabled">\"Push\" pranešimai yra išjungti</string>
-    <string name="nc_refresh">Įkelti iš naujo</string>
     <string name="nc_remind">Priminti vėliau</string>
     <string name="nc_remove_from_favorites">Šalinti iš mėgstamų</string>
     <string name="nc_remove_group_and_members">Šalinti grupę ir narius</string>
@@ -238,19 +231,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Ieškoti</string>
     <string name="nc_select_an_account">Pasirinkti paskyrą</string>
-    <string name="nc_select_participants">Ieškoti dalyvių</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s išsiuntė GIF paveikslą.</string>
     <string name="nc_sent_a_gif_you">Jūs išsiuntėte GIF paveikslą.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s išsiuntė vaizdo įrašą.</string>
     <string name="nc_sent_a_video_you">Jūs išsiuntėte vaizdo įrašą.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s išsiuntė priedą.</string>
-    <string name="nc_sent_an_attachment_you">Jūs išsiuntėte priedą.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s išsiuntė garso įrašą.</string>
     <string name="nc_sent_an_audio_you">Jūs išsiuntėte garso įrašą.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s išsiuntė paveikslą.</string>
     <string name="nc_sent_an_image_you">Jūs išsiuntėte paveikslą.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s išsiuntė balso žinutę.</string>
-    <string name="nc_sent_voice_you">Jūs išsiuntėte balso žinutę.</string>
     <string name="nc_server_connect">Prisijunkite prie serverio</string>
     <string name="nc_server_db_upgrade_needed">Atnaujinkite savo %1$s duomenų bazę</string>
     <string name="nc_server_failed_to_import_account">Nepavyko importuoti pasirinktą paskyrą</string>
@@ -309,12 +297,10 @@
     <string name="nc_start_time">Pradžios laikas</string>
     <string name="nc_switch_account">Perjungti paskyrą</string>
     <string name="nc_team">Komanda</string>
-    <string name="nc_teams">Komandos</string>
     <string name="nc_upload_failed_notification_title">Nesėkmė</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_user">Naudotojas</string>
-    <string name="nc_visible">Matoma</string>
     <string name="nc_voice_message_hold_to_record_info">Laikykite, kad įrašinėtumėte, atleiskite, kad išsiųstumėte.</string>
     <string name="nc_voice_message_slide_to_cancel">« Perbraukite norėdami atsisakyti</string>
     <string name="nc_webinar">Internetinis seminaras</string>

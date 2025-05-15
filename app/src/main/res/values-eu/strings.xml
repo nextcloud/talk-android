@@ -38,7 +38,6 @@
     <string name="dontClear">Ez garbitu</string>
     <string name="edit">Editatu</string>
     <string name="edit_message_icon_description">Editatu mezua</string>
-    <string name="emoji_backspace">Atzera</string>
     <string name="emoji_category_recent">Azkenak</string>
     <string name="encrypted">Zifratua</string>
     <string name="end_call_for_everyone">Amaitu deia denontzat</string>
@@ -90,7 +89,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desblokeatu %1$s</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth bozgorailuak gaitzeko, eman \"Inguruko gailuak\" baimena.</string>
-    <string name="nc_call_button_content_description_advanced">Dei-ezarpen aurreratuak</string>
     <string name="nc_call_button_content_description_answer_video_call">Erantzun bideo-dei gisa</string>
     <string name="nc_call_button_content_description_answer_voice_only">Erantzun ahots-dei gisa soilik</string>
     <string name="nc_call_button_content_description_audio_output">Aldatu audio irteera</string>
@@ -184,7 +182,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Barnekoa</string>
     <string name="nc_diagnose_signaling_mode_title">Seinalizazio modua</string>
     <string name="nc_dialog_invalid_password">Pasahitz baliogabea</string>
-    <string name="nc_dialog_maintenance_mode">Mantentze modua</string>
     <string name="nc_dialog_maintenance_mode_description">Zerbitzaria mantentze moduan dago.</string>
     <string name="nc_dialog_outdated_client">Aplikazioa zaharkituta dago</string>
     <string name="nc_dialog_outdated_client_description">Aplikazio hau zaharregia da eta ez dago zerbitzari honengatik onartuta. Mesedez eguneratu.</string>
@@ -200,7 +197,6 @@
     <string name="nc_edit_icon">Editatu</string>
     <string name="nc_edit_message">Aldatu</string>
     <string name="nc_edit_message_text">Editatu mezua</string>
-    <string name="nc_email">E-posta</string>
     <string name="nc_expire_message_eight_hours">8 ordu</string>
     <string name="nc_expire_message_four_weeks">4 aste</string>
     <string name="nc_expire_message_off">Desaktibatu</string>
@@ -223,7 +219,6 @@
     <string name="nc_get_from_provider">Oraindik zerbitzaririk gabe?\n Egin klik hemen hornitzailetik bat lortzeko</string>
     <string name="nc_get_source_code">Iturburu kodea eskuratu</string>
     <string name="nc_group">Taldea</string>
-    <string name="nc_groups">Taldeak</string>
     <string name="nc_guest">Gonbidatua</string>
     <string name="nc_guest_access">Gonbidatuen sarbidea</string>
     <string name="nc_guest_access_allow_failed">Ezin da gaitu/desgaitu gonbidatuen sarbidea.</string>
@@ -234,7 +229,6 @@
     <string name="nc_guest_access_password_failed">Errore bat gertatu da pasahitza ezartzean/desgaitzean.</string>
     <string name="nc_guest_access_password_summary">Ezarri pasahitz bat, esteka publikoa nork erabili mugatzeko.</string>
     <string name="nc_guest_access_password_title">Pasahitz bidezko babesa</string>
-    <string name="nc_guest_access_password_weak_alert_title">Pasahitz ahula</string>
     <string name="nc_guest_access_resend_invitations">Birbidali gonbidapenak</string>
     <string name="nc_guest_access_resend_invitations_failed">Gonbidapenak ez dira bidali errore baten ondorioz.</string>
     <string name="nc_guest_access_resend_invitations_successful">Gonbidapenak berriro bidali dira.</string>
@@ -251,7 +245,6 @@
     <string name="nc_license_summary">GNU General Public Lizentzia, 3. bertsioa</string>
     <string name="nc_license_title">Lizentzia</string>
     <string name="nc_limit_hit">%s karaktere limitera iritsi da</string>
-    <string name="nc_list_open_conversations">Zerrendatu irekitako elkarrizketak</string>
     <string name="nc_lobby">Sarrera</string>
     <string name="nc_lobby_start_date">Bilera hau %1$s(r)etarako programatuta dago</string>
     <string name="nc_lobby_start_soon">Bilera laster hasiko da</string>
@@ -273,7 +266,6 @@
     <string name="nc_microphone_permission_hint">Ahots bidezko komunikazioa gaitzeko, eman \"Mikrofonoa\" baimena.</string>
     <string name="nc_missed_call">%s-ren dei bat galdu duzu</string>
     <string name="nc_moderator">Moderatzailea</string>
-    <string name="nc_never">Ez da inoiz elkartu</string>
     <string name="nc_new_conversation">Elkarrizketa berria</string>
     <string name="nc_new_conversation_visibility">Ikusgarritasuna</string>
     <string name="nc_new_mention">Irakurri gabeko aipamenak</string>
@@ -319,15 +311,11 @@
     <string name="nc_privacy">Pribatutasuna</string>
     <string name="nc_profile_personal_info_title">Informazio pertsonala</string>
     <string name="nc_promote">Moderatzaile bihurtu zara</string>
-    <string name="nc_public_call">Elkarrizketa publiko berria</string>
-    <string name="nc_public_call_explanation">Elkarrizketa publikoek kanpoko jendea gonbidatzen uzten dizute bereziki sortutako esteka baten bidez.</string>
     <string name="nc_public_call_status">Elkarrizketa publikoa</string>
     <string name="nc_push_disabled">Push jakinarazpenak desgaiturik</string>
     <string name="nc_push_to_talk">Sakatu-hitz-egiteko</string>
     <string name="nc_push_to_talk_desc">Mikrofonoa desgaituta daukazunean, egin klik &amp;mantendu sakatzerakoan hitz egiteko</string>
-    <string name="nc_refresh">Freskatu</string>
     <string name="nc_remind">Gogoratu geroago</string>
-    <string name="nc_remote_audio_off">Urruneko audioa itzalita</string>
     <string name="nc_remove_from_favorites">Kendu gogokoetatik</string>
     <string name="nc_remove_group_and_members">Kendu taldea eta kideak</string>
     <string name="nc_remove_participant">Kendu parte-hartzailea</string>
@@ -348,23 +336,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Bilatu</string>
     <string name="nc_select_an_account">Hautatu kontua bat</string>
-    <string name="nc_select_participants">Hautatu parte-hartzaileak</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s-k GIF bat bidali du.</string>
     <string name="nc_sent_a_gif_you">GIF bat bidali duzu.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s-k bideoa bidali du.</string>
     <string name="nc_sent_a_video_you">Bideo bat bidali duzu.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s-k eranskin bat bidali du.</string>
-    <string name="nc_sent_an_attachment_you">Eranskin bat bidali duzu.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s-k audio bat bidali du.</string>
     <string name="nc_sent_an_audio_you">Audio bat bidali duzu.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s-k irudi bat bidali du.</string>
     <string name="nc_sent_an_image_you">Irudi bat bidali duzu.</string>
-    <string name="nc_sent_location" formatted="true">%1$s-k kokaleku bat bidali du.</string>
-    <string name="nc_sent_location_you">Kokaleku bat bidali duzu.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s-(e)k galdeketa bat bidali du.</string>
-    <string name="nc_sent_poll_you">Galdeketa bat bidali duzu.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s-k ahots mezui bat bidali du.</string>
-    <string name="nc_sent_voice_you">Ahots mezu bat bidali duzu.</string>
     <string name="nc_server_connect">Probatu zerbitzariaren konexioa</string>
     <string name="nc_server_db_upgrade_needed">Mesedez eguneratu zure %1$s datu-basea</string>
     <string name="nc_server_failed_to_import_account">Ezin izan da aukeratutako kontua inportatu</string>
@@ -448,7 +427,6 @@
     <string name="nc_start_time">Hasiera-ordua</string>
     <string name="nc_switch_account">Aldatu kontua</string>
     <string name="nc_team">Lantaldea</string>
-    <string name="nc_teams">Lantaldeak</string>
     <string name="nc_upload_choose_local_files">Hautatu fitxategiak</string>
     <string name="nc_upload_confirm_send_multiple">Fitxategi hauek bidali %1$s(r)i?</string>
     <string name="nc_upload_confirm_send_single">Fitxategi hau bidali %1$s(r)i?</string>
@@ -463,7 +441,6 @@
     <string name="nc_upload_video_from_cam">Atera bideoa</string>
     <string name="nc_user">Erabiltzailea</string>
     <string name="nc_video_filename">%1$s(r)en bideo grabazioa</string>
-    <string name="nc_visible">Ikusgai</string>
     <string name="nc_voice_message_filename">Hizketaldia hemendik grabatzen %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Sakatu grabatzeko, askatu bidaltzeko.</string>
     <string name="nc_voice_message_missing_audio_permission">Audioa grabatzeko baimena behar da</string>

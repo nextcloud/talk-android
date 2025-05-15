@@ -49,7 +49,6 @@
     <string name="edit">Ändra</string>
     <string name="edit_error_24_hours_old_message">Meddelanden som är äldre än 24 timmar kan inte redigeras</string>
     <string name="edit_message_icon_description">Redigera meddelande</string>
-    <string name="emoji_backspace">Backsteg</string>
     <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
     <string name="end_call_for_everyone">Avsluta samtal för alla</string>
@@ -105,7 +104,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Lås upp %1$s</string>
     <string name="nc_bluetooth_permission_hint">För att aktivera bluetooth-högtalare måste du bevilja tillstånd för \"Enheter i närheten\".</string>
-    <string name="nc_call_button_content_description_advanced">Avancerade samtalsalternativ</string>
     <string name="nc_call_button_content_description_answer_video_call">Svara som videosamtal</string>
     <string name="nc_call_button_content_description_answer_voice_only">Svara endast som röstsamtal</string>
     <string name="nc_call_button_content_description_audio_output">Ändra ljudutgång</string>
@@ -136,7 +134,6 @@
     <string name="nc_certificate_error">Dina SSL-inställningar förhindrade anslutning</string>
     <string name="nc_change_cert_auth">Ändra autentiseringscertifikat</string>
     <string name="nc_change_password">Ändra lösenord</string>
-    <string name="nc_check_your_internet">Kontrollerar din internetanslutning</string>
     <string name="nc_clear_edit_button">Avbryt redigering</string>
     <string name="nc_clear_edit_message">Avbryt redigering</string>
     <string name="nc_clear_history">Radera alla meddelanden</string>
@@ -169,6 +166,7 @@
     <string name="nc_copy_message">Kopia</string>
     <string name="nc_create_new_conversation">Skapa en ny konversation</string>
     <string name="nc_create_poll">Skapa omröstning</string>
+    <string name="nc_current_user">Du:</string>
     <string name="nc_date_header_today">Idag</string>
     <string name="nc_date_header_yesterday">Igår</string>
     <string name="nc_delete">Ta bort</string>
@@ -221,7 +219,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Intern</string>
     <string name="nc_diagnose_signaling_mode_title">Signaleringsläge</string>
     <string name="nc_dialog_invalid_password">Felaktigt lösenord</string>
-    <string name="nc_dialog_maintenance_mode">Underhållsläge</string>
     <string name="nc_dialog_maintenance_mode_description">Servern är för närvarande i underhållsläge.</string>
     <string name="nc_dialog_outdated_client">Appen är föråldrad</string>
     <string name="nc_dialog_outdated_client_description">Appen är för gammal och stöds inte längre av den här servern. Uppdatera.</string>
@@ -238,7 +235,6 @@
     <string name="nc_edit_message">Redigera</string>
     <string name="nc_edit_message_text">Redigera meddelande</string>
     <string name="nc_edited_by_admin">Redigerad av admin</string>
-    <string name="nc_email">E-post</string>
     <string name="nc_expire_message_eight_hours">8 timmar</string>
     <string name="nc_expire_message_four_weeks">4 veckor</string>
     <string name="nc_expire_message_off">Av</string>
@@ -264,7 +260,6 @@
     <string name="nc_get_from_provider">Har du inte en server än?\nKlicka här för att få en från en leverantör</string>
     <string name="nc_get_source_code">Hämta källkod</string>
     <string name="nc_group">Grupp</string>
-    <string name="nc_groups">Grupper</string>
     <string name="nc_guest">Gäst</string>
     <string name="nc_guest_access">Gäståtkomst</string>
     <string name="nc_guest_access_allow_failed">Kan inte aktivera/inaktivera gäståtkomst.</string>
@@ -275,7 +270,6 @@
     <string name="nc_guest_access_password_failed">Fel under inställning/inaktivering av lösenordet.</string>
     <string name="nc_guest_access_password_summary">Ange ett lösenord för att begränsa vem som kan använda den offentliga länken.</string>
     <string name="nc_guest_access_password_title">Lösenordsskydd</string>
-    <string name="nc_guest_access_password_weak_alert_title">Svagt lösenord</string>
     <string name="nc_guest_access_resend_invitations">Skicka inbjudningar igen</string>
     <string name="nc_guest_access_resend_invitations_failed">Inbjudningar skickades inte på grund av ett fel.</string>
     <string name="nc_guest_access_resend_invitations_successful">Inbjudningar skickades ut igen.</string>
@@ -294,7 +288,6 @@
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licens</string>
     <string name="nc_limit_hit">%s teckengränsen har uppnåtts</string>
-    <string name="nc_list_open_conversations">Lista öppna konversationer</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_start_date">Det här mötet är planerat till %1$s</string>
     <string name="nc_lobby_start_soon">Mötet börjar snart</string>
@@ -317,7 +310,6 @@
     <string name="nc_microphone_permission_hint">För att aktivera röstkommunikation ange \"Mikrofon\"-tillstånd.</string>
     <string name="nc_missed_call">Du missade ett samtal från %s</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_never">Gick aldrig med</string>
     <string name="nc_new_conversation">Ny konversation</string>
     <string name="nc_new_conversation_visibility">Synlighet</string>
     <string name="nc_new_mention">Olästa omnämnanden</string>
@@ -366,8 +358,6 @@
     <string name="nc_privacy">Integritet</string>
     <string name="nc_profile_personal_info_title">Personlig information</string>
     <string name="nc_promote">Befordra till moderator</string>
-    <string name="nc_public_call">Ny publik konversation</string>
-    <string name="nc_public_call_explanation">Offentliga konversationer låter dig bjuda in externa användare via en speciellt utformad länk.</string>
     <string name="nc_public_call_status">Publik konversation</string>
     <string name="nc_push_disabled">Push-aviseringar inaktiverade</string>
     <string name="nc_push_notification_error"> Tyvärr, något gick fel. Felet är %1$s</string>
@@ -375,9 +365,7 @@
     <string name="nc_push_notification_message">Push-notis skickades framgångsrikt. Du bör nu få en notis på den här enheten med titeln \'Testar push-notiser\'</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Med mikrofon inaktiverad klickar du på &amp;vänta för att använda Push-to-talk</string>
-    <string name="nc_refresh">Uppdatera</string>
     <string name="nc_remind">Påminn mig senare</string>
-    <string name="nc_remote_audio_off">Fjärrljud av</string>
     <string name="nc_remove_from_favorites">Ta bort från favoriter</string>
     <string name="nc_remove_group_and_members">Ta bort grupp och medlemmar</string>
     <string name="nc_remove_participant">Ta bort deltagare</string>
@@ -400,26 +388,16 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Sök</string>
     <string name="nc_select_an_account">Välj ett konto</string>
-    <string name="nc_select_participants">Välj deltagare</string>
     <string name="nc_send_edit_message">Uppdatera meddelande</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
     <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>
     <string name="nc_sent_a_video_you">Du skickade en video.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s skickade en bilaga.</string>
-    <string name="nc_sent_an_attachment_you">Du skickade en bilaga.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s skickade en ljudfil.</string>
     <string name="nc_sent_an_audio_you">Du skickade en ljudfil.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s skickade en bild.</string>
     <string name="nc_sent_an_image_you">Du skickade en bild.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s skickade ett Deck-kort</string>
-    <string name="nc_sent_deck_card_you">Du skickade ett Deck-kort</string>
-    <string name="nc_sent_location" formatted="true">%1$s skickade en plats.</string>
-    <string name="nc_sent_location_you">Du skickade en plats.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s skickade en omröstning.</string>
-    <string name="nc_sent_poll_you">Du skickade en omröstning.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s skickade ett röstmeddelande.</string>
-    <string name="nc_sent_voice_you">Du skickade ett röstmeddelande.</string>
     <string name="nc_server_connect">Testa serveranslutning</string>
     <string name="nc_server_db_upgrade_needed">Vänligen uppgradera din %1$s-databas</string>
     <string name="nc_server_failed_to_import_account">Misslyckades att importera valt konto</string>
@@ -450,7 +428,6 @@
     <string name="nc_settings_no_talk_installed">Talk-appen är inte installerad på den server som du försöker autentisera mot</string>
     <string name="nc_settings_notification_sounds_post_oreo">Aviseringar</string>
     <string name="nc_settings_notifications_declined">Aviseringar avvisas</string>
-    <string name="nc_settings_notifications_declined_hint">Aviseringar avvisas. Tillåt aviseringar i Android-inställningarna</string>
     <string name="nc_settings_notifications_granted">Anmälningar beviljas</string>
     <string name="nc_settings_other_notifications_ringtone">Meddelanden</string>
     <string name="nc_settings_phone_book_integration_desc">Matcha kontakter baserat på telefonnummer för att integrera Talk-genväg i systemkontaktappen</string>
@@ -514,7 +491,6 @@
     <string name="nc_start_time">Starttid</string>
     <string name="nc_switch_account">Växla konto</string>
     <string name="nc_team">Team</string>
-    <string name="nc_teams">Teams</string>
     <string name="nc_test_push_button">Testa pushnotiser</string>
     <string name="nc_test_results">Testresultat</string>
     <string name="nc_upload_choose_local_files">Välj filer</string>
@@ -531,7 +507,6 @@
     <string name="nc_upload_video_from_cam">Spela in video</string>
     <string name="nc_user">Användare</string>
     <string name="nc_video_filename">Videoinspelning från %1$s</string>
-    <string name="nc_visible">Synlig</string>
     <string name="nc_voice_message_filename">Talk-inspelning från %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Håll ned för att spela in, släpp för att skicka.</string>
     <string name="nc_voice_message_missing_audio_permission">Tillstånd för ljudinspelning krävs</string>

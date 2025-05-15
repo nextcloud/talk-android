@@ -50,7 +50,6 @@
     <string name="edit">Edit</string>
     <string name="edit_error_24_hours_old_message">Messages older than 24 hours can not be edited</string>
     <string name="edit_message_icon_description">Edit message</string>
-    <string name="emoji_backspace">Backspace</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
     <string name="end_call_for_everyone">End call for everyone</string>
@@ -65,7 +64,6 @@
     <string name="hint_edited_message">(edited)</string>
     <string name="internal_note">Internal note</string>
     <string name="invisible">Invisible</string>
-    <string name="join_open_conversations_icon">Join Open Conversations Icon</string>
     <string name="languages_error_message">Languages could not be retrieved</string>
     <string name="languages_error_title">Retrieval failed</string>
     <string name="later_today">Later today</string>
@@ -107,7 +105,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Unlock %1$s</string>
     <string name="nc_bluetooth_permission_hint">To enable Bluetooth speakers please grant \"Nearby devices\" permission.</string>
-    <string name="nc_call_button_content_description_advanced">Advanced call options</string>
     <string name="nc_call_button_content_description_answer_video_call">Answer as video call</string>
     <string name="nc_call_button_content_description_answer_voice_only">Answer as voice call only</string>
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
@@ -138,7 +135,6 @@
     <string name="nc_certificate_error">Your SSL setup prevented connection</string>
     <string name="nc_change_cert_auth">Change authentication certificate</string>
     <string name="nc_change_password">Change Password</string>
-    <string name="nc_check_your_internet">Please check your internet connection</string>
     <string name="nc_clear_edit_button">Cancel editing</string>
     <string name="nc_clear_edit_message">Cancel editing</string>
     <string name="nc_clear_history">Delete all messages</string>
@@ -171,6 +167,7 @@
     <string name="nc_copy_message">Copy</string>
     <string name="nc_create_new_conversation">Create a new conversation</string>
     <string name="nc_create_poll">Create poll</string>
+    <string name="nc_current_user">You:</string>
     <string name="nc_date_header_today">Today</string>
     <string name="nc_date_header_yesterday">Yesterday</string>
     <string name="nc_delete">Delete</string>
@@ -223,7 +220,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Internal</string>
     <string name="nc_diagnose_signaling_mode_title">Signaling Mode</string>
     <string name="nc_dialog_invalid_password">Invalid password</string>
-    <string name="nc_dialog_maintenance_mode">Maintenance mode</string>
     <string name="nc_dialog_maintenance_mode_description">Server is currently in maintenance mode.</string>
     <string name="nc_dialog_outdated_client">App is outdated</string>
     <string name="nc_dialog_outdated_client_description">The app is too old and no longer supported by this server. Please update.</string>
@@ -240,7 +236,7 @@
     <string name="nc_edit_message">Edit</string>
     <string name="nc_edit_message_text">Edit message</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
-    <string name="nc_email">Email</string>
+    <string name="nc_event_schedule">Schedule</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
     <string name="nc_expire_message_off">Off</string>
@@ -266,7 +262,6 @@
     <string name="nc_get_from_provider">Do you not have a server yet?\nClick here to get one from a provider</string>
     <string name="nc_get_source_code">Get source code</string>
     <string name="nc_group">Group</string>
-    <string name="nc_groups">Groups</string>
     <string name="nc_guest">Guest</string>
     <string name="nc_guest_access">Guest access</string>
     <string name="nc_guest_access_allow_failed">Cannot enable/disable guest access.</string>
@@ -277,7 +272,6 @@
     <string name="nc_guest_access_password_failed">Error during setting/disabling the password.</string>
     <string name="nc_guest_access_password_summary">Set a password to restrict who can use the public link.</string>
     <string name="nc_guest_access_password_title">Password protection</string>
-    <string name="nc_guest_access_password_weak_alert_title">Weak password</string>
     <string name="nc_guest_access_resend_invitations">Resend invitations</string>
     <string name="nc_guest_access_resend_invitations_failed">Invitations were not send due to an error.</string>
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
@@ -296,7 +290,6 @@
     <string name="nc_license_summary">GNU General Public Licence, Version 3</string>
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">%s characters limit has been hit</string>
-    <string name="nc_list_open_conversations">List open conversations</string>
     <string name="nc_lobby">Lobby</string>
     <string name="nc_lobby_start_date">This meeting is scheduled for %1$s</string>
     <string name="nc_lobby_start_soon">The meeting will start soon</string>
@@ -319,7 +312,6 @@
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
     <string name="nc_missed_call">You missed a call from %s</string>
     <string name="nc_moderator">Moderator</string>
-    <string name="nc_never">Never joined</string>
     <string name="nc_new_conversation">New conversation</string>
     <string name="nc_new_conversation_visibility">Visibility</string>
     <string name="nc_new_mention">Unread mentions</string>
@@ -368,8 +360,6 @@
     <string name="nc_privacy">Privacy</string>
     <string name="nc_profile_personal_info_title">Personal Info</string>
     <string name="nc_promote">Promote to moderator</string>
-    <string name="nc_public_call">New public conversation</string>
-    <string name="nc_public_call_explanation">Public conversations let you invite people from outside through a specially crafted link.</string>
     <string name="nc_public_call_status">Public conversation</string>
     <string name="nc_push_disabled">Push notifications disabled</string>
     <string name="nc_push_notification_error"> Sorry something went wrong, error is %1$s</string>
@@ -377,9 +367,7 @@
     <string name="nc_push_notification_message">Push notification is sent successfully. You should now receive a notification on this device with the title \'Testing push notifications\'</string>
     <string name="nc_push_to_talk">Press-to-transmit</string>
     <string name="nc_push_to_talk_desc">With the microphone disabled, click&amp;hold to use Press-to-transmit</string>
-    <string name="nc_refresh">Refresh</string>
     <string name="nc_remind">Remind me later</string>
-    <string name="nc_remote_audio_off">Remote audio off</string>
     <string name="nc_remove_from_favorites">Remove from favourites</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">Remove participant</string>
@@ -402,26 +390,16 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Search</string>
     <string name="nc_select_an_account">Select an account</string>
-    <string name="nc_select_participants">Select participants</string>
     <string name="nc_send_edit_message">Update message</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
     <string name="nc_sent_a_gif_you">You sent a GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sent a video.</string>
     <string name="nc_sent_a_video_you">You sent a video.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s sent an attachment.</string>
-    <string name="nc_sent_an_attachment_you">You sent an attachment.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
     <string name="nc_sent_an_audio_you">You sent an audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s sent an image.</string>
     <string name="nc_sent_an_image_you">You sent an image.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
-    <string name="nc_sent_deck_card_you">You sent a deck card</string>
-    <string name="nc_sent_location" formatted="true">%1$s sent a location.</string>
-    <string name="nc_sent_location_you">You sent a location.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s sent a poll.</string>
-    <string name="nc_sent_poll_you">You sent a poll.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s sent a voice message.</string>
-    <string name="nc_sent_voice_you">You sent a voice message.</string>
     <string name="nc_server_connect">Test server connection</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
@@ -452,7 +430,6 @@
     <string name="nc_settings_no_talk_installed">Talk app is not installed on the server you tried to authenticate against</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notifications</string>
     <string name="nc_settings_notifications_declined">Notifications are declined</string>
-    <string name="nc_settings_notifications_declined_hint">Notifications are declined. Please allow notifications in Android settings</string>
     <string name="nc_settings_notifications_granted">Notifications are granted</string>
     <string name="nc_settings_other_notifications_ringtone">Messages</string>
     <string name="nc_settings_phone_book_integration_desc">Match contacts based on phone number to integrate Talk shortcut into system contacts app</string>
@@ -516,7 +493,6 @@
     <string name="nc_start_time">Start time</string>
     <string name="nc_switch_account">Switch account</string>
     <string name="nc_team">Team</string>
-    <string name="nc_teams">Teams</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
@@ -533,14 +509,12 @@
     <string name="nc_upload_video_from_cam">Take video</string>
     <string name="nc_user">User</string>
     <string name="nc_video_filename">Video recording from %1$s</string>
-    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Talk recording from %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Hold to record, release to send.</string>
     <string name="nc_voice_message_missing_audio_permission">Permission for audio recording is required</string>
     <string name="nc_voice_message_slide_to_cancel">« Slide to cancel</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Yes</string>
-    <string name="new_conversation_creation_icon">New Conversation Creation Icon</string>
     <string name="next_week">Next week</string>
     <string name="no_conversations_archived">No archived conversations</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>

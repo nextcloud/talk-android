@@ -36,7 +36,6 @@
     <string name="dontClear">Не очищать</string>
     <string name="edit">Редактировать</string>
     <string name="edit_message_icon_description">Редактировать сообщение</string>
-    <string name="emoji_backspace">Вернуться</string>
     <string name="emoji_category_recent">Недавние</string>
     <string name="encrypted">Зашифровано</string>
     <string name="end_call_for_everyone">Завершить звонок для всех</string>
@@ -89,7 +88,6 @@
     <string name="nc_attendee_pin">Пин: %1$s</string>
     <string name="nc_biometric_unlock">Разблокировать %1$s</string>
     <string name="nc_bluetooth_permission_hint">Чтобы включить динамики Bluetooth, предоставьте разрешение «Устройства поблизости».</string>
-    <string name="nc_call_button_content_description_advanced">Дополнительные настройки звонка</string>
     <string name="nc_call_button_content_description_answer_video_call">Ответить как видеозвонок</string>
     <string name="nc_call_button_content_description_answer_voice_only">Ответить как голосовой звонок</string>
     <string name="nc_call_button_content_description_audio_output">Изменить аудио-выход</string>
@@ -120,7 +118,6 @@
     <string name="nc_certificate_error">Заданные параметры SSL не позволяют подключиться</string>
     <string name="nc_change_cert_auth">Изменить сертификат для подтверждения подлинности</string>
     <string name="nc_change_password">Изменить пароль</string>
-    <string name="nc_check_your_internet">Проверьте подключение к Интернету.</string>
     <string name="nc_clear_edit_button">Отменить редактирование</string>
     <string name="nc_clear_edit_message">Отменить редактирование</string>
     <string name="nc_clear_history">Удалить все сообщения</string>
@@ -153,6 +150,7 @@
     <string name="nc_copy_message">Копировать</string>
     <string name="nc_create_new_conversation">Создать новое обсуждение</string>
     <string name="nc_create_poll">Создать опрос</string>
+    <string name="nc_current_user">Вы:</string>
     <string name="nc_date_header_today">Сегодня</string>
     <string name="nc_date_header_yesterday">Вчера</string>
     <string name="nc_delete">Удалить</string>
@@ -188,7 +186,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Внутренние</string>
     <string name="nc_diagnose_signaling_mode_title">Режим сигнализации</string>
     <string name="nc_dialog_invalid_password">Неверный пароль</string>
-    <string name="nc_dialog_maintenance_mode">Режим обслуживания</string>
     <string name="nc_dialog_maintenance_mode_description">В настоящее время сервер находится в режиме технического обслуживания.</string>
     <string name="nc_dialog_outdated_client">Приложение устарело</string>
     <string name="nc_dialog_outdated_client_description">Версия клиента слишком старая и больше не поддерживается этим сервером. Пожалуйста обновите его.</string>
@@ -205,7 +202,6 @@
     <string name="nc_edit_message">Редактирование</string>
     <string name="nc_edit_message_text">Редактировать сообщение</string>
     <string name="nc_edited_by_admin">Изменено администратором</string>
-    <string name="nc_email">Эл. почта</string>
     <string name="nc_expire_message_eight_hours">8 часов</string>
     <string name="nc_expire_message_four_weeks">4 недели</string>
     <string name="nc_expire_message_off">Отключить</string>
@@ -229,7 +225,6 @@
     <string name="nc_get_from_provider">Нет своего сервера?\nНажмите здесь чтобы заказать у провайдера</string>
     <string name="nc_get_source_code">Исходный код</string>
     <string name="nc_group">Группа</string>
-    <string name="nc_groups">Группы</string>
     <string name="nc_guest">Гость</string>
     <string name="nc_guest_access">Гостевой доступ</string>
     <string name="nc_guest_access_allow_failed">Невозможно включить/выключить гостевой доступ.</string>
@@ -240,7 +235,6 @@
     <string name="nc_guest_access_password_failed">Ошибка при установке/отключении пароля.</string>
     <string name="nc_guest_access_password_summary">Задать пароль для входа по открытой ссылке.</string>
     <string name="nc_guest_access_password_title">Защита паролем</string>
-    <string name="nc_guest_access_password_weak_alert_title">Слабый пароль</string>
     <string name="nc_guest_access_resend_invitations">Повторная отправка приглашений</string>
     <string name="nc_guest_access_resend_invitations_failed">Приглашения не были отправлены из-за ошибки.</string>
     <string name="nc_guest_access_resend_invitations_successful">Приглашения были разосланы повторно.</string>
@@ -258,7 +252,6 @@
     <string name="nc_license_summary">Открытое лицензионное соглашение GNU, версия 3</string>
     <string name="nc_license_title">Лицензия</string>
     <string name="nc_limit_hit">Достигнуто ограничение в %s знаков</string>
-    <string name="nc_list_open_conversations">Список открытых чатов</string>
     <string name="nc_lobby">Лобби</string>
     <string name="nc_lobby_start_date">Эта встреча запланирована на %1$s</string>
     <string name="nc_lobby_start_soon">Встреча скоро начнётся</string>
@@ -280,7 +273,6 @@
     <string name="nc_microphone_permission_hint">Для включения голосовой связи предоставьте разрешение «Микрофон».</string>
     <string name="nc_missed_call">Вы пропустили звонок от %s</string>
     <string name="nc_moderator">Модератор</string>
-    <string name="nc_never">Никогда не использовался</string>
     <string name="nc_new_conversation">Новый чат</string>
     <string name="nc_new_conversation_visibility">Видимость</string>
     <string name="nc_new_mention">Непрочитанные упоминания</string>
@@ -326,15 +318,11 @@
     <string name="nc_privacy">Конфиденциальность</string>
     <string name="nc_profile_personal_info_title">Личная информация</string>
     <string name="nc_promote">Назначить модератором</string>
-    <string name="nc_public_call">Начать открытую беседу</string>
-    <string name="nc_public_call_explanation">Открытые беседы позволяют приглашать участников при помощи специальной ссылки.</string>
     <string name="nc_public_call_status">Открытое обсуждение</string>
     <string name="nc_push_disabled">Всплывающие уведомления отключены</string>
     <string name="nc_push_to_talk"> PTT (нажми чтобы говорить)</string>
     <string name="nc_push_to_talk_desc">Нажмите и удерживайте для использования PTT при отключённом микрофоне</string>
-    <string name="nc_refresh">Обновить</string>
     <string name="nc_remind">Напомнить позже</string>
-    <string name="nc_remote_audio_off">Отключить звук удалённо</string>
     <string name="nc_remove_from_favorites">Удалить из избранного</string>
     <string name="nc_remove_group_and_members">Удалить группу и её участников</string>
     <string name="nc_remove_participant">Удалить участника</string>
@@ -355,23 +343,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Поиск</string>
     <string name="nc_select_an_account">Выберите учётную запись</string>
-    <string name="nc_select_participants">Выберите участников</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s отправил(а) GIF.</string>
     <string name="nc_sent_a_gif_you">Вы отправили GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s отправил(а) файл видео.</string>
     <string name="nc_sent_a_video_you">Вы отправили файл видео.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s отправил(а) вложение.</string>
-    <string name="nc_sent_an_attachment_you">Вы отправили вложение.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s отправил(а) аудиофайл.</string>
     <string name="nc_sent_an_audio_you">Вы отправили аудиофайл.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s отправил(а) изображение.</string>
     <string name="nc_sent_an_image_you">Вы отправили изображение.</string>
-    <string name="nc_sent_location" formatted="true">%1$s отправил местоположение.</string>
-    <string name="nc_sent_location_you">Вы отправили местоположение.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s отправил опрос.</string>
-    <string name="nc_sent_poll_you">Вы отправили опрос.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s отправил голосовое сообщение.</string>
-    <string name="nc_sent_voice_you">Вы отправили голосовое сообщение.</string>
     <string name="nc_server_connect">Проверить соединение с сервером</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
@@ -400,7 +379,6 @@
     <string name="nc_settings_no_talk_installed">На сервере, к которому вы пытаетесь подключиться, приложение «Talk» не установлено.</string>
     <string name="nc_settings_notification_sounds_post_oreo">Уведомления</string>
     <string name="nc_settings_notifications_declined">Уведомления отклонены</string>
-    <string name="nc_settings_notifications_declined_hint">Уведомления отклонены. Разрешите уведомления в настройках Android</string>
     <string name="nc_settings_notifications_granted">Уведомления отклонены. Разрешите уведомления в настройках Android</string>
     <string name="nc_settings_other_notifications_ringtone">Сообщения</string>
     <string name="nc_settings_phone_book_integration_desc">Сопоставление контактов по номеру телефона для создания ярлыков на приложения «Конференции» в приложение системных контактов</string>
@@ -459,7 +437,6 @@
     <string name="nc_start_time">Время начала</string>
     <string name="nc_switch_account">Сменить аккаунт</string>
     <string name="nc_team">Команда</string>
-    <string name="nc_teams">Команды</string>
     <string name="nc_upload_choose_local_files">Выберите файлы</string>
     <string name="nc_upload_confirm_send_multiple">Отправить эти файлы %1$s?</string>
     <string name="nc_upload_confirm_send_single">Отправить этот файл %1$s?</string>
@@ -474,14 +451,12 @@
     <string name="nc_upload_video_from_cam">Снять видео</string>
     <string name="nc_user">Пользователь</string>
     <string name="nc_video_filename">Запись видео с %1$s</string>
-    <string name="nc_visible">Видимый</string>
     <string name="nc_voice_message_filename">Запись разговора с %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Удерживайте для записи, отпустите для отправки.</string>
     <string name="nc_voice_message_missing_audio_permission">Требуется разрешение на аудиозапись</string>
     <string name="nc_voice_message_slide_to_cancel">« Сдвинуть для отмены</string>
     <string name="nc_webinar">Вебинар</string>
     <string name="nc_yes">Да</string>
-    <string name="new_conversation_creation_icon">Значок создания новой беседы</string>
     <string name="next_week">Следующая неделя</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
     <string name="oneHour">1 час</string>

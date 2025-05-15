@@ -124,7 +124,6 @@
     <string name="nc_diagnose_signaling_mode_extern">De foras</string>
     <string name="nc_diagnose_signaling_mode_intern">Internu</string>
     <string name="nc_dialog_invalid_password">Crae non bàlida</string>
-    <string name="nc_dialog_maintenance_mode">Modalidade de mantenidura</string>
     <string name="nc_dialog_outdated_client_option_update">Agiorna</string>
     <string name="nc_dialog_reauth_or_delete">Boles torrare a autorizare o cantzellare custu contu?</string>
     <string name="nc_dialog_save_to_storage_no">No</string>
@@ -133,7 +132,6 @@
     <string name="nc_display_name_not_stored">No at fatu a sarvare su nùmene ammustradu, annullende</string>
     <string name="nc_edit_icon">Modìfica</string>
     <string name="nc_edit_message">Modìfica</string>
-    <string name="nc_email">Posta eletrònica</string>
     <string name="nc_expire_message_off">Istudadu</string>
     <string name="nc_expire_message_one_day">1 die</string>
     <string name="nc_expire_message_one_hour">1 ora</string>
@@ -149,13 +147,11 @@
     <string name="nc_get_from_provider">Non tenes ancora unu serbidore?\nIncarca inoghe pro dd\'otènnere dae unu frunidore.</string>
     <string name="nc_get_source_code">Otene su còdighe fonte</string>
     <string name="nc_group">Grupu</string>
-    <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Persone invitada</string>
     <string name="nc_guest_access_allow_title">Autoriza persones invitadas</string>
     <string name="nc_guest_access_password_dialog_hint">Dìgita una crae noa</string>
     <string name="nc_guest_access_password_summary">Cunfigura una crae pro limitare is chi podent impreare su ligòngiu pùblicu.</string>
     <string name="nc_guest_access_password_title">Bardiadura de sa crae</string>
-    <string name="nc_guest_access_password_weak_alert_title">Crae dèbile</string>
     <string name="nc_guest_access_resend_invitations">Torra a imbiare is invitos</string>
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
@@ -179,7 +175,6 @@
     <string name="nc_message_read">Messàgiu lèghidu</string>
     <string name="nc_message_sent">Messàgiu imbiadu</string>
     <string name="nc_moderator">Chie moderat</string>
-    <string name="nc_never">Mai aderidu</string>
     <string name="nc_new_conversation">Resonada noa</string>
     <string name="nc_new_messages">Messàgios non lèghidos</string>
     <string name="nc_nick_guest">Persone invitada</string>
@@ -209,14 +204,10 @@
     <string name="nc_privacy">Riservadesa</string>
     <string name="nc_profile_personal_info_title">Informatziones personales</string>
     <string name="nc_promote">Approva a moderadore</string>
-    <string name="nc_public_call">Tzarrada pùblica noa</string>
-    <string name="nc_public_call_explanation">Is resonadas pùblicas ti faghent invitare a gente dae foras cun unu ligòngiu fatu a posta.</string>
     <string name="nc_push_disabled">Notìficas push disativadas</string>
     <string name="nc_push_to_talk">Cumandu de trasmissione</string>
     <string name="nc_push_to_talk_desc">Cun su micròfonu disativadu, mantene incarcadu&amp;pro impreare su cumandu de trasmissione</string>
-    <string name="nc_refresh">Agiorna</string>
     <string name="nc_remind">Regorda•mi•ddu a coa</string>
-    <string name="nc_remote_audio_off">Àudiu remotu istudadu </string>
     <string name="nc_remove_from_favorites">Boga dae preferidos</string>
     <string name="nc_remove_group_and_members">Boga·nche grupu e partetzipantes</string>
     <string name="nc_remove_participant"> Boga·nche partetzipante</string>
@@ -235,21 +226,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Chirca</string>
     <string name="nc_select_an_account">Seletziona unu contu</string>
-    <string name="nc_select_participants">Seletzionapartetzipantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s at imbiadu una GIF.</string>
     <string name="nc_sent_a_gif_you">As imbiadu una GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s at imbiadu unu vìdeu.</string>
     <string name="nc_sent_a_video_you">As imbiadu unu vìdeu.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s at imbiadu un\'alligongiadu.</string>
-    <string name="nc_sent_an_attachment_you">As imbiadu un\'alligongiadu.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s at imbiadu un\'àudiu.</string>
     <string name="nc_sent_an_audio_you">As imbiadu un\'àudiu.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s at imbiadu un\'immàgine.</string>
     <string name="nc_sent_an_image_you">As imbiadu un\'immàgine.</string>
-    <string name="nc_sent_location" formatted="true">%1$s at imbiadu una positzione.</string>
-    <string name="nc_sent_location_you">As imbiadu una positzione.</string>
-    <string name="nc_sent_voice" formatted="true">%1$sat imbiadu unu messàgiu de boghe</string>
-    <string name="nc_sent_voice_you">As imbiadu unu messàgiu de boghe.</string>
     <string name="nc_server_connect">Proa sa connessione de su serbidore</string>
     <string name="nc_server_db_upgrade_needed">Agiorna %1$s sa base de datos tua</string>
     <string name="nc_server_failed_to_import_account">No at fatu a importare su contu seletzionadu</string>
@@ -330,14 +314,12 @@
     <string name="nc_upload_from_device">Càrriga dae su dispositivu</string>
     <string name="nc_upload_in_progess">Carrigamentu</string>
     <string name="nc_user">Utente</string>
-    <string name="nc_visible">Visìbile</string>
     <string name="nc_voice_message_filename">Registratzione Talk dae %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Podera pro registrare, lassa pro imbiare.</string>
     <string name="nc_voice_message_missing_audio_permission">Permissu pro registratziones àudio rechertu</string>
     <string name="nc_voice_message_slide_to_cancel">« Iscurre pro annullare</string>
     <string name="nc_webinar">Seminàriu in lìnia</string>
     <string name="nc_yes">Eja</string>
-    <string name="new_conversation_creation_icon">Icona de creatzione de resonada noa</string>
     <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
     <string name="oneHour">1 ora</string>

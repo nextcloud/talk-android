@@ -34,7 +34,6 @@
     <string name="dontClear">不要清除</string>
     <string name="edit">编辑</string>
     <string name="edit_message_icon_description">编辑消息</string>
-    <string name="emoji_backspace">退格</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">已加密</string>
     <string name="end_call_for_everyone">为所有人结束通话</string>
@@ -84,7 +83,6 @@
     <string name="nc_attendee_pin">固定：%1$s</string>
     <string name="nc_biometric_unlock">解锁 %1$s</string>
     <string name="nc_bluetooth_permission_hint">使用蓝牙音箱需要“附近的设备”权限</string>
-    <string name="nc_call_button_content_description_advanced">高级呼叫选项</string>
     <string name="nc_call_button_content_description_answer_video_call">以视频通话接听</string>
     <string name="nc_call_button_content_description_answer_voice_only">以语音通话接听</string>
     <string name="nc_call_button_content_description_audio_output">切换音频输出</string>
@@ -146,6 +144,7 @@
     <string name="nc_copy_message">复制</string>
     <string name="nc_create_new_conversation">创建一个新对话</string>
     <string name="nc_create_poll">创建投票</string>
+    <string name="nc_current_user">您：</string>
     <string name="nc_date_header_today">今天</string>
     <string name="nc_date_header_yesterday">昨天</string>
     <string name="nc_delete">删除</string>
@@ -169,7 +168,6 @@
     <string name="nc_diagnose_signaling_mode_extern">外部</string>
     <string name="nc_diagnose_signaling_mode_intern">内部</string>
     <string name="nc_dialog_invalid_password">无效的密码</string>
-    <string name="nc_dialog_maintenance_mode">维护模式</string>
     <string name="nc_dialog_maintenance_mode_description">服务器目前处于维护模式</string>
     <string name="nc_dialog_outdated_client">应用版本已过期</string>
     <string name="nc_dialog_outdated_client_description">应用版本过低，不再被服务器支持，请更新</string>
@@ -185,7 +183,6 @@
     <string name="nc_edit_icon">编辑</string>
     <string name="nc_edit_message">编辑</string>
     <string name="nc_edit_message_text">编辑消息</string>
-    <string name="nc_email">电子邮件</string>
     <string name="nc_expire_message_eight_hours">8小时</string>
     <string name="nc_expire_message_four_weeks">4 星期</string>
     <string name="nc_expire_message_off">关闭</string>
@@ -208,7 +205,6 @@
     <string name="nc_get_from_provider">还没有服务器吗？\n点此查看供应商</string>
     <string name="nc_get_source_code">获取源代码</string>
     <string name="nc_group">群组</string>
-    <string name="nc_groups">群组</string>
     <string name="nc_guest">访客</string>
     <string name="nc_guest_access">访客访问</string>
     <string name="nc_guest_access_allow_failed">无法启用/停用访客访问。</string>
@@ -219,7 +215,6 @@
     <string name="nc_guest_access_password_failed">设置/禁用密码时发生错误。</string>
     <string name="nc_guest_access_password_summary">设置密码来限制谁可以使用公共链接。</string>
     <string name="nc_guest_access_password_title">密码保护</string>
-    <string name="nc_guest_access_password_weak_alert_title">弱密码</string>
     <string name="nc_guest_access_resend_invitations">重发邀请</string>
     <string name="nc_guest_access_resend_invitations_failed">由于错误，未发送邀请。</string>
     <string name="nc_guest_access_resend_invitations_successful">邀请函已再次发出。</string>
@@ -236,7 +231,6 @@
     <string name="nc_license_summary">GNU 通用公共许可证，第3版</string>
     <string name="nc_license_title">许可证</string>
     <string name="nc_limit_hit">已达到%s字符限制</string>
-    <string name="nc_list_open_conversations">打开公开对话列表</string>
     <string name="nc_lobby">休息室</string>
     <string name="nc_lobby_start_date">此会议预定开始时间 %1$s</string>
     <string name="nc_lobby_start_soon">会议不久后将开始</string>
@@ -257,7 +251,6 @@
     <string name="nc_microphone_permission_hint">使用语音通话需要“麦克风”权限</string>
     <string name="nc_missed_call">你错过了来自 %s 的一个通话</string>
     <string name="nc_moderator">主持人</string>
-    <string name="nc_never">从未加入</string>
     <string name="nc_new_conversation">新的对话</string>
     <string name="nc_new_conversation_visibility">可见性</string>
     <string name="nc_new_mention">未读的提及</string>
@@ -303,15 +296,11 @@
     <string name="nc_privacy">隐私</string>
     <string name="nc_profile_personal_info_title">个人信息</string>
     <string name="nc_promote">设置为主持人</string>
-    <string name="nc_public_call">新的公开对话</string>
-    <string name="nc_public_call_explanation">公共对话可以让你通过一个特别制作的链接邀请外面的人。</string>
     <string name="nc_public_call_status">公开对话</string>
     <string name="nc_push_disabled">通知推送已禁用</string>
     <string name="nc_push_to_talk">按键讲话</string>
     <string name="nc_push_to_talk_desc">禁用麦克风的情况下，点击&amp;并按住使用“按键讲话”功能</string>
-    <string name="nc_refresh">刷新</string>
     <string name="nc_remind">以后提醒我 </string>
-    <string name="nc_remote_audio_off">远程音频关闭</string>
     <string name="nc_remove_from_favorites">取消收藏</string>
     <string name="nc_remove_group_and_members">移除群组和成员</string>
     <string name="nc_remove_participant">移除参与者</string>
@@ -332,23 +321,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜索</string>
     <string name="nc_select_an_account">选择一个账号</string>
-    <string name="nc_select_participants">选择参与者</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
     <string name="nc_sent_a_gif_you">你已发送一张GIF图</string>
     <string name="nc_sent_a_video" formatted="true">%1$s发送一个视频</string>
     <string name="nc_sent_a_video_you">你已发送一个视频</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s作为附件发送</string>
-    <string name="nc_sent_an_attachment_you">你已发送一个附件</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s发送一段音频</string>
     <string name="nc_sent_an_audio_you">你已发送一段音频</string>
     <string name="nc_sent_an_image" formatted="true">%1$s发送一张图片</string>
     <string name="nc_sent_an_image_you">你已发送一张图片</string>
-    <string name="nc_sent_location" formatted="true">%1$s发送了一个位置</string>
-    <string name="nc_sent_location_you">你发送了一个位置</string>
-    <string name="nc_sent_poll" formatted="true">%1$s 发送了一个投票。</string>
-    <string name="nc_sent_poll_you">您发送了一个投票。</string>
-    <string name="nc_sent_voice" formatted="true">%1$s 发送了一条语音消息</string>
-    <string name="nc_sent_voice_you">你发送了一条语音消息</string>
     <string name="nc_server_connect">测试服务端连接 </string>
     <string name="nc_server_db_upgrade_needed">请升级您的%1$s 数据库</string>
     <string name="nc_server_failed_to_import_account">选择的账号导入失败</string>
@@ -431,7 +411,6 @@
     <string name="nc_start_time">开始时间</string>
     <string name="nc_switch_account">切换账号</string>
     <string name="nc_team">团队</string>
-    <string name="nc_teams">团队</string>
     <string name="nc_upload_choose_local_files">选择文件</string>
     <string name="nc_upload_confirm_send_multiple">将这些文件发送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">将此文件发送到 %1$s？</string>
@@ -446,7 +425,6 @@
     <string name="nc_upload_video_from_cam">拍摄视频</string>
     <string name="nc_user">用户</string>
     <string name="nc_video_filename">来自 %1$s的视频录制</string>
-    <string name="nc_visible">可见的</string>
     <string name="nc_voice_message_filename">来自%1$s的通话录制（%2$s）</string>
     <string name="nc_voice_message_hold_to_record_info">按住录音，松开发送</string>
     <string name="nc_voice_message_missing_audio_permission">需要音频录制权限</string>

@@ -69,7 +69,6 @@
     <string name="nc_all_ok_operation">خوب ، همه انجام شد!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">باز کردن %1$s</string>
-    <string name="nc_call_button_content_description_advanced">گزینه‌های پیشرفتهٔ تماس</string>
     <string name="nc_call_button_content_description_answer_video_call">پاسخ با تماس دیداری</string>
     <string name="nc_call_button_content_description_answer_voice_only">پاسخ صرفا به صورت تماس شنیداری</string>
     <string name="nc_call_button_content_description_audio_output">تغییر خروجی صدا</string>
@@ -142,7 +141,6 @@
     <string name="nc_diagnose_signaling_mode_extern">خارجی</string>
     <string name="nc_diagnose_signaling_mode_intern">داخلی</string>
     <string name="nc_dialog_invalid_password">گذرواژه نادرست</string>
-    <string name="nc_dialog_maintenance_mode">حالت نگه‌دارنده</string>
     <string name="nc_dialog_outdated_client">برنامه، قدیمی شده است</string>
     <string name="nc_dialog_outdated_client_option_update">به‌روز رسانی</string>
     <string name="nc_dialog_save_to_storage_no">خیر</string>
@@ -152,7 +150,6 @@
     <string name="nc_edit_icon">ویرایش</string>
     <string name="nc_edit_message">ویرایش</string>
     <string name="nc_edit_message_text">Edit message</string>
-    <string name="nc_email">رایانامه</string>
     <string name="nc_expire_message_eight_hours">8 ساعت</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
     <string name="nc_expire_message_off">خاموش</string>
@@ -171,12 +168,10 @@
     <string name="nc_get_from_provider">"آیا هیچ سروری در دسترس ندارید؟ برای گرفتن سرور از یک ارائه دهنده کلیک کنید "</string>
     <string name="nc_get_source_code">دریافت کد منبع</string>
     <string name="nc_group">گروه</string>
-    <string name="nc_groups">گروه ها</string>
     <string name="nc_guest">مهمان</string>
     <string name="nc_guest_access_allow_title">اجازه میهمانان</string>
     <string name="nc_guest_access_password_dialog_hint">یک گذرواژه وارد کنید</string>
     <string name="nc_guest_access_password_title">محافظت از رمز عبور</string>
-    <string name="nc_guest_access_password_weak_alert_title">رمز عبور ضعیف</string>
     <string name="nc_important_conversation">گفتگوی مهم</string>
     <string name="nc_invitations">دعوت‌ها</string>
     <string name="nc_join_open_conversations">پیوستن به گفتگوهای باز</string>
@@ -203,7 +198,6 @@
     <string name="nc_message_read">پیام، خوانده شد</string>
     <string name="nc_message_sent">پیام، ارسال شد</string>
     <string name="nc_moderator">مدیر</string>
-    <string name="nc_never">تاکنون ملحق نشده‌اید</string>
     <string name="nc_new_conversation">گفتگوی جدید</string>
     <string name="nc_new_conversation_visibility">Visibility</string>
     <string name="nc_new_messages">پیام‌های خوانده نشده</string>
@@ -239,14 +233,10 @@
     <string name="nc_privacy">حریم خصوصی</string>
     <string name="nc_profile_personal_info_title">مشخصات شخصی</string>
     <string name="nc_promote">ترفیع به مدیر</string>
-    <string name="nc_public_call">مکالمه عمومی جدید</string>
-    <string name="nc_public_call_explanation">مکالمات عمومی به شما امکان می دهد تا از طریق پیوندی خاص و ساخته شده، افراد را از خارج دعوت کنید.</string>
     <string name="nc_push_disabled">دریافت اعلانات غیرفعال است</string>
     <string name="nc_push_to_talk">برای صحبت کردن فشار دهید</string>
     <string name="nc_push_to_talk_desc">با غیر فعال کردن میکروفن، برای استفاده از Push-to-talk کلیک &amp; نگه‌داشتن را انجام دهید</string>
-    <string name="nc_refresh">تازه‌سازی</string>
     <string name="nc_remind">بعدا به من یادآوری کن</string>
-    <string name="nc_remote_audio_off">قطع صدای راه‌دور</string>
     <string name="nc_remove_from_favorites">حذف کردن از مورد علاقه‌ها</string>
     <string name="nc_remove_group_and_members">حذف گروه و اعضا</string>
     <string name="nc_remove_participant">شرکت کننده را حذف کنید</string>
@@ -269,14 +259,10 @@
     <string name="nc_sent_a_gif_you">شما یک GIF ارسال کردید.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s یک ویدئو فرستاد.</string>
     <string name="nc_sent_a_video_you">شما یک ویدیو ارسال کردید</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s یک پیوست فرستاد.</string>
-    <string name="nc_sent_an_attachment_you">شما پیوست ارسال کردید.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s صدایی فرستاد.</string>
     <string name="nc_sent_an_audio_you">شما صوتی ارسال کردید.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s تصویری فرستاد.</string>
     <string name="nc_sent_an_image_you">شما یک تصویر ارسال کردید</string>
-    <string name="nc_sent_location" formatted="true">%1$s یک موقعیت مکانی فرستاد.</string>
-    <string name="nc_sent_location_you">شما یک موقعیت مکانی فرستادید.</string>
     <string name="nc_server_connect">آزمایش اتصال به سرور</string>
     <string name="nc_server_db_upgrade_needed">لطفا پایگاه داده %1$s خود را ارتقا دهید</string>
     <string name="nc_server_failed_to_import_account">" وارد کردن  حساب  انتخاب‌شده موفقیت آمیز نبود"</string>
@@ -351,7 +337,6 @@
     <string name="nc_upload_picture_from_cam">عکس گرفتن</string>
     <string name="nc_upload_video_from_cam">ضبط ویدئو</string>
     <string name="nc_user">کاربر</string>
-    <string name="nc_visible">قابل رویت</string>
     <string name="nc_voice_message_hold_to_record_info">برای ضبط نگه‌داشته و برای فرستادن، رها کنید.</string>
     <string name="nc_voice_message_missing_audio_permission">جواز دسترسی به ضبط صدا مورد نیاز است</string>
     <string name="nc_webinar">وبینار</string>

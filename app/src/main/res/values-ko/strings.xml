@@ -28,7 +28,6 @@
     <string name="dontClear">지우지 않음</string>
     <string name="edit">편집</string>
     <string name="edit_message_icon_description">메시지 편집</string>
-    <string name="emoji_backspace">백스페이스</string>
     <string name="emoji_category_recent">최근 항목</string>
     <string name="encrypted">암호화</string>
     <string name="end_call_for_everyone">모든 이들에 대해 통화 끝내기</string>
@@ -145,7 +144,6 @@
     <string name="nc_diagnose_signaling_mode_extern">외부</string>
     <string name="nc_diagnose_signaling_mode_intern">내부</string>
     <string name="nc_dialog_invalid_password">잘못된 암호</string>
-    <string name="nc_dialog_maintenance_mode">유지 보수 모드</string>
     <string name="nc_dialog_outdated_client_option_update">업데이트</string>
     <string name="nc_dialog_reauth_or_delete">이 계정을 재인증하거나 삭제하시겠습니까?</string>
     <string name="nc_dialog_save_to_storage_no">아니오</string>
@@ -155,7 +153,6 @@
     <string name="nc_edit_icon">편집</string>
     <string name="nc_edit_message">편집</string>
     <string name="nc_edit_message_text">메시지 편집</string>
-    <string name="nc_email">이메일</string>
     <string name="nc_expire_message_eight_hours">8시간</string>
     <string name="nc_expire_message_four_weeks">4주</string>
     <string name="nc_expire_message_off">꺼짐</string>
@@ -176,7 +173,6 @@
     <string name="nc_get_from_provider">서버가 없으신가요?\n공급자를 알아보려면 누르십시오</string>
     <string name="nc_get_source_code">소스 코드 얻기</string>
     <string name="nc_group">그룹</string>
-    <string name="nc_groups">그룹</string>
     <string name="nc_guest">손님</string>
     <string name="nc_guest_access">게스트 접속</string>
     <string name="nc_guest_access_allow_failed">손님 접근을 가능/불가능 하게 할 수 없습니다.</string>
@@ -187,7 +183,6 @@
     <string name="nc_guest_access_password_failed">암호 설정/비활성화 중 오류 발생</string>
     <string name="nc_guest_access_password_summary">공개 링크를 사용할 수 있는 사용자를 제한하려면 암호를 설정하십시오.</string>
     <string name="nc_guest_access_password_title">암호 보호</string>
-    <string name="nc_guest_access_password_weak_alert_title">약한 암호</string>
     <string name="nc_guest_access_resend_invitations">초대 재전송</string>
     <string name="nc_guest_access_resend_invitations_failed">초대장이 오류로 인하여 전송되지 못했습니다.</string>
     <string name="nc_guest_access_resend_invitations_successful">초대장이 다시 전송되었습니다.</string>
@@ -221,7 +216,6 @@
     <string name="nc_message_sent">보낸 메시지</string>
     <string name="nc_missed_call">%s로부터의 전화를 받지 못하였습니다.</string>
     <string name="nc_moderator">중재자</string>
-    <string name="nc_never">참가하지 않음</string>
     <string name="nc_new_conversation">새 대화</string>
     <string name="nc_new_conversation_visibility">표시 여부</string>
     <string name="nc_new_mention">읽지 않은 언급</string>
@@ -261,14 +255,10 @@
     <string name="nc_privacy">개인 정보 취급 방침</string>
     <string name="nc_profile_personal_info_title">개인 정보</string>
     <string name="nc_promote">중재자 권한 부여</string>
-    <string name="nc_public_call">새로운 공적 대화</string>
-    <string name="nc_public_call_explanation">공개 대화를 통해 특수하게 조작된 링크를 통해 외부에서 사용자를 초대할 수 있습니다.</string>
     <string name="nc_push_disabled">푸시 알림이 비활성화됨</string>
     <string name="nc_push_to_talk">눌러 말하기</string>
     <string name="nc_push_to_talk_desc">마이크가 비활성화된 상태에서 &amp;를 누르고 있으면 눌러 말하기 사용</string>
-    <string name="nc_refresh">새로 고침</string>
     <string name="nc_remind">나중에 다시 알림</string>
-    <string name="nc_remote_audio_off">원격 오디오 끄기</string>
     <string name="nc_remove_from_favorites">즐겨찾기에서 제거</string>
     <string name="nc_remove_group_and_members">Remove group and members</string>
     <string name="nc_remove_participant">참가자 삭제</string>
@@ -287,23 +277,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">검색</string>
     <string name="nc_select_an_account">계정 선택</string>
-    <string name="nc_select_participants">참가자 선택</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s님이 GIF를 보냈습니다.</string>
     <string name="nc_sent_a_gif_you">GIF를 보냈습니다.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s님이 영상 파일을 보냈습니다.</string>
     <string name="nc_sent_a_video_you">영상 파일을 보냈습니다.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s님이 첨부 파일을 보냈습니다.</string>
-    <string name="nc_sent_an_attachment_you">첨부 파일을 보냈습니다.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s님이 오디오 파일을 보냈습니다.</string>
     <string name="nc_sent_an_audio_you">오디오 파일을 보냈습니다.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s님이 이미지를 보냈습니다.</string>
     <string name="nc_sent_an_image_you">이미지를 보냈습니다.</string>
-    <string name="nc_sent_location" formatted="true">%1$s가 위치를 전송하였습니다.</string>
-    <string name="nc_sent_location_you">위치를 보냈습니다.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s가 투표를 보냈습니다.</string>
-    <string name="nc_sent_poll_you">당신은 투표를 보냈습니다.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s가 음성 메시지를 보냈습니다.</string>
-    <string name="nc_sent_voice_you">당신은 음성 메시지를 보냈습니다.</string>
     <string name="nc_server_connect">서버 연결 테스트</string>
     <string name="nc_server_db_upgrade_needed">%1$s 데이터베이스를 업그레이드하십시오</string>
     <string name="nc_server_failed_to_import_account">선택한 계정을 가져올 수 없음</string>
@@ -394,7 +375,6 @@
     <string name="nc_upload_video_from_cam">영상 촬영</string>
     <string name="nc_user">사용자</string>
     <string name="nc_video_filename">%1$s(으)로 부터의 영상 녹화</string>
-    <string name="nc_visible">보임</string>
     <string name="nc_voice_message_filename">%1$s(%2$s) 부터의 음성녹음</string>
     <string name="nc_voice_message_missing_audio_permission">오디오 녹음을 위하여 권한이 필요합니다.</string>
     <string name="nc_voice_message_slide_to_cancel">« 취소하려면 슬라이드하세요.</string>

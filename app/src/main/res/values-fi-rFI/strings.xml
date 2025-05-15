@@ -131,7 +131,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Ulkoinen</string>
     <string name="nc_diagnose_signaling_mode_intern">Sisäinen</string>
     <string name="nc_dialog_invalid_password">Virheellinen salasana</string>
-    <string name="nc_dialog_maintenance_mode">Huoltotila</string>
     <string name="nc_dialog_outdated_client_option_update">Päivitä</string>
     <string name="nc_dialog_reauth_or_delete">Haluatko valtuuttaa tämän tilin uudelleen vai poistaa tilin?</string>
     <string name="nc_dialog_save_to_storage_no">Ei</string>
@@ -139,7 +138,6 @@
     <string name="nc_edit_icon">Muokkaa</string>
     <string name="nc_edit_message">Muokkaa</string>
     <string name="nc_edit_message_text">Muokkaa viestiä</string>
-    <string name="nc_email">Sähköposti</string>
     <string name="nc_expire_message_eight_hours">8 tuntia</string>
     <string name="nc_expire_message_four_weeks">4 viikkoa</string>
     <string name="nc_expire_message_off">Pois</string>
@@ -158,14 +156,12 @@
     <string name="nc_get_from_provider">Ei palvelinta?\nNapsauta tästä ja hanki palveluntarjoajalta</string>
     <string name="nc_get_source_code">Lataa lähdekoodi</string>
     <string name="nc_group">Ryhmä</string>
-    <string name="nc_groups">Ryhmät</string>
     <string name="nc_guest">Vieras</string>
     <string name="nc_guest_access">Vieraspääsy</string>
     <string name="nc_guest_access_allow_title">Salli vieraat</string>
     <string name="nc_guest_access_password_dialog_hint">Syötä salasana</string>
     <string name="nc_guest_access_password_summary">Aseta salasana rajoittaaksesi, ketkä voivat käyttää julkista linkkiä.</string>
     <string name="nc_guest_access_password_title">Salasanasuojaus</string>
-    <string name="nc_guest_access_password_weak_alert_title">Heikko salasana</string>
     <string name="nc_guest_access_resend_invitations">Lähetä kutsut uudelleen</string>
     <string name="nc_guest_access_resend_invitations_successful">Kutsut lähetettiin uudelleen.</string>
     <string name="nc_guest_access_share_link">Jaa keskustelulinkki</string>
@@ -199,7 +195,6 @@
     <string name="nc_message_read">Viesti luettu</string>
     <string name="nc_message_sent">Viesti lähetetty</string>
     <string name="nc_moderator">Moderaattori</string>
-    <string name="nc_never">Ei koskaan liitytty</string>
     <string name="nc_new_conversation">Uusi keskustelu</string>
     <string name="nc_new_conversation_visibility">Näkyvyys</string>
     <string name="nc_new_mention">Lukemattomat maininnat</string>
@@ -232,11 +227,9 @@
     <string name="nc_privacy">Yksityisyys</string>
     <string name="nc_profile_personal_info_title">Henkilökohtaiset tiedot</string>
     <string name="nc_promote">Ylennä moderaattoriksi</string>
-    <string name="nc_public_call">Uusi julkinen keskustelu</string>
     <string name="nc_public_call_status">Julkinen keskustelu</string>
     <string name="nc_push_disabled">Push-ilmoitukset pois käytöstä</string>
     <string name="nc_push_to_talk">Paina puhuaksesi</string>
-    <string name="nc_refresh">Päivitä</string>
     <string name="nc_remind">Muistuta myöhemmin</string>
     <string name="nc_remove_from_favorites">Poista suosikeista</string>
     <string name="nc_remove_group_and_members">Poista ryhmä ja jäsenet</string>
@@ -258,23 +251,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Etsi</string>
     <string name="nc_select_an_account">Valitse tili</string>
-    <string name="nc_select_participants">Valitse osallistujat</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s lähetti GIF-kuvan.</string>
     <string name="nc_sent_a_gif_you">Lähetit GIF-kuvan.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s lähetti videon.</string>
     <string name="nc_sent_a_video_you">Lähetit videon.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s lähetti liitteen.</string>
-    <string name="nc_sent_an_attachment_you">Lähetit liitteen.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s lähetti ääntä.</string>
     <string name="nc_sent_an_audio_you">Lähetit ääntä.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s lähetti kuvan.</string>
     <string name="nc_sent_an_image_you">Lähetit kuvan.</string>
-    <string name="nc_sent_location" formatted="true">%1$s lähetti sijainnin.</string>
-    <string name="nc_sent_location_you">Lähetit sijainnin.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s lähetti kyselyn.</string>
-    <string name="nc_sent_poll_you">Lähetit kyselyn.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s lähetti ääniviestin.</string>
-    <string name="nc_sent_voice_you">Lähetit ääniviestin.</string>
     <string name="nc_server_connect">Testaa palvelinyhteys</string>
     <string name="nc_server_db_upgrade_needed">Päivitä %1$s-tietokantasi</string>
     <string name="nc_server_failed_to_import_account">Valitun tilin tuominen epäonnistui</string>
@@ -343,14 +327,12 @@
     <string name="nc_start_time">Aloitusaika</string>
     <string name="nc_switch_account">Vaihda tiliä</string>
     <string name="nc_team">Tiimi</string>
-    <string name="nc_teams">Tiimit</string>
     <string name="nc_upload_choose_local_files">Valitse tiedostot</string>
     <string name="nc_upload_failed">Lähetys epäonnistui</string>
     <string name="nc_upload_from_device">Lähetä laitteelta</string>
     <string name="nc_upload_in_progess">Lähetys</string>
     <string name="nc_upload_picture_from_cam">Ota kuva</string>
     <string name="nc_user">Käyttäjä</string>
-    <string name="nc_visible">Näkyvissä</string>
     <string name="nc_voice_message_missing_audio_permission">Oikeus äänen tallentamiseen vaaditaan</string>
     <string name="nc_voice_message_slide_to_cancel">« Liu\'uta peruuttaaksesi</string>
     <string name="nc_webinar">Webinaari</string>

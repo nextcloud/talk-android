@@ -30,7 +30,6 @@
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
     <string name="edit_message_icon_description">Editar mensaje</string>
-    <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
@@ -73,7 +72,6 @@
     <string name="nc_all_ok_operation">¡OK, ya terminamos!</string>
     <string name="nc_attendee_pin">Fijar: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
-    <string name="nc_call_button_content_description_advanced">Opciones avanzadas de llamada</string>
     <string name="nc_call_button_content_description_answer_video_call">Responder como videollamada</string>
     <string name="nc_call_button_content_description_answer_voice_only">Responder solo como llamada de voz</string>
     <string name="nc_call_button_content_description_audio_output">Cambiar salida de audio</string>
@@ -156,7 +154,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Externo</string>
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_dialog_invalid_password">Contraseña inválida</string>
-    <string name="nc_dialog_maintenance_mode">Modo de mantenimiento</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor está actualmente en modo de mantenimiento.</string>
     <string name="nc_dialog_outdated_client">La aplicación está desactualizada</string>
     <string name="nc_dialog_outdated_client_description">La aplicación es demasiado antigua y ya no es compatible con este servidor. Por favor, actualízala.</string>
@@ -167,7 +164,6 @@
     <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensaje</string>
-    <string name="nc_email">Correo electrónico</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
     <string name="nc_expire_message_off">Apagado</string>
@@ -188,7 +184,6 @@
     <string name="nc_get_from_provider">¿Aún no cuentas con un servidor?\nHaz click aquí para obtener uno de un proveedor</string>
     <string name="nc_get_source_code">Obtener el código fuente</string>
     <string name="nc_group">Grupo</string>
-    <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Invitado</string>
     <string name="nc_guest_access">Acceso de invitado</string>
     <string name="nc_guest_access_allow_failed">No se puede habilitar/deshabilitar el acceso de invitado.</string>
@@ -199,7 +194,6 @@
     <string name="nc_guest_access_password_failed">Error durante la configuración/desactivación de la contraseña.</string>
     <string name="nc_guest_access_password_summary">Establece una contraseña para restringir quién puede usar el enlace público.</string>
     <string name="nc_guest_access_password_title">Protección con contraseña</string>
-    <string name="nc_guest_access_password_weak_alert_title">Contraseña débil</string>
     <string name="nc_guest_access_resend_invitations">Volver a enviar invitaciones</string>
     <string name="nc_guest_access_resend_invitations_failed">No se pudieron enviar las invitaciones debido a un error.</string>
     <string name="nc_guest_access_resend_invitations_successful">Las invitaciones se enviaron nuevamente.</string>
@@ -214,7 +208,6 @@
     <string name="nc_license_summary">Licencia Pública General GNU, Versión 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s caracteres</string>
-    <string name="nc_list_open_conversations">Listar conversaciones abiertas</string>
     <string name="nc_lobby">Vestíbulo</string>
     <string name="nc_lobby_start_date">Esta reunión está programada para %1$s</string>
     <string name="nc_lobby_start_soon">La reunión comenzará pronto</string>
@@ -234,7 +227,6 @@
     <string name="nc_message_sent">Mensaje enviado</string>
     <string name="nc_missed_call">Perdiste una llamada de %s</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_never">Nunca se unió</string>
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_new_conversation_visibility">Visibilidad</string>
     <string name="nc_new_mention">Menciones no leídas</string>
@@ -274,14 +266,10 @@
     <string name="nc_privacy">Privacidad</string>
     <string name="nc_profile_personal_info_title">Información personal</string>
     <string name="nc_promote">Promover a moderador</string>
-    <string name="nc_public_call">Nueva conversación pública</string>
-    <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a personas desde fuera a través de un enlace especialmente creado.</string>
     <string name="nc_push_disabled">Notificaciones push deshabilitadas</string>
     <string name="nc_push_to_talk">Presiona-para-hablar</string>
     <string name="nc_push_to_talk_desc">Con el microfono deshabilitado, haz click &amp; presiona para usar Presiona-para-hablar</string>
-    <string name="nc_refresh">Actualizar</string>
     <string name="nc_remind">Recuérdame más tarde</string>
-    <string name="nc_remote_audio_off">Audio remoto desactivado</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
@@ -300,23 +288,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Seleccionar una cuenta</string>
-    <string name="nc_select_participants">Seleccionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviado un GIF.</string>
     <string name="nc_sent_a_gif_you">Has enviado un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviado un video.</string>
     <string name="nc_sent_a_video_you">Has enviado un video.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s ha enviado un archivo adjunto.</string>
-    <string name="nc_sent_an_attachment_you">Has enviado un archivo adjunto.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s ha enviado un audio.</string>
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
-    <string name="nc_sent_location" formatted="true">%1$s ha enviado una ubicación.</string>
-    <string name="nc_sent_location_you">Has enviado una ubicación.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s ha enviado una encuesta.</string>
-    <string name="nc_sent_poll_you">Has enviado una encuesta.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s ha enviado un mensaje de voz.</string>
-    <string name="nc_sent_voice_you">Has enviado un mensaje de voz.</string>
     <string name="nc_server_connect">Probar la conexión del servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza tu base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Se presentó una falla al importar la cuenta seleccionada</string>
@@ -410,7 +389,6 @@
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Grabación de video desde %1$s</string>
-    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Grabación de Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantén presionado para grabar, suelta para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>

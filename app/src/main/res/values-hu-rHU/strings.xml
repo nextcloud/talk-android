@@ -35,7 +35,6 @@
     <string name="dontClear">Ne törölje</string>
     <string name="edit">Szerkesztés</string>
     <string name="edit_message_icon_description">Üzenet szerkesztése</string>
-    <string name="emoji_backspace">Visszatörlés</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
     <string name="encrypted">Titkosított</string>
     <string name="end_call_for_everyone">Hívás befejezése mindenki számára</string>
@@ -83,7 +82,6 @@
     <string name="nc_all_ok_operation">Rendben, minden kész!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
     <string name="nc_biometric_unlock">%1$s feloldása</string>
-    <string name="nc_call_button_content_description_advanced">Speciális hívásbeállítások</string>
     <string name="nc_call_button_content_description_answer_video_call">Válasz videóhívásként</string>
     <string name="nc_call_button_content_description_answer_voice_only">Válasz csak hanghívásként</string>
     <string name="nc_call_button_content_description_audio_output">Hangkimenet módosítása</string>
@@ -168,7 +166,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Külső</string>
     <string name="nc_diagnose_signaling_mode_intern">Belső</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
-    <string name="nc_dialog_maintenance_mode">Karbantartási mód</string>
     <string name="nc_dialog_maintenance_mode_description">A kiszolgáló jelenleg karbantartási módban van.</string>
     <string name="nc_dialog_outdated_client">Az alkalmazás elavult</string>
     <string name="nc_dialog_outdated_client_description">Az alkalmazás túl régi, és már nem támogatja ez a kiszolgáló. Frissítse.</string>
@@ -181,7 +178,6 @@
     <string name="nc_edit_icon">Szerkesztés</string>
     <string name="nc_edit_message">Szerkesztés</string>
     <string name="nc_edit_message_text">Üzenet szerkesztése</string>
-    <string name="nc_email">E-mail</string>
     <string name="nc_expire_message_eight_hours">8 óra</string>
     <string name="nc_expire_message_four_weeks">4 hét</string>
     <string name="nc_expire_message_off">Ki</string>
@@ -203,7 +199,6 @@
     <string name="nc_get_from_provider">Nincs még saját kiszolgálója?\nKattintson ide a beszerzéshez az egyik szolgáltatótól</string>
     <string name="nc_get_source_code">Forráskód letöltése</string>
     <string name="nc_group">Csoport</string>
-    <string name="nc_groups">Csoportok</string>
     <string name="nc_guest">Vendég</string>
     <string name="nc_guest_access">Vendéghozzáférés</string>
     <string name="nc_guest_access_allow_failed">A vendéghozzáférés nem kapcsolható be/ki.</string>
@@ -214,7 +209,6 @@
     <string name="nc_guest_access_password_failed">Hiba a jelszó beállítása/kikapcsolása során.</string>
     <string name="nc_guest_access_password_summary">Jelszó beállítása annak korlátozásához, hogy kik használhassák a nyilvános hivatkozást.</string>
     <string name="nc_guest_access_password_title">Jelszavas védelem</string>
-    <string name="nc_guest_access_password_weak_alert_title">Gyenge jelszó</string>
     <string name="nc_guest_access_resend_invitations">Meghívások újraküldése</string>
     <string name="nc_guest_access_resend_invitations_failed">A meghívások egy hiba miatt nem lettek elküldve.</string>
     <string name="nc_guest_access_resend_invitations_successful">A meghívások újra ki lettek küldve.</string>
@@ -231,7 +225,6 @@
     <string name="nc_license_summary">GNU General Public License, Version 3</string>
     <string name="nc_license_title">Licenc</string>
     <string name="nc_limit_hit">%s karakteres korlát elérve</string>
-    <string name="nc_list_open_conversations">Nyitott beszélgetések listázása</string>
     <string name="nc_lobby">Váró</string>
     <string name="nc_lobby_start_date">A találkozó ekkorra van ütemezve: %1$s</string>
     <string name="nc_lobby_start_soon">Ez a találkozó hamarosan elkezdődik</string>
@@ -253,7 +246,6 @@
     <string name="nc_microphone_permission_hint">A hanghívás engedélyezéséhez meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_missed_call">Nem fogadott hívás a következőtől: %s</string>
     <string name="nc_moderator">Moderátor</string>
-    <string name="nc_never">Soha nem csatlakozott</string>
     <string name="nc_new_conversation">Új beszélgetés</string>
     <string name="nc_new_conversation_visibility">Láthatóság</string>
     <string name="nc_new_mention">Olvasatlan említések</string>
@@ -298,14 +290,10 @@
     <string name="nc_privacy">Adatvédelem</string>
     <string name="nc_profile_personal_info_title">Személyes információk</string>
     <string name="nc_promote">Kinevezés moderátorrá</string>
-    <string name="nc_public_call">Új nyilvános beszélgetés</string>
-    <string name="nc_public_call_explanation">A nyilvános beszélgetések lehetővé teszik, hogy egy speciálisan előállított hivatkozással külső embereket hívjon meg.</string>
     <string name="nc_push_disabled">Leküldéses értesítések kikapcsolva</string>
     <string name="nc_push_to_talk">Lenyomás a beszédhez</string>
     <string name="nc_push_to_talk_desc">A mikrofon le lesz tiltva, a beszédhez tartsa lenyomva</string>
-    <string name="nc_refresh">Frissítés</string>
     <string name="nc_remind">Emlékeztessen később</string>
-    <string name="nc_remote_audio_off">Távoli hang kikapcsolása</string>
     <string name="nc_remove_from_favorites">Eltávolítás a kedvencekből</string>
     <string name="nc_remove_group_and_members">Csoport és tagok eltávolítása</string>
     <string name="nc_remove_participant">Résztvevő eltávolítása</string>
@@ -325,23 +313,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Keresés</string>
     <string name="nc_select_an_account">Fiók kiválasztása</string>
-    <string name="nc_select_participants">Résztvevők kiválasztása</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s GIF képet küldött.</string>
     <string name="nc_sent_a_gif_you">Ön GIF képet küldött.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s videót küldött.</string>
     <string name="nc_sent_a_video_you">Ön videót küldött.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s mellékletet küldött.</string>
-    <string name="nc_sent_an_attachment_you">Ön mellékletet küldött.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s hangot küldött.</string>
     <string name="nc_sent_an_audio_you">Ön hangot küldött.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s képet küldött.</string>
     <string name="nc_sent_an_image_you">Ön képet küldött.</string>
-    <string name="nc_sent_location" formatted="true">%1$s egy helyet küldött.</string>
-    <string name="nc_sent_location_you">Ön egy helyet küldött.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s küldött egy szavazást.</string>
-    <string name="nc_sent_poll_you">Küldött egy szavazást</string>
-    <string name="nc_sent_voice" formatted="true">%1$s hangüzenetet küldött.</string>
-    <string name="nc_sent_voice_you">Ön hangüzenetet küldött.</string>
     <string name="nc_server_connect">Kiszolgálókapcsolat tesztelése</string>
     <string name="nc_server_db_upgrade_needed">Frissítse a(z) %1$s adatbázisát</string>
     <string name="nc_server_failed_to_import_account">A kiválasztott fiók importálása sikertelen</string>
@@ -424,7 +403,6 @@
     <string name="nc_start_time">Kezdési idő</string>
     <string name="nc_switch_account">Fiókváltás</string>
     <string name="nc_team">Csapat</string>
-    <string name="nc_teams">Csapatok</string>
     <string name="nc_upload_choose_local_files">Válasszon fájlokat</string>
     <string name="nc_upload_confirm_send_multiple">Fájlok küldése ide: %1$s</string>
     <string name="nc_upload_confirm_send_single">Ezen fájl küldése ide: %1$s</string>
@@ -439,7 +417,6 @@
     <string name="nc_upload_video_from_cam">Videó készítése</string>
     <string name="nc_user">Felhasználó</string>
     <string name="nc_video_filename">Videófelvétel innen: %1$s</string>
-    <string name="nc_visible">Látható</string>
     <string name="nc_voice_message_filename">Beszédfelvétel innen: %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Tartsa a felvételhez, engedje el a küldéshez.</string>
     <string name="nc_voice_message_missing_audio_permission">Hangfelvételi engedély szükséges</string>
