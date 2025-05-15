@@ -242,6 +242,7 @@ How to translate with transifex:
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_delete_call">Delete conversation</string>
+   <!-- Noun -->
     <string name="nc_event_schedule">Schedule</string>
     <string name="nc_delete">Delete</string>
     <string name="nc_delete_all">Delete all</string>
