@@ -130,7 +130,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Εξωτερικό</string>
     <string name="nc_diagnose_signaling_mode_intern">Εσωτερικό</string>
     <string name="nc_dialog_invalid_password">Λανθασμένο συνθηματικό</string>
-    <string name="nc_dialog_maintenance_mode">Κατάσταση συντήρησης</string>
     <string name="nc_dialog_outdated_client_option_update">Ενημέρωση</string>
     <string name="nc_dialog_reauth_or_delete">Θέλετε να εξουσιοδοτήσετε εκ νέου ή να διαγράψετε αυτόν τον λογαριασμό;</string>
     <string name="nc_dialog_save_to_storage_no">Όχι</string>
@@ -140,7 +139,6 @@
     <string name="nc_edit_icon">Επεξεργασία</string>
     <string name="nc_edit_message">Επεξεργασία</string>
     <string name="nc_edit_message_text">Επεξεργασία μηνύματος</string>
-    <string name="nc_email">Ηλ. ταχυδρομείο</string>
     <string name="nc_expire_message_eight_hours">8 ώρες</string>
     <string name="nc_expire_message_off">Απενεργοποίηση </string>
     <string name="nc_expire_message_one_day">1 μέρα</string>
@@ -158,13 +156,11 @@
     <string name="nc_get_from_provider">Δεν έχετε ακόμα διακομιστή;\nΚάντε κλικ εδώ για να αποκτήσετε έναν από κάποιον πάροχο</string>
     <string name="nc_get_source_code">Λήψη πηγαίου κώδικα</string>
     <string name="nc_group">Ομάδα</string>
-    <string name="nc_groups">Ομάδες</string>
     <string name="nc_guest">Επισκέπτης</string>
     <string name="nc_guest_access_allow_title">Επιτρέψτε τους επισκέπτες</string>
     <string name="nc_guest_access_password_dialog_hint">Εισάγετε συνθηματικό</string>
     <string name="nc_guest_access_password_summary">Ορίστε έναν κωδικό πρόσβασης για να περιορίσετε ποιος μπορεί να χρησιμοποιήσει τον δημόσιο σύνδεσμο.</string>
     <string name="nc_guest_access_password_title">Προστασία συνθηματικού</string>
-    <string name="nc_guest_access_password_weak_alert_title">Ασθενές συνηματικό</string>
     <string name="nc_guest_access_resend_invitations">Επαναποστολή προσκλήσεων</string>
     <string name="nc_guest_access_share_link">Κοινή χρήση συνδέσμου συνομιλίας</string>
     <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα ...</string>
@@ -192,7 +188,6 @@
     <string name="nc_message_read">Το μήνυμα διαβάστηκε</string>
     <string name="nc_message_sent">Το μήνυμα στάλθηκε</string>
     <string name="nc_moderator">Συντονιστής</string>
-    <string name="nc_never">Δεν ξανασυνδέθηκε</string>
     <string name="nc_new_conversation">Νέα συνομιλία</string>
     <string name="nc_new_conversation_visibility">Ορατότητα</string>
     <string name="nc_new_messages">Μη αναγνωσμένα μηνύματα</string>
@@ -225,12 +220,9 @@
     <string name="nc_privacy">Ιδιωτικότητα</string>
     <string name="nc_profile_personal_info_title">Προσωπικές πληροφορίες</string>
     <string name="nc_promote">Προαγωγή από συντονιστή</string>
-    <string name="nc_public_call">Νέα δημόσια συνομιλία</string>
-    <string name="nc_public_call_explanation">Η δημόσια συζήτηση σας επιτρέπει να προσκαλέσετε άτομα μέσω ειδίκού συνδέσμου.</string>
     <string name="nc_push_disabled">Οι ειδοποιήσεις push απενεργοποιήθηκαν</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Με απενεργοποιημένο το μικρόφωνο, πιέστε και κρατήστε το &amp; για χρήση του Push-to-talk</string>
-    <string name="nc_refresh">Ανανέωση</string>
     <string name="nc_remind">Θύμισέ μου αργότερα</string>
     <string name="nc_remove_from_favorites">Αφαίρεση από τα αγαπημένα</string>
     <string name="nc_remove_group_and_members">Αφαίρεση ομάδων και μελών</string>
@@ -251,21 +243,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Αναζήτηση</string>
     <string name="nc_select_an_account">Επιλογή λογαριασμού</string>
-    <string name="nc_select_participants">Επιλογή συμμετεχόντων</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s έστειλε GIF.</string>
     <string name="nc_sent_a_gif_you">Στείλατε εικόνα GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s έστειλε βίντεο.</string>
     <string name="nc_sent_a_video_you">Στείλατε βίντεο.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s έστειλε συνημμένο</string>
-    <string name="nc_sent_an_attachment_you">Στείλατε συνημμένο.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s έστειλε  ήχο.</string>
     <string name="nc_sent_an_audio_you">Στείλατε αρχείο ήχου.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s έστειλε εικόνα.</string>
     <string name="nc_sent_an_image_you">Στείλατε εικόνα.</string>
-    <string name="nc_sent_location" formatted="true">Ο %1$s έστειλε μια τοποθεσία</string>
-    <string name="nc_sent_location_you">Αποστείλατε την τοποθεσία</string>
-    <string name="nc_sent_voice" formatted="true">Ο %1$s έστειλε ένα ηχητικό μήνυμα</string>
-    <string name="nc_sent_voice_you">Αποστείλατε ηχητικό μήνυμα</string>
     <string name="nc_server_connect">Δοκιμή σύνδεσης με διακομιστή</string>
     <string name="nc_server_db_upgrade_needed">Παρακαλούμε αναβαθμίστε την %1$s βάση δεδομένων σας</string>
     <string name="nc_server_failed_to_import_account">Αποτυχία εισαγωγής επιλεγμένου λογαριασμού</string>
@@ -348,7 +333,6 @@
     <string name="nc_upload_in_progess">Γίνεται μεταφόρτωση</string>
     <string name="nc_upload_picture_from_cam">Βγάλε φωτογραφία</string>
     <string name="nc_user">Χρήστης</string>
-    <string name="nc_visible">Ορατός</string>
     <string name="nc_voice_message_hold_to_record_info">Κρατήστε για εγγραφή, αφήστε για αποστολή.</string>
     <string name="nc_voice_message_missing_audio_permission">Απαιτούνται δικαιώματα για ηχογράφηση</string>
     <string name="nc_voice_message_slide_to_cancel">« Σύρετε για ακύρωση</string>

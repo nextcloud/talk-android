@@ -50,7 +50,6 @@
     <string name="edit">Düzenle</string>
     <string name="edit_error_24_hours_old_message">24 saatten eski iletiler düzenlenemez</string>
     <string name="edit_message_icon_description">İletiyi düzenle</string>
-    <string name="emoji_backspace">Geriye silme</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
     <string name="end_call_for_everyone">Çağrıyı herkes için sonlandır</string>
@@ -65,7 +64,6 @@
     <string name="hint_edited_message">(düzenlendi)</string>
     <string name="internal_note">İç not</string>
     <string name="invisible">Görünmez</string>
-    <string name="join_open_conversations_icon">Açık görüşmelere katıl simgesi</string>
     <string name="languages_error_message">Diller alınamadı</string>
     <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
@@ -106,7 +104,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">%1$s kilidini aç</string>
     <string name="nc_bluetooth_permission_hint">Bluetooth hoparlörleri kullanıma almak için lütfen \"Yakındaki aygıtlar\" izni verin.</string>
-    <string name="nc_call_button_content_description_advanced">Gelişmiş çağrı seçenekleri</string>
     <string name="nc_call_button_content_description_answer_video_call">Görüntülü çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_answer_voice_only">Yalnızca sesli çağrı olarak yanıtla</string>
     <string name="nc_call_button_content_description_audio_output">Ses çıkışını değiştir</string>
@@ -137,7 +134,6 @@
     <string name="nc_certificate_error">SSL kurulumunuz bağlantı kurulmasını engelliyor</string>
     <string name="nc_change_cert_auth">Kimlik doğrulama sertifikasını değiştir</string>
     <string name="nc_change_password">Parolayı değiştir</string>
-    <string name="nc_check_your_internet">Lütfen İnternet bağlantınızı denetleyin</string>
     <string name="nc_clear_edit_button">Düzenlemeyi iptal et</string>
     <string name="nc_clear_edit_message">Düzenlemeyi iptal et</string>
     <string name="nc_clear_history">Tüm iletileri sil</string>
@@ -170,6 +166,7 @@
     <string name="nc_copy_message">Kopyala</string>
     <string name="nc_create_new_conversation">Yeni bir görüşme oluştur</string>
     <string name="nc_create_poll">Anket ekle</string>
+    <string name="nc_current_user">Siz:</string>
     <string name="nc_date_header_today">Bugün</string>
     <string name="nc_date_header_yesterday">Dün</string>
     <string name="nc_delete">Sil</string>
@@ -222,7 +219,6 @@
     <string name="nc_diagnose_signaling_mode_intern">İç</string>
     <string name="nc_diagnose_signaling_mode_title">Signaling kipi</string>
     <string name="nc_dialog_invalid_password">Parola geçersiz</string>
-    <string name="nc_dialog_maintenance_mode">Bakım kipi</string>
     <string name="nc_dialog_maintenance_mode_description">Şu anda sunucuda bakım yapılıyor.</string>
     <string name="nc_dialog_outdated_client">Uygulama sürümü çok eski</string>
     <string name="nc_dialog_outdated_client_description">Uygulama çok eski ve artık bu sunucu tarafından desteklenmiyor. Lütfen güncelleyin.</string>
@@ -239,7 +235,7 @@
     <string name="nc_edit_message">Düzenle</string>
     <string name="nc_edit_message_text">İletiyi düzenle</string>
     <string name="nc_edited_by_admin">Yönetici tarafından düzenlendi</string>
-    <string name="nc_email">E-posta</string>
+    <string name="nc_event_schedule">Zamanlama</string>
     <string name="nc_expire_message_eight_hours">8 saat</string>
     <string name="nc_expire_message_four_weeks">4 hafta</string>
     <string name="nc_expire_message_off">Kapalı</string>
@@ -265,7 +261,6 @@
     <string name="nc_get_from_provider">Henüz bir sunucunuz yok mu?\Listeden bir hizmet sağlayıcısı seçebilirsiniz</string>
     <string name="nc_get_source_code">Kaynak kodu alın</string>
     <string name="nc_group">Grup</string>
-    <string name="nc_groups">Gruplar</string>
     <string name="nc_guest">Konuk</string>
     <string name="nc_guest_access">Konuk erişimi</string>
     <string name="nc_guest_access_allow_failed">Konuk erişimi kullanıma alınamaz ya da kullanımdan kaldırılamaz.</string>
@@ -276,7 +271,6 @@
     <string name="nc_guest_access_password_failed">Parola ayarlanırken ya da kaldırılırken sorun çıktı.</string>
     <string name="nc_guest_access_password_summary">Herkese açık bağlantıya erişimi sınırlamak için bir parola belirleyin.</string>
     <string name="nc_guest_access_password_title">Parola koruması</string>
-    <string name="nc_guest_access_password_weak_alert_title">Parola zayıf</string>
     <string name="nc_guest_access_resend_invitations">Davetleri yeniden gönder</string>
     <string name="nc_guest_access_resend_invitations_failed">Bir sorun nedeniyle davetler gönderilemedi.</string>
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
@@ -295,7 +289,6 @@
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
     <string name="nc_limit_hit">%s karakter sınırına ulaşıldı</string>
-    <string name="nc_list_open_conversations">Açık görüşmeleri listele</string>
     <string name="nc_lobby">Giriş</string>
     <string name="nc_lobby_start_date">Bu toplantı %1$s zamanına ayarlanmış</string>
     <string name="nc_lobby_start_soon">Toplantı yakında başlayacak</string>
@@ -318,7 +311,6 @@
     <string name="nc_microphone_permission_hint">Sesli iletişim kurabilmek için \"Mikrofon\" için erişme izni verin.</string>
     <string name="nc_missed_call">%s sizi aramış</string>
     <string name="nc_moderator">Sorumlu</string>
-    <string name="nc_never">Hiç katılmadı</string>
     <string name="nc_new_conversation">Yeni görüşme</string>
     <string name="nc_new_conversation_visibility">Görünürlük</string>
     <string name="nc_new_mention">Okunmamış anmalar</string>
@@ -367,15 +359,11 @@
     <string name="nc_privacy">Gizlilik</string>
     <string name="nc_profile_personal_info_title">Kişisel bilgiler</string>
     <string name="nc_promote">Sorumluluğa yükselt</string>
-    <string name="nc_public_call">Herkese açık görüşme ekle</string>
-    <string name="nc_public_call_explanation">Herkese açık görüşmelere dışarıdan kişiler özel oluşturulmuş bir bağlantı ile davet edilebilir.</string>
     <string name="nc_public_call_status">Herkese açık görüşme</string>
     <string name="nc_push_disabled">Anında bildirimler kullanımdan kaldırılmış</string>
     <string name="nc_push_to_talk">Bas-konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon kullanımdan kaldırılmışken, Bas-konuş üzerine tıklayıp basılı tutun</string>
-    <string name="nc_refresh">Yenlle</string>
     <string name="nc_remind">Sonra hatırlat</string>
-    <string name="nc_remote_audio_off">Uzak ses kapalı</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>
     <string name="nc_remove_group_and_members">Grup ve üyelerini sil</string>
     <string name="nc_remove_participant">Katılımcıyı çıkar</string>
@@ -398,26 +386,16 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Arama</string>
     <string name="nc_select_an_account">Bir hesap seçin</string>
-    <string name="nc_select_participants">Katılımcıları seçin</string>
     <string name="nc_send_edit_message">İletiyi güncelle</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s bir GIF gönderdi.</string>
     <string name="nc_sent_a_gif_you">Bir GIF gönderdiniz.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s bir görüntü gönderdi.</string>
     <string name="nc_sent_a_video_you">Bir görüntü gönderdiniz.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s bir ek dosya gönderdi.</string>
-    <string name="nc_sent_an_attachment_you">Bir ek dosya gönderdiniz.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s bir ses gönderdi.</string>
     <string name="nc_sent_an_audio_you">Bir ses gönderdiniz.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s bir görsel gönderdi.</string>
     <string name="nc_sent_an_image_you">Bir görsel gönderdiniz.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s bir tahta kartı gönderdi</string>
-    <string name="nc_sent_deck_card_you">Bir tahta kartı gönderdiniz</string>
-    <string name="nc_sent_location" formatted="true">%1$s bir konum gönderdi.</string>
-    <string name="nc_sent_location_you">Bir konum gönderdiniz.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s bir anket gönderdi.</string>
-    <string name="nc_sent_poll_you">Bir anket gönderdiniz.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s bir sesli ileti gönderdi.</string>
-    <string name="nc_sent_voice_you">Bir sesli ileti gönderdiniz.</string>
     <string name="nc_server_connect">Sunucu bağlantısını sına</string>
     <string name="nc_server_db_upgrade_needed">Lütfen %1$s veri tabanınızı güncelleyin</string>
     <string name="nc_server_failed_to_import_account">Seçilmiş hesap içe aktarılamadı</string>
@@ -448,7 +426,6 @@
     <string name="nc_settings_no_talk_installed">Kimlik doğrulaması yapmak istediğiniz sunucu üzerinde Konuş uygulaması kurulu değil</string>
     <string name="nc_settings_notification_sounds_post_oreo">Bildirimler</string>
     <string name="nc_settings_notifications_declined">Bildirimler reddediliyor</string>
-    <string name="nc_settings_notifications_declined_hint">Bildirimler reddediliyor. Lütfen Android ayarlarından bildirimlere izin verin</string>
     <string name="nc_settings_notifications_granted">Bildirimlere izin veriliyor</string>
     <string name="nc_settings_other_notifications_ringtone">İletiler</string>
     <string name="nc_settings_phone_book_integration_desc">Kişileri telefon numaralarına göre eşleştirerek sistem kişiler uygulamasında Konuş kısa yolunu görüntüler</string>
@@ -512,7 +489,6 @@
     <string name="nc_start_time">Başlangıç zamanı</string>
     <string name="nc_switch_account">Hesabı değiştir</string>
     <string name="nc_team">Takım</string>
-    <string name="nc_teams">Takımlar</string>
     <string name="nc_upload_choose_local_files">Dosyaları seçin</string>
     <string name="nc_upload_confirm_send_multiple">Bu dosyalar %1$s alıcısına gönderilsin mi?</string>
     <string name="nc_upload_confirm_send_single">Bu dosya %1$s alıcısına gönderilsin mi?</string>
@@ -527,14 +503,12 @@
     <string name="nc_upload_video_from_cam">Görüntü al</string>
     <string name="nc_user">Kullanıcı</string>
     <string name="nc_video_filename">%1$s üzerinden görüntü kaydı</string>
-    <string name="nc_visible">Görünür</string>
     <string name="nc_voice_message_filename">%1$s Konuş kaydı (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Kaydetmek için basılı tutun, bırakarak gönderin.</string>
     <string name="nc_voice_message_missing_audio_permission">Ses kaydetme izninin verilmesi gereklidir</string>
     <string name="nc_voice_message_slide_to_cancel">« İptal etmek için kaydırın</string>
     <string name="nc_webinar">İnternet sunumu</string>
     <string name="nc_yes">Evet</string>
-    <string name="new_conversation_creation_icon">Yeni görüşme oluştur simgesi</string>
     <string name="next_week">Sonraki hafta</string>
     <string name="no_conversations_archived">Arşivlenmiş bir görüşme yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>

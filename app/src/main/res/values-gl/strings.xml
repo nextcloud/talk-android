@@ -47,7 +47,6 @@
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
     <string name="edit_message_icon_description">Editar a mensaxe</string>
-    <string name="emoji_backspace">Retroceso</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar a chamada para todos</string>
@@ -62,7 +61,6 @@
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisíbel</string>
-    <string name="join_open_conversations_icon">Icona «Unirse a conversas abertas»</string>
     <string name="languages_error_message">Non foi posíbel recuperar os idiomas</string>
     <string name="languages_error_title">Produciuse un fallo na recuperación</string>
     <string name="later_today">Hoxe máis tarde</string>
@@ -103,7 +101,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para activar os altofalantes Bluetooth, conceda os permiso para «Dispositivos próximos».</string>
-    <string name="nc_call_button_content_description_advanced"> Opcións avanzadas de chamada</string>
     <string name="nc_call_button_content_description_answer_video_call">Responda como videochamada</string>
     <string name="nc_call_button_content_description_answer_voice_only">Responda só como chamada de voz</string>
     <string name="nc_call_button_content_description_audio_output">Cambiar a saída do son</string>
@@ -134,7 +131,6 @@
     <string name="nc_certificate_error">A súa configuración SSL impediu a conexión</string>
     <string name="nc_change_cert_auth">Cambiar o certificado de autenticación</string>
     <string name="nc_change_password">Cambiar o contrasinal</string>
-    <string name="nc_check_your_internet">Comprobe a conexión á Internet</string>
     <string name="nc_clear_edit_button">Cancelar a edición</string>
     <string name="nc_clear_edit_message">Cancelar a edición</string>
     <string name="nc_clear_history">Eliminar todas as mensaxes</string>
@@ -219,7 +215,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Interna</string>
     <string name="nc_diagnose_signaling_mode_title">Modo de sinalización</string>
     <string name="nc_dialog_invalid_password">Contrasinal incorrecto </string>
-    <string name="nc_dialog_maintenance_mode">Modo de mantemento</string>
     <string name="nc_dialog_maintenance_mode_description">O servidor neste momento está en modo de mantemento.</string>
     <string name="nc_dialog_outdated_client">A aplicación está desactualizada</string>
     <string name="nc_dialog_outdated_client_description">A aplicación é demasiado antiga e xa non é compatíbel con este servidor. Actualícea.</string>
@@ -236,7 +231,7 @@
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar a mensaxe</string>
     <string name="nc_edited_by_admin">Editado por alguén de administración</string>
-    <string name="nc_email">Correo-e</string>
+    <string name="nc_event_schedule">Programa</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
     <string name="nc_expire_message_off">Apagado</string>
@@ -261,7 +256,6 @@
     <string name="nc_get_from_provider">Aínda non ten un servidor? \nPrema aquí para obter un dun provedor</string>
     <string name="nc_get_source_code">Obter o código fonte</string>
     <string name="nc_group">Grupo</string>
-    <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidado</string>
     <string name="nc_guest_access">Acceso de convidado</string>
     <string name="nc_guest_access_allow_failed">Non é posíbel activar/desactivar o acceso para convidados.</string>
@@ -272,7 +266,6 @@
     <string name="nc_guest_access_password_failed">Produciuse un erro ao configurar/desactivar o contrasinal.</string>
     <string name="nc_guest_access_password_summary">Definir un contrasinal para restrinxir quen pode usar a ligazón pública.</string>
     <string name="nc_guest_access_password_title">Protección por contrasinal</string>
-    <string name="nc_guest_access_password_weak_alert_title">Contrasinal feble</string>
     <string name="nc_guest_access_resend_invitations">Volver enviar os convites</string>
     <string name="nc_guest_access_resend_invitations_failed">Non se enviaron os convites por mor dun erro.</string>
     <string name="nc_guest_access_resend_invitations_successful">Os convites foron enviados de novo.</string>
@@ -291,7 +284,6 @@
     <string name="nc_license_summary">Licenza Pública Xeral GNU, versión 3</string>
     <string name="nc_license_title">licenza</string>
     <string name="nc_limit_hit">Acadouse o límite de %s caracteres</string>
-    <string name="nc_list_open_conversations">Lista de conversas abertas</string>
     <string name="nc_lobby">Ástrago</string>
     <string name="nc_lobby_start_date">Esta xuntanza está programada para %1$s</string>
     <string name="nc_lobby_start_soon">A xuntanza comezará en breve</string>
@@ -314,7 +306,6 @@
     <string name="nc_microphone_permission_hint">Para activar a comunicación por voz, conceda o permiso de «Micrófono».</string>
     <string name="nc_missed_call">Perdeu unha chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_never">Non conectou nunca</string>
     <string name="nc_new_conversation">Nova conversa</string>
     <string name="nc_new_conversation_visibility">Visibilidade</string>
     <string name="nc_new_mention">Mencións sen ler</string>
@@ -363,15 +354,11 @@
     <string name="nc_privacy">Privacidade</string>
     <string name="nc_profile_personal_info_title">Información persoal</string>
     <string name="nc_promote">Promover a moderador</string>
-    <string name="nc_public_call">Nova conversa pública</string>
-    <string name="nc_public_call_explanation">As conversas públicas permítenlle convidar a outras persoas de fóra mediante unha ligazón creada especialmente.</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Desactivadas as notificacións emerxentes</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
-    <string name="nc_refresh">Actualizar</string>
     <string name="nc_remind">Lembrarmo más adiante</string>
-    <string name="nc_remote_audio_off">Son remoto desactivado</string>
     <string name="nc_remove_from_favorites">Retirar de favoritos</string>
     <string name="nc_remove_group_and_members">Retirar grupo e membros</string>
     <string name="nc_remove_participant">Retirar participante</string>
@@ -394,25 +381,15 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
-    <string name="nc_select_participants">Seleccionar participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
     <string name="nc_sent_a_gif_you">Vde. enviou un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s enviou un vídeo.</string>
     <string name="nc_sent_a_video_you">Vde. enviou un vídeo.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s enviou un anexo.</string>
-    <string name="nc_sent_an_attachment_you">Vde. enviou un anexo.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s enviou un ficheiro de son.</string>
     <string name="nc_sent_an_audio_you">Vde. enviou un ficheiro de son.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s enviou unha imaxe.</string>
     <string name="nc_sent_an_image_you">Vde. enviou unha imaxe.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$s enviou unha tarxeta de Gabeta</string>
-    <string name="nc_sent_deck_card_you">Vde. enviou unha tarxeta de Gabeta</string>
-    <string name="nc_sent_location" formatted="true">%1$s enviou unha localización.</string>
-    <string name="nc_sent_location_you">Vde. enviou unha localización.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s enviou unha enquisa.</string>
-    <string name="nc_sent_poll_you">Vde. enviou unha enquisa.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s enviou unha mensaxe de voz.</string>
-    <string name="nc_sent_voice_you">Vde. enviou unha mensaxe de voz.</string>
     <string name="nc_server_connect">Probar a conexión co servidor</string>
     <string name="nc_server_db_upgrade_needed">Ten que anovar a base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Produciuse un fallo ao importar a conta seleccionada</string>
@@ -443,7 +420,6 @@
     <string name="nc_settings_no_talk_installed">A aplicación Parladoiro non está instalada no servidor contra o que tentou autenticarse</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificacións</string>
     <string name="nc_settings_notifications_declined">As notificacións son rexeitadas</string>
-    <string name="nc_settings_notifications_declined_hint">As notificacións son rexeitadas. Permita as notificacións nos axustes de Android</string>
     <string name="nc_settings_notifications_granted">As notificacións están permitidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensaxes</string>
     <string name="nc_settings_phone_book_integration_desc">Emparellar os contactos en función do número de teléfono para integrar o atallo de Parladoiro na lista de teléfonos</string>
@@ -505,7 +481,6 @@
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
     <string name="nc_team">Equipo</string>
-    <string name="nc_teams">Equipos</string>
     <string name="nc_upload_choose_local_files">Escoller os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
@@ -520,14 +495,12 @@
     <string name="nc_upload_video_from_cam">Gravar un vídeo</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Gravación de vídeo de %1$s</string>
-    <string name="nc_visible">Visíbel</string>
     <string name="nc_voice_message_filename">Gravación da conversa de %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Manteña premido para gravar, solte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Precísase de permiso para gravar son</string>
     <string name="nc_voice_message_slide_to_cancel">« Esvare para cancelar</string>
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_yes">Si</string>
-    <string name="new_conversation_creation_icon">conversaNew Conversation Creation IconNova icona de Icona «Creación de nova conversa»</string>
     <string name="next_week">Semana seguinte</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>

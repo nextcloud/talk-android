@@ -131,7 +131,6 @@
     <string name="nc_diagnose_phone_category_title">Teléfonu</string>
     <string name="nc_diagnose_server_version">Versión del sirvidor</string>
     <string name="nc_dialog_invalid_password">La contraseña ye inválida</string>
-    <string name="nc_dialog_maintenance_mode">Mou de caltenimientu</string>
     <string name="nc_dialog_outdated_client">L\'aplicación nun ta anovada</string>
     <string name="nc_dialog_outdated_client_description">L\'aplicación ye mui antigua y yá nun ye compatible con esti sirvidor. Anuévala.</string>
     <string name="nc_dialog_outdated_client_option_update">Anovar</string>
@@ -141,7 +140,6 @@
     <string name="nc_edit_icon">Editar</string>
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar el mensaxe</string>
-    <string name="nc_email">Corréu electrónicu</string>
     <string name="nc_expire_message_eight_hours">8 hores</string>
     <string name="nc_expire_message_four_weeks">4 selmanes</string>
     <string name="nc_expire_message_off">Non</string>
@@ -158,11 +156,9 @@
     <string name="nc_gallery">Galería</string>
     <string name="nc_get_source_code">Consiguir el códigu fonte</string>
     <string name="nc_group">Grupu</string>
-    <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Convidáu</string>
     <string name="nc_guest_access_password_dialog_hint">Introduz una contraseña</string>
     <string name="nc_guest_access_password_title">Proteición con contraseña</string>
-    <string name="nc_guest_access_password_weak_alert_title">La contraseña ye poco segura</string>
     <string name="nc_guest_access_share_link">Compartir l\'enllaz de la converación</string>
     <string name="nc_important_conversation">Converación importante</string>
     <string name="nc_invitations">Invitaciones</string>
@@ -205,10 +201,8 @@
     <string name="nc_plain_old_messages">Mensaxes</string>
     <string name="nc_privacy">Privacidá</string>
     <string name="nc_profile_personal_info_title">Información personal</string>
-    <string name="nc_public_call">Conversación pública nueva</string>
     <string name="nc_public_call_status">Conversación pública</string>
     <string name="nc_push_to_talk">Primir pa falar</string>
-    <string name="nc_refresh">Anovar</string>
     <string name="nc_remove_from_favorites">Quitar de Favoritos</string>
     <string name="nc_rename">Renomar la conversación</string>
     <string name="nc_rename_confirm">Renomar</string>
@@ -231,12 +225,6 @@
     <string name="nc_sent_a_video_you">Unviesti un videu.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s unvió una imaxe.</string>
     <string name="nc_sent_an_image_you">Unviesti una imaxe.</string>
-    <string name="nc_sent_location" formatted="true">%1$s unvió una llocalización.</string>
-    <string name="nc_sent_location_you">Unviesti una llocalización.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s unvió una encuesta.</string>
-    <string name="nc_sent_poll_you">Unviesti una encuesta.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s unvió un mensaxe de voz.</string>
-    <string name="nc_sent_voice_you">Unviesti un mensaxe de voz.</string>
     <string name="nc_server_connect">Probar la conexón del sirvidor</string>
     <string name="nc_server_db_upgrade_needed">Anueva la base de datos %1$s</string>
     <string name="nc_server_failed_to_import_account">Nun se pue importar la cuenta seleicionada</string>
@@ -269,7 +257,6 @@
     <string name="nc_shared_items_location">Llocalización</string>
     <string name="nc_switch_account">Cambiar de cuenta</string>
     <string name="nc_team">Equipu</string>
-    <string name="nc_teams">Equipos</string>
     <string name="nc_upload_confirm_send_multiple">¿Quies unviar estos ficheros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Quies unviar esti ficheru a %1$s?</string>
     <string name="nc_upload_failed">Sentímoslo, la xuba falló</string>
@@ -279,7 +266,6 @@
     <string name="nc_upload_picture_from_cam">Facer una semeya</string>
     <string name="nc_upload_video_from_cam">Grabar un videu</string>
     <string name="nc_user">Usuariu</string>
-    <string name="nc_visible">Visible</string>
     <string name="nc_webinar">Webinariu</string>
     <string name="nc_yes">Sí</string>
     <string name="next_week">La selmana que vien</string>

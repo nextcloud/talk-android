@@ -47,7 +47,6 @@
     <string name="dontClear">No borrar</string>
     <string name="edit">Editar</string>
     <string name="edit_message_icon_description">Editar mensaje</string>
-    <string name="emoji_backspace">Tecla de retroceso</string>
     <string name="emoji_category_recent">Reciente</string>
     <string name="encrypted">Cifrado</string>
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
@@ -62,7 +61,6 @@
     <string name="hint_edited_message">(editado)</string>
     <string name="internal_note">Nota interna</string>
     <string name="invisible">Invisible</string>
-    <string name="join_open_conversations_icon">Ícono de Unirse a Conversaciones Abiertas</string>
     <string name="languages_error_message">Los lenguajes no pudieron ser recuperados</string>
     <string name="languages_error_title">Recuperación fallida</string>
     <string name="later_today">Más tarde hoy</string>
@@ -103,7 +101,6 @@
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Desbloquear %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para habilitar los parlantes bluetooth, por favor, otorgue el permiso \"Dispositivos cercanos\".</string>
-    <string name="nc_call_button_content_description_advanced">Opciones avanzadas de llamada</string>
     <string name="nc_call_button_content_description_answer_video_call">Contestar como videollamada</string>
     <string name="nc_call_button_content_description_answer_voice_only">Contestar como llamada de audio solamente</string>
     <string name="nc_call_button_content_description_audio_output">Cambiar salida de audio</string>
@@ -134,7 +131,6 @@
     <string name="nc_certificate_error">Tu configuración SSL impidió la conexión</string>
     <string name="nc_change_cert_auth">Cambiar certificado de autenticación</string>
     <string name="nc_change_password">Cambiar contraseña</string>
-    <string name="nc_check_your_internet">Por favor, verifique su conexión a internet</string>
     <string name="nc_clear_edit_button">Cancelar edición</string>
     <string name="nc_clear_edit_message">Cancelar edición</string>
     <string name="nc_clear_history">Borrar todos los mensajes</string>
@@ -167,6 +163,7 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_create_new_conversation">Crear una conversación nueva</string>
     <string name="nc_create_poll">Crear votación</string>
+    <string name="nc_current_user">Usted:</string>
     <string name="nc_date_header_today">Hoy</string>
     <string name="nc_date_header_yesterday">Ayer</string>
     <string name="nc_delete">Borrar</string>
@@ -219,7 +216,6 @@
     <string name="nc_diagnose_signaling_mode_intern">Interno</string>
     <string name="nc_diagnose_signaling_mode_title">Modo de señalización</string>
     <string name="nc_dialog_invalid_password">Contraseña no válida</string>
-    <string name="nc_dialog_maintenance_mode">Modo de mantenimiento</string>
     <string name="nc_dialog_maintenance_mode_description">El servidor se encuentra actualmente en modo de mantenimiento.</string>
     <string name="nc_dialog_outdated_client">La app está desactualizada</string>
     <string name="nc_dialog_outdated_client_description">La app es muy antigua y ya no está soportada por este servidor. Por favor, actualice.</string>
@@ -236,7 +232,7 @@
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensaje</string>
     <string name="nc_edited_by_admin">Editado por admin</string>
-    <string name="nc_email">Email</string>
+    <string name="nc_event_schedule">Programar</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
     <string name="nc_expire_message_off">Apagado</string>
@@ -261,7 +257,6 @@
     <string name="nc_get_from_provider">¿No tienes todavía un servidor?\nClic aquí para conseguir uno de un proveedor</string>
     <string name="nc_get_source_code">Obtener el código fuente</string>
     <string name="nc_group">Grupo</string>
-    <string name="nc_groups">Grupos</string>
     <string name="nc_guest">Invitado</string>
     <string name="nc_guest_access">Acceso de invitado</string>
     <string name="nc_guest_access_allow_failed">Imposible habilitar/deshabilitar el acceso de invitado.</string>
@@ -272,7 +267,6 @@
     <string name="nc_guest_access_password_failed">Se encontró un error al configurar/deshabilitar la contraseña.</string>
     <string name="nc_guest_access_password_summary">Establezca una contraseña para controlar quién puede usar el enlace público.</string>
     <string name="nc_guest_access_password_title">Protección con contraseña</string>
-    <string name="nc_guest_access_password_weak_alert_title">Contraseña débil</string>
     <string name="nc_guest_access_resend_invitations">Reenviar invitaciones</string>
     <string name="nc_guest_access_resend_invitations_failed">Las invitaciones no fueron enviadas debido a un error.</string>
     <string name="nc_guest_access_resend_invitations_successful">Las invitaciones fueron enviadas nuevamente.</string>
@@ -291,7 +285,6 @@
     <string name="nc_license_summary">Licencia General Pública de GNU (GPL), versión 3</string>
     <string name="nc_license_title">Licencia</string>
     <string name="nc_limit_hit">Se ha alcanzado el límite de %s caracteres</string>
-    <string name="nc_list_open_conversations">Listar conversaciones abiertas</string>
     <string name="nc_lobby">Sala de espera</string>
     <string name="nc_lobby_start_date">La reunión está programada para las %1$s</string>
     <string name="nc_lobby_start_soon">La reunión empezará en breve</string>
@@ -314,7 +307,6 @@
     <string name="nc_microphone_permission_hint">Para habilitar la comunicación por voz, por favor, otorgue el permiso \"Micrófono\".</string>
     <string name="nc_missed_call">Perdió una llamada de %s</string>
     <string name="nc_moderator">Moderador</string>
-    <string name="nc_never">Nunca unido</string>
     <string name="nc_new_conversation">Nueva conversación</string>
     <string name="nc_new_conversation_visibility">Visibilidad</string>
     <string name="nc_new_mention">Menciones sin leer</string>
@@ -363,15 +355,11 @@
     <string name="nc_privacy">Privacidad</string>
     <string name="nc_profile_personal_info_title">Información Personal</string>
     <string name="nc_promote">Elevar a moderador</string>
-    <string name="nc_public_call">Nueva conversación pública</string>
-    <string name="nc_public_call_explanation">Las conversaciones públicas te permiten invitar a gente del exterior a través de un enlace creado de forma especial. </string>
     <string name="nc_public_call_status">Conversación pública</string>
     <string name="nc_push_disabled">Notificaciones push desactivadas</string>
     <string name="nc_push_to_talk">Push-to-talk</string>
     <string name="nc_push_to_talk_desc">Con el micrófono deshabilitado, mantén pulsado &amp; para usar Push-to-talk</string>
-    <string name="nc_refresh">Actualizar</string>
     <string name="nc_remind">Recuérdamelo más tarde</string>
-    <string name="nc_remote_audio_off">Audio remoto apagado</string>
     <string name="nc_remove_from_favorites">Eliminar de favoritos</string>
     <string name="nc_remove_group_and_members">Eliminar grupo y miembros</string>
     <string name="nc_remove_participant">Eliminar participante</string>
@@ -394,25 +382,15 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Buscar</string>
     <string name="nc_select_an_account">Selecciona una cuenta</string>
-    <string name="nc_select_participants">Selecciona participantes</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s ha enviado un GIF.</string>
     <string name="nc_sent_a_gif_you">Has enviado un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s ha enviado un vídeo.</string>
     <string name="nc_sent_a_video_you">Has enviado un video.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s ha enviado un adjunto.</string>
-    <string name="nc_sent_an_attachment_you">Has enviado un adjunto.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s ha enviado un audio.</string>
     <string name="nc_sent_an_audio_you">Has enviado un audio.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s ha enviado una imagen.</string>
     <string name="nc_sent_an_image_you">Has enviado una imagen.</string>
     <string name="nc_sent_deck_card" formatted="true">%1$senvió una tarjeta de deck</string>
-    <string name="nc_sent_deck_card_you">Ud. Envió una tarjeta de deck</string>
-    <string name="nc_sent_location" formatted="true">%1$s envió una ubicación.</string>
-    <string name="nc_sent_location_you">Usted envió una ubicación.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s ha enviado una encuesta.</string>
-    <string name="nc_sent_poll_you">Ud. ha enviado una encuesta.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s envió un mensaje de voz.</string>
-    <string name="nc_sent_voice_you">Ud. envió un mensaje de voz.</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
@@ -443,7 +421,6 @@
     <string name="nc_settings_no_talk_installed">La app Talk no está instalada en el servidor contra el que has intentado autorizarte</string>
     <string name="nc_settings_notification_sounds_post_oreo">Notificaciones</string>
     <string name="nc_settings_notifications_declined">Las notificaciones no están permitidas</string>
-    <string name="nc_settings_notifications_declined_hint">Las notificaciones no están permitidas. Por favor, otorgue los permisos para las notificaciones en las configuraciones de Android</string>
     <string name="nc_settings_notifications_granted">Las notificaciones están permitidas</string>
     <string name="nc_settings_other_notifications_ringtone">Mensajes</string>
     <string name="nc_settings_phone_book_integration_desc">Comparar el número de teléfono de los contactos para integrar un acceso directo a Talk en la app de contactos del sistema
@@ -507,7 +484,6 @@
     <string name="nc_start_time">Hora de inicio</string>
     <string name="nc_switch_account">Cambiar cuenta</string>
     <string name="nc_team">Equipo</string>
-    <string name="nc_teams">Equipos</string>
     <string name="nc_upload_choose_local_files">Seleccionar archivos</string>
     <string name="nc_upload_confirm_send_multiple">¿Enviar estos archivos a %1$s?</string>
     <string name="nc_upload_confirm_send_single">¿Enviar este archivo a %1$s?</string>
@@ -522,14 +498,12 @@
     <string name="nc_upload_video_from_cam">Tomar video</string>
     <string name="nc_user">Usuario</string>
     <string name="nc_video_filename">Grabación de video de %1$s</string>
-    <string name="nc_visible">Visible</string>
     <string name="nc_voice_message_filename">Grabación Talk desde %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Mantenga presionado para grabar, suelte para enviar.</string>
     <string name="nc_voice_message_missing_audio_permission">Se requiere permiso para grabar audio</string>
     <string name="nc_voice_message_slide_to_cancel">« Deslizar para cancelar</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Sí</string>
-    <string name="new_conversation_creation_icon">Ícono de Creación de Nueva Conversación </string>
     <string name="next_week">Semana siguiente</string>
     <string name="no_offline_messages_saved">No hay mensajes fuera de línea guardados</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>

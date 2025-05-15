@@ -28,7 +28,6 @@
     <string name="dontClear">Не очищати</string>
     <string name="edit">Редагувати</string>
     <string name="edit_message_icon_description">Редагувати повідомлення</string>
-    <string name="emoji_backspace">Повернутися</string>
     <string name="emoji_category_recent">Нещодавні</string>
     <string name="encrypted">Зашифровано</string>
     <string name="end_call_for_everyone">Завершити дзвінок для всіх</string>
@@ -71,7 +70,6 @@
     <string name="nc_all_ok_operation">ОК, все готово!</string>
     <string name="nc_attendee_pin">ПІН: %1$s</string>
     <string name="nc_biometric_unlock">Розблокувати %1$s</string>
-    <string name="nc_call_button_content_description_advanced">Розширені опції дзвінка</string>
     <string name="nc_call_button_content_description_answer_video_call">Відповісти як відеодзвінок</string>
     <string name="nc_call_button_content_description_answer_voice_only">Відповісти тільки як голосовий виклик</string>
     <string name="nc_call_button_content_description_audio_output">Змінити аудіовихід</string>
@@ -152,7 +150,6 @@
     <string name="nc_diagnose_signaling_mode_extern">Зовнішнє</string>
     <string name="nc_diagnose_signaling_mode_intern">Внутрішній</string>
     <string name="nc_dialog_invalid_password">Invalid Password</string>
-    <string name="nc_dialog_maintenance_mode">Режим технічного обслуговування</string>
     <string name="nc_dialog_outdated_client_option_update">Оновлення</string>
     <string name="nc_dialog_reauth_or_delete">Чи хочете ви повторно авторизувати чи вилучити цей акаунт?</string>
     <string name="nc_dialog_save_to_storage_no">Ні</string>
@@ -162,7 +159,6 @@
     <string name="nc_edit_icon">Редагувати</string>
     <string name="nc_edit_message">Редагувати</string>
     <string name="nc_edit_message_text">Редагувати повідомлення</string>
-    <string name="nc_email">Електронна пошта</string>
     <string name="nc_expire_message_eight_hours">8 годин</string>
     <string name="nc_expire_message_four_weeks">4 тижні</string>
     <string name="nc_expire_message_off">Вимкнути</string>
@@ -184,7 +180,6 @@
     <string name="nc_get_from_provider">Ще не маєте сервера?\nНатисніть тут щоб отримати в провайдера</string>
     <string name="nc_get_source_code">Отримати вихідний код</string>
     <string name="nc_group">Група</string>
-    <string name="nc_groups">Групи</string>
     <string name="nc_guest">Гість</string>
     <string name="nc_guest_access">Гостьовий доступ</string>
     <string name="nc_guest_access_allow_failed">Неможливо ввімкнути/вимкнути гостьовий доступ.</string>
@@ -195,7 +190,6 @@
     <string name="nc_guest_access_password_failed">Помилка під час встановлення/відключення пароля.</string>
     <string name="nc_guest_access_password_summary">Встановіть пароль, щоб обмежити доступ до публічного посилання.</string>
     <string name="nc_guest_access_password_title">Захист паролем</string>
-    <string name="nc_guest_access_password_weak_alert_title">Слабкий пароль</string>
     <string name="nc_guest_access_resend_invitations">Повторно надіслати запрошення</string>
     <string name="nc_guest_access_resend_invitations_failed">Запрошення не було надіслано через помилку, що виникла.</string>
     <string name="nc_guest_access_resend_invitations_successful">Запрошення було розіслано повторно.</string>
@@ -230,7 +224,6 @@
     <string name="nc_message_sent">Повідомлення відправлено</string>
     <string name="nc_missed_call">Ви пропустили дзвінок з номера %s</string>
     <string name="nc_moderator">Модератор</string>
-    <string name="nc_never">Ніколи не приєднувався</string>
     <string name="nc_new_conversation">Нова розмова</string>
     <string name="nc_new_conversation_visibility">Видимість</string>
     <string name="nc_new_mention">Непрочитані згадки</string>
@@ -268,14 +261,10 @@
     <string name="nc_privacy">Конфіденційність</string>
     <string name="nc_profile_personal_info_title">Персональна інформація</string>
     <string name="nc_promote">Призначити модератором</string>
-    <string name="nc_public_call">Нова публічна розмова</string>
-    <string name="nc_public_call_explanation">Публічна розмова дозволяє Вам запросити людей за допомогою спеціалного посилання</string>
     <string name="nc_push_disabled">Push сповіщення вимкнено</string>
     <string name="nc_push_to_talk">Тисни-та-кажи</string>
     <string name="nc_push_to_talk_desc">Натисніть і утримуйте &amp; для використання PTT при вимкненому мікрофоні</string>
-    <string name="nc_refresh">Оновити</string>
     <string name="nc_remind">Нагадати пізніше</string>
-    <string name="nc_remote_audio_off">Віддалене аудіо відключено</string>
     <string name="nc_remove_from_favorites">Прибрати зірочку</string>
     <string name="nc_remove_group_and_members">Вилучити групи та учасників</string>
     <string name="nc_remove_participant">Вилучити учасника</string>
@@ -295,23 +284,14 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Пошук</string>
     <string name="nc_select_an_account">Оберіть обліковий запис</string>
-    <string name="nc_select_participants">Виберіть учасників</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s надсилає GIF.</string>
     <string name="nc_sent_a_gif_you">Ви надіслали GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s надсилає відео.</string>
     <string name="nc_sent_a_video_you">Ви надіслали відео.</string>
-    <string name="nc_sent_an_attachment" formatted="true">%1$s надсилає вкладення.</string>
-    <string name="nc_sent_an_attachment_you">Ви надіслали вкладення.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s надсилає аудіо.</string>
     <string name="nc_sent_an_audio_you">Ви надіслали аудіо.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s надсилає зображення.</string>
     <string name="nc_sent_an_image_you">Ви надіслали зображення.</string>
-    <string name="nc_sent_location" formatted="true">%1$s надсилає геолокацію.</string>
-    <string name="nc_sent_location_you">Ви надіслали геолокацію.</string>
-    <string name="nc_sent_poll" formatted="true">%1$s надіслав опитування.</string>
-    <string name="nc_sent_poll_you">Ви надіслали опитування.</string>
-    <string name="nc_sent_voice" formatted="true">%1$s надсилає голосове повідомлення.</string>
-    <string name="nc_sent_voice_you">Ви надіслали голосове повідомлення.</string>
     <string name="nc_server_connect">Перевірка з\'єднання з сервером</string>
     <string name="nc_server_db_upgrade_needed">Будь ласка, оновіть вашу %1$s базу даних</string>
     <string name="nc_server_failed_to_import_account">Не вдалося імпортувати обраний акаунт.</string>
@@ -390,7 +370,6 @@
     <string name="nc_start_time">Час початку</string>
     <string name="nc_switch_account">Перемкнути обліковий запис</string>
     <string name="nc_team">Команда</string>
-    <string name="nc_teams">Команди</string>
     <string name="nc_upload_choose_local_files">Виберіть файли</string>
     <string name="nc_upload_failed">Вибачте, помилка завантаження</string>
     <string name="nc_upload_failed_notification_title">Невдача</string>
@@ -401,7 +380,6 @@
     <string name="nc_upload_video_from_cam">Зняти відео</string>
     <string name="nc_user">Користувач</string>
     <string name="nc_video_filename">Запис відео з %1$s</string>
-    <string name="nc_visible">Видимий</string>
     <string name="nc_voice_message_filename">Запис розмови з %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Утримуйте для запису, відпустіть для надсилання.</string>
     <string name="nc_voice_message_missing_audio_permission">Потрібен дозвіл на аудіозапис</string>
