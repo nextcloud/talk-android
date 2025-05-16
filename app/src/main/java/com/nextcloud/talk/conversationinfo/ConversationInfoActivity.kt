@@ -384,7 +384,8 @@ class ConversationInfoActivity :
                     val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
                     val role = profile.role ?: ""
                     val company = profile.company ?: ""
-                    binding.professionCompany.text = "$role$concat1$company"
+                    val professionCompanyText = "$role$concat1$company"
+                    binding.professionCompany.text = professionCompanyText
 
                     val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
                     val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
@@ -392,10 +393,11 @@ class ConversationInfoActivity :
                     val localTimeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
                     val concat2 = if (profile.address != null) " · " else ""
                     val address = profile.address ?: ""
-                    binding.locationTime.text = "$localTimeString$concat2$address"
+                    val localTimeLocation = "$localTimeString$concat2$address"
+                    binding.locationTime.text = resources.getString(R.string.local_time, localTimeLocation)
 
                     binding.pronouns.visibility = VISIBLE
-                    binding.professionCompany.visibility = VISIBLE
+                    binding.professionCompany.visibility = if (professionCompanyText.isNotEmpty()) VISIBLE else GONE
                     binding.locationTime.visibility = VISIBLE
                 }
 
