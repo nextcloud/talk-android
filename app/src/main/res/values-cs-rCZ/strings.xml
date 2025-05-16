@@ -167,6 +167,7 @@
     <string name="nc_copy_message">Zkopírovat</string>
     <string name="nc_create_new_conversation">Vytvořit novou konverzaci</string>
     <string name="nc_create_poll">Vytvořit anketu</string>
+    <string name="nc_current_user">Vy:</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Smazat</string>

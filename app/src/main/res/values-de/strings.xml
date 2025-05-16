@@ -35,6 +35,7 @@
     <string name="connection_lost">Keine Verbindung zum Server</string>
     <string name="connection_lost_sent_messages_are_queued">Verbindung verloren - Gesendete Nachrichten werden der Warteschlange hinzugefügt</string>
     <string name="continuous_voice_message_recording">Aufnahme sperren für kontinuierliche Aufzeichnung der Sprachnachricht</string>
+    <string name="conversation_archived">Unterhaltung ist archiviert</string>
     <string name="conversation_is_read_only">Unterhaltung ist schreibgeschützt</string>
     <string name="conversation_read_only_failed">Unterhaltung konnte nicht auf schreibgeschützt gesetzt werden</string>
     <string name="conversations">Unterhaltungen</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">Bearbeiten</string>
     <string name="nc_edit_message_text">Nachricht bearbeiten</string>
     <string name="nc_edited_by_admin">Bearbeitet von der Administration</string>
+    <string name="nc_event_conversation_menu">Menü für Veranstaltungsunterhaltungen</string>
     <string name="nc_event_schedule">Planen</string>
     <string name="nc_expire_message_eight_hours">8 Stunden</string>
     <string name="nc_expire_message_four_weeks">4 Wochen</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
+    <string name="nc_invalid_time">Ungültige Zeit</string>
     <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
     <string name="nc_last_moderator_leaving_room_warning">Sie müssen einen neuen Moderator bestimmen, bevor Sie die Unterhaltung verlassen können.</string>
@@ -302,6 +305,8 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_meeting_ended">Meeting beendet</string>
+    <string name="nc_message_added_to_notes">Nachricht zu den Notizen hinzugefügt</string>
     <string name="nc_message_failed">Fehlgeschlagen</string>
     <string name="nc_message_failed_to_send">Fehler beim Senden der Nachricht:</string>
     <string name="nc_message_offline">Offline</string>
@@ -341,6 +346,7 @@
     <string name="nc_notify_me_never">Nie benachrichtigen</string>
     <string name="nc_offline">Aktuell offline, bitte die Verbindung prüfen</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Laufendes Meeting</string>
     <string name="nc_open_conversation_to_registered_users">Unterhaltung für registrierte Benutzer öffnen</string>
     <string name="nc_open_to_guest_app_users">Auch für Gast-App-Benutzer öffnen</string>
     <string name="nc_owner">Besitzer</string>
@@ -495,6 +501,8 @@
     <string name="nc_team">Team</string>
     <string name="nc_test_push_button">Push-Benachrichtigungen testen</string>
     <string name="nc_test_results">Testergebnisse</string>
+    <string name="nc_today_meeting">Heute um %1$s</string>
+    <string name="nc_tomorrow_meeting">Morgen um %1$s</string>
     <string name="nc_upload_choose_local_files">Dateien auswählen</string>
     <string name="nc_upload_confirm_send_multiple">Diese Dateien an %1$s senden?</string>
     <string name="nc_upload_confirm_send_single">Diese Datei an %1$s senden?</string>

@@ -35,6 +35,7 @@
     <string name="connection_lost">Puudub ühendus serveriga</string>
     <string name="connection_lost_sent_messages_are_queued">Ühendus on katkenud - saadetud sõnumid on edasisaatmise ootejärjekorras</string>
     <string name="continuous_voice_message_recording">Häälsõnumi pidevaks salvestamiseks lukusta salvestamine</string>
+    <string name="conversation_archived">Vestlust on arhiveeritud</string>
     <string name="conversation_is_read_only">Vestlus on vaid loetav</string>
     <string name="conversation_read_only_failed">Ei õnnestunud muuta vestlust ainult loetavaks</string>
     <string name="conversations">Vestlused</string>
@@ -236,6 +237,8 @@
     <string name="nc_edit_message">Redigeeri</string>
     <string name="nc_edit_message_text">Muuda sõnumit</string>
     <string name="nc_edited_by_admin">Muudetud peakasutaja poolt</string>
+    <string name="nc_event_conversation_menu">Sündmuse vestluse menüü</string>
+    <string name="nc_event_schedule">Ajakava</string>
     <string name="nc_expire_message_eight_hours">8 tundi</string>
     <string name="nc_expire_message_four_weeks">4 nädalat</string>
     <string name="nc_expire_message_off">Pole kasutusel</string>
@@ -280,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Eira akukasutuse optimeerimist</string>
     <string name="nc_important_conversation">Oluline vestlus</string>
     <string name="nc_important_conversation_desc">Selle vestluse teavituste seadistused on ülemuslikud „Ära sega“ seadistuste suhtes</string>
+    <string name="nc_invalid_time">Vigane aeg</string>
     <string name="nc_invitations">Kutsed</string>
     <string name="nc_join_open_conversations">Liitu avalike vestlustega</string>
     <string name="nc_last_moderator_leaving_room_warning">Pead määrtama uue moderaatori enne, kui saad siis vestlusest lahkuda</string>
@@ -301,6 +305,8 @@
     <string name="nc_manual">Pole määratud</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
+    <string name="nc_meeting_ended">Kohtumine on lõppenud</string>
+    <string name="nc_message_added_to_notes">Teade on lisatud märkmetesse</string>
     <string name="nc_message_failed">Ebaõnnestus</string>
     <string name="nc_message_failed_to_send">Sõnumi saatmine ei õnnestunud:</string>
     <string name="nc_message_offline">Pole võrgus</string>
@@ -340,6 +346,7 @@
     <string name="nc_notify_me_never">Ära iialgi teavita</string>
     <string name="nc_offline">Nutiseade pole võrgus, palun kontrolli internetiühendust</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Pooleliolev kohtumine</string>
     <string name="nc_open_conversation_to_registered_users">Ava vestlus registreeritud kasutajatele</string>
     <string name="nc_open_to_guest_app_users">Lisaks ava ka külalisrakenduse kasutajatele</string>
     <string name="nc_owner">Omanik</string>
@@ -494,6 +501,8 @@
     <string name="nc_team">Tiim</string>
     <string name="nc_test_push_button">Tõuketeavituse test</string>
     <string name="nc_test_results">Testi tulemused</string>
+    <string name="nc_today_meeting">Täna kell %1$s</string>
+    <string name="nc_tomorrow_meeting">Homme kell %1$s</string>
     <string name="nc_upload_choose_local_files">Vali failid</string>
     <string name="nc_upload_confirm_send_multiple">Kas saadame need failid kasutajale „%1$s“?</string>
     <string name="nc_upload_confirm_send_single">Kas saadame selle faili kasutajale „%1$s“?</string>
