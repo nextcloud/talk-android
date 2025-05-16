@@ -1349,6 +1349,7 @@ class ConversationsListActivity :
     private fun performFilterAndSearch(filter: String?) {
         if (filter!!.length >= SEARCH_MIN_CHARS) {
             clearMessageSearchResults()
+            binding.noArchivedConversationLayout.visibility = View.GONE
 
             if (hasFilterEnabled()) {
                 adapter?.updateDataSet(conversationItems)
@@ -1372,6 +1373,12 @@ class ConversationsListActivity :
         clearMessageSearchResults()
         adapter?.setFilter("")
         adapter?.filterItems()
+        val archiveFilterOn = filterState[FilterConversationFragment.ARCHIVE] ?: false
+        if (archiveFilterOn && adapter!!.isEmpty) {
+            binding.noArchivedConversationLayout.visibility = View.VISIBLE
+        } else {
+            binding.noArchivedConversationLayout.visibility = View.GONE
+        }
     }
 
     private fun clearMessageSearchResults() {
