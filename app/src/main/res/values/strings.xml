@@ -846,4 +846,5 @@ How to translate with transifex:
     <string name="archived_conversation">Archived %1$s</string>
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="conversation_archived">Conversation is archived</string>
+    <string name="local_time">Local time: %1$s</string>
 </resources>
