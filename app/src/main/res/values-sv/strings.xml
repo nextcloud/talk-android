@@ -34,6 +34,7 @@
     <string name="connection_lost">Ingen anslutning till servern</string>
     <string name="connection_lost_sent_messages_are_queued">Anslutning förlorad - Skickade meddelanden är i kö</string>
     <string name="continuous_voice_message_recording">Lås inspelning för kontinuerlig inspelning av röstmeddelandet</string>
+    <string name="conversation_archived">Konversationen är arkiverad</string>
     <string name="conversation_is_read_only">Konversationen är skrivskyddad</string>
     <string name="conversation_read_only_failed">Kunde inte sätta konversationen skrivskyddad</string>
     <string name="conversations">Konversationer</string>
@@ -235,6 +236,8 @@
     <string name="nc_edit_message">Redigera</string>
     <string name="nc_edit_message_text">Redigera meddelande</string>
     <string name="nc_edited_by_admin">Redigerad av admin</string>
+    <string name="nc_event_conversation_menu">Menyn för händelsekonversation</string>
+    <string name="nc_event_schedule">Schemalägg</string>
     <string name="nc_expire_message_eight_hours">8 timmar</string>
     <string name="nc_expire_message_four_weeks">4 veckor</string>
     <string name="nc_expire_message_off">Av</string>
@@ -279,6 +282,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorera batterioptimering</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
+    <string name="nc_invalid_time">Ogiltig tid</string>
     <string name="nc_invitations">Inbjudningar</string>
     <string name="nc_join_open_conversations">Gå med i öppna konversationer</string>
     <string name="nc_last_moderator_leaving_room_warning">Du måste tilldela en ny moderator innan du kan lämna konversationen</string>
@@ -300,6 +304,8 @@
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>
+    <string name="nc_meeting_ended">Möte avslutat</string>
+    <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
     <string name="nc_message_failed">Misslyckades</string>
     <string name="nc_message_failed_to_send">Kunde inte skicka meddelande:</string>
     <string name="nc_message_offline">Frånkopplad</string>
@@ -339,6 +345,7 @@
     <string name="nc_notify_me_never">Meddela aldrig</string>
     <string name="nc_offline">För närvarande frånkopplad, kontrollera din anslutning</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Pågående möte</string>
     <string name="nc_open_conversation_to_registered_users">Öppna konversation för registrerade användare</string>
     <string name="nc_open_to_guest_app_users">Även öppen för gästappanvändare</string>
     <string name="nc_owner">Ägare</string>
@@ -493,6 +500,8 @@
     <string name="nc_team">Team</string>
     <string name="nc_test_push_button">Testa pushnotiser</string>
     <string name="nc_test_results">Testresultat</string>
+    <string name="nc_today_meeting">Idag kl. %1$s</string>
+    <string name="nc_tomorrow_meeting">Imorgon kl. %1$s</string>
     <string name="nc_upload_choose_local_files">Välj filer</string>
     <string name="nc_upload_confirm_send_multiple">Skicka dessa filer till %1$s?</string>
     <string name="nc_upload_confirm_send_single">Skicka denna fil till %1$s?</string>

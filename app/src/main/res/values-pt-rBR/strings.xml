@@ -35,6 +35,7 @@
     <string name="connection_lost">Sem conexão com o servidor</string>
     <string name="connection_lost_sent_messages_are_queued">Conexão perdida - As mensagens enviadas são colocadas na fila</string>
     <string name="continuous_voice_message_recording">Fixar gravação para gravação contínua da mensagem de voz</string>
+    <string name="conversation_archived">Conversa arquivada</string>
     <string name="conversation_is_read_only">A conversa é somente leitura</string>
     <string name="conversation_read_only_failed">Falha ao definir a conversa Somente leitura</string>
     <string name="conversations">Conversas</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar mensagem</string>
     <string name="nc_edited_by_admin">Editado por um administrador</string>
+    <string name="nc_event_conversation_menu">Menu da conversa do evento</string>
     <string name="nc_event_schedule">Agendar</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">As notificações nesta conversa substituirão as configurações de Não perturbe</string>
+    <string name="nc_invalid_time">Horário inválido</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Entrar em conversas abertas</string>
     <string name="nc_last_moderator_leaving_room_warning">Você precisa promover um novo moderador antes de sair da conversa</string>
@@ -495,6 +498,8 @@
     <string name="nc_team">Equipe</string>
     <string name="nc_test_push_button">Testar notificações push</string>
     <string name="nc_test_results">Resultados do teste</string>
+    <string name="nc_today_meeting">Hoje às %1$s</string>
+    <string name="nc_tomorrow_meeting">Amanhã às %1$s</string>
     <string name="nc_upload_choose_local_files">Escolher arquivos</string>
     <string name="nc_upload_confirm_send_multiple">Enviar estes arquivos para %1$s?</string>
     <string name="nc_upload_confirm_send_single">Enviar este arquivo para %1$s?</string>
