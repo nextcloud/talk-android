@@ -17,6 +17,7 @@ import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
+import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
@@ -254,4 +255,7 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getNoteToSelfRoom(@Header("Authorization") authorization: String, @Url url: String): RoomOverall
+
+    @GET
+    suspend fun getProfile(@Header("Authorization") authorization: String, @Url url: String): ProfileOverall
 }

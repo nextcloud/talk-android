@@ -28,6 +28,7 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.EMAILS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.FEDERATED
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.GROUPS
 import com.nextcloud.talk.models.json.participants.TalkBan
+import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForRooms
@@ -126,6 +127,12 @@ class ConversationInfoViewModel @Inject constructor(
     private val _createRoomViewState = MutableLiveData<CreateRoomUIState>(CreateRoomUIState.None)
     val createRoomViewState: LiveData<CreateRoomUIState>
         get() = _createRoomViewState
+
+    object GetProfileErrorState : ViewState
+    class GetProfileSuccessState(val profile: Profile) : ViewState
+    private val _getProfileViewState = MutableLiveData<ViewState>()
+    val getProfileViewState: LiveData<ViewState>
+        get() = _getProfileViewState
 
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
@@ -284,6 +291,18 @@ class ConversationInfoViewModel @Inject constructor(
             } catch (exception: Exception) {
                 _getUnBanActorState.value = UnBanActorErrorState
                 Log.e(TAG, "Error while unbanning a participant", exception)
+            }
+        }
+    }
+
+    fun getProfileData(user: User, userId: String) {
+        val url = ApiUtils.getUrlForProfile(user.baseUrl!!, userId)
+        viewModelScope.launch {
+            val profile = conversationsRepository.getProfile(user.getCredentials(), url)
+            if (profile != null) {
+                _getProfileViewState.value = GetProfileSuccessState(profile)
+            } else {
+                _getProfileViewState.value = GetProfileErrorState
             }
         }
     }
