@@ -35,6 +35,7 @@
     <string name="connection_lost">No connection to server</string>
     <string name="connection_lost_sent_messages_are_queued">Connection lost - Sent messages are queued</string>
     <string name="continuous_voice_message_recording">Lock recording for continuously recording of the voice message</string>
+    <string name="conversation_archived">Conversation is archived</string>
     <string name="conversation_is_read_only">Conversation is read only</string>
     <string name="conversation_read_only_failed">Failed to set conversation Read-only</string>
     <string name="conversations">Conversations</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">Edit</string>
     <string name="nc_edit_message_text">Edit message</string>
     <string name="nc_edited_by_admin">Edited by admin</string>
+    <string name="nc_event_conversation_menu">Event conversation menu</string>
     <string name="nc_event_schedule">Schedule</string>
     <string name="nc_expire_message_eight_hours">8 hours</string>
     <string name="nc_expire_message_four_weeks">4 weeks</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_invalid_time">Invalid time</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
     <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
@@ -302,6 +305,8 @@
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
+    <string name="nc_meeting_ended">Meeting ended</string>
+    <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed</string>
     <string name="nc_message_failed_to_send">Failed to send message:</string>
     <string name="nc_message_offline">Offline</string>
@@ -341,6 +346,7 @@
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_offline">Currently offline, please check your connectivity</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Ongoing meeting</string>
     <string name="nc_open_conversation_to_registered_users">Open conversation to registered users</string>
     <string name="nc_open_to_guest_app_users">Also open to guest app users</string>
     <string name="nc_owner">Owner</string>
@@ -495,6 +501,8 @@
     <string name="nc_team">Team</string>
     <string name="nc_test_push_button">Test push notifications</string>
     <string name="nc_test_results">Test results</string>
+    <string name="nc_today_meeting">Today at %1$s</string>
+    <string name="nc_tomorrow_meeting">Tomorrow at %1$s</string>
     <string name="nc_upload_choose_local_files">Choose files</string>
     <string name="nc_upload_confirm_send_multiple">Send these files to %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send this file to %1$s?</string>
