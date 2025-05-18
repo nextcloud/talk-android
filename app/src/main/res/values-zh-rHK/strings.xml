@@ -35,6 +35,7 @@
     <string name="connection_lost">無法連接到伺服器</string>
     <string name="connection_lost_sent_messages_are_queued">連線已中斷 - 已發送的訊息已排隊等待傳送</string>
     <string name="continuous_voice_message_recording">鎖定錄音以連續錄製音頻訊息</string>
+    <string name="conversation_archived">對話已封存</string>
     <string name="conversation_is_read_only">對話是唯讀</string>
     <string name="conversation_read_only_failed">設定對話唯讀失敗</string>
     <string name="conversations">對話</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">編輯</string>
     <string name="nc_edit_message_text">編輯訊息</string>
     <string name="nc_edited_by_admin">編輯由管理員完成</string>
+    <string name="nc_event_conversation_menu">活動對話選項單</string>
     <string name="nc_event_schedule">預定</string>
     <string name="nc_expire_message_eight_hours">8 小时</string>
     <string name="nc_expire_message_four_weeks">4 個星期</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">不用理會電池優化</string>
     <string name="nc_important_conversation">重要對話</string>
     <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
+    <string name="nc_invalid_time">時間無效</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
     <string name="nc_last_moderator_leaving_room_warning">在您離開對話之前您需要推舉一位新的主持人</string>
@@ -302,6 +305,8 @@
     <string name="nc_manual">未定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_meeting_ended">會議已結束</string>
+    <string name="nc_message_added_to_notes">訊息已新增至筆記</string>
     <string name="nc_message_failed">失敗了</string>
     <string name="nc_message_failed_to_send">傳送訊息失敗︰</string>
     <string name="nc_message_offline">離線</string>
@@ -341,6 +346,7 @@
     <string name="nc_notify_me_never">從不通知</string>
     <string name="nc_offline">目前離線，請檢查您的連接</string>
     <string name="nc_ok">確定</string>
+    <string name="nc_ongoing_meeting">正在進行的會議</string>
     <string name="nc_open_conversation_to_registered_users">開放對話與註冊用戶</string>
     <string name="nc_open_to_guest_app_users">也向使用應用程式的來賓用戶開放</string>
     <string name="nc_owner">擁有者</string>
@@ -495,6 +501,8 @@
     <string name="nc_team">團隊</string>
     <string name="nc_test_push_button">測試推送通知</string>
     <string name="nc_test_results">測試結果</string>
+    <string name="nc_today_meeting">於今日 %1$s</string>
+    <string name="nc_tomorrow_meeting">於明天 %1$s</string>
     <string name="nc_upload_choose_local_files">選擇檔案</string>
     <string name="nc_upload_confirm_send_multiple">將這些檔案發送到 %1$s？</string>
     <string name="nc_upload_confirm_send_single">將此檔案發送到 %1$s？</string>

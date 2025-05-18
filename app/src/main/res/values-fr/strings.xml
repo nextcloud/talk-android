@@ -2,12 +2,13 @@
   <resources>
     <string name= "nc_edit">Modifier</string>
     <string name="add_to_notes">Ajouter à Notes</string>
-    <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favorites</string>
+    <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favoris</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
     <string name="archive_conversation">Archiver la conversation</string>
     <string name="archive_hint">Lorsqu\'une conversation est archivée, elle est cachée par défaut. Choisissez le filtre \"Archivés\" pour voir les conversations archivées. Les mentions directes seront toujours bien reçues.</string>
     <string name="archived">Archivé</string>
     <string name="archived_conversation">%1$s archivée</string>
+    <string name="audio_call">Appel audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Sortie audio</string>
     <string name="audio_output_phone">Téléphone</string>
@@ -31,8 +32,10 @@
     <string name="close">Fermer</string>
     <string name="close_icon">Icône de fermeture</string>
     <string name="connection_established">Connexion établie</string>
+    <string name="connection_lost">Aucune connexion au serveur</string>
     <string name="connection_lost_sent_messages_are_queued">Connexion perdue - les messages envoyés sont mis en file d\'attente</string>
     <string name="continuous_voice_message_recording">Verrouiller l\'enregistrement pour enregistrer en continu le message vocal</string>
+    <string name="conversation_archived">La conversation est archivée</string>
     <string name="conversation_is_read_only">La conversation est en lecture seule</string>
     <string name="conversation_read_only_failed">Impossible de passer la conversation en lecture seule</string>
     <string name="conversations">Discussions</string>
@@ -46,6 +49,7 @@
     <string name="dnd">Ne pas déranger</string>
     <string name="dontClear">Ne pas effacer</string>
     <string name="edit">Modifier</string>
+    <string name="edit_error_24_hours_old_message">Les messages datant de plus de 24 heures ne peuvent pas être modifiés</string>
     <string name="edit_message_icon_description">Modifier le message</string>
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
@@ -79,6 +83,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Les plus gros d\'abord</string>
     <string name="menu_item_sort_by_size_smallest_first">Le plus petit en premier</string>
+    <string name="message_copied">Message copié</string>
     <string name="message_deleted_by_you">Message supprimé par vous</string>
     <string name="message_last_edited_by">Modifié par %1$s</string>
     <string name="message_poll_tap_to_open">Toucher pour ouvrir le sondage</string>
@@ -163,6 +168,7 @@
     <string name="nc_copy_message">Copier</string>
     <string name="nc_create_new_conversation">Créer une nouvelle conversation</string>
     <string name="nc_create_poll">Créer un sondage</string>
+    <string name="nc_current_user">Toi :</string>
     <string name="nc_date_header_today">Aujourd\'hui</string>
     <string name="nc_date_header_yesterday">Hier</string>
     <string name="nc_delete">Supprimer</string>
@@ -205,8 +211,8 @@
     <string name="nc_diagnose_latest_push_registration_at_server_fail">Pas encore inscrit sur le serveur</string>
     <string name="nc_diagnose_meta_category_title">Méta-informations</string>
     <string name="nc_diagnose_meta_system_report_date">Génération du rapport système</string>
-    <string name="nc_diagnose_notification_calls_channel_permission">Canal de notification des appels activé?</string>
-    <string name="nc_diagnose_notification_messages_channel_permission">Canal de notification des messages activé?</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Canal de notification des appels activé ?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Canal de notification des messages activé ?</string>
     <string name="nc_diagnose_notification_permission">Permissions de notification</string>
     <string name="nc_diagnose_phone_category_title">Téléphone</string>
     <string name="nc_diagnose_server_talk_version">Version du serveur Talk</string>
@@ -231,6 +237,8 @@
     <string name="nc_edit_message">Modifier</string>
     <string name="nc_edit_message_text">Modifier le message</string>
     <string name="nc_edited_by_admin">Modifié par un administrateur</string>
+    <string name="nc_event_conversation_menu">Menu de conversation d\'événement</string>
+    <string name="nc_event_schedule">Calendrier</string>
     <string name="nc_expire_message_eight_hours">8 heures</string>
     <string name="nc_expire_message_four_weeks">4 semaines</string>
     <string name="nc_expire_message_off">Éteint</string>
@@ -247,6 +255,7 @@
     <string name="nc_federation_pending_invitation_hint">Vous avez des invitations en attente</string>
     <string name="nc_file_browser_back">Retour</string>
     <string name="nc_file_storage_permission">La permission d\'accès aux fichiers est requise</string>
+    <string name="nc_filter">Filtrer les conversations</string>
     <string name="nc_following_link">Utilisateur suivant un lien public</string>
     <string name="nc_formatted_message_you">Vous : %1$s</string>
     <string name="nc_forward_message">Transférer</string>
@@ -257,7 +266,7 @@
     <string name="nc_group">Groupe</string>
     <string name="nc_guest">Invité</string>
     <string name="nc_guest_access">Accès invité</string>
-    <string name="nc_guest_access_allow_failed">Impossible d\'activer/désactiver l\'accès invité.</string>
+    <string name="nc_guest_access_allow_failed">Impossible d\'activer / désactiver l\'accès invité.</string>
     <string name="nc_guest_access_allow_summary">Autoriser les inviter à partager le lien public pour rejoindre cette conversation</string>
     <string name="nc_guest_access_allow_title">Autoriser les invités</string>
     <string name="nc_guest_access_password_dialog_hint">Entrez un mot de passe</string>
@@ -274,12 +283,13 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
+    <string name="nc_invalid_time">Heure invalide</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
     <string name="nc_last_moderator_leaving_room_warning">Vous devez promouvoir un nouveau modérateur avant de pouvoir quitter la conversation.</string>
     <string name="nc_last_modified">%1$s | Dernière modification : %2$s</string>
     <string name="nc_leave">Quitter la conversation</string>
-    <string name="nc_leaving_call">Fin d\'appel …</string>
+    <string name="nc_leaving_call">Fin d\'appel…</string>
     <string name="nc_license_summary">Licence Publique Générale GNU, Version 3</string>
     <string name="nc_license_title">Licence</string>
     <string name="nc_limit_hit">La limite de %s caractères a été atteinte</string>
@@ -295,6 +305,8 @@
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
+    <string name="nc_meeting_ended">Réunion terminée</string>
+    <string name="nc_message_added_to_notes">Message ajouté aux notes</string>
     <string name="nc_message_failed">Échec</string>
     <string name="nc_message_failed_to_send">Échec d\'envoi du message :</string>
     <string name="nc_message_offline">Hors-ligne</string>
@@ -327,14 +339,14 @@
     <string name="nc_notification_channel_uploads_description">Notifier la progression du téléversement</string>
     <string name="nc_notification_settings">Paramètres de notification</string>
     <string name="nc_notification_warning">Les notifications ne sont pas configurées correctement</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Les permissions de notification et les paramètres de la batterie sont correctement configurés pour recevoir les notifications. Si vous avez néanmoins  des problèmes pour recevoir les notifications, merci de vérifier que les canaux de notification pour appels et messages sont activés.
-De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la liste des vérifications des erreurs communes. Si cela ne fonctionne toujours pas, merci d\'aller sur l\'écran de diagnostic et envoyer un rapport de bug.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Les permissions de notification et les paramètres de la batterie sont correctement configurés pour recevoir les notifications. Si vous avez néanmoins  des problèmes pour recevoir les notifications, merci de vérifier que les canaux de notification pour appels et messages sont activés. De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la liste des vérifications des erreurs communes. Si cela ne fonctionne toujours pas, merci d\'aller sur l\'écran de diagnostic et envoyer un rapport de bug.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Erreurs communes au sujet de la notification</string>
     <string name="nc_notify_me_always">Toujours notifier</string>
     <string name="nc_notify_me_mention">Notifier quand mentionné</string>
     <string name="nc_notify_me_never">Ne jamais notifier</string>
     <string name="nc_offline">Actuellement hors-ligne, veuillez vérifier votre connexion</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Réunion en cours</string>
     <string name="nc_open_conversation_to_registered_users">Ouvrir la conversation aux utilisateurs enregistrés</string>
     <string name="nc_open_to_guest_app_users">Également ouvert aux utilisateurs invités de l\'application</string>
     <string name="nc_owner">Propriétaire</string>
@@ -356,6 +368,9 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_promote">Promouvoir comme modérateur</string>
     <string name="nc_public_call_status">Conversation publique</string>
     <string name="nc_push_disabled">Notifications push désactivées</string>
+    <string name="nc_push_notification_error">Désolé, quelque chose s\'est mal passé, l\'erreur est %1$s</string>
+    <string name="nc_push_notification_fetch_error">Désolé, quelque chose s\'est mal passé, impossible de récupérer le message de test push</string>
+    <string name="nc_push_notification_message">La notification push a été envoyée avec succès. Vous devriez maintenant recevoir une notification sur cet appareil intitulée « Test des notifications push ».</string>
     <string name="nc_push_to_talk">Talkie-walkie</string>
     <string name="nc_push_to_talk_desc">Avec le micro désactivé, cliquez &amp; maintenez pour utiliser la fonction Talkie-walkie.</string>
     <string name="nc_remind">Rappelez-moi plus tard</string>
@@ -381,6 +396,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Recherche</string>
     <string name="nc_select_an_account">Choisissez un compte</string>
+    <string name="nc_send_edit_message">Message de mise à jour</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s a envoyé un GIF.</string>
     <string name="nc_sent_a_gif_you">Vous avez envoyé un GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s a envoyé une vidéo.</string>
@@ -451,6 +467,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_settings_server_eol">La version du serveur est trop ancienne et n\'est pas supporté par cette version de l\'application android</string>
     <string name="nc_settings_server_eol_title">Serveur non pris en charge</string>
     <string name="nc_settings_server_notification_app_not_installed_title">L\'application de notifications n\'est pas installée sur le serveur</string>
+    <string name="nc_settings_theme_battery_saver">Réglé par l\'économiseur de batterie</string>
     <string name="nc_settings_theme_dark">Sombre</string>
     <string name="nc_settings_theme_follow_system">Utiliser les paramètres du système</string>
     <string name="nc_settings_theme_key">thème</string>
@@ -478,9 +495,14 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_show_notification_warning_description">Quand les notifications ne sont pas correctement configurées, afficher un avertissement régulier</string>
     <string name="nc_show_notification_warning_title">Afficher un avertissement régulier à propos des notifications</string>
     <string name="nc_sort_by">Trier par</string>
+    <string name="nc_start_group_chat">Démarrer une discussion de groupe</string>
     <string name="nc_start_time">Heure de début</string>
     <string name="nc_switch_account">Changer de compte</string>
     <string name="nc_team">Équipe</string>
+    <string name="nc_test_push_button">Tester les notifications push</string>
+    <string name="nc_test_results">Résultats des tests</string>
+    <string name="nc_today_meeting">Aujourd\'hui à %1$s</string>
+    <string name="nc_tomorrow_meeting">Demain à %1$s</string>
     <string name="nc_upload_choose_local_files">Choisir des fichiers</string>
     <string name="nc_upload_confirm_send_multiple">Envoyer ces fichiers à %1$s ?</string>
     <string name="nc_upload_confirm_send_single">Envoyer ce fichier à %1$s ?</string>
@@ -502,6 +524,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="nc_webinar">Webinaire</string>
     <string name="nc_yes">Oui</string>
     <string name="next_week">Semaine suivante</string>
+    <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="oneHour">1 heure</string>
@@ -509,7 +532,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="online_status">Statut de connexion</string>
     <string name="openConversations">Discussions en cours</string>
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
-    <string name="play_pause_voice_message">Jouer/mettre en pause le message vocal</string>
+    <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="polls_add_option">Ajouter une option</string>
     <string name="polls_edit_vote">Modifier le vote</string>
@@ -600,7 +623,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="take_photo_switch_camera">Retourner la caméra</string>
     <string name="take_photo_toggle_crop">Rogner la photo</string>
     <string name="take_photo_toggle_lowres">Réduire la taille de l\'image</string>
-    <string name="take_photo_toggle_torch">Allumer/Éteindre la lampe</string>
+    <string name="take_photo_toggle_torch">Allumer / Éteindre la lampe</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
@@ -640,6 +663,7 @@ De l\'aide supplémentaire peut être trouvée sur DontKillMyApp.com ou dans la 
     <string name="userinfo_error_text">Impossible de récupérer les informations personnelles de l\'utilisateur.</string>
     <string name="userinfo_no_info_headline">Aucunes informations personnelles renseignées</string>
     <string name="userinfo_no_info_text">Ajoutez vos nom, photo et coordonnées sur votre page de profil.</string>
+    <string name="video_call">Appel vidéo</string>
     <string name="whats_your_status">Quel est votre état ?</string>
     <plurals name="see_similar_system_messages">
         <item quantity="one">Voir %d message similaire</item>
