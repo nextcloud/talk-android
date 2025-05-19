@@ -22,7 +22,6 @@
         android:text="@string/nc_conversation_auto_delete_notice"
         android:textSize="14sp"
         android:lineSpacingExtra="4dp"
-        android:textColor="@android:color/black"
         android:gravity="center"
         android:layout_marginBottom="12dp" />
 

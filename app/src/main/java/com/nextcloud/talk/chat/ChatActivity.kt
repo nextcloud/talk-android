@@ -86,6 +86,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
@@ -168,6 +169,9 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -229,13 +233,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import com.google.android.material.card.MaterialCardView
-import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
-import com.nextcloud.talk.models.json.participants.Participant
-import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
-import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
-import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -1193,12 +1190,53 @@ class ChatActivity :
 
     fun showConversationDeletionWarning(retentionPeriod: Int)  {
         binding.conversationDeleteNotice.visibility = View.VISIBLE
-        val deleteNoticeCard = findViewById<MaterialCardView>(R.id.conversation_delete_notice)
-        val messageTextView = deleteNoticeCard.findViewById<TextView>(R.id.deletion_message)
-        messageTextView.text = String.format(
+        binding.conversationDeleteNotice.apply {
+            isClickable = false
+            isFocusable = false
+            bringToFront()
+        }
+       val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
+
+       deleteNoticeText.text = String.format(
             resources.getString(R.string.nc_conversation_auto_delete_notice),
             retentionPeriod
         )
+
+        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).setOnClickListener {
+            deleteConversationDialog(it.context)
+        }
+
+        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).setOnClickListener{
+
+        }
+    }
+
+
+    fun deleteConversationDialog(context:Context){
+
+        val dialogBuilder = MaterialAlertDialogBuilder(context)
+            .setIcon(
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+            )
+            .setTitle(R.string.nc_delete_call)
+            .setMessage(R.string.nc_delete_conversation_more)
+            .setPositiveButton(R.string.nc_delete) { _, _ ->
+                currentConversation?.let { conversation ->
+                    deleteConversation(conversation)
+                }
+            }
+            .setNegativeButton(R.string.nc_cancel) { _, _ ->
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(context, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
+
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -3092,28 +3130,7 @@ class ChatActivity :
             deleteConversation.visibility = View.VISIBLE
 
             deleteConversation.setOnClickListener {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog
-                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
-                    )
-                    .setTitle(R.string.nc_delete_call)
-                    .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete) { _, _ ->
-                        currentConversation?.let { conversation ->
-                            deleteConversation(conversation)
-                        }
-                    }
-                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                )
+                deleteConversationDialog(it.context)
                 popupWindow.dismiss()
             }
         } else {
