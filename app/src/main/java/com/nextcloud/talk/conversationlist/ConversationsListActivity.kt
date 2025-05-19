@@ -41,9 +41,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
-import androidx.core.os.bundleOf
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -1387,6 +1387,7 @@ class ConversationsListActivity :
             adapter?.removeSection(firstHeader)
         } else {
             adapter?.removeItemsOfType(MessageResultItem.VIEW_TYPE)
+            adapter?.removeItemsOfType(MessagesTextHeaderItem.VIEW_TYPE)
         }
         adapter?.removeItemsOfType(LoadMoreResultsItem.VIEW_TYPE)
     }
@@ -2084,29 +2085,25 @@ class ConversationsListActivity :
             val entries = results.messages
             if (entries.isNotEmpty()) {
                 val adapterItems: MutableList<AbstractFlexibleItem<*>> = ArrayList(entries.size + 1)
+
                 for (i in entries.indices) {
+                    val showHeader = i == 0
                     adapterItems.add(
                         MessageResultItem(
                             context,
                             currentUser!!,
                             entries[i],
+                            showHeader,
                             viewThemeUtils = viewThemeUtils
                         )
                     )
                 }
+
                 if (results.hasMore) {
                     adapterItems.add(LoadMoreResultsItem)
                 }
 
                 adapter?.addItems(Int.MAX_VALUE, adapterItems)
-                val pos = adapter?.currentItems?.indexOfFirst {
-                    it is MessageResultItem
-                }
-                val item = (adapter?.currentItems?.get(pos!!) as MessageResultItem).apply { showHeader = true }
-                adapter?.addItem(pos!!, item)
-                adapter?.notifyItemInserted(pos!!)
-                adapter?.removeItem(pos!! - 1)
-                adapter?.notifyItemRemoved(pos!! - 1)
                 binding.recyclerView.scrollToPosition(0)
             }
         }
