@@ -144,7 +144,7 @@
             android:id="@+id/conversation_delete_notice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             tools:visibility="visible"
             android:layout_margin="8dp"
             app:cardCornerRadius="12dp">
