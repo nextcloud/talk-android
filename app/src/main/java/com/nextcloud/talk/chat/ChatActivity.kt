@@ -229,6 +229,13 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import com.google.android.material.card.MaterialCardView
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
+import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -661,6 +668,40 @@ class ChatActivity :
                                     user.baseUrl!!,
                                     currentConversation!!.name
                                 )
+                            }
+                        }
+
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+                            val eventEndTimeStamp = currentConversation?.objectId?.split("#")[1]?.toLong()
+                            val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
+                            val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
+                            val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
+                            if (isPastEvent == true && retentionPeriod != 0) {
+                                showConversationDeletionWarning(retentionPeriod)
+                            }
+                        }
+
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE) {
+                            val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
+                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
+                            if (retentionPeriod != 0 && (
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                    )
+                            ) {
+                                showConversationDeletionWarning(retentionPeriod)
+                            }
+                        }
+
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.INSTANT_MEETING) {
+                            val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
+                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
+                            if (retentionPeriod != 0 && (
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                    )
+                            ) {
+                                showConversationDeletionWarning(retentionPeriod)
                             }
                         }
 
@@ -1148,6 +1189,16 @@ class ChatActivity :
                 adapter?.notifyItemRemoved(indexToDelete)
             }
         }
+    }
+
+    fun showConversationDeletionWarning(retentionPeriod: Int)  {
+        binding.conversationDeleteNotice.visibility = View.VISIBLE
+        val deleteNoticeCard = findViewById<MaterialCardView>(R.id.conversation_delete_notice)
+        val messageTextView = deleteNoticeCard.findViewById<TextView>(R.id.deletion_message)
+        messageTextView.text = String.format(
+            resources.getString(R.string.nc_conversation_auto_delete_notice),
+            retentionPeriod
+        )
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

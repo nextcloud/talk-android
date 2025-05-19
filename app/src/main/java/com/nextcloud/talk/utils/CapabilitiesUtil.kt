@@ -140,7 +140,7 @@ object CapabilitiesUtil {
         return false
     }
 
-    fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int  {
+    fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-event") == true) {
@@ -150,7 +150,7 @@ object CapabilitiesUtil {
         return 0
     }
 
-    fun retentionOfSIP(spreedCapabilities: SpreedCapability): Int  {
+    fun retentionOfSIPRoom(spreedCapabilities: SpreedCapability): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-phone") == true) {
@@ -160,7 +160,7 @@ object CapabilitiesUtil {
         return 0
     }
 
-    fun retentionOfInstantMeetings(spreedCapabilities: SpreedCapability): Int  {
+    fun retentionOfInstantMeetingRoom(spreedCapabilities: SpreedCapability): Int {
         if (spreedCapabilities.config?.containsKey("conversations") == true) {
             val map = spreedCapabilities.config!!["conversations"]
             if (map?.containsKey("retention-instant-meetings") == true) {
