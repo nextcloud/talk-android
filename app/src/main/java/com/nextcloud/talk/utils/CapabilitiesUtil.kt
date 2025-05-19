@@ -140,6 +140,36 @@ object CapabilitiesUtil {
         return false
     }
 
+    fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int  {
+        if (spreedCapabilities.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("retention-event") == true) {
+                return map["retention-event"].toString().toInt()
+            }
+        }
+        return 0
+    }
+
+    fun retentionOfSIP(spreedCapabilities: SpreedCapability): Int  {
+        if (spreedCapabilities.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("retention-phone") == true) {
+                return map["retention-phone"].toString().toInt()
+            }
+        }
+        return 0
+    }
+
+    fun retentionOfInstantMeetings(spreedCapabilities: SpreedCapability): Int  {
+        if (spreedCapabilities.config?.containsKey("conversations") == true) {
+            val map = spreedCapabilities.config!!["conversations"]
+            if (map?.containsKey("retention-instant-meetings") == true) {
+                return map["retention-instant-meetings"].toString().toInt()
+            }
+        }
+        return 0
+    }
+
     @JvmStatic
     fun isCallRecordingAvailable(spreedCapabilities: SpreedCapability): Boolean {
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.RECORDING_V1) &&
