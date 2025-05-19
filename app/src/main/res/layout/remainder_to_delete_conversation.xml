@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kch@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/deletion_warning_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:padding="12dp">
+
+    <TextView
+        android:id="@+id/deletion_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nc_conversation_auto_delete_notice"
+        android:textSize="14sp"
+        android:lineSpacingExtra="4dp"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="12dp" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_now_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nc_delete_now"
+            android:textColor="@color/white"
+            app:icon="@drawable/ic_delete"
+            app:iconPadding="8dp"
+            app:iconGravity="textStart"
+            android:backgroundTint="@color/nc_darkRed"
+            android:layout_marginEnd="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/keep_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nc_keep"
+            app:icon="@drawable/ic_check"
+            app:iconPadding="8dp"
+            app:iconGravity="textStart" />
+    </LinearLayout>
+
+</LinearLayout>

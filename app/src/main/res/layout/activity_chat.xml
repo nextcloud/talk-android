@@ -139,6 +139,19 @@
         <include layout="@layout/out_of_office_view" />
     </com.google.android.material.card.MaterialCardView>
 
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/conversation_delete_notice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            tools:visibility="visible"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="12dp">
+
+            <include layout="@layout/remainder_to_delete_conversation" />
+        </com.google.android.material.card.MaterialCardView>
+
         <com.stfalcon.chatkit.messages.MessagesList
             android:id="@+id/messagesListView"
             android:layout_width="match_parent"
