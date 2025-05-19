@@ -35,6 +35,7 @@
     <string name="connection_lost">Níl aon cheangal leis an bhfreastalaí</string>
     <string name="connection_lost_sent_messages_are_queued">Ceangal caillte - Tá na teachtaireachtaí seolta i scuaine</string>
     <string name="continuous_voice_message_recording">Taifeadadh glas chun an teachtaireacht gutha a thaifeadadh go leanúnach</string>
+    <string name="conversation_archived">Tá an comhrá cartlannaithe</string>
     <string name="conversation_is_read_only">Tá an comhrá léite amháin</string>
     <string name="conversation_read_only_failed">Theip ar an gcomhrá Inléite amháin a shocrú</string>
     <string name="conversations">Comhráite</string>
@@ -236,6 +237,8 @@
     <string name="nc_edit_message">Cuir in eagar</string>
     <string name="nc_edit_message_text">Cuir teachtaireacht in eagar</string>
     <string name="nc_edited_by_admin">Arna chur in eagar ag riarthóir</string>
+    <string name="nc_event_conversation_menu">Roghchlár comhrá imeachta</string>
+    <string name="nc_event_schedule">Sceideal</string>
     <string name="nc_expire_message_eight_hours">8 n-uaire</string>
     <string name="nc_expire_message_four_weeks">4 seachtaine</string>
     <string name="nc_expire_message_off">as</string>
@@ -280,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
     <string name="nc_important_conversation_desc">Sáróidh fógraí sa chomhrá seo na socruithe Ná Cuir Isteach</string>
+    <string name="nc_invalid_time">Am neamhbhailí</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
     <string name="nc_last_moderator_leaving_room_warning">Ní mór duit modhnóir nua a chur chun cinn sula bhféadfaidh tú an comhrá a fhágáil</string>
@@ -301,6 +305,8 @@
     <string name="nc_manual">Gan socraithe</string>
     <string name="nc_mark_as_read">Marcáil mar léite</string>
     <string name="nc_mark_as_unread">Marcáil mar neamhléite</string>
+    <string name="nc_meeting_ended">Deireadh leis an gcruinniú</string>
+    <string name="nc_message_added_to_notes">Teachtaireacht curtha leis na nótaí</string>
     <string name="nc_message_failed">Theip</string>
     <string name="nc_message_failed_to_send">Theip ar an teachtaireacht a sheoladh:</string>
     <string name="nc_message_offline">As líne</string>
@@ -340,6 +346,7 @@
     <string name="nc_notify_me_never">Ná cuir in iúl riamh</string>
     <string name="nc_offline">Faoi láthair, seiceáil do nascacht le do thoil</string>
     <string name="nc_ok">Ceart go leor</string>
+    <string name="nc_ongoing_meeting">Cruinniú leanúnach</string>
     <string name="nc_open_conversation_to_registered_users">Oscail an comhrá d\'úsáideoirí cláraithe</string>
     <string name="nc_open_to_guest_app_users">Chomh maith leis sin oscailte d\'úsáideoirí aip aoi</string>
     <string name="nc_owner">Úinéir</string>
@@ -494,6 +501,8 @@
     <string name="nc_team">Foireann</string>
     <string name="nc_test_push_button">Tástáil fógraí brú</string>
     <string name="nc_test_results">Torthaí tástála</string>
+    <string name="nc_today_meeting">Inniu ag %1$s</string>
+    <string name="nc_tomorrow_meeting">Amárach ag %1$s</string>
     <string name="nc_upload_choose_local_files">Roghnaigh comhaid</string>
     <string name="nc_upload_confirm_send_multiple">An bhfuil fonn ort na comhaid seo a sheoladh chuig %1$s?</string>
     <string name="nc_upload_confirm_send_single">An bhfuil fonn ort an comhad seo a sheoladh chuig %1$s?</string>

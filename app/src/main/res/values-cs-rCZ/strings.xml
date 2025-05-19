@@ -35,6 +35,7 @@
     <string name="connection_lost">Žádné spojení se serverem</string>
     <string name="connection_lost_sent_messages_are_queued">Spojení ztraceno – odeslané zprávy jsou zařazené do fronty</string>
     <string name="continuous_voice_message_recording">Zamknout nahrávku pro nepřetržité nahrávání hlasové zprávy</string>
+    <string name="conversation_archived">Konverzace je archivována</string>
     <string name="conversation_is_read_only">Konverzace je pouze pro čtení</string>
     <string name="conversation_read_only_failed">Nepodařilo se nastavit konverzaci na pouze pro čtení</string>
     <string name="conversations">Konverzace</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">Upravit</string>
     <string name="nc_edit_message_text">Upravit zprávu</string>
     <string name="nc_edited_by_admin">Upraveno správcem</string>
+    <string name="nc_event_conversation_menu">Nabídka konverzace k události</string>
     <string name="nc_event_schedule">Plán</string>
     <string name="nc_expire_message_eight_hours">8 hodin</string>
     <string name="nc_expire_message_four_weeks">4 týdny</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
+    <string name="nc_invalid_time">Neplatný čas</string>
     <string name="nc_invitations">Pozvání</string>
     <string name="nc_join_open_conversations">Přidat se do všem přístupných konverzací</string>
     <string name="nc_last_moderator_leaving_room_warning">Než budete moci konverzaci opustit, je třeba předat někomu roli moderátora</string>
@@ -302,6 +305,7 @@
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
+    <string name="nc_meeting_ended">Schůzka skončila</string>
     <string name="nc_message_failed">Nezdařilo se</string>
     <string name="nc_message_failed_to_send">Odeslání zprávy se nezdařilo:</string>
     <string name="nc_message_offline">Bez připojení</string>
@@ -341,6 +345,7 @@
     <string name="nc_notify_me_never">Nikdy neupozorňovat</string>
     <string name="nc_offline">Jste bez připojení – zkontrolujte svou konektivitu</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Probíhající schůzka</string>
     <string name="nc_open_conversation_to_registered_users">Otevřít konverzaci registrovaným uživatelům</string>
     <string name="nc_open_to_guest_app_users">Otevřít také pro neregistrované hosty</string>
     <string name="nc_owner">Vlastník</string>
@@ -495,6 +500,8 @@
     <string name="nc_team">Tým</string>
     <string name="nc_test_push_button">Vyzkoušet push notifikace</string>
     <string name="nc_test_results">Výsledky testu</string>
+    <string name="nc_today_meeting">Dnes v%1$s</string>
+    <string name="nc_tomorrow_meeting">Zítra v %1$s</string>
     <string name="nc_upload_choose_local_files">Vyberte soubory</string>
     <string name="nc_upload_confirm_send_multiple">Odeslat tyto soubory k %1$s?</string>
     <string name="nc_upload_confirm_send_single">Odeslat tento soubor k %1$s?</string>
