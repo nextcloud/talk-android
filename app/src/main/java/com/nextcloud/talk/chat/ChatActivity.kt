@@ -53,6 +53,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -124,6 +125,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -142,6 +144,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -226,9 +229,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
-import com.nextcloud.talk.models.json.participants.Participant
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -301,32 +301,35 @@ class ChatActivity :
                 runBlocking {
                     val id = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
                     id?.let {
-                        val long = id.toLong()
                         val isSaved = chatViewModel.isMessageSaved(id.toLong())
                         if (isSaved) {
                             onMessageSearchResult(intent)
                         } else {
-                            binding.genericComposeView.apply {
-                                val shouldDismiss = mutableStateOf(false)
-                                setContent {
-                                    val bundle = bundleOf()
-                                    bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
-                                    bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
-                                    bundle.putString(KEY_ROOM_TOKEN, roomToken)
-                                    bundle.putString(BundleKeys.KEY_MESSAGE_ID, id)
-                                    bundle.putString(
-                                        BundleKeys.KEY_CONVERSATION_NAME,
-                                        currentConversation!!.displayName
-                                    )
-                                    ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
-                                }
-                            }
-                            Log.d("Julius", "Should open something else")
+                            startContextChatWindowForMessage(id)
                         }
                     }
                 }
             }
         }
+
+    private fun startContextChatWindowForMessage(id: String?) {
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                val bundle = bundleOf()
+                bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
+                bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
+                bundle.putString(KEY_ROOM_TOKEN, roomToken)
+                bundle.putString(BundleKeys.KEY_MESSAGE_ID, id)
+                bundle.putString(
+                    KEY_CONVERSATION_NAME,
+                    currentConversation!!.displayName
+                )
+                ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+            }
+        }
+        Log.d(TAG, "Should open something else")
+    }
 
     private val startPickCameraIntentForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -3955,9 +3958,7 @@ class ChatActivity :
         }
         if (!foundMessage) {
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
-            // TODO: show better info
-            // TODO: improve handling how this can be avoided. E.g. loading chat until message is reached...
-            Snackbar.make(binding.root, "Message was not found", Snackbar.LENGTH_LONG).show()
+            startContextChatWindowForMessage(parentMessage.id)
         }
     }
 
