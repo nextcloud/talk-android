@@ -258,4 +258,7 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getProfile(@Header("Authorization") authorization: String, @Url url: String): ProfileOverall
+
+    @DELETE
+    suspend fun unbindRoom(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 }

@@ -1073,6 +1073,27 @@ class ChatActivity :
             binding.voiceRecordingLock.y -= y
         }
 
+        chatViewModel.unbindRoomResult.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.UnbindRoomUiState.Success -> {
+                    binding.conversationDeleteNotice.visibility = View.GONE
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_room_retention),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ChatViewModel.UnbindRoomUiState.Error -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_common_error_sorry),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                else -> { }
+            }
+        }
+
         chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
             when (uiState) {
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
@@ -1188,16 +1209,16 @@ class ChatActivity :
         }
     }
 
-    fun showConversationDeletionWarning(retentionPeriod: Int)  {
+    fun showConversationDeletionWarning(retentionPeriod: Int) {
         binding.conversationDeleteNotice.visibility = View.VISIBLE
         binding.conversationDeleteNotice.apply {
             isClickable = false
             isFocusable = false
             bringToFront()
         }
-       val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
+        val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
 
-       deleteNoticeText.text = String.format(
+        deleteNoticeText.text = String.format(
             resources.getString(R.string.nc_conversation_auto_delete_notice),
             retentionPeriod
         )
@@ -1206,14 +1227,12 @@ class ChatActivity :
             deleteConversationDialog(it.context)
         }
 
-        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).setOnClickListener{
-
+        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).setOnClickListener {
+            chatViewModel.unbindRoom(credentials!!, conversationUser?.baseUrl!!, currentConversation?.token!!)
         }
     }
 
-
-    fun deleteConversationDialog(context:Context){
-
+    fun deleteConversationDialog(context: Context)  {
         val dialogBuilder = MaterialAlertDialogBuilder(context)
             .setIcon(
                 viewThemeUtils.dialog
@@ -1236,7 +1255,6 @@ class ChatActivity :
             dialog.getButton(AlertDialog.BUTTON_POSITIVE),
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
         )
-
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")

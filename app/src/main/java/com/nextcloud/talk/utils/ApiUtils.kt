@@ -449,6 +449,10 @@ object ApiUtils {
         return "$baseUrl$OCS_API_VERSION/cloud/users/search/by-phone"
     }
 
+    fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String  {
+        return "$baseUrl/ocs/v2.php/apps/spreed/api/v4/room/$roomToken/object"
+    }
+
     fun getUrlForFileUpload(baseUrl: String, user: String, remotePath: String): String {
         return "$baseUrl/remote.php/dav/files/$user$remotePath"
     }

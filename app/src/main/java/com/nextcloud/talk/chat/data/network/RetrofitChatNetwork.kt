@@ -217,4 +217,9 @@ class RetrofitChatNetwork(
             extractedLinkToPreview
         ).blockingFirst().ocs?.data?.references?.entries?.iterator()?.next()?.value
     }
+
+    override suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall {
+        val url = ApiUtils.getUrlForUnbindingRoom(baseUrl, roomToken)
+        return ncApiCoroutines.unbindRoom(credentials, url)
+    }
 }
