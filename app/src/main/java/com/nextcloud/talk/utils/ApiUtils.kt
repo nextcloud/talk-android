@@ -205,6 +205,10 @@ object ApiUtils {
         return getUrlForParticipants(version, baseUrl, token) + "/active"
     }
 
+    fun getUrlForImportantConversation(baseUrl: String, roomToken: String): String {
+        return "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/important"
+    }
+
     @JvmStatic
     fun getUrlForParticipantsSelf(version: Int, baseUrl: String?, token: String?): String {
         return getUrlForParticipants(version, baseUrl, token) + "/self"
