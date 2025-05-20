@@ -367,24 +367,30 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsSensitive(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
                 val response = conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
-                _markConversationAsSensitiveResult.value = MarkConversationAsSensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
+                _markConversationAsSensitiveResult.value =
+                    MarkConversationAsSensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
-                _markConversationAsSensitiveResult.value = MarkConversationAsSensitiveViewState.Error(exception)
+                _markConversationAsSensitiveResult.value =
+                    MarkConversationAsSensitiveViewState.Error(exception)
             }
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsInsensitive(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
                 val response = conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
-                _markConversationAsInsensitiveResult.value = MarkConversationAsInsensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
+                _markConversationAsInsensitiveResult.value =
+                    MarkConversationAsInsensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
-                _markConversationAsInsensitiveResult.value = MarkConversationAsInsensitiveViewState.Error(exception)
+                _markConversationAsInsensitiveResult.value =
+                    MarkConversationAsInsensitiveViewState.Error(exception)
             }
         }
     }

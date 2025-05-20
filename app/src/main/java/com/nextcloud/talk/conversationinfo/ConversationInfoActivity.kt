@@ -1061,7 +1061,6 @@ class ConversationInfoActivity :
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
 
-
         binding.notificationSettingsView.sensitiveConversationSwitch.isChecked = conversation!!.hasSensitive
 
         binding.notificationSettingsView.notificationSettingsSensitiveConversation.setOnClickListener {
