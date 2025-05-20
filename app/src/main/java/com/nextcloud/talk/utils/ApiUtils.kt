@@ -477,6 +477,10 @@ object ApiUtils {
         return "$baseUrl$OCS_API_VERSION/apps/spreed/temp-user-avatar"
     }
 
+    fun getUrlForSensitiveConversation(baseUrl:String, roomToken: String): String{
+        return "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/sensitive"
+    }
+
     fun getUrlForUserFields(baseUrl: String): String {
         return "$baseUrl$OCS_API_VERSION/cloud/user/fields"
     }
