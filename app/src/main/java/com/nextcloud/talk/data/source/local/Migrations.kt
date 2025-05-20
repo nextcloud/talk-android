@@ -295,10 +295,10 @@ object Migrations {
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +
-                    "ADD COLUMN isSensitive INTEGER NOT NULL DEFAULT 0;"
+                    "ADD COLUMN hasSensitive INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column isSensitive to table Conversations")
+            Log.i("Migrations", "Something went wrong when adding column hasSensitive to table Conversations")
         }
     }
 

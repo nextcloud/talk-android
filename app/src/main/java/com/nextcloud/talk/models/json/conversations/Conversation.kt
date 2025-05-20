@@ -168,5 +168,5 @@ data class Conversation(
     var hasArchived: Boolean = false,
 
     @JsonField(name = ["isSensitive"])
-    var isSensitive: Boolean = false
+    var hasSensitive: Boolean = false
 ) : Parcelable

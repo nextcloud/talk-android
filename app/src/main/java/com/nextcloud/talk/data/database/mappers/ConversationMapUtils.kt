@@ -62,7 +62,7 @@ fun ConversationModel.asEntity() =
         remoteServer = remoteServer,
         remoteToken = remoteToken,
         hasArchived = hasArchived,
-        isSensitive = isSensitive
+        hasSensitive = hasSensitive
     )
 
 fun ConversationEntity.asModel() =
@@ -115,7 +115,7 @@ fun ConversationEntity.asModel() =
         remoteServer = remoteServer,
         remoteToken = remoteToken,
         hasArchived = hasArchived,
-        isSensitive = isSensitive
+        hasSensitive = hasSensitive
     )
 
 fun Conversation.asEntity(accountId: Long) =
@@ -167,5 +167,5 @@ fun Conversation.asEntity(accountId: Long) =
         remoteServer = remoteServer,
         remoteToken = remoteToken,
         hasArchived = hasArchived,
-        isSensitive = isSensitive
+        hasSensitive = hasSensitive
     )
