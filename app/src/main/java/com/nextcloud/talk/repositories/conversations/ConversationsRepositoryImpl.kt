@@ -139,6 +139,24 @@ class ConversationsRepositoryImpl(
         return coroutineApi.markConversationAsInsensitive(credentials, url)
     }
 
+    override suspend fun markConversationAsImportant(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): GenericOverall {
+        val url = ApiUtils.getUrlForImportantConversation(baseUrl, roomToken)
+        return coroutineApi.markConversationAsImportant(credentials, url)
+    }
+
+    override suspend fun markConversationAsUnImportant(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): GenericOverall {
+        val url = ApiUtils.getUrlForImportantConversation(baseUrl, roomToken)
+        return coroutineApi.markConversationAsUnimportant(credentials, url)
+    }
+
     override suspend fun banActor(
         credentials: String,
         url: String,
