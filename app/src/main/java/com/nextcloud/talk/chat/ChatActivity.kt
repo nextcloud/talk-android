@@ -1246,15 +1246,14 @@ class ChatActivity :
             )
         }
 
-        if(ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)) {
+        if (ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)) {
             binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
                 View.VISIBLE
             binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.VISIBLE
-        }else{
+        } else {
             binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
                 View.GONE
             binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.GONE
-
         }
         binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).setOnClickListener {
             deleteConversationDialog(it.context)
