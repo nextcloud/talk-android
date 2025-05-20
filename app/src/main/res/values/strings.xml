@@ -521,7 +521,7 @@ How to translate with transifex:
         leaked to other services</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
     <string name="nc_last_moderator_leaving_room_warning">You need to promote a new moderator before you can leave the conversation</string>
-    <string name="nc_room_retention">Room was retained successfully</string>
+    <string name="nc_room_retention">Room is retained successfully</string>
 
     <string name="share">Share</string>
     <string name="send_to">Send to</string>

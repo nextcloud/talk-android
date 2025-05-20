@@ -808,7 +808,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun unbindRoom(credentials: String, baseUrl: String, roomToken: String)  {
+    fun unbindRoom(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
                 val response = chatNetworkDataSource.unbindRoom(credentials, baseUrl, roomToken)

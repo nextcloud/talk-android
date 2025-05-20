@@ -449,7 +449,7 @@ object ApiUtils {
         return "$baseUrl$OCS_API_VERSION/cloud/users/search/by-phone"
     }
 
-    fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String  {
+    fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String {
         return "$baseUrl/ocs/v2.php/apps/spreed/api/v4/room/$roomToken/object"
     }
 

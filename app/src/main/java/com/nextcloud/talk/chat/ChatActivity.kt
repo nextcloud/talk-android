@@ -169,6 +169,7 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
 import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
@@ -668,7 +669,11 @@ class ChatActivity :
                             }
                         }
 
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT && hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
                             val eventEndTimeStamp = currentConversation?.objectId?.split("#")[1]?.toLong()
                             val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
                             val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
@@ -678,7 +683,11 @@ class ChatActivity :
                             }
                         }
 
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE) {
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE && hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
                             val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
                             val systemMessage = currentConversation?.lastMessage?.systemMessageType
                             if (retentionPeriod != 0 && (
@@ -690,7 +699,11 @@ class ChatActivity :
                             }
                         }
 
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.INSTANT_MEETING) {
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.INSTANT_MEETING && hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
                             val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
                             val systemMessage = currentConversation?.lastMessage?.systemMessageType
                             if (retentionPeriod != 0 && (
@@ -1232,7 +1245,7 @@ class ChatActivity :
         }
     }
 
-    fun deleteConversationDialog(context: Context)  {
+    fun deleteConversationDialog(context: Context) {
         val dialogBuilder = MaterialAlertDialogBuilder(context)
             .setIcon(
                 viewThemeUtils.dialog
