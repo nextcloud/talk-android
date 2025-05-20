@@ -36,6 +36,7 @@ import com.nextcloud.talk.utils.Mimetype.AUDIO_MPEG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_OGG
 import com.nextcloud.talk.utils.Mimetype.AUDIO_WAV
 import com.nextcloud.talk.utils.Mimetype.IMAGE_GIF
+import com.nextcloud.talk.utils.Mimetype.IMAGE_HEIC
 import com.nextcloud.talk.utils.Mimetype.IMAGE_JPEG
 import com.nextcloud.talk.utils.Mimetype.IMAGE_PNG
 import com.nextcloud.talk.utils.Mimetype.TEXT_MARKDOWN
@@ -155,7 +156,8 @@ class FileViewerUtils(private val context: Context, private val user: User) {
                 -> openMediaView(filename, mimetype)
                 IMAGE_PNG,
                 IMAGE_JPEG,
-                IMAGE_GIF
+                IMAGE_GIF,
+                IMAGE_HEIC
                 -> openImageView(filename, mimetype)
                 TEXT_MARKDOWN,
                 TEXT_PLAIN
@@ -248,6 +250,7 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         return when (mimetype) {
             IMAGE_PNG,
             IMAGE_JPEG,
+            IMAGE_HEIC,
             IMAGE_GIF,
             AUDIO_MPEG,
             AUDIO_WAV,
