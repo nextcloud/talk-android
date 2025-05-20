@@ -245,6 +245,8 @@ class ConversationInfoActivity :
         initBanActorObserver()
         initConversationReadOnlyObserver()
         initClearChatHistoryObserver()
+        initMarkConversationAsImportantObserver()
+        initMarkConversationAsUnimportantObserver()
     }
 
     private fun initClearChatHistoryObserver() {
@@ -331,6 +333,46 @@ class ConversationInfoActivity :
                 }
 
                 else -> {}
+            }
+        }
+    }
+
+    private fun initMarkConversationAsImportantObserver() {
+        viewModel.markAsImportantResult.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.MarkConversationAsImportantViewState.Success -> {
+                        binding.root,
+                        context.getString(R.string.nc_mark_conversation_as_important),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ConversationInfoViewModel.MarkConversationAsImportantViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to mark conversation as important", uiState.exception)
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+
+    private fun initMarkConversationAsUnimportantObserver() {
+        viewModel.markAsUnimportantResult.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.MarkConversationAsUnimportantViewState.Success -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_mark_conversation_as_unimportant),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ConversationInfoViewModel.MarkConversationAsUnimportantViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to mark conversation as unimportant", uiState.exception)
+                }
+                else -> {
+                }
             }
         }
     }
@@ -940,6 +982,29 @@ class ConversationInfoActivity :
             } else {
                 binding.clearConversationHistory.visibility = GONE
             }
+        }
+
+        binding.notificationSettingsView.importantConversationSwitch.isChecked = conversation!!.hasImportant
+
+        binding.notificationSettingsView.importantConversationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                viewModel.markConversationAsImportant(
+                    credentials,
+                    conversationUser.baseUrl!!,
+                    conversation?.token!!
+                )
+            } else {
+                viewModel.markConversationAsUnimportant(
+                    credentials,
+                    conversationUser.baseUrl!!,
+                    conversation?.token!!
+                )
+            }
+        }
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.IMPORTANT_CONVERSATIONS)) {
+            binding.notificationSettingsView.notificationSettingsImportantConversation.visibility = VISIBLE
+        } else {
+            binding.notificationSettingsView.notificationSettingsImportantConversation.visibility = GONE
         }
 
         if (!hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ARCHIVE_CONVERSATIONS)) {
@@ -1648,13 +1713,13 @@ class ConversationInfoActivity :
     }
 
     private fun setUpNotificationSettings(module: DatabaseStorageModule) {
-        binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
-            val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
-            binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
-            lifecycleScope.launch {
-                module.saveBoolean("important_conversation_switch", !isChecked)
-            }
-        }
+        // binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
+        //     val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
+        //     binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
+        //     lifecycleScope.launch {
+        //        module.saveBoolean("important_conversation_switch", !isChecked)
+        //     }
+        // }
         binding.notificationSettingsView.notificationSettingsCallNotifications.setOnClickListener {
             val isChecked = binding.notificationSettingsView.callNotificationsSwitch.isChecked
             binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
@@ -1671,8 +1736,8 @@ class ConversationInfoActivity :
                 }
             }
 
-        binding.notificationSettingsView.importantConversationSwitch.isChecked = module
-            .getBoolean("important_conversation_switch", false)
+        // binding.notificationSettingsView.importantConversationSwitch.isChecked = module
+        //     .getBoolean("important_conversation_switch", false)
 
         if (conversation!!.remoteServer.isNullOrEmpty()) {
             binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = VISIBLE
