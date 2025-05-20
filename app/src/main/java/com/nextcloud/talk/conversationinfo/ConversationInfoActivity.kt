@@ -1049,11 +1049,6 @@ class ConversationInfoActivity :
             viewModel.getRoom(conversationUser, conversationToken)
         }
 
-        binding.notificationSettingsView.notificationSettingsSensitiveConversation.setOnClickListener {
-            val isChecked = binding.notificationSettingsView.sensitiveConversationSwitch.isChecked
-            binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
-        }
-
         if (conversation!!.hasArchived) {
             binding.archiveConversationIcon
                 .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
@@ -1066,12 +1061,24 @@ class ConversationInfoActivity :
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
         }
 
-        binding.notificationSettingsView.sensitiveConversationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
+
+        binding.notificationSettingsView.sensitiveConversationSwitch.isChecked = conversation!!.hasSensitive
+
+        binding.notificationSettingsView.notificationSettingsSensitiveConversation.setOnClickListener {
+            val isChecked = !binding.notificationSettingsView.sensitiveConversationSwitch.isChecked
+            binding.notificationSettingsView.sensitiveConversationSwitch.isChecked = isChecked
             if (isChecked) {
-                viewModel.markConversationAsSensitive(credentials, conversationUser.baseUrl!!, conversation?.token!!)
+                viewModel.markConversationAsSensitive(
+                    credentials,
+                    conversationUser.baseUrl!!,
+                    conversation?.token!!
+                )
             } else {
-                viewModel.markConversationAsInsensitive(credentials, conversationUser.baseUrl!!, conversation?.token!!)
+                viewModel.markConversationAsInsensitive(
+                    credentials,
+                    conversationUser.baseUrl!!,
+                    conversation?.token!!
+                )
             }
         }
         if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SENSITIVE_CONVERSATIONS)) {
@@ -1776,8 +1783,6 @@ class ConversationInfoActivity :
 
         binding.notificationSettingsView.importantConversationSwitch.isChecked = module
             .getBoolean("important_conversation_switch", false)
-
-        binding.notificationSettingsView.sensitiveConversationSwitch.isChecked = conversation!!.hasSensitive
 
         if (conversation!!.remoteServer.isNullOrEmpty()) {
             binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = VISIBLE
