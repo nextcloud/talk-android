@@ -1231,10 +1231,18 @@ class ChatActivity :
         }
         val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
 
-        deleteNoticeText.text = String.format(
-            resources.getString(R.string.nc_conversation_auto_delete_notice),
-            retentionPeriod
-        )
+        if(currentConversation?.objectType!= ConversationEnums.ObjectType.INSTANT_MEETING){
+            deleteNoticeText.text = String.format(
+                resources.getString(R.string.nc_conversation_auto_delete_notice),
+                retentionPeriod
+            )
+        }else{
+            deleteNoticeText.text = String.format(
+                resources.getString(R.string.nc_conversation_auto_delete_warning),
+                retentionPeriod
+            )
+        }
+
 
         binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).setOnClickListener {
             deleteConversationDialog(it.context)
