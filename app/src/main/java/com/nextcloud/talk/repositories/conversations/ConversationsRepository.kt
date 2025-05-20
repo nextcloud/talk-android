@@ -46,4 +46,9 @@ interface ConversationsRepository {
     suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall
 
     suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall
+
+    suspend fun markConversationAsImportant(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+
+    suspend fun markConversationAsUnImportant(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 }
+
