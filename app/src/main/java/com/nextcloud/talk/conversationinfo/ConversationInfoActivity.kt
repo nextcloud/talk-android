@@ -387,6 +387,7 @@ class ConversationInfoActivity :
         viewModel.markAsImportantResult.observe(this) { uiState ->
             when (uiState) {
                 is ConversationInfoViewModel.MarkConversationAsImportantViewState.Success -> {
+                    Snackbar.make(
                         binding.root,
                         context.getString(R.string.nc_mark_conversation_as_important),
                         Snackbar.LENGTH_LONG
@@ -401,7 +402,6 @@ class ConversationInfoActivity :
             }
         }
     }
-
 
     private fun initMarkConversationAsUnimportantObserver() {
         viewModel.markAsUnimportantResult.observe(this) { uiState ->

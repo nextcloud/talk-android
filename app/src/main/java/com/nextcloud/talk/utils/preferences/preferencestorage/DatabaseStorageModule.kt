@@ -22,7 +22,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.ApiUtils.getConversationApiVersion
 import com.nextcloud.talk.utils.ApiUtils.getCredentials
 import com.nextcloud.talk.utils.ApiUtils.getUrlForMessageExpiration
-import com.nextcloud.talk.utils.ApiUtils.getUrlForRoomNotificationCalls
 import com.nextcloud.talk.utils.ApiUtils.getUrlForRoomNotificationLevel
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.SpreedFeatures
