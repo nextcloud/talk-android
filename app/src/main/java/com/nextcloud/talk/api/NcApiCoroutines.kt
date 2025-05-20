@@ -179,7 +179,6 @@ interface NcApiCoroutines {
         @Url url: String
     ): GenericOverall
 
-
     @POST
     suspend fun markConversationAsImportant(
         @Header("Authorization") authorization: String,
