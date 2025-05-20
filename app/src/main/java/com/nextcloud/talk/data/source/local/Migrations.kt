@@ -290,7 +290,6 @@ object Migrations {
         }
     }
 
-
     fun addisSensitive(db: SupportSQLiteDatabase) {
         try {
             db.execSQL(

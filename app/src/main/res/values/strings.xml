@@ -239,6 +239,8 @@ How to translate with transifex:
     <string name="nc_clear_history">Delete all messages</string>
     <string name="nc_clear_history_warning">Do you really want to delete all messages in this conversation?</string>
     <string name="nc_clear_history_success">All messages were deleted</string>
+    <string name="nc_mark_conversation_as_sensitive">Conversation marked as sensitive</string>
+    <string name="nc_mark_conversation_as_insensitive">Conversation unmarked as sensitive</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_delete_call">Delete conversation</string>

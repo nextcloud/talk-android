@@ -50,7 +50,7 @@ interface ConversationsRepository {
 
     suspend fun getProfile(credentials: String, url: String): Profile?
 
-    suspend fun markConversationAsSensitive(credentials:String, baseUrl:String, roomToken:String) : GenericOverall
+    suspend fun markConversationAsSensitive(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 
-    suspend fun markConversationAsInsensitive(credentials: String, baseUrl:String, roomToken:String): GenericOverall
+    suspend fun markConversationAsInsensitive(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 }

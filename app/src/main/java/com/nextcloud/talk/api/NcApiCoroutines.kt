@@ -187,14 +187,14 @@ interface NcApiCoroutines {
 
     @POST
     suspend fun markConversationAsSensitive(
-        @Header("Authorization") authorization:String,
-        @Url url:String
+        @Header("Authorization") authorization: String,
+        @Url url: String
     ): GenericOverall
 
     @DELETE
     suspend fun markConversationAsInsensitive(
-        @Header("Authorization") authorization:String,
-        @Url url:String
+        @Header("Authorization") authorization: String,
+        @Url url: String
     ): GenericOverall
 
     @FormUrlEncoded

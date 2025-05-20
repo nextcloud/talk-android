@@ -135,10 +135,13 @@ class ConversationInfoViewModel @Inject constructor(
         get() = _getProfileViewState
 
     private val _markConversationAsSensitiveResult = MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
+    private val _markConversationAsSensitiveResult =
+        MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
     val markAsSensitiveResult: LiveData<MarkConversationAsSensitiveViewState>
         get() = _markConversationAsSensitiveResult
 
-    private val _markConversationAsInsensitiveResult = MutableLiveData<MarkConversationAsInsensitiveViewState>(MarkConversationAsInsensitiveViewState.None)
+    private val _markConversationAsInsensitiveResult =
+        MutableLiveData<MarkConversationAsInsensitiveViewState>(MarkConversationAsInsensitiveViewState.None)
     val markAsInsensitiveResult: LiveData<MarkConversationAsInsensitiveViewState>
         get() = _markConversationAsInsensitiveResult
 
@@ -370,19 +373,18 @@ class ConversationInfoViewModel @Inject constructor(
                 val response = conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
                 _markConversationAsSensitiveResult.value = MarkConversationAsSensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
-                _markConversationAsSensitiveResult.value = MarkConversationAsSensitiveViewState.Error(exception.message.toString())
+                _markConversationAsSensitiveResult.value = MarkConversationAsSensitiveViewState.Error(exception)
             }
         }
     }
 
-
-    fun markConversationAsInsensitive(credentials: String, baseUrl: String, roomToken:String){
+    fun markConversationAsInsensitive(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
                 val response = conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
                 _markConversationAsInsensitiveResult.value = MarkConversationAsInsensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
-                _markConversationAsInsensitiveResult.value = MarkConversationAsInsensitiveViewState.Error(exception.message.toString())
+                _markConversationAsInsensitiveResult.value = MarkConversationAsInsensitiveViewState.Error(exception)
             }
         }
     }
@@ -436,16 +438,16 @@ class ConversationInfoViewModel @Inject constructor(
         data class Error(val exception: Exception) : ClearChatHistoryViewState()
     }
 
-    sealed class MarkConversationAsSensitiveViewState{
-        data object None: MarkConversationAsSensitiveViewState()
-        data class Success (val statusCode: Int): MarkConversationAsSensitiveViewState()
-        data class Error (val message:String): MarkConversationAsSensitiveViewState()
+    sealed class MarkConversationAsSensitiveViewState {
+        data object None : MarkConversationAsSensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsSensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsSensitiveViewState()
     }
 
-    sealed class MarkConversationAsInsensitiveViewState{
-        data object None: MarkConversationAsInsensitiveViewState()
-        data class Success (val statusCode: Int): MarkConversationAsInsensitiveViewState()
-        data class Error (val message:String): MarkConversationAsInsensitiveViewState()
+    sealed class MarkConversationAsInsensitiveViewState {
+        data object None : MarkConversationAsInsensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsInsensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsInsensitiveViewState()
     }
 
     sealed class SetConversationReadOnlyViewState {

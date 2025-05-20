@@ -250,8 +250,49 @@ class ConversationInfoActivity :
         initBanActorObserver()
         initConversationReadOnlyObserver()
         initClearChatHistoryObserver()
+        initMarkConversationAsSensitiveObserver()
+        initMarkConversationAsInsensitiveObserver()
     }
 
+    private fun initMarkConversationAsSensitiveObserver() {
+        viewModel.markAsSensitiveResult.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.MarkConversationAsSensitiveViewState.Success -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_mark_conversation_as_sensitive),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ConversationInfoViewModel.MarkConversationAsSensitiveViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to mark conversation as sensitive", uiState.exception)
+                }
+                else -> {
+                }
+            }
+        }
+    }
+
+    private fun initMarkConversationAsInsensitiveObserver() {
+        viewModel.markAsInsensitiveResult.observe(this) { uiState ->
+            when (uiState) {
+                is ConversationInfoViewModel.MarkConversationAsInsensitiveViewState.Success -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_mark_conversation_as_insensitive),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ConversationInfoViewModel.MarkConversationAsInsensitiveViewState.Error -> {
+                    Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    Log.e(TAG, "failed to mark conversation as sensitive", uiState.exception)
+                }
+                else -> {
+                }
+            }
+        }
+    }
     private fun initClearChatHistoryObserver() {
         viewModel.clearChatHistoryViewState.observe(this) { uiState ->
             when (uiState) {
@@ -1008,6 +1049,11 @@ class ConversationInfoActivity :
             viewModel.getRoom(conversationUser, conversationToken)
         }
 
+        binding.notificationSettingsView.notificationSettingsSensitiveConversation.setOnClickListener {
+            val isChecked = binding.notificationSettingsView.sensitiveConversationSwitch.isChecked
+            binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
+        }
+
         if (conversation!!.hasArchived) {
             binding.archiveConversationIcon
                 .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_eye, null))
@@ -1018,6 +1064,20 @@ class ConversationInfoActivity :
                 .setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.outline_archive_24, null))
             binding.archiveConversationText.text = resources.getString(R.string.archive_conversation)
             binding.archiveConversationTextHint.text = resources.getString(R.string.archive_hint)
+        }
+
+        binding.notificationSettingsView.sensitiveConversationSwitch.setOnCheckedChangeListener { _, isChecked ->
+            binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
+            if (isChecked) {
+                viewModel.markConversationAsSensitive(credentials, conversationUser.baseUrl!!, conversation?.token!!)
+            } else {
+                viewModel.markConversationAsInsensitive(credentials, conversationUser.baseUrl!!, conversation?.token!!)
+            }
+        }
+        if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SENSITIVE_CONVERSATIONS)) {
+            binding.notificationSettingsView.notificationSettingsSensitiveConversation.visibility = VISIBLE
+        } else {
+            binding.notificationSettingsView.notificationSettingsSensitiveConversation.visibility = GONE
         }
         if (ConversationUtils.isConversationReadOnlyAvailable(conversationCopy, spreedCapabilities)) {
             binding.lockConversation.visibility = VISIBLE
@@ -1704,6 +1764,7 @@ class ConversationInfoActivity :
                 module.saveBoolean("call_notifications_switch", !isChecked)
             }
         }
+
         binding.notificationSettingsView.conversationInfoMessageNotificationsDropdown
             .setOnItemClickListener { _, _, position, _ ->
                 val value = resources.getStringArray(R.array.message_notification_levels_entry_values)[position]
@@ -1715,6 +1776,8 @@ class ConversationInfoActivity :
 
         binding.notificationSettingsView.importantConversationSwitch.isChecked = module
             .getBoolean("important_conversation_switch", false)
+
+        binding.notificationSettingsView.sensitiveConversationSwitch.isChecked = conversation!!.hasSensitive
 
         if (conversation!!.remoteServer.isNullOrEmpty()) {
             binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = VISIBLE
