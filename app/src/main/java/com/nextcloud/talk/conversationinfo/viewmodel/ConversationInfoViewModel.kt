@@ -124,6 +124,16 @@ class ConversationInfoViewModel @Inject constructor(
     val getConversationReadOnlyState: LiveData<SetConversationReadOnlyViewState>
         get() = _getConversationReadOnlyState
 
+    private val _markConversationAsImportantResult =
+        MutableLiveData<MarkConversationAsImportantViewState>(MarkConversationAsImportantViewState.None)
+    val markAsImportantResult: LiveData<MarkConversationAsImportantViewState>
+        get() = _markConversationAsImportantResult
+
+    private val _markConversationAsUnimportantResult =
+        MutableLiveData<MarkConversationAsUnimportantViewState>(MarkConversationAsUnimportantViewState.None)
+    val markAsUnimportantResult: LiveData<MarkConversationAsUnimportantViewState>
+        get() = _markConversationAsUnimportantResult
+
     private val _createRoomViewState = MutableLiveData<CreateRoomUIState>(CreateRoomUIState.None)
     val createRoomViewState: LiveData<CreateRoomUIState>
         get() = _createRoomViewState
@@ -356,6 +366,35 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsImportant(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
+                _markConversationAsImportantResult.value =
+                    MarkConversationAsImportantViewState.Success(response.ocs?.meta?.statusCode!!)
+            } catch (exception: Exception) {
+                _markConversationAsImportantResult.value =
+                    MarkConversationAsImportantViewState.Error(exception)
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsUnimportant(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
+                _markConversationAsUnimportantResult.value =
+                    MarkConversationAsUnimportantViewState.Success(response.ocs?.meta?.statusCode!!)
+            } catch (exception: Exception) {
+                _markConversationAsUnimportantResult.value =
+                    MarkConversationAsUnimportantViewState.Error(exception)
+            }
+        }
+    }
+
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun clearChatHistory(apiVersion: Int, roomToken: String) {
         viewModelScope.launch {
@@ -479,5 +518,17 @@ class ConversationInfoViewModel @Inject constructor(
         data object None : PasswordUiState()
         data object Success : PasswordUiState()
         data class Error(val exception: Exception) : PasswordUiState()
+    }
+
+    sealed class MarkConversationAsImportantViewState {
+        data object None : MarkConversationAsImportantViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsImportantViewState()
+        data class Error(val exception: Exception) : MarkConversationAsImportantViewState()
+    }
+
+    sealed class MarkConversationAsUnimportantViewState {
+        data object None : MarkConversationAsUnimportantViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsUnimportantViewState()
+        data class Error(val exception: Exception) : MarkConversationAsUnimportantViewState()
     }
 }

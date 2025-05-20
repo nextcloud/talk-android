@@ -352,8 +352,7 @@ How to translate with transifex:
     <string name="nc_sensitive_conversation">Sensitive conversation</string>
     <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_do_not_disturb">Ignore Do not disturb</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>
 
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>

@@ -65,20 +65,20 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     suspend fun saveBoolean(key: String, value: Boolean) {
-        if ("call_notifications_switch" == key) {
-            val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4))
-            val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl, conversationToken)
-            val credentials = getCredentials(conversationUser.username, conversationUser.token)
-            val notificationLevel = if (value) 1 else 0
-            withContext(Dispatchers.IO) {
-                try {
-                    ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
-                    Log.d(TAG, "Toggled notification calls")
-                } catch (e: Exception) {
-                    Log.e(TAG, "Error when trying to toggle notification calls", e)
-                }
-            }
-        }
+        // if ("call_notifications_switch" == key) {
+        //     val apiVersion = getConversationApiVersion(conversationUser, intArrayOf(ApiUtils.API_V4))
+        //     val url = getUrlForRoomNotificationCalls(apiVersion, conversationUser.baseUrl, conversationToken)
+        //     val credentials = getCredentials(conversationUser.username, conversationUser.token)
+        //     val notificationLevel = if (value) 1 else 0
+        //     withContext(Dispatchers.IO) {
+        //         try {
+        //             ncApiCoroutines!!.notificationCalls(credentials!!, url, notificationLevel)
+        //             Log.d(TAG, "Toggled notification calls")
+        //         } catch (e: Exception) {
+        //             Log.e(TAG, "Error when trying to toggle notification calls", e)
+        //         }
+        //     }
+        // }
         if ("lobby_switch" != key) {
             arbitraryStorageManager!!.storeStorageSetting(
                 accountIdentifier,
