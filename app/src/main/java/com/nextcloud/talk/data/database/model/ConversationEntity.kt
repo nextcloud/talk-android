@@ -95,7 +95,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "unreadMentionDirect") var unreadMentionDirect: Boolean,
     @ColumnInfo(name = "unreadMessages") var unreadMessages: Int = 0,
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
-    @ColumnInfo(name = "isSensitive") var isSensitive:Boolean = false
+    @ColumnInfo(name = "isSensitive") var isSensitive: Boolean = false
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions
