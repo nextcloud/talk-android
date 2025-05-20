@@ -51,4 +51,3 @@ interface ConversationsRepository {
 
     suspend fun markConversationAsUnImportant(credentials: String, baseUrl: String, roomToken: String): GenericOverall
 }
-

@@ -335,7 +335,6 @@ class ConversationInfoViewModel @Inject constructor(
         conversationsRepository.unarchiveConversation(user.getCredentials(), url)
     }
 
-
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun markConversationAsImportant(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
