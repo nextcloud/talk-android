@@ -306,6 +306,7 @@
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
     <string name="nc_meeting_ended">Schůzka skončila</string>
+    <string name="nc_message_added_to_notes">Zpráva přidána do poznámek</string>
     <string name="nc_message_failed">Nezdařilo se</string>
     <string name="nc_message_failed_to_send">Odeslání zprávy se nezdařilo:</string>
     <string name="nc_message_offline">Bez připojení</string>
