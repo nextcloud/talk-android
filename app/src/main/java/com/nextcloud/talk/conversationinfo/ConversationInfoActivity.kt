@@ -266,7 +266,7 @@ class ConversationInfoActivity :
                 }
                 is ConversationInfoViewModel.MarkConversationAsSensitiveViewState.Error -> {
                     Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    Log.e(TAG, "failed to mark conversation as sensitive", uiState.exception)
+                    Log.e(TAG, "failed to mark conversation as insensitive", uiState.exception)
                 }
                 else -> {
                 }

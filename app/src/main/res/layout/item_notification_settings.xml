@@ -140,7 +140,7 @@
             <com.google.android.material.textview.MaterialTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nc_sensitive_conversation_hint"
+                android:hint="@string/nc_sensitive_conversation_hint"
                 android:textSize="@dimen/supporting_text_text_size"
                 android:textColor="?android:textColorSecondary" />
         </LinearLayout>
