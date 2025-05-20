@@ -61,7 +61,8 @@ fun ConversationModel.asEntity() =
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
         remoteToken = remoteToken,
-        hasArchived = hasArchived
+        hasArchived = hasArchived,
+        isSensitive = isSensitive
     )
 
 fun ConversationEntity.asModel() =
@@ -113,7 +114,8 @@ fun ConversationEntity.asModel() =
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
         remoteToken = remoteToken,
-        hasArchived = hasArchived
+        hasArchived = hasArchived,
+        isSensitive = isSensitive
     )
 
 fun Conversation.asEntity(accountId: Long) =
@@ -164,5 +166,6 @@ fun Conversation.asEntity(accountId: Long) =
         recordingConsentRequired = recordingConsentRequired,
         remoteServer = remoteServer,
         remoteToken = remoteToken,
-        hasArchived = hasArchived
+        hasArchived = hasArchived,
+        isSensitive = isSensitive
     )

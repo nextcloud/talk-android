@@ -61,9 +61,11 @@ class ConversationModel(
     var remoteServer: String? = null,
     var remoteToken: String? = null,
     var hasArchived: Boolean = false,
+    var isSensitive: Boolean = false,
 
     // attributes that don't come from API. This should be changed?!
-    var password: String? = null
+    var password: String? = null,
+
 ) {
 
     companion object {
@@ -125,7 +127,8 @@ class ConversationModel(
                 recordingConsentRequired = conversation.recordingConsentRequired,
                 remoteServer = conversation.remoteServer,
                 remoteToken = conversation.remoteToken,
-                hasArchived = conversation.hasArchived
+                hasArchived = conversation.hasArchived,
+                isSensitive = conversation.isSensitive
             )
         }
     }

@@ -185,6 +185,18 @@ interface NcApiCoroutines {
         @Url url: String
     ): GenericOverall
 
+    @POST
+    suspend fun markConversationAsSensitive(
+        @Header("Authorization") authorization:String,
+        @Url url:String
+    ): GenericOverall
+
+    @DELETE
+    suspend fun markConversationAsInsensitive(
+        @Header("Authorization") authorization:String,
+        @Url url:String
+    ): GenericOverall
+
     @FormUrlEncoded
     @POST
     suspend fun notificationCalls(
