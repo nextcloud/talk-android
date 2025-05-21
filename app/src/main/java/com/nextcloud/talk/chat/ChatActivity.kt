@@ -53,6 +53,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -124,6 +125,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -142,6 +144,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -153,6 +156,7 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
+import com.nextcloud.talk.ui.dialog.ContextChatCompose
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -208,6 +212,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -224,9 +229,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
-import com.nextcloud.talk.models.json.participants.Participant
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -296,9 +298,38 @@ class ChatActivity :
     private val startMessageSearchForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             executeIfResultOk(it) { intent ->
-                onMessageSearchResult(intent)
+                runBlocking {
+                    val id = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+                    id?.let {
+                        val isSaved = chatViewModel.isMessageSaved(id.toLong())
+                        if (isSaved) {
+                            onMessageSearchResult(intent)
+                        } else {
+                            startContextChatWindowForMessage(id)
+                        }
+                    }
+                }
             }
         }
+
+    private fun startContextChatWindowForMessage(id: String?) {
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                val bundle = bundleOf()
+                bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
+                bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
+                bundle.putString(KEY_ROOM_TOKEN, roomToken)
+                bundle.putString(BundleKeys.KEY_MESSAGE_ID, id)
+                bundle.putString(
+                    KEY_CONVERSATION_NAME,
+                    currentConversation!!.displayName
+                )
+                ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+            }
+        }
+        Log.d(TAG, "Should open something else")
+    }
 
     private val startPickCameraIntentForResult = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -2149,7 +2180,7 @@ class ChatActivity :
         if (position != null && position >= 0) {
             binding.messagesListView.scrollToPosition(position)
         } else {
-            Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
+            startContextChatWindowForMessage(messageId)
         }
     }
 
@@ -2162,12 +2193,10 @@ class ChatActivity :
                     binding.messagesListView.height / 2
                 )
             } else {
-                Log.d(
-                    TAG,
-                    "message $messageId that should be scrolled to was not found " +
-                        "(scrollToAndCenterMessageWithId)"
-                )
+                startContextChatWindowForMessage(messageId)
             }
+        } ?: run {
+            startContextChatWindowForMessage(messageId)
         }
     }
 
@@ -3159,9 +3188,11 @@ class ChatActivity :
                         context.resources.getString(R.string.nc_tomorrow_meeting),
                         startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                     )
+
                     else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
                 }
             }
+
             currentTime.isAfter(endDateTime) -> context.resources.getString(R.string.nc_meeting_ended)
             else -> context.resources.getString(R.string.nc_ongoing_meeting)
         }
@@ -3624,6 +3655,7 @@ class ChatActivity :
                 )
                 showSnackBar(roomToken)
             }
+
             else -> {}
         }
     }
@@ -3644,6 +3676,7 @@ class ChatActivity :
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(chatIntent)
     }
+
     fun openInFilesApp(message: ChatMessage) {
         val keyID = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]
         val link = message.selectedIndividualHashMap!!["link"]
@@ -3927,9 +3960,7 @@ class ChatActivity :
         }
         if (!foundMessage) {
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
-            // TODO: show better info
-            // TODO: improve handling how this can be avoided. E.g. loading chat until message is reached...
-            Snackbar.make(binding.root, "Message was not found", Snackbar.LENGTH_LONG).show()
+            startContextChatWindowForMessage(parentMessage.id)
         }
     }
 
