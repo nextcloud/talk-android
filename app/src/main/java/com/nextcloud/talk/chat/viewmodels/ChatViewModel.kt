@@ -808,6 +808,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun unbindRoom(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
