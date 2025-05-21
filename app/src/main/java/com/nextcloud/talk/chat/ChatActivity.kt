@@ -684,7 +684,7 @@ class ChatActivity :
                             }
                         }
 
-                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE &&
+                        if (currentConversation?.objectId == "phone" &&
                             hasSpreedFeatureCapability(
                                 conversationUser?.capabilities!!.spreedCapability!!,
                                 SpreedFeatures.UNBIND_CONVERSATION
