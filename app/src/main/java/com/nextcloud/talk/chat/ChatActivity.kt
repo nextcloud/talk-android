@@ -2180,7 +2180,7 @@ class ChatActivity :
         if (position != null && position >= 0) {
             binding.messagesListView.scrollToPosition(position)
         } else {
-            Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
+            startContextChatWindowForMessage(messageId)
         }
     }
 
@@ -2193,12 +2193,10 @@ class ChatActivity :
                     binding.messagesListView.height / 2
                 )
             } else {
-                Log.d(
-                    TAG,
-                    "message $messageId that should be scrolled to was not found " +
-                        "(scrollToAndCenterMessageWithId)"
-                )
+                startContextChatWindowForMessage(messageId)
             }
+        } ?: run {
+            startContextChatWindowForMessage(messageId)
         }
     }
 
@@ -3190,9 +3188,11 @@ class ChatActivity :
                         context.resources.getString(R.string.nc_tomorrow_meeting),
                         startDateTime.format(DateTimeFormatter.ofPattern("HH:mm"))
                     )
+
                     else -> startDateTime.format(DateTimeFormatter.ofPattern("MMM d, yyyy, HH:mm"))
                 }
             }
+
             currentTime.isAfter(endDateTime) -> context.resources.getString(R.string.nc_meeting_ended)
             else -> context.resources.getString(R.string.nc_ongoing_meeting)
         }
@@ -3655,6 +3655,7 @@ class ChatActivity :
                 )
                 showSnackBar(roomToken)
             }
+
             else -> {}
         }
     }
@@ -3675,6 +3676,7 @@ class ChatActivity :
         chatIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(chatIntent)
     }
+
     fun openInFilesApp(message: ChatMessage) {
         val keyID = message.selectedIndividualHashMap!![PreviewMessageViewHolder.KEY_ID]
         val link = message.selectedIndividualHashMap!!["link"]
