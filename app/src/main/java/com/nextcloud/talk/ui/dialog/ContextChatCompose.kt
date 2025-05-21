@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -45,9 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -158,28 +155,28 @@ class ContextChatCompose(val bundle: Bundle) {
                                 val name = bundle.getString(BundleKeys.KEY_CONVERSATION_NAME)!!
                                 Text(name, fontSize = 24.sp)
                             }
-                            Spacer(modifier = Modifier.weight(1f))
-                            val cInt = context.resources.getColor(R.color.high_emphasis_text, null)
-                            Icon(
-                                painterResource(R.drawable.ic_call_black_24dp),
-                                "",
-                                tint = Color(cInt),
-                                modifier = Modifier
-                                    .padding()
-                                    .padding(end = 16.dp)
-                                    .alpha(HALF_ALPHA)
-                            )
-
-                            Icon(
-                                painterResource(R.drawable.ic_baseline_videocam_24),
-                                "",
-                                tint = Color(cInt),
-                                modifier = Modifier
-                                    .padding()
-                                    .alpha(HALF_ALPHA)
-                            )
-
-                            ComposeChatMenu(colorScheme.background, false)
+                            // Spacer(modifier = Modifier.weight(1f))
+                            // val cInt = context.resources.getColor(R.color.high_emphasis_text, null)
+                            // Icon(
+                            //     painterResource(R.drawable.ic_call_black_24dp),
+                            //     "",
+                            //     tint = Color(cInt),
+                            //     modifier = Modifier
+                            //         .padding()
+                            //         .padding(end = 16.dp)
+                            //         .alpha(HALF_ALPHA)
+                            // )
+                            //
+                            // Icon(
+                            //     painterResource(R.drawable.ic_baseline_videocam_24),
+                            //     "",
+                            //     tint = Color(cInt),
+                            //     modifier = Modifier
+                            //         .padding()
+                            //         .alpha(HALF_ALPHA)
+                            // )
+                            //
+                            // ComposeChatMenu(colorScheme.background, false)
                         }
                         if (shouldShow) {
                             Icon(
