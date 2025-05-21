@@ -62,6 +62,24 @@ object Migrations {
         }
     }
 
+    val MIGRATION_14_15 = object : Migration(14, 15) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 14 to 15")
+            addisImportant(db)
+        }
+    }
+
+    fun addisImportant(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD COLUMN hasImportant INTEGER NOT NULL DEFAULT 0;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations")
+        }
+    }
+
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +
