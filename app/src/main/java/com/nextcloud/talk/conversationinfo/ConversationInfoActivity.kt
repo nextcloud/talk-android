@@ -1068,8 +1068,10 @@ class ConversationInfoActivity :
 
         binding.notificationSettingsView.importantConversationSwitch.isChecked = conversation!!.hasImportant
 
-        binding.notificationSettingsView.importantConversationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
+        binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
+            val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
+            binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
+            if (!isChecked) {
                 viewModel.markConversationAsImportant(
                     credentials,
                     conversationUser.baseUrl!!,
@@ -1820,13 +1822,6 @@ class ConversationInfoActivity :
     }
 
     private fun setUpNotificationSettings(module: DatabaseStorageModule) {
-        // binding.notificationSettingsView.notificationSettingsImportantConversation.setOnClickListener {
-        //     val isChecked = binding.notificationSettingsView.importantConversationSwitch.isChecked
-        //     binding.notificationSettingsView.importantConversationSwitch.isChecked = !isChecked
-        //     lifecycleScope.launch {
-        //        module.saveBoolean("important_conversation_switch", !isChecked)
-        //     }
-        // }
         binding.notificationSettingsView.notificationSettingsCallNotifications.setOnClickListener {
             val isChecked = binding.notificationSettingsView.callNotificationsSwitch.isChecked
             binding.notificationSettingsView.callNotificationsSwitch.isChecked = !isChecked
@@ -1843,9 +1838,6 @@ class ConversationInfoActivity :
                     module.saveString("conversation_info_message_notifications_dropdown", value)
                 }
             }
-
-        // binding.notificationSettingsView.importantConversationSwitch.isChecked = module
-        //     .getBoolean("important_conversation_switch", false)
 
         if (conversation!!.remoteServer.isNullOrEmpty()) {
             binding.notificationSettingsView.notificationSettingsCallNotifications.visibility = VISIBLE
