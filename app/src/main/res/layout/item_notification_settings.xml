@@ -46,7 +46,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="@string/nc_important_conversation"
-                            android:textSize="@dimen/headline_text_size" />
+                            android:textSize="@dimen/headline_text_size"
+                            android:clickable="false"/>
 
                         <com.google.android.material.textview.MaterialTextView
                             android:layout_width="match_parent"
@@ -110,7 +111,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/standard_margin"
                         android:checked="true"
-                        android:clickable="false" />
+                        android:clickable="false"/>
                 </LinearLayout>
 
     <LinearLayout

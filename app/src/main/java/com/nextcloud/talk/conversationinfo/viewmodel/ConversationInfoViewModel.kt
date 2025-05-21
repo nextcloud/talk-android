@@ -384,7 +384,7 @@ class ConversationInfoViewModel @Inject constructor(
     fun markConversationAsUnimportant(credentials: String, baseUrl: String, roomToken: String) {
         viewModelScope.launch {
             try {
-                val response = conversationsRepository.markConversationAsImportant(credentials, baseUrl, roomToken)
+                val response = conversationsRepository.markConversationAsUnImportant(credentials, baseUrl, roomToken)
                 _markConversationAsUnimportantResult.value =
                     MarkConversationAsUnimportantViewState.Success(response.ocs?.meta?.statusCode!!)
             } catch (exception: Exception) {
