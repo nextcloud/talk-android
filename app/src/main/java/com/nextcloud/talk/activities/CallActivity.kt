@@ -131,6 +131,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.SILENT_FOR
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.power.PowerManagerUtils
 import com.nextcloud.talk.utils.registerPermissionHandlerBroadcastReceiver
@@ -236,6 +237,7 @@ class CallActivity : CallBaseActivity() {
     private var microphoneOn = false
     private var isVoiceOnlyCall = false
     private var isCallWithoutNotification = false
+    private var silentFor: Array<String>? = null
     private var isIncomingCallFromNotification = false
     private val callControlHandler = Handler()
     private val callInfosHandler = Handler()
@@ -383,9 +385,9 @@ class CallActivity : CallBaseActivity() {
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
-        credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
+        credentials = ApiUtils.getCredentials(conversationUser.username, conversationUser.token)
         if (TextUtils.isEmpty(baseUrl)) {
-            baseUrl = conversationUser!!.baseUrl
+            baseUrl = conversationUser.baseUrl
         }
         powerManagerUtils = PowerManagerUtils()
 
@@ -492,6 +494,7 @@ class CallActivity : CallBaseActivity() {
         conversationName = extras.getString(KEY_CONVERSATION_NAME, "")
         isVoiceOnlyCall = extras.getBoolean(KEY_CALL_VOICE_ONLY, false)
         isCallWithoutNotification = extras.getBoolean(KEY_CALL_WITHOUT_NOTIFICATION, false)
+        silentFor = extras.getStringArray(SILENT_FOR)
         canPublishAudioStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_AUDIO)
         canPublishVideoStream = extras.getBoolean(KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO)
         isModerator = extras.getBoolean(KEY_IS_MODERATOR, false)
@@ -530,12 +533,12 @@ class CallActivity : CallBaseActivity() {
             )
         }
 
-        when (CapabilitiesUtil.getRecordingConsentType(conversationUser!!.capabilities!!.spreedCapability!!)) {
+        when (CapabilitiesUtil.getRecordingConsentType(conversationUser.capabilities!!.spreedCapability!!)) {
             CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED -> initiateCall()
             CapabilitiesUtil.RECORDING_CONSENT_REQUIRED -> askForRecordingConsent()
             CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> {
                 val getRoomApiVersion = ApiUtils.getConversationApiVersion(
-                    conversationUser!!,
+                    conversationUser,
                     intArrayOf(ApiUtils.API_V4, 1)
                 )
                 ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
@@ -583,7 +586,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     fun sendReaction(emoji: String?) {
-        addReactionForAnimation(emoji, conversationUser!!.displayName)
+        addReactionForAnimation(emoji, conversationUser.displayName)
         if (isConnectionEstablished) {
             for (peerConnectionWrapper in peerConnectionWrapperList) {
                 peerConnectionWrapper.sendReaction(emoji)
@@ -1497,20 +1500,20 @@ class CallActivity : CallBaseActivity() {
                         }
                         Log.d(TAG, "   hasExternalSignalingServer: $hasExternalSignalingServer")
 
-                        if ("?" != conversationUser!!.userId && conversationUser!!.id != null) {
+                        if ("?" != conversationUser.userId && conversationUser.id != null) {
                             Log.d(
                                 TAG,
-                                "Update externalSignalingServer for: " + conversationUser!!.id +
-                                    " / " + conversationUser!!.userId
+                                "Update externalSignalingServer for: " + conversationUser.id +
+                                    " / " + conversationUser.userId
                             )
                             userManager!!.updateExternalSignalingServer(
-                                conversationUser!!.id!!,
+                                conversationUser.id!!,
                                 externalSignalingServer!!
                             )
                                 .subscribeOn(Schedulers.io())
                                 .subscribe()
                         } else {
-                            conversationUser!!.externalSignalingServer = externalSignalingServer
+                            conversationUser.externalSignalingServer = externalSignalingServer
                         }
 
                         addIceServers(signalingSettingsOverall, apiVersion)
@@ -1698,7 +1701,7 @@ class CallActivity : CallBaseActivity() {
                             if (!TextUtils.isEmpty(roomToken)) {
                                 cancelExistingNotificationsForRoom(
                                     applicationContext,
-                                    conversationUser!!,
+                                    conversationUser,
                                     roomToken!!
                                 )
                             }
@@ -1743,7 +1746,8 @@ class CallActivity : CallBaseActivity() {
             ApiUtils.getUrlForCall(apiVersion, baseUrl, roomToken!!),
             inCallFlag,
             isCallWithoutNotification,
-            recordingConsentGiven
+            recordingConsentGiven,
+            silentFor ?: arrayOf()
         )
             .subscribeOn(Schedulers.io())
             .retry(API_RETRIES)
@@ -1780,7 +1784,7 @@ class CallActivity : CallBaseActivity() {
     private fun startCallTimeCounter(callStartTime: Long) {
         if (callStartTime != 0L &&
             hasSpreedFeatureCapability(
-                conversationUser!!.capabilities!!.spreedCapability!!,
+                conversationUser.capabilities!!.spreedCapability!!,
                 SpreedFeatures.RECORDING_V1
             )
         ) {
@@ -2603,8 +2607,8 @@ class CallActivity : CallBaseActivity() {
         val dataChannelMessage = DataChannelMessage()
         dataChannelMessage.type = "nickChanged"
         val nickChangedPayload: MutableMap<String, String> = HashMap()
-        nickChangedPayload["userid"] = conversationUser!!.userId!!
-        nickChangedPayload["name"] = conversationUser!!.displayName!!
+        nickChangedPayload["userid"] = conversationUser.userId!!
+        nickChangedPayload["name"] = conversationUser.displayName!!
         dataChannelMessage.payloadMap = nickChangedPayload.toMap()
         for (peerConnectionWrapper in peerConnectionWrapperList) {
             if (peerConnectionWrapper.isMCUPublisher) {
@@ -3100,7 +3104,7 @@ class CallActivity : CallBaseActivity() {
             val payload = ncSignalingMessage.payload
                 ?: // Broken message, this should not happen
                 return
-            payload.nick = conversationUser!!.displayName
+            payload.nick = conversationUser.displayName
         }
     }
 
@@ -3251,7 +3255,7 @@ class CallActivity : CallBaseActivity() {
 
     val isAllowedToStartOrStopRecording: Boolean
         get() = (
-            isCallRecordingAvailable(conversationUser!!.capabilities!!.spreedCapability!!) &&
+            isCallRecordingAvailable(conversationUser.capabilities!!.spreedCapability!!) &&
                 isModerator
             )
     val isAllowedToRaiseHand: Boolean

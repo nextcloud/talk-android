@@ -53,6 +53,7 @@ import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
@@ -124,6 +125,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
+import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -142,6 +144,7 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
+import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
@@ -187,6 +190,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.SILENT_FOR
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -224,9 +228,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
-import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
-import com.nextcloud.talk.models.json.participants.Participant
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
@@ -327,6 +328,7 @@ class ChatActivity :
     var pullChatMessagesPending = false
     var startCallFromNotification: Boolean = false
     var startCallFromRoomSwitch: Boolean = false
+    var silentFor: Array<String>? = null
 
     var voiceOnly: Boolean = true
     private lateinit var path: String
@@ -510,7 +512,7 @@ class ChatActivity :
 
         startCallFromNotification = extras?.getBoolean(BundleKeys.KEY_FROM_NOTIFICATION_START_CALL, false) == true
         startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
-
+        silentFor = extras?.getStringArray(SILENT_FOR)
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
     }
 
@@ -678,7 +680,7 @@ class ChatActivity :
 
                     if (startCallFromRoomSwitch) {
                         startCallFromRoomSwitch = false
-                        startACall(voiceOnly, true)
+                        startACall(voiceOnly, true, silentFor)
                     }
                 }
 
@@ -1634,6 +1636,13 @@ class ChatActivity :
             if (startCallAfterRoomSwitch) {
                 bundle.putBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, true)
                 bundle.putBoolean(KEY_CALL_VOICE_ONLY, isVoiceOnlyCall)
+            }
+
+            val previousParticipants = mutableListOf<String>()
+            if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                previousParticipants.add(currentConversation!!.name)
+                val silentFor = previousParticipants.toTypedArray()
+                bundle.putStringArray(SILENT_FOR, silentFor)
             }
 
             leaveRoom {
@@ -3245,7 +3254,7 @@ class ChatActivity :
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
 
-    private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean) {
+    private fun startACall(isVoiceOnlyCall: Boolean, callWithoutNotification: Boolean, silentFor: Array<String>? = null) {
         currentConversation?.let {
             if (conversationUser != null) {
                 val pp = ParticipantPermissions(spreedCapabilities, it)
@@ -3290,6 +3299,7 @@ class ChatActivity :
 
             if (it.objectType == ConversationEnums.ObjectType.ROOM) {
                 bundle.putBoolean(KEY_IS_BREAKOUT_ROOM, true)
+                bundle.putStringArray(SILENT_FOR, silentFor) // TODO should this go here?
             }
 
             val callIntent = Intent(this, CallActivity::class.java)

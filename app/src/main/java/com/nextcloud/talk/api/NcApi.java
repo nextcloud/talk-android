@@ -25,7 +25,6 @@ import com.nextcloud.talk.models.json.notifications.NotificationOverall;
 import com.nextcloud.talk.models.json.opengraph.OpenGraphOverall;
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall;
 import com.nextcloud.talk.models.json.participants.ParticipantsOverall;
-import com.nextcloud.talk.models.json.participants.TalkBanOverall;
 import com.nextcloud.talk.models.json.push.PushRegistrationOverall;
 import com.nextcloud.talk.models.json.reactions.ReactionsOverall;
 import com.nextcloud.talk.models.json.reminder.ReminderOverall;
@@ -207,7 +206,8 @@ public interface NcApi {
                                         @Url String url,
                                         @Field("flags") Integer inCall,
                                         @Field("silent") Boolean callWithoutNotification,
-                                        @Nullable @Field("recordingConsent") Boolean recordingConsent);
+                                        @Nullable @Field("recordingConsent") Boolean recordingConsent,
+                                        @Field("silentFor") String[] silentFor);
 
     /*
     Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /call/callToken
