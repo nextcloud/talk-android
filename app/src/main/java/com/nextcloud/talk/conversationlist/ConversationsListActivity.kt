@@ -598,7 +598,7 @@ class ConversationsListActivity :
         nearFutureEventConversationItems.add(conversationItem)
     }
 
-    fun getFilterStates()  {
+    fun getFilterStates() {
         val accountId = UserIdUtils.getIdForUser(currentUser)
         filterState[UNREAD] = (
             arbitraryStorageManager.getStorageSetting(
