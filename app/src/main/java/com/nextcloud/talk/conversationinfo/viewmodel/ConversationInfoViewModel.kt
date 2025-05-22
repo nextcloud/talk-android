@@ -134,7 +134,6 @@ class ConversationInfoViewModel @Inject constructor(
     val getProfileViewState: LiveData<ViewState>
         get() = _getProfileViewState
 
-    private val _markConversationAsSensitiveResult = MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
     private val _markConversationAsSensitiveResult =
         MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
     val markAsSensitiveResult: LiveData<MarkConversationAsSensitiveViewState>
