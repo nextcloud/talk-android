@@ -35,6 +35,7 @@
     <string name="connection_lost">Нема везе са сервером</string>
     <string name="connection_lost_sent_messages_are_queued">Веза је прекинута - Послате поруке су стављене у ред</string>
     <string name="continuous_voice_message_recording">Закључајте снимање да би се гласовна порука непрестано снимала.</string>
+    <string name="conversation_archived">Разговор је архивиран</string>
     <string name="conversation_is_read_only">Овај разговор је само-за-читање</string>
     <string name="conversation_read_only_failed">Разговор није могао да се постави као само-за-читање</string>
     <string name="conversations">Разговори</string>
@@ -236,6 +237,7 @@
     <string name="nc_edit_message">Измени</string>
     <string name="nc_edit_message_text">Уреди поруку</string>
     <string name="nc_edited_by_admin">Уредио је админ</string>
+    <string name="nc_event_conversation_menu">Мени разговора у догађају</string>
     <string name="nc_event_schedule">Закажи</string>
     <string name="nc_expire_message_eight_hours">8 сати</string>
     <string name="nc_expire_message_four_weeks">4 недеље</string>
@@ -281,6 +283,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Игнориши оптимизацију батерије</string>
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_important_conversation_desc">Обавештења у овом разговору ће преиначити Не узнемиравај поставке.</string>
+    <string name="nc_invalid_time">Неисправно време</string>
     <string name="nc_invitations">Позивнице</string>
     <string name="nc_join_open_conversations">Придружи се отвореном разговору</string>
     <string name="nc_last_moderator_leaving_room_warning">Морате да промовишете новог модератора пре него што напустите разговор</string>
@@ -302,6 +305,8 @@
     <string name="nc_manual">Није постављено</string>
     <string name="nc_mark_as_read">Означи као прочитано</string>
     <string name="nc_mark_as_unread">Означи као непрочитано</string>
+    <string name="nc_meeting_ended">Састанак је завршен</string>
+    <string name="nc_message_added_to_notes">У белешке је додата порука</string>
     <string name="nc_message_failed">Није успело</string>
     <string name="nc_message_failed_to_send">Није успело слање поруке:</string>
     <string name="nc_message_offline">Ван мреже</string>
@@ -341,6 +346,7 @@
     <string name="nc_notify_me_never">Никад не обавештавај</string>
     <string name="nc_offline">Тренутно ван мреже, проверите да ли имате интернет</string>
     <string name="nc_ok">У реду</string>
+    <string name="nc_ongoing_meeting">Састанак је у току</string>
     <string name="nc_open_conversation_to_registered_users">Отвори разговор свим регистрованим корисницима</string>
     <string name="nc_open_to_guest_app_users">Такође отвори и за кориснике апликације гост</string>
     <string name="nc_owner">Власник</string>
@@ -495,6 +501,8 @@
     <string name="nc_team">Тим</string>
     <string name="nc_test_push_button">Тестирање брзих обавештења</string>
     <string name="nc_test_results">Резултати теста</string>
+    <string name="nc_today_meeting">Данас у %1$s</string>
+    <string name="nc_tomorrow_meeting">Сутра у %1$s</string>
     <string name="nc_upload_choose_local_files">Изаберите фајлове</string>
     <string name="nc_upload_confirm_send_multiple">Да ли да пошаљем ове фајлове %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да ли да пошаљем овај фајл %1$s?</string>

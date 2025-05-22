@@ -305,6 +305,8 @@
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
+    <string name="nc_meeting_ended">Reunião encerrada</string>
+    <string name="nc_message_added_to_notes">Mensagem adicionada ás notas</string>
     <string name="nc_message_failed">Falhou</string>
     <string name="nc_message_failed_to_send">Falha ao enviar mensagem:</string>
     <string name="nc_message_offline">Off-line</string>
@@ -344,6 +346,7 @@
     <string name="nc_notify_me_never">Nunca notificar</string>
     <string name="nc_offline">Off-line no momento, cheque sua conectividade</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Reunião em andamento</string>
     <string name="nc_open_conversation_to_registered_users">Abrir conversa a usuários registrados</string>
     <string name="nc_open_to_guest_app_users">Também abrir a usuários do aplicativo de convidados</string>
     <string name="nc_owner">Proprietário</string>
