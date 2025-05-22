@@ -675,7 +675,11 @@ class ChatActivity :
                                 SpreedFeatures.UNBIND_CONVERSATION
                             )
                         ) {
-                            val eventEndTimeStamp = currentConversation?.objectId?.split("#")[1]?.toLong()
+                            val eventEndTimeStamp =
+                                currentConversation?.objectId
+                                    ?.split("#")
+                                    ?.getOrNull(1)
+                                    ?.toLongOrNull()
                             val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
                             val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
                             val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
