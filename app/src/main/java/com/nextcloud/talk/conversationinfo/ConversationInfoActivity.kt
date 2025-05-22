@@ -462,7 +462,8 @@ class ConversationInfoActivity :
                 binding.notificationSettingsView.importantConversationSwitch,
                 binding.guestAccessView.allowGuestsSwitch,
                 binding.guestAccessView.passwordProtectionSwitch,
-                binding.recordingConsentView.recordingConsentForConversationSwitch
+                binding.recordingConsentView.recordingConsentForConversationSwitch,
+                binding.lockConversationSwitch
             ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
