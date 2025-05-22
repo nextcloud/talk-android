@@ -44,6 +44,9 @@ class ConversationEnums {
         SHARE_PASSWORD,
         FILE,
         ROOM,
-        EVENT
+        EVENT,
+        PHONE_TEMPORARY,
+        PHONE_PERSIST,
+        INSTANT_MEETING
     }
 }

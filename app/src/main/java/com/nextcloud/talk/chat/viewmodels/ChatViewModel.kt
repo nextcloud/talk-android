@@ -146,6 +146,10 @@ class ChatViewModel @Inject constructor(
     val outOfOfficeViewState: LiveData<OutOfOfficeUIState>
         get() = _outOfOfficeViewState
 
+    private val _unbindRoomResult = MutableLiveData<UnbindRoomUiState>(UnbindRoomUiState.None)
+    val unbindRoomResult: LiveData<UnbindRoomUiState>
+        get() = _unbindRoomResult
+
     private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
@@ -804,6 +808,18 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun unbindRoom(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = chatNetworkDataSource.unbindRoom(credentials, baseUrl, roomToken)
+                _unbindRoomResult.value = UnbindRoomUiState.Success(response.ocs?.meta?.statusCode!!)
+            } catch (exception: Exception) {
+                _unbindRoomResult.value = UnbindRoomUiState.Error(exception.message.toString())
+            }
+        }
+    }
+
     fun resendMessage(credentials: String, urlForChat: String, message: ChatMessage) {
         viewModelScope.launch {
             chatRepository.resendChatMessage(
@@ -854,5 +870,11 @@ class ChatViewModel @Inject constructor(
         data object None : OutOfOfficeUIState()
         data class Success(val userAbsence: UserAbsenceData) : OutOfOfficeUIState()
         data class Error(val exception: Exception) : OutOfOfficeUIState()
+    }
+
+    sealed class UnbindRoomUiState {
+        data object None : UnbindRoomUiState()
+        data class Success(val statusCode: Int) : UnbindRoomUiState()
+        data class Error(val message: String) : UnbindRoomUiState()
     }
 }

@@ -13,7 +13,7 @@
     <color name="disabled_text">#ff888888</color>
     <color name="textColorOnPrimaryBackground">#ffffff</color> <!-- white/black depending on primary color -->
     <color name="nc_login_text_color">#B3FFFFFF</color>
-    <color name="popup_menu_color">#FF607D8B</color>
+
 
 
     <!-- App bar -->

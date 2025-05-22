@@ -523,7 +523,7 @@ class ConversationsListActivity :
         nearFutureEventConversationItems.clear()
 
         for (conversation in list) {
-            if (!futureEvent(conversation)) {
+            if (!isFutureEvent(conversation)) {
                 addToNearFutureEventConversationItems(conversation)
             }
             addToConversationItems(conversation)
@@ -564,13 +564,14 @@ class ConversationsListActivity :
         return false
     }
 
-    private fun futureEvent(conversation: ConversationModel): Boolean {
+    private fun isFutureEvent(conversation: ConversationModel): Boolean {
         if (!conversation.objectId.contains("#")) {
             return false
         }
-        return conversation.objectType == ConversationEnums.ObjectType.EVENT &&
-            (conversation.objectId.split("#")[0].toLong() - (System.currentTimeMillis() / LONG_1000)) >
-            AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS
+        val eventTimeStart = conversation.objectId.split("#")[0].toLong()
+        val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
+        val sixteenHoursAfterTimeStamp = (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
+        return conversation.objectType == ConversationEnums.ObjectType.EVENT && sixteenHoursAfterTimeStamp
     }
 
     fun showOnlyNearFutureEvents() {
@@ -2156,7 +2157,7 @@ class ConversationsListActivity :
         const val NOTIFICATION_WARNING_DATE_NOT_SET = 0L
         const val OFFSET_HEIGHT_DIVIDER: Int = 3
         const val ROOM_TYPE_ONE_ONE = "1"
-        private const val AGE_THRESHOLD_FOR_EVENT_CONVERSATIONS: Long = 57600
+        private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         const val LONG_1000: Long = 1000
     }
 }

@@ -16,6 +16,9 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             "room" -> ConversationEnums.ObjectType.ROOM
             "file" -> ConversationEnums.ObjectType.FILE
             "event" -> ConversationEnums.ObjectType.EVENT
+            "phone_persist" -> ConversationEnums.ObjectType.PHONE_PERSIST
+            "phone_temporary" -> ConversationEnums.ObjectType.PHONE_TEMPORARY
+            "instant_meeting" -> ConversationEnums.ObjectType.INSTANT_MEETING
             else -> ConversationEnums.ObjectType.DEFAULT
         }
     }
@@ -30,6 +33,9 @@ class ConversationObjectTypeConverter : StringBasedTypeConverter<ConversationEnu
             ConversationEnums.ObjectType.ROOM -> "room"
             ConversationEnums.ObjectType.FILE -> "file"
             ConversationEnums.ObjectType.EVENT -> "event"
+            ConversationEnums.ObjectType.PHONE_PERSIST -> "phone_persist"
+            ConversationEnums.ObjectType.PHONE_TEMPORARY -> "phone_temporary"
+            ConversationEnums.ObjectType.INSTANT_MEETING -> "instant_meeting"
             else -> ""
         }
     }

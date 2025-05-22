@@ -86,6 +86,7 @@ import coil.request.CachePolicy
 import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.color.ColorUtil
@@ -168,6 +169,10 @@ import com.nextcloud.talk.ui.recyclerview.MessageSwipeCallback
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.AudioUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfEventRooms
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfInstantMeetingRoom
+import com.nextcloud.talk.utils.CapabilitiesUtil.retentionOfSIPRoom
 import com.nextcloud.talk.utils.ContactUtils
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.DateConstants
@@ -664,6 +669,59 @@ class ChatActivity :
                             }
                         }
 
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT &&
+                            hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
+                            val eventEndTimeStamp =
+                                currentConversation?.objectId
+                                    ?.split("#")
+                                    ?.getOrNull(1)
+                                    ?.toLongOrNull()
+                            val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
+                            val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
+                            val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
+                            if (isPastEvent == true && retentionPeriod != 0) {
+                                showConversationDeletionWarning(retentionPeriod)
+                            }
+                        }
+
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.PHONE_TEMPORARY &&
+                            hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
+                            val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
+                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
+                            if (retentionPeriod != 0 && (
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                    )
+                            ) {
+                                showConversationDeletionWarning(retentionPeriod)
+                            }
+                        }
+
+                        if (currentConversation?.objectType == ConversationEnums.ObjectType.INSTANT_MEETING &&
+                            hasSpreedFeatureCapability(
+                                conversationUser?.capabilities!!.spreedCapability!!,
+                                SpreedFeatures.UNBIND_CONVERSATION
+                            )
+                        ) {
+                            val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
+                            val systemMessage = currentConversation?.lastMessage?.systemMessageType
+                            if (retentionPeriod != 0 && (
+                                    systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
+                                        systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
+                                    )
+                            ) {
+                                showConversationDeletionWarning(retentionPeriod)
+                            }
+                        }
+
                         updateRoomTimerHandler(MILLIS_250)
 
                         val urlForChatting =
@@ -1035,6 +1093,27 @@ class ChatActivity :
             binding.voiceRecordingLock.y -= y
         }
 
+        chatViewModel.unbindRoomResult.observe(this) { uiState ->
+            when (uiState) {
+                is ChatViewModel.UnbindRoomUiState.Success -> {
+                    binding.conversationDeleteNotice.visibility = View.GONE
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_room_retention),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                is ChatViewModel.UnbindRoomUiState.Error -> {
+                    Snackbar.make(
+                        binding.root,
+                        context.getString(R.string.nc_common_error_sorry),
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
+                else -> { }
+            }
+        }
+
         chatViewModel.outOfOfficeViewState.observe(this) { uiState ->
             when (uiState) {
                 is ChatViewModel.OutOfOfficeUIState.Error -> {
@@ -1148,6 +1227,63 @@ class ChatActivity :
                 adapter?.notifyItemRemoved(indexToDelete)
             }
         }
+    }
+
+    fun showConversationDeletionWarning(retentionPeriod: Int) {
+        binding.conversationDeleteNotice.visibility = View.VISIBLE
+        binding.conversationDeleteNotice.apply {
+            isClickable = false
+            isFocusable = false
+            bringToFront()
+        }
+        val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
+
+        deleteNoticeText.text = String.format(
+            resources.getString(R.string.nc_conversation_auto_delete_notice),
+            retentionPeriod
+        )
+
+        if (ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)) {
+            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
+                View.VISIBLE
+            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.VISIBLE
+        } else {
+            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
+                View.GONE
+            binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).visibility = View.GONE
+        }
+        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).setOnClickListener {
+            deleteConversationDialog(it.context)
+        }
+
+        binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.keep_button).setOnClickListener {
+            chatViewModel.unbindRoom(credentials!!, conversationUser?.baseUrl!!, currentConversation?.token!!)
+        }
+    }
+
+    fun deleteConversationDialog(context: Context) {
+        val dialogBuilder = MaterialAlertDialogBuilder(context)
+            .setIcon(
+                viewThemeUtils.dialog
+                    .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+            )
+            .setTitle(R.string.nc_delete_call)
+            .setMessage(R.string.nc_delete_conversation_more)
+            .setPositiveButton(R.string.nc_delete) { _, _ ->
+                currentConversation?.let { conversation ->
+                    deleteConversation(conversation)
+                }
+            }
+            .setNegativeButton(R.string.nc_cancel) { _, _ ->
+            }
+
+        viewThemeUtils.dialog
+            .colorMaterialAlertDialogBackground(context, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -3041,28 +3177,7 @@ class ChatActivity :
             deleteConversation.visibility = View.VISIBLE
 
             deleteConversation.setOnClickListener {
-                val dialogBuilder = MaterialAlertDialogBuilder(it.context)
-                    .setIcon(
-                        viewThemeUtils.dialog
-                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
-                    )
-                    .setTitle(R.string.nc_delete_call)
-                    .setMessage(R.string.nc_delete_conversation_more)
-                    .setPositiveButton(R.string.nc_delete) { _, _ ->
-                        currentConversation?.let { conversation ->
-                            deleteConversation(conversation)
-                        }
-                    }
-                    .setNegativeButton(R.string.nc_cancel) { _, _ ->
-                    }
-
-                viewThemeUtils.dialog
-                    .colorMaterialAlertDialogBackground(it.context, dialogBuilder)
-                val dialog = dialogBuilder.show()
-                viewThemeUtils.platform.colorTextButtons(
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE),
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                )
+                deleteConversationDialog(it.context)
                 popupWindow.dismiss()
             }
         } else {
