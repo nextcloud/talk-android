@@ -121,6 +121,24 @@ class ConversationsRepositoryImpl(
         return coroutineApi.getProfile(credentials, url).ocs?.data
     }
 
+    override suspend fun markConversationAsSensitive(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): GenericOverall {
+        val url = ApiUtils.getUrlForSensitiveConversation(baseUrl, roomToken)
+        return coroutineApi.markConversationAsSensitive(credentials, url)
+    }
+
+    override suspend fun markConversationAsInsensitive(
+        credentials: String,
+        baseUrl: String,
+        roomToken: String
+    ): GenericOverall {
+        val url = ApiUtils.getUrlForSensitiveConversation(baseUrl, roomToken)
+        return coroutineApi.markConversationAsInsensitive(credentials, url)
+    }
+
     override suspend fun banActor(
         credentials: String,
         url: String,

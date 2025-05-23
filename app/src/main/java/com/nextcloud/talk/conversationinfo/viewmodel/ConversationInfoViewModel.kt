@@ -134,6 +134,18 @@ class ConversationInfoViewModel @Inject constructor(
     val getProfileViewState: LiveData<ViewState>
         get() = _getProfileViewState
 
+    @Suppress("PropertyName")
+    private val _markConversationAsSensitiveResult =
+        MutableLiveData<MarkConversationAsSensitiveViewState>(MarkConversationAsSensitiveViewState.None)
+    val markAsSensitiveResult: LiveData<MarkConversationAsSensitiveViewState>
+        get() = _markConversationAsSensitiveResult
+
+    @Suppress("PropertyName")
+    private val _markConversationAsInsensitiveResult =
+        MutableLiveData<MarkConversationAsInsensitiveViewState>(MarkConversationAsInsensitiveViewState.None)
+    val markAsInsensitiveResult: LiveData<MarkConversationAsInsensitiveViewState>
+        get() = _markConversationAsInsensitiveResult
+
     fun getRoom(user: User, token: String) {
         _viewState.value = GetRoomStartState
         chatNetworkDataSource.getRoom(user, token)
@@ -356,6 +368,34 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsSensitive(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = conversationsRepository.markConversationAsSensitive(credentials, baseUrl, roomToken)
+                _markConversationAsSensitiveResult.value =
+                    MarkConversationAsSensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
+            } catch (exception: Exception) {
+                _markConversationAsSensitiveResult.value =
+                    MarkConversationAsSensitiveViewState.Error(exception)
+            }
+        }
+    }
+
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun markConversationAsInsensitive(credentials: String, baseUrl: String, roomToken: String) {
+        viewModelScope.launch {
+            try {
+                val response = conversationsRepository.markConversationAsInsensitive(credentials, baseUrl, roomToken)
+                _markConversationAsInsensitiveResult.value =
+                    MarkConversationAsInsensitiveViewState.Success(response.ocs?.meta?.statusCode!!)
+            } catch (exception: Exception) {
+                _markConversationAsInsensitiveResult.value =
+                    MarkConversationAsInsensitiveViewState.Error(exception)
+            }
+        }
+    }
+
     inner class GetRoomObserver : Observer<ConversationModel> {
         override fun onSubscribe(d: Disposable) {
             // unused atm
@@ -403,6 +443,18 @@ class ConversationInfoViewModel @Inject constructor(
         data object None : ClearChatHistoryViewState()
         data object Success : ClearChatHistoryViewState()
         data class Error(val exception: Exception) : ClearChatHistoryViewState()
+    }
+
+    sealed class MarkConversationAsSensitiveViewState {
+        data object None : MarkConversationAsSensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsSensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsSensitiveViewState()
+    }
+
+    sealed class MarkConversationAsInsensitiveViewState {
+        data object None : MarkConversationAsInsensitiveViewState()
+        data class Success(val statusCode: Int) : MarkConversationAsInsensitiveViewState()
+        data class Error(val exception: Exception) : MarkConversationAsInsensitiveViewState()
     }
 
     sealed class SetConversationReadOnlyViewState {

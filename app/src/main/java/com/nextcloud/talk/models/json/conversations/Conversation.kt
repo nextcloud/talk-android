@@ -165,5 +165,8 @@ data class Conversation(
     var remoteToken: String? = "",
 
     @JsonField(name = ["isArchived"])
-    var hasArchived: Boolean = false
+    var hasArchived: Boolean = false,
+
+    @JsonField(name = ["isSensitive"])
+    var hasSensitive: Boolean = false
 ) : Parcelable

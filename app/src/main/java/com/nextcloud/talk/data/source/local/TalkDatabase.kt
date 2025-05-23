@@ -49,7 +49,7 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 14,
+    version = 15,
     autoMigrations = [
         AutoMigration(from = 9, to = 10)
     ],
@@ -116,7 +116,8 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_10_11,
                     Migrations.MIGRATION_11_12,
                     Migrations.MIGRATION_12_13,
-                    Migrations.MIGRATION_13_14
+                    Migrations.MIGRATION_13_14,
+                    Migrations.MIGRATION_14_15
                 )
                 .allowMainThreadQueries()
                 .addCallback(

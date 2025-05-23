@@ -113,4 +113,45 @@
                         android:checked="true"
                         android:clickable="false" />
                 </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/notification_settings_sensitive_conversation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/standard_half_padding"
+        android:paddingBottom="@dimen/standard_half_padding"
+        android:paddingStart="@dimen/standard_margin"
+        android:paddingEnd="@dimen/standard_margin"
+        android:background="?android:attr/selectableItemBackground">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nc_sensitive_conversation"
+                android:textSize="@dimen/headline_text_size" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="@string/nc_sensitive_conversation_hint"
+                android:textSize="@dimen/supporting_text_text_size"
+                android:textColor="?android:textColorSecondary" />
+        </LinearLayout>
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/sensitive_conversation_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:checked="false"
+            android:clickable="false" />
+    </LinearLayout>
+
 </LinearLayout>
