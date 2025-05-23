@@ -114,6 +114,9 @@ import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ContextChatCompose
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.MENTION
+import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.UNREAD
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.BrandingUtils
@@ -529,20 +532,23 @@ class ConversationsListActivity :
             addToConversationItems(conversation)
         }
 
+        getFilterStates()
+        val noFiltersActive = !(
+            filterState[MENTION] == true ||
+                filterState[UNREAD] == true ||
+                filterState[ARCHIVE] == true
+            )
+
         sortConversations(conversationItems)
         sortConversations(conversationItemsWithHeader)
         sortConversations(nearFutureEventConversationItems)
 
-        if (!hasFilterEnabled() && searchBehaviorSubject.value == false) {
+        if (noFiltersActive && searchBehaviorSubject.value == false) {
             adapter?.updateDataSet(nearFutureEventConversationItems, false)
         } else {
-            // Filter Conversations
-            if (!hasFilterEnabled()) {
-                filterableConversationItems = conversationItems
-            }
-            filterConversation()
-            adapter?.updateDataSet(filterableConversationItems, false)
+            applyFilter()
         }
+
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
         // Fetch Open Conversations
@@ -554,6 +560,14 @@ class ConversationsListActivity :
 
         // Get users
         fetchUsers()
+    }
+
+    fun applyFilter() {
+        if (!hasFilterEnabled()) {
+            filterableConversationItems = conversationItems
+        }
+        filterConversation()
+        adapter?.updateDataSet(filterableConversationItems, false)
     }
 
     private fun hasFilterEnabled(): Boolean {
@@ -585,32 +599,35 @@ class ConversationsListActivity :
         nearFutureEventConversationItems.add(conversationItem)
     }
 
-    fun filterConversation() {
+    fun getFilterStates() {
         val accountId = UserIdUtils.getIdForUser(currentUser)
-        filterState[FilterConversationFragment.UNREAD] = (
+        filterState[UNREAD] = (
             arbitraryStorageManager.getStorageSetting(
                 accountId,
-                FilterConversationFragment.UNREAD,
+                UNREAD,
                 ""
             ).blockingGet()?.value ?: ""
             ) == "true"
 
-        filterState[FilterConversationFragment.MENTION] = (
+        filterState[MENTION] = (
             arbitraryStorageManager.getStorageSetting(
                 accountId,
-                FilterConversationFragment.MENTION,
+                MENTION,
                 ""
             ).blockingGet()?.value ?: ""
             ) == "true"
 
-        filterState[FilterConversationFragment.ARCHIVE] = (
+        filterState[ARCHIVE] = (
             arbitraryStorageManager.getStorageSetting(
                 accountId,
-                FilterConversationFragment.ARCHIVE,
+                ARCHIVE,
                 ""
             ).blockingGet()?.value ?: ""
             ) == "true"
+    }
 
+    fun filterConversation() {
+        getFilterStates()
         val newItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
         val items = conversationItems
         for (i in items) {
