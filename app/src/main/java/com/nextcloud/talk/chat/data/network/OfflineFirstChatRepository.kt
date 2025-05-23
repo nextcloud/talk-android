@@ -475,6 +475,15 @@ class OfflineFirstChatRepository @Inject constructor(
             .map(ChatMessageEntity::asModel)
     }
 
+    override suspend fun checkIfMessageIsSaved(messageId: Long): Boolean {
+        try {
+            chatDao.getChatMessageForConversation(internalConversationId, messageId)
+            return true
+        } catch (_: Exception) {
+            return false
+        }
+    }
+
     @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>
