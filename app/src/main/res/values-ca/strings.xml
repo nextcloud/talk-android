@@ -274,6 +274,7 @@
     <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
     <string name="nc_join_open_conversations">Uneix-te a converses obertes</string>
+    <string name="nc_keep">Mantén</string>
     <string name="nc_last_moderator_leaving_room_warning">Heu de promocionar un nou moderador abans de deixar la conversa</string>
     <string name="nc_last_modified">%1$s | Darrera modificació: %2$s</string>
     <string name="nc_leave">Surt de la conversa</string>

@@ -153,6 +153,7 @@
     <string name="nc_delete_conversation_more">如果你删除了该对话，它也会被从其他所有与会者那里删除。</string>
     <string name="nc_delete_message">删除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功删除，但可能已泄漏给其他服务</string>
+    <string name="nc_delete_now">立即删除</string>
     <string name="nc_demote">取消主持人资格</string>
     <string name="nc_description_record_voice">录制语音消息 </string>
     <string name="nc_description_send_message_button">发送消息</string>
@@ -224,6 +225,7 @@
     <string name="nc_important_conversation_desc">此对话中的通知将覆盖免打扰设置</string>
     <string name="nc_invitations">邀请函</string>
     <string name="nc_join_open_conversations">加入公开对话</string>
+    <string name="nc_keep">保留</string>
     <string name="nc_last_moderator_leaving_room_warning">在您离开对话之前需要推举一位新的主持人</string>
     <string name="nc_last_modified">%1$s 我上一次更改： %2$s</string>
     <string name="nc_leave">离开对话</string>

@@ -71,6 +71,7 @@
     <string name="leave_call">Leave call</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
+    <string name="local_time">Local time: %1$s</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
@@ -177,6 +178,7 @@
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
     <string name="nc_delete_message">Delete</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
+    <string name="nc_delete_now">Delete now</string>
     <string name="nc_deleted_user">User %1$s was removed</string>
     <string name="nc_demote">Demote from moderator</string>
     <string name="nc_description_record_voice">Record voice message</string>

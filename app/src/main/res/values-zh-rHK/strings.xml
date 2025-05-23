@@ -71,6 +71,7 @@
     <string name="leave_call">離開通話</string>
     <string name="left_conversation">你離開了對話 %1$s</string>
     <string name="load_more_results">正在載入更多結果</string>
+    <string name="local_time">本地時間︰%1$s</string>
     <string name="lock_conversation">鎖定對話</string>
     <string name="lock_symbol">鎖符號</string>
     <string name="lower_hand">放下手</string>
@@ -177,6 +178,7 @@
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
     <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功刪除，但可能已分發到其他服務</string>
+    <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">用户 %1$s 已被移除</string>
     <string name="nc_demote">從主持人降級</string>
     <string name="nc_description_record_voice">錄製話音短訊</string>
@@ -286,6 +288,7 @@
     <string name="nc_invalid_time">時間無效</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
+    <string name="nc_keep">保留</string>
     <string name="nc_last_moderator_leaving_room_warning">在您離開對話之前您需要推舉一位新的主持人</string>
     <string name="nc_last_modified">%1$s | 上次修改時間：%2$s</string>
     <string name="nc_leave">結束對話</string>

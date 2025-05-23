@@ -177,6 +177,7 @@
     <string name="nc_delete_conversation_more">Má scriosann tú an comhrá, scriosfar é do gach rannpháirtí eile freisin.</string>
     <string name="nc_delete_message">Scrios</string>
     <string name="nc_delete_message_leaked_to_matterbridge">D\'éirigh leis an teachtaireacht a scriosadh, ach seans gur sceitheadh ​​chuig seirbhísí eile í</string>
+    <string name="nc_delete_now">Scrios anois</string>
     <string name="nc_deleted_user">Baineadh úsáideoir %1$s</string>
     <string name="nc_demote">Léim as an modhnóir</string>
     <string name="nc_description_record_voice">Taifead teachtaireacht gutha</string>
@@ -286,6 +287,7 @@
     <string name="nc_invalid_time">Am neamhbhailí</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>
+    <string name="nc_keep">Coinnigh</string>
     <string name="nc_last_moderator_leaving_room_warning">Ní mór duit modhnóir nua a chur chun cinn sula bhféadfaidh tú an comhrá a fhágáil</string>
     <string name="nc_last_modified">%1$s | Athraithe is déanaí: %2$s</string>
     <string name="nc_leave">Fág an comhrá</string>
