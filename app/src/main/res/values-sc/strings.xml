@@ -156,6 +156,7 @@
     <string name="nc_guest_access_share_link">Cumpartzi su ligòngiu de sa resonada</string>
     <string name="nc_important_conversation">Tzarrada importante</string>
     <string name="nc_important_conversation_desc">Is notìficas in custa resonada ant a ignorare sa cunfiguratzione No istorbare</string>
+    <string name="nc_keep">Mantene</string>
     <string name="nc_last_modified">%1$s | Ùrtima modìfica: %2$s</string>
     <string name="nc_leave">Lassa resonada</string>
     <string name="nc_license_summary">GNU General Public License, Versione 3</string>

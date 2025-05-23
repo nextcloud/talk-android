@@ -275,6 +275,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_invitations">Uitnodigingen</string>
     <string name="nc_join_open_conversations">Deelnemen aan open gesprekken</string>
+    <string name="nc_keep">Behouden</string>
     <string name="nc_last_moderator_leaving_room_warning">Je moet een nieuwe moderator aanwijzen voordat je het gesprek kan verlaten</string>
     <string name="nc_last_modified">%1$s | Laatst gewijzigd: %2$s</string>
     <string name="nc_leave">Verlaat gesprek</string>

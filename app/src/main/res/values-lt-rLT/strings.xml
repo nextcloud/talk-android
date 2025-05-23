@@ -163,6 +163,7 @@
     <string name="nc_important_conversation">Svarbus pokalbis</string>
     <string name="nc_invitations">Pakvietimai</string>
     <string name="nc_join_open_conversations">Prisijungti prie atvirų pokalbių</string>
+    <string name="nc_keep">Palikti</string>
     <string name="nc_last_modified">%1$s | Paskutinį kartą modifikuota: %2$s</string>
     <string name="nc_leave">Išeiti iš pokalbio</string>
     <string name="nc_license_summary">GNU Bendroji Viešoji Licencija, Versija 3</string>

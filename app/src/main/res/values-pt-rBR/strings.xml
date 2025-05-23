@@ -71,6 +71,7 @@
     <string name="leave_call">Sair da chamada</string>
     <string name="left_conversation">Você saiu da conversa %1$s</string>
     <string name="load_more_results">Carregar mais resultados</string>
+    <string name="local_time">Horário local: %1$s</string>
     <string name="lock_conversation">Bloquear conversa</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar mão</string>
@@ -177,6 +178,7 @@
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
     <string name="nc_delete_message">Excluir</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
+    <string name="nc_delete_now">Excluir linha</string>
     <string name="nc_deleted_user">Usuário %1$s foi removido</string>
     <string name="nc_demote">Rebaixar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensagem de voz</string>
@@ -286,6 +288,7 @@
     <string name="nc_invalid_time">Horário inválido</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Entrar em conversas abertas</string>
+    <string name="nc_keep">Manter</string>
     <string name="nc_last_moderator_leaving_room_warning">Você precisa promover um novo moderador antes de sair da conversa</string>
     <string name="nc_last_modified">%1$s | Modificado recentemente: %2$s</string>
     <string name="nc_leave">Sair da conversa</string>
