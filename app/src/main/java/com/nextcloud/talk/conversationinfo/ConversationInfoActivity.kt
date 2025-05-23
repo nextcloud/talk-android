@@ -545,7 +545,8 @@ class ConversationInfoActivity :
                 binding.guestAccessView.allowGuestsSwitch,
                 binding.guestAccessView.passwordProtectionSwitch,
                 binding.recordingConsentView.recordingConsentForConversationSwitch,
-                binding.lockConversationSwitch
+                binding.lockConversationSwitch,
+                binding.notificationSettingsView.sensitiveConversationSwitch
             ).forEach(viewThemeUtils.talk::colorSwitch)
         }
     }
@@ -559,7 +560,7 @@ class ConversationInfoActivity :
                 binding.sharedItemsTitle,
                 binding.recordingConsentView.recordingConsentSettingsCategory,
                 binding.conversationSettingsTitle,
-                binding.participantsListCategory
+                binding.participantsListCategory,
             )
         }.forEach(viewThemeUtils.platform::colorTextView)
     }
