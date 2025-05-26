@@ -53,7 +53,7 @@ class ContactsViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
-    fun modifyClickAddButton(value:Boolean){
+    fun modifyClickAddButton(value: Boolean) {
         _clickAddButton.value = value
     }
 
@@ -63,7 +63,7 @@ class ContactsViewModel @Inject constructor(
         _selectedContacts.value = _selectedContacts.value + contact
     }
 
-    fun updateAddButtonState()  {
+    fun updateAddButtonState() {
         if (_selectedContacts.value.isEmpty()) {
             _enableAddButton.value = false
         } else {

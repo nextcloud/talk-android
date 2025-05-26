@@ -32,6 +32,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
+@Suppress("LongParameterList", "LongMethod")
 @Composable
 fun AppBar(
     title: String,
@@ -44,7 +45,7 @@ fun AppBar(
     onUpdateSearchQuery: (String) -> Unit,
     onUpdateAutocompleteUsers: () -> Unit,
     enableAddButton: Boolean,
-    clickAddButton:(Boolean) -> Unit
+    clickAddButton: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
 

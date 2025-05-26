@@ -31,7 +31,6 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
     val autocompleteUsers by contactsViewModel.selectedParticipantsList.collectAsStateWithLifecycle()
     val enableAddButton by contactsViewModel.enableAddButton.collectAsStateWithLifecycle()
 
-
     Scaffold(
         topBar = {
             AppBar(
