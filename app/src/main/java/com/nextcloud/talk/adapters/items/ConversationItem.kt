@@ -19,6 +19,7 @@ import android.text.TextUtils
 import android.text.format.DateUtils
 import android.text.style.ImageSpan
 import android.view.View
+import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.nextcloud.talk.R
@@ -155,6 +156,30 @@ class ConversationItem(
         } else {
             holder.binding.userStatusImage.visibility = View.GONE
         }
+
+        val dialogNameParams = holder.binding.dialogName.layoutParams as RelativeLayout.LayoutParams
+        val unreadBubbleParams = holder.binding.dialogUnreadBubble.layoutParams as RelativeLayout.LayoutParams
+        val relativeLayoutParams = holder.binding.relativeLayout.layoutParams as RelativeLayout.LayoutParams
+
+        if (model.hasSensitive == true) {
+            dialogNameParams.addRule(RelativeLayout.CENTER_VERTICAL)
+            relativeLayoutParams.addRule(RelativeLayout.ALIGN_TOP, R.id.dialogAvatarFrameLayout)
+            dialogNameParams.marginEnd =
+                context.resources.getDimensionPixelSize(R.dimen.standard_double_padding)
+            unreadBubbleParams.topMargin =
+                context.resources.getDimensionPixelSize(R.dimen.double_margin_between_elements)
+            unreadBubbleParams.addRule(RelativeLayout.CENTER_VERTICAL)
+        } else {
+            dialogNameParams.removeRule(RelativeLayout.CENTER_VERTICAL)
+            relativeLayoutParams.removeRule(RelativeLayout.ALIGN_TOP)
+            dialogNameParams.marginEnd = 0
+            unreadBubbleParams.topMargin = 0
+            unreadBubbleParams.removeRule(RelativeLayout.CENTER_VERTICAL)
+        }
+        holder.binding.relativeLayout.layoutParams = relativeLayoutParams
+        holder.binding.dialogUnreadBubble.layoutParams = unreadBubbleParams
+        holder.binding.dialogName.layoutParams = dialogNameParams
+
         setLastMessage(holder, appContext)
         showAvatar(holder)
     }

@@ -560,7 +560,7 @@ class ConversationInfoActivity :
                 binding.sharedItemsTitle,
                 binding.recordingConsentView.recordingConsentSettingsCategory,
                 binding.conversationSettingsTitle,
-                binding.participantsListCategory,
+                binding.participantsListCategory
             )
         }.forEach(viewThemeUtils.platform::colorTextView)
     }
