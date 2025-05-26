@@ -87,8 +87,6 @@ object Migrations {
         }
     }
 
-
-
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +

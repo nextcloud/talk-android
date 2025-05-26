@@ -124,11 +124,13 @@ class ConversationInfoViewModel @Inject constructor(
     val getConversationReadOnlyState: LiveData<SetConversationReadOnlyViewState>
         get() = _getConversationReadOnlyState
 
+    @Suppress("PropertyName")
     private val _markConversationAsImportantResult =
         MutableLiveData<MarkConversationAsImportantViewState>(MarkConversationAsImportantViewState.None)
     val markAsImportantResult: LiveData<MarkConversationAsImportantViewState>
         get() = _markConversationAsImportantResult
 
+    @Suppress("PropertyName")
     private val _markConversationAsUnimportantResult =
         MutableLiveData<MarkConversationAsUnimportantViewState>(MarkConversationAsUnimportantViewState.None)
     val markAsUnimportantResult: LiveData<MarkConversationAsUnimportantViewState>
