@@ -97,6 +97,7 @@ fun AppBar(
                     onClick = {
                         onDisableSearch()
                         onUpdateSearchQuery("")
+                        onUpdateAutocompleteUsers()
                     },
                     enabled = enableAddButton
                 ) {
