@@ -109,9 +109,3 @@ fun searchKeyboardActions(text: String, keyboardController: SoftwareKeyboardCont
             }
         }
     )
-
-class SearchComponentCompanionClass {
-    companion object {
-        const val WIDTH_RATIO = 0.85f
-    }
-}

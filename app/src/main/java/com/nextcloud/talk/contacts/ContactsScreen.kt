@@ -29,6 +29,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
     val isSearchActive by contactsViewModel.isSearchActive.collectAsStateWithLifecycle()
     val isAddParticipants by contactsViewModel.isAddParticipantsView.collectAsStateWithLifecycle()
     val autocompleteUsers by contactsViewModel.selectedParticipantsList.collectAsStateWithLifecycle()
+    val enableAddButton by contactsViewModel.enableAddButton.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -49,7 +50,8 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
                 },
                 onUpdateAutocompleteUsers = {
                     contactsViewModel.getContactsFromSearchParams()
-                }
+                },
+                enableAddButton = enableAddButton
             )
         },
         content = {

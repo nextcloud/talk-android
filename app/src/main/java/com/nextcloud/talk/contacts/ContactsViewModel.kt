@@ -36,6 +36,11 @@ class ContactsViewModel @Inject constructor(
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
+    private val _enableAddButton = MutableStateFlow(false)
+    val enableAddButton: StateFlow<Boolean> = _enableAddButton
+
+    private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+
     private var hideAlreadyAddedParticipants: Boolean = false
 
     init {
@@ -49,11 +54,21 @@ class ContactsViewModel @Inject constructor(
     fun selectContact(contact: AutocompleteUser) {
         val updatedParticipants = selectedParticipants.value + contact
         selectedParticipants.value = updatedParticipants
+        _selectedContacts.value = _selectedContacts.value + contact
+    }
+
+    fun updateAddButtonState()  {
+        if (_selectedContacts.value.isEmpty()) {
+            _enableAddButton.value = false
+        } else {
+            _enableAddButton.value = true
+        }
     }
 
     fun deselectContact(contact: AutocompleteUser) {
         val updatedParticipants = selectedParticipants.value - contact
         selectedParticipants.value = updatedParticipants
+        _selectedContacts.value = _selectedContacts.value - contact
     }
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {

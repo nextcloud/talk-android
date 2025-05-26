@@ -65,8 +65,10 @@ fun ContactItemRow(contact: AutocompleteUser, contactsViewModel: ContactsViewMod
                         isSelected = !isSelected
                         if (isSelected) {
                             contactsViewModel.selectContact(contact)
+                            contactsViewModel.updateAddButtonState()
                         } else {
                             contactsViewModel.deselectContact(contact)
+                            contactsViewModel.updateAddButtonState()
                         }
                     }
                 }
