@@ -34,12 +34,21 @@ import androidx.compose.ui.unit.sp
 import com.nextcloud.talk.R
 
 @Composable
-fun SearchComponent(text: String, onTextChange: (String) -> Unit, onDisableSearch: () -> Unit) {
+fun SearchComponent(
+    text: String,
+    onTextChange: (String) -> Unit,
+    onDisableSearch: () -> Unit,
+    isAddParticipants: Boolean
+) {
+    var width_ratio = 0.85f
+    if (!isAddParticipants) {
+        width_ratio = 1.0f
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth(SearchComponentCompanionClass.WIDTH_RATIO)
+            .fillMaxWidth(width_ratio)
             .height(60.dp),
         value = text,
         onValueChange = { onTextChange(it) },

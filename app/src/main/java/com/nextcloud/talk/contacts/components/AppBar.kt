@@ -86,7 +86,8 @@ fun AppBar(
                     onUpdateSearchQuery(searchQuery)
                     onUpdateAutocompleteUsers()
                 },
-                onDisableSearch = onDisableSearch
+                onDisableSearch = onDisableSearch,
+                isAddParticipants = isAddParticipants
             )
 
             if (searchQuery.isNotEmpty() && isAddParticipants) {
@@ -99,6 +100,7 @@ fun AppBar(
                 ) {
                     Text(text = context.getString(R.string.add_participants))
                 }
+            } else {
             }
         }
     }
