@@ -43,7 +43,8 @@ fun AppBar(
     onDisableSearch: () -> Unit,
     onUpdateSearchQuery: (String) -> Unit,
     onUpdateAutocompleteUsers: () -> Unit,
-    enableAddButton: Boolean
+    enableAddButton: Boolean,
+    clickAddButton:(Boolean) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -97,6 +98,7 @@ fun AppBar(
                     onClick = {
                         onDisableSearch()
                         onUpdateSearchQuery("")
+                        clickAddButton(true)
                         onUpdateAutocompleteUsers()
                     },
                     enabled = enableAddButton

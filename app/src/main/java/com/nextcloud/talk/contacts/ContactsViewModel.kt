@@ -41,6 +41,8 @@ class ContactsViewModel @Inject constructor(
 
     private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
 
+    private val _clickAddButton = MutableStateFlow(false)
+
     private var hideAlreadyAddedParticipants: Boolean = false
 
     init {
@@ -49,6 +51,10 @@ class ContactsViewModel @Inject constructor(
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
+    }
+
+    fun modifyClickAddButton(value:Boolean){
+        _clickAddButton.value = value
     }
 
     fun selectContact(contact: AutocompleteUser) {
@@ -101,10 +107,9 @@ class ContactsViewModel @Inject constructor(
                 )
                 val contactsList: MutableList<AutocompleteUser>? = contacts.ocs!!.data?.toMutableList()
 
-                if (hideAlreadyAddedParticipants) {
+                if (hideAlreadyAddedParticipants && !_clickAddButton.value) {
                     contactsList?.removeAll(selectedParticipants.value)
                 }
-
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
