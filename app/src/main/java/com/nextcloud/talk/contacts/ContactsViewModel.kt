@@ -114,6 +114,10 @@ class ContactsViewModel @Inject constructor(
                 if (hideAlreadyAddedParticipants && !_clickAddButton.value) {
                     contactsList?.removeAll(selectedParticipants.value)
                 }
+                if (_clickAddButton.value) {
+                    contactsList?.removeAll(selectedParticipants.value)
+                    contactsList?.addAll(_selectedContacts.value)
+                }
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
