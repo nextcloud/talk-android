@@ -37,11 +37,11 @@ class ContactsViewModel @Inject constructor(
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
-    @Suppress("PropertyName")
+    @SuppressLint("PropertyName")
     private val _enableAddButton = MutableStateFlow(false)
     val enableAddButton: StateFlow<Boolean> = _enableAddButton
 
-    @Suppress("PropertyName")
+    @SuppressLint("PropertyName")
     private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
 
     @SuppressLint("PropertyName")
