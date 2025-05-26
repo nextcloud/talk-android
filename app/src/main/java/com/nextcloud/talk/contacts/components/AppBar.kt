@@ -91,7 +91,7 @@ fun AppBar(
                 isAddParticipants = isAddParticipants
             )
 
-            if (searchQuery.isNotEmpty() && isAddParticipants) {
+            if (isAddParticipants) {
                 TextButton(
                     modifier = Modifier.align(Alignment.CenterVertically),
                     onClick = {
