@@ -157,6 +157,7 @@
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
+    <string name="nc_conversation_auto_delete_notice">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dagar utan aktivitet</string>
     <string name="nc_conversation_description">Konversationsbeskrivning</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_conversation_menu_video_call">Videosamtal</string>
@@ -385,6 +386,7 @@
     <string name="nc_rename_confirm">Döp om</string>
     <string name="nc_reply">Svara</string>
     <string name="nc_reply_privately">Svara privat</string>
+    <string name="nc_room_retention">Rummet har behållits framgångsrikt</string>
     <string name="nc_save_message">Spara</string>
     <string name="nc_save_success">Sparad</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
@@ -399,6 +401,8 @@
     <string name="nc_search">Sök</string>
     <string name="nc_select_an_account">Välj ett konto</string>
     <string name="nc_send_edit_message">Uppdatera meddelande</string>
+    <string name="nc_sensitive_conversation">Känslig konversation</string>
+    <string name="nc_sensitive_conversation_hint">Förhandsvisning av meddelanden kommer att inaktiveras i konversationslistan och i aviseringar</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
     <string name="nc_sent_a_gif_you">Du skickade en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s skickade en video.</string>

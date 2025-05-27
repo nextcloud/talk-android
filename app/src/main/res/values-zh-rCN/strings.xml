@@ -323,6 +323,8 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">搜索</string>
     <string name="nc_select_an_account">选择一个账号</string>
+    <string name="nc_sensitive_conversation">敏感对话</string>
+    <string name="nc_sensitive_conversation_hint">将在对话列表和通知中禁用消息预览</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s发送一个GIF图</string>
     <string name="nc_sent_a_gif_you">你已发送一张GIF图</string>
     <string name="nc_sent_a_video" formatted="true">%1$s发送一个视频</string>

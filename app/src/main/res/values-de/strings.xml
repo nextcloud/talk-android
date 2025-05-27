@@ -158,6 +158,7 @@
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
+    <string name="nc_conversation_auto_delete_notice">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tagen gelöscht</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Information</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>
@@ -288,6 +289,7 @@
     <string name="nc_invalid_time">Ungültige Zeit</string>
     <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
+    <string name="nc_keep">Behalten</string>
     <string name="nc_last_moderator_leaving_room_warning">Sie müssen einen neuen Moderator bestimmen, bevor Sie die Unterhaltung verlassen können.</string>
     <string name="nc_last_modified">%1$s | Zuletzt geändert: %2$s</string>
     <string name="nc_leave">Unterhaltung verlassen</string>
@@ -385,6 +387,7 @@
     <string name="nc_rename_confirm">Umbenennen</string>
     <string name="nc_reply">Antworten</string>
     <string name="nc_reply_privately">Privat antworten</string>
+    <string name="nc_room_retention">Raum wird beibehalten</string>
     <string name="nc_save_message">Speichern</string>
     <string name="nc_save_success">Gespeichert</string>
     <string name="nc_screen_lock_timeout_30">30 Sekunden</string>
@@ -399,6 +402,8 @@
     <string name="nc_search">Suchen</string>
     <string name="nc_select_an_account">Konto auswählen</string>
     <string name="nc_send_edit_message">Nachricht aktualisieren</string>
+    <string name="nc_sensitive_conversation">Sensible Unterhaltung</string>
+    <string name="nc_sensitive_conversation_hint">Die Nachrichtenvorschau wird in der Unterhaltungsliste und den Benachrichtigungen deaktiviert</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s hat ein GIF gesendet.</string>
     <string name="nc_sent_a_gif_you">Sie haben ein GIF gesendet.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s hat ein Video gesendet.</string>

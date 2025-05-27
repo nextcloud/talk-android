@@ -71,6 +71,7 @@
     <string name="leave_call">Quitter l\'appel</string>
     <string name="left_conversation">Vous avez quitté la conversation %1$s</string>
     <string name="load_more_results">Charger plus de résultats</string>
+    <string name="local_time">Heure locale : %1$s</string>
     <string name="lock_conversation">Verrouiller la conversation</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
@@ -177,6 +178,7 @@
     <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
     <string name="nc_delete_message">Supprimer</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message supprimé avec succès, mais il pourrait avoir été divulgué à d’autres services</string>
+    <string name="nc_delete_now">Supprimer maintenant</string>
     <string name="nc_deleted_user">L\'utilisateur %1$s a été supprimé</string>
     <string name="nc_demote">Destituer de modérateur</string>
     <string name="nc_description_record_voice">Enregistrer un message vocal</string>
