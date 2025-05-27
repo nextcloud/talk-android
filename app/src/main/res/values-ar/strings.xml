@@ -277,6 +277,7 @@
     <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
     <string name="nc_join_open_conversations">الانضمام إلى محادثات جارية</string>
+    <string name="nc_keep">حفظ</string>
     <string name="nc_last_moderator_leaving_room_warning">تحتاج إلى إنشاء ميسر جديد قبل أن تتمكن من مغادرة المحادثة</string>
     <string name="nc_last_modified">%1$s| آخر تعديل: %2$s</string>
     <string name="nc_leave">غادر المحادثة</string>

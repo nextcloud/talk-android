@@ -158,6 +158,7 @@
     <string name="nc_configure_cert_auth">選擇驗證證書</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
+    <string name="nc_conversation_auto_delete_notice">此對話如無人於%1$d天內互動，將會自動為所有人刪除。</string>
     <string name="nc_conversation_description">對話描述</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
@@ -386,6 +387,7 @@
     <string name="nc_rename_confirm">重新命名</string>
     <string name="nc_reply">回覆</string>
     <string name="nc_reply_privately">私下回覆</string>
+    <string name="nc_room_retention">聊天室已成功保留</string>
     <string name="nc_save_message">保存</string>
     <string name="nc_save_success">保存成功</string>
     <string name="nc_screen_lock_timeout_30">30秒</string>
@@ -400,6 +402,8 @@
     <string name="nc_search">搜尋</string>
     <string name="nc_select_an_account">選擇一個賬號</string>
     <string name="nc_send_edit_message">更新訊息</string>
+    <string name="nc_sensitive_conversation">敏感對話</string>
+    <string name="nc_sensitive_conversation_hint">對話清單和通知中的訊息預覽將被停用。</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s 傳送一個 GIF。</string>
     <string name="nc_sent_a_gif_you">您傳送了一個 GIF 檔</string>
     <string name="nc_sent_a_video" formatted="true">%1$s 傳送一個影片</string>

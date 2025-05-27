@@ -71,6 +71,7 @@
     <string name="leave_call">Fág glaoch</string>
     <string name="left_conversation">D\'fhág tú an comhrá %1$s</string>
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
+    <string name="local_time">Am áitiúil: %1$s</string>
     <string name="lock_conversation">Cuir glas ar an gcomhrá</string>
     <string name="lock_symbol">Siombail ghlais</string>
     <string name="lower_hand">Lámh íochtair</string>
@@ -157,6 +158,7 @@
     <string name="nc_configure_cert_auth">Roghnaigh teastas fíordheimhnithe</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
     <string name="nc_contacts_done">Déanta</string>
+    <string name="nc_conversation_auto_delete_notice">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</string>
     <string name="nc_conversation_description">Cur síos ar an gcomhrá</string>
     <string name="nc_conversation_menu_conversation_info">Eolas faoin gcomhrá</string>
     <string name="nc_conversation_menu_video_call">Glao físe</string>
@@ -385,6 +387,7 @@
     <string name="nc_rename_confirm">Athainmnigh</string>
     <string name="nc_reply">Freagra</string>
     <string name="nc_reply_privately">Freagair go príobháideach</string>
+    <string name="nc_room_retention">Coinníodh an seomra go rathúil</string>
     <string name="nc_save_message">Sábháil</string>
     <string name="nc_save_success">Sábháilte go rathúil</string>
     <string name="nc_screen_lock_timeout_30">30 soicind</string>
@@ -399,6 +402,8 @@
     <string name="nc_search">Cuardach</string>
     <string name="nc_select_an_account">Roghnaigh cuntas</string>
     <string name="nc_send_edit_message">Nuashonraigh teachtaireacht</string>
+    <string name="nc_sensitive_conversation">Comhrá íogair</string>
+    <string name="nc_sensitive_conversation_hint">Díchumasófar réamhamharc teachtaireachta sa liosta comhráite agus sna fógraí</string>
     <string name="nc_sent_a_gif" formatted="true">Sheol %1$s GIF.</string>
     <string name="nc_sent_a_gif_you">Sheol tú GIF.</string>
     <string name="nc_sent_a_video" formatted="true">Sheol %1$s físeán.</string>
