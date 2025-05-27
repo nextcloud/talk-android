@@ -423,7 +423,8 @@ data class ChatMessage(
         AVATAR_SET,
         AVATAR_REMOVED,
         FEDERATED_USER_ADDED,
-        FEDERATED_USER_REMOVED
+        FEDERATED_USER_REMOVED,
+        PHONE_ADDED
     }
 
     companion object {
