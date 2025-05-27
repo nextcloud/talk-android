@@ -160,6 +160,7 @@
     <string name="nc_configure_cert_auth">Authentifizierungs-Zertifikat auswählen</string>
     <string name="nc_connecting_call">Verbinde …</string>
     <string name="nc_contacts_done">Fertig</string>
+    <string name="nc_conversation_auto_delete_notice">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tagen gelöscht</string>
     <string name="nc_conversation_description">Beschreibung der Unterhaltung</string>
     <string name="nc_conversation_menu_conversation_info">Unterhaltungs-Information</string>
     <string name="nc_conversation_menu_video_call">Videoanruf</string>

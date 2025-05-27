@@ -159,6 +159,7 @@
     <string name="nc_configure_cert_auth">Välj autentiseringscertifikat</string>
     <string name="nc_connecting_call">Ansluter…</string>
     <string name="nc_contacts_done">Färdig</string>
+    <string name="nc_conversation_auto_delete_notice">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dagar utan aktivitet</string>
     <string name="nc_conversation_description">Konversationsbeskrivning</string>
     <string name="nc_conversation_menu_conversation_info">Konversationsinfo</string>
     <string name="nc_conversation_menu_video_call">Videosamtal</string>
