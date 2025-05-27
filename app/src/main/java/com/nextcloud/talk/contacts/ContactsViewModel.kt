@@ -99,12 +99,12 @@ class ContactsViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun getContactsFromSearchParams() {
+    fun getContactsFromSearchParams(query: String = "") {
         _contactsViewState.value = ContactsUiState.Loading
         viewModelScope.launch {
             try {
                 val contacts = repository.getContacts(
-                    searchQuery.value,
+                    if (query != "") query else searchQuery.value,
                     shareTypeList
                 )
                 val contactsList: MutableList<AutocompleteUser>? = contacts.ocs!!.data?.toMutableList()

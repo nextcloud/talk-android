@@ -211,7 +211,7 @@ class ConversationsListActivity :
     private var adapter: FlexibleAdapter<AbstractFlexibleItem<*>>? = null
     private var conversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private val searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+    private var searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var nearFutureEventConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null
@@ -235,9 +235,9 @@ class ConversationsListActivity :
     private var searchViewDisposable: Disposable? = null
     private var filterState =
         mutableMapOf(
-            FilterConversationFragment.MENTION to false,
-            FilterConversationFragment.UNREAD to false,
-            FilterConversationFragment.ARCHIVE to false,
+            MENTION to false,
+            UNREAD to false,
+            ARCHIVE to false,
             FilterConversationFragment.DEFAULT to true
         )
     val searchBehaviorSubject = BehaviorSubject.createDefault(false)
@@ -461,7 +461,13 @@ class ConversationsListActivity :
                             userItems.add(contactItem)
                         }
 
-                        searchableConversationItems.addAll(userItems)
+                        val list = searchableConversationItems.filter {
+                            it !is ContactItem
+                        }.toMutableList()
+
+                        list.addAll(userItems)
+
+                        searchableConversationItems = list
                     }
 
                     else -> {}
@@ -557,9 +563,6 @@ class ConversationsListActivity :
             intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
         )
         fetchOpenConversations(apiVersion)
-
-        // Get users
-        fetchUsers()
     }
 
     fun applyFilter() {
@@ -637,7 +640,7 @@ class ConversationsListActivity :
             }
         }
 
-        val archiveFilterOn = filterState[FilterConversationFragment.ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] ?: false
         if (archiveFilterOn && newItems.isEmpty()) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -659,7 +662,7 @@ class ConversationsListActivity :
         for ((k, v) in filterState) {
             if (v) {
                 when (k) {
-                    FilterConversationFragment.MENTION -> result = (result && conversation.unreadMention) ||
+                    MENTION -> result = (result && conversation.unreadMention) ||
                         (
                             result &&
                                 (
@@ -669,10 +672,10 @@ class ConversationsListActivity :
                                 (conversation.unreadMessages > 0)
                             )
 
-                    FilterConversationFragment.UNREAD -> result = result && (conversation.unreadMessages > 0)
+                    UNREAD -> result = result && (conversation.unreadMessages > 0)
 
                     FilterConversationFragment.DEFAULT -> {
-                        result = if (filterState[FilterConversationFragment.ARCHIVE] == true) {
+                        result = if (filterState[ARCHIVE] == true) {
                             result && conversation.hasArchived
                         } else {
                             result && !conversation.hasArchived
@@ -1168,8 +1171,8 @@ class ConversationsListActivity :
         }
     }
 
-    private fun fetchUsers() {
-        contactsViewModel.getContactsFromSearchParams()
+    private fun fetchUsers(query: String = "") {
+        contactsViewModel.getContactsFromSearchParams(query)
     }
 
     private fun handleHttpExceptions(throwable: Throwable) {
@@ -1369,12 +1372,15 @@ class ConversationsListActivity :
             clearMessageSearchResults()
             binding.noArchivedConversationLayout.visibility = View.GONE
 
+            fetchUsers(filter)
+
             if (hasFilterEnabled()) {
                 adapter?.updateDataSet(conversationItems)
                 adapter?.setFilter(filter)
                 adapter?.filterItems()
                 adapter?.updateDataSet(filterableConversationItems)
             } else {
+                adapter?.updateDataSet(searchableConversationItems)
                 adapter?.setFilter(filter)
                 adapter?.filterItems()
             }
@@ -1389,9 +1395,10 @@ class ConversationsListActivity :
 
     private fun resetSearchResults() {
         clearMessageSearchResults()
+        adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
-        val archiveFilterOn = filterState[FilterConversationFragment.ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] ?: false
         if (archiveFilterOn && adapter!!.isEmpty) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -2134,8 +2141,8 @@ class ConversationsListActivity :
     }
 
     fun updateFilterState(mention: Boolean, unread: Boolean) {
-        filterState[FilterConversationFragment.MENTION] = mention
-        filterState[FilterConversationFragment.UNREAD] = unread
+        filterState[MENTION] = mention
+        filterState[UNREAD] = unread
     }
 
     fun setFilterableItems(items: MutableList<AbstractFlexibleItem<*>>) {
