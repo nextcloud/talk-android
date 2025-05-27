@@ -3,6 +3,7 @@ How to work with translations as a developer:
 - Only add new translations to values/stings.xml, don't do this for other languages (it will be done via transifex).
 - Never change the key of a translation. If it really has to be changed, delete it and create a new entry instead.
 - Values in values/strings.xml are allowed to be modified. For bigger changes consider to add a new key-value pair.
+- Linebreaks inside values/strings.xml itself are not allowed (this will break the transifex sync)
 - Only the first letter of a sentence should be uppercase, all following words should be lowercase.
 - Translations are synced every night (or when manually triggered):
    - New entries are added to transifex.com
@@ -347,8 +348,7 @@ How to translate with transifex:
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_call_notifications">Call notifications</string>
     <string name="nc_sensitive_conversation">Sensitive conversation</string>
-    <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and
-        notifications</string>
+    <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
 
