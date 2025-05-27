@@ -443,8 +443,10 @@ class ConversationInfoActivity :
                         )
                     }
 
-                    if (conversation!!.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
-                        viewModel.getProfileData(conversationUser, conversation!!.name)
+                    conversation?.let {
+                        if (it.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+                            viewModel.getProfileData(conversationUser, it.name)
+                        }
                     }
                 }
 
@@ -459,16 +461,19 @@ class ConversationInfoActivity :
         viewModel.getProfileViewState.observe(this) { state ->
             when (state) {
                 is ConversationInfoViewModel.GetProfileSuccessState -> {
+                    // Pronouns
                     val profile = state.profile
                     val pronouns = profile.pronouns ?: ""
                     binding.pronouns.text = pronouns
 
+                    // Role @ Organization
                     val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
                     val role = profile.role ?: ""
                     val company = profile.company ?: ""
                     val professionCompanyText = "$role$concat1$company"
                     binding.professionCompany.text = professionCompanyText
 
+                    // Local Time: xX:xX · Address
                     val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
                     val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
                     val localTime = ZonedDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), profileZoneOffset)
