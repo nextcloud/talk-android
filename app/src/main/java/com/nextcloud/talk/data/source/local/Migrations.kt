@@ -65,7 +65,14 @@ object Migrations {
     val MIGRATION_14_15 = object : Migration(14, 15) {
         override fun migrate(db: SupportSQLiteDatabase) {
             Log.i("Migrations", "Migrating 14 to 15")
-            addisSensitive(db)
+            addIsSensitive(db)
+        }
+    }
+
+    val MIGRATION_15_16 = object : Migration(15, 16) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 15 to 16")
+            addIsImportant(db)
         }
     }
 
@@ -290,7 +297,7 @@ object Migrations {
         }
     }
 
-    fun addisSensitive(db: SupportSQLiteDatabase) {
+    fun addIsSensitive(db: SupportSQLiteDatabase) {
         try {
             db.execSQL(
                 "ALTER TABLE Conversations " +
@@ -298,6 +305,17 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column hasSensitive to table Conversations")
+        }
+    }
+
+    fun addIsImportant(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD COLUMN hasImportant INTEGER NOT NULL DEFAULT 0;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations")
         }
     }
 

@@ -242,6 +242,8 @@ How to translate with transifex:
     <string name="nc_clear_history_success">All messages were deleted</string>
     <string name="nc_mark_conversation_as_sensitive">Conversation marked as sensitive</string>
     <string name="nc_mark_conversation_as_insensitive">Conversation unmarked as sensitive</string>
+    <string name="nc_mark_conversation_as_important">Conversation marked as important</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversation unmarked as important</string>
     <string name="nc_rename">Rename conversation</string>
     <string name="nc_rename_confirm">Rename</string>
     <string name="nc_delete_call">Delete conversation</string>
@@ -350,7 +352,7 @@ How to translate with transifex:
     <string name="nc_sensitive_conversation">Sensitive conversation</string>
     <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>
 
     <string name="nc_all_ok_operation">OK, all done!</string>
     <string name="nc_ok">OK</string>

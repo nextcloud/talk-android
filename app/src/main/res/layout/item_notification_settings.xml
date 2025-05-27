@@ -62,7 +62,8 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:layout_marginStart="@dimen/standard_margin"
-                        android:clickable="false" />
+                        android:checked="false"
+                        android:clickable="false"/>
 
                 </LinearLayout>
 
@@ -111,7 +112,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/standard_margin"
                         android:checked="true"
-                        android:clickable="false" />
+                        android:clickable="false"/>
                 </LinearLayout>
 
     <LinearLayout
