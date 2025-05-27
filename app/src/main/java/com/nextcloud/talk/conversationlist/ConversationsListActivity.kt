@@ -526,7 +526,7 @@ class ConversationsListActivity :
         nearFutureEventConversationItems.clear()
 
         for (conversation in list) {
-            if (!isFutureEvent(conversation)) {
+            if (!isFutureEvent(conversation) && !conversation.hasArchived) {
                 addToNearFutureEventConversationItems(conversation)
             }
             addToConversationItems(conversation)
