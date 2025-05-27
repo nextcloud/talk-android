@@ -25,6 +25,7 @@ import com.nextcloud.talk.extensions.loadDefaultAvatar
 import com.nextcloud.talk.extensions.loadDefaultGroupCallAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
 import com.nextcloud.talk.extensions.loadFirstLetterAvatar
+import com.nextcloud.talk.extensions.loadPhoneAvatar
 import com.nextcloud.talk.extensions.loadTeamAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.domain.ConversationModel
@@ -235,6 +236,10 @@ class ParticipantItem(
                     true,
                     false
                 )
+            }
+
+            Participant.ActorType.PHONES ->{
+                holder.binding.avatarView.loadPhoneAvatar(viewThemeUtils)
             }
 
             else -> {

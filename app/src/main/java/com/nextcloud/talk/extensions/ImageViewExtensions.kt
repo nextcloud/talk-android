@@ -205,8 +205,8 @@ fun ImageView.loadAvatarWithUrl(user: User? = null, url: String): io.reactivex.d
     loadAvatarInternal(user, url, false, null)
 
 fun ImageView.loadPhoneAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.outline_call_24) as Any
-    return loadUserAvatar(data)
+    val drawable = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_phone)
+    return loadUserAvatar(drawable)
 }
 
 fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.Disposable {
