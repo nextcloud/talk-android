@@ -89,8 +89,7 @@ fun AppBar(
                     onUpdateSearchQuery(searchQuery)
                     onUpdateAutocompleteUsers()
                 },
-                onDisableSearch = onDisableSearch,
-                isAddParticipants = isAddParticipants
+                onDisableSearch = onDisableSearch
             )
 
             if (isAddParticipants) {

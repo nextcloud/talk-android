@@ -38,17 +38,12 @@ fun SearchComponent(
     text: String,
     onTextChange: (String) -> Unit,
     onDisableSearch: () -> Unit,
-    isAddParticipants: Boolean
 ) {
-    var widthRatio = SearchComponentCompanionClass.WIDTH_RATI0_SMALL
-    if (!isAddParticipants) {
-        widthRatio = SearchComponentCompanionClass.WIDTH_RATIO_LARGE
-    }
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth(widthRatio)
+            .fillMaxWidth()
             .height(60.dp),
         value = text,
         onValueChange = { onTextChange(it) },
@@ -110,9 +105,3 @@ fun searchKeyboardActions(text: String, keyboardController: SoftwareKeyboardCont
         }
     )
 
-class SearchComponentCompanionClass {
-    companion object {
-        const val WIDTH_RATI0_SMALL = 0.85f
-        const val WIDTH_RATIO_LARGE = 1.0f
-    }
-}
