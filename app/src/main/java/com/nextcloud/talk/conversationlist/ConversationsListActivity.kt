@@ -563,9 +563,6 @@ class ConversationsListActivity :
             intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
         )
         fetchOpenConversations(apiVersion)
-
-        // Get users
-        // fetchUsers()
     }
 
     fun applyFilter() {

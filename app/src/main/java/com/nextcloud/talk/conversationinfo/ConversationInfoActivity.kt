@@ -461,31 +461,44 @@ class ConversationInfoActivity :
         viewModel.getProfileViewState.observe(this) { state ->
             when (state) {
                 is ConversationInfoViewModel.GetProfileSuccessState -> {
-                    // Pronouns
-                    val profile = state.profile
-                    val pronouns = profile.pronouns ?: ""
-                    binding.pronouns.text = pronouns
+                    try {
+                        // Pronouns
+                        val profile = state.profile
+                        val pronouns = profile.pronouns ?: ""
+                        binding.pronouns.text = pronouns
 
-                    // Role @ Organization
-                    val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
-                    val role = profile.role ?: ""
-                    val company = profile.company ?: ""
-                    val professionCompanyText = "$role$concat1$company"
-                    binding.professionCompany.text = professionCompanyText
+                        // Role @ Organization
+                        val concat1 = if (profile.role != null && profile.company != null) " @ " else ""
+                        val role = profile.role ?: ""
+                        val company = profile.company ?: ""
+                        val professionCompanyText = "$role$concat1$company"
+                        binding.professionCompany.text = professionCompanyText
 
-                    // Local Time: xX:xX · Address
-                    val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
-                    val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
-                    val localTime = ZonedDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), profileZoneOffset)
-                    val localTimeString = localTime.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT))
-                    val concat2 = if (profile.address != null) " · " else ""
-                    val address = profile.address ?: ""
-                    val localTimeLocation = "$localTimeString$concat2$address"
-                    binding.locationTime.text = resources.getString(R.string.local_time, localTimeLocation)
+                        // Local Time: xX:xX · Address
+                        val profileZoneOffset = ZoneOffset.ofTotalSeconds(0)
+                        val secondsToAdd = profile.timezoneOffset?.toLong() ?: 0
+                        val localTime = ZonedDateTime.ofInstant(Instant.now().plusSeconds(secondsToAdd), profileZoneOffset)
+                        val localTimeString = localTime.format(DateTimeFormatter
+                            .ofLocalizedTime(FormatStyle.SHORT)
+                            .withLocale(Locale.getDefault()))
+                        val concat2 = if (profile.address != null) " · " else ""
+                        val address = profile.address ?: ""
+                        val localTimeLocation = "$localTimeString$concat2$address"
+                        binding.locationTime.text = resources.getString(R.string.local_time, localTimeLocation)
 
-                    binding.pronouns.visibility = VISIBLE
-                    binding.professionCompany.visibility = if (professionCompanyText.isNotEmpty()) VISIBLE else GONE
-                    binding.locationTime.visibility = VISIBLE
+                        binding.pronouns.visibility = VISIBLE
+                        binding.professionCompany.visibility = if (professionCompanyText.isNotEmpty()) VISIBLE else GONE
+                        binding.locationTime.visibility = VISIBLE
+
+                    } catch (e: Exception) {
+                        Snackbar.make(binding.root, "Exception getting profile information: $e",
+                            Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+
+                is ConversationInfoViewModel.GetProfileErrorState -> {
+                    Snackbar.make(binding.root, "Network error occurred getting profile information",
+                        Snackbar.LENGTH_SHORT).show()
                 }
 
                 else -> {}
