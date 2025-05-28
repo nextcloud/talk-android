@@ -947,8 +947,7 @@ class CallActivity : CallBaseActivity() {
                 ParticipantGrid(
                     participantUiStates = participantUiStates,
                     eglBase = rootEglBase!!,
-                    isVoiceOnlyCall = isVoiceOnlyCall,
-                    isInPipMode = isInPipMode
+                    isVoiceOnlyCall = isVoiceOnlyCall
                 ) {
                     animateCallControls(true, 0)
                 }
