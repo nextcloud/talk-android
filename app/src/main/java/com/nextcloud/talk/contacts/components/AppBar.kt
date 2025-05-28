@@ -13,6 +13,8 @@ import android.app.Activity
 import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Search
@@ -48,9 +50,13 @@ fun AppBar(
     clickAddButton: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-
+    val appTitle = if(!isSearchActive){
+        title
+    }else{
+        ""
+    }
     TopAppBar(
-        title = { Text(text = title) },
+        title = { Text(text = appTitle) },
         navigationIcon = {
             IconButton(onClick = {
                 (context as? Activity)?.finish()
@@ -82,19 +88,19 @@ fun AppBar(
         }
     )
     if (isSearchActive) {
-        Row {
+        Row (modifier = Modifier.fillMaxWidth()) {
             SearchComponent(
                 text = searchQuery,
                 onTextChange = { searchQuery ->
                     onUpdateSearchQuery(searchQuery)
                     onUpdateAutocompleteUsers()
                 },
-                onDisableSearch = onDisableSearch
+                onDisableSearch = onDisableSearch,
+                modifier = Modifier.weight(1f)
             )
-
             if (isAddParticipants) {
                 TextButton(
-                    modifier = Modifier.align(Alignment.CenterVertically),
+                    modifier = Modifier.align(Alignment.CenterVertically).wrapContentWidth(),
                     onClick = {
                         onDisableSearch()
                         onUpdateSearchQuery("")

@@ -8,7 +8,6 @@
 package com.nextcloud.talk.contacts.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -38,15 +37,15 @@ fun SearchComponent(
     text: String,
     onTextChange: (String) -> Unit,
     onDisableSearch: () -> Unit,
+    modifier:Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.background)
-            .fillMaxWidth()
-            .height(60.dp),
         value = text,
         onValueChange = { onTextChange(it) },
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .height(60.dp),
         placeholder = { Text(text = stringResource(R.string.nc_search)) },
         textStyle = TextStyle(fontSize = 16.sp),
         singleLine = true,
