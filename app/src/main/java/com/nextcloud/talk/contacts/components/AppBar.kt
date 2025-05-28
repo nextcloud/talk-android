@@ -50,9 +50,9 @@ fun AppBar(
     clickAddButton: (Boolean) -> Unit
 ) {
     val context = LocalContext.current
-    val appTitle = if(!isSearchActive){
+    val appTitle = if (!isSearchActive) {
         title
-    }else{
+    } else {
         ""
     }
     TopAppBar(
@@ -88,7 +88,7 @@ fun AppBar(
         }
     )
     if (isSearchActive) {
-        Row (modifier = Modifier.fillMaxWidth()) {
+        Row(modifier = Modifier.fillMaxWidth()) {
             SearchComponent(
                 text = searchQuery,
                 onTextChange = { searchQuery ->

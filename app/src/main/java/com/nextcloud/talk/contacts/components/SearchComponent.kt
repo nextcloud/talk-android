@@ -37,7 +37,7 @@ fun SearchComponent(
     text: String,
     onTextChange: (String) -> Unit,
     onDisableSearch: () -> Unit,
-    modifier:Modifier = Modifier
+    modifier: Modifier = Modifier
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     TextField(
@@ -103,4 +103,3 @@ fun searchKeyboardActions(text: String, keyboardController: SoftwareKeyboardCont
             }
         }
     )
-

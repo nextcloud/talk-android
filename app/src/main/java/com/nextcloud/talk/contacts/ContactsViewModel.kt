@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.contacts
 
-import android.annotation.SuppressLint
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -37,14 +36,11 @@ class ContactsViewModel @Inject constructor(
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
-    @SuppressLint("PropertyName")
     private val _enableAddButton = MutableStateFlow(false)
     val enableAddButton: StateFlow<Boolean> = _enableAddButton
 
-    @SuppressLint("PropertyName")
     private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
 
-    @SuppressLint("PropertyName")
     private val _clickAddButton = MutableStateFlow(false)
 
     private var hideAlreadyAddedParticipants: Boolean = false
