@@ -376,6 +376,8 @@ class CallActivity : CallBaseActivity() {
         Log.d(TAG, "onCreate")
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
+
+        rootEglBase = EglBase.create()
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
@@ -765,7 +767,6 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun basicInitialization() {
-        rootEglBase = EglBase.create()
         createCameraEnumerator()
 
         // Create a new PeerConnectionFactory instance.
