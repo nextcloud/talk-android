@@ -18,7 +18,6 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.PHONES
 
-
 class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>() {
     override fun getFromString(string: String?): Participant.ActorType =
         when (string) {
