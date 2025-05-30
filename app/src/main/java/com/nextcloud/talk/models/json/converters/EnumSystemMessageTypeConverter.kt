@@ -143,7 +143,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "federated_user_added" -> FEDERATED_USER_ADDED
             "federated_user_removed" -> FEDERATED_USER_REMOVED
             "phone_added" -> PHONE_ADDED
-             else -> DUMMY
+            else -> DUMMY
         }
 
     @Suppress("Detekt.ComplexMethod", "Detekt.LongMethod")
