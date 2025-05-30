@@ -859,16 +859,13 @@ class ConversationInfoActivity :
     private fun selectParticipantsToAdd() {
         val bundle = Bundle()
         val existingParticipants = ArrayList<AutocompleteUser>()
-
         for (userItem in userItems) {
-            if (userItem.model.calculatedActorType == USERS) {
-                val user = AutocompleteUser(
-                    userItem.model.calculatedActorId!!,
-                    userItem.model.displayName,
-                    userItem.model.calculatedActorType.name.lowercase()
-                )
-                existingParticipants.add(user)
-            }
+            val user = AutocompleteUser(
+                userItem.model.calculatedActorId!!,
+                userItem.model.displayName,
+                userItem.model.calculatedActorType.name.lowercase()
+            )
+            existingParticipants.add(user)
         }
 
         bundle.putBoolean(BundleKeys.KEY_ADD_PARTICIPANTS, true)

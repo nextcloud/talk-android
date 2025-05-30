@@ -36,6 +36,15 @@ class ContactsViewModel @Inject constructor(
     private val _isAddParticipantsView = MutableStateFlow(false)
     val isAddParticipantsView: StateFlow<Boolean> = _isAddParticipantsView
 
+    private val _enableAddButton = MutableStateFlow(false)
+    val enableAddButton: StateFlow<Boolean> = _enableAddButton
+
+    @Suppress("PropertyName")
+    private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
+
+    @Suppress("PropertyName")
+    private val _clickAddButton = MutableStateFlow(false)
+
     private var hideAlreadyAddedParticipants: Boolean = false
 
     init {
@@ -46,14 +55,28 @@ class ContactsViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+    fun modifyClickAddButton(value: Boolean) {
+        _clickAddButton.value = value
+    }
+
     fun selectContact(contact: AutocompleteUser) {
         val updatedParticipants = selectedParticipants.value + contact
         selectedParticipants.value = updatedParticipants
+        _selectedContacts.value = _selectedContacts.value + contact
+    }
+
+    fun updateAddButtonState() {
+        if (_selectedContacts.value.isEmpty()) {
+            _enableAddButton.value = false
+        } else {
+            _enableAddButton.value = true
+        }
     }
 
     fun deselectContact(contact: AutocompleteUser) {
         val updatedParticipants = selectedParticipants.value - contact
         selectedParticipants.value = updatedParticipants
+        _selectedContacts.value = _selectedContacts.value - contact
     }
 
     fun updateSelectedParticipants(participants: List<AutocompleteUser>) {
@@ -86,10 +109,13 @@ class ContactsViewModel @Inject constructor(
                 )
                 val contactsList: MutableList<AutocompleteUser>? = contacts.ocs!!.data?.toMutableList()
 
-                if (hideAlreadyAddedParticipants) {
+                if (hideAlreadyAddedParticipants && !_clickAddButton.value) {
                     contactsList?.removeAll(selectedParticipants.value)
                 }
-
+                if (_clickAddButton.value) {
+                    contactsList?.removeAll(selectedParticipants.value)
+                    contactsList?.addAll(_selectedContacts.value)
+                }
                 _contactsViewState.value = ContactsUiState.Success(contactsList)
             } catch (exception: Exception) {
                 _contactsViewState.value = ContactsUiState.Error(exception.message ?: "")
