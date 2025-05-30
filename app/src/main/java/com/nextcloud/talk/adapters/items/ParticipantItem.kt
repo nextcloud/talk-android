@@ -243,7 +243,7 @@ class ParticipantItem(
                 )
             }
 
-            Participant.ActorType.PHONES ->{
+            Participant.ActorType.PHONES -> {
                 holder.binding.avatarView.loadPhoneAvatar(viewThemeUtils)
             }
 
