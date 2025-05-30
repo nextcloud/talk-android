@@ -39,8 +39,10 @@ class ContactsViewModel @Inject constructor(
     private val _enableAddButton = MutableStateFlow(false)
     val enableAddButton: StateFlow<Boolean> = _enableAddButton
 
+    @Suppress("PropertyName")
     private val _selectedContacts = MutableStateFlow<List<AutocompleteUser>>(emptyList())
 
+    @Suppress("PropertyName")
     private val _clickAddButton = MutableStateFlow(false)
 
     private var hideAlreadyAddedParticipants: Boolean = false
