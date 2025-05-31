@@ -271,7 +271,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">L\'optimització de la bateria no s\'ignora. Això hauria de canviar-se per a garantir que les notificacions funcionin en segon pla. Feu clic a D\'acord i seleccioneu \"Totes les aplicacions\" ->  %1$s ->  No optimitzis</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignora l\'optimització de la bateria</string>
     <string name="nc_important_conversation">Conversa important</string>
-    <string name="nc_important_conversation_desc">Les notificacions d\'aquesta conversa anul·laran els paràmetres de no destorbar.</string>
     <string name="nc_invitations">Invitacions</string>
     <string name="nc_join_open_conversations">Uneix-te a converses obertes</string>
     <string name="nc_keep">Mantén</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Aldatu</string>
+    <string name="add_participants">Gehitu</string>
     <string name="add_to_notes">Gehitu oharretara</string>
     <string name="added_to_favorites">%1$s elkarrizketa gogokoetara gehitu da</string>
     <string name="appbar_search_in">Bilatu %s(e)n</string>
@@ -235,7 +236,6 @@
     <string name="nc_guest_access_share_link">Partekatu elkarrizketa esteka</string>
     <string name="nc_hint_enter_a_message">Idatzi mezu bat …</string>
     <string name="nc_important_conversation">Elkarrizketa garrantzitsua</string>
-    <string name="nc_important_conversation_desc">Ez Molestatu ezarpenek sahiestuko dituzte elkarrizketa honen jakinarazpenak </string>
     <string name="nc_invitations">Gonbidapenak</string>
     <string name="nc_join_open_conversations">Sartu elkarrizketa irekietara</string>
     <string name="nc_last_moderator_leaving_room_warning">Moderatzaile berri bat sustatu behar duzu elkarrizketatik irten aurretik</string>

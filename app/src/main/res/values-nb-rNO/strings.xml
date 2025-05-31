@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Rediger</string>
+    <string name="add_participants">Legg til</string>
     <string name="add_to_notes">Legg til notater</string>
     <string name="added_to_favorites">La til samtale %1$s i favoritter</string>
     <string name="appbar_search_in">Søk i %s</string>
@@ -268,7 +269,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimalisering ignoreres ikke. Dette bør endres for å sikre at varsler fungerer i bakgrunnen! Klikk OK og velg \"Alle apper\" -> %1$s -> Ikke optimaliser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimalisering</string>
     <string name="nc_important_conversation">Viktig samtale</string>
-    <string name="nc_important_conversation_desc">Varsler i denne samtalen overstyrer innstillingene for Ikke forstyrr</string>
     <string name="nc_invitations">Invitasjoner</string>
     <string name="nc_join_open_conversations">Bli med i åpne samtaler</string>
     <string name="nc_keep">Behold</string>

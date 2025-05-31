@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">편집</string>
+    <string name="add_participants">추가</string>
     <string name="appbar_search_in">%s 검색</string>
     <string name="archived">보관된</string>
     <string name="audio_output_bluetooth">블루투스</string>

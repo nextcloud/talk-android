@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Cuir in eagar</string>
+    <string name="add_participants">Cuir</string>
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
@@ -285,7 +286,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Ní thugtar aird ar bharrfheabhsú ceallraí. Ba cheart é seo a athrú chun a chinntiú go n-oibríonn fógraí sa chúlra! Cliceáil OK agus roghnaigh \"Gach aip\" -> %1$s -> Ná optamaigh le do thoil</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
-    <string name="nc_important_conversation_desc">Sáróidh fógraí sa chomhrá seo na socruithe Ná Cuir Isteach</string>
+    <string name="nc_important_conversation_desc">Déantar neamhaird ar stádas an úsáideora \"Ná cuir isteach\" i gcás comhráite tábhachtacha</string>
     <string name="nc_invalid_time">Am neamhbhailí</string>
     <string name="nc_invitations">cuirí</string>
     <string name="nc_join_open_conversations">Glac páirt i gcomhráite oscailte</string>

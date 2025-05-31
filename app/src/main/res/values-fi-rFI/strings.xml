@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Muokkaa</string>
+    <string name="add_participants">Lisää</string>
     <string name="appbar_search_in">Etsi kohteesta %s</string>
     <string name="archived">Arkistoitu</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -167,7 +168,6 @@
     <string name="nc_guest_access_share_link">Jaa keskustelulinkki</string>
     <string name="nc_hint_enter_a_message">Kirjoita viesti…</string>
     <string name="nc_important_conversation">Tärkeä keskustelu</string>
-    <string name="nc_important_conversation_desc">Tämän keskustelun ilmoitukset eivät noudata Älä häiritse -asetuksia</string>
     <string name="nc_invitations">Kutsut</string>
     <string name="nc_join_open_conversations">Liity avoimiin keskusteluihin</string>
     <string name="nc_last_modified">%1$s | Viimeksi muokattu: %2$s</string>

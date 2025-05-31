@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Редактирование</string>
+    <string name="add_participants">Добавить</string>
     <string name="add_to_notes">Добавить в заметки</string>
     <string name="appbar_search_in">Искать в %s</string>
     <string name="archive_conversation">Архивировать обсуждение</string>
@@ -242,7 +243,6 @@
     <string name="nc_hint_enter_a_message">Напишите сообщение …</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Игнорировать оптимизацию батареи</string>
     <string name="nc_important_conversation">Важное обсуждение</string>
-    <string name="nc_important_conversation_desc">Уведомления в этом чате имеют приоритет над настройками режима \"Не беспокоить\" </string>
     <string name="nc_invitations">Приглашения</string>
     <string name="nc_join_open_conversations">Присоединиться к открытым обсуждениям</string>
     <string name="nc_last_moderator_leaving_room_warning">Вам нужно назначить нового модератора перед тем, как покинуть обсуждение</string>

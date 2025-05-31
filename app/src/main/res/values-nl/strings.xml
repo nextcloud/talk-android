@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Bewerken</string>
+    <string name="add_participants">Toevoegen</string>
     <string name="add_to_notes">Toevoegen aan Notities</string>
     <string name="added_to_favorites">Gesprek %1$s toegevoegd aan favorieten</string>
     <string name="appbar_search_in">Zoeken in %s</string>
@@ -272,7 +273,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Batterijoptimalisatie staat niet uit. Dit moet aangepast worden zodat meldingen op de achtergrond werken! Druk op OK en selecteer \"Alle apps\" ->  %1$s -> Niet optimaliseren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterijoptimalisatie negeren</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
-    <string name="nc_important_conversation_desc">Meldingen in dit gesprek negeren de Niet-Storen instellingen</string>
     <string name="nc_invitations">Uitnodigingen</string>
     <string name="nc_join_open_conversations">Deelnemen aan open gesprekken</string>
     <string name="nc_keep">Behouden</string>

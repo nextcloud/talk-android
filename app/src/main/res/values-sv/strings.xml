@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Redigera</string>
+    <string name="add_participants">Lägg till</string>
     <string name="add_to_notes">Lägg till i anteckningar</string>
     <string name="added_to_favorites">Lade till konversationen %1$s till favoriter</string>
     <string name="appbar_search_in">Sök i %s</string>
@@ -284,7 +285,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering ignoreras inte. Detta bör ändras för att säkerställa att aviseringar fungerar i bakgrunden! Klicka på OK och välj \"Alla appar\" -> %1$s -> Optimera inte</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorera batterioptimering</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
-    <string name="nc_important_conversation_desc">Meddelanden i den här konversationen kommer att åsidosätta Stör inte-inställningar</string>
+    <string name="nc_important_conversation_desc">Användarstatus \"Stör ej\" ignoreras för viktiga konversationer</string>
     <string name="nc_invalid_time">Ogiltig tid</string>
     <string name="nc_invitations">Inbjudningar</string>
     <string name="nc_join_open_conversations">Gå med i öppna konversationer</string>
@@ -308,6 +309,8 @@
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>
+    <string name="nc_mark_conversation_as_insensitive">Konversationen avmarkerades som känslig</string>
+    <string name="nc_mark_conversation_as_sensitive">Konversationen markerades som känslig</string>
     <string name="nc_meeting_ended">Möte avslutat</string>
     <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
     <string name="nc_message_failed">Misslyckades</string>

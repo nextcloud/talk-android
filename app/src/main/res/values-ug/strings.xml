@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">تەھرىر</string>
+    <string name="add_participants">قوش</string>
     <string name="add_to_notes">ئىزاھاتقا قوشۇڭ</string>
     <string name="added_to_favorites">ياقتۇرىدىغانلارغا %1$s پاراڭ قوشۇلدى</string>
     <string name="appbar_search_in">%s دىن ئىزدەڭ</string>
@@ -269,7 +270,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">باتارېيەنى ئەلالاشتۇرۇشقا سەل قاراشقا بولمايدۇ. ئۇقتۇرۇشنىڭ ئارقا سۇپىدا ئىشلىشىگە كاپالەتلىك قىلىش ئۈچۈن بۇنى ئۆزگەرتىش كېرەك! «جەزملە» نى چېكىپ ، \ \"بارلىق ئەپلەر \" -&gt;%1$s-&gt; ئەلالاشتۇرماڭ</string>
     <string name="nc_ignore_battery_optimization_dialog_title">باتارېيەنىڭ ئەلالاشتۇرۇشىغا پەرۋا قىلماڭ</string>
     <string name="nc_important_conversation">مۇھىم سۆھبەت</string>
-    <string name="nc_important_conversation_desc">بۇ سۆھبەتتىكى ئۇقتۇرۇشلار قالايمىقانلاشتۇرماڭ</string>
     <string name="nc_invitations">تەكلىپنامە</string>
     <string name="nc_join_open_conversations">ئوچۇق سۆھبەتكە قاتنىشىڭ</string>
     <string name="nc_keep">ساقلاڭ</string>

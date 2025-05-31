@@ -166,7 +166,6 @@
     <string name="nc_guest_access_share_link">Κοινή χρήση συνδέσμου συνομιλίας</string>
     <string name="nc_hint_enter_a_message">Εισάγετε ένα μήνυμα ...</string>
     <string name="nc_important_conversation">Σημαντική συνομιλία</string>
-    <string name="nc_important_conversation_desc">Οι Ειδοποιήσεις σε αυτή την συνομιλία θα παρακάμψουν τις ρυθμίσεις Μην ενοχλείτε</string>
     <string name="nc_invitations">Προσκλήσεις</string>
     <string name="nc_join_open_conversations">Δημιουργία νέας συνομιλίας</string>
     <string name="nc_last_modified">%1$s Τελευταία τροποποίηση %2$s</string>

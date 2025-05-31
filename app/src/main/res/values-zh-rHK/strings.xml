@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">編輯</string>
+    <string name="add_participants">添加</string>
     <string name="add_to_notes">添加到筆記</string>
     <string name="added_to_favorites">添加了對話 %1$s 至最愛</string>
     <string name="appbar_search_in">%s內搜尋</string>
@@ -285,7 +286,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">電池優化未被忽略。為確保通知在背景中正常運作，請更改設定。請點擊「確定」並選擇「所有應用程式」-> %1$s -> 不優化。</string>
     <string name="nc_ignore_battery_optimization_dialog_title">不用理會電池優化</string>
     <string name="nc_important_conversation">重要對話</string>
-    <string name="nc_important_conversation_desc">此對話中的通告將覆蓋\"請勿打擾\"設置</string>
+    <string name="nc_important_conversation_desc">「勿擾」用戶狀態將在重要對話中略過。</string>
     <string name="nc_invalid_time">時間無效</string>
     <string name="nc_invitations">邀請</string>
     <string name="nc_join_open_conversations">加入公開對話</string>
@@ -309,6 +310,8 @@
     <string name="nc_manual">未定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_mark_conversation_as_insensitive">對話已標記為非敏感</string>
+    <string name="nc_mark_conversation_as_sensitive">對話已標記為敏感</string>
     <string name="nc_meeting_ended">會議已結束</string>
     <string name="nc_message_added_to_notes">訊息已新增至筆記</string>
     <string name="nc_message_failed">失敗了</string>

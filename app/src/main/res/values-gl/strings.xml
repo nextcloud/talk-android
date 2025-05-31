@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Editar</string>
+    <string name="add_participants">Engadir</string>
     <string name="add_to_notes">Engadir a Notas</string>
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
@@ -274,7 +275,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Non se ignora a optimización da batería. Isto debería cambiarse para asegurarse de que as notificacións funcionan en segundo plano. Prema en Aceptar e seleccione «Todas as aplicacións» → %1$s → Non optimizar</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar a optimización da batería</string>
     <string name="nc_important_conversation">Conversa importante</string>
-    <string name="nc_important_conversation_desc">As notificacións nesta conversa anularán os axustes de «Non molestar»</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
     <string name="nc_keep">Manter</string>

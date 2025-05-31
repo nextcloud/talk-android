@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">編集</string>
+    <string name="add_participants">追加</string>
     <string name="add_to_notes">メモに追加する</string>
     <string name="added_to_favorites">%1$s会話をお気に入りに追加した</string>
     <string name="appbar_search_in">%sを検索</string>
@@ -259,7 +260,6 @@
     <string name="nc_hint_enter_a_message">メッセージを入力…</string>
     <string name="nc_ignore_battery_optimization_dialog_title">バッテリーの最適化を無視する</string>
     <string name="nc_important_conversation">重要な会議</string>
-    <string name="nc_important_conversation_desc">この会話の通知設定は、取り込み中設定を上書きします</string>
     <string name="nc_invitations">招待</string>
     <string name="nc_join_open_conversations">オープンな会話に参加する</string>
     <string name="nc_last_moderator_leaving_room_warning">会話から離れる前に、新しいモデレーターを昇格させる必要があります</string>

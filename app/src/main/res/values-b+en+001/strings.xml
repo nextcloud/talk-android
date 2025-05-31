@@ -285,7 +285,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Do not optimize</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
-    <string name="nc_important_conversation_desc">Notifications in this conversation will override Do Not Disturb settings</string>
+    <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>
     <string name="nc_invalid_time">Invalid time</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Join open conversations</string>
@@ -309,6 +309,8 @@
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
+    <string name="nc_mark_conversation_as_insensitive">Conversation unmarked as sensitive</string>
+    <string name="nc_mark_conversation_as_sensitive">Conversation marked as sensitive</string>
     <string name="nc_meeting_ended">Meeting ended</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed</string>
