@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Uredi</string>
+    <string name="add_participants">Dodaj</string>
     <string name="appbar_search_in">Traži u %s</string>
     <string name="archived">Arhivirano</string>
     <string name="audio_output_phone">Telefon</string>
@@ -158,7 +159,6 @@
     <string name="nc_guest_access_share_link">Dijeli poveznicu za razgovor</string>
     <string name="nc_hint_enter_a_message">Unesi poruku …</string>
     <string name="nc_important_conversation">Važan razgovor</string>
-    <string name="nc_important_conversation_desc">Obavijesti u okviru ovog razgovora prikazuju se neovisno o postavkama Ne uznemiravaj</string>
     <string name="nc_invitations">Pozivnice</string>
     <string name="nc_last_modified">%1$s | Posljednja izmjena: %2$s</string>
     <string name="nc_leave">Napusti razgovor</string>

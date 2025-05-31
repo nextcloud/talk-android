@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upraviť</string>
+    <string name="add_participants">Pridať</string>
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
@@ -273,7 +274,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Optimalizácia batérie nie je ignorovaná. Toto by sa malo zmeniť, aby ste sa uistili, že upozornenia fungujú na pozadí! Kliknite na tlačidlo OK a vyberte možnosť Všetky aplikácie -> %1$s -> Neoptimalizovať</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovať optimalizáciu batérie</string>
     <string name="nc_important_conversation">Dôležitá konverzácia</string>
-    <string name="nc_important_conversation_desc">Oznámenia v tejto konverzácii sa prepíšu nastavením Nerušiť</string>
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
     <string name="nc_last_moderator_leaving_room_warning">Skôr než budete môcť opustiť rozhovor, je potrebné niekomu odovzdať rolu moderátora.</string>

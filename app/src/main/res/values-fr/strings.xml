@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Modifier</string>
+    <string name="add_participants">Ajouter</string>
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favoris</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
@@ -284,7 +285,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Ceci devrait être modifié pour vous assurer que les notifications fonctionnent en arrière-plan. Merci de cliquer OK et sélectionner \"Toutes les applications\" -> %1$s -> Ne pas optimiser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
-    <string name="nc_important_conversation_desc">Les notifications dans cette conversation l\'emportent sur les paramètres « Ne Pas Déranger ».</string>
     <string name="nc_invalid_time">Heure invalide</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>

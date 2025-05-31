@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Modifica</string>
+    <string name="add_participants">Aggiungi</string>
     <string name="appbar_search_in">Cerca in %s</string>
     <string name="archived">Archiviati</string>
     <string name="archived_conversation">Archiviato %1$s</string>
@@ -184,7 +185,6 @@
     <string name="nc_guest_access_share_link">Condividi collegamento della conversazione</string>
     <string name="nc_hint_enter_a_message">Digita un messaggio …</string>
     <string name="nc_important_conversation">Conversazione importante</string>
-    <string name="nc_important_conversation_desc">Le notifiche in questa conversazione ignoreranno l\'impostazione Non disturbare</string>
     <string name="nc_invitations">Inviti</string>
     <string name="nc_last_modified">%1$s | Ultima modifica: %2$s</string>
     <string name="nc_leave">Lascia la conversazione</string>

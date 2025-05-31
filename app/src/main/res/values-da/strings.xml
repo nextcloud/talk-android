@@ -269,7 +269,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering bliver ikke ignoreret. Dette bør ændres for at være sikker på at notifikationer virker i baggrunden! Klik venligst på OK og vælg \"Alle apps\" -> %1$s -> Optimer ikke</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimering</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
-    <string name="nc_important_conversation_desc">notifikationer under denne samtale vil ignorere Forstyr ikke indstillinger</string>
     <string name="nc_invitations">Invitationer</string>
     <string name="nc_join_open_conversations">Deltag i åbne samtaler</string>
     <string name="nc_last_moderator_leaving_room_warning">Du skal udnævne en ny moderator inden du kan forlade samtalen.</string>

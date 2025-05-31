@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Szerkesztés</string>
+    <string name="add_participants">Hozzáadás</string>
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
     <string name="archived">Archiválva</string>
@@ -215,7 +216,6 @@
     <string name="nc_guest_access_share_link">Beszélgetés hivatkozásának megosztása</string>
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
-    <string name="nc_important_conversation_desc">E beszélgetés értesítései felülírják a Ne zavarjanak beállításokat</string>
     <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_open_conversations">Csatlakozás a nyílt beszélgetésekhez</string>
     <string name="nc_keep">Megtartás</string>

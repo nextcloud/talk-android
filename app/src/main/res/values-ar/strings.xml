@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">تحرير</string>
+    <string name="add_participants">إضافة </string>
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
@@ -274,7 +275,6 @@
     <string name="nc_ignore_battery_optimization_dialog_text">تحسين البطارية لا يتم تجاهله. يجب تغيير هذا للتأكد من أن الإشعارات تعمل في الخلفية! الرجاء النقر فوق \"موافق OK\" ثم تحديد \"جميع التطبيقات All apps\" -> %1$s -> \"لا تقم بالتحسين Do not optimize\"</string>
     <string name="nc_ignore_battery_optimization_dialog_title">تجاهل توفير البطارية</string>
     <string name="nc_important_conversation">محادثة مهمة</string>
-    <string name="nc_important_conversation_desc">الاشعارات في هذه المحادثة ستتجاوز إعداد الحالة \"يُرجى عدم الإزعاج\"</string>
     <string name="nc_invitations">دعوات</string>
     <string name="nc_join_open_conversations">الانضمام إلى محادثات جارية</string>
     <string name="nc_keep">حفظ</string>

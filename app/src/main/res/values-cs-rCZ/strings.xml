@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upravit</string>
+    <string name="add_participants">Přidat</string>
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
@@ -285,7 +286,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Úspora energie z akumulátoru není ignorována. Pokud chcete, aby upozorňování na pozadí fungovalo správně, mělo by toto být změněno! Klikněte na OK a vyberte „Všechny aplikace“ -> %1$s -> neoptimalizovat</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
-    <string name="nc_important_conversation_desc">Upozornění v této konverzaci budou ignorovat režim Nerušit</string>
+    <string name="nc_important_conversation_desc">Stav uživatele „Nevyrušovat“ bude v případě důležitých konverzací ignorován</string>
     <string name="nc_invalid_time">Neplatný čas</string>
     <string name="nc_invitations">Pozvání</string>
     <string name="nc_join_open_conversations">Přidat se do všem přístupných konverzací</string>
@@ -309,6 +310,8 @@
     <string name="nc_manual">Nenastaveno</string>
     <string name="nc_mark_as_read">Označit jako přečtené</string>
     <string name="nc_mark_as_unread">Označit jako nepřečtené</string>
+    <string name="nc_mark_conversation_as_insensitive">Zrušeno značení konverzace coby citlivé</string>
+    <string name="nc_mark_conversation_as_sensitive">Konverzace označena jako citlivá</string>
     <string name="nc_meeting_ended">Schůzka skončila</string>
     <string name="nc_message_added_to_notes">Zpráva přidána do poznámek</string>
     <string name="nc_message_failed">Nezdařilo se</string>
@@ -402,6 +405,8 @@
     <string name="nc_search">Hledat</string>
     <string name="nc_select_an_account">Vyberte účet</string>
     <string name="nc_send_edit_message">Aktualizovat zprávu</string>
+    <string name="nc_sensitive_conversation">Citlivá konverzace</string>
+    <string name="nc_sensitive_conversation_hint">Náhled zprávy bude vypnut pro seznam konverzací a notifikace</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>
     <string name="nc_sent_a_gif_you">Odeslali jste GIF animaci.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>

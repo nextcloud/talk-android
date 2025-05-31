@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">编辑</string>
+    <string name="add_participants">添加</string>
     <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
     <string name="archive_conversation">存档对话</string>
@@ -222,7 +223,7 @@
     <string name="nc_guest_access_share_link">分享对话链接</string>
     <string name="nc_hint_enter_a_message">输入消息……</string>
     <string name="nc_important_conversation">重要对话</string>
-    <string name="nc_important_conversation_desc">此对话中的通知将覆盖免打扰设置</string>
+    <string name="nc_important_conversation_desc">重要对话忽略“勿扰”用户状态</string>
     <string name="nc_invitations">邀请函</string>
     <string name="nc_join_open_conversations">加入公开对话</string>
     <string name="nc_keep">保留</string>

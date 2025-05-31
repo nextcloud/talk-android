@@ -285,7 +285,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
-    <string name="nc_important_conversation_desc">Benachrichtigungen in dieser Unterhaltung überschreiben Nicht-Stören-Einstellungen</string>
+    <string name="nc_important_conversation_desc">\"Nicht stören\"-Benutzerstatus wird für wichtige Unterhaltungen ignoriert</string>
     <string name="nc_invalid_time">Ungültige Zeit</string>
     <string name="nc_invitations">Einladungen</string>
     <string name="nc_join_open_conversations">Offenen Unterhaltungen beitreten</string>
@@ -309,6 +309,8 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_mark_conversation_as_insensitive">Unterhaltung nicht als sensibel markiert</string>
+    <string name="nc_mark_conversation_as_sensitive">Unterhaltung als sensibel markiert</string>
     <string name="nc_meeting_ended">Meeting beendet</string>
     <string name="nc_message_added_to_notes">Nachricht zu den Notizen hinzugefügt</string>
     <string name="nc_message_failed">Fehlgeschlagen</string>

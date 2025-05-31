@@ -195,9 +195,11 @@
     <string name="nc_mark_as_unread">علامت به عنوان خوانده‌نشده</string>
     <string name="nc_message_failed">Failed</string>
     <string name="nc_message_failed_to_send">ناتوانی در فرستادن پیام:</string>
+    <string name="nc_message_offline">آفلاین</string>
     <string name="nc_message_quote_cancel_reply">لغو پاسخ</string>
     <string name="nc_message_read">پیام، خوانده شد</string>
     <string name="nc_message_sent">پیام، ارسال شد</string>
+    <string name="nc_missed_call">شما یک تماس از %s را از دست دادید</string>
     <string name="nc_moderator">مدیر</string>
     <string name="nc_new_conversation">گفتگوی جدید</string>
     <string name="nc_new_conversation_visibility">Visibility</string>
@@ -399,6 +401,7 @@
     <string name="translation_copy_translated_text">رونوشت متن ترجمه</string>
     <string name="translation_detect_language">تشخیص زبان</string>
     <string name="translation_device_settings">تنظیمات افزاره</string>
+    <string name="translation_error_message">امکان تشخیص زبان وجود ندارد.</string>
     <string name="translation_from">از</string>
     <string name="translation_to">به</string>
     <string name="user_avatar">آواتار کاربر</string>
