@@ -43,6 +43,7 @@
     <string name="later_today">تا آخر وقت همین امروز</string>
     <string name="leave_call">Leave call</string>
     <string name="load_more_results">بار کردن نتیحه‌های بیش‌تر</string>
+    <string name="local_time">زمان محلی: %1$s</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">نماد قفل</string>
     <string name="mentioned">Mentioned</string>

@@ -310,8 +310,10 @@
     <string name="nc_manual">Pole määratud</string>
     <string name="nc_mark_as_read">Märgi loetuks</string>
     <string name="nc_mark_as_unread">Märgi mitteloetuks</string>
+    <string name="nc_mark_conversation_as_important">Vestlus on märgitud oluliseks</string>
     <string name="nc_mark_conversation_as_insensitive">Vestlus on märgitud mittedelikaatseks</string>
     <string name="nc_mark_conversation_as_sensitive">Vestlus on märgitud delikaatseks</string>
+    <string name="nc_mark_conversation_as_unimportant">Vestlus on märgitud mitteoluliseks</string>
     <string name="nc_meeting_ended">Kohtumine on lõppenud</string>
     <string name="nc_message_added_to_notes">Teade on lisatud märkmetesse</string>
     <string name="nc_message_failed">Ebaõnnestus</string>
