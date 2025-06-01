@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Bearbeiten</string>
+    <string name="add_participants">Hinzufügen</string>
     <string name="add_to_notes">Zu Notizen hinzufügen</string>
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
@@ -309,8 +310,10 @@
     <string name="nc_manual">Nicht eingestellt</string>
     <string name="nc_mark_as_read">Als gelesen markieren</string>
     <string name="nc_mark_as_unread">Als ungelesen markieren</string>
+    <string name="nc_mark_conversation_as_important">Unterhaltung als wichtig markiert</string>
     <string name="nc_mark_conversation_as_insensitive">Unterhaltung nicht als sensibel markiert</string>
     <string name="nc_mark_conversation_as_sensitive">Unterhaltung als sensibel markiert</string>
+    <string name="nc_mark_conversation_as_unimportant">Unterhaltung nicht als wichtig markiert</string>
     <string name="nc_meeting_ended">Meeting beendet</string>
     <string name="nc_message_added_to_notes">Nachricht zu den Notizen hinzugefügt</string>
     <string name="nc_message_failed">Fehlgeschlagen</string>

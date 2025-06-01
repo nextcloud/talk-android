@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Upravit</string>
+    <string name="add_participants">Přidat</string>
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
@@ -285,6 +286,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Úspora energie z akumulátoru není ignorována. Pokud chcete, aby upozorňování na pozadí fungovalo správně, mělo by toto být změněno! Klikněte na OK a vyberte „Všechny aplikace“ -> %1$s -> neoptimalizovat</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
+    <string name="nc_important_conversation_desc">Stav uživatele „Nevyrušovat“ bude v případě důležitých konverzací ignorován</string>
     <string name="nc_invalid_time">Neplatný čas</string>
     <string name="nc_invitations">Pozvání</string>
     <string name="nc_join_open_conversations">Přidat se do všem přístupných konverzací</string>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Редактиране</string>
+    <string name="add_participants">Добавяне</string>
     <string name="appbar_search_in">Търсене в %s</string>
     <string name="archived">Архивирано</string>
     <string name="audio_output_bluetooth">Bluetooth /Блутут/</string>

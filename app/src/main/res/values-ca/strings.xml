@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Edició</string>
+    <string name="add_participants">Afegeix</string>
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>

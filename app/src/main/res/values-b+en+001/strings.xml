@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Edit</string>
+    <string name="add_participants">Add</string>
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
@@ -309,8 +310,10 @@
     <string name="nc_manual">Not set</string>
     <string name="nc_mark_as_read">Mark as read</string>
     <string name="nc_mark_as_unread">Mark as unread</string>
+    <string name="nc_mark_conversation_as_important">Conversation marked as important</string>
     <string name="nc_mark_conversation_as_insensitive">Conversation unmarked as sensitive</string>
     <string name="nc_mark_conversation_as_sensitive">Conversation marked as sensitive</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversation unmarked as important</string>
     <string name="nc_meeting_ended">Meeting ended</string>
     <string name="nc_message_added_to_notes">Message added to notes</string>
     <string name="nc_message_failed">Failed</string>
