@@ -433,7 +433,7 @@ class ConversationItem(
                 } else if (MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == chatMessage?.getCalculateMessageType()) {
                     var attachmentName = chatMessage.text
                     if (attachmentName == "{file}") {
-                        attachmentName = chatMessage.messageParameters?.get("file")?.get("name")!!
+                        attachmentName = chatMessage.messageParameters?.get("file")?.get("name") ?: ""
                     }
                     val author = authorName(chatMessage)
 
