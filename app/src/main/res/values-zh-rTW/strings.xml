@@ -310,8 +310,10 @@
     <string name="nc_manual">未設定</string>
     <string name="nc_mark_as_read">標為已讀</string>
     <string name="nc_mark_as_unread">標為未讀</string>
+    <string name="nc_mark_conversation_as_important">對話已標記為重要</string>
     <string name="nc_mark_conversation_as_insensitive">對話已取消標記為敏感</string>
     <string name="nc_mark_conversation_as_sensitive">對話已標記為敏感</string>
+    <string name="nc_mark_conversation_as_unimportant">對話已取消標記為重要</string>
     <string name="nc_meeting_ended">會議已結束</string>
     <string name="nc_message_added_to_notes">訊息已新增至筆記</string>
     <string name="nc_message_failed">失敗</string>
