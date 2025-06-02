@@ -32,6 +32,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogConversationOperationsBinding
 import com.nextcloud.talk.jobs.LeaveConversationWorker
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
@@ -151,6 +152,14 @@ class ConversationsListBottomDialog(
         binding.conversationOperationDelete.visibility = setVisibleIf(
             canModerate
         )
+
+        if (conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL ||
+            conversation.type == ConversationEnums.ConversationType.FORMER_ONE_TO_ONE
+        ) {
+            if (conversation.canDeleteConversation) {
+                binding.conversationOperationDelete.visibility = View.VISIBLE
+            }
+        }
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
             conversation.canLeaveConversation &&
