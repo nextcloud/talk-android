@@ -55,6 +55,29 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 1 
+        AND (sendStatus = 'PENDING' OR sendStatus = 'FAILED')
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getPendingOrFailedMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
+        AND (isTemporary = 1 OR sendStatus = 'SENT_PENDING_ACK')
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempOrSendingAckMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
         AND referenceId = :referenceId
         AND isTemporary = 1
         ORDER BY timestamp DESC, id DESC
