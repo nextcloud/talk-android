@@ -76,6 +76,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_16_17 = object : Migration(16, 17) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 16 to 17")
+            addSendStatus(db)
+        }
+    }
+
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE User_new (" +
@@ -316,6 +323,17 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations")
+        }
+    }
+
+    private fun addSendStatus(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN sendStatus TEXT NOT NULL DEFAULT 'PENDING'"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column sendStatus to table ChatMessages")
         }
     }
 

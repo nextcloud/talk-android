@@ -30,6 +30,18 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         flowOf()
 
+    override fun getPendingOrFailedMessagesForConversation(
+        internalConversationId: String
+    ): Flow<List<ChatMessageEntity>> {
+        TODO("Not yet implemented")
+    }
+
+    override fun getTempOrSendingAckMessagesForConversation(
+        internalConversationId: String
+    ): Flow<List<ChatMessageEntity>> {
+        TODO("Not yet implemented")
+    }
+
     override fun getTempMessageForConversation(
         internalConversationId: String,
         referenceId: String
