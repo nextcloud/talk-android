@@ -76,8 +76,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
      */
     suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage>
 
-    suspend fun checkIfMessageIsSaved(messageId: Long): Boolean
-
     @Suppress("LongParameterList")
     suspend fun sendChatMessage(
         credentials: String,

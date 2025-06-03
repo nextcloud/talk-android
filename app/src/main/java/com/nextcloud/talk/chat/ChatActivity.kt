@@ -307,12 +307,7 @@ class ChatActivity :
                 runBlocking {
                     val id = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
                     id?.let {
-                        val isSaved = chatViewModel.isMessageSaved(id.toLong())
-                        if (isSaved) {
-                            onMessageSearchResult(intent)
-                        } else {
-                            startContextChatWindowForMessage(id)
-                        }
+                        startContextChatWindowForMessage(id)
                     }
                 }
             }
@@ -2297,13 +2292,6 @@ class ChatActivity :
         }
     }
 
-    private fun onMessageSearchResult(intent: Intent?) {
-        val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
-        messageId?.let { id ->
-            scrollToAndCenterMessageWithId(id)
-        }
-    }
-
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
         if (result.resultCode == Activity.RESULT_OK) {
             onResult(result.data)
@@ -2319,7 +2307,7 @@ class ChatActivity :
         if (position != null && position >= 0) {
             binding.messagesListView.scrollToPosition(position)
         } else {
-            startContextChatWindowForMessage(messageId)
+            Log.d(TAG, "message $messageId that should be scrolled to was not found (scrollToMessageWithId)")
         }
     }
 
@@ -2332,10 +2320,12 @@ class ChatActivity :
                     binding.messagesListView.height / 2
                 )
             } else {
-                startContextChatWindowForMessage(messageId)
+                Log.d(
+                    TAG,
+                    "message $messageId that should be scrolled " +
+                        "to was not found (scrollToAndCenterMessageWithId)"
+                )
             }
-        } ?: run {
-            startContextChatWindowForMessage(messageId)
         }
     }
 
