@@ -20,6 +20,7 @@ import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.snackbar.Snackbar
+import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -157,7 +158,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
-        binding.messageTime.setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         // parent message handling
         if (!message.isDeleted && message.parentMessageId != null) {
             processParentMessage(message)
