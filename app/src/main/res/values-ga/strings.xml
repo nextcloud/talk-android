@@ -310,6 +310,10 @@
     <string name="nc_manual">Gan socraithe</string>
     <string name="nc_mark_as_read">Marcáil mar léite</string>
     <string name="nc_mark_as_unread">Marcáil mar neamhléite</string>
+    <string name="nc_mark_conversation_as_important">Comhrá marcáilte mar thábhachtach</string>
+    <string name="nc_mark_conversation_as_insensitive">Dímharcáladh an comhrá mar chomhrá íogair</string>
+    <string name="nc_mark_conversation_as_sensitive">Comhrá marcáilte mar íogair</string>
+    <string name="nc_mark_conversation_as_unimportant">Dímharcáladh an comhrá mar chomhrá tábhachtach</string>
     <string name="nc_meeting_ended">Deireadh leis an gcruinniú</string>
     <string name="nc_message_added_to_notes">Teachtaireacht curtha leis na nótaí</string>
     <string name="nc_message_failed">Theip</string>

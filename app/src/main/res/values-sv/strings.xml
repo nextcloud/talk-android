@@ -309,8 +309,10 @@
     <string name="nc_manual">Inte inställd</string>
     <string name="nc_mark_as_read">Markera som läst</string>
     <string name="nc_mark_as_unread">Markera som oläst</string>
+    <string name="nc_mark_conversation_as_important">Konversationen markerades som viktig</string>
     <string name="nc_mark_conversation_as_insensitive">Konversationen avmarkerades som känslig</string>
     <string name="nc_mark_conversation_as_sensitive">Konversationen markerades som känslig</string>
+    <string name="nc_mark_conversation_as_unimportant">Konversationen avmarkerades som viktig</string>
     <string name="nc_meeting_ended">Möte avslutat</string>
     <string name="nc_message_added_to_notes">Meddelande tillagt i anteckningar</string>
     <string name="nc_message_failed">Misslyckades</string>
