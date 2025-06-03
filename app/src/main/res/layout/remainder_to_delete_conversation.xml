@@ -39,6 +39,7 @@
             android:textColor="@color/white"
             app:icon="@drawable/ic_delete"
             app:iconPadding="8dp"
+            app:iconTint="@color/white"
             app:iconGravity="textStart"
             android:backgroundTint="@color/nc_darkRed"
             android:layout_marginEnd="16dp" />
