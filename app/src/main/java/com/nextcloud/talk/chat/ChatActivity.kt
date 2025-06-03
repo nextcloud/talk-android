@@ -1237,6 +1237,7 @@ class ChatActivity :
             bringToFront()
         }
         val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
+        viewThemeUtils.material.themeCardView(binding.conversationDeleteNotice)
 
         deleteNoticeText.text = String.format(
             resources.getString(R.string.nc_conversation_auto_delete_notice),
@@ -3150,7 +3151,6 @@ class ChatActivity :
     private fun showPopupWindow(anchorView: View) {
         val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
 
-        val titleTextView = popupView.findViewById<TextView>(R.id.event_scheduled)
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
 
         val popupWindow = PopupWindow(
