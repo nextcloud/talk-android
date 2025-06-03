@@ -118,7 +118,6 @@ class ConversationsListBottomDialog(
             currentUser.capabilities?.spreedCapability!!,
             SpreedFeatures.FAVORITES
         )
-        val canModerate = ConversationUtils.canModerate(conversation, currentUser.capabilities?.spreedCapability!!)
 
         binding.conversationRemoveFromFavorites.visibility = setVisibleIf(
             hasFavoritesCapability && conversation.favorite
@@ -149,7 +148,7 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationOperationDelete.visibility = setVisibleIf(
-            canModerate
+            conversation.canDeleteConversation
         )
 
         binding.conversationOperationLeave.visibility = setVisibleIf(
