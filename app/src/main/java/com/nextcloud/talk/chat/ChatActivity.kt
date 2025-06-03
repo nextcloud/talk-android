@@ -276,6 +276,8 @@ class ChatActivity :
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
+    private var chatMenu: Menu? = null
+
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
             .StartActivityForResult()
@@ -1097,6 +1099,8 @@ class ChatActivity :
                         context.getString(R.string.nc_room_retention),
                         Snackbar.LENGTH_LONG
                     ).show()
+
+                   chatMenu?.removeItem(R.id.conversation_event)
                 }
                 is ChatViewModel.UnbindRoomUiState.Error -> {
                     Snackbar.make(
@@ -3037,6 +3041,7 @@ class ChatActivity :
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_conversation, menu)
+        chatMenu = menu
 
         if (currentConversation?.objectType == ConversationEnums.ObjectType.EVENT) {
             eventConversationMenuItem = menu.findItem(R.id.conversation_event)
@@ -3050,9 +3055,10 @@ class ChatActivity :
             loadAvatarForStatusBar()
             setActionBarTitle()
         }
-
         return true
     }
+
+
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
