@@ -81,4 +81,5 @@ object BundleKeys {
     const val KEY_FIELD_MAP: String = "KEY_FIELD_MAP"
     const val KEY_CHAT_URL: String = "KEY_CHAT_URL"
     const val KEY_SCROLL_TO_NOTIFICATION_CATEGORY: String = "KEY_SCROLL_TO_NOTIFICATION_CATEGORY"
+    const val KEY_FOCUS_INPUT: String = "KEY_FOCUS_INPUT"
 }

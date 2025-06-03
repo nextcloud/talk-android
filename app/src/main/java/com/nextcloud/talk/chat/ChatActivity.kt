@@ -16,7 +16,6 @@ package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -363,6 +362,7 @@ class ChatActivity :
     var startCallFromRoomSwitch: Boolean = false
 
     var voiceOnly: Boolean = true
+    var focusInput: Boolean = false
     private lateinit var path: String
 
     var myFirstMessage: CharSequence? = null
@@ -546,6 +546,8 @@ class ChatActivity :
         startCallFromRoomSwitch = extras?.getBoolean(KEY_START_CALL_AFTER_ROOM_SWITCH, false) == true
 
         voiceOnly = extras?.getBoolean(KEY_CALL_VOICE_ONLY, false) == true
+
+        focusInput = extras?.getBoolean(BundleKeys.KEY_FOCUS_INPUT) == true
     }
 
     override fun onStart() {
@@ -637,12 +639,17 @@ class ChatActivity :
                         supportFragmentManager.commit {
                             setReorderingAllowed(true) // optimizes out redundant replace operations
                             replace(R.id.fragment_container_activity_chat, messageInputFragment)
+                            runOnCommit {
+                                if (focusInput) {
+                                    messageInputFragment.binding.fragmentMessageInputView.requestFocus()
+                                }
+                            }
                         }
 
                         joinRoomWithPassword()
 
                         if (conversationUser?.userId != "?" &&
-                            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
@@ -2046,7 +2053,7 @@ class ChatActivity :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
+            return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
                 currentConversation?.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
                 !ConversationUtils.canModerate(currentConversation!!, spreedCapabilities) &&
                 !participantPermissions.canIgnoreLobby()
@@ -2302,7 +2309,7 @@ class ChatActivity :
     }
 
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             onResult(result.data)
         } else {
             Log.e(TAG, "resultCode for received intent was != ok")
@@ -2796,7 +2803,7 @@ class ChatActivity :
         }
 
         if (this::spreedCapabilities.isInitialized) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
                 deleteExpiredMessages()
             }
         } else {
@@ -3064,7 +3071,7 @@ class ChatActivity :
         super.onPrepareOptionsMenu(menu)
 
         if (this::spreedCapabilities.isInitialized) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
             }
 
@@ -3085,7 +3092,7 @@ class ChatActivity :
                     }.collect()
                 }
 
-                if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
+                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
                     Handler().post {
                         findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
                             showCallButtonMenu(true)
@@ -3144,6 +3151,7 @@ class ChatActivity :
             else -> super.onOptionsItemSelected(item)
         }
 
+    @SuppressLint("InflateParams")
     private fun showPopupWindow(anchorView: View) {
         val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
 
@@ -3595,7 +3603,7 @@ class ChatActivity :
 
     fun copyMessage(message: IMessage?) {
         val clipboardManager =
-            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(
             resources?.getString(R.string.nc_app_product_name),
             message?.text
@@ -3909,7 +3917,7 @@ class ChatActivity :
         val isOlderThanSixHours = message
             .createdAt
             .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
-        val hasDeleteMessagesUnlimitedCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
+        val hasDeleteMessagesUnlimitedCapability = hasSpreedFeatureCapability(
             spreedCapabilities,
             SpreedFeatures.DELETE_MESSAGES_UNLIMITED
         )
@@ -3919,7 +3927,7 @@ class ChatActivity :
             !hasDeleteMessagesUnlimitedCapability && isOlderThanSixHours -> false
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
-            !CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
+            !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
             !participantPermissions.hasChatPermission() -> false
             hasDeleteMessagesUnlimitedCapability -> true
             else -> true
