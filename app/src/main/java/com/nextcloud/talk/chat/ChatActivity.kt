@@ -1105,7 +1105,7 @@ class ChatActivity :
                         Snackbar.LENGTH_LONG
                     ).show()
 
-                   chatMenu?.removeItem(R.id.conversation_event)
+                    chatMenu?.removeItem(R.id.conversation_event)
                 }
                 is ChatViewModel.UnbindRoomUiState.Error -> {
                     Snackbar.make(
@@ -1247,8 +1247,10 @@ class ChatActivity :
             resources.getString(R.string.nc_conversation_auto_delete_notice),
             retentionPeriod
         )
-        viewThemeUtils.material.colorMaterialButtonPrimaryTonal(binding.conversationDeleteNotice
-            .findViewById<MaterialButton>(R.id.keep_button))
+        viewThemeUtils.material.colorMaterialButtonPrimaryTonal(
+            binding.conversationDeleteNotice
+                .findViewById<MaterialButton>(R.id.keep_button)
+        )
 
         if (ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)) {
             binding.conversationDeleteNotice.findViewById<MaterialButton>(R.id.delete_now_button).visibility =
@@ -3067,8 +3069,6 @@ class ChatActivity :
         }
         return true
     }
-
-
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         super.onPrepareOptionsMenu(menu)
