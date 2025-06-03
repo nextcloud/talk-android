@@ -521,6 +521,10 @@ How to translate with transifex:
     <string name="nc_reply">Reply</string>
     <string name="nc_reply_privately">Reply privately</string>
     <string name="nc_delete_message">Delete</string>
+    <plurals name="nc_conversation_auto_delete_notice">
+        <item quantity="one">This conversation will be automatically deleted for everyone in %1$d day of no activity</item>
+        <item quantity="other">This conversation will be automatically deleted for everyone in %1$d days of no activity</item>
+    </plurals>
     <string name="nc_conversation_auto_delete_notice">This conversation will be automatically deleted for everyone in %1$d days of no activity</string>
     <string name="nc_delete_now">Delete now</string>
     <string name="nc_keep">Keep</string>
@@ -860,4 +864,5 @@ How to translate with transifex:
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="conversation_archived">Conversation is archived</string>
     <string name="local_time">Local time: %1$s</string>
+    <string name="open_notes">Open Notes</string>
 </resources>

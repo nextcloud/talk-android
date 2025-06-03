@@ -16,7 +16,6 @@ import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -41,6 +40,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
@@ -409,6 +411,10 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     setConversationList(list)
+                    val noteToSelf = list
+                        .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
+                    val isNoteToSelfAvailable = noteToSelf != null
+                    handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
                 }.collect()
         }
 
@@ -522,6 +528,30 @@ class ConversationsListActivity :
                     }
                 }
             }.collect()
+        }
+    }
+
+    private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
+        // Redundant operations just update the existing id
+        if (noteToSelfAvailable) {
+            val bundle = Bundle()
+            bundle.putString(KEY_ROOM_TOKEN, noteToSelfToken)
+            bundle.putBoolean(BundleKeys.KEY_FOCUS_INPUT, true)
+            val intent = Intent(context, ChatActivity::class.java)
+            intent.putExtras(bundle)
+            intent.action = Intent.ACTION_VIEW
+            val openNotesString = resources.getString(R.string.open_notes)
+
+            val shortcut = ShortcutInfoCompat.Builder(context, NOTE_TO_SELF_SHORTCUT_ID)
+                .setShortLabel(openNotesString)
+                .setLongLabel(openNotesString)
+                .setIcon(IconCompat.createWithResource(context, R.drawable.ic_pencil_grey600_24dp))
+                .setIntent(intent)
+                .build()
+
+            ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
+        } else {
+            ShortcutManagerCompat.removeDynamicShortcuts(context, listOf(NOTE_TO_SELF_SHORTCUT_ID))
         }
     }
 
@@ -640,7 +670,7 @@ class ConversationsListActivity :
             }
         }
 
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && newItems.isEmpty()) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -755,7 +785,7 @@ class ConversationsListActivity :
     }
 
     private fun initSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager?
         if (searchItem != null) {
             searchView = MenuItemCompat.getActionView(searchItem) as SearchView
             viewThemeUtils.talk.themeSearchView(searchView!!)
@@ -1217,7 +1247,7 @@ class ConversationsListActivity :
         })
         binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
@@ -1398,7 +1428,7 @@ class ConversationsListActivity :
         adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && adapter!!.isEmpty) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -1809,7 +1839,7 @@ class ConversationsListActivity :
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
         val serverNotificationAppInstalled =
-            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() == true
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
@@ -2183,5 +2213,6 @@ class ConversationsListActivity :
         const val ROOM_TYPE_ONE_ONE = "1"
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         const val LONG_1000: Long = 1000
+        private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
     }
 }

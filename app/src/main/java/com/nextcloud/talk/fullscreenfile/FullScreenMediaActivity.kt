@@ -190,6 +190,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
         supportActionBar?.show()
     }
 
+    @OptIn(UnstableApi::class)
     private fun applyWindowInsets() {
         val playerView = binding.playerView
         val exoControls = playerView.findViewById<FrameLayout>(R.id.exo_bottom_bar)
