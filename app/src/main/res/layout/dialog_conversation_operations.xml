@@ -196,6 +196,36 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/conversation_operation_rename"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_sheet_item_height"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="@dimen/standard_padding"
+                android:paddingEnd="@dimen/standard_padding"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_pencil_grey600_24dp"
+                    app:tint="@color/high_emphasis_menu_icon" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|center_vertical"
+                    android:paddingStart="40dp"
+                    android:paddingEnd="@dimen/zero"
+                    android:text="@string/nc_rename"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/high_emphasis_text"
+                    android:textSize="@dimen/bottom_sheet_text_size" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/conversation_archive"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_sheet_item_height"
@@ -227,7 +257,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/conversation_operation_rename"
+                android:id="@+id/conversation_operation_leave"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_sheet_item_height"
                 android:background="?android:attr/selectableItemBackground"
@@ -241,7 +271,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@null"
-                    android:src="@drawable/ic_pencil_grey600_24dp"
+                    android:src="@drawable/ic_exit_to_app_black_24dp"
                     app:tint="@color/high_emphasis_menu_icon" />
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -250,7 +280,7 @@
                     android:layout_gravity="start|center_vertical"
                     android:paddingStart="40dp"
                     android:paddingEnd="@dimen/zero"
-                    android:text="@string/nc_rename"
+                    android:text="@string/nc_leave"
                     android:textAlignment="viewStart"
                     android:textColor="@color/high_emphasis_text"
                     android:textSize="@dimen/bottom_sheet_text_size" />
@@ -281,36 +311,6 @@
                     android:paddingStart="40dp"
                     android:paddingEnd="@dimen/zero"
                     android:text="@string/nc_delete_call"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/high_emphasis_text"
-                    android:textSize="@dimen/bottom_sheet_text_size" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/conversation_operation_leave"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bottom_sheet_item_height"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="@dimen/standard_padding"
-                android:paddingEnd="@dimen/standard_padding"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@null"
-                    android:src="@drawable/ic_exit_to_app_black_24dp"
-                    app:tint="@color/high_emphasis_menu_icon" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:paddingStart="40dp"
-                    android:paddingEnd="@dimen/zero"
-                    android:text="@string/nc_leave"
                     android:textAlignment="viewStart"
                     android:textColor="@color/high_emphasis_text"
                     android:textSize="@dimen/bottom_sheet_text_size" />
