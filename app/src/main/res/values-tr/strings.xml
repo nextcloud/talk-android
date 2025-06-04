@@ -4,7 +4,7 @@
     <string name="add_participants">Ekle</string>
     <string name="add_to_notes">Notlar uygulamasına ekle</string>
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
-    <string name="appbar_search_in">%s içinde arama</string>
+    <string name="appbar_search_in">%s içinde ara</string>
     <string name="archive_conversation">Görüşmeyi arşivle</string>
     <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \"Arşivlenmiş\" süzgecini seçin. Doğrudan bahsetmeler yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
@@ -362,7 +362,7 @@
     <string name="nc_promote">Sorumluluğa yükselt</string>
     <string name="nc_public_call_status">Herkese açık görüşme</string>
     <string name="nc_push_disabled">Anında bildirimler kullanımdan kaldırılmış</string>
-    <string name="nc_push_to_talk">Bas-konuş</string>
+    <string name="nc_push_to_talk">Bas Konuş</string>
     <string name="nc_push_to_talk_desc">Mikrofon kullanımdan kaldırılmışken, Bas-konuş üzerine tıklayıp basılı tutun</string>
     <string name="nc_remind">Sonra hatırlat</string>
     <string name="nc_remove_from_favorites">Sık kullanılanlardan kaldır</string>

@@ -44,6 +44,7 @@
     <string name="invisible">Drugim nevidno</string>
     <string name="leave_call">Zapusti klic</string>
     <string name="load_more_results">Naloži več zadetkov</string>
+    <string name="local_time">Krajevni čas: %1$s</string>
     <string name="lock_conversation">Zakleni pogovor</string>
     <string name="lock_symbol">Simbol zaklepa</string>
     <string name="lower_hand">Spusti roko</string>
@@ -140,6 +141,7 @@
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
     <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
+    <string name="nc_delete_now">Izbriši</string>
     <string name="nc_demote">Ponižaj iz moderatorja</string>
     <string name="nc_description_record_voice">Posnemi glasovno sporočilo</string>
     <string name="nc_description_send_message_button">Pošlji sporočilo</string>
@@ -204,6 +206,7 @@
     <string name="nc_important_conversation">Pomemben pogovor</string>
     <string name="nc_invitations">Povabila</string>
     <string name="nc_join_open_conversations">Pridruži se odprtemu pogovoru</string>
+    <string name="nc_keep">Ohrani</string>
     <string name="nc_last_moderator_leaving_room_warning">Pred odhodom iz pogovora je treba nekoga določiti za moderatorja.</string>
     <string name="nc_last_modified">%1$s | Nazadnje spremenjeno: %2$s</string>
     <string name="nc_leave">Zapusti pogovor</string>
