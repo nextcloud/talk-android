@@ -20,9 +20,12 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.UserCirclesOrGroupsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.database.model.UserCirclesEntity
+import com.nextcloud.talk.data.database.model.UserGroupsEntity
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
@@ -47,7 +50,9 @@ import java.util.Locale
         ArbitraryStorageEntity::class,
         ConversationEntity::class,
         ChatMessageEntity::class,
-        ChatBlockEntity::class
+        ChatBlockEntity::class,
+        UserCirclesEntity::class,
+        UserGroupsEntity::class
     ],
     version = 16,
     autoMigrations = [
@@ -72,6 +77,7 @@ abstract class TalkDatabase : RoomDatabase() {
     abstract fun chatMessagesDao(): ChatMessagesDao
     abstract fun chatBlocksDao(): ChatBlocksDao
     abstract fun arbitraryStoragesDao(): ArbitraryStoragesDao
+    abstract fun userCirclesOrGroupsDao(): UserCirclesOrGroupsDao
 
     companion object {
         const val TAG = "TalkDatabase"

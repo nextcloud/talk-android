@@ -621,7 +621,7 @@ class ComposeChatAdapter(
             )
 
             processedMessageText = viewModel.messageUtils.processMessageParameters(
-                ctx, viewModel.viewThemeUtils, processedMessageText!!, message, null
+                ctx, viewModel.viewThemeUtils, processedMessageText!!, message, null, null, null
             )
 
             EmojiTextView(ctx).apply {

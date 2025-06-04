@@ -138,6 +138,10 @@ class MainActivity : BaseActivity(), ActionBarProvider {
         super.onStop()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
     private fun openConversationList() {
         val intent = Intent(this, ConversationsListActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

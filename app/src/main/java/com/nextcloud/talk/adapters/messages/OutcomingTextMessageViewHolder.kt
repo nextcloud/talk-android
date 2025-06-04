@@ -29,6 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.UserGroupsCirclesRepository
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
@@ -47,6 +48,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
@@ -85,26 +88,46 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private var job: Job? = null
 
-    @Suppress("Detekt.LongMethod")
+    @Inject
+    lateinit var userGroupsCirclesRepository: UserGroupsCirclesRepository
+
+    private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
     override fun onBind(message: ChatMessage) {
         super.onBind(message)
         sharedApplication!!.componentApplication.inject(this)
         val user = currentUserProvider.currentUser.blockingGet()
-        val hasCheckboxes = processCheckboxes(
-            message,
-            user
-        )
-        processMessage(message, hasCheckboxes)
+        lateinit var userGroups: List<String>
+        lateinit var userCircles: List<String>
+        coroutineScope.launch {
+            userGroups = userGroupsCirclesRepository.getUserGroups()
+                .map { list -> list.mapNotNull { it.groups } }.firstOrNull() ?: emptyList()
+
+            userCircles = userGroupsCirclesRepository.getUserCircles()
+                .map { list -> list.mapNotNull { it.displayName } }.firstOrNull() ?: emptyList()
+
+            val hasCheckboxes = processCheckboxes(
+                message,
+                user
+            )
+            processMessage(message, hasCheckboxes, userCircles, userGroups)
+        }
     }
 
     @Suppress("Detekt.LongMethod")
-    private fun processMessage(message: ChatMessage, hasCheckboxes: Boolean) {
+    private fun processMessage(
+        message: ChatMessage,
+        hasCheckboxes: Boolean,
+        userGroups: List<String>,
+        userCircles: List<String>
+    ) {
         var isBubbled = true
         val layoutParams = binding.messageTime.layoutParams as FlexboxLayout.LayoutParams
         var textSize = context.resources.getDimension(R.dimen.chat_text_size)
         if (!hasCheckboxes) {
             realView.isSelected = false
             layoutParams.isWrapBefore = false
+            viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
             viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
 
             binding.messageText.visibility = View.VISIBLE
@@ -115,6 +138,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 message,
                 false,
                 viewThemeUtils
+
             )
 
             val spansFromString: Array<Any> = processedMessageText!!.getSpans(
@@ -144,8 +168,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 viewThemeUtils,
                 processedMessageText,
                 message,
-                itemView
+                itemView,
+                userGroups,
+                userCircles
             )
+            binding.messageText.text = processedMessageText
 
             if (
                 (message.messageParameters == null || message.messageParameters!!.size <= 0) &&
@@ -156,7 +183,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 realView.isSelected = true
                 isBubbled = false
             }
-
             binding.messageTime.layoutParams = layoutParams
             viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
             binding.messageText.text = processedMessageText
@@ -186,7 +212,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.sendingProgress.visibility = View.GONE
 
         if (message.sendingFailed) {
-            updateStatus(R.drawable.baseline_error_outline_24, context.resources?.getString(R.string.nc_message_failed))
+            updateStatus(
+                R.drawable.baseline_error_outline_24,
+                context.resources?.getString(R.string.nc_message_failed)
+            )
         } else if (message.isTemporary) {
             updateStatus(R.drawable.baseline_schedule_24, context.resources?.getString(R.string.nc_message_sending))
         } else if (message.readStatus == ReadStatus.READ) {
