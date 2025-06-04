@@ -319,14 +319,19 @@ class ConversationInfoViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getProfileData(user: User, userId: String) {
         val url = ApiUtils.getUrlForProfile(user.baseUrl!!, userId)
         viewModelScope.launch {
-            val profile = conversationsRepository.getProfile(user.getCredentials(), url)
-            if (profile != null) {
-                _getProfileViewState.value = GetProfileSuccessState(profile)
-            } else {
-                _getProfileViewState.value = GetProfileErrorState
+            try {
+                val profile = conversationsRepository.getProfile(user.getCredentials(), url)
+                if (profile != null) {
+                    _getProfileViewState.value = GetProfileSuccessState(profile)
+                } else {
+                    _getProfileViewState.value = GetProfileErrorState
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Failed to get profile data (if not supported there wil be http405)", e)
             }
         }
     }
