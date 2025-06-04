@@ -155,7 +155,7 @@ ext {
     daggerVersion = "2.56.2"
     emojiVersion = "1.5.0"
     fidoVersion = "4.1.0-patch2"
-    lifecycleVersion = '2.8.7'
+    lifecycleVersion = '2.9.1'
     okhttpVersion = "4.12.0"
     markwonVersion = "4.6.2"
     materialDialogsVersion = "3.3.0"
