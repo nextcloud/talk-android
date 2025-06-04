@@ -105,7 +105,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         if (!hasCheckboxes) {
             realView.isSelected = false
             layoutParams.isWrapBefore = false
-            viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
 
             binding.messageText.visibility = View.VISIBLE
             binding.checkboxContainer.visibility = View.GONE
@@ -172,7 +171,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageEditIndicator.visibility = View.GONE
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
-        binding.messageTime.setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+        viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         setBubbleOnChatMessage(message)
         // parent message handling
         if (!message.isDeleted && message.parentMessageId != null) {
