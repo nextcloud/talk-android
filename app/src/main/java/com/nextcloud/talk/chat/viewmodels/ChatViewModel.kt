@@ -27,6 +27,7 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
@@ -60,6 +61,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.inject.Inject
 
@@ -89,6 +91,8 @@ class ChatViewModel @Inject constructor(
     val disposableSet = mutableSetOf<Disposable>()
     var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
+    var chatRoomToken: String = ""
+    var messageDraft: MessageDraft = MessageDraft()
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -108,6 +112,14 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
+
+        runBlocking {
+            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+            model?.let {
+                it.messageDraft = messageDraft
+                conversationRepository.updateConversation(it)
+            }
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -887,6 +899,11 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             _getOpenGraph.value = chatNetworkDataSource.getOpenGraph(credentials, baseUrl, urlToPreview)
         }
+    }
+
+    suspend fun updateMessageDraft() {
+        val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+        messageDraft = model?.messageDraft!!
     }
 
     companion object {
