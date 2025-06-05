@@ -98,11 +98,21 @@ class OfflineFirstConversationsRepository @Inject constructor(
                         runBlocking {
                             _conversationFlow.emit(model)
                             val entityList = listOf(model.asEntity())
-                            dao.upsertConversations(entityList)
+                            dao.upsertConversations(user.id!!, entityList)
                         }
                     }
                 })
         }
+
+    override suspend fun updateConversation(conversationModel: ConversationModel) {
+        val entity = conversationModel.asEntity()
+        dao.updateConversation(entity)
+    }
+
+    override suspend fun getLocallyStoredConversation(roomToken: String): ConversationModel? {
+        val id = user.id!!
+        return getConversation(id, roomToken)
+    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun getRoomsFromServer(): List<ConversationEntity>? {
@@ -126,7 +136,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
             }
 
             deleteLeftConversations(conversationsFromSync)
-            dao.upsertConversations(conversationsFromSync)
+            dao.upsertConversations(user.id!!, conversationsFromSync)
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when fetching conversations", e)
         }

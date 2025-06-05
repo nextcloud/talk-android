@@ -37,6 +37,7 @@ import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.MessageDraftConverter
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
@@ -51,10 +52,11 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 17,
+    version = 18,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
-        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
+        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
+        AutoMigration(from = 17, to = 18)
     ],
     exportSchema = true
 )
@@ -67,7 +69,8 @@ import java.util.Locale
     HashMapHashMapConverter::class,
     LinkedHashMapConverter::class,
     ArrayListConverter::class,
-    SendStatusConverter::class
+    SendStatusConverter::class,
+    MessageDraftConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
 
@@ -126,7 +129,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 )
                 .allowMainThreadQueries()
                 .addCallback(
-                    object : RoomDatabase.Callback() {
+                    object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
                             super.onOpen(db)
                             db.execSQL("PRAGMA defer_foreign_keys = 1")
