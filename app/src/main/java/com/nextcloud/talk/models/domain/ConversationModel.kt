@@ -8,6 +8,7 @@
 package com.nextcloud.talk.models.domain
 
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -65,7 +66,8 @@ class ConversationModel(
     var hasImportant: Boolean = false,
 
     // attributes that don't come from API. This should be changed?!
-    var password: String? = null
+    var password: String? = null,
+    var messageDraft: MessageDraft? = MessageDraft()
 ) {
 
     companion object {

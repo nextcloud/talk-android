@@ -8,11 +8,15 @@
 package com.nextcloud.talk.data.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import androidx.room.Upsert
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 
 @Dao
 interface ConversationsDao {
@@ -22,8 +26,26 @@ interface ConversationsDao {
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
     fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
-    @Upsert
+    @Upsert()
     fun upsertConversations(conversationEntities: List<ConversationEntity>)
+
+    @Insert(onConflict = REPLACE)
+    suspend fun insertOrUpdate(item: ConversationEntity)
+
+    @Transaction
+    suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
+        serverItems.forEach { serverItem ->
+            val existingItem = getConversationForUser(accountId, serverItem.token).first()
+            if (existingItem != null) {
+                val mergedItem = serverItem
+                mergedItem.messageDraft = existingItem.messageDraft
+                insertOrUpdate(mergedItem)
+            } else {
+                // Insert new item directly (local-only fields will be default)
+                insertOrUpdate(serverItem)
+            }
+        }
+    }
 
     /**
      * Deletes rows in the db matching the specified [conversationIds]
@@ -36,7 +58,7 @@ interface ConversationsDao {
     )
     fun deleteConversations(conversationIds: List<String>)
 
-    @Update
+    @Update(onConflict = REPLACE)
     fun updateConversation(conversationEntity: ConversationEntity)
 
     @Query(

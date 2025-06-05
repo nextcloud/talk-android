@@ -13,6 +13,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
@@ -96,7 +97,8 @@ data class ConversationEntity(
     @ColumnInfo(name = "unreadMessages") var unreadMessages: Int = 0,
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
     @ColumnInfo(name = "hasSensitive") var hasSensitive: Boolean = false,
-    @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false
+    @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
+    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft()
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions

@@ -35,7 +35,6 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -81,15 +80,15 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
-import com.stfalcon.chatkit.commons.models.IMessage
 import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Objects
 import javax.inject.Inject
 
-@Suppress("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList", "TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
 class MessageInputFragment : Fragment() {
 
@@ -112,6 +111,10 @@ class MessageInputFragment : Fragment() {
         private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
+        const val QUOTED_MESSAGE_TEXT = "QUOTED_MESSAGE_TEXT"
+        const val QUOTED_MESSAGE_ID = "QUOTED_MESSAGE_ID"
+        const val QUOTED_MESSAGE_URL = "QUOTED_MESSAGE_URL"
+        const val QUOTED_MESSAGE_NAME = "QUOTED_MESSAGE_NAME"
     }
 
     @Inject
@@ -163,7 +166,6 @@ class MessageInputFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        saveState()
     }
 
     override fun onDestroyView() {
@@ -172,7 +174,6 @@ class MessageInputFragment : Fragment() {
             mentionAutocomplete?.dismissPopup()
         }
         clearEditUI()
-        cancelReply()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -183,7 +184,13 @@ class MessageInputFragment : Fragment() {
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
-            message?.let { replyToMessage(message) }
+            (message as ChatMessage?)?.let {
+                chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
+                chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
+                chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
+                chatActivity.chatViewModel.messageDraft.quotedJsonId = message.jsonMessageId
+                replyToMessage(message.text, message.actorDisplayName, message.imageUrl, message.jsonMessageId)
+            }
         }
 
         chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
@@ -299,34 +306,24 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-        if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {
-            requireContext().getSharedPreferences(chatActivity.localClassName, AppCompatActivity.MODE_PRIVATE).apply {
-                val text = getString(chatActivity.roomToken, "")
-                val cursor = getInt(chatActivity.roomToken + CURSOR_KEY, 0)
-                binding.fragmentMessageInputView.messageInput.setText(text)
-                binding.fragmentMessageInputView.messageInput.setSelection(cursor)
-            }
+        runBlocking {
+            chatActivity.chatViewModel.updateMessageDraft()
         }
-    }
 
-    private fun saveState() {
-        val text = binding.fragmentMessageInputView.messageInput.text.toString()
-        val cursor = binding.fragmentMessageInputView.messageInput.selectionStart
-        val previous = requireContext().getSharedPreferences(
-            chatActivity.localClassName,
-            AppCompatActivity
-                .MODE_PRIVATE
-        ).getString(chatActivity.roomToken, "null")
+        val draft = chatActivity.chatViewModel.messageDraft
+        binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
+        binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
+        if (draft.messageText != "") {
+            binding.fragmentMessageInputView.messageInput.requestFocus()
+        }
 
-        if (text != previous) {
-            requireContext().getSharedPreferences(
-                chatActivity.localClassName,
-                AppCompatActivity.MODE_PRIVATE
-            ).edit().apply {
-                putString(chatActivity.roomToken, text)
-                putInt(chatActivity.roomToken + CURSOR_KEY, cursor)
-                apply()
-            }
+        if (isInReplyState()) {
+            replyToMessage(
+                chatActivity.chatViewModel.messageDraft.quotedMessageText,
+                chatActivity.chatViewModel.messageDraft.quotedDisplayName,
+                chatActivity.chatViewModel.messageDraft.quotedImageUrl,
+                chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
+            )
         }
     }
 
@@ -388,7 +385,10 @@ class MessageInputFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                // unused atm
+                val cursor = binding.fragmentMessageInputView.messageInput.selectionStart
+                val text = binding.fragmentMessageInputView.messageInput.text.toString()
+                chatActivity.chatViewModel.messageDraft.messageCursor = cursor
+                chatActivity.chatViewModel.messageDraft.messageText = text
             }
         })
 
@@ -615,7 +615,7 @@ class MessageInputFragment : Fragment() {
                     }
                 }
             }
-            v?.onTouchEvent(event) ?: true
+            v?.onTouchEvent(event) != false
         }
     }
 
@@ -717,52 +717,54 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun replyToMessage(message: IMessage?) {
+    private fun replyToMessage(
+        quotedMessageText: String?,
+        quotedActorDisplayName: String?,
+        quotedImageUrl: String?,
+        quotedJsonId: Int
+    ) {
         Log.d(TAG, "Reply")
-        val chatMessage = message as ChatMessage?
-        chatMessage?.let {
-            val view = binding.fragmentMessageInputView
-            view.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
-                View.GONE
-            view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
-                View.VISIBLE
+        val view = binding.fragmentMessageInputView
+        view.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
+            View.GONE
+        view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
+            View.VISIBLE
 
-            val quotedMessage = view.findViewById<EmojiTextView>(R.id.quotedMessage)
+        val quotedMessage = view.findViewById<EmojiTextView>(R.id.quotedMessage)
 
-            quotedMessage?.maxLines = 2
-            quotedMessage?.ellipsize = TextUtils.TruncateAt.END
-            quotedMessage?.text = it.text
-            view.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
-                it.actorDisplayName ?: requireContext().getText(R.string.nc_nick_guest)
+        quotedMessage?.maxLines = 2
+        quotedMessage?.ellipsize = TextUtils.TruncateAt.END
+        quotedMessage?.text = quotedMessageText
+        view.findViewById<EmojiTextView>(R.id.quotedMessageAuthor)?.text =
+            quotedActorDisplayName ?: requireContext().getText(R.string.nc_nick_guest)
 
-            chatActivity.conversationUser?.let {
-                val quotedMessageImage = view.findViewById<ImageView>(R.id.quotedMessageImage)
-                chatMessage.imageUrl?.let { previewImageUrl ->
-                    quotedMessageImage?.visibility = View.VISIBLE
+        chatActivity.conversationUser?.let {
+            val quotedMessageImage = view.findViewById<ImageView>(R.id.quotedMessageImage)
+            quotedImageUrl?.let { previewImageUrl ->
+                quotedMessageImage?.visibility = View.VISIBLE
 
-                    val px = TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_DIP,
-                        QUOTED_MESSAGE_IMAGE_MAX_HEIGHT,
-                        resources.displayMetrics
-                    )
+                val px = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    QUOTED_MESSAGE_IMAGE_MAX_HEIGHT,
+                    resources.displayMetrics
+                )
 
-                    quotedMessageImage?.maxHeight = px.toInt()
-                    val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
-                    layoutParams.flexGrow = 0f
-                    quotedMessageImage.layoutParams = layoutParams
-                    quotedMessageImage.load(previewImageUrl) {
-                        addHeader("Authorization", chatActivity.credentials!!)
-                    }
-                } ?: run {
-                    view.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.GONE
+                quotedMessageImage?.maxHeight = px.toInt()
+                val layoutParams = quotedMessageImage?.layoutParams as FlexboxLayout.LayoutParams
+                layoutParams.flexGrow = 0f
+                quotedMessageImage.layoutParams = layoutParams
+                quotedMessageImage.load(previewImageUrl) {
+                    addHeader("Authorization", chatActivity.credentials!!)
                 }
+            } ?: run {
+                view.findViewById<ImageView>(R.id.quotedMessageImage)?.visibility = View.GONE
             }
-
-            val quotedChatMessageView =
-                view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-            quotedChatMessageView?.tag = message?.jsonMessageId
-            quotedChatMessageView?.visibility = View.VISIBLE
         }
+
+        val quotedChatMessageView =
+            view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+        quotedChatMessageView?.tag = quotedJsonId
+        quotedChatMessageView?.visibility = View.VISIBLE
     }
 
     fun updateOwnTypingStatus(typedText: CharSequence) {
@@ -1051,5 +1053,15 @@ class MessageInputFragment : Fragment() {
         quote.tag = null
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
         chatActivity.messageInputViewModel.reply(null)
+
+        chatActivity.chatViewModel.messageDraft.quotedMessageText = null
+        chatActivity.chatViewModel.messageDraft.quotedDisplayName = null
+        chatActivity.chatViewModel.messageDraft.quotedImageUrl = null
+        chatActivity.chatViewModel.messageDraft.quotedJsonId = null
+    }
+
+    private fun isInReplyState(): Boolean {
+        val jsonId = chatActivity.chatViewModel.messageDraft.quotedJsonId
+        return jsonId != null
     }
 }

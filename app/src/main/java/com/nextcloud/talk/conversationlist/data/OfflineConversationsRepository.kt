@@ -36,4 +36,8 @@ interface OfflineConversationsRepository {
      * to be handled asynchronously.
      */
     fun getRoom(roomToken: String): Job
+
+    suspend fun updateConversation(conversationModel: ConversationModel)
+
+    suspend fun getLocallyStoredConversation(roomToken: String): ConversationModel?
 }
