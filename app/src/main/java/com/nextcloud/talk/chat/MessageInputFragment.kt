@@ -64,6 +64,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
@@ -414,8 +415,9 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
             val text = binding.fragmentMessageInputView.inputEditText.text.toString()
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
+            val editedMessage = ChatUtils.getParsedMessage(text, message.messageParameters)
             if (message.message!!.trim() != text.trim()) {
-                editMessageAPI(message, text)
+                editMessageAPI(message, editedMessage!!)
             }
             clearEditUI()
         }
