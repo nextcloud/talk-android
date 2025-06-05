@@ -9,6 +9,36 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 Types of changes can be: Added/Changed/Deprecated/Removed/Fixed/Security
 
+## [21.1.0] - 2025-06-05
+
+### Added
+- Allow adding participants to one-to-one chats creating a new conversation
+- Handling of event conversations
+- Show info about participant (organization, role, timezone, ...) in 1:1 conversation info screen
+- Added gallery option in chat attachment menu (access photos and videos with one click without giving permissions)
+- Add self-test button for push notifications in diagnosis screen
+- Edit checkbox in chat messages
+- Team mentions in chat
+- Add option to mark a conversation as sensitive
+- Allow bluetooth headset to be discovered and used during a call (@gavine99)
+
+### Changed
+- Design of participants grid in call
+- Improve subline in conversations screen when last message is attachment
+- Improve message search
+- In search window, show messages at last
+- Switch video capture for calls between 4:3 and 16:9 ratio depending on portrait/ landscape mode
+
+### Fixed
+- Crashes
+- Videos in videocall lost after app comes back to foreground
+- Open conversations not being shown in search
+- Minor bugs (@MmAaXx500)
+
+Minimum: NC 17 Server, Android 8.0 Oreo
+
+For a full list, please see https://github.com/nextcloud/talk-android/milestone/94?closed=1
+
 ## [21.0.1] - 2025-04-15
 
 ### Fixed
