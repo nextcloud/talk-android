@@ -259,8 +259,8 @@
     <string name="nc_guest">Gość</string>
     <string name="nc_guest_access">Dostęp dla gościa</string>
     <string name="nc_guest_access_allow_failed">Nie można włączyć/wyłączyć dostępu dla gościa.</string>
-    <string name="nc_guest_access_allow_summary">Zezwól gościom na udostępnianie linku publicznego, aby dołączyć do tej rozmowy.</string>
-    <string name="nc_guest_access_allow_title">Zezwól gościom</string>
+    <string name="nc_guest_access_allow_summary">Zezwalaj gościom na udostępnianie linku publicznego, aby dołączyć do tej rozmowy.</string>
+    <string name="nc_guest_access_allow_title">Zezwalaj gościom</string>
     <string name="nc_guest_access_password_dialog_hint">Wprowadź hasło</string>
     <string name="nc_guest_access_password_dialog_title">Hasło dostępu gościa</string>
     <string name="nc_guest_access_password_failed">Błąd podczas ustawiania/wyłączania hasła.</string>
@@ -342,7 +342,7 @@
     <string name="nc_password">Hasło</string>
     <string name="nc_permissions_ask">Ustaw uprawnienia</string>
     <string name="nc_permissions_denied">Odmówiono niektórych uprawnień.</string>
-    <string name="nc_permissions_rationale_dialog_title">Zezwól na uprawnienia</string>
+    <string name="nc_permissions_rationale_dialog_title">Zezwalaj na uprawnienia</string>
     <string name="nc_permissions_settings">Otwórz ustawienia</string>
     <string name="nc_permissions_settings_hint">Nadaj uprawnienia w Ustawienia > Uprawnienia</string>
     <string name="nc_phone_book_integration_account_not_found">Nie znaleziono konta</string>

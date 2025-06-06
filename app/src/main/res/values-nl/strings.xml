@@ -29,7 +29,7 @@
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>
     <string name="close">Sluit</string>
-    <string name="close_icon">Sluiten pictogram</string>
+    <string name="close_icon">Sluiten-pictogram</string>
     <string name="connection_established">Verbinding tot stand gebracht</string>
     <string name="connection_lost_sent_messages_are_queued">Verbinding verbroken - Verzonden berichten in de wachtrij geplaatst</string>
     <string name="continuous_voice_message_recording">Zet opname vast voor doorlopende opname van de spraak</string>
@@ -557,7 +557,7 @@ Kies er eentje van een provider.</string>
     <string name="scope_toggle">Scope omschakelen</string>
     <string name="scope_toggle_description">Wijzigen privacyniveau van %1$s</string>
     <string name="scroll_to_bottom">Scroll naar beneden</string>
-    <string name="search_icon">Zoeken pictogram</string>
+    <string name="search_icon">Zoeken-pictogram</string>
     <string name="secondsAgo">seconden geleden</string>
     <string name="selected_list_item">Geselecteerd</string>
     <string name="send_email">Verstuur e-mail</string>
