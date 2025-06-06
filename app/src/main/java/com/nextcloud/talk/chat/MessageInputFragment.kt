@@ -86,7 +86,7 @@ import kotlinx.coroutines.launch
 import java.util.Objects
 import javax.inject.Inject
 
-@Suppress("LongParameterList", "TooManyFunctions")
+@Suppress("LongParameterList", "TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
 class MessageInputFragment : Fragment() {
 
