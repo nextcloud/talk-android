@@ -286,6 +286,7 @@ class WebViewLoginActivity : BaseActivity() {
                 }
             }
 
+            @SuppressLint("DiscouragedPrivateApi")
             @Suppress("Detekt.TooGenericExceptionCaught")
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 try {
