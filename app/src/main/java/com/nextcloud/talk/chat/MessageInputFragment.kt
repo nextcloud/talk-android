@@ -780,7 +780,6 @@ class MessageInputFragment : Fragment() {
             view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quotedChatMessageView?.tag = quotedJsonId
         quotedChatMessageView?.visibility = View.VISIBLE
-
     }
 
     fun updateOwnTypingStatus(typedText: CharSequence) {
