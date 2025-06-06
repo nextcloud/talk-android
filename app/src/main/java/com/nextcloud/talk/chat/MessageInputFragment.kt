@@ -324,7 +324,6 @@ class MessageInputFragment : Fragment() {
                 if (isInReplyState) {
                     replyToMessage(quotedMessageText, quotedActorDisplayName, quotedImageUrl, quotedJsonId)
                 }
-
             }
         }
     }
