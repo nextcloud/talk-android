@@ -310,8 +310,10 @@
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
+    <string name="nc_mark_conversation_as_important">Conversa marcada como importante</string>
     <string name="nc_mark_conversation_as_insensitive">Conversa desmarcada como sensível</string>
     <string name="nc_mark_conversation_as_sensitive">Conversa marcada como sensível</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversa não marcada como importante</string>
     <string name="nc_meeting_ended">Reunião encerrada</string>
     <string name="nc_message_added_to_notes">Mensagem adicionada às notas</string>
     <string name="nc_message_failed">Falhou</string>
