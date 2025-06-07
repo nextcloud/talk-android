@@ -205,7 +205,7 @@
                     android:textStyle="bold"/>
 
                 <LinearLayout
-                    android:id="@+id/settings_gplay_only_wrapper"
+                    android:id="@+id/settings_push_notifications_only_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
@@ -277,7 +277,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/settings_gplay_not_available"
+                    android:id="@+id/settings_push_notifications_not_available"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/standard_padding"
@@ -286,9 +286,10 @@
                     tools:visibility="visible">
 
                     <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/settings_push_notifications_not_available_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_diagnose_gplay_available_no"/>
+                        android:text="@string/nc_diagnose_push_notifications_available_no" />
 
                 </LinearLayout>
 
@@ -655,14 +656,36 @@
                         android:id="@+id/diagnose_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textSize="@dimen/headline_text_size"
-                        android:text="@string/nc_settings_diagnose_title"/>
+                        android:text="@string/nc_settings_diagnose_title"
+                        android:textSize="@dimen/headline_text_size" />
 
                     <com.google.android.material.textview.MaterialTextView
                         android:id="@+id/diagnose_subtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/nc_settings_diagnose_subtitle"/>
+                        android:text="@string/nc_settings_diagnose_subtitle" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/reset_push_notifications_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/reset_push_notifications_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/headline_text_size"
+                        android:text="@string/prefs_reset_push_title"/>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/reset_push_notifications_subtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/prefs_reset_push_summary"/>
                 </LinearLayout>
 
                 <LinearLayout
