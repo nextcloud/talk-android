@@ -195,6 +195,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_OFFSET
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -369,6 +370,7 @@ class ChatActivity :
 
     var myFirstMessage: CharSequence? = null
     var checkingLobbyStatus: Boolean = false
+    private var listScrollOffset: Int = 0
 
     private var conversationVoiceCallMenuItem: MenuItem? = null
     private var conversationVideoMenuItem: MenuItem? = null
@@ -392,7 +394,10 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            intent.putExtras(Bundle())
+            val bundle = bundleOf()
+            bundle.putInt(KEY_SCROLL_OFFSET, listScrollOffset)
+            bundle.putString(KEY_ROOM_TOKEN, roomToken)
+            intent.putExtras(bundle)
             startActivity(intent)
         }
     }
@@ -549,6 +554,7 @@ class ChatActivity :
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+        listScrollOffset = extras?.getInt(KEY_SCROLL_OFFSET, 0) ?: 0
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 

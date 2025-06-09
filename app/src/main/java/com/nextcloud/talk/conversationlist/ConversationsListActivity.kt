@@ -51,6 +51,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
@@ -141,6 +142,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_FLAG
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FORWARD_MSG_TEXT
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_OFFSET
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SCROLL_TO_NOTIFICATION_CATEGORY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARED_TEXT
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
@@ -235,6 +237,8 @@ class ConversationsListActivity :
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
+    private var roomTokenFromIntent: String? = null
+    private var scrollOffset: Int = 0
     private var filterState =
         mutableMapOf(
             MENTION to false,
@@ -307,6 +311,8 @@ class ConversationsListActivity :
         showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
+        roomTokenFromIntent = intent.extras?.getString(KEY_ROOM_TOKEN)
+        scrollOffset = intent.extras?.getInt(KEY_SCROLL_OFFSET, 0) ?: 0
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -426,6 +432,17 @@ class ConversationsListActivity :
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
+                    if (roomTokenFromIntent != null) {
+                        val item = adapter?.currentItems?.first {
+                            it is ConversationItem && it.model.token == roomTokenFromIntent
+                        }
+                        val pos = adapter?.currentItems?.indexOf(item)
+                        pos?.let {
+                            val layoutManager = binding.recyclerView.layoutManager as LinearLayoutManager
+                            layoutManager.scrollToPosition(scrollOffset)
+                        }
+                        roomTokenFromIntent = null
+                    }
                 }.collect()
         }
 
@@ -1879,7 +1896,8 @@ class ConversationsListActivity :
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
         }
-
+        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        bundle.putInt(KEY_SCROLL_OFFSET, firstVisible)
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtras(bundle)
         startActivity(intent)
