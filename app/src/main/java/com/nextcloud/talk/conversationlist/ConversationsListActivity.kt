@@ -16,7 +16,6 @@ import android.animation.AnimatorInflater
 import android.annotation.SuppressLint
 import android.app.SearchManager
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
@@ -412,8 +411,9 @@ class ConversationsListActivity :
                 .onEach { list ->
                     setConversationList(list)
                     if (roomTokenFromIntent != null) {
-                        val item = adapter?.currentItems?.
-                            first { it is ConversationItem && it.model.token == roomTokenFromIntent }
+                        val item = adapter?.currentItems?.first {
+                            it is ConversationItem && it.model.token == roomTokenFromIntent
+                        }
                         val pos = adapter?.currentItems?.indexOf(item)
                         pos?.let {
                             val layoutManager = binding.recyclerView.layoutManager
