@@ -233,6 +233,7 @@ class ConversationsListActivity :
     private var conversationsListBottomDialog: ConversationsListBottomDialog? = null
     private var searchHelper: MessageSearchHelper? = null
     private var searchViewDisposable: Disposable? = null
+    private var roomTokenFromIntent: String? = null
     private var filterState =
         mutableMapOf(
             MENTION to false,
@@ -304,6 +305,7 @@ class ConversationsListActivity :
         showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
+        roomTokenFromIntent = intent.extras?.getString(KEY_ROOM_TOKEN)
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -409,6 +411,16 @@ class ConversationsListActivity :
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     setConversationList(list)
+                    if (roomTokenFromIntent != null) {
+                        val item = adapter?.currentItems?.
+                            first { it is ConversationItem && it.model.token == roomTokenFromIntent }
+                        val pos = adapter?.currentItems?.indexOf(item)
+                        pos?.let {
+                            val layoutManager = binding.recyclerView.layoutManager
+                            layoutManager?.scrollToPosition(pos)
+                        }
+                        roomTokenFromIntent = null
+                    }
                 }.collect()
         }
 
@@ -640,7 +652,7 @@ class ConversationsListActivity :
             }
         }
 
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && newItems.isEmpty()) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -755,7 +767,7 @@ class ConversationsListActivity :
     }
 
     private fun initSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager?
         if (searchItem != null) {
             searchView = MenuItemCompat.getActionView(searchItem) as SearchView
             viewThemeUtils.talk.themeSearchView(searchView!!)
@@ -1217,7 +1229,7 @@ class ConversationsListActivity :
         })
         binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
@@ -1398,7 +1410,7 @@ class ConversationsListActivity :
         adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && adapter!!.isEmpty) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -1809,7 +1821,7 @@ class ConversationsListActivity :
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
         val serverNotificationAppInstalled =
-            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() == true
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
