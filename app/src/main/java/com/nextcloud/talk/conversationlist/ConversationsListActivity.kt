@@ -963,8 +963,7 @@ class ConversationsListActivity :
             } else {
                 showToolbar()
             }
-            colorizeStatusBar()
-            colorizeNavigationBar()
+            setupSystemColors()
         }
     }
 

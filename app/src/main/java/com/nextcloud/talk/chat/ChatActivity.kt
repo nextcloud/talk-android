@@ -461,21 +461,26 @@ class ChatActivity :
         setupActionBar()
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
-            val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
-            val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
+                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
-            val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-            val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
+                val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
 
-            view.setPadding(
-                view.paddingLeft,
-                statusBarInsets.top,
-                view.paddingRight,
-                bottomPadding
-            )
-            WindowInsetsCompat.CONSUMED
+                view.setPadding(
+                    view.paddingLeft,
+                    statusBarInsets.top,
+                    view.paddingRight,
+                    bottomPadding
+                )
+                WindowInsetsCompat.CONSUMED
+            }
+        } else {
+            colorizeStatusBar()
+            colorizeNavigationBar()
         }
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
@@ -1397,7 +1402,7 @@ class ChatActivity :
         supportActionBar?.setDisplayShowHomeEnabled(true)
         supportActionBar?.setIcon(resources!!.getColor(R.color.transparent, null).toDrawable())
         setActionBarTitle()
-        // viewThemeUtils.material.themeToolbar(binding.chatToolbar)
+        viewThemeUtils.material.themeToolbar(binding.chatToolbar)
     }
 
     private fun initAdapter() {

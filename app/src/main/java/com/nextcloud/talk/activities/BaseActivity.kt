@@ -11,6 +11,7 @@ package com.nextcloud.talk.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -20,12 +21,12 @@ import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
 import android.widget.EditText
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.android.common.ui.util.extensions.adjustUIForAPILevel35
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -41,6 +42,7 @@ import com.nextcloud.talk.utils.UriUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
+import com.nextcloud.talk.utils.setStatusBarColor
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -82,7 +84,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-        enableEdgeToEdge()
+        adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
@@ -114,8 +116,12 @@ open class BaseActivity : AppCompatActivity() {
     }
 
     fun setupSystemColors() {
-        colorizeStatusBar()
-        colorizeNavigationBar()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            setStatusBarColor(ResourcesCompat.getColor(resources, R.color.bg_default, context.theme))
+        } else {
+            colorizeStatusBar()
+            colorizeNavigationBar()
+        }
     }
 
     open fun colorizeStatusBar() {
