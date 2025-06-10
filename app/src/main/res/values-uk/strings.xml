@@ -3,6 +3,7 @@
     <string name= "nc_edit">Редагувати</string>
     <string name="add_participants">Додати</string>
     <string name="appbar_search_in">Пошук у %s</string>
+    <string name="archived">Заархівовані</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Вивід аудіо</string>
     <string name="audio_output_phone">Телефон</string>

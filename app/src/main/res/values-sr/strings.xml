@@ -310,8 +310,10 @@
     <string name="nc_manual">Није постављено</string>
     <string name="nc_mark_as_read">Означи као прочитано</string>
     <string name="nc_mark_as_unread">Означи као непрочитано</string>
+    <string name="nc_mark_conversation_as_important">Разговор је означен као важан</string>
     <string name="nc_mark_conversation_as_insensitive">Разговор више није означен као осетљив</string>
     <string name="nc_mark_conversation_as_sensitive">Разговор је означен као осетљив</string>
+    <string name="nc_mark_conversation_as_unimportant">Разговор више није означен као важан</string>
     <string name="nc_meeting_ended">Састанак је завршен</string>
     <string name="nc_message_added_to_notes">У белешке је додата порука</string>
     <string name="nc_message_failed">Није успело</string>
