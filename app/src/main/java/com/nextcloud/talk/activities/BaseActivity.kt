@@ -115,7 +115,7 @@ open class BaseActivity : AppCompatActivity() {
         eventBus.unregister(this)
     }
 
-    fun setupSystemColors() {
+    fun initSystemBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             setStatusBarColor(ResourcesCompat.getColor(resources, R.color.bg_default, context.theme))
         } else {

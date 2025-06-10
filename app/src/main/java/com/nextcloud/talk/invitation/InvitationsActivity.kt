@@ -65,7 +65,7 @@ class InvitationsActivity : BaseActivity() {
         binding = ActivityInvitationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         adapter = InvitationsAdapter(currentUser) { invitation, action ->
             handleInvitation(invitation, action)

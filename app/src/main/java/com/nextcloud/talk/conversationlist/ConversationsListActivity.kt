@@ -264,7 +264,7 @@ class ConversationsListActivity :
         binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
         viewThemeUtils.material.themeCardView(binding.searchToolbar)
         viewThemeUtils.material.themeSearchBarText(binding.searchText)
 
@@ -934,7 +934,7 @@ class ConversationsListActivity :
             } else {
                 showToolbar()
             }
-            setupSystemColors()
+            initSystemBars()
         }
     }
 
