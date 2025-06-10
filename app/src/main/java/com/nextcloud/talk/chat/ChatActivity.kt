@@ -16,7 +16,6 @@ package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
