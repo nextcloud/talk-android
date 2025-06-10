@@ -86,7 +86,7 @@ class SwitchAccountActivity : BaseActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(binding.root)
         setupActionBar()
-        setupSystemColors()
+        initSystemBars()
 
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 

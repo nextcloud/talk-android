@@ -129,7 +129,7 @@ class LocationPickerActivity :
         binding = ActivityLocationBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 
