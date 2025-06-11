@@ -463,7 +463,7 @@ class ChatActivity :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
-                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                // val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
                 val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
                 val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
@@ -472,7 +472,7 @@ class ChatActivity :
 
                 view.setPadding(
                     view.paddingLeft,
-                    statusBarInsets.top,
+                    0,
                     view.paddingRight,
                     bottomPadding
                 )
