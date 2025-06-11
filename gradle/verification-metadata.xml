@@ -169,7 +169,6 @@
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.8"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.9"/>
          </trusted-key>
-		 <trusted-key id="AEFEB87890CDFDF2BC08C4AABDD2A76422470515" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.10"/>
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
          <trusted-key id="7E22D50A7EBD9D2CD269B2D4056ACA74D46000BF" group="io.netty"/>
          <trusted-key id="7F36E793AE3252E5D9E9B98FEE9E7DC9D92FC896" group="com.google.errorprone"/>
@@ -241,6 +240,7 @@
          <trusted-key id="AA417737BD805456DB3CBDDE6601E5C08DCCBB96" group="info.picocli" name="picocli" version="4.7.5"/>
          <trusted-key id="AA70C7C433D501636392EC02153E7A3C2B4E5118" group="org.eclipse.ee4j" name="project"/>
          <trusted-key id="ADBC987D1A7B91DB6B0AAA81995EFBF4A3D20BEB" group="com.pinterest.ktlint"/>
+         <trusted-key id="AEFEB87890CDFDF2BC08C4AABDD2A76422470515" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.10"/>
          <trusted-key id="AFCC4C7594D09E2182C60E0F7A01B0F236E5430F" group="com.google.code.gson"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
          <trusted-key id="B087A0EB8416563AFE64CEBA4604091C01C3086A" group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.4"/>
