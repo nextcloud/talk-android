@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
     <string name= "nc_edit">Rediger</string>
+    <string name="add_participants">Tilføj</string>
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
     <string name="appbar_search_in">Søg i %s</string>
@@ -389,9 +390,9 @@
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
     <string name="nc_server_helper_text">Linket til dit %1$s web interface når du åbner den i browseren.</string>
     <string name="nc_server_import_account">Importer konto fra %1$s appen</string>
-    <string name="nc_server_import_account_plain">Importer konto</string>
+    <string name="nc_server_import_account_plain">Importér konto</string>
     <string name="nc_server_import_accounts">Importer konti fra %1$s appen</string>
-    <string name="nc_server_import_accounts_plain">Importer konti</string>
+    <string name="nc_server_import_accounts_plain">Importér konti</string>
     <string name="nc_server_maintenance">Få venligst  %1$s ud fra vedligeholdelse </string>
     <string name="nc_server_not_installed">Afslut venligst din %1$s installation</string>
     <string name="nc_server_testing_connection">Tester forbindelsen</string>
