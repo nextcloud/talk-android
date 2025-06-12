@@ -45,7 +45,7 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
         modifier = Modifier
             .fillMaxWidth(),
         contentPadding = PaddingValues(
-            top =  10.dp,
+            top = 10.dp,
             bottom = 40.dp,
             start = 10.dp,
             end = 10.dp
