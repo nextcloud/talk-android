@@ -43,7 +43,7 @@ import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.setStatusBarColor
+import com.nextcloud.talk.utils.initStatusBar
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -118,7 +118,7 @@ open class BaseActivity : AppCompatActivity() {
 
     fun initSystemBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            setStatusBarColor(ResourcesCompat.getColor(resources, R.color.bg_default, context.theme))
+            initStatusBar(ResourcesCompat.getColor(resources, R.color.bg_default, context.theme))
         } else {
             colorizeStatusBar()
             colorizeNavigationBar()

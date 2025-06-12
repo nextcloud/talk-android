@@ -29,7 +29,7 @@ fun AppCompatActivity.adjustUIForAPILevel35(
     enableEdgeToEdge(statusBarStyle, navigationBarStyle)
 }
 
-fun AppCompatActivity.setStatusBarColor(@ColorInt color: Int) {
+fun AppCompatActivity.initStatusBar(@ColorInt color: Int) {
     window.decorView.setOnApplyWindowInsetsListener { view, insets ->
         view.setBackgroundColor(color)
 
