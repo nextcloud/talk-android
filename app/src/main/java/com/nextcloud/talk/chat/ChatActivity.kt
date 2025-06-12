@@ -509,7 +509,7 @@ class ChatActivity :
         initObservers()
 
         pickMultipleMedia = registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(5)
+            ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
         ) { uris ->
             if (uris.isNotEmpty()) {
                 onChooseFileResult(uris)
@@ -707,7 +707,7 @@ class ChatActivity :
                                     ?.split("#")
                                     ?.getOrNull(1)
                                     ?.toLongOrNull()
-                            val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
+                            val currentTimeStamp = (System.currentTimeMillis() / ONE_SECOND_IN_MILLIS).toLong()
                             val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
                             val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
                             if (isPastEvent == true && retentionPeriod != 0) {
@@ -4216,5 +4216,6 @@ class ChatActivity :
         const val OUT_OF_OFFICE_ALPHA = 76
         const val ZERO_INDEX = 0
         const val ONE_INDEX = 1
+        const val MAX_AMOUNT_MEDIA_FILE_PICKER = 10
     }
 }
