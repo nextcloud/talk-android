@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.HorizontalDivider
@@ -44,9 +43,13 @@ fun ContactsItem(contacts: List<AutocompleteUser>, contactsViewModel: ContactsVi
     }
     LazyColumn(
         modifier = Modifier
-            .padding(8.dp)
             .fillMaxWidth(),
-        contentPadding = PaddingValues(all = 10.dp),
+        contentPadding = PaddingValues(
+            top =  10.dp,
+            bottom = 40.dp,
+            start = 10.dp,
+            end = 10.dp
+        ),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         groupedContacts.forEach { (initial, contactsForInitial) ->
