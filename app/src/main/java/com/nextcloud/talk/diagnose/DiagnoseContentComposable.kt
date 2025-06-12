@@ -65,7 +65,12 @@ fun DiagnoseContentComposable(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(
+                start = 16.dp,
+                top = 0.dp,
+                end = 16.dp,
+                bottom = 0.dp
+            )
             .verticalScroll(rememberScrollState())
     ) {
         data.value.forEach { element ->
@@ -100,6 +105,7 @@ fun DiagnoseContentComposable(
             ShowTestPushButton(onTestPushClick)
         }
         ShowNotificationData(isLoading, showDialog, context, viewState, onDismissDialog)
+        Spacer(modifier = Modifier.height(40.dp))
     }
 }
 
