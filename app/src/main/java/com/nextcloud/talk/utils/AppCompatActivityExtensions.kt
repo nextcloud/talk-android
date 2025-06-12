@@ -15,9 +15,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.ColorInt
 
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.WindowInsetsCompat
-
-import com.nextcloud.android.common.ui.util.extensions.addSystemBarPaddings
 
 @JvmOverloads
 @Suppress("MagicNumber")
@@ -30,27 +27,21 @@ fun AppCompatActivity.adjustUIForAPILevel35(
         return
     }
     enableEdgeToEdge(statusBarStyle, navigationBarStyle)
-
-    window.addSystemBarPaddings()
 }
 
-// replace this with the common lib whenever https://github.com/nextcloud/android-common/pull/668 is merged
-// and then delete this file
 fun AppCompatActivity.setStatusBarColor(@ColorInt color: Int) {
     window.decorView.setOnApplyWindowInsetsListener { view, insets ->
         view.setBackgroundColor(color)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
             view.setPadding(
                 view.paddingLeft,
                 statusBarHeight,
                 view.paddingRight,
-                navBarInsets.bottom
+                0
             )
         }
-
         insets
     }
 }
