@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import com.nextcloud.talk.R
 import com.nextcloud.talk.components.VerticallyCenteredRow
 
+@Suppress("LongParameterList")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContactsSearchAppBar(
