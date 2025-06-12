@@ -26,7 +26,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-
+import com.nextcloud.android.common.ui.util.extensions.initStatusBar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -43,7 +43,6 @@ import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.initStatusBar
 import com.nextcloud.talk.utils.ssl.TrustManager
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
