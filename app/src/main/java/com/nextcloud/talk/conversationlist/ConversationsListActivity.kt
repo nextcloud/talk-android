@@ -81,6 +81,7 @@ import com.nextcloud.talk.adapters.items.GenericTextHeaderItem
 import com.nextcloud.talk.adapters.items.LoadMoreResultsItem
 import com.nextcloud.talk.adapters.items.MessageResultItem
 import com.nextcloud.talk.adapters.items.MessagesTextHeaderItem
+import com.nextcloud.talk.adapters.items.SpacerItem
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
@@ -293,10 +294,9 @@ class ConversationsListActivity :
 
     override fun onResume() {
         super.onResume()
-
-        // actionBar?.show()
         if (adapter == null) {
             adapter = FlexibleAdapter(conversationItems, this, true)
+            addEmptyItemForEdgeToEdgeIfNecessary()
         } else {
             binding.loadingContent.visibility = View.GONE
         }
@@ -340,6 +340,14 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
+    }
+
+    // if edge to edge is used, add an empty item at the bottom of the list
+    @Suppress("MagicNumber")
+    private fun addEmptyItemForEdgeToEdgeIfNecessary() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            adapter?.addScrollableFooter(SpacerItem(200))
+        }
     }
 
     @Suppress("LongMethod")
