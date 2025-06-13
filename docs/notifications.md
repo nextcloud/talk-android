@@ -106,6 +106,14 @@ Run the `notification:test-push` command for the user who is logged in at the de
 ```bash
 sudo -u www-data php /var/www/yourinstance/occ notification:test-push --talk youruser
 ```
+Alternatively, you can check if push notifications are set up correctly on the server from the app’s Diagnosis screen:
+
+- Select the user avatar in the upper right corner of the conversation list
+- Select "Settings" from the menu.
+- In "Advanced" section of settings menu, select "Diagnosis"
+- Click on “Test push notifications” button located at the bottom of the Diagnosis.
+
+If google play services are not available on the device, then you cannot see "Test push notifications" button in the Diagnosis screen.
 
 It should print something like the following:
 ```
