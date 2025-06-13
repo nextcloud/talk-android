@@ -17,6 +17,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
@@ -26,7 +27,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.nextcloud.android.common.ui.util.extensions.initStatusBar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
@@ -115,12 +115,21 @@ open class BaseActivity : AppCompatActivity() {
         eventBus.unregister(this)
     }
 
+    /*
+     * May be aligned with android-common lib in the future: .../ui/util/extensions/AppCompatActivityExtensions.kt
+     */
     fun initSystemBars() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            initStatusBar(ResourcesCompat.getColor(resources, R.color.bg_default, context.theme))
-        } else {
-            colorizeStatusBar()
-            colorizeNavigationBar()
+        window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+                view.setPadding(0, statusBarHeight, 0, 0)
+                val color = ResourcesCompat.getColor(resources, R.color.bg_default, context.theme)
+                view.setBackgroundColor(color)
+            } else {
+                colorizeStatusBar()
+                colorizeNavigationBar()
+            }
+            insets
         }
     }
 
