@@ -114,7 +114,7 @@ class WebViewLoginActivity : BaseActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(binding.root)
         actionBar?.hide()
-        setupSystemColors()
+        initSystemBars()
 
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()

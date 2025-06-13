@@ -18,9 +18,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import autodagger.AutoInjector
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.CompanionClass.Companion.KEY_HIDE_ALREADY_EXISTING_PARTICIPANTS
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
-import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import javax.inject.Inject
@@ -64,11 +64,11 @@ class ContactsActivity : BaseActivity() {
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
+                ColoredStatusBar()
                 ContactsScreen(
                     contactsViewModel = contactsViewModel,
                     uiState = uiState.value
                 )
-                SetupSystemBars()
             }
         }
     }

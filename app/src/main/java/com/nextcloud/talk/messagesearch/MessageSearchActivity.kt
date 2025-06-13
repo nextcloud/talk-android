@@ -70,7 +70,7 @@ class MessageSearchActivity : BaseActivity() {
         binding = ActivityMessageSearchBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
         user = currentUserProvider.currentUser.blockingGet()
