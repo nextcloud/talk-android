@@ -166,7 +166,7 @@ ext {
     workVersion = "2.9.1"
     espressoVersion = "3.6.1"
     androidxTestVersion = "1.5.0"
-    media3_version = "1.4.1"
+    media3_version = "1.7.1"
     coroutines_version = "1.10.2"
     mockitoKotlinVersion = "5.4.0"
 }
