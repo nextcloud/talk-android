@@ -9,6 +9,7 @@
     <string name="archive_hint">Po zarchiwizowaniu rozmowa zostanie domyślnie ukryta. Wybierz filtr „Zarchiwizowane”, aby wyświetlić zarchiwizowane rozmowy. Bezpośrednie wzmianki będą nadal otrzymywane.</string>
     <string name="archived">Zarchiwizowane</string>
     <string name="archived_conversation">Zarchiwizowane %1$s</string>
+    <string name="audio_call">Rozmowa audio</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Wyjście audio</string>
     <string name="audio_output_phone">Telefon</string>
@@ -32,8 +33,10 @@
     <string name="close">Zamknij</string>
     <string name="close_icon">Ikona zamknięcia</string>
     <string name="connection_established">Połączenie nawiązane</string>
+    <string name="connection_lost">Brak połączenia z serwerem</string>
     <string name="connection_lost_sent_messages_are_queued">Utracono połączenie - wysłane wiadomości są w kolejce</string>
     <string name="continuous_voice_message_recording">Zablokuj nagrywanie w celu ciągłego nagrywania wiadomości głosowej</string>
+    <string name="conversation_archived">Konwersacja została zarchiwizowana.</string>
     <string name="conversation_is_read_only">Rozmowa jest tylko do odczytu</string>
     <string name="conversation_read_only_failed">Nie udało się ustawić rozmowy Tylko do odczytu</string>
     <string name="conversations">Rozmowy</string>
@@ -47,6 +50,7 @@
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
     <string name="edit">Edytuj</string>
+    <string name="edit_error_24_hours_old_message">Wiadomości starsze niż 24 godziny nie mogą być edytowane.</string>
     <string name="edit_message_icon_description">Edytuj wiadomość</string>
     <string name="emoji_category_recent">Ostatnie</string>
     <string name="encrypted">Zaszyfrowane</string>
@@ -68,6 +72,7 @@
     <string name="leave_call">Rozłącz się</string>
     <string name="left_conversation">Opuściłeś rozmowę %1$s</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
+    <string name="local_time">Czas lokalny: %1$s</string>
     <string name="lock_conversation">Zablokuj rozmowę</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="lower_hand">Opuścić rękę</string>
@@ -80,6 +85,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Od największych</string>
     <string name="menu_item_sort_by_size_smallest_first">Od najmniejszych</string>
+    <string name="message_copied">Wiadomość skopiowana</string>
     <string name="message_deleted_by_you">Wiadomość usunięta przez Ciebie</string>
     <string name="message_last_edited_by">Edytowany przez %1$s</string>
     <string name="message_poll_tap_to_open">Dotknij, aby otworzyć sondę</string>
@@ -153,6 +159,7 @@
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_contacts_done">Gotowe</string>
+    <string name="nc_conversation_auto_delete_notice">Ta konwersacja zostanie automatycznie usunięta dla wszystkich po %1$d dniach braku aktywności.</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
     <string name="nc_conversation_menu_conversation_info">Informacje o rozmowie</string>
     <string name="nc_conversation_menu_video_call">Rozmowa wideo</string>
@@ -164,6 +171,7 @@
     <string name="nc_copy_message">Kopiuj</string>
     <string name="nc_create_new_conversation">Utwórz nową rozmowę</string>
     <string name="nc_create_poll">Utwórz sondę</string>
+    <string name="nc_current_user">Ty:</string>
     <string name="nc_date_header_today">Dzisiaj</string>
     <string name="nc_date_header_yesterday">Wczoraj</string>
     <string name="nc_delete">Usuń</string>
@@ -172,6 +180,7 @@
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
     <string name="nc_delete_message">Usuń</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
+    <string name="nc_delete_now">Usuń teraz</string>
     <string name="nc_deleted_user">Użytkownik %1$s został usunięty</string>
     <string name="nc_demote">Zdegraduj z moderatora</string>
     <string name="nc_description_record_voice">Nagraj wiadomość głosową</string>
@@ -232,6 +241,8 @@
     <string name="nc_edit_message">Edycja</string>
     <string name="nc_edit_message_text">Edytuj wiadomość</string>
     <string name="nc_edited_by_admin">Edytowane przez administratora</string>
+    <string name="nc_event_conversation_menu">Menu rozmowy wydarzenia</string>
+    <string name="nc_event_schedule">Harmonogram</string>
     <string name="nc_expire_message_eight_hours">8 godzin</string>
     <string name="nc_expire_message_four_weeks">4 tygodnie</string>
     <string name="nc_expire_message_off">Wyłączona</string>
@@ -248,6 +259,7 @@
     <string name="nc_federation_pending_invitation_hint">Masz oczekujące zaproszenia</string>
     <string name="nc_file_browser_back">Wstecz</string>
     <string name="nc_file_storage_permission">Wymagane jest zezwolenie na dostęp do plików</string>
+    <string name="nc_filter">Filtruj rozmowy</string>
     <string name="nc_following_link">Użytkownik korzysta z łącza publicznego</string>
     <string name="nc_formatted_message_you">Ty: %1$s</string>
     <string name="nc_forward_message">Przekaż dalej</string>
@@ -274,8 +286,11 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Optymalizacja baterii nie jest ignorowana. Należy to zmienić, aby mieć pewność, że powiadomienia działają w tle! Kliknij OK i wybierz \"Wszystkie aplikacje\" -> %1$s -> Nie optymalizuj</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Zignoruj optymalizację baterii</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
+    <string name="nc_important_conversation_desc">Status użytkownika „Nie przeszkadzać” jest ignorowany dla ważnych rozmów.</string>
+    <string name="nc_invalid_time">Nieprawidłowy czas</string>
     <string name="nc_invitations">Zaproszenia</string>
     <string name="nc_join_open_conversations">Dołącz do otwartych rozmów</string>
+    <string name="nc_keep">Pozostaw</string>
     <string name="nc_last_moderator_leaving_room_warning">Zanim opuścisz rozmowę, musisz wybrać nowego moderatora</string>
     <string name="nc_last_modified">%1$s | Ostatnio zmodyfikowany: %2$s</string>
     <string name="nc_leave">Opuść rozmowę</string>
@@ -295,6 +310,8 @@
     <string name="nc_manual">Nie ustawiony</string>
     <string name="nc_mark_as_read">Oznacz jako przeczytane</string>
     <string name="nc_mark_as_unread">Oznacz jako nieprzeczytane</string>
+    <string name="nc_mark_conversation_as_important">Rozmowa oznaczona jako ważna</string>
+    <string name="nc_mark_conversation_as_insensitive">Rozmowa została odznaczona jako wrażliwa</string>
     <string name="nc_message_failed">Nie powiodło się</string>
     <string name="nc_message_failed_to_send">Nie udało się wysłać wiadomości:</string>
     <string name="nc_message_offline">Niedostępny</string>
