@@ -532,7 +532,6 @@ class ConversationsListActivity :
     }
 
     private fun handleNoteToSelfShortcut(noteToSelfAvailable: Boolean, noteToSelfToken: String) {
-        // Redundant operations just update the existing id
         if (noteToSelfAvailable) {
             val bundle = Bundle()
             bundle.putString(KEY_ROOM_TOKEN, noteToSelfToken)
