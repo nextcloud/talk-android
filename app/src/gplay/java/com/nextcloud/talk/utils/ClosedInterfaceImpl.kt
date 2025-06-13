@@ -8,6 +8,7 @@
  */
 package com.nextcloud.talk.utils
 
+import android.content.Context
 import android.content.Intent
 import android.util.Log
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -26,7 +27,13 @@ import java.util.concurrent.TimeUnit
 @AutoInjector(NextcloudTalkApplication::class)
 class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallListener {
 
-    override val isGooglePlayServicesAvailable: Boolean = isGPlayServicesAvailable()
+    override fun isPushMessagingServiceAvailable(context: Context): Boolean {
+        return isGPlayServicesAvailable()
+    }
+
+    override fun pushMessagingProvider(): String {
+        return "gplay"
+    }
 
     override fun providerInstallerInstallIfNeededAsync() {
         NextcloudTalkApplication.sharedApplication?.let {
@@ -49,7 +56,7 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         val api = GoogleApiAvailability.getInstance()
         val code =
             NextcloudTalkApplication.sharedApplication?.let {
-                api.isGooglePlayServicesAvailable(it.applicationContext)
+                api.isPushMessagingAvailable(it.applicationContext)
             }
         return if (code == ConnectionResult.SUCCESS) {
             true
@@ -59,11 +66,17 @@ class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallLi
         }
     }
 
-    override fun setUpPushTokenRegistration() {
+    override fun registerWithServer(context: Context, username: String?, forceChoose: Boolean): Boolean {
         val firebasePushTokenWorker = OneTimeWorkRequest.Builder(GetFirebasePushTokenWorker::class.java).build()
         WorkManager.getInstance().enqueue(firebasePushTokenWorker)
 
         setUpPeriodicTokenRefreshFromFCM()
+
+        return false
+    }
+
+    override fun unregisterWithServer(context: Context, username: String?) {
+        // do nothing
     }
 
     private fun setUpPeriodicTokenRefreshFromFCM() {

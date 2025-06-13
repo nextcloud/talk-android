@@ -201,9 +201,14 @@ How to translate with transifex:
     <string name="nc_diagnose_app_name_title">App name</string>
     <string name="nc_diagnose_app_version_title">App version</string>
     <string name="nc_diagnose_app_users_amount">Registered users</string>
-    <string name="nc_diagnose_gplay_available_title">Google Play services</string>
-    <string name="nc_diagnose_gplay_available_yes">Google Play services are available</string>
-    <string name="nc_diagnose_gplay_available_no">Google Play services are not available. Notifications are not supported</string>
+    <string name="nc_diagnose_push_notifications_available_title">Push notification services</string>
+    <string name="nc_diagnose_push_notifications_available_no">Push notifications are not available.</string>
+    <string name="nc_diagnose_push_notifications_gplay">Push notifications are using the Google Play engine.</string>
+    <string name="nc_diagnose_push_notifications_gplay_rectify">An alternate version of Talk is available for devices
+        without the Google Play Apis.</string>
+    <string name="nc_diagnose_push_notifications_unified_push">Push notifications are using the UnifiedPush engine.</string>
+    <string name="nc_diagnose_push_notifications_unified_push_rectify">Notifications can be enabled via UnifiedPush.
+        Please see https://unifiedpush.org</string>
     <string name="nc_diagnose_battery_optimization_title">Battery settings</string>
     <string name="nc_diagnose_battery_optimization_not_ignored">Battery optimization is enabled which might cause issues. You should disable battery optimization!</string>
     <string name="nc_diagnose_battery_optimization_ignored">Battery optimization is ignored, all fine</string>
@@ -860,4 +865,8 @@ How to translate with transifex:
     <string name="unarchived_conversation">Unarchived %1$s</string>
     <string name="conversation_archived">Conversation is archived</string>
     <string name="local_time">Local time: %1$s</string>
+
+    <string name="prefs_reset_push_title">Reset push notifications</string>
+    <string name="prefs_reset_push_summary">Reset push notifications in case of push messaging issues</string>
+    <string name="prefs_reset_push_done">Push notifications reset</string>
 </resources>
