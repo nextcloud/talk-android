@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.bottomsheet.items
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -65,6 +66,7 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
         }
     }
 
+    @SuppressLint("RestrictedApi")
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListItemViewHolder {
         val listItemView: View = parent.inflate(dialog.windowContext, R.layout.menu_item_sheet)
         val viewHolder = ListItemViewHolder(

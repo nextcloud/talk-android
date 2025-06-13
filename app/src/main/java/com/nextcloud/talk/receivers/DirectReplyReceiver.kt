@@ -6,14 +6,17 @@
  */
 package com.nextcloud.talk.receivers
 
+import android.Manifest
 import android.app.Notification
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.text.SpannableStringBuilder
 import android.text.style.ForegroundColorSpan
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
@@ -162,9 +165,15 @@ class DirectReplyReceiver : BroadcastReceiver() {
             // Set the updated style
             previousBuilder.setStyle(previousStyle)
 
-            // Check if notification still exists
-            if (findActiveNotification(systemNotificationId!!) != null) {
-                NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // Check if notification still exists
+                if (findActiveNotification(systemNotificationId!!) != null) {
+                    NotificationManagerCompat.from(context).notify(systemNotificationId!!, previousBuilder.build())
+                }
             }
         }
             .subscribeOn(Schedulers.io())
