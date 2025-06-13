@@ -183,19 +183,26 @@ class MediaPlayerManager : LifecycleAwareManager {
                     continue
                 }
 
-                if (mediaPlayer != null && mediaPlayer?.isPlaying == true) {
-                    val pos = mediaPlayer!!.currentPosition
+                mediaPlayer?.let { player ->
+                    try {
+                        if (!player.isPlaying) return@let
+                    } catch (e: IllegalStateException) {
+                        Log.e(TAG, "Seekbar updated during an improper state: $e")
+                        return@let
+                    }
+
+                    val pos = player.currentPosition
                     mediaPlayerPosition = pos
                     val progress = (pos.toFloat() / mediaPlayerDuration) * DIVIDER
                     val progressI = ceil(progress).toInt()
                     val seconds = (pos / ONE_SEC)
                     _mediaPlayerSeekBarPosition.emit(progressI)
-                    currentCycledMessage?.let {
-                        it.isPlayingVoiceMessage = true
-                        it.voiceMessageSeekbarProgress = progressI
-                        it.voiceMessagePlayedSeconds = seconds
-                        if (progressI >= IS_PLAYED_CUTOFF) it.wasPlayedVoiceMessage = true
-                        _mediaPlayerSeekBarPositionMsg.emit(it)
+                    currentCycledMessage?.let { msg ->
+                        msg.isPlayingVoiceMessage = true
+                        msg.voiceMessageSeekbarProgress = progressI
+                        msg.voiceMessagePlayedSeconds = seconds
+                        if (progressI >= IS_PLAYED_CUTOFF) msg.wasPlayedVoiceMessage = true
+                        _mediaPlayerSeekBarPositionMsg.emit(msg)
                     }
                 }
 
