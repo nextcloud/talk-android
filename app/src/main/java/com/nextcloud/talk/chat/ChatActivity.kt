@@ -16,7 +16,6 @@ package com.nextcloud.talk.chat
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -390,7 +389,9 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            intent.putExtras(Bundle())
+            val bundle = bundleOf()
+            bundle.putString(KEY_ROOM_TOKEN, roomToken)
+            intent.putExtras(bundle)
             startActivity(intent)
         }
     }
@@ -642,7 +643,7 @@ class ChatActivity :
                         joinRoomWithPassword()
 
                         if (conversationUser?.userId != "?" &&
-                            CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
@@ -2046,7 +2047,7 @@ class ChatActivity :
 
     private fun shouldShowLobby(): Boolean {
         if (currentConversation != null) {
-            return CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
+            return hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.WEBINARY_LOBBY) &&
                 currentConversation?.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
                 !ConversationUtils.canModerate(currentConversation!!, spreedCapabilities) &&
                 !participantPermissions.canIgnoreLobby()
@@ -2302,7 +2303,7 @@ class ChatActivity :
     }
 
     private fun executeIfResultOk(result: ActivityResult, onResult: (intent: Intent?) -> Unit) {
-        if (result.resultCode == Activity.RESULT_OK) {
+        if (result.resultCode == RESULT_OK) {
             onResult(result.data)
         } else {
             Log.e(TAG, "resultCode for received intent was != ok")
@@ -2796,7 +2797,7 @@ class ChatActivity :
         }
 
         if (this::spreedCapabilities.isInitialized) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MESSAGE_EXPIRATION)) {
                 deleteExpiredMessages()
             }
         } else {
@@ -3064,7 +3065,7 @@ class ChatActivity :
         super.onPrepareOptionsMenu(menu)
 
         if (this::spreedCapabilities.isInitialized) {
-            if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
+            if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.READ_ONLY_ROOMS)) {
                 checkShowCallButtons()
             }
 
@@ -3085,7 +3086,7 @@ class ChatActivity :
                     }.collect()
                 }
 
-                if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
+                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_CALL)) {
                     Handler().post {
                         findViewById<View?>(R.id.conversation_voice_call)?.setOnLongClickListener {
                             showCallButtonMenu(true)
@@ -3595,7 +3596,7 @@ class ChatActivity :
 
     fun copyMessage(message: IMessage?) {
         val clipboardManager =
-            getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val clipData = ClipData.newPlainText(
             resources?.getString(R.string.nc_app_product_name),
             message?.text
@@ -3909,7 +3910,7 @@ class ChatActivity :
         val isOlderThanSixHours = message
             .createdAt
             .before(Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_DELETE_MESSAGE))
-        val hasDeleteMessagesUnlimitedCapability = CapabilitiesUtil.hasSpreedFeatureCapability(
+        val hasDeleteMessagesUnlimitedCapability = hasSpreedFeatureCapability(
             spreedCapabilities,
             SpreedFeatures.DELETE_MESSAGES_UNLIMITED
         )
@@ -3919,7 +3920,7 @@ class ChatActivity :
             !hasDeleteMessagesUnlimitedCapability && isOlderThanSixHours -> false
             message.systemMessageType != ChatMessage.SystemMessageType.DUMMY -> false
             message.isDeleted -> false
-            !CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
+            !hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.DELETE_MESSAGES) -> false
             !participantPermissions.hasChatPermission() -> false
             hasDeleteMessagesUnlimitedCapability -> true
             else -> true
