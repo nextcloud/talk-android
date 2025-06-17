@@ -68,7 +68,7 @@ fun ChatMessageEntity.asModel() =
         isDeleted = deleted,
         referenceId = referenceId,
         isTemporary = isTemporary,
-        sendingFailed = sendingFailed,
+        sendStatus = sendStatus,
         readStatus = ReadStatus.NONE,
         silent = silent
     )

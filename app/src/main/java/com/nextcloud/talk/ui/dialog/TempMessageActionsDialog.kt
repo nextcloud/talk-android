@@ -18,6 +18,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.DialogTempMessageActionsBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -58,9 +59,10 @@ class TempMessageActionsDialog(
 
     private fun initMenuItems() {
         this.lifecycleScope.launch {
-            initResendMessage(message.sendingFailed && networkMonitor.isOnline.value)
-            initMenuEditMessage(message.sendingFailed || !networkMonitor.isOnline.value)
-            initMenuDeleteMessage(message.sendingFailed || !networkMonitor.isOnline.value)
+            val sendingFailed = message.sendStatus == SendStatus.FAILED
+            initResendMessage(sendingFailed && networkMonitor.isOnline.value)
+            initMenuEditMessage(sendingFailed || !networkMonitor.isOnline.value)
+            initMenuDeleteMessage(sendingFailed || !networkMonitor.isOnline.value)
             initMenuItemCopy()
         }
     }

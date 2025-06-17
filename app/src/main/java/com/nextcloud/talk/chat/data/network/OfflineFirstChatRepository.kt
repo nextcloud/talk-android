@@ -215,7 +215,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 )
             }
 
-            sendTempChatMessages(credentials, urlForChatting)
+            // this call could be deleted when we have a worker to send messages..
+            sendUnsentChatMessages(credentials, urlForChatting)
 
             // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
             // with them (otherwise there is a race condition).
@@ -845,8 +846,6 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-        Log.d(TAG, "sending chat message: " + message)
-
         return flow {
             val response = network.sendChatMessage(
                 credentials,
@@ -881,7 +880,6 @@ class OfflineFirstChatRepository @Inject constructor(
                     referenceId
                 ).firstOrNull()
                 failedMessage?.let {
-                    // it.sendingFailed = true
                     it.sendStatus = SendStatus.FAILED
                     chatDao.updateChatMessage(it)
 
@@ -903,7 +901,6 @@ class OfflineFirstChatRepository @Inject constructor(
         referenceId: String
     ): Flow<Result<ChatMessage?>> {
         val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-        // messageToResend.sendingFailed = false
         messageToResend.sendStatus = SendStatus.PENDING
         chatDao.updateChatMessage(messageToResend)
 
@@ -960,8 +957,8 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun sendTempChatMessages(credentials: String, url: String) {
-        val tempMessages = chatDao.getPendingOrFailedMessagesForConversation(internalConversationId).first()
+    override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
+        val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId).first()
         tempMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
                 credentials,
@@ -1055,7 +1052,7 @@ class OfflineFirstChatRepository @Inject constructor(
             actorDisplayName = currentUser.displayName!!,
             referenceId = referenceId,
             isTemporary = true,
-            sendingFailed = false,
+            sendStatus = SendStatus.PENDING,
             silent = sendWithoutNotification
         )
         return entity
