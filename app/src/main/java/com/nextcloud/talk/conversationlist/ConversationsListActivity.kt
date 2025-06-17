@@ -83,6 +83,10 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_ID
+import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_NAME
+import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_TEXT
+import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_URL
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
@@ -304,6 +308,16 @@ class ConversationsListActivity :
         showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
+        context.getSharedPreferences(
+            CHAT_ACTIVITY_LOCAL_NAME,
+            MODE_PRIVATE
+        ).edit().apply {
+            putInt(QUOTED_MESSAGE_ID, -1)
+            putString(QUOTED_MESSAGE_NAME, null)
+            putString(QUOTED_MESSAGE_TEXT, "")
+            putString(QUOTED_MESSAGE_URL, null)
+            apply()
+        }
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
@@ -640,7 +654,7 @@ class ConversationsListActivity :
             }
         }
 
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && newItems.isEmpty()) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -755,7 +769,7 @@ class ConversationsListActivity :
     }
 
     private fun initSearchView() {
-        val searchManager = getSystemService(Context.SEARCH_SERVICE) as SearchManager?
+        val searchManager = getSystemService(SEARCH_SERVICE) as SearchManager?
         if (searchItem != null) {
             searchView = MenuItemCompat.getActionView(searchItem) as SearchView
             viewThemeUtils.talk.themeSearchView(searchView!!)
@@ -1217,7 +1231,7 @@ class ConversationsListActivity :
         })
         binding.recyclerView.setOnTouchListener { v: View, _: MotionEvent? ->
             if (!isDestroyed) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(v.windowToken, 0)
             }
             false
@@ -1398,7 +1412,7 @@ class ConversationsListActivity :
         adapter?.updateDataSet(conversationItems)
         adapter?.setFilter("")
         adapter?.filterItems()
-        val archiveFilterOn = filterState[ARCHIVE] ?: false
+        val archiveFilterOn = filterState[ARCHIVE] == true
         if (archiveFilterOn && adapter!!.isEmpty) {
             binding.noArchivedConversationLayout.visibility = View.VISIBLE
         } else {
@@ -1809,7 +1823,7 @@ class ConversationsListActivity :
         val callsChannelNotEnabled = !NotificationUtils.isCallsNotificationChannelEnabled(this)
 
         val serverNotificationAppInstalled =
-            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() ?: false
+            currentUser?.capabilities?.notificationsCapability?.features?.isNotEmpty() == true
 
         val settingsOfUserAreWrong = notificationPermissionNotGranted ||
             batteryOptimizationNotIgnored ||
@@ -2167,6 +2181,7 @@ class ConversationsListActivity :
         const val UNREAD_BUBBLE_DELAY = 2500
         const val BOTTOM_SHEET_DELAY: Long = 2500
         private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
+        private const val CHAT_ACTIVITY_LOCAL_NAME = "com.nextcloud.talk.chat.ChatActivity"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 1
         const val HTTP_UNAUTHORIZED = 401
