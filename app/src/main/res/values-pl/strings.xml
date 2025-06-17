@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">Wybierz certyfikat uwierzytelnienia</string>
     <string name="nc_connecting_call">Łączę…</string>
     <string name="nc_contacts_done">Gotowe</string>
-    <string name="nc_conversation_auto_delete_notice">Ta konwersacja zostanie automatycznie usunięta dla wszystkich po %1$d dniach braku aktywności.</string>
     <string name="nc_conversation_description">Opis rozmowy</string>
     <string name="nc_conversation_menu_conversation_info">Informacje o rozmowie</string>
     <string name="nc_conversation_menu_video_call">Rozmowa wideo</string>
@@ -397,6 +396,8 @@
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Szukaj</string>
     <string name="nc_select_an_account">Wybierz konto</string>
+    <string name="nc_sensitive_conversation">Rozmowa poufna</string>
+    <string name="nc_sensitive_conversation_hint">Podgląd wiadomości zostanie wyłączony na liście rozmów i w powiadomieniach.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s wysłał GIF.</string>
     <string name="nc_sent_a_gif_you">Wysłałeś GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s wysłał plik wideo.</string>

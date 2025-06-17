@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">Одабери сертификат за пријаву</string>
     <string name="nc_connecting_call">Повезивање ..</string>
     <string name="nc_contacts_done">Готово</string>
-    <string name="nc_conversation_auto_delete_notice">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</string>
     <string name="nc_conversation_description">Опис разговора</string>
     <string name="nc_conversation_menu_conversation_info">Информације о разговору</string>
     <string name="nc_conversation_menu_video_call">Видео позив</string>

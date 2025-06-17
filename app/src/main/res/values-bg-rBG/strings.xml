@@ -17,7 +17,7 @@
     <string name="call_without_notification">Обаждане без известие</string>
     <string name="camera_permission_granted">Дадено е право на камера. Моля, изберете камера отново. </string>
     <string name="choose_avatar_from_cloud">Избор на аватар от облака</string>
-    <string name="clear_status_message">Изчистване на съобщението за състоянието</string>
+    <string name="clear_status_message">Изчисти състоянието</string>
     <string name="clear_status_message_after">Изчистване на съобщение за състоянието след</string>
     <string name="close">Затваряне</string>
     <string name="connection_established">Осъществена е връзка</string>
@@ -38,7 +38,7 @@
     <string name="file_list_folder">папка</string>
     <string name="file_list_loading">Зареждане …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="fourHours">4 часа</string>
+    <string name="fourHours">4 чàса</string>
     <string name="invisible">Невидим</string>
     <string name="leave_call">Напускане на обаждането</string>
     <string name="load_more_results">Зареждане на още резултати</string>
@@ -65,7 +65,7 @@
     <string name="nc_action_open_main_menu">Отворяне на главното меню</string>
     <string name="nc_add_attachment">Добавяне на прикачен файл</string>
     <string name="nc_add_emojis">Добавяне на емотикони</string>
-    <string name="nc_add_file">Добавяне към разговор</string>
+    <string name="nc_add_file">Добави към разговор</string>
     <string name="nc_add_participants">Добавяне на участници</string>
     <string name="nc_add_to_favorites">Добави към любимите</string>
     <string name="nc_all_ok_operation">Добре, всичко е готово!</string>
@@ -113,6 +113,7 @@
     <string name="nc_common_disabled">Изключено</string>
     <string name="nc_common_dismiss">Отхвърляне</string>
     <string name="nc_common_error_sorry">Съжалявам нещо се обърка!</string>
+    <string name="nc_common_more_options">Още опции</string>
     <string name="nc_common_set">Настройка</string>
     <string name="nc_common_skip">Пропусни</string>
     <string name="nc_common_unknown">Неизвестен</string>
@@ -225,6 +226,7 @@
     <string name="nc_missed_call">Пропуснахте обаждане от %s</string>
     <string name="nc_moderator">Модератор</string>
     <string name="nc_new_conversation">Нов разговор</string>
+    <string name="nc_new_conversation_visibility">Видимост</string>
     <string name="nc_new_mention">Непрочетени споменавания</string>
     <string name="nc_new_messages">Непрочетени съобщения.</string>
     <string name="nc_nextcloud_talk_app_not_installed">%1$s не е наличен (не е инсталиран или е ограничен от администратора)</string>
@@ -393,7 +395,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>
     <string name="oneHour">1 час</string>
     <string name="online">На линия</string>
-    <string name="online_status">Състояние на линия</string>
+    <string name="online_status">Състояние</string>
     <string name="openConversations">Отворени разговори</string>
     <string name="open_in_files_app">Отворяне в приложението Файлове</string>
     <string name="play_pause_voice_message">Възпроизвеждане/пауза на гласово съобщение</string>
@@ -429,10 +431,10 @@
     <string name="save">Записване</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>
-    <string name="scope_local_description">Видим само за хора от този случай и гости</string>
+    <string name="scope_local_description">Видимо за потребители на тази инстанция на сървъра, както и гости.</string>
     <string name="scope_local_title">Локално</string>
-    <string name="scope_private_description">Видим само за хора, съчетани чрез интегриране на телефонен номер чрез Talk на мобилен телефон</string>
-    <string name="scope_private_title">Частен</string>
+    <string name="scope_private_description">Видим само за хора, открити по телефонен номер, който е зададен в \"Talk\".</string>
+    <string name="scope_private_title">Лично</string>
     <string name="scope_published_description">Синхронизиране с доверени сървъри и с глобалната и публичната адресна книга</string>
     <string name="scope_published_title">Публикувано</string>
     <string name="scope_toggle">Превключване на обхват</string>
@@ -448,7 +450,7 @@
     <string name="set">Да се зададе</string>
     <string name="set_avatar_from_camera">Задаване на аватар от камерата</string>
     <string name="set_status">Задаване на състояние</string>
-    <string name="set_status_message">Задаване на съобщение за състояние</string>
+    <string name="set_status_message">Задай състояние</string>
     <string name="share">Споделяне</string>
     <string name="shared_items_audio">Аудио</string>
     <string name="shared_items_file">Файл</string>
@@ -496,7 +498,7 @@
     <string name="userinfo_no_info_headline">Няма зададена лична информация</string>
     <string name="userinfo_no_info_text">Добавяне на име, снимка и подробности за контакт към страницата на вашия профил.</string>
     <string name="video_call">Видео разговор</string>
-    <string name="whats_your_status">Какъв е вашият статус?</string>
+    <string name="whats_your_status">Какво е вашето състояние?</string>
     <plurals name="polls_amount_voters">
         <item quantity="one">%dгласувания </item>
         <item quantity="other">%d гласувания</item>
