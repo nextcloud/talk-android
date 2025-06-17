@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">Roghnaigh teastas fíordheimhnithe</string>
     <string name="nc_connecting_call">Ag nascadh…</string>
     <string name="nc_contacts_done">Déanta</string>
-    <string name="nc_conversation_auto_delete_notice">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</string>
     <string name="nc_conversation_description">Cur síos ar an gcomhrá</string>
     <string name="nc_conversation_menu_conversation_info">Eolas faoin gcomhrá</string>
     <string name="nc_conversation_menu_video_call">Glao físe</string>

@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">Vali autentimise sertifikaat</string>
     <string name="nc_connecting_call">Ühendan…</string>
     <string name="nc_contacts_done">Valmis</string>
-    <string name="nc_conversation_auto_delete_notice">See vestlus kustub automaatselt kõigi osalejate jaoks, kui siin pole olnud tegevust %1$d päeva jooksul.</string>
     <string name="nc_conversation_description">Vestluse kirjeldus</string>
     <string name="nc_conversation_menu_conversation_info">Vestluse teave</string>
     <string name="nc_conversation_menu_video_call">Videokõne</string>

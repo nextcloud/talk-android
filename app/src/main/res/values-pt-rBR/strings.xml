@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">Selecionar certificado de autenticação</string>
     <string name="nc_connecting_call">Conectando …</string>
     <string name="nc_contacts_done">Concluído</string>
-    <string name="nc_conversation_auto_delete_notice">Esta conversa será excluída automaticamente para todos em %1$d dias sem atividade</string>
     <string name="nc_conversation_description">Descrição da conversa</string>
     <string name="nc_conversation_menu_conversation_info">Informação da conversa</string>
     <string name="nc_conversation_menu_video_call">Chamada de vídeo</string>
@@ -313,7 +312,7 @@
     <string name="nc_mark_conversation_as_important">Conversa marcada como importante</string>
     <string name="nc_mark_conversation_as_insensitive">Conversa desmarcada como sensível</string>
     <string name="nc_mark_conversation_as_sensitive">Conversa marcada como sensível</string>
-    <string name="nc_mark_conversation_as_unimportant">Conversa não marcada como importante</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversa desmarcada como importante</string>
     <string name="nc_meeting_ended">Reunião encerrada</string>
     <string name="nc_message_added_to_notes">Mensagem adicionada às notas</string>
     <string name="nc_message_failed">Falhou</string>

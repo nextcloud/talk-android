@@ -159,7 +159,6 @@
     <string name="nc_configure_cert_auth">選擇驗證憑證</string>
     <string name="nc_connecting_call">連線中 …</string>
     <string name="nc_contacts_done">完成</string>
-    <string name="nc_conversation_auto_delete_notice">%1$d天內沒有活動的每個人都會自動刪除此對話。</string>
     <string name="nc_conversation_description">對話描述</string>
     <string name="nc_conversation_menu_conversation_info">對話資訊</string>
     <string name="nc_conversation_menu_video_call">視訊通話</string>
