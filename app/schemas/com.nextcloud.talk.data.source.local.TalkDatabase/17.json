@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 17,
-    "identityHash": "c6e75dfc4f897469a82de6aeff6208c1",
+    "identityHash": "5bc4247e179307faa995552da5d34324",
     "entities": [
       {
         "tableName": "User",
@@ -445,7 +445,7 @@
       },
       {
         "tableName": "ChatMessages",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER NOT NULL, `token` TEXT NOT NULL, `id` INTEGER NOT NULL, `internalConversationId` TEXT NOT NULL, `actorDisplayName` TEXT NOT NULL, `message` TEXT NOT NULL, `actorId` TEXT NOT NULL, `actorType` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `expirationTimestamp` INTEGER NOT NULL, `isReplyable` INTEGER NOT NULL, `isTemporary` INTEGER NOT NULL, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER, `markdown` INTEGER, `messageParameters` TEXT, `messageType` TEXT NOT NULL, `parent` INTEGER, `reactions` TEXT, `reactionsSelf` TEXT, `referenceId` TEXT, `sendingFailed` INTEGER NOT NULL, `sendStatus` TEXT, `silent` INTEGER NOT NULL, `systemMessage` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`internalId` TEXT NOT NULL, `accountId` INTEGER NOT NULL, `token` TEXT NOT NULL, `id` INTEGER NOT NULL, `internalConversationId` TEXT NOT NULL, `actorDisplayName` TEXT NOT NULL, `message` TEXT NOT NULL, `actorId` TEXT NOT NULL, `actorType` TEXT NOT NULL, `deleted` INTEGER NOT NULL, `expirationTimestamp` INTEGER NOT NULL, `isReplyable` INTEGER NOT NULL, `isTemporary` INTEGER NOT NULL, `lastEditActorDisplayName` TEXT, `lastEditActorId` TEXT, `lastEditActorType` TEXT, `lastEditTimestamp` INTEGER, `markdown` INTEGER, `messageParameters` TEXT, `messageType` TEXT NOT NULL, `parent` INTEGER, `reactions` TEXT, `reactionsSelf` TEXT, `referenceId` TEXT, `sendStatus` TEXT, `silent` INTEGER NOT NULL, `systemMessage` TEXT NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`internalId`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "internalId",
@@ -580,12 +580,6 @@
             "fieldPath": "referenceId",
             "columnName": "referenceId",
             "affinity": "TEXT"
-          },
-          {
-            "fieldPath": "sendingFailed",
-            "columnName": "sendingFailed",
-            "affinity": "INTEGER",
-            "notNull": true
           },
           {
             "fieldPath": "sendStatus",
@@ -730,7 +724,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'c6e75dfc4f897469a82de6aeff6208c1')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5bc4247e179307faa995552da5d34324')"
     ]
   }
 }

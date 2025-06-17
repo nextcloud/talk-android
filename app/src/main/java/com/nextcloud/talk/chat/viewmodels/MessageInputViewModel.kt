@@ -169,9 +169,9 @@ class MessageInputViewModel @Inject constructor(
         }
     }
 
-    fun sendTempMessages(credentials: String, url: String) {
+    fun sendUnsentMessages(credentials: String, url: String) {
         viewModelScope.launch {
-            chatRepository.sendTempChatMessages(
+            chatRepository.sendUnsentChatMessages(
                 credentials,
                 url
             )

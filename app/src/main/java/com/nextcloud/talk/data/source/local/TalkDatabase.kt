@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2023-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -23,6 +23,7 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.source.local.Migrations.AutoMigration16To17
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
@@ -52,7 +53,8 @@ import java.util.Locale
     ],
     version = 17,
     autoMigrations = [
-        AutoMigration(from = 9, to = 10)
+        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
     ],
     exportSchema = true
 )
@@ -110,7 +112,7 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
-                // .openHelperFactory(factory)
+                .openHelperFactory(factory)
                 .addMigrations(
                     Migrations.MIGRATION_6_8,
                     Migrations.MIGRATION_7_8,
@@ -120,8 +122,7 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_12_13,
                     Migrations.MIGRATION_13_14,
                     Migrations.MIGRATION_14_15,
-                    Migrations.MIGRATION_15_16,
-                    Migrations.MIGRATION_16_17
+                    Migrations.MIGRATION_15_16
                 )
                 .allowMainThreadQueries()
                 .addCallback(

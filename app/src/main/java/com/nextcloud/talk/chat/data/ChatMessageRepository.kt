@@ -110,7 +110,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun editTempChatMessage(message: ChatMessage, editedMessageText: String): Flow<Boolean>
 
-    suspend fun sendTempChatMessages(credentials: String, url: String)
+    suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
 }
