@@ -1245,8 +1245,9 @@ class ChatActivity :
         val deleteNoticeText = binding.conversationDeleteNotice.findViewById<TextView>(R.id.deletion_message)
         viewThemeUtils.material.themeCardView(binding.conversationDeleteNotice)
 
-        deleteNoticeText.text = String.format(
-            resources.getString(R.string.nc_conversation_auto_delete_notice),
+        deleteNoticeText.text = resources.getQuantityString(
+            R.plurals.nc_conversation_auto_delete_info,
+            retentionPeriod,
             retentionPeriod
         )
         viewThemeUtils.material.colorMaterialButtonPrimaryTonal(

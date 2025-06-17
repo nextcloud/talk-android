@@ -19,7 +19,6 @@
         android:id="@+id/deletion_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/nc_conversation_auto_delete_notice"
         android:textSize="14sp"
         android:lineSpacingExtra="4dp"
         android:gravity="center"
