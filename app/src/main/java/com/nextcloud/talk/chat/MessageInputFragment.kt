@@ -109,10 +109,10 @@ class MessageInputFragment : Fragment() {
         private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
-        private const val QUOTED_MESSAGE_TEXT = "QUOTED_MESSAGE_TEXT"
-        private const val QUOTED_MESSAGE_ID = "QUOTED_MESSAGE_ID"
-        private const val QUOTED_MESSAGE_URL = "QUOTED_MESSAGE_URL"
-        private const val QUOTED_MESSAGE_NAME = "QUOTED_MESSAGE_NAME"
+        const val QUOTED_MESSAGE_TEXT = "QUOTED_MESSAGE_TEXT"
+        const val QUOTED_MESSAGE_ID = "QUOTED_MESSAGE_ID"
+        const val QUOTED_MESSAGE_URL = "QUOTED_MESSAGE_URL"
+        const val QUOTED_MESSAGE_NAME = "QUOTED_MESSAGE_NAME"
     }
 
     @Inject
@@ -176,7 +176,8 @@ class MessageInputFragment : Fragment() {
         clearEditUI()
         val isInReplyState = (quotedJsonId != -1 && quotedActorDisplayName != null && quotedMessageText != "")
         if (!isInReplyState) {
-            cancelReply()
+            cancelReply() // TODO - I could move this to the view model, in a onBackPressCallback to remove all from
+                          //  storage
         }
     }
 
@@ -311,6 +312,7 @@ class MessageInputFragment : Fragment() {
 
     private fun restoreState() {
         if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {
+            Log.d("Julius", "State restored from: ${chatActivity.localClassName}")
             requireContext().getSharedPreferences(chatActivity.localClassName, AppCompatActivity.MODE_PRIVATE).apply {
                 val text = getString(chatActivity.roomToken, "")
                 val cursor = getInt(chatActivity.roomToken + CURSOR_KEY, 0)
