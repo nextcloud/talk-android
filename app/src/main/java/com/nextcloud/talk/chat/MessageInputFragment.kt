@@ -176,8 +176,7 @@ class MessageInputFragment : Fragment() {
         clearEditUI()
         val isInReplyState = (quotedJsonId != -1 && quotedActorDisplayName != null && quotedMessageText != "")
         if (!isInReplyState) {
-            cancelReply() // TODO - I could move this to the view model, in a onBackPressCallback to remove all from
-                          //  storage
+            cancelReply()
         }
     }
 
