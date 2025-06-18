@@ -119,11 +119,14 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var conversationModel: ConversationModel
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
+    private var threadId: Long? = null
 
-    override fun initData(credentials: String, urlForChatting: String, roomToken: String) {
+    override fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
         internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting
+        this.threadId = threadId // TODO: use this threadId in API requests when fetching messages? +
+        // TODO Introduce ChatBlocks for threads
     }
 
     override fun updateConversation(conversationModel: ConversationModel) {
