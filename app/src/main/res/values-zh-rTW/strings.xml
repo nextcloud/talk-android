@@ -543,6 +543,7 @@
     <string name="online_status">線上狀態</string>
     <string name="openConversations">開啟對話</string>
     <string name="open_in_files_app">在「檔案」應用程式中開啟</string>
+    <string name="open_notes">開啟筆記</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="polls_add_option">新增選項</string>
@@ -678,6 +679,9 @@
     <string name="whats_your_status">您目前的狀態是什麼呢？</string>
     <plurals name="see_similar_system_messages">
         <item quantity="other">檢視 %d 則類似的訊息</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="other">此對話若於%1$d天內沒有活動，將會自動為所有人刪除</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>

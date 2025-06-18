@@ -543,6 +543,7 @@
     <string name="online_status">Võrgus staatus</string>
     <string name="openConversations">Ava vestlused</string>
     <string name="open_in_files_app">Ava failirakenduses</string>
+    <string name="open_notes">Ava märkmik</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
     <string name="polls_add_option">Lisa valik</string>
@@ -679,6 +680,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">Vaata %d sarnast sõnumit</item>
         <item quantity="other">Vaata %d sarnast sõnumit</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">See vestlus kustub automaatselt kõigi osalejate jaoks, kui siin pole olnud tegevust %1$d päeva jooksul.</item>
+        <item quantity="other">See vestlus kustub automaatselt kõigi osalejate jaoks, kui siin pole olnud tegevust %1$d päeva jooksul.</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hääl</item>
