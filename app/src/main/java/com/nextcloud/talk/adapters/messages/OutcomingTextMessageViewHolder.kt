@@ -29,6 +29,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ItemCustomOutcomingTextMessageBinding
@@ -184,7 +185,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.checkMark.visibility = View.INVISIBLE
         binding.sendingProgress.visibility = View.GONE
 
-        if (message.sendingFailed) {
+        if (message.sendStatus == SendStatus.FAILED) {
             updateStatus(R.drawable.baseline_error_outline_24, context.resources?.getString(R.string.nc_message_failed))
         } else if (message.isTemporary) {
             updateStatus(R.drawable.baseline_schedule_24, context.resources?.getString(R.string.nc_message_sending))

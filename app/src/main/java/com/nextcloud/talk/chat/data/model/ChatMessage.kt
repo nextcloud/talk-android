@@ -14,6 +14,7 @@ import android.util.Log
 import com.bluelinelabs.logansquare.annotation.JsonIgnore
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils.Companion.getParsedMessage
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -119,7 +120,7 @@ data class ChatMessage(
 
     var referenceId: String? = null,
 
-    var sendingFailed: Boolean = true,
+    var sendStatus: SendStatus? = null,
 
     var silent: Boolean = false
 
