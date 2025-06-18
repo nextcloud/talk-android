@@ -159,13 +159,19 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
         // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
-            processParentMessage(message)
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
+        val chatActivity = commonMessageInterface as ChatActivity
+        binding.messageQuote.quotedChatMessageView.visibility =
+            // TODO replace message.parentMessageId with topmostParentId
+            if (chatActivity.threadId == message.parentMessageId) {
+                View.GONE
+            } else if (!message.isDeleted && message.parentMessageId != null) {
+                processParentMessage(message)
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
@@ -365,6 +371,14 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                             true,
                             viewThemeUtils
                         )
+
+                    // TODO replace message.parentMessageId!! with topmostParentId (=threadId)
+                    binding.messageQuote.threadIcon.setOnClickListener {
+                        chatActivity.openThread(
+                            chatActivity.roomToken,
+                            message.parentMessageId!!
+                        )
+                    }
 
                     viewThemeUtils.talk.themeParentMessage(
                         parentChatMessage,
