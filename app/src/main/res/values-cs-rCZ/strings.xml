@@ -543,6 +543,7 @@
     <string name="online_status">Stav online</string>
     <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
+    <string name="open_notes">Otevřít poznámky</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
     <string name="polls_add_option">Přidat volbu</string>
@@ -681,6 +682,12 @@
         <item quantity="few">Viz %d podobné zprávy</item>
         <item quantity="many">Viz %d podobných zpráv</item>
         <item quantity="other">Viz %d podobné zprávy</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dni bez jakékoli aktivity.</item>
+        <item quantity="few">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
+        <item quantity="many">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
+        <item quantity="other">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hlas</item>
