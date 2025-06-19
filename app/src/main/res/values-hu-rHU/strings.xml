@@ -198,7 +198,19 @@
     <string name="nc_diagnose_battery_optimization_not_ignored">Az akkumulátoroptimalizálás engedélyezve van, amely problémákat okozhat. Ajánlatos letiltani az akkumulátoroptimalizálást.</string>
     <string name="nc_diagnose_battery_optimization_title">Akkumulátorbeállítások</string>
     <string name="nc_diagnose_device_name_title">Eszköz</string>
+    <string name="nc_diagnose_dialog_open_checklist">Hibaelhárítási ellenőrzőlista megnyitása</string>
+    <string name="nc_diagnose_dialog_open_diagnose">Diagnosztikai képernyő megnyitása</string>
+    <string name="nc_diagnose_dialog_open_dontkillmyapp_website">A dontkillmyapp.com megnyitása</string>
+    <string name="nc_diagnose_gplay_available_title">Google Play szolgáltatások</string>
+    <string name="nc_diagnose_gplay_available_yes">A Google Play szolgáltatások elérhetőek</string>
+    <string name="nc_diagnose_meta_category_title">Metainformációk</string>
+    <string name="nc_diagnose_meta_system_report_date">Rendszerjelentés előállítása</string>
+    <string name="nc_diagnose_notification_calls_channel_permission">Engedélyezve van a hívások értesítési csatornája?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Engedélyezve van az üzenetek értesítési csatornája?</string>
+    <string name="nc_diagnose_notification_permission">Értesítési engedély</string>
     <string name="nc_diagnose_phone_category_title">Telefon</string>
+    <string name="nc_diagnose_server_talk_version">Kiszolgáló Beszélgetés verziója</string>
+    <string name="nc_diagnose_server_version">Kiszolgáló verziója</string>
     <string name="nc_diagnose_signaling_mode_extern">Külső</string>
     <string name="nc_diagnose_signaling_mode_intern">Belső</string>
     <string name="nc_dialog_invalid_password">Érvénytelen jelszó</string>
@@ -207,7 +219,9 @@
     <string name="nc_dialog_outdated_client_description">Az alkalmazás túl régi, és már nem támogatja ez a kiszolgáló. Frissítse.</string>
     <string name="nc_dialog_outdated_client_option_update">Frissítés</string>
     <string name="nc_dialog_reauth_or_delete">Újrahitelesíti vagy törli ezt a fiókot?</string>
+    <string name="nc_dialog_save_to_storage_continue">Folytatja?</string>
     <string name="nc_dialog_save_to_storage_no">Nem</string>
+    <string name="nc_dialog_save_to_storage_title">Menti a tárolóba?</string>
     <string name="nc_dialog_save_to_storage_yes">Igen</string>
     <string name="nc_display_name_not_fetched">A megjelenítendő név nem kérhető le, megszakítás</string>
     <string name="nc_display_name_not_stored">A megjelenítendő név nem tárolható, megszakítás</string>
@@ -251,6 +265,7 @@
     <string name="nc_guest_access_share_link">Beszélgetés hivatkozásának megosztása</string>
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
+    <string name="nc_invalid_time">Érvénytelen idő</string>
     <string name="nc_invitations">Meghívások</string>
     <string name="nc_join_open_conversations">Csatlakozás a nyílt beszélgetésekhez</string>
     <string name="nc_keep">Megtartás</string>

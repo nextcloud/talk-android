@@ -543,6 +543,7 @@
     <string name="online_status">Online-Status</string>
     <string name="openConversations">Offene Unterhaltungen</string>
     <string name="open_in_files_app">In Dateien-App öffnen</string>
+    <string name="open_notes">Notizen öffnen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
     <string name="polls_add_option">Option hinzufügen</string>
@@ -679,6 +680,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">%d ähnliche Nachricht ansehen</item>
         <item quantity="other">%d ähnliche Nachrichten ansehen</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tag gelöscht</item>
+        <item quantity="other">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tagen gelöscht</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d Stimme</item>
