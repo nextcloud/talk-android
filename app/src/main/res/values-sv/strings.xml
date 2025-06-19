@@ -542,6 +542,7 @@
     <string name="online_status">Online-status</string>
     <string name="openConversations">Öppna konversationer</string>
     <string name="open_in_files_app">Öppna i appen Filer</string>
+    <string name="open_notes">Öppna anteckningar</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
     <string name="polls_add_option">Lägg till alternativ</string>
@@ -677,6 +678,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">Se %d liknande meddelande</item>
         <item quantity="other">Se %d liknande meddelanden</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dag utan aktivitet</item>
+        <item quantity="other">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dagar utan aktivitet</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d röst</item>
