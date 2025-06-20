@@ -393,9 +393,14 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            intent.putExtras(Bundle())
-            startActivity(intent)
+            if (isChatThread()) {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            } else {
+                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.putExtras(Bundle())
+                startActivity(intent)
+            }
         }
     }
 
@@ -2603,7 +2608,7 @@ class ChatActivity :
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
-            if (threadId != null && threadId!! > 0) {
+            if (isChatThread()) {
                 "Thread $threadId"
             } else if (currentConversation?.displayName != null) {
                 try {
@@ -4117,6 +4122,8 @@ class ChatActivity :
             startContextChatWindowForMessage(parentMessage.id)
         }
     }
+
+    private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
 
     fun openThread(roomToken: String, threadId: Long) {
         val bundle = Bundle()
