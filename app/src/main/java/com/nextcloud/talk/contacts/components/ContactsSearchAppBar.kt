@@ -14,6 +14,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -51,8 +52,7 @@ fun ContactsSearchAppBar(
     ) {
         VerticallyCenteredRow {
             IconButton(
-                modifier = Modifier
-                    .padding(start = 4.dp),
+                modifier = Modifier.padding(start = 4.dp),
                 onClick = onCloseSearch
             ) {
                 Icon(
@@ -68,7 +68,17 @@ fun ContactsSearchAppBar(
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = searchKeyboardActions(searchQuery, keyboardController),
-                colors = searchTextFieldColors()
+                colors = searchTextFieldColors(),
+                trailingIcon = {
+                    if (searchQuery.isNotEmpty()) {
+                        IconButton(onClick = { onTextChange("") }) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = stringResource(R.string.nc_search_clear)
+                            )
+                        }
+                    }
+                }
             )
 
             if (isAddParticipants) {
