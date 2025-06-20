@@ -543,6 +543,7 @@
     <string name="online_status">Мрежни статус</string>
     <string name="openConversations">Отвори разговор</string>
     <string name="open_in_files_app">Отвори у апликацији Фајлови</string>
+    <string name="open_notes">Отвори Белешке</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
     <string name="playback_speed_control">Контрола брзине репродукције</string>
     <string name="polls_add_option">Додај ставку</string>
@@ -680,6 +681,11 @@
         <item quantity="one">Погледајте %d сличну поруку</item>
         <item quantity="few">Погледајте %d сличне поруке</item>
         <item quantity="other">Погледајте %d сличних порука</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
+        <item quantity="few">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
+        <item quantity="other">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d глас</item>
