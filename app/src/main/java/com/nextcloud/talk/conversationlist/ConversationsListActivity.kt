@@ -215,7 +215,6 @@ class ConversationsListActivity :
     private var conversationItemsWithHeader: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var filterableConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-    private var nearFutureEventConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
     private var searchItem: MenuItem? = null
     private var chooseAccountItem: MenuItem? = null
     private var searchView: SearchView? = null
@@ -558,31 +557,20 @@ class ConversationsListActivity :
         // Update Conversations
         conversationItems.clear()
         conversationItemsWithHeader.clear()
-        nearFutureEventConversationItems.clear()
+        searchableConversationItems.clear()
 
         for (conversation in list) {
-            if (!isFutureEvent(conversation) && !conversation.hasArchived) {
-                addToNearFutureEventConversationItems(conversation)
-            }
             addToConversationItems(conversation)
         }
 
+        searchableConversationItems.addAll(conversationItemsWithHeader)
         getFilterStates()
-        val noFiltersActive = !(
-            filterState[MENTION] == true ||
-                filterState[UNREAD] == true ||
-                filterState[ARCHIVE] == true
-            )
 
         sortConversations(conversationItems)
         sortConversations(conversationItemsWithHeader)
-        sortConversations(nearFutureEventConversationItems)
+        sortConversations(searchableConversationItems)
 
-        if (noFiltersActive && searchBehaviorSubject.value == false) {
-            adapter?.updateDataSet(nearFutureEventConversationItems, false)
-        } else {
-            applyFilter()
-        }
+        applyFilter()
 
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
@@ -618,17 +606,6 @@ class ConversationsListActivity :
         val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
         val sixteenHoursAfterTimeStamp = (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
         return conversation.objectType == ConversationEnums.ObjectType.EVENT && sixteenHoursAfterTimeStamp
-    }
-
-    fun showOnlyNearFutureEvents() {
-        sortConversations(nearFutureEventConversationItems)
-        adapter?.updateDataSet(nearFutureEventConversationItems, false)
-        adapter?.smoothScrollToPosition(0)
-    }
-
-    private fun addToNearFutureEventConversationItems(conversation: ConversationModel) {
-        val conversationItem = ConversationItem(conversation, currentUser!!, this, null, viewThemeUtils)
-        nearFutureEventConversationItems.add(conversationItem)
     }
 
     fun getFilterStates() {
@@ -922,12 +899,7 @@ class ConversationsListActivity :
                 override fun onMenuItemActionCollapse(item: MenuItem): Boolean {
                     adapter?.setHeadersShown(false)
                     searchBehaviorSubject.onNext(false)
-                    if (!hasFilterEnabled()) filterableConversationItems = conversationItemsWithHeader
-                    if (!hasFilterEnabled()) {
-                        adapter?.updateDataSet(nearFutureEventConversationItems, false)
-                    } else {
-                        filterableConversationItems = conversationItems
-                    }
+                    applyFilter()
                     adapter?.hideAllHeaders()
                     if (searchHelper != null) {
                         // cancel any pending searches
@@ -1082,7 +1054,7 @@ class ConversationsListActivity :
             this,
             viewThemeUtils
         )
-        conversationItems.add(conversationItem)
+
         val conversationItemWithHeader = ConversationItem(
             conversation,
             currentUser!!,
@@ -1090,7 +1062,13 @@ class ConversationsListActivity :
             callHeaderItems[headerTitle],
             viewThemeUtils
         )
-        conversationItemsWithHeader.add(conversationItemWithHeader)
+
+        if (isFutureEvent(conversation)) {
+            searchableConversationItems.add(conversationItem)
+        } else {
+            conversationItems.add(conversationItem)
+            conversationItemsWithHeader.add(conversationItemWithHeader)
+        }
     }
 
     private fun showErrorDialog() {
@@ -1157,8 +1135,6 @@ class ConversationsListActivity :
     }
 
     private fun fetchOpenConversations(apiVersion: Int) {
-        searchableConversationItems.clear()
-        searchableConversationItems.addAll(conversationItemsWithHeader)
         if (hasSpreedFeatureCapability(
                 currentUser!!.capabilities!!.spreedCapability!!,
                 SpreedFeatures.LISTABLE_ROOMS
