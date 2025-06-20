@@ -66,6 +66,9 @@ fun ContactsSearchAppBar(
                 onValueChange = onTextChange,
                 placeholder = { Text(text = stringResource(R.string.nc_search)) },
                 singleLine = true,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = searchKeyboardActions(searchQuery, keyboardController),
                 colors = searchTextFieldColors(),
