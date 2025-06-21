@@ -543,6 +543,7 @@
     <string name="online_status">Stádas ar líne</string>
     <string name="openConversations">Oscail comhráite</string>
     <string name="open_in_files_app">Oscail san aip Comhaid</string>
+    <string name="open_notes">Nótaí Oscailte</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
     <string name="polls_add_option">Cuir rogha leis</string>
@@ -682,6 +683,13 @@
         <item quantity="few">Féach ar %d teachtaireacht dá samhail</item>
         <item quantity="many">Féach ar %d teachtaireacht dá samhail</item>
         <item quantity="other">Féach ar %d teachtaireacht dá samhail</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
+        <item quantity="two">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
+        <item quantity="few">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
+        <item quantity="many">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
+        <item quantity="other">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vóta</item>

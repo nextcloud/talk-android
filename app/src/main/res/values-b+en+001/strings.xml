@@ -543,6 +543,7 @@
     <string name="online_status">Online status</string>
     <string name="openConversations">Open conversations</string>
     <string name="open_in_files_app">Open in Files app</string>
+    <string name="open_notes">Open Notes</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="playback_speed_control">Playback speed control</string>
     <string name="polls_add_option">Add option</string>
@@ -679,6 +680,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">This conversation will be automatically deleted for everyone in %1$d day of no activity</item>
+        <item quantity="other">This conversation will be automatically deleted for everyone in %1$d days of no activity</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
