@@ -66,6 +66,8 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.text.bold
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
@@ -458,7 +460,28 @@ class ChatActivity :
         binding = ActivityChatBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
+                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+                val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
+
+                val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
+                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
+
+                view.setPadding(
+                    view.paddingLeft,
+                    statusBarInsets.top,
+                    view.paddingRight,
+                    bottomPadding
+                )
+                WindowInsetsCompat.CONSUMED
+            }
+        } else {
+            colorizeStatusBar()
+            colorizeNavigationBar()
+        }
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
         handleIntent(intent)
@@ -486,7 +509,7 @@ class ChatActivity :
         initObservers()
 
         pickMultipleMedia = registerForActivityResult(
-            ActivityResultContracts.PickMultipleVisualMedia(5)
+            ActivityResultContracts.PickMultipleVisualMedia(MAX_AMOUNT_MEDIA_FILE_PICKER)
         ) { uris ->
             if (uris.isNotEmpty()) {
                 onChooseFileResult(uris)
@@ -684,7 +707,7 @@ class ChatActivity :
                                     ?.split("#")
                                     ?.getOrNull(1)
                                     ?.toLongOrNull()
-                            val currentTimeStamp = (System.currentTimeMillis() / 1000).toLong()
+                            val currentTimeStamp = (System.currentTimeMillis() / ONE_SECOND_IN_MILLIS).toLong()
                             val retentionPeriod = retentionOfEventRooms(spreedCapabilities)
                             val isPastEvent = eventEndTimeStamp?.let { it < currentTimeStamp }
                             if (isPastEvent == true && retentionPeriod != 0) {
@@ -4193,5 +4216,6 @@ class ChatActivity :
         const val OUT_OF_OFFICE_ALPHA = 76
         const val ZERO_INDEX = 0
         const val ONE_INDEX = 1
+        const val MAX_AMOUNT_MEDIA_FILE_PICKER = 10
     }
 }

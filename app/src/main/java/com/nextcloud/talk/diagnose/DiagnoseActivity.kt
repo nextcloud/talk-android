@@ -21,6 +21,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.collectAsState
@@ -28,8 +29,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.ViewModelProvider
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
+import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
 import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
@@ -37,8 +39,8 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
+import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -109,18 +111,22 @@ class DiagnoseActivity : BaseActivity() {
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
+                ColoredStatusBar()
                 Scaffold(
+                    modifier = Modifier
+                        .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
                             title = stringResource(R.string.nc_settings_diagnose_title),
                             menuItems
                         )
                     },
-                    content = {
+                    content = { paddingValues ->
                         val viewState = diagnoseViewModel.notificationViewState.collectAsState().value
+
                         Column(
                             Modifier
-                                .padding(it)
+                                .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
                                 .background(backgroundColor)
                                 .fillMaxSize()
                         ) {
@@ -136,7 +142,6 @@ class DiagnoseActivity : BaseActivity() {
                         }
                     }
                 )
-                SetupSystemBars()
             }
         }
     }

@@ -190,7 +190,7 @@ class ConversationInfoActivity :
         binding = ActivityConversationInfoBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         viewModel =
             ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]

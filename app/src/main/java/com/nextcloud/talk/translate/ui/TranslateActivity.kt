@@ -86,7 +86,7 @@ class TranslateActivity : BaseActivity() {
         }
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
         setupTextViews()
         viewModel.getLanguages()
         setupCopyButton()

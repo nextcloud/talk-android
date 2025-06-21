@@ -84,8 +84,8 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.contacts.ContactsActivity
-import com.nextcloud.talk.components.SetupSystemBars
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.extensions.getParcelableArrayListExtraProvider
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
@@ -117,7 +117,6 @@ class ConversationCreationActivity : BaseActivity() {
                 colorScheme = colorScheme
             ) {
                 ConversationCreationScreen(conversationCreationViewModel, context, pickImage)
-                SetupSystemBars()
             }
         }
     }
@@ -172,6 +171,7 @@ fun ConversationCreationScreen(
         }
     )
 
+    ColoredStatusBar()
     Scaffold(
         topBar = {
             TopAppBar(
@@ -191,7 +191,7 @@ fun ConversationCreationScreen(
         content = { paddingValues ->
             Column(
                 modifier = Modifier
-                    .padding(paddingValues)
+                    .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
                     .background(colorResource(id = R.color.bg_default))
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
