@@ -57,7 +57,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         binding = ActivityOpenConversationsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
         viewThemeUtils.platform.colorImageView(binding.searchOpenConversations, ColorRole.ON_SURFACE)
         viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
 

@@ -99,7 +99,7 @@ class ConversationInfoEditActivity : BaseActivity() {
         binding = ActivityConversationInfoEditBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         val extras: Bundle? = intent.extras
 

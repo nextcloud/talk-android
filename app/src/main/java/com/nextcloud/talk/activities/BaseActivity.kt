@@ -11,11 +11,13 @@ package com.nextcloud.talk.activities
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.view.inputmethod.EditorInfo
 import android.webkit.SslErrorHandler
@@ -37,6 +39,7 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileViewerUtils
 import com.nextcloud.talk.utils.UriUtils
+import com.nextcloud.talk.utils.adjustUIForAPILevel35
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -81,6 +84,7 @@ open class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        adjustUIForAPILevel35()
         super.onCreate(savedInstanceState)
 
         cleanTempCertPreference()
@@ -111,9 +115,22 @@ open class BaseActivity : AppCompatActivity() {
         eventBus.unregister(this)
     }
 
-    fun setupSystemColors() {
-        colorizeStatusBar()
-        colorizeNavigationBar()
+    /*
+     * May be aligned with android-common lib in the future: .../ui/util/extensions/AppCompatActivityExtensions.kt
+     */
+    fun initSystemBars() {
+        window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
+                view.setPadding(0, statusBarHeight, 0, 0)
+                val color = ResourcesCompat.getColor(resources, R.color.bg_default, context.theme)
+                view.setBackgroundColor(color)
+            } else {
+                colorizeStatusBar()
+                colorizeNavigationBar()
+            }
+            insets
+        }
     }
 
     open fun colorizeStatusBar() {

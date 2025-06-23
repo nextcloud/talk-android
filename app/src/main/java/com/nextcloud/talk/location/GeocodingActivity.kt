@@ -67,7 +67,7 @@ class GeocodingActivity :
         binding = ActivityGeocodingBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         Configuration.getInstance().load(context, PreferenceManager.getDefaultSharedPreferences(context))
 

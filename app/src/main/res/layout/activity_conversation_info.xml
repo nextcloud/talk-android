@@ -553,7 +553,7 @@
                     android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding">
+                    android:padding="@dimen/standard_half_padding">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -579,7 +579,7 @@
                     android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding">
+                    android:padding="@dimen/standard_half_padding">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -605,7 +605,7 @@
                     android:layout_marginTop="@dimen/standard_quarter_margin"
                     android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
-                    android:padding="@dimen/standard_padding">
+                    android:padding="@dimen/standard_half_padding">
 
                     <ImageView
                         android:layout_width="24dp"
@@ -625,6 +625,9 @@
 
                 </LinearLayout>
             </LinearLayout>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </LinearLayout>

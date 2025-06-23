@@ -145,7 +145,7 @@ class SettingsActivity :
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setupActionBar()
         setContentView(binding.root)
-        setupSystemColors()
+        initSystemBars()
 
         binding.avatarImage.let { ViewCompat.setTransitionName(it, "userAvatar.transitionTag") }
 
