@@ -159,6 +159,7 @@ class MessageUtils(val context: Context) {
         return messageStringInternal
     }
 
+    @Suppress("NestedBlockDepth")
     fun processEditMessageParameters(
         messageParameters: HashMap<String?, HashMap<String?, String?>>?,
         message: ChatMessage?,
