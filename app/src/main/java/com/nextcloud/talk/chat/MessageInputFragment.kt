@@ -40,6 +40,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.text.toSpannable
+import androidx.core.text.toSpanned
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
@@ -78,6 +80,7 @@ import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -124,6 +127,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     lateinit var binding: FragmentMessageInputBinding
     private lateinit var conversationInternalId: String
@@ -357,7 +363,7 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentMessageInputView.inputEditText?.error = null
                 }
 
-                val editable = binding.fragmentMessageInputView.inputEditText?.editableText
+               val editable = binding.fragmentMessageInputView.inputEditText?.editableText
 
                 if (editable != null && binding.fragmentMessageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
@@ -410,39 +416,6 @@ class MessageInputFragment : Fragment() {
 
         binding.fragmentMessageInputView.button?.setOnClickListener {
             submitMessage(false)
-        }
-
-        binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
-            val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
-            val mentionSpans = editable.getSpans(
-                0,
-                editable.length,
-                Spans.MentionChipSpan::class.java
-            )
-            var mentionSpan: Spans.MentionChipSpan
-            for (i in mentionSpans.indices) {
-                mentionSpan = mentionSpans[i]
-                var mentionId = mentionSpan.id
-                val shouldQuote = mentionId.contains(" ") ||
-                    mentionId.contains("@") ||
-                    mentionId.startsWith("guest/") ||
-                    mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/") ||
-                    mentionId.startsWith("team/")
-                if (shouldQuote) {
-                    mentionId = "\"" + mentionId + "\""
-                }
-                editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
-            }
-            val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
-            val editedMessage = ChatUtils.getParsedMessage(editable!!.toString(), message.messageParameters)
-            if (message.message!!.trim() != editedMessage?.trim()) {
-                editMessageAPI(message, editedMessage!!)
-            }
-            clearEditUI()
-        }
-        binding.fragmentEditView.clearEdit.setOnClickListener {
-            clearEditUI()
         }
 
         if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
@@ -953,8 +926,8 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun setEditUI(message: ChatMessage) {
-       val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+     private fun setEditUI(message: ChatMessage) {
+         val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
         binding.fragmentEditView.editMessage.text = editedMessage
         binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
         val end = binding.fragmentMessageInputView.inputEditText.text.length
@@ -964,6 +937,38 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
         binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
+
+         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
+                 val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
+                 val mentionSpans = editable.getSpans(
+                     0,
+                     editable.length,
+                     Spans.MentionChipSpan::class.java
+                 )
+                 var mentionSpan: Spans.MentionChipSpan
+                 for (i in mentionSpans.indices) {
+                     mentionSpan = mentionSpans[i]
+                     var mentionId = mentionSpan.id
+                     val shouldQuote = mentionId.contains(" ") ||
+                         mentionId.contains("@") ||
+                         mentionId.startsWith("guest/") ||
+                         mentionId.startsWith("group/") ||
+                         mentionId.startsWith("email/") ||
+                         mentionId.startsWith("team/")
+                     if (shouldQuote) {
+                         mentionId = "\"" + mentionId + "\""
+                     }
+                     editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
+                 }
+                 val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
+                 if (message.message!!.trim() != editable?.trim()) {
+                     editMessageAPI(message, editable!!.toString())
+                 }
+                 clearEditUI()
+             }
+             binding.fragmentEditView.clearEdit.setOnClickListener {
+                 clearEditUI()
+             }
     }
 
     private fun clearEditUI() {
