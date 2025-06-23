@@ -78,7 +78,6 @@ import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
