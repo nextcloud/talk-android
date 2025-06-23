@@ -78,6 +78,7 @@ import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -954,8 +955,9 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun setEditUI(message: ChatMessage) {
-        binding.fragmentEditView.editMessage.text = message.message
-        binding.fragmentMessageInputView.inputEditText.setText(message.message)
+       val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+        binding.fragmentEditView.editMessage.text = editedMessage
+        binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
         val end = binding.fragmentMessageInputView.inputEditText.text.length
         binding.fragmentMessageInputView.inputEditText.setSelection(end)
         binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
