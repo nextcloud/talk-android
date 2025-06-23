@@ -40,8 +40,6 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
-import androidx.core.text.toSpannable
-import androidx.core.text.toSpanned
 import androidx.core.view.isVisible
 import androidx.core.widget.doAfterTextChanged
 import androidx.emoji2.widget.EmojiTextView
