@@ -938,11 +938,34 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
 
-            val inputEditText = binding.fragmentMessageInputView.inputEditText!!.text.toString()
+            val inputEditText = binding.fragmentMessageInputView.inputEditText!!.editableText
+
+            val mentionSpans = inputEditText.getSpans(
+                0,
+                inputEditText.length,
+                Spans.MentionChipSpan::class.java
+            )
+            var mentionSpan: Spans.MentionChipSpan
+            for (i in mentionSpans.indices) {
+                mentionSpan = mentionSpans[i]
+                var mentionId = mentionSpan.id
+                val shouldQuote = mentionId.contains(" ") ||
+                    mentionId.contains("@") ||
+                    mentionId.startsWith("guest/") ||
+                    mentionId.startsWith("group/") ||
+                    mentionId.startsWith("email/") ||
+                    mentionId.startsWith("team/")
+                if (shouldQuote) {
+                    mentionId = "\"" + mentionId + "\""
+                }
+                inputEditText.replace(inputEditText.getSpanStart(mentionSpan), inputEditText.getSpanEnd(mentionSpan),
+                    "@$mentionId")
+            }
+
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
                 val editedMessage = messageUtils.processEditMessageParameters(message.messageParameters!!, message,
-                    inputEditText)
+                    inputEditText.toString())
                 editMessageAPI(message, editedMessage.toString())
             }
             clearEditUI()
