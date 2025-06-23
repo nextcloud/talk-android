@@ -89,6 +89,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_17_18 = object : Migration(17, 18) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 17 to 18")
+            addMessageDraft(db)
+        }
+    }
+
     //endregion
 
     fun migrateToRoom(db: SupportSQLiteDatabase) {
@@ -331,6 +338,17 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations")
+        }
+    }
+
+    fun addMessageDraft(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE Conversations " +
+                    "ADD COLUMN messageDraft TEXT;"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when adding column messageDraft to table Conversations")
         }
     }
 
