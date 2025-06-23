@@ -159,6 +159,41 @@ class MessageUtils(val context: Context) {
         return messageStringInternal
     }
 
+
+   fun processEditMessageParameters(
+        messageParameters: HashMap<String?, HashMap<String?, String?>>?,
+        message: ChatMessage?,
+       inputEditText:String
+    ): Spanned {
+
+       var result = inputEditText.toString()
+        for ((key, valueMap) in messageParameters!!) {
+            if (key != null) {
+                val mentionId = valueMap["mention-id"]
+                val type = valueMap["type"]
+                val name = valueMap["name"]
+                val user = message?.activeUser
+                if (user != null && mentionId != null && type != null) {
+                    val placeholder = "@$name"
+                    when (type) {
+                        "user", "guest", "email" -> {
+                            result = result.replace(placeholder, "@$mentionId", ignoreCase = false)
+                        }
+                        "user-group", "circle" ->{
+                            val mentionId = "\"" + mentionId + "\""
+                            result = result.replace(placeholder, "@$mentionId", ignoreCase = false)
+                        }
+                        "call" -> {
+                            result = result.replace(placeholder,"@all", ignoreCase = false )
+                        }
+                    }
+                }
+            }
+        }
+        return SpannableString(result)
+    }
+
+
     private fun defaultMessageParameters(
         messageString: Spanned,
         individualHashMap: HashMap<String?, String?>,
