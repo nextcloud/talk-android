@@ -361,7 +361,7 @@ class MessageInputFragment : Fragment() {
                     binding.fragmentMessageInputView.inputEditText?.error = null
                 }
 
-               val editable = binding.fragmentMessageInputView.inputEditText?.editableText
+                val editable = binding.fragmentMessageInputView.inputEditText?.editableText
 
                 if (editable != null && binding.fragmentMessageInputView.inputEditText != null) {
                     val mentionSpans = editable.getSpans(
@@ -924,7 +924,6 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-
     private fun setEditUI(message: ChatMessage) {
         val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
         binding.fragmentEditView.editMessage.text = editedMessage
@@ -937,7 +936,6 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
-
             val inputEditText = binding.fragmentMessageInputView.inputEditText!!.editableText
 
             val mentionSpans = inputEditText.getSpans(
@@ -958,14 +956,20 @@ class MessageInputFragment : Fragment() {
                 if (shouldQuote) {
                     mentionId = "\"" + mentionId + "\""
                 }
-                inputEditText.replace(inputEditText.getSpanStart(mentionSpan), inputEditText.getSpanEnd(mentionSpan),
-                    "@$mentionId")
+                inputEditText.replace(
+                    inputEditText.getSpanStart(mentionSpan),
+                    inputEditText.getSpanEnd(mentionSpan),
+                    "@$mentionId"
+                )
             }
 
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
-                val editedMessage = messageUtils.processEditMessageParameters(message.messageParameters!!, message,
-                    inputEditText.toString())
+                val editedMessage = messageUtils.processEditMessageParameters(
+                    message.messageParameters!!,
+                    message,
+                    inputEditText.toString()
+                )
                 editMessageAPI(message, editedMessage.toString())
             }
             clearEditUI()
@@ -974,7 +978,6 @@ class MessageInputFragment : Fragment() {
             clearEditUI()
         }
     }
-
 
     private fun clearEditUI() {
         binding.fragmentMessageInputView.editMessageButton.visibility = View.GONE
