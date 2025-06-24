@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.call.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -40,6 +41,7 @@ const val NICK_OFFSET = 4f
 const val NICK_BLUR_RADIUS = 4f
 const val AVATAR_SIZE_FACTOR = 0.6f
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("Detekt.LongMethod")
 @Composable
 fun ParticipantTile(
