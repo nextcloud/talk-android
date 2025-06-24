@@ -286,6 +286,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Търси</string>
+    <string name="nc_search_clear">Изчисти търсенето</string>
     <string name="nc_select_an_account">Избор на профил</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s изпратихте GIF.</string>
     <string name="nc_sent_a_gif_you">Изпратихте GIF.</string>

@@ -232,6 +232,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Ieškoti</string>
+    <string name="nc_search_clear">Išvalyti paiešką</string>
     <string name="nc_select_an_account">Pasirinkti paskyrą</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s išsiuntė GIF paveikslą.</string>
     <string name="nc_sent_a_gif_you">Jūs išsiuntėte GIF paveikslą.</string>
