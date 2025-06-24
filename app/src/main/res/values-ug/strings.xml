@@ -373,6 +373,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">ئىزدەش</string>
+    <string name="nc_search_clear">ئىزدەشنى تازىلاش</string>
     <string name="nc_select_an_account">ھېسابات تاللاڭ</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s s GIF ئەۋەتتى.</string>
     <string name="nc_sent_a_gif_you">سىز بىر سوۋغات ئەۋەتتىڭىز.</string>

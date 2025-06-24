@@ -404,6 +404,7 @@
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Тражи</string>
+    <string name="nc_search_clear">Обриши претрагу</string>
     <string name="nc_select_an_account">Изаберите налог</string>
     <string name="nc_send_edit_message">Ажурирај поруку</string>
     <string name="nc_sensitive_conversation">Осетљиви разговор</string>

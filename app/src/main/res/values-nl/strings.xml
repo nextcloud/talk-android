@@ -8,6 +8,8 @@
     <string name="archive_conversation">Archiveer gesprek</string>
     <string name="archive_hint">Wanneer een gesprek wordt gearchiveerd is het standaard verborgen. Selecteer de filter \"Gearchiveerd\" om gearchiveerdde gesprekken te zien. Directe vermeldingen worden nog steeds ontvangen.</string>
     <string name="archived">Gearchiveerd</string>
+    <string name="archived_conversation">%1$s gearchiveerd</string>
+    <string name="audio_call">Audio oproep</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Audio output</string>
     <string name="audio_output_phone">Telefoon</string>
@@ -31,8 +33,10 @@
     <string name="close">Sluit</string>
     <string name="close_icon">Sluiten-pictogram</string>
     <string name="connection_established">Verbinding tot stand gebracht</string>
+    <string name="connection_lost">Geen verbinding met server</string>
     <string name="connection_lost_sent_messages_are_queued">Verbinding verbroken - Verzonden berichten in de wachtrij geplaatst</string>
     <string name="continuous_voice_message_recording">Zet opname vast voor doorlopende opname van de spraak</string>
+    <string name="conversation_archived">Gesprek is gearchiveerd</string>
     <string name="conversation_is_read_only">Gesprek is alleen-lezen</string>
     <string name="conversation_read_only_failed">Gesprek op alleen-lezen instellen is mislukt</string>
     <string name="conversations">Gesprekken</string>
@@ -46,6 +50,7 @@
     <string name="dnd">Niet storen</string>
     <string name="dontClear">Niet opruimen</string>
     <string name="edit">Bewerken</string>
+    <string name="edit_error_24_hours_old_message">Berichten ouder dan 24 uur kunnen niet worden bewerkt</string>
     <string name="edit_message_icon_description">Bewerk bericht</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Versleuteld</string>
@@ -67,6 +72,7 @@
     <string name="leave_call">Verlaat oproep</string>
     <string name="left_conversation">Je hebt gesprek %1$s verlaten</string>
     <string name="load_more_results">Laad meer resultaten</string>
+    <string name="local_time">Lokale tijd: %1$s</string>
     <string name="lock_conversation">Gesprek vergrendelen</string>
     <string name="lock_symbol">Slot symbool</string>
     <string name="lower_hand">Hand omlaag</string>
@@ -79,6 +85,7 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Grootste eerst</string>
     <string name="menu_item_sort_by_size_smallest_first">Kleinste eerst</string>
+    <string name="message_copied">Bericht gekopieerd</string>
     <string name="message_deleted_by_you">Bericht verwijderd door jou</string>
     <string name="message_last_edited_by">Bewerkt door %1$s</string>
     <string name="message_poll_tap_to_open">Klik om de peiling te openen</string>
@@ -125,6 +132,7 @@
     <string name="nc_camera_permission_hint">Om videogesprekken te houden, verleen \"Camera\" machtiging.</string>
     <string name="nc_cancel">Annuleren</string>
     <string name="nc_capabilities_failed">Kon mogelijkheden niet ophalen, afbreken</string>
+    <string name="nc_caption">Bijschrift</string>
     <string name="nc_certificate_dialog_text">Vertrouw je het tot nu onbekende SSL certificaat, uitgegeven door %1$s voor %2$s, geldig van %3$s tot %4$s?</string>
     <string name="nc_certificate_dialog_title">Controleer het certificaat</string>
     <string name="nc_certificate_error">Je SSL-instellingen blokkeerden de verbinding</string>
@@ -162,6 +170,7 @@
     <string name="nc_copy_message">Kopie</string>
     <string name="nc_create_new_conversation">Maak een nieuw gesprek</string>
     <string name="nc_create_poll">Peiling aanmaken</string>
+    <string name="nc_current_user">Jij:</string>
     <string name="nc_date_header_today">Vandaag</string>
     <string name="nc_date_header_yesterday">Gisteren</string>
     <string name="nc_delete">Verwijderen</string>
@@ -170,6 +179,7 @@
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
     <string name="nc_delete_message">verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
+    <string name="nc_delete_now">Verwijder nu</string>
     <string name="nc_deleted_user">Gebruiker %1$s is verwijderd</string>
     <string name="nc_demote">Degradeer van moderator</string>
     <string name="nc_description_record_voice">Opnemen gesproken bericht</string>
@@ -230,6 +240,8 @@
     <string name="nc_edit_message">Bewerken</string>
     <string name="nc_edit_message_text">Bewerk bericht</string>
     <string name="nc_edited_by_admin">Bewerkt door admin</string>
+    <string name="nc_event_conversation_menu">Menu voor evenementgesprekken</string>
+    <string name="nc_event_schedule">Agenda</string>
     <string name="nc_expire_message_eight_hours">8 uur</string>
     <string name="nc_expire_message_four_weeks">4 weken</string>
     <string name="nc_expire_message_off">Uit</string>
@@ -246,6 +258,7 @@
     <string name="nc_federation_pending_invitation_hint">Je hebt wachtende uitnodigingen</string>
     <string name="nc_file_browser_back">Terug</string>
     <string name="nc_file_storage_permission">Toestemming voor bestandstoegang is vereist</string>
+    <string name="nc_filter">Filter gesprekken</string>
     <string name="nc_following_link">Gebruiker die een openbare link volgde</string>
     <string name="nc_formatted_message_you">Jij: %1$s</string>
     <string name="nc_forward_message">Doorsturen</string>
@@ -273,6 +286,8 @@ Kies er eentje van een provider.</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Batterijoptimalisatie staat niet uit. Dit moet aangepast worden zodat meldingen op de achtergrond werken! Druk op OK en selecteer \"Alle apps\" ->  %1$s -> Niet optimaliseren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterijoptimalisatie negeren</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
+    <string name="nc_important_conversation_desc">De gebruikersstatus ‘Niet storen’ wordt genegeerd voor belangrijke gesprekken</string>
+    <string name="nc_invalid_time">Ongeldige tijd</string>
     <string name="nc_invitations">Uitnodigingen</string>
     <string name="nc_join_open_conversations">Deelnemen aan open gesprekken</string>
     <string name="nc_keep">Behouden</string>
@@ -296,11 +311,18 @@ Kies er eentje van een provider.</string>
     <string name="nc_manual">Niet ingesteld</string>
     <string name="nc_mark_as_read">Markeren als gelezen</string>
     <string name="nc_mark_as_unread">Markeren als ongelezen</string>
+    <string name="nc_mark_conversation_as_important">Gesprek gemarkeerd als belangrijk</string>
+    <string name="nc_mark_conversation_as_insensitive">Gesprek niet gemarkeerd als gevoelig</string>
+    <string name="nc_mark_conversation_as_sensitive">Gesprek gemarkeerd als gevoelig</string>
+    <string name="nc_mark_conversation_as_unimportant">Gesprek niet gemarkeerd als belangrijk</string>
+    <string name="nc_meeting_ended">Bespreking is beëindigd</string>
+    <string name="nc_message_added_to_notes">Bericht toegevoegd aan notities</string>
     <string name="nc_message_failed">Mislukt</string>
     <string name="nc_message_failed_to_send">Fout bij versturen bericht:</string>
     <string name="nc_message_offline">Offline</string>
     <string name="nc_message_quote_cancel_reply">Antwoord annuleren</string>
     <string name="nc_message_read">Bericht gelezen</string>
+    <string name="nc_message_sending">Verzenden</string>
     <string name="nc_message_sent">Bericht verstuurd</string>
     <string name="nc_microphone_permission_hint">Om videogesprekken te houden, verleen \"Microfoon\" machtiging.</string>
     <string name="nc_missed_call">Je hebt een gesprek gemist van %s</string>
@@ -334,6 +356,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_notify_me_never">Nooit waarschuwen</string>
     <string name="nc_offline">Op dit moment offline, controleer je verbinding</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Lopende bespreking</string>
     <string name="nc_open_conversation_to_registered_users">Open gesprek voor geregistreerde gebruikers</string>
     <string name="nc_open_to_guest_app_users">Ook open voor gastgebruikers van de app</string>
     <string name="nc_owner">Eigenaar</string>
@@ -355,6 +378,9 @@ Kies er eentje van een provider.</string>
     <string name="nc_promote">Promoveer tot moderator</string>
     <string name="nc_public_call_status">Openbaar gesprek</string>
     <string name="nc_push_disabled">Push meldingen uitgeschakeld</string>
+    <string name="nc_push_notification_error">Er is iets misgegaan, fout is %1$s</string>
+    <string name="nc_push_notification_fetch_error">Sorry, er is iets misgegaan, het testbericht kan niet worden opgehaald.</string>
+    <string name="nc_push_notification_message">De pushmelding is succesvol verzonden. Je zou nu een melding moeten ontvangen op dit apparaat met de titel ‘Pushmeldingen testen’.</string>
     <string name="nc_push_to_talk">Druk-om-te-praten</string>
     <string name="nc_push_to_talk_desc">Met uitgeschakelde microfoon, klik&amp;indrukken om Druk-om-te-praten te gebruiken</string>
     <string name="nc_remind">Herinner me later</string>
@@ -367,18 +393,24 @@ Kies er eentje van een provider.</string>
     <string name="nc_rename_confirm">Hernoemen</string>
     <string name="nc_reply">Antwoord</string>
     <string name="nc_reply_privately">Antwoord privé</string>
+    <string name="nc_room_retention">De ruimte is met succes gereserveerd</string>
     <string name="nc_save_message">Opslaan</string>
     <string name="nc_save_success">Succesvol opgeslagen</string>
     <string name="nc_screen_lock_timeout_30">30 seconden</string>
     <string name="nc_screen_lock_timeout_300">5 minuten</string>
     <string name="nc_screen_lock_timeout_60">1 minuut</string>
     <string name="nc_screen_lock_timeout_600">10 minuten</string>
+    <string name="nc_screen_lock_timeout_immediate">Onmiddellijk</string>
     <string name="nc_screen_lock_timeout_six_hundred">600</string>
     <string name="nc_screen_lock_timeout_sixty">60</string>
     <string name="nc_screen_lock_timeout_thirty">30</string>
     <string name="nc_screen_lock_timeout_three_hundred">300</string>
     <string name="nc_search">Zoeken</string>
+    <string name="nc_search_clear">Wis zoekvak</string>
     <string name="nc_select_an_account">Selecteer een account</string>
+    <string name="nc_send_edit_message">Bijwerken bericht</string>
+    <string name="nc_sensitive_conversation">Gevoelig gesprek</string>
+    <string name="nc_sensitive_conversation_hint">Berichtvoorvertoning wordt uitgeschakeld in de gesprekslijst en meldingen</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s verstuurde een GIF.</string>
     <string name="nc_sent_a_gif_you">Je verstuurde een GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s verstuurde een video.</string>
@@ -449,6 +481,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_settings_server_eol">De serverversie is te oud en wordt niet meer ondersteund door deze versie van de Android app</string>
     <string name="nc_settings_server_eol_title">Niet-ondersteunde server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notificatie-app niet geïnstalleerd</string>
+    <string name="nc_settings_theme_battery_saver">Ingesteld door batterijbespaarder</string>
     <string name="nc_settings_theme_dark">Donker</string>
     <string name="nc_settings_theme_follow_system">Gebruik systeem standaarden</string>
     <string name="nc_settings_theme_key">thema</string>
@@ -476,9 +509,14 @@ Kies er eentje van een provider.</string>
     <string name="nc_show_notification_warning_description">Als meldingen niet goed ingesteld zijn, toon dan een terugkerende waarschuwing</string>
     <string name="nc_show_notification_warning_title">Toon terugkerende meldingswaarschuwing</string>
     <string name="nc_sort_by">Sorteren op</string>
+    <string name="nc_start_group_chat">Start groepsgesprek</string>
     <string name="nc_start_time">Begintijd</string>
     <string name="nc_switch_account">Account wisselen</string>
     <string name="nc_team">Team</string>
+    <string name="nc_test_push_button">Test pushnotificatie</string>
+    <string name="nc_test_results">Test resultaten</string>
+    <string name="nc_today_meeting">Vandaag om %1$s</string>
+    <string name="nc_tomorrow_meeting">Morgen om %1$s</string>
     <string name="nc_upload_choose_local_files">Kies bestanden</string>
     <string name="nc_upload_confirm_send_multiple">Bestanden versturen naar %1$s?</string>
     <string name="nc_upload_confirm_send_single">Bestand versturen naar %1$s?</string>
@@ -500,6 +538,7 @@ Kies er eentje van een provider.</string>
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Volgende week</string>
+    <string name="no_conversations_archived">Geen gearchiveerde gesprekken</string>
     <string name="no_offline_messages_saved">Geen offline berichten bewaard</string>
     <string name="no_phone_book_integration_due_to_permissions">Geen telefoonnummer-integratie wegens ontbrekende machtigingen</string>
     <string name="oneHour">1 uur</string>
@@ -507,6 +546,7 @@ Kies er eentje van een provider.</string>
     <string name="online_status">Online status</string>
     <string name="openConversations">Open gesprekken</string>
     <string name="open_in_files_app">Openen in de Bestanden-app</string>
+    <string name="open_notes">Open notities</string>
     <string name="play_pause_voice_message">Afspelen/pauzeren voicebericht</string>
     <string name="playback_speed_control">Controle afspeelsnelheid</string>
     <string name="polls_add_option">Voeg een optie toe</string>
@@ -515,6 +555,8 @@ Kies er eentje van een provider.</string>
     <string name="polls_end_poll_confirm">Wil je deze peiling echt beëindigen? Dit kan niet ogedaan gemaakt worden.</string>
     <string name="polls_max_votes_reached">Je kan niet stemmen met meer opties voor deze peiling.</string>
     <string name="polls_multiple_answers">Meerdere antwoorden</string>
+    <string name="polls_option_delete">Verwijder optie %1$d</string>
+    <string name="polls_option_hint">Optie %1$d</string>
     <string name="polls_options">Opties</string>
     <string name="polls_private_poll">Privé peiling</string>
     <string name="polls_question">Vraag</string>
@@ -543,6 +585,7 @@ Kies er eentje van een provider.</string>
     <string name="recording_settings_title">Opnemen</string>
     <string name="removed_from_favorites">Gesprek %1$s verwijderd uit favorieten</string>
     <string name="renamed_conversation">Gesprek %1$s is hernoemd</string>
+    <string name="resend_message">Opnieuw verzenden</string>
     <string name="reset_status">Reset status</string>
     <string name="restrict_join_other_room_while_call">Het is niet mogelijk een ruimte binnen te gaan tijdens een gesprek</string>
     <string name="save">Bewaren</string>
@@ -617,9 +660,12 @@ Kies er eentje van een provider.</string>
     <string name="typing_x_others">en %1$s anderen zijn aan het typen …</string>
     <string name="unarchive_conversation">Dearchiveer gesprek</string>
     <string name="unarchive_hint">Als een gesprek gedearchiveerd is, wordt het standaard weer getoond.</string>
+    <string name="unarchived_conversation">%1$s uit archief gehaald</string>
     <string name="unban">Uitsluiten opheffen</string>
     <string name="unread">Ongelezen</string>
     <string name="upload_new_avatar_from_device">Upload nieuwe avatar van apparaat</string>
+    <string name="user_absence">%1$s is niet op kantoor en kan mogelijk niet reageren</string>
+    <string name="user_absence_for_one_day">%1$s is vandaag niet op kantoor</string>
     <string name="user_absence_replacement">Vervanging:</string>
     <string name="user_avatar">Gebruik avatar</string>
     <string name="user_info_address">Adres</string>
@@ -632,7 +678,16 @@ Kies er eentje van een provider.</string>
     <string name="userinfo_error_text">Kon persoonlijke informatie niet ophalen.</string>
     <string name="userinfo_no_info_headline">Geen persoonlijke informatie ingesteld</string>
     <string name="userinfo_no_info_text">Voeg naam, foto en contactgegevens toe op je profielpagina.</string>
+    <string name="video_call">Videogesprek</string>
     <string name="whats_your_status">Wat is jouw status?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Zie %d gelijke bericht</item>
+        <item quantity="other">Zie %d gelijke berichten</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Dit gesprek wordt automatisch verwijderd voor iedereen na %1$d dag zonder activiteit</item>
+        <item quantity="other">Dit gesprek wordt automatisch verwijderd voor iedereen na %1$d dagen zonder activiteit</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d stem</item>
         <item quantity="other">%d stemmen</item>
