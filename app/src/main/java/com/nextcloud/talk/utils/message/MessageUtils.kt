@@ -159,7 +159,6 @@ class MessageUtils(val context: Context) {
         return messageStringInternal
     }
 
-    @Suppress("NestedBlockDepth")
     fun processEditMessageParameters(
         messageParameters: HashMap<String?, HashMap<String?, String?>>?,
         message: ChatMessage?,
@@ -174,17 +173,11 @@ class MessageUtils(val context: Context) {
                 val user = message?.activeUser
                 if (user != null && mentionId != null && type != null) {
                     val placeholder = "@$name"
-                    when (type) {
-                        "user", "guest", "email" -> {
-                            result = result.replace(placeholder, "@$mentionId", ignoreCase = false)
-                        }
-                        "user-group", "circle" -> {
-                            val mentionId = "\"" + mentionId + "\""
-                            result = result.replace(placeholder, "@$mentionId", ignoreCase = false)
-                        }
-                        "call" -> {
-                            result = result.replace(placeholder, "@all", ignoreCase = false)
-                        }
+                    result = when (type) {
+                        "user", "guest", "email" -> result.replace(placeholder, "@$mentionId", ignoreCase = false)
+                        "user-group", "circle" -> result.replace(placeholder, "@\"$mentionId\"", ignoreCase = false)
+                        "call" -> result.replace(placeholder, "@all", ignoreCase = false)
+                        else -> result
                     }
                 }
             }
