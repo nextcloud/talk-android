@@ -19,6 +19,8 @@ import kotlinx.parcelize.Parcelize
 data class ChatMessageJson(
     @JsonField(name = ["id"]) var id: Long = 0,
     @JsonField(name = ["token"]) var token: String? = null,
+    @JsonField(name = ["topmostParentId"]) var topmostParentId: Long? = null,
+    @JsonField(name = ["childrenCount"]) var childrenCount: Long? = 0,
     @JsonField(name = ["actorType"]) var actorType: String? = null,
     @JsonField(name = ["actorId"]) var actorId: String? = null,
     @JsonField(name = ["actorDisplayName"]) var actorDisplayName: String? = null,

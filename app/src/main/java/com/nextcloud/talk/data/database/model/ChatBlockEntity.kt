@@ -31,10 +31,11 @@ import androidx.room.PrimaryKey
 data class ChatBlockEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var id: Long = 0,
-    // accountId@token
+    // accountId@token(@threadId)
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
     @ColumnInfo(name = "accountId") var accountId: Long? = null,
     @ColumnInfo(name = "token") var token: String?,
+    @ColumnInfo(name = "threadId") var threadId: Long? = null,
     @ColumnInfo(name = "oldestMessageId") var oldestMessageId: Long,
     @ColumnInfo(name = "newestMessageId") var newestMessageId: Long,
     @ColumnInfo(name = "hasHistory") var hasHistory: Boolean
