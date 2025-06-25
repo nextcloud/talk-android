@@ -86,10 +86,6 @@ import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.ChatActivity
-import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_ID
-import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_NAME
-import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_TEXT
-import com.nextcloud.talk.chat.MessageInputFragment.Companion.QUOTED_MESSAGE_URL
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
@@ -310,16 +306,16 @@ class ConversationsListActivity :
         showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
-        context.getSharedPreferences(
-            CHAT_ACTIVITY_LOCAL_NAME,
-            MODE_PRIVATE
-        ).edit().apply {
-            putInt(QUOTED_MESSAGE_ID, -1)
-            putString(QUOTED_MESSAGE_NAME, null)
-            putString(QUOTED_MESSAGE_TEXT, "")
-            putString(QUOTED_MESSAGE_URL, null)
-            apply()
-        }
+        // context.getSharedPreferences(
+        //     CHAT_ACTIVITY_LOCAL_NAME,
+        //     MODE_PRIVATE
+        // ).edit().apply {
+        //     putInt(QUOTED_MESSAGE_ID, -1)
+        //     putString(QUOTED_MESSAGE_NAME, null)
+        //     putString(QUOTED_MESSAGE_TEXT, "")
+        //     putString(QUOTED_MESSAGE_URL, null)
+        //     apply()
+        // }
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)

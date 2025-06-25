@@ -35,7 +35,6 @@ import android.widget.LinearLayout
 import android.widget.PopupMenu
 import android.widget.RelativeLayout
 import android.widget.SeekBar
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.content.ContextCompat
@@ -83,6 +82,7 @@ import com.vanniktech.emoji.EmojiPopup
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Objects
 import javax.inject.Inject
 
@@ -137,10 +137,6 @@ class MessageInputFragment : Fragment() {
     private var xcounter = 0f
     private var ycounter = 0f
     private var collapsed = false
-    private var quotedMessageText: String? = ""
-    private var quotedActorDisplayName: String? = null
-    private var quotedImageUrl: String? = null
-    private var quotedJsonId: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -164,7 +160,6 @@ class MessageInputFragment : Fragment() {
     }
 
     override fun onPause() {
-        saveState()
         super.onPause()
     }
 
@@ -174,8 +169,7 @@ class MessageInputFragment : Fragment() {
             mentionAutocomplete?.dismissPopup()
         }
         clearEditUI()
-        val isInReplyState = (quotedJsonId != -1 && quotedActorDisplayName != null && quotedMessageText != "")
-        if (!isInReplyState) {
+        if (!isInReplyState()) {
             cancelReply()
         }
     }
@@ -189,10 +183,10 @@ class MessageInputFragment : Fragment() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             (message as ChatMessage?)?.let {
-                quotedMessageText = message.text
-                quotedActorDisplayName = message.actorDisplayName
-                quotedImageUrl = message.imageUrl
-                quotedJsonId = message.jsonMessageId
+                chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
+                chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
+                chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
+                chatActivity.chatViewModel.messageDraft.quotedJsonId = message.jsonMessageId
                 replyToMessage(message.text, message.actorDisplayName, message.imageUrl, message.jsonMessageId)
             }
         }
@@ -310,51 +304,25 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-        if (binding.fragmentMessageInputView.inputEditText.text.isEmpty()) {
-            Log.d("Julius", "State restored from: ${chatActivity.localClassName}")
-            requireContext().getSharedPreferences(chatActivity.localClassName, AppCompatActivity.MODE_PRIVATE).apply {
-                val text = getString(chatActivity.roomToken, "")
-                val cursor = getInt(chatActivity.roomToken + CURSOR_KEY, 0)
-                binding.fragmentMessageInputView.messageInput.setText(text)
-                binding.fragmentMessageInputView.messageInput.setSelection(cursor)
-                quotedJsonId = getInt(QUOTED_MESSAGE_ID, -1)
-                quotedImageUrl = getString(QUOTED_MESSAGE_URL, null)
-                quotedMessageText = getString(QUOTED_MESSAGE_TEXT, "")
-                quotedActorDisplayName = getString(QUOTED_MESSAGE_NAME, null)
-                val isInReplyState = (quotedJsonId != -1 && quotedActorDisplayName != null && quotedMessageText != "")
-                if (isInReplyState) {
-                    replyToMessage(quotedMessageText, quotedActorDisplayName, quotedImageUrl, quotedJsonId)
-                }
-            }
+
+        runBlocking {
+            chatActivity.chatViewModel.updateMessageDraft()
         }
-    }
 
-    private fun saveState() {
-        val text = binding.fragmentMessageInputView.messageInput.text.toString()
-        val cursor = binding.fragmentMessageInputView.messageInput.selectionStart
-        val previous = requireContext().getSharedPreferences(
-            chatActivity.localClassName,
-            AppCompatActivity
-                .MODE_PRIVATE
-        ).getString(chatActivity.roomToken, "null")
+        val draft = chatActivity.chatViewModel.messageDraft
+        binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
+        binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
+        if (draft.messageText != "") {
+            binding.fragmentMessageInputView.messageInput.requestFocus()
+        }
 
-        val isInReplyState = (quotedJsonId != -1 && quotedActorDisplayName != null && quotedMessageText != "")
-        requireContext().getSharedPreferences(
-            chatActivity.localClassName,
-            AppCompatActivity.MODE_PRIVATE
-        ).edit().apply {
-            if (text != previous) {
-                putString(chatActivity.roomToken, text)
-                putInt(chatActivity.roomToken + CURSOR_KEY, cursor)
-            }
-
-            if (isInReplyState) {
-                putInt(QUOTED_MESSAGE_ID, quotedJsonId)
-                putString(QUOTED_MESSAGE_NAME, quotedActorDisplayName)
-                putString(QUOTED_MESSAGE_TEXT, quotedMessageText)
-                putString(QUOTED_MESSAGE_URL, quotedImageUrl) // may be null
-            }
-            apply()
+        if (isInReplyState()) {
+            replyToMessage(
+                chatActivity.chatViewModel.messageDraft.quotedMessageText,
+                chatActivity.chatViewModel.messageDraft.quotedDisplayName,
+                chatActivity.chatViewModel.messageDraft.quotedImageUrl,
+                chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
+            )
         }
     }
 
@@ -416,7 +384,10 @@ class MessageInputFragment : Fragment() {
             }
 
             override fun afterTextChanged(s: Editable) {
-                // unused atm
+                val cursor = binding.fragmentMessageInputView.messageInput.selectionStart
+                val text = binding.fragmentMessageInputView.messageInput.text.toString()
+                chatActivity.chatViewModel.messageDraft.messageCursor = cursor
+                chatActivity.chatViewModel.messageDraft.messageText = text
             }
         })
 
@@ -1056,20 +1027,14 @@ class MessageInputFragment : Fragment() {
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
         chatActivity.messageInputViewModel.reply(null)
 
-        quotedMessageText = ""
-        quotedActorDisplayName = null
-        quotedImageUrl = null
-        quotedJsonId = -1
+        chatActivity.chatViewModel.messageDraft.quotedMessageText = null
+        chatActivity.chatViewModel.messageDraft.quotedDisplayName = null
+        chatActivity.chatViewModel.messageDraft.quotedImageUrl = null
+        chatActivity.chatViewModel.messageDraft.quotedJsonId = null
+    }
 
-        requireContext().getSharedPreferences(
-            chatActivity.localClassName,
-            AppCompatActivity.MODE_PRIVATE
-        ).edit().apply {
-            putInt(QUOTED_MESSAGE_ID, quotedJsonId)
-            putString(QUOTED_MESSAGE_NAME, quotedActorDisplayName)
-            putString(QUOTED_MESSAGE_TEXT, quotedMessageText)
-            putString(QUOTED_MESSAGE_URL, quotedImageUrl) // may be null
-            apply()
-        }
+    private fun isInReplyState(): Boolean {
+        val jsonId = chatActivity.chatViewModel.messageDraft.quotedJsonId
+        return jsonId != null
     }
 }

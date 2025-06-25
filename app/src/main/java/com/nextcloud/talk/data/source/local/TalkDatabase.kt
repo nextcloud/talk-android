@@ -95,7 +95,7 @@ abstract class TalkDatabase : RoomDatabase() {
             val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
             val passphrase: ByteArray = SQLiteDatabase.getBytes(passCharArray)
 
-            val factory = if (appPreferences.isDbRoomMigrated) {
+            if (appPreferences.isDbRoomMigrated) {
                 Log.i(TAG, "No cipher migration needed")
                 SupportFactory(passphrase)
             } else {
@@ -114,7 +114,7 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
-                .openHelperFactory(factory)
+                // .openHelperFactory(factory)
                 .addMigrations(
                     Migrations.MIGRATION_6_8,
                     Migrations.MIGRATION_7_8,

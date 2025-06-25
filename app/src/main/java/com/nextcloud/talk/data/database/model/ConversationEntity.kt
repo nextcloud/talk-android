@@ -98,7 +98,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
     @ColumnInfo(name = "hasSensitive") var hasSensitive: Boolean = false,
     @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
-    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = null
+    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft = MessageDraft()
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions

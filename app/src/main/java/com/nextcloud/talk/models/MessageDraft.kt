@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -10,17 +10,30 @@ package com.nextcloud.talk.models
 import android.os.Parcelable
 import androidx.room.TypeConverter
 import com.bluelinelabs.logansquare.LoganSquare
+import com.bluelinelabs.logansquare.annotation.JsonField
+import com.bluelinelabs.logansquare.annotation.JsonObject
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 @Parcelize
+@JsonObject
+@Serializable
 data class MessageDraft(
+    @JsonField(name = ["messageText"])
     var messageText: String = "",
+    @JsonField(name = ["messageCursor"])
     var messageCursor: Int = 0,
+    @JsonField(name = ["quotedJsonId"])
     var quotedJsonId: Int? = null,
+    @JsonField(name = ["quotedDisplayName"])
     var quotedDisplayName: String? = null,
+    @JsonField(name = ["quotedMessageText"])
     var quotedMessageText: String? = null,
+    @JsonField(name = ["quoteImageUrl"])
     var quotedImageUrl: String? = null
-): Parcelable
+): Parcelable {
+    constructor() : this("", 0, null, null, null, null)
+}
 
 class MessageDraftConverter {
 
