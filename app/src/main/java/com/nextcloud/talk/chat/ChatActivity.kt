@@ -1403,7 +1403,7 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        if(adapter == null){
+        if (adapter == null) {
             chatViewModel.getRoom(roomToken)
         }
 
