@@ -9,6 +9,7 @@
 
 package com.nextcloud.talk.call.components
 
+import android.annotation.SuppressLint
 import android.content.res.Configuration
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("LongParameterList")
 @Composable
 fun ParticipantGrid(
@@ -78,7 +80,9 @@ fun ParticipantGrid(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(availableHeight),
             verticalArrangement = Arrangement.spacedBy(itemSpacing),
             horizontalArrangement = Arrangement.spacedBy(itemSpacing),
             contentPadding = PaddingValues(vertical = edgePadding, horizontal = edgePadding)
