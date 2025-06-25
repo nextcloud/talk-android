@@ -544,6 +544,7 @@
     <string name="online_status">Status on-line</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir no aplicativo Arquivos</string>
+    <string name="open_notes">Abrir Notas</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="polls_add_option">Adicionar opção</string>
