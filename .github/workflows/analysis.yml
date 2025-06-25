@@ -77,3 +77,7 @@ jobs:
                         echo "kapt.incremental.apt=true"
                     } > "$HOME/.gradle/gradle.properties"
                     scripts/analysis/analysis-wrapper.sh "${{ steps.get-vars.outputs.branch }}" "${{ secrets.LOG_USERNAME }}" "${{ secrets.LOG_PASSWORD }}" "$GITHUB_RUN_NUMBER" "${{ steps.get-vars.outputs.pr }}"
+            -   name: Push changes
+                uses: ad-m/github-push-action@master
+                with:
+                    branch: ${{ github.head_ref }}
