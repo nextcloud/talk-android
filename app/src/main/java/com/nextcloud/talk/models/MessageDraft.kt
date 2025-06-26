@@ -31,7 +31,7 @@ data class MessageDraft(
     var quotedMessageText: String? = null,
     @JsonField(name = ["quoteImageUrl"])
     var quotedImageUrl: String? = null
-): Parcelable {
+) : Parcelable {
     constructor() : this("", 0, null, null, null, null)
 }
 

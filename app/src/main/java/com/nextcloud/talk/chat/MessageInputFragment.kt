@@ -169,9 +169,6 @@ class MessageInputFragment : Fragment() {
             mentionAutocomplete?.dismissPopup()
         }
         clearEditUI()
-        if (!isInReplyState()) {
-            cancelReply()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -304,7 +301,6 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-
         runBlocking {
             chatActivity.chatViewModel.updateMessageDraft()
         }
@@ -727,7 +723,7 @@ class MessageInputFragment : Fragment() {
 
         chatActivity.conversationUser?.let {
             val quotedMessageImage = view.findViewById<ImageView>(R.id.quotedMessageImage)
-            quotedImageUrl.let { previewImageUrl ->
+            quotedImageUrl?.let { previewImageUrl ->
                 quotedMessageImage?.visibility = View.VISIBLE
 
                 val px = TypedValue.applyDimension(
