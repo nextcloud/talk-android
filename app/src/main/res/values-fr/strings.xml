@@ -309,6 +309,10 @@
     <string name="nc_manual">Non défini</string>
     <string name="nc_mark_as_read">Marquer comme lu</string>
     <string name="nc_mark_as_unread">Marquer comme non lu</string>
+    <string name="nc_mark_conversation_as_important">Conversation marquée comme importante</string>
+    <string name="nc_mark_conversation_as_insensitive">Conversation sensible désactivée</string>
+    <string name="nc_mark_conversation_as_sensitive">Conversation marquée comme sensible</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversation importante désactivée</string>
     <string name="nc_meeting_ended">Réunion terminée</string>
     <string name="nc_message_added_to_notes">Message ajouté aux notes</string>
     <string name="nc_message_failed">Échec</string>
@@ -387,6 +391,7 @@
     <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
+    <string name="nc_room_retention">Salle retenue avec succès</string>
     <string name="nc_save_message">Enregistrer</string>
     <string name="nc_save_success">Enregistré avec succès</string>
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
@@ -539,6 +544,7 @@
     <string name="online_status">Statut de connexion</string>
     <string name="openConversations">Discussions en cours</string>
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
+    <string name="open_notes">Ouvrir les Notes</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="polls_add_option">Ajouter une option</string>
@@ -676,6 +682,11 @@
         <item quantity="one">Voir %d message similaire</item>
         <item quantity="many">Voir %d messages similaires</item>
         <item quantity="other">Voir %d messages similaires</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Cette conversation sera automatiquement supprimée pour tout le monde après %1$d jour d\'inactivité</item>
+        <item quantity="many">Cette conversation sera automatiquement supprimée pour tout le monde après %1$d jours d\'inactivité</item>
+        <item quantity="other">Cette conversation sera automatiquement supprimée pour tout le monde après %1$d jours d\'inactivité</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
