@@ -343,8 +343,6 @@ object Migrations {
 
     fun migrateToMessageThreads(db: SupportSQLiteDatabase) {
         try {
-            // db.execSQL("PRAGMA foreign_keys=ON;")
-
             db.execSQL(
                 "ALTER TABLE ChatBlocks " +
                     "ADD COLUMN threadId INTEGER DEFAULT NULL;"
@@ -365,8 +363,19 @@ object Migrations {
                     "ADD COLUMN threadId INTEGER DEFAULT NULL;"
             )
 
+            // Foreign key constraints are not active during migration.
+            // At least   db.execSQL("PRAGMA foreign_keys=ON;")  etc did not help.
+            // Because of this it is not enough to just clear the Conversations table (to have cascade deletion in
+            // other tables), but all related tables have to be cleared with SQL statement as well.
+
             db.execSQL(
                 "DELETE FROM Conversations"
+            )
+            db.execSQL(
+                "DELETE FROM ChatMessages"
+            )
+            db.execSQL(
+                "DELETE FROM ChatBlocks"
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when migrating to messageThreads", e)
