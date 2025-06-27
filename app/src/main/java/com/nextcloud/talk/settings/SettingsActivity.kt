@@ -1358,10 +1358,11 @@ class SettingsActivity :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun observeReadPrivacy() {
+        var exceptionCaught = false
         lifecycleScope.launch {
             var state = appPreferences.readPrivacy
             readPrivacyFlow.collect { newBoolean ->
-                if (state != newBoolean) {
+                if (!exceptionCaught && state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"read_status_privacy\", \"value\" : $booleanValue}"
@@ -1377,6 +1378,7 @@ class SettingsActivity :
                             }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
+                                exceptionCaught = true
                                 appPreferences.setReadPrivacy(!newBoolean)
                                 binding.settingsReadPrivacySwitch.isChecked = !newBoolean
                             }
@@ -1394,10 +1396,11 @@ class SettingsActivity :
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun observeTypingStatus() {
+        var exceptionCaught = false
         lifecycleScope.launch {
             var state = appPreferences.typingStatus
             typingStatusFlow.collect { newBoolean ->
-                if (state != newBoolean) {
+                if (!exceptionCaught && state != newBoolean) {
                     state = newBoolean
                     val booleanValue = if (newBoolean) "0" else "1"
                     val json = "{\"key\": \"typing_privacy\", \"value\" : $booleanValue}"
@@ -1416,6 +1419,7 @@ class SettingsActivity :
                             }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
+                                exceptionCaught = true
                                 appPreferences.typingStatus = !newBoolean
                                 binding.settingsTypingStatusSwitch.isChecked = !newBoolean
                             }
