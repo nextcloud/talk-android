@@ -288,18 +288,20 @@ class DateTimeCompose(val bundle: Bundle) {
         val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.verticalScroll(scrollState)
+            modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)
         ) {
             if (!isCollapsed.value) {
                 val datePickerState = rememberDatePickerState()
                 val timePickerState = rememberTimePickerState()
 
                 DatePicker(
-                    state = datePickerState
+                    state = datePickerState,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 TimePicker(
-                    state = timePickerState
+                    state = timePickerState,
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 val date = datePickerState.selectedDateMillis?.let {
