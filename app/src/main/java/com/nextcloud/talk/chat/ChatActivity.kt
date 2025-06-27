@@ -197,6 +197,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -350,6 +351,7 @@ class ChatActivity :
 
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
+    var threadId: Long? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -391,9 +393,14 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            intent.putExtras(Bundle())
-            startActivity(intent)
+            if (isChatThread()) {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            } else {
+                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.putExtras(Bundle())
+                startActivity(intent)
+            }
         }
     }
 
@@ -495,7 +502,8 @@ class ChatActivity :
         chatViewModel.initData(
             credentials!!,
             urlForChatting,
-            roomToken
+            roomToken,
+            threadId
         )
 
         messageInputFragment = getMessageInputFragment()
@@ -549,6 +557,7 @@ class ChatActivity :
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+        threadId = extras?.getLong(KEY_THREAD_ID)
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
@@ -2599,7 +2608,9 @@ class ChatActivity :
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
-            if (currentConversation?.displayName != null) {
+            if (isChatThread()) {
+                "Thread $threadId"
+            } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
@@ -4110,6 +4121,17 @@ class ChatActivity :
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
             startContextChatWindowForMessage(parentMessage.id)
         }
+    }
+
+    private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
+
+    fun openThread(roomToken: String, threadId: Long) {
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        bundle.putLong(KEY_THREAD_ID, threadId)
+        val chatIntent = Intent(context, ChatActivity::class.java)
+        chatIntent.putExtras(bundle)
+        startActivity(chatIntent)
     }
 
     override fun joinAudioCall() {

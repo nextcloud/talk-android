@@ -119,11 +119,19 @@ class OfflineFirstChatRepository @Inject constructor(
     private lateinit var conversationModel: ConversationModel
     private lateinit var credentials: String
     private lateinit var urlForChatting: String
+    private var threadId: Long? = null
 
-    override fun initData(credentials: String, urlForChatting: String, roomToken: String) {
-        internalConversationId = currentUser.id.toString() + "@" + roomToken
+    override fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
+        val threadIdAppendedString = if (threadId != null && threadId > 0) {
+            "@$threadId"
+        } else {
+            ""
+        }
+        internalConversationId = currentUser.id.toString() + "@" + roomToken + threadIdAppendedString
         this.credentials = credentials
         this.urlForChatting = urlForChatting
+        this.threadId = threadId // use this threadId in API requests when fetching messages? +
+        // Introduce ChatBlocks for threads
     }
 
     override fun updateConversation(conversationModel: ConversationModel) {
@@ -761,6 +769,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 internalConversationId = internalConversationId,
                 accountId = conversationModel.accountId,
                 token = conversationModel.token,
+                threadId = conversationModel.threadId,
                 oldestMessageId = oldestIdFromDbChatBlocks,
                 newestMessageId = newestIdFromDbChatBlocks,
                 hasHistory = hasHistory

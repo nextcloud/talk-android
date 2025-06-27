@@ -45,6 +45,10 @@ data class ChatMessage(
 
     var token: String? = null,
 
+    var topmostParentId: Long? = null,
+
+    var childrenCount: Long? = 0,
+
     // guests or users
     var actorType: String? = null,
 
