@@ -7,16 +7,19 @@
 
 package com.nextcloud.talk.ui.dialog
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -42,6 +45,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -110,12 +114,11 @@ class DateTimeCompose(val bundle: Bundle) {
             ) {
                 Surface(
                     shape = RoundedCornerShape(INT_8.dp),
-                    modifier = Modifier.animateContentSize()
+                    modifier = Modifier.fillMaxWidth().animateContentSize()
                 ) {
                     Column(
                         modifier = Modifier
                             .padding(INT_16.dp)
-                            .fillMaxWidth()
                     ) {
                         Header()
                         Body()
@@ -281,6 +284,7 @@ class DateTimeCompose(val bundle: Bundle) {
         HorizontalDivider()
     }
 
+    @SuppressLint("UnusedBoxWithConstraintsScope")
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun CollapsableDateTime(shouldDismiss: MutableState<Boolean>, isCollapsed: MutableState<Boolean>) {
@@ -288,20 +292,27 @@ class DateTimeCompose(val bundle: Bundle) {
         val scrollState = rememberScrollState()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxWidth().verticalScroll(scrollState)
+            modifier = Modifier.verticalScroll(scrollState)
         ) {
             if (!isCollapsed.value) {
                 val datePickerState = rememberDatePickerState()
                 val timePickerState = rememberTimePickerState()
 
-                DatePicker(
-                    state = datePickerState,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                BoxWithConstraints(
+                    modifier = Modifier
+                        .requiredSizeIn(minWidth = 360.dp)
+                ) {
+                    val scale = remember(maxWidth) { if (maxWidth < 360.dp) maxWidth / 360.dp else 1f }
+
+                    DatePicker(
+                        state = datePickerState,
+                        modifier = Modifier
+                            .scale(scale)
+                    )
+                }
 
                 TimePicker(
-                    state = timePickerState,
-                    modifier = Modifier.fillMaxWidth()
+                    state = timePickerState
                 )
 
                 val date = datePickerState.selectedDateMillis?.let {
