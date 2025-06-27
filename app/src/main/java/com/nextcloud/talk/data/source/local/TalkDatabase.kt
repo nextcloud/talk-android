@@ -37,6 +37,7 @@ import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.MessageDraftConverter
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
@@ -51,7 +52,7 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 17,
+    version = 18,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
@@ -67,7 +68,8 @@ import java.util.Locale
     HashMapHashMapConverter::class,
     LinkedHashMapConverter::class,
     ArrayListConverter::class,
-    SendStatusConverter::class
+    SendStatusConverter::class,
+    MessageDraftConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
 
@@ -93,7 +95,7 @@ abstract class TalkDatabase : RoomDatabase() {
             val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
             val passphrase: ByteArray = SQLiteDatabase.getBytes(passCharArray)
 
-            val factory = if (appPreferences.isDbRoomMigrated) {
+            if (appPreferences.isDbRoomMigrated) {
                 Log.i(TAG, "No cipher migration needed")
                 SupportFactory(passphrase)
             } else {
@@ -112,7 +114,7 @@ abstract class TalkDatabase : RoomDatabase() {
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
-                .openHelperFactory(factory)
+                // .openHelperFactory(factory)
                 .addMigrations(
                     Migrations.MIGRATION_6_8,
                     Migrations.MIGRATION_7_8,
@@ -122,11 +124,12 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_12_13,
                     Migrations.MIGRATION_13_14,
                     Migrations.MIGRATION_14_15,
-                    Migrations.MIGRATION_15_16
+                    Migrations.MIGRATION_15_16,
+                    Migrations.MIGRATION_17_18
                 )
                 .allowMainThreadQueries()
                 .addCallback(
-                    object : RoomDatabase.Callback() {
+                    object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
                             super.onOpen(db)
                             db.execSQL("PRAGMA defer_foreign_keys = 1")
