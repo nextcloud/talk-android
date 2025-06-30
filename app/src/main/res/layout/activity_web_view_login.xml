@@ -5,13 +5,26 @@
   ~ SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     android:keepScreenOn="true"
     android:orientation="vertical">
 
-    <ProgressBar
+    <ImageView
+        android:id="@+id/image_logo"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_marginHorizontal="@dimen/standard_margin"
+        android:layout_marginTop="185dp"
+        android:contentDescription="@string/nc_app_product_name"
+        android:scaleType="centerInside"
+        app:srcCompat="@drawable/ic_logo" />
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progress_bar"
         android:layout_width="@dimen/item_height"
         android:layout_height="@dimen/item_height"
@@ -21,15 +34,35 @@
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:indeterminate="true"
-        android:indeterminateTint="@color/colorPrimary"
+        android:indeterminateTint="@color/white"
         android:indeterminateTintMode="src_in" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/cancel_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progress_bar"
+        android:layout_marginTop="@dimen/standard_double_margin"
+        android:textAlignment="center"
+        android:text="Please continue the login process in the browser"
+        android:layout_centerInParent="true"/>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/cancel_login_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/cancel_desc"
+        android:layout_marginTop="@dimen/standard_double_margin"
+        android:layout_centerInParent="true"
+        android:text="Cancel Login"
+        />
 
     <WebView
         android:id="@+id/webview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="invisible">
-
+        android:visibility="gone">
     </WebView>
 
 </RelativeLayout>
