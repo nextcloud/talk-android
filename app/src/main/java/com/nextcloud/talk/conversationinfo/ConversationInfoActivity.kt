@@ -1271,7 +1271,6 @@ class ConversationInfoActivity :
             binding.recordingConsentView.recordingConsentAll.visibility = VISIBLE
         }
 
-
         fun showSwitch() {
             binding.recordingConsentView.recordingConsentForConversation.visibility = VISIBLE
             binding.recordingConsentView.recordingConsentAll.visibility = GONE
@@ -1304,7 +1303,7 @@ class ConversationInfoActivity :
         }
     }
 
-    fun showDeleteAllMessagesOption(conversationCopy: ConversationModel){
+    fun showDeleteAllMessagesOption(conversationCopy: ConversationModel) {
         if (hasSpreedFeatureCapability(
                 spreedCapabilities,
                 SpreedFeatures.CLEAR_HISTORY
