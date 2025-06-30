@@ -683,6 +683,11 @@
         <item quantity="many">Veja %d mensagens semelhantes</item>
         <item quantity="other">Veja %d mensagens semelhantes</item>
     </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Esta conversa será excluída automaticamente para todos em %1$d dia sem atividade</item>
+        <item quantity="many">Esta conversa será excluída automaticamente para todos em %1$d de dias sem atividade</item>
+        <item quantity="other">Esta conversa será excluída automaticamente para todos em %1$d dias sem atividade</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
         <item quantity="many">%d votos</item>
