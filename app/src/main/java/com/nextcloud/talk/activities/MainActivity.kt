@@ -23,8 +23,8 @@ import androidx.lifecycle.ProcessLifecycleOwner
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
-import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -103,7 +103,7 @@ class MainActivity :
 
     private fun launchServerSelection() {
         if (isBrandingUrlSet()) {
-            val intent = Intent(context, WebViewLoginActivity::class.java)
+            val intent = Intent(context, BrowserLoginActivity::class.java)
             val bundle = Bundle()
             bundle.putString(BundleKeys.KEY_BASE_URL, resources.getString(R.string.weblogin_url))
             intent.putExtras(bundle)
