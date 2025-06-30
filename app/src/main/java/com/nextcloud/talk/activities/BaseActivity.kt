@@ -30,9 +30,9 @@ import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.AccountVerificationActivity
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.account.SwitchAccountActivity
-import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.events.CertificateEvent
@@ -241,7 +241,7 @@ open class BaseActivity : AppCompatActivity() {
         val temporaryClassNames: MutableList<String> = ArrayList()
         temporaryClassNames.add(ServerSelectionActivity::class.java.name)
         temporaryClassNames.add(AccountVerificationActivity::class.java.name)
-        temporaryClassNames.add(WebViewLoginActivity::class.java.name)
+        temporaryClassNames.add(BrowserLoginActivity::class.java.name)
         temporaryClassNames.add(SwitchAccountActivity::class.java.name)
         if (!temporaryClassNames.contains(javaClass.name)) {
             appPreferences.removeTemporaryClientCertAlias()
