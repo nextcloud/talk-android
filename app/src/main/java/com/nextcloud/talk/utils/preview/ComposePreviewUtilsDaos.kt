@@ -30,6 +30,11 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
         flowOf()
 
+    override fun getTempUnsentMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> {
+        // nothing to return here as long this class is only used for the Search window
+        return flowOf()
+    }
+
     override fun getTempMessageForConversation(
         internalConversationId: String,
         referenceId: String

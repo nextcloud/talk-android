@@ -64,7 +64,7 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "reactions") var reactions: LinkedHashMap<String, Int>? = null,
     @ColumnInfo(name = "reactionsSelf") var reactionsSelf: ArrayList<String>? = null,
     @ColumnInfo(name = "referenceId") var referenceId: String? = null,
-    @ColumnInfo(name = "sendingFailed") var sendingFailed: Boolean = false,
+    @ColumnInfo(name = "sendStatus") var sendStatus: SendStatus? = null,
     @ColumnInfo(name = "silent") var silent: Boolean = false,
     @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
     @ColumnInfo(name = "timestamp") var timestamp: Long = 0

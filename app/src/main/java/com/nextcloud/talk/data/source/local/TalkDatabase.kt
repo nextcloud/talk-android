@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2023-2024 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2023-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2020 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -23,12 +23,14 @@ import com.nextcloud.talk.data.database.dao.ConversationsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.source.local.Migrations.AutoMigration16To17
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
 import com.nextcloud.talk.data.source.local.converters.ExternalSignalingServerConverter
 import com.nextcloud.talk.data.source.local.converters.HashMapHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.LinkedHashMapConverter
 import com.nextcloud.talk.data.source.local.converters.PushConfigurationConverter
+import com.nextcloud.talk.data.source.local.converters.SendStatusConverter
 import com.nextcloud.talk.data.source.local.converters.ServerVersionConverter
 import com.nextcloud.talk.data.source.local.converters.SignalingSettingsConverter
 import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
@@ -49,9 +51,10 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 16,
+    version = 17,
     autoMigrations = [
-        AutoMigration(from = 9, to = 10)
+        AutoMigration(from = 9, to = 10),
+        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
     ],
     exportSchema = true
 )
@@ -63,7 +66,8 @@ import java.util.Locale
     SignalingSettingsConverter::class,
     HashMapHashMapConverter::class,
     LinkedHashMapConverter::class,
-    ArrayListConverter::class
+    ArrayListConverter::class,
+    SendStatusConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
 

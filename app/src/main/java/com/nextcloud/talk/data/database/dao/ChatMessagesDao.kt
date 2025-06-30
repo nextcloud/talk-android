@@ -55,6 +55,18 @@ interface ChatMessagesDao {
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
+        AND isTemporary = 1 
+        AND sendStatus != 'SENT_PENDING_ACK'
+        ORDER BY timestamp DESC, id DESC
+        """
+    )
+    fun getTempUnsentMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+
+    @Query(
+        """
+        SELECT *
+        FROM ChatMessages
+        WHERE internalConversationId = :internalConversationId
         AND referenceId = :referenceId
         AND isTemporary = 1
         ORDER BY timestamp DESC, id DESC

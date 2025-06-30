@@ -19,6 +19,7 @@ import com.nextcloud.talk.data.database.mappers.asEntity
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.data.database.model.SendStatus
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
@@ -214,7 +215,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 )
             }
 
-            sendTempChatMessages(credentials, urlForChatting)
+            // this call could be deleted when we have a worker to send messages..
+            sendUnsentChatMessages(credentials, urlForChatting)
 
             // delay is a dirty workaround to make sure messages are added to adapter on initial load before dealing
             // with them (otherwise there is a race condition).
@@ -365,11 +367,18 @@ class OfflineFirstChatRepository @Inject constructor(
         lookIntoFuture: Boolean,
         showUnreadMessagesMarker: Boolean
     ) {
+        receivedChatMessages.forEach {
+            Log.d(TAG, "receivedChatMessage: " + it.message)
+        }
+
         // remove all temp messages from UI
         val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
             .map(ChatMessageEntity::asModel)
-        oldTempMessages.forEach { _removeMessageFlow.emit(it) }
+        oldTempMessages.forEach {
+            Log.d(TAG, "oldTempMessage to be removed from UI: " + it.message)
+            _removeMessageFlow.emit(it)
+        }
 
         // add new messages to UI
         val tripleChatMessages = Triple(lookIntoFuture, showUnreadMessagesMarker, receivedChatMessages)
@@ -378,6 +387,9 @@ class OfflineFirstChatRepository @Inject constructor(
         // remove temp messages from DB that are now found in the new messages
         val chatMessagesReferenceIds = receivedChatMessages.mapTo(HashSet(receivedChatMessages.size)) { it.referenceId }
         val tempChatMessagesThatCanBeReplaced = oldTempMessages.filter { it.referenceId in chatMessagesReferenceIds }
+        tempChatMessagesThatCanBeReplaced.forEach {
+            Log.d(TAG, "oldTempMessage that was identified in newMessages: " + it.message)
+        }
         chatDao.deleteTempChatMessages(
             internalConversationId,
             tempChatMessagesThatCanBeReplaced.map { it.referenceId!! }
@@ -388,6 +400,10 @@ class OfflineFirstChatRepository @Inject constructor(
             .first()
             .sortedBy { it.internalId }
             .map(ChatMessageEntity::asModel)
+
+        remainingTempMessages.forEach {
+            Log.d(TAG, "remainingTempMessage: " + it.message)
+        }
 
         val triple = Triple(true, false, remainingTempMessages)
         _messageFlow.emit(triple)
@@ -843,6 +859,17 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val chatMessageModel = response.ocs?.data?.asModel()
 
+            val sentMessage = chatDao.getTempMessageForConversation(
+                internalConversationId,
+                referenceId
+            ).firstOrNull()
+
+            sentMessage?.let {
+                it.sendStatus = SendStatus.SENT_PENDING_ACK
+                chatDao.updateChatMessage(it)
+            }
+
+            Log.d(TAG, "sending chat message succeeded: " + message)
             emit(Result.success(chatMessageModel))
         }
             .catch { e ->
@@ -853,7 +880,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     referenceId
                 ).firstOrNull()
                 failedMessage?.let {
-                    it.sendingFailed = true
+                    it.sendStatus = SendStatus.FAILED
                     chatDao.updateChatMessage(it)
 
                     val failedMessageModel = it.asModel()
@@ -874,7 +901,7 @@ class OfflineFirstChatRepository @Inject constructor(
         referenceId: String
     ): Flow<Result<ChatMessage?>> {
         val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-        messageToResend.sendingFailed = false
+        messageToResend.sendStatus = SendStatus.PENDING
         chatDao.updateChatMessage(messageToResend)
 
         val messageToResendModel = messageToResend.asModel()
@@ -930,8 +957,8 @@ class OfflineFirstChatRepository @Inject constructor(
             }
         }
 
-    override suspend fun sendTempChatMessages(credentials: String, url: String) {
-        val tempMessages = chatDao.getTempMessagesForConversation(internalConversationId).first()
+    override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
+        val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId).first()
         tempMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
                 credentials,
@@ -1025,7 +1052,7 @@ class OfflineFirstChatRepository @Inject constructor(
             actorDisplayName = currentUser.displayName!!,
             referenceId = referenceId,
             isTemporary = true,
-            sendingFailed = false,
+            sendStatus = SendStatus.PENDING,
             silent = sendWithoutNotification
         )
         return entity

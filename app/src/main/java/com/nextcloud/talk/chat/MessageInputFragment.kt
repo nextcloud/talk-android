@@ -200,7 +200,7 @@ class MessageInputFragment : Fragment() {
                     val connectionGained = (!wasOnline && isOnline)
                     Log.d(TAG, "isOnline: $isOnline\nwasOnline: $wasOnline\nconnectionGained: $connectionGained")
                     if (connectionGained) {
-                        chatActivity.messageInputViewModel.sendTempMessages(
+                        chatActivity.messageInputViewModel.sendUnsentMessages(
                             chatActivity.conversationUser!!.getCredentials(),
                             ApiUtils.getUrlForChat(
                                 chatActivity.chatApiVersion,

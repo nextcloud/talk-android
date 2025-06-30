@@ -1,18 +1,31 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2024-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.data.source.local
 
 import android.util.Log
+import androidx.room.DeleteColumn
+import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.sql.SQLException
 
 @Suppress("MagicNumber")
 object Migrations {
+
+    //region Auto migrations
+
+    @DeleteColumn(tableName = "ChatMessages", columnName = "sendingFailed")
+    class AutoMigration16To17 : AutoMigrationSpec
+
+    //endregion
+
+    //region Manual migrations
+
     val MIGRATION_6_8 = object : Migration(6, 8) {
         override fun migrate(db: SupportSQLiteDatabase) {
             Log.i("Migrations", "Migrating 6 to 8")
@@ -75,6 +88,8 @@ object Migrations {
             addIsImportant(db)
         }
     }
+
+    //endregion
 
     fun migrateToRoom(db: SupportSQLiteDatabase) {
         db.execSQL(
