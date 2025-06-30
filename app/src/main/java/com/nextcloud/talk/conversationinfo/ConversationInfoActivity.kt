@@ -1065,21 +1065,13 @@ class ConversationInfoActivity :
         ) {
             binding.addParticipantsAction.visibility = GONE
             binding.startGroupChat.visibility = VISIBLE
+            showDeleteAllMessagesOption(conversationCopy)
         } else if (ConversationUtils.canModerate(conversationCopy, spreedCapabilities)) {
             binding.addParticipantsAction.visibility = VISIBLE
-            if (hasSpreedFeatureCapability(
-                    spreedCapabilities,
-                    SpreedFeatures.CLEAR_HISTORY
-                ) && conversationCopy.canDeleteConversation
-            ) {
-                binding.clearConversationHistory.visibility = VISIBLE
-            } else {
-                binding.clearConversationHistory.visibility = GONE
-            }
+            showDeleteAllMessagesOption(conversationCopy)
             showOptionsMenu()
         } else {
             binding.addParticipantsAction.visibility = GONE
-
             if (ConversationUtils.isNoteToSelfConversation(conversation)) {
                 binding.notificationSettingsView.notificationSettings.visibility = VISIBLE
             } else {
@@ -1279,6 +1271,7 @@ class ConversationInfoActivity :
             binding.recordingConsentView.recordingConsentAll.visibility = VISIBLE
         }
 
+
         fun showSwitch() {
             binding.recordingConsentView.recordingConsentForConversation.visibility = VISIBLE
             binding.recordingConsentView.recordingConsentAll.visibility = GONE
@@ -1308,6 +1301,18 @@ class ConversationInfoActivity :
             }
         } else {
             hide()
+        }
+    }
+
+    fun showDeleteAllMessagesOption(conversationCopy: ConversationModel){
+        if (hasSpreedFeatureCapability(
+                spreedCapabilities,
+                SpreedFeatures.CLEAR_HISTORY
+            ) && conversationCopy.canDeleteConversation
+        ) {
+            binding.clearConversationHistory.visibility = VISIBLE
+        } else {
+            binding.clearConversationHistory.visibility = GONE
         }
     }
 
