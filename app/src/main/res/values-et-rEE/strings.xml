@@ -164,7 +164,7 @@
     <string name="nc_conversation_menu_video_call">Videokõne</string>
     <string name="nc_conversation_menu_voice_call">Häälkõne</string>
     <string name="nc_conversation_not_found">Vestlust ei leidu</string>
-    <string name="nc_conversation_settings">Vesrtluse seadistused</string>
+    <string name="nc_conversation_settings">Vestluse seadistused</string>
     <string name="nc_conversations_empty">Liitu vestlusega või alusta uut</string>
     <string name="nc_conversations_empty_details">Ütle tere oma sõpradele ja kolleegidele!</string>
     <string name="nc_copy_message">Kopeeri</string>
@@ -555,12 +555,12 @@
     <string name="polls_multiple_answers">Mitu vastust</string>
     <string name="polls_option_delete">Kustuta %1$d valik</string>
     <string name="polls_option_hint">%1$d valik</string>
-    <string name="polls_options">Sätted</string>
+    <string name="polls_options">Eelistused</string>
     <string name="polls_private_poll">Privaatne küsitlus</string>
     <string name="polls_question">Küsimus</string>
     <string name="polls_question_hint">Sinu küsimus</string>
     <string name="polls_results_subtitle">Tulemused</string>
-    <string name="polls_settings">Seaded</string>
+    <string name="polls_settings">Seadistused</string>
     <string name="polls_submit_vote">Hääleta</string>
     <string name="polls_voted_hidden_success">Hääletatud</string>
     <string name="previously_set">Varasemalt seatud</string>
@@ -647,7 +647,7 @@
     <string name="translation">Tõlge</string>
     <string name="translation_copy_translated_text">Kopeeri tõlgitud tekst</string>
     <string name="translation_detect_language">Tuvasta keel</string>
-    <string name="translation_device_settings">Seadme seaded</string>
+    <string name="translation_device_settings">Seadme seadistused</string>
     <string name="translation_error_message">Ei suutnud keelt tuvastada</string>
     <string name="translation_error_title">Tõlkimine ebaõnnestus</string>
     <string name="translation_from">Saatja</string>
