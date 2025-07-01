@@ -900,22 +900,28 @@ class OfflineFirstChatRepository @Inject constructor(
         sendWithoutNotification: Boolean,
         referenceId: String
     ): Flow<Result<ChatMessage?>> {
-        val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).first()
-        messageToResend.sendStatus = SendStatus.PENDING
-        chatDao.updateChatMessage(messageToResend)
+        val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).firstOrNull()
+        return if (messageToResend != null) {
+            messageToResend.sendStatus = SendStatus.PENDING
+            chatDao.updateChatMessage(messageToResend)
 
-        val messageToResendModel = messageToResend.asModel()
-        _updateMessageFlow.emit(messageToResendModel)
+            val messageToResendModel = messageToResend.asModel()
+            _updateMessageFlow.emit(messageToResendModel)
 
-        return sendChatMessage(
-            credentials,
-            url,
-            message,
-            displayName,
-            replyTo,
-            sendWithoutNotification,
-            referenceId
-        )
+            sendChatMessage(
+                credentials,
+                url,
+                message,
+                displayName,
+                replyTo,
+                sendWithoutNotification,
+                referenceId
+            )
+        } else {
+            flow {
+                emit(Result.failure(IllegalStateException("No temporary message found to resend")))
+            }
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
