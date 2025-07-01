@@ -445,12 +445,16 @@ class MessageInputFragment : Fragment() {
 
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
-                val editedMessage = messageUtils.processEditMessageParameters(
-                    message.messageParameters!!,
-                    message,
-                    inputEditText.toString()
-                )
-                editMessageAPI(message, editedMessage.toString())
+                if (message.messageParameters != null) {
+                    val editedMessage = messageUtils.processEditMessageParameters(
+                        message.messageParameters!!,
+                        message,
+                        inputEditText.toString()
+                    )
+                    editMessageAPI(message, editedMessage.toString())
+                } else {
+                    editMessageAPI(message, inputEditText.toString())
+                }
             }
             clearEditUI()
         }
@@ -967,21 +971,19 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun setEditUI(message: ChatMessage) {
-        if (message.message != null) {
-            val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
-            binding.fragmentEditView.editMessage.text = editedMessage
-            binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
-            if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
-                mentionAutocomplete?.dismissPopup()
-            }
-            val end = binding.fragmentMessageInputView.inputEditText.text.length
-            binding.fragmentMessageInputView.inputEditText.setSelection(end)
-            binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
-            binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
-            binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
+        val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+        binding.fragmentEditView.editMessage.text = editedMessage
+        binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
+        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
+            mentionAutocomplete?.dismissPopup()
         }
+        val end = binding.fragmentMessageInputView.inputEditText.text.length
+        binding.fragmentMessageInputView.inputEditText.setSelection(end)
+        binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
+        binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
+        binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
+        binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
+        binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
     }
 
     private fun clearEditUI() {

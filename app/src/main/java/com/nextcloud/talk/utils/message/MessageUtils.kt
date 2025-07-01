@@ -160,25 +160,23 @@ class MessageUtils(val context: Context) {
     }
 
     fun processEditMessageParameters(
-        messageParameters: HashMap<String?, HashMap<String?, String?>>?,
+        messageParameters: HashMap<String?, HashMap<String?, String?>>,
         message: ChatMessage?,
         inputEditText: String
     ): Spanned {
-        var result = inputEditText.toString()
-        for ((key, valueMap) in messageParameters!!) {
-            if (key != null) {
-                val mentionId = valueMap["mention-id"]
-                val type = valueMap["type"]
-                val name = valueMap["name"]
-                val user = message?.activeUser
-                if (user != null && mentionId != null && type != null) {
-                    val placeholder = "@$name"
-                    result = when (type) {
-                        "user", "guest", "email" -> result.replace(placeholder, "@$mentionId", ignoreCase = false)
-                        "user-group", "circle" -> result.replace(placeholder, "@\"$mentionId\"", ignoreCase = false)
-                        "call" -> result.replace(placeholder, "@all", ignoreCase = false)
-                        else -> result
-                    }
+        var result = inputEditText
+        for (key in messageParameters.keys) {
+            val individualHashMap = message?.messageParameters?.get(key)
+            if (individualHashMap != null) {
+                val mentionId = individualHashMap["mention-id"]
+                val type = individualHashMap["type"]
+                val name = individualHashMap["name"]
+                val placeholder = "@$name"
+                result = when (type) {
+                    "user", "guest", "email" -> result.replace(placeholder, "@$mentionId", ignoreCase = false)
+                    "user-group", "circle" -> result.replace(placeholder, "@\"$mentionId\"", ignoreCase = false)
+                    "call" -> result.replace(placeholder, "@all", ignoreCase = false)
+                    else -> result
                 }
             }
         }
