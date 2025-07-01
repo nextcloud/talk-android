@@ -72,7 +72,7 @@ interface ChatMessagesDao {
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getTempMessageForConversation(internalConversationId: String, referenceId: String): Flow<ChatMessageEntity>
+    fun getTempMessageForConversation(internalConversationId: String, referenceId: String): Flow<ChatMessageEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
