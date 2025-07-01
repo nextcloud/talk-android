@@ -116,7 +116,7 @@
             android:layout_marginStart="@dimen/standard_double_margin"
             android:scaleType="centerInside"
             android:src="@drawable/ic_delete"
-            android:contentDescription="@null"
+            android:contentDescription="@string/delete_voice_message"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:visibility="gone" />
 
