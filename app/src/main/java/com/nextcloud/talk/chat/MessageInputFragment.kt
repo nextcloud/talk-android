@@ -967,7 +967,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun setEditUI(message: ChatMessage) {
-        if(message.message != null){
+        if (message.message != null) {
             val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
             binding.fragmentEditView.editMessage.text = editedMessage
             binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
