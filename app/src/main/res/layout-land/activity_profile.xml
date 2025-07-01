@@ -118,7 +118,7 @@
                     android:tint="@android:color/white"
                     app:elevation="0dp"
                     app:fabSize="mini"
-                    app:srcCompat="@drawable/ic_mimetype_folder" />
+                    app:srcCompat="@drawable/ic_folder" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/avatar_camera"

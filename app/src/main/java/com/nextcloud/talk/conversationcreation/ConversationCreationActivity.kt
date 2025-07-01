@@ -289,7 +289,7 @@ fun UploadAvatar(
             }
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_mimetype_folder),
+                painter = painterResource(id = R.drawable.ic_folder),
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
