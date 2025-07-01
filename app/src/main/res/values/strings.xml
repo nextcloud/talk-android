@@ -299,6 +299,7 @@ How to translate with transifex:
     <string name="nc_camera_permission_hint">To enable video communication please grant \"Camera\" permission.</string>
     <string name="nc_microphone_permission_hint">To enable voice communication please grant \"Microphone\" permission.</string>
     <string name="nc_bluetooth_permission_hint">To enable bluetooth speakers please grant \"Nearby devices\" permission.</string>
+    <string name="nc_microphone_enabled_audio_recording">Microphone is enabled and audio is recording</string>
 
     <!-- Call -->
     <string name="nc_call_voice">%s voice call</string>
@@ -452,6 +453,7 @@ How to translate with transifex:
         <item quantity="one">See %d similar message</item>
         <item quantity="other">See %d similar messages</item>
     </plurals>
+    <string name="nc_send_voice_message">Send voice message</string>
 
     <!-- Conversation info guest access -->
     <string name="nc_guest_access">Guest access</string>
