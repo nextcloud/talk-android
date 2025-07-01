@@ -416,6 +416,48 @@ class MessageInputFragment : Fragment() {
             submitMessage(false)
         }
 
+        binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
+            val inputEditText = binding.fragmentMessageInputView.inputEditText!!.editableText
+            val mentionSpans = inputEditText.getSpans(
+                0,
+                inputEditText.length,
+                Spans.MentionChipSpan::class.java
+            )
+            var mentionSpan: Spans.MentionChipSpan
+            for (i in mentionSpans.indices) {
+                mentionSpan = mentionSpans[i]
+                var mentionId = mentionSpan.id
+                val shouldQuote = mentionId.contains(" ") ||
+                    mentionId.contains("@") ||
+                    mentionId.startsWith("guest/") ||
+                    mentionId.startsWith("group/") ||
+                    mentionId.startsWith("email/") ||
+                    mentionId.startsWith("team/")
+                if (shouldQuote) {
+                    mentionId = "\"" + mentionId + "\""
+                }
+                inputEditText.replace(
+                    inputEditText.getSpanStart(mentionSpan),
+                    inputEditText.getSpanEnd(mentionSpan),
+                    "@$mentionId"
+                )
+            }
+
+            val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
+            if (message.message!!.trim() != inputEditText.trim()) {
+                val editedMessage = messageUtils.processEditMessageParameters(
+                    message.messageParameters!!,
+                    message,
+                    inputEditText.toString()
+                )
+                editMessageAPI(message, editedMessage.toString())
+            }
+            clearEditUI()
+        }
+        binding.fragmentEditView.clearEdit.setOnClickListener {
+            clearEditUI()
+        }
+
         if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
             binding.fragmentMessageInputView.button?.setOnLongClickListener {
                 showSendButtonMenu()
@@ -936,47 +978,6 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.editMessageButton.visibility = View.VISIBLE
             binding.fragmentEditView.editMessageView.visibility = View.VISIBLE
             binding.fragmentMessageInputView.attachmentButton.visibility = View.GONE
-            binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
-                val inputEditText = binding.fragmentMessageInputView.inputEditText!!.editableText
-                val mentionSpans = inputEditText.getSpans(
-                    0,
-                    inputEditText.length,
-                    Spans.MentionChipSpan::class.java
-                )
-                var mentionSpan: Spans.MentionChipSpan
-                for (i in mentionSpans.indices) {
-                    mentionSpan = mentionSpans[i]
-                    var mentionId = mentionSpan.id
-                    val shouldQuote = mentionId.contains(" ") ||
-                        mentionId.contains("@") ||
-                        mentionId.startsWith("guest/") ||
-                        mentionId.startsWith("group/") ||
-                        mentionId.startsWith("email/") ||
-                        mentionId.startsWith("team/")
-                    if (shouldQuote) {
-                        mentionId = "\"" + mentionId + "\""
-                    }
-                    inputEditText.replace(
-                        inputEditText.getSpanStart(mentionSpan),
-                        inputEditText.getSpanEnd(mentionSpan),
-                        "@$mentionId"
-                    )
-                }
-
-                val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
-                if (message.message!!.trim() != inputEditText.trim()) {
-                    val editedMessage = messageUtils.processEditMessageParameters(
-                        message.messageParameters!!,
-                        message,
-                        inputEditText.toString()
-                    )
-                    editMessageAPI(message, editedMessage.toString())
-                }
-                clearEditUI()
-            }
-            binding.fragmentEditView.clearEdit.setOnClickListener {
-                clearEditUI()
-            }
         }
     }
 
