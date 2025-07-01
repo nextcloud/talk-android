@@ -971,6 +971,9 @@ class MessageInputFragment : Fragment() {
             val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
             binding.fragmentEditView.editMessage.text = editedMessage
             binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
+            if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
+                mentionAutocomplete?.dismissPopup()
+            }
             val end = binding.fragmentMessageInputView.inputEditText.text.length
             binding.fragmentMessageInputView.inputEditText.setSelection(end)
             binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
