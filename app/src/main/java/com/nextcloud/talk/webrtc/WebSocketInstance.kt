@@ -165,7 +165,6 @@ class WebSocketInstance internal constructor(
                     when (messageType) {
                         "hello" -> processHelloMessage(webSocket, text)
                         "error" -> processErrorMessage(webSocket, text)
-                        "room" -> processJoinedRoomMessage(text)
                         "event" -> processEventMessage(text)
                         "message" -> processMessage(text)
                         "bye" -> {
@@ -396,11 +395,14 @@ class WebSocketInstance internal constructor(
         Log.d(TAG, "   session: $normalBackendSession")
         try {
             val message = webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
+            val processJoinedRoomMessageCallback = { text: String ->
+                processJoinedRoomMessage(text)
+            }
             if (roomToken == "") {
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
                 currentFederation = null
-                sendMessage(message)
+                sendMessage(message, processJoinedRoomMessageCallback)
             } else if (
                 roomToken == currentRoomToken &&
                 normalBackendSession == currentNormalBackendSession &&
@@ -413,7 +415,7 @@ class WebSocketInstance internal constructor(
                 Log.d(TAG, "Sending join room message via websocket")
                 currentNormalBackendSession = normalBackendSession
                 currentFederation = federation
-                sendMessage(message)
+                sendMessage(message, processJoinedRoomMessageCallback)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
