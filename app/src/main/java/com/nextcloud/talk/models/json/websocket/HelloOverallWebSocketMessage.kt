@@ -16,10 +16,10 @@ import kotlinx.parcelize.Parcelize
 @JsonObject
 data class HelloOverallWebSocketMessage(
     @JsonField(name = ["type"])
-    var type: String? = null,
+    override var type: String? = null,
     @JsonField(name = ["hello"])
     var helloWebSocketMessage: HelloWebSocketMessage? = null
-) : Parcelable {
+) : BaseWebSocketMessageInterface, Parcelable {
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null)
 }

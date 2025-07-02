@@ -21,6 +21,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.models.json.signaling.settings.FederationSettings
+import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessageInterface
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage
@@ -79,7 +80,7 @@ class WebSocketInstance internal constructor(
     private var currentFederation: FederationSettings? = null
     private var reconnecting = false
     private val usersHashMap: HashMap<String?, Participant>
-    private var messagesQueue: MutableList<String> = ArrayList()
+    private var messagesQueue: MutableList<BaseWebSocketMessageInterface> = ArrayList()
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
 
@@ -379,9 +380,7 @@ class WebSocketInstance internal constructor(
         Log.d(TAG, "   roomToken: $roomToken")
         Log.d(TAG, "   session: $normalBackendSession")
         try {
-            val message = LoganSquare.serialize(
-                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
-            )
+            val message = webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
             if (roomToken == "") {
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
@@ -408,16 +407,14 @@ class WebSocketInstance internal constructor(
 
     private fun sendCallMessage(ncSignalingMessage: NCSignalingMessage) {
         try {
-            val message = LoganSquare.serialize(
-                webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
-            )
+            val message = webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
             sendMessage(message)
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
         }
     }
 
-    private fun sendMessage(message: String) {
+    private fun sendMessage(message: BaseWebSocketMessageInterface) {
         if (!isConnected || reconnecting) {
             messagesQueue.add(message)
 
@@ -428,7 +425,7 @@ class WebSocketInstance internal constructor(
             return
         }
 
-        if (!internalWebSocket!!.send(message)) {
+        if (!internalWebSocket!!.send(LoganSquare.serialize(message))) {
             messagesQueue.add(message)
             restartWebSocket()
         }
