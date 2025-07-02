@@ -24,6 +24,7 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.JsonParseException
 import com.google.gson.JsonParser
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
@@ -145,7 +146,7 @@ class WebViewLoginActivity : BaseActivity() {
                     launchDefaultWebBrowser(loginUrl)
                 }
                 token = jsonObject.getAsJsonObject("poll").get("token").asString
-            } catch (t: Throwable) {
+            } catch (t: JsonParseException) {
                 Log.d(TAG, "Error caught at anonymouslyPostLoginRequest: $t")
             }
         }
@@ -193,7 +194,7 @@ class WebViewLoginActivity : BaseActivity() {
             if (!isLoginProcessCompleted) {
                 performLoginFlowV2()
             }
-        }, 0, 30, TimeUnit.SECONDS)
+        }, 0, INTERVAL, TimeUnit.SECONDS)
     }
 
     private fun performLoginFlowV2() {
@@ -239,7 +240,7 @@ class WebViewLoginActivity : BaseActivity() {
             loginData.token = appPassword
 
             isLoginProcessCompleted =
-                (status == 200 && !server.isEmpty() && !loginName.isEmpty() && !appPassword.isEmpty())
+                (status == HTTP_OK && !server.isEmpty() && !loginName.isEmpty() && !appPassword.isEmpty())
 
             parseAndLogin(loginData)
         } catch (e: java.lang.Exception) {
@@ -345,5 +346,7 @@ class WebViewLoginActivity : BaseActivity() {
 
     companion object {
         private val TAG = WebViewLoginActivity::class.java.simpleName
+        private const val INTERVAL = 30L
+        private const val HTTP_OK = 200
     }
 }
