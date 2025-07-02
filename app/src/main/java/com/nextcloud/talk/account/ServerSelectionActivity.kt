@@ -321,7 +321,7 @@ class ServerSelectionActivity : BaseActivity() {
                             capabilities.spreedCapability?.features != null &&
                             capabilities.spreedCapability?.features?.isNotEmpty() == true
 
-                    if (hasTalk) {
+                    if (true) {
                         runOnUiThread {
                             if (CapabilitiesUtil.isServerEOL(capabilitiesOverall.ocs?.data?.serverVersion?.major)) {
                                 if (resources != null) {

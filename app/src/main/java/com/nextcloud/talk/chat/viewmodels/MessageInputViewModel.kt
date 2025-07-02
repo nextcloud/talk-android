@@ -20,7 +20,10 @@ import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.AudioRecorderManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
+import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import com.stfalcon.chatkit.commons.models.IMessage
 import io.reactivex.disposables.Disposable
@@ -43,11 +46,13 @@ class MessageInputViewModel @Inject constructor(
     }
 
     lateinit var chatRepository: ChatMessageRepository
+    lateinit var chatDataSource: ChatNetworkDataSource
     lateinit var currentLifeCycleFlag: LifeCycleFlag
     val disposableSet = mutableSetOf<Disposable>()
 
-    fun setData(chatMessageRepository: ChatMessageRepository) {
+    fun setData(chatMessageRepository: ChatMessageRepository, chatNetworkDataSource: ChatNetworkDataSource) {
         chatRepository = chatMessageRepository
+        chatDataSource = chatNetworkDataSource
     }
 
     override fun onResume(owner: LifecycleOwner) {
@@ -117,6 +122,10 @@ class MessageInputViewModel @Inject constructor(
     private val _callStartedFlow: MutableLiveData<Pair<ChatMessage, Boolean>> = MutableLiveData()
     val callStartedFlow: LiveData<Pair<ChatMessage, Boolean>>
         get() = _callStartedFlow
+
+    private val _maintenanceMode: MutableLiveData<Boolean> = MutableLiveData(false)
+    val maintenanceMode: LiveData<Boolean>
+        get() = _maintenanceMode
 
     @Suppress("LongParameterList")
     fun sendChatMessage(
@@ -200,6 +209,18 @@ class MessageInputViewModel @Inject constructor(
                 message,
                 editedMessageText
             ).collect {}
+        }
+    }
+
+    fun checkMaintenance(baseUrl: String) {
+        val url = baseUrl + ApiUtils.getUrlPostfixForStatus()
+        viewModelScope.launch {
+            try {
+                val status = chatDataSource.getServerStatus(url)
+                _maintenanceMode.postValue(status.maintenance)
+            } catch (_: Exception) {
+                _maintenanceMode.postValue(false)
+            }
         }
     }
 

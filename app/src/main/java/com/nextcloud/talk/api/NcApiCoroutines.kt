@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
@@ -126,6 +127,9 @@ interface NcApiCoroutines {
         @Url url: String,
         @Part attachment: MultipartBody.Part
     ): RoomOverall
+
+    @GET
+    suspend fun getServerStatus(@Url url: String): Status
 
     @DELETE
     suspend fun deleteConversationAvatar(@Header("Authorization") authorization: String, @Url url: String): RoomOverall

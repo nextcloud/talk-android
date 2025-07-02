@@ -500,7 +500,7 @@ class ChatActivity :
 
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository())
+        messageInputViewModel.setData(chatViewModel.getChatRepository(), chatViewModel.getChatNetworkDataSource())
 
         binding.progressBar.visibility = View.VISIBLE
 

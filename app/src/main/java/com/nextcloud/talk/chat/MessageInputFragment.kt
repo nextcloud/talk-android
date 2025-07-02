@@ -173,12 +173,19 @@ class MessageInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+        chatActivity.conversationUser?.baseUrl?.let {
+            chatActivity.messageInputViewModel.checkMaintenance(it)
+        }
     }
 
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let { replyToMessage(message) }
+        }
+
+        chatActivity.messageInputViewModel.maintenanceMode.observe(viewLifecycleOwner) { show ->
+            binding.fragmentMaintenanceMode.isVisible = show
         }
 
         chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->

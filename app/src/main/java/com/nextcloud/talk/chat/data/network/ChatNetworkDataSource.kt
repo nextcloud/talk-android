@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
@@ -77,4 +78,5 @@ interface ChatNetworkDataSource {
     ): List<ChatMessageJson>
     suspend fun getOpenGraph(credentials: String, baseUrl: String, extractedLinkToPreview: String): Reference?
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
+    suspend fun getServerStatus(baseUrl: String): Status
 }

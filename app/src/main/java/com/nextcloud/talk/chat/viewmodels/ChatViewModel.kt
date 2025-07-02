@@ -89,6 +89,10 @@ class ChatViewModel @Inject constructor(
         return chatRepository
     }
 
+    fun getChatNetworkDataSource(): ChatNetworkDataSource{
+        return chatNetworkDataSource
+    }
+
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
