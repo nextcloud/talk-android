@@ -424,11 +424,13 @@ class WebSocketInstance internal constructor(
             if (!reconnecting) {
                 restartWebSocket()
             }
-        } else {
-            if (!internalWebSocket!!.send(message)) {
-                messagesQueue.add(message)
-                restartWebSocket()
-            }
+
+            return
+        }
+
+        if (!internalWebSocket!!.send(message)) {
+            messagesQueue.add(message)
+            restartWebSocket()
         }
     }
 
