@@ -10,5 +10,6 @@ package com.nextcloud.talk.models.json.websocket
  * Interface with the properties common to all websocket signaling messages.
  */
 interface BaseWebSocketMessageInterface {
+    var id: String?
     var type: String?
 }

@@ -150,7 +150,7 @@ class WebSocketInstance internal constructor(
         if (webSocket === internalWebSocket) {
             Log.d(TAG, "Receiving : $webSocket $text")
             try {
-                val (messageType) = LoganSquare.parse(text, BaseWebSocketMessage::class.java)
+                val (_, messageType) = LoganSquare.parse(text, BaseWebSocketMessage::class.java)
                 if (messageType != null) {
                     when (messageType) {
                         "hello" -> processHelloMessage(webSocket, text)
@@ -176,7 +176,7 @@ class WebSocketInstance internal constructor(
 
     @Throws(IOException::class)
     private fun processMessage(text: String) {
-        val (_, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
+        val (_, _, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
         if (callWebSocketMessage != null) {
             val ncSignalingMessage = callWebSocketMessage.ncSignalingMessage
 
@@ -285,7 +285,7 @@ class WebSocketInstance internal constructor(
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
-        val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
+        val (_, _, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             currentRoomToken = roomWebSocketMessage.roomId
             if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
@@ -297,7 +297,7 @@ class WebSocketInstance internal constructor(
     @Throws(IOException::class)
     private fun processErrorMessage(webSocket: WebSocket, text: String) {
         Log.e(TAG, "Received error: $text")
-        val (_, message) = LoganSquare.parse(text, ErrorOverallWebSocketMessage::class.java)
+        val (_, _, message) = LoganSquare.parse(text, ErrorOverallWebSocketMessage::class.java)
         if (message != null) {
             if ("no_such_session" == message.code) {
                 Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired")
@@ -316,7 +316,7 @@ class WebSocketInstance internal constructor(
         isConnected = true
         reconnecting = false
         val oldResumeId = resumeId
-        val (_, helloResponseWebSocketMessage1) = LoganSquare.parse(
+        val (_, _, helloResponseWebSocketMessage1) = LoganSquare.parse(
             text,
             HelloResponseOverallWebSocketMessage::class.java
         )
