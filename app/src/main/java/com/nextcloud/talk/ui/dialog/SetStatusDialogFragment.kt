@@ -298,6 +298,9 @@ class SetStatusDialogFragment :
                         binding.clearStatusMessageTextView.text = getString(R.string.clear_status_message_after)
                     }
                 }
+                clearAt = it.clearAt
+            } else {
+                clearAt = null
             }
         }
     }
