@@ -326,7 +326,7 @@ class WebSocketInstance internal constructor(
             hasMCU = helloResponseWebSocketMessage1.serverHasMCUSupport()
         }
         for (i in messagesQueue.indices) {
-            webSocket.send(messagesQueue[i])
+            webSocket.send(LoganSquare.serialize(messagesQueue[i]))
         }
         messagesQueue = ArrayList()
         val helloHashMap = HashMap<String, String?>()
