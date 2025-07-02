@@ -181,12 +181,12 @@ class WebViewLoginActivity : BaseActivity() {
         startActivity(intent)
     }
 
-    private val lifecycleEventObserver: LifecycleEventObserver = (LifecycleEventObserver { lifecycleOwner, event ->
+    private val lifecycleEventObserver = LifecycleEventObserver { lifecycleOwner, event ->
         if (event === Lifecycle.Event.ON_START) {
             Log.d(TAG, "Start poolLogin")
             poolLogin()
         }
-    })
+    }
 
     private fun poolLogin() {
         loginFlowExecutorService?.scheduleWithFixedDelay({
