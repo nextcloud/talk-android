@@ -116,7 +116,7 @@
             android:layout_marginStart="@dimen/standard_double_margin"
             android:scaleType="centerInside"
             android:src="@drawable/ic_delete"
-            android:contentDescription="@string/delete_voice_message"
+            android:contentDescription="@string/delete_voice_recording"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:visibility="gone" />
 
@@ -131,7 +131,7 @@
             android:layout_marginEnd="@dimen/standard_double_margin"
             android:scaleType="centerInside"
             android:src="@drawable/ic_send"
-            android:contentDescription="@string/nc_send_voice_message"
+            android:contentDescription="@string/nc_send_voice_recording"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:visibility="gone" />
 
