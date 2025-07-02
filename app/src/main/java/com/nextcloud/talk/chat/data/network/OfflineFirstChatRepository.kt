@@ -161,7 +161,10 @@ class OfflineFirstChatRepository @Inject constructor(
             } else {
                 if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
-                    _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    val maintenanceMode = network.getServerStatus(currentUser.baseUrl!!).maintenance
+                    if (networkMonitor.isOnline.value.not() || maintenanceMode){
+                        _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    }
                 } else {
                     Log.d(
                         TAG,
