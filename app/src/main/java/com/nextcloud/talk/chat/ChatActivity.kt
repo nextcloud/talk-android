@@ -603,7 +603,7 @@ class ChatActivity :
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
 
-       chatViewModel.maintenanceMode.observe(this) { show ->
+        chatViewModel.maintenanceMode.observe(this) { show ->
             binding.maintenanceModeBar.isVisible = show
         }
 
