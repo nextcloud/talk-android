@@ -68,6 +68,7 @@ import androidx.core.os.bundleOf
 import androidx.core.text.bold
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.emoji2.text.EmojiCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.commit
@@ -500,7 +501,11 @@ class ChatActivity :
 
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
-        messageInputViewModel.setData(chatViewModel.getChatRepository(), chatViewModel.getChatNetworkDataSource())
+        messageInputViewModel.setData(chatViewModel.getChatRepository())
+
+        conversationUser?.baseUrl?.let { baseUrl ->
+            chatViewModel.checkMaintenance(baseUrl)
+        }
 
         binding.progressBar.visibility = View.VISIBLE
 
@@ -597,6 +602,10 @@ class ChatActivity :
     @Suppress("LongMethod")
     private fun initObservers() {
         Log.d(TAG, "initObservers Called")
+
+       chatViewModel.maintenanceMode.observe(this) { show ->
+            binding.maintenanceModeBar.isVisible = show
+        }
 
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow

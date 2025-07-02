@@ -89,10 +89,6 @@ class ChatViewModel @Inject constructor(
         return chatRepository
     }
 
-    fun getChatNetworkDataSource(): ChatNetworkDataSource{
-        return chatNetworkDataSource
-    }
-
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)
         currentLifeCycleFlag = LifeCycleFlag.RESUMED
@@ -276,6 +272,10 @@ class ChatViewModel @Inject constructor(
     val reactionDeletedViewState: LiveData<ViewState>
         get() = _reactionDeletedViewState
 
+    private val _maintenanceMode: MutableLiveData<Boolean> = MutableLiveData(false)
+    val maintenanceMode: LiveData<Boolean>
+        get() = _maintenanceMode
+
     fun initData(credentials: String, urlForChatting: String, roomToken: String) {
         chatRepository.initData(credentials, urlForChatting, roomToken)
     }
@@ -335,6 +335,17 @@ class ChatViewModel @Inject constructor(
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.retry(JOIN_ROOM_RETRY_COUNT)
             ?.subscribe(JoinRoomObserver())
+    }
+
+    fun checkMaintenance(baseUrl: String) {
+        viewModelScope.launch {
+            try {
+                val status = chatNetworkDataSource.getServerStatus(baseUrl)
+                _maintenanceMode.postValue(status.maintenance)
+            } catch (_: Exception) {
+                _maintenanceMode.postValue(false)
+            }
+        }
     }
 
     fun setReminder(user: User, roomToken: String, messageId: String, timestamp: Int, chatApiVersion: Int) {
