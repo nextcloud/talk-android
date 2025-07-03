@@ -140,7 +140,11 @@ class ChatMessagesDaoTest {
             assertEquals("are", conv1chatMessage3.message)
 
             val chatMessagesConv1Since =
-                chatMessagesDao.getMessagesForConversationSince(conversation1.internalId, conv1chatMessage3.id)
+                chatMessagesDao.getMessagesForConversationSince(
+                    conversation1.internalId,
+                    conv1chatMessage3.id,
+                    null
+                )
             assertEquals(3, chatMessagesConv1Since.first().size)
             assertEquals("are", chatMessagesConv1Since.first()[0].message)
             assertEquals("some", chatMessagesConv1Since.first()[1].message)
@@ -150,7 +154,8 @@ class ChatMessagesDaoTest {
                 chatMessagesDao.getMessagesForConversationBeforeAndEqual(
                     conversation1.internalId,
                     conv1chatMessage3.id,
-                    3
+                    3,
+                    null
                 )
             assertEquals(3, chatMessagesConv1To.first().size)
             assertEquals("hello", chatMessagesConv1To.first()[2].message)

@@ -557,7 +557,12 @@ class ChatActivity :
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
-        threadId = extras?.getLong(KEY_THREAD_ID)
+
+        threadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
+            extras.getLong(KEY_THREAD_ID)
+        } else {
+            null
+        }
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
