@@ -1,7 +1,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
-  ~ SPDX-FileCopyrightText: 2018-2024 Google LLC
+  ~ SPDX-FileCopyrightText: 2018-2025 Google LLC
   ~ SPDX-License-Identifier: Apache-2.0
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -12,6 +12,6 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:fillColor="#FF000000"
-        android:pathData="M21,12L14,5V9C7,10 4,15 3,20C5.5,16.5 9,14.9 14,14.9V19L21,12Z" />
+        android:fillColor="#E8EAED"
+        android:pathData="M5,19L5,15C5,14.167 5.292,13.458 5.875,12.875C6.458,12.292 7.167,12 8,12L17.175,12L13.575,15.6L15,17L21,11L15,5L13.575,6.4L17.175,10L8,10C6.617,10 5.437,10.488 4.462,11.462C3.487,12.438 3,13.617 3,15L3,19L5,19Z" />
 </vector>
