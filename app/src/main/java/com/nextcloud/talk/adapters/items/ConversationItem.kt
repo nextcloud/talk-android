@@ -59,6 +59,8 @@ class ConversationItem(
     IFilterable<String?> {
     private var header: GenericTextHeaderItem? = null
     private val chatMessage = model.lastMessage?.asModel()
+    var mHolder: ConversationItemViewHolder? = null
+
 
     constructor(
         conversation: ConversationModel,
@@ -97,6 +99,7 @@ class ConversationItem(
         position: Int,
         payloads: List<Any>
     ) {
+        mHolder = holder
         val appContext = sharedApplication!!.applicationContext
         holder.binding.dialogName.setTextColor(
             ResourcesCompat.getColor(
