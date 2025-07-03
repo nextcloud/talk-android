@@ -10,6 +10,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -159,7 +160,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
             binding.messageTime.layoutParams = layoutParams
             viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
-            binding.messageText.text = processedMessageText
+            // binding.messageText.text = processedMessageText
+            // just for debugging:
+            binding.messageText.text =
+                SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
             binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE

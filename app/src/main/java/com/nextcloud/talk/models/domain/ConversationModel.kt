@@ -17,7 +17,6 @@ class ConversationModel(
     var internalId: String,
     var accountId: Long,
     var token: String,
-    var threadId: Long? = null,
     var name: String,
     var displayName: String,
     var description: String,
