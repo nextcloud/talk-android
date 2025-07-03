@@ -70,7 +70,7 @@
     <string name="languages_error_title">Alınamadı</string>
     <string name="later_today">Bugün daha sonra</string>
     <string name="leave_call">Çağrıdan ayrıl</string>
-    <string name="left_conversation">%1$s görüşmesinden ayrıldınız</string>
+    <string name="left_conversation">%1$s görüşmesinden çıktınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="local_time">Yerel zaman: %1$s</string>
     <string name="lock_conversation">Görüşmeyi kilitle</string>
@@ -249,7 +249,7 @@
     <string name="nc_expire_message_one_hour">1 saat</string>
     <string name="nc_expire_message_one_week">1 hafta</string>
     <string name="nc_expire_messages">Süreli sohbet iletileri</string>
-    <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık sohbette paylaşılmaz.</string>
+    <string name="nc_expire_messages_explanation">Sohbet iletileri süresi belirli bir süre sonra dolacak şekilde ayarlanabilir. Not: Süresi dolan iletlerdeki dosyalar sahibi için silinmez, ancak artık görüşmede paylaşılmaz.</string>
     <string name="nc_external_server_failed">İşaretleşme ayarları alınamadı</string>
     <string name="nc_federation_invitation_accept">Kabul et</string>
     <string name="nc_federation_invitation_reject">Reddet</string>
@@ -270,7 +270,7 @@
     <string name="nc_guest">Konuk</string>
     <string name="nc_guest_access">Konuk erişimi</string>
     <string name="nc_guest_access_allow_failed">Konuk erişimi izni verilemez ya da kaldırılamaz.</string>
-    <string name="nc_guest_access_allow_summary">Etkinleştirildiğinde, konuklar bu görüşmeyi herkese açık bir katılma bağlantısı ile paylaşabilir.</string>
+    <string name="nc_guest_access_allow_summary">Konukların bu görüşmeyi herkese açık bir katılma bağlantısı ile paylaşabilmesini sağlar.</string>
     <string name="nc_guest_access_allow_title">Konuklar katılabilsin</string>
     <string name="nc_guest_access_password_dialog_hint">Bir parola yazın</string>
     <string name="nc_guest_access_password_dialog_title">Konuk erişimi parolası</string>
@@ -290,9 +290,9 @@
     <string name="nc_invitations">Davetler</string>
     <string name="nc_join_open_conversations">Açık görüşmelere katıl</string>
     <string name="nc_keep">Tut</string>
-    <string name="nc_last_moderator_leaving_room_warning">Görüşmeden ayrılmadan önce başka bir kullanıcıyı sorumluluğa yükseltmelisiniz</string>
+    <string name="nc_last_moderator_leaving_room_warning">Görüşmeden çıkmadan önce başka bir kullanıcıyı sorumluluğa yükseltmelisiniz</string>
     <string name="nc_last_modified">%1$s | Son değişiklik: %2$s</string>
-    <string name="nc_leave">Görüşmeden ayrıl</string>
+    <string name="nc_leave">Görüşmeden çık</string>
     <string name="nc_leaving_call">Çağrıdan çıkılıyor…</string>
     <string name="nc_license_summary">GNU Genel Kamu Lisansı, 3. sürüm</string>
     <string name="nc_license_title">Lisans</string>
@@ -657,7 +657,7 @@
     <string name="typing_is_typing">yazıyor…</string>
     <string name="typing_x_others">ve %1$s diğer kişi yazıyor…</string>
     <string name="unarchive_conversation">Görüşmeyi arşivden çıkar</string>
-    <string name="unarchive_hint">Bir görüşme arşivden çıkarıldığında varsayılan olarak yeniden gösterilir.</string>
+    <string name="unarchive_hint">Bir görüşme arşivden çıkarıldığında varsayılan olarak yeniden görüntülenir.</string>
     <string name="unarchived_conversation">%1$s arşivden çıkarıldı</string>
     <string name="unban">Yasaklamayı kaldır</string>
     <string name="unread">Okunmamış</string>
