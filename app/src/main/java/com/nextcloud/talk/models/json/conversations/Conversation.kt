@@ -28,9 +28,6 @@ data class Conversation(
     @JsonField(name = ["token"])
     var token: String = "",
 
-    @JsonField(name = ["threadId"])
-    var threadId: Long? = null,
-
     @JsonField(name = ["name"])
     var name: String = "",
 

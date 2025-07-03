@@ -122,16 +122,10 @@ class OfflineFirstChatRepository @Inject constructor(
     private var threadId: Long? = null
 
     override fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
-        val threadIdAppendedString = if (threadId != null && threadId > 0) {
-            "@$threadId"
-        } else {
-            ""
-        }
-        internalConversationId = currentUser.id.toString() + "@" + roomToken + threadIdAppendedString
+        internalConversationId = currentUser.id.toString() + "@" + roomToken
         this.credentials = credentials
         this.urlForChatting = urlForChatting
-        this.threadId = threadId // use this threadId in API requests when fetching messages? +
-        // Introduce ChatBlocks for threads
+        this.threadId = threadId
     }
 
     override fun updateConversation(conversationModel: ConversationModel) {
@@ -151,7 +145,8 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
             Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-            var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+            // var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId, threadId)
+            var newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
             Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 
             val weAlreadyHaveSomeOfflineMessages = newestMessageIdFromDb > 0
@@ -197,7 +192,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     Log.e(TAG, "initial loading of messages failed")
                 }
 
-                newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId)
+                newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
                 Log.d(TAG, "newestMessageIdFromDb after sync: $newestMessageIdFromDb")
             }
 
@@ -211,9 +206,9 @@ class OfflineFirstChatRepository @Inject constructor(
             val limit = getCappedMessagesAmountOfChatBlock(newestMessageIdFromDb)
 
             val list = getMessagesBeforeAndEqual(
-                newestMessageIdFromDb,
-                internalConversationId,
-                limit
+                messageId = newestMessageIdFromDb,
+                internalConversationId = internalConversationId,
+                messageLimit = limit
             )
             if (list.isNotEmpty()) {
                 handleNewAndTempMessages(
@@ -242,7 +237,8 @@ class OfflineFirstChatRepository @Inject constructor(
             val amountBetween = chatDao.getCountBetweenMessageIds(
                 internalConversationId,
                 messageId,
-                chatBlock.oldestMessageId
+                chatBlock.oldestMessageId,
+                threadId
             )
 
             Log.d(TAG, "amount of messages between newestMessageId and oldest message of same ChatBlock:$amountBetween")
@@ -292,7 +288,7 @@ class OfflineFirstChatRepository @Inject constructor(
             )
             withNetworkParams.putSerializable(BundleKeys.KEY_FIELD_MAP, fieldMap)
 
-            val loadFromServer = hasToLoadPreviousMessagesFromServer(beforeMessageId)
+            val loadFromServer = hasToLoadPreviousMessagesFromServer(beforeMessageId, DEFAULT_MESSAGES_LIMIT)
 
             if (loadFromServer) {
                 Log.d(TAG, "Starting online request for loadMoreMessages")
@@ -354,7 +350,10 @@ class OfflineFirstChatRepository @Inject constructor(
 
                     updateUiForLastCommonRead()
 
-                    val newestMessage = chatDao.getNewestMessageId(internalConversationId).toInt()
+                    val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
+                        internalConversationId,
+                        threadId
+                    ).toInt()
 
                     // update field map vars for next cycle
                     fieldMap = getFieldMap(
@@ -380,7 +379,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         // remove all temp messages from UI
-        val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
+        val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId, threadId)
             .first()
             .map(ChatMessageEntity::asModel)
         oldTempMessages.forEach {
@@ -404,7 +403,7 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         // add the remaining temp messages to UI again
-        val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
+        val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId, threadId)
             .first()
             .sortedBy { it.internalId }
             .map(ChatMessageEntity::asModel)
@@ -417,7 +416,7 @@ class OfflineFirstChatRepository @Inject constructor(
         _messageFlow.emit(triple)
     }
 
-    private suspend fun hasToLoadPreviousMessagesFromServer(beforeMessageId: Long): Boolean {
+    private suspend fun hasToLoadPreviousMessagesFromServer(beforeMessageId: Long, amountToCheck: Int): Boolean {
         val loadFromServer: Boolean
 
         val blockForMessage = getBlockOfMessage(beforeMessageId.toInt())
@@ -429,21 +428,19 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "The last chatBlock is reached so we won't request server for older messages")
             loadFromServer = false
         } else {
-            // we know that beforeMessageId and blockForMessage.oldestMessageId are in the same block.
-            // As we want the last DEFAULT_MESSAGES_LIMIT entries before beforeMessageId, we calculate if these
-            // messages are DEFAULT_MESSAGES_LIMIT entries apart from each other
-
             val amountBetween = chatDao.getCountBetweenMessageIds(
                 internalConversationId,
                 beforeMessageId,
-                blockForMessage.oldestMessageId
+                blockForMessage.oldestMessageId,
+                threadId
             )
-            loadFromServer = amountBetween < DEFAULT_MESSAGES_LIMIT
+            loadFromServer = amountBetween < amountToCheck
 
             Log.d(
                 TAG,
                 "Amount between messageId " + beforeMessageId + " and " + blockForMessage.oldestMessageId +
-                    " is: " + amountBetween + " so 'loadFromServer' is " + loadFromServer
+                    " is: " + amountBetween + " and $amountToCheck were needed, so 'loadFromServer' is " +
+                    loadFromServer
             )
         }
         return loadFromServer
@@ -479,7 +476,7 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
         Log.d(TAG, "Get message with id $messageId")
-        val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId)
+        val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId, 1)
 
         if (loadFromServer) {
             val fieldMap = getFieldMap(
@@ -495,8 +492,10 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "Starting online request for single message (e.g. a reply)")
             sync(bundle)
         }
-        return chatDao.getChatMessageForConversation(internalConversationId, messageId)
-            .map(ChatMessageEntity::asModel)
+        return chatDao.getChatMessageForConversation(
+            internalConversationId,
+            messageId
+        ).map(ChatMessageEntity::asModel)
     }
 
     @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
@@ -660,11 +659,12 @@ class OfflineFirstChatRepository @Inject constructor(
             internalConversationId = internalConversationId,
             accountId = conversationModel.accountId,
             token = conversationModel.token,
+            threadId = threadId,
             oldestMessageId = oldestMessageIdForNewChatBlock,
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertChatBlock(newChatBlock)
+        chatBlocksDao.upsertChatBlock(newChatBlock) // crash when no conversation thread exists!
 
         updateBlocks(newChatBlock)
         return chatMessagesFromSyncToProcess
@@ -721,7 +721,11 @@ class OfflineFirstChatRepository @Inject constructor(
         var blockContainingQueriedMessage: ChatBlockEntity? = null
         if (queriedMessageId != null) {
             val blocksContainingQueriedMessage =
-                chatBlocksDao.getChatBlocksContainingMessageId(internalConversationId, queriedMessageId.toLong())
+                chatBlocksDao.getChatBlocksContainingMessageId(
+                    internalConversationId = internalConversationId,
+                    threadId = threadId,
+                    messageId = queriedMessageId.toLong()
+                )
 
             val chatBlocks = blocksContainingQueriedMessage.first()
             if (chatBlocks.size > 1) {
@@ -740,9 +744,10 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun updateBlocks(chatBlock: ChatBlockEntity): ChatBlockEntity? {
         val connectedChatBlocks =
             chatBlocksDao.getConnectedChatBlocks(
-                internalConversationId,
-                chatBlock.oldestMessageId,
-                chatBlock.newestMessageId
+                internalConversationId = internalConversationId,
+                threadId = threadId,
+                oldestMessageId = chatBlock.oldestMessageId,
+                newestMessageId = chatBlock.newestMessageId
             ).first()
 
         return if (connectedChatBlocks.size == 1) {
@@ -769,7 +774,7 @@ class OfflineFirstChatRepository @Inject constructor(
                 internalConversationId = internalConversationId,
                 accountId = conversationModel.accountId,
                 token = conversationModel.token,
-                threadId = conversationModel.threadId,
+                threadId = threadId,
                 oldestMessageId = oldestIdFromDbChatBlocks,
                 newestMessageId = newestIdFromDbChatBlocks,
                 hasHistory = hasHistory
@@ -793,7 +798,8 @@ class OfflineFirstChatRepository @Inject constructor(
         chatDao.getMessagesForConversationBeforeAndEqual(
             internalConversationId,
             messageId,
-            messageLimit
+            messageLimit,
+            threadId
         ).map {
             it.map(ChatMessageEntity::asModel)
         }.first()
@@ -807,7 +813,8 @@ class OfflineFirstChatRepository @Inject constructor(
             chatDao.getMessagesForConversationBefore(
                 internalConversationId,
                 messageId,
-                messageLimit
+                messageLimit,
+                threadId
             ).map {
                 it.map(ChatMessageEntity::asModel)
             }.first()
@@ -870,7 +877,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
             val sentMessage = chatDao.getTempMessageForConversation(
                 internalConversationId,
-                referenceId
+                referenceId,
+                threadId
             ).firstOrNull()
 
             sentMessage?.let {
@@ -886,7 +894,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
                 val failedMessage = chatDao.getTempMessageForConversation(
                     internalConversationId,
-                    referenceId
+                    referenceId,
+                    threadId
                 ).firstOrNull()
                 failedMessage?.let {
                     it.sendStatus = SendStatus.FAILED
@@ -909,7 +918,11 @@ class OfflineFirstChatRepository @Inject constructor(
         sendWithoutNotification: Boolean,
         referenceId: String
     ): Flow<Result<ChatMessage?>> {
-        val messageToResend = chatDao.getTempMessageForConversation(internalConversationId, referenceId).firstOrNull()
+        val messageToResend = chatDao.getTempMessageForConversation(
+            internalConversationId,
+            referenceId,
+            threadId
+        ).firstOrNull()
         return if (messageToResend != null) {
             messageToResend.sendStatus = SendStatus.PENDING
             chatDao.updateChatMessage(messageToResend)
@@ -958,8 +971,7 @@ class OfflineFirstChatRepository @Inject constructor(
             try {
                 val messageToEdit = chatDao.getChatMessageForConversation(
                     internalConversationId,
-                    message.jsonMessageId
-                        .toLong()
+                    message.jsonMessageId.toLong()
                 ).first()
                 messageToEdit.message = editedMessageText
                 chatDao.upsertChatMessage(messageToEdit)
@@ -973,7 +985,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
     override suspend fun sendUnsentChatMessages(credentials: String, url: String) {
-        val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId).first()
+        val tempMessages = chatDao.getTempUnsentMessagesForConversation(internalConversationId, threadId).first()
         tempMessages.sortedBy { it.internalId }.onEach {
             sendChatMessage(
                 credentials,

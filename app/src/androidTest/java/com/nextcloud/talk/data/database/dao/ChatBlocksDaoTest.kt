@@ -52,7 +52,8 @@ class ChatBlocksDaoTest {
     @Test
     fun testGetConnectedChatBlocks() =
         runTest {
-            usersDao.saveUser(createUserEntity("account1", "Account 1"))
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
             val account1 = usersDao.getUserWithUserId("account1").blockingGet()
 
             conversationsDao.upsertConversations(
@@ -77,6 +78,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 50,
                 newestMessageId = 60,
                 hasHistory = true
@@ -86,6 +88,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 10,
                 newestMessageId = 20,
                 hasHistory = true
@@ -95,6 +98,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 45,
                 newestMessageId = 55,
                 hasHistory = true
@@ -104,6 +108,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 52,
                 newestMessageId = 58,
                 hasHistory = true
@@ -113,6 +118,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 1,
                 newestMessageId = 99,
                 hasHistory = true
@@ -122,6 +128,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 59,
                 newestMessageId = 70,
                 hasHistory = true
@@ -131,6 +138,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation1.internalId,
                 accountId = conversation1.accountId,
                 token = conversation1.token,
+                threadId = null,
                 oldestMessageId = 80,
                 newestMessageId = 90,
                 hasHistory = true
@@ -140,6 +148,7 @@ class ChatBlocksDaoTest {
                 internalConversationId = conversation2.internalId,
                 accountId = conversation2.accountId,
                 token = conversation2.token,
+                threadId = null,
                 oldestMessageId = 53,
                 newestMessageId = 57,
                 hasHistory = true
@@ -156,9 +165,10 @@ class ChatBlocksDaoTest {
             chatBlocksDao.upsertChatBlock(chatBlockWithinButOtherConversation)
 
             val results = chatBlocksDao.getConnectedChatBlocks(
-                conversation1.internalId,
-                searchedChatBlock.oldestMessageId,
-                searchedChatBlock.newestMessageId
+                internalConversationId = conversation1.internalId,
+                threadId = null,
+                oldestMessageId = searchedChatBlock.oldestMessageId,
+                newestMessageId = searchedChatBlock.newestMessageId
             )
 
             assertEquals(5, results.first().size)

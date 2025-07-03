@@ -31,7 +31,7 @@ import androidx.room.PrimaryKey
 data class ChatBlockEntity(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id") var id: Long = 0,
-    // accountId@token(@threadId)
+    // accountId@token
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
     @ColumnInfo(name = "accountId") var accountId: Long? = null,
     @ColumnInfo(name = "token") var token: String?,

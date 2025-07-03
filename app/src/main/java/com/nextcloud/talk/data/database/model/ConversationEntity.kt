@@ -49,8 +49,6 @@ data class ConversationEntity(
     // exactly what we want for this case.
     @ColumnInfo(name = "token") var token: String,
 
-    @ColumnInfo(name = "threadId") var threadId: Long? = null,
-
     @ColumnInfo(name = "displayName") var displayName: String,
 
     // OTHER ATTRIBUTES IN ALPHABETICAL ORDER
