@@ -178,13 +178,18 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         setBubbleOnChatMessage(message)
+
         // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
-            processParentMessage(message)
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
+        val chatActivity = commonMessageInterface as ChatActivity
+        binding.messageQuote.quotedChatMessageView.visibility =
+            if (chatActivity.threadId == message.threadId) {
+                View.GONE
+            } else if (!message.isDeleted && message.parentMessageId != null) {
+                processParentMessage(message)
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
         binding.checkMark.visibility = View.INVISIBLE
         binding.sendingProgress.visibility = View.GONE
@@ -198,8 +203,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         } else if (message.readStatus == ReadStatus.SENT) {
             updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
         }
-
-        val chatActivity = commonMessageInterface as ChatActivity
 
         chatActivity.lifecycleScope.launch {
             if (message.isTemporary && !networkMonitor.isOnline.value) {

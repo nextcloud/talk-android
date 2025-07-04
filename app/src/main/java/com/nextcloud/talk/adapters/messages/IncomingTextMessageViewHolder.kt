@@ -167,8 +167,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         // parent message handling
         val chatActivity = commonMessageInterface as ChatActivity
         binding.messageQuote.quotedChatMessageView.visibility =
-            // TODO replace message.parentMessageId with topmostParentId
-            if (chatActivity.threadId == message.parentMessageId) {
+            if (chatActivity.threadId == message.threadId) {
                 View.GONE
             } else if (!message.isDeleted && message.parentMessageId != null) {
                 processParentMessage(message)
@@ -375,14 +374,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                             true,
                             viewThemeUtils
                         )
-
-                    // TODO replace message.parentMessageId!! with topmostParentId (=threadId)
-                    binding.messageQuote.threadIcon.setOnClickListener {
-                        chatActivity.openThread(
-                            chatActivity.roomToken,
-                            message.parentMessageId!!
-                        )
-                    }
 
                     viewThemeUtils.talk.themeParentMessage(
                         parentChatMessage,
