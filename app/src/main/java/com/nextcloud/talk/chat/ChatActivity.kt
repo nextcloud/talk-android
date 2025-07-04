@@ -1993,8 +1993,8 @@ class ChatActivity :
         WorkManager.getInstance().enqueue(downloadWorker)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(downloadWorker.id)
-            .observeForever { workInfo: WorkInfo ->
-                if (workInfo.state == WorkInfo.State.SUCCEEDED) {
+            .observeForever { workInfo: WorkInfo? ->
+                if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
                     funToCallWhenDownloadSuccessful()
                 }
             }

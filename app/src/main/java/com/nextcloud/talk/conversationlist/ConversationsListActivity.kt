@@ -1974,9 +1974,9 @@ class ConversationsListActivity :
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
 
         WorkManager.getInstance(context).getWorkInfoByIdLiveData(accountRemovalWork.id)
-            .observeForever { workInfo: WorkInfo ->
+            .observeForever { workInfo: WorkInfo? ->
 
-                when (workInfo.state) {
+                when (workInfo?.state) {
                     WorkInfo.State.SUCCEEDED -> {
                         val text = String.format(
                             context.resources.getString(R.string.nc_deleted_user),
