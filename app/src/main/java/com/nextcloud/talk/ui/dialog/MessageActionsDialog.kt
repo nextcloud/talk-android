@@ -151,6 +151,7 @@ class MessageActionsDialog(
                     currentConversation?.type != ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
                     isOnline
             )
+            initMenuOpenThread(message.isThread && chatActivity.threadId == null)
             initMenuEditMessage(isMessageEditable)
             initMenuDeleteMessage(showMessageDeletionButton && isOnline)
             initMenuForwardMessage(
@@ -412,6 +413,17 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuReplyPrivately.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuOpenThread(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuOpenThread.setOnClickListener {
+                chatActivity.openThread(message)
+                dismiss()
+            }
+        }
+
+        dialogMessageActionsBinding.menuOpenThread.visibility = getVisibility(visible)
     }
 
     private fun initMenuReplyToMessage(visible: Boolean) {

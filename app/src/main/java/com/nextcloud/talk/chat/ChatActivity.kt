@@ -4132,13 +4132,15 @@ class ChatActivity :
 
     private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
 
-    fun openThread(roomToken: String, threadId: Long) {
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, roomToken)
-        bundle.putLong(KEY_THREAD_ID, threadId)
-        val chatIntent = Intent(context, ChatActivity::class.java)
-        chatIntent.putExtras(bundle)
-        startActivity(chatIntent)
+    fun openThread(chatMessage: ChatMessage) {
+        chatMessage.threadId?.let {
+            val bundle = Bundle()
+            bundle.putString(KEY_ROOM_TOKEN, roomToken)
+            bundle.putLong(KEY_THREAD_ID, it)
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(bundle)
+            startActivity(chatIntent)
+        }
     }
 
     override fun joinAudioCall() {
