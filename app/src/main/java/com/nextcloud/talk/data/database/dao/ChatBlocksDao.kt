@@ -52,7 +52,7 @@ interface ChatBlocksDao {
         SELECT *
         FROM ChatBlocks
         WHERE internalConversationId in (:internalConversationId)
-        AND (:threadId IS NULL OR threadId = :threadId)
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         AND oldestMessageId <= :messageId
         AND newestMessageId >= :messageId
         ORDER BY newestMessageId ASC
@@ -69,7 +69,7 @@ interface ChatBlocksDao {
         SELECT *
         FROM ChatBlocks
         WHERE internalConversationId = :internalConversationId
-        AND (:threadId IS NULL OR threadId = :threadId)
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         AND(
             (oldestMessageId <= :oldestMessageId AND newestMessageId >= :oldestMessageId)
             OR
@@ -92,7 +92,7 @@ interface ChatBlocksDao {
         SELECT MAX(newestMessageId) as max_items
         FROM ChatBlocks
         WHERE internalConversationId = :internalConversationId
-        AND (:threadId IS NULL OR threadId = :threadId)
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         """
     )
     fun getNewestMessageIdFromChatBlocks(internalConversationId: String, threadId: Long?): Long

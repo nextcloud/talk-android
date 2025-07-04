@@ -174,6 +174,84 @@ class ChatBlocksDaoTest {
             assertEquals(5, results.first().size)
         }
 
+    @Test
+    fun testGetConnectedChatBlocksWithThreadsScenario() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        "abc",
+                        roomName = "Conversation One"
+                    ),
+                    createConversationEntity(
+                        accountId = account1.id,
+                        "def",
+                        roomName = "Conversation Two"
+                    )
+                )
+            )
+
+            val conversation1 = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            val searchedChatBlock = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = 123,
+                oldestMessageId = 50,
+                newestMessageId = 60,
+                hasHistory = true
+            )
+
+            val chatBlockOverlap1 = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = null,
+                oldestMessageId = 45,
+                newestMessageId = 55,
+                hasHistory = true
+            )
+
+            val chatBlockOverlap2 = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = 123,
+                oldestMessageId = 59,
+                newestMessageId = 70,
+                hasHistory = true
+            )
+
+            chatBlocksDao.upsertChatBlock(searchedChatBlock)
+
+            chatBlocksDao.upsertChatBlock(chatBlockOverlap1)
+            chatBlocksDao.upsertChatBlock(chatBlockOverlap2)
+
+            val resultsForThreadIdNull = chatBlocksDao.getConnectedChatBlocks(
+                internalConversationId = conversation1.internalId,
+                threadId = null,
+                oldestMessageId = searchedChatBlock.oldestMessageId,
+                newestMessageId = searchedChatBlock.newestMessageId
+            )
+
+            assertEquals(1, resultsForThreadIdNull.first().size)
+
+            val resultsForThreadId123 = chatBlocksDao.getConnectedChatBlocks(
+                internalConversationId = conversation1.internalId,
+                threadId = 123,
+                oldestMessageId = searchedChatBlock.oldestMessageId,
+                newestMessageId = searchedChatBlock.newestMessageId
+            )
+
+            assertEquals(2, resultsForThreadId123.first().size)
+        }
+
     private fun createUserEntity(userId: String, userName: String) =
         UserEntity(
             userId = userId,
