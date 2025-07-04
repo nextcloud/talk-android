@@ -197,6 +197,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -350,6 +351,7 @@ class ChatActivity :
 
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
+    var threadId: Long? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -391,9 +393,14 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            intent.putExtras(Bundle())
-            startActivity(intent)
+            if (isChatThread()) {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            } else {
+                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.putExtras(Bundle())
+                startActivity(intent)
+            }
         }
     }
 
@@ -495,7 +502,8 @@ class ChatActivity :
         chatViewModel.initData(
             credentials!!,
             urlForChatting,
-            roomToken
+            roomToken,
+            threadId
         )
 
         messageInputFragment = getMessageInputFragment()
@@ -549,6 +557,12 @@ class ChatActivity :
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+
+        threadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
+            extras.getLong(KEY_THREAD_ID)
+        } else {
+            null
+        }
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
@@ -2599,7 +2613,9 @@ class ChatActivity :
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
-            if (currentConversation?.displayName != null) {
+            if (isChatThread()) {
+                "Thread $threadId"
+            } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
@@ -4109,6 +4125,49 @@ class ChatActivity :
         if (!foundMessage) {
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
             startContextChatWindowForMessage(parentMessage.id)
+        }
+    }
+
+    private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
+
+    fun openThread(chatMessage: ChatMessage) {
+        chatMessage.threadId?.let {
+            val bundle = Bundle()
+            bundle.putString(KEY_ROOM_TOKEN, roomToken)
+            bundle.putLong(KEY_THREAD_ID, it)
+            val chatIntent = Intent(context, ChatActivity::class.java)
+            chatIntent.putExtras(bundle)
+            startActivity(chatIntent)
+        }
+    }
+
+    fun createThread(chatMessage: ChatMessage) {
+        chatViewModel.createThread(
+            credentials = conversationUser!!.getCredentials(),
+            url = ApiUtils.getUrlForThread(
+                version = chatApiVersion,
+                baseUrl = conversationUser!!.baseUrl!!,
+                token = roomToken,
+                threadId = chatMessage.jsonMessageId
+            )
+        )
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadCreationState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadCreationUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Error -> {
+                        Log.e(TAG, "Error when creating thread")
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Success -> {
+                        openThread(chatMessage)
+                    }
+                }
+            }
         }
     }
 

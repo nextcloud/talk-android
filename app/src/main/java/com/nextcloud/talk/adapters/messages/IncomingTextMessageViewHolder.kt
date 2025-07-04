@@ -10,6 +10,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
@@ -145,7 +146,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 binding.messageAuthor.visibility = View.GONE
             }
             binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-            binding.messageText.text = processedMessageText
+            // binding.messageText.text = processedMessageText
+            // just for debugging:
+            binding.messageText.text =
+                SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
             binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE
@@ -159,13 +163,18 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             binding.messageTime.text = dateUtils.getLocalTimeStringFromTimestamp(message.timestamp)
         }
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
+
         // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
-            processParentMessage(message)
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
-        }
+        val chatActivity = commonMessageInterface as ChatActivity
+        binding.messageQuote.quotedChatMessageView.visibility =
+            if (chatActivity.threadId == message.threadId) {
+                View.GONE
+            } else if (!message.isDeleted && message.parentMessageId != null) {
+                processParentMessage(message)
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
