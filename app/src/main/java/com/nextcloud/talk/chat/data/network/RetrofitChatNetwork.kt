@@ -15,6 +15,7 @@ import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
@@ -221,5 +222,10 @@ class RetrofitChatNetwork(
     override suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall {
         val url = ApiUtils.getUrlForUnbindingRoom(baseUrl, roomToken)
         return ncApiCoroutines.unbindRoom(credentials, url)
+    }
+
+    override suspend fun getServerStatus(baseUrl: String): Status {
+        val url = baseUrl + ApiUtils.getUrlPostfixForStatus()
+        return ncApiCoroutines.getServerStatus(url)
     }
 }
