@@ -4143,6 +4143,36 @@ class ChatActivity :
         }
     }
 
+    fun createThread(chatMessage: ChatMessage) {
+        chatViewModel.createThread(
+            credentials = conversationUser!!.getCredentials(),
+            url = ApiUtils.getUrlForThread(
+                version = chatApiVersion,
+                baseUrl = conversationUser!!.baseUrl!!,
+                token = roomToken,
+                threadId = chatMessage.jsonMessageId
+            )
+        )
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadCreationState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadCreationUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Error -> {
+                        Log.e(TAG, "Error when creating thread")
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Success -> {
+                        openThread(chatMessage)
+                    }
+                }
+            }
+        }
+    }
+
     override fun joinAudioCall() {
         startACall(true, false)
     }

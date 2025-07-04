@@ -15,6 +15,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import io.reactivex.Observable
 import retrofit2.Response
@@ -65,6 +66,7 @@ interface ChatNetworkDataSource {
     fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
+    suspend fun createThread(credentials: String, url: String): ThreadOverall
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
     suspend fun editChatMessage(credentials: String, url: String, text: String): ChatOverallSingleMessage
     suspend fun getOutOfOfficeStatusForUser(credentials: String, baseUrl: String, userId: String): UserAbsenceOverall
