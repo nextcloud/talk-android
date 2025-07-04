@@ -184,8 +184,5 @@ system ('git add ' + PREVIOUS_LINT_RESULTS_FILE)
 # commit changes
 system('git commit -sm "Analysis: update lint results to reflect reduced error/warning count"')
 
-# push to origin
-system ('git push')
-
 puts "SUCCESS: count was reduced"
 exit 0 # success
