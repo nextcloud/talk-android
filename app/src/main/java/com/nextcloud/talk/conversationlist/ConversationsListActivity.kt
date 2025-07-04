@@ -316,8 +316,10 @@ class ConversationsListActivity :
                 showServerEOLDialog()
                 return
             }
-            if (isUnifiedSearchAvailable(currentUser!!.capabilities?.spreedCapability!!)) {
-                searchHelper = MessageSearchHelper(unifiedSearchRepository)
+            currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
+                if (isUnifiedSearchAvailable(spreedCapabilities)) {
+                    searchHelper = MessageSearchHelper(unifiedSearchRepository)
+                }
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
