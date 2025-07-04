@@ -37,6 +37,7 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
+import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
@@ -51,6 +52,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -155,6 +158,9 @@ class ChatViewModel @Inject constructor(
     private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
     val getContextChatMessages: LiveData<List<ChatMessageJson>>
         get() = _getContextChatMessages
+
+    private val _threadCreationState = MutableStateFlow<ThreadCreationUiState>(ThreadCreationUiState.None)
+    val threadCreationState: StateFlow<ThreadCreationUiState> = _threadCreationState
 
     val getOpenGraph: LiveData<Reference>
         get() = _getOpenGraph
@@ -420,6 +426,13 @@ class ChatViewModel @Inject constructor(
                     _createRoomViewState.value = CreateRoomSuccessState(t)
                 }
             })
+    }
+
+    fun createThread(credentials: String, url: String) {
+        viewModelScope.launch {
+            val thread = chatNetworkDataSource.createThread(credentials, url)
+            _threadCreationState.value = ThreadCreationUiState.Success(thread.ocs?.data)
+        }
     }
 
     fun loadMessages(withCredentials: String, withUrl: String) {
@@ -870,5 +883,11 @@ class ChatViewModel @Inject constructor(
         data object None : UnbindRoomUiState()
         data class Success(val statusCode: Int) : UnbindRoomUiState()
         data class Error(val message: String) : UnbindRoomUiState()
+    }
+
+    sealed class ThreadCreationUiState {
+        data object None : ThreadCreationUiState()
+        data class Success(val thread: ThreadInfo?) : ThreadCreationUiState()
+        data class Error(val message: String) : ThreadCreationUiState()
     }
 }
