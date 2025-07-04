@@ -298,7 +298,7 @@ class ConversationsListActivity :
         } else {
             binding.loadingContent.visibility = View.GONE
         }
-        adapter!!.addListener(this)
+        adapter?.addListener(this)
         prepareViews()
 
         showNotificationWarning()
@@ -314,7 +314,7 @@ class ConversationsListActivity :
                 showServerEOLDialog()
                 return
             }
-            if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
+            if (isUnifiedSearchAvailable(currentUser!!.capabilities?.spreedCapability!!)) {
                 searchHelper = MessageSearchHelper(unifiedSearchRepository)
             }
             credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
