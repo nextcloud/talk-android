@@ -162,8 +162,9 @@ object DisplayUtils {
         val config = context.resources.configuration
         chip.setLayoutDirection(config.layoutDirection)
         val drawable: Int
-        val isCallOrGroup = "call" == type || "calls" == type || "groups" == type || "user-group" == type
-        if (!isCallOrGroup) {
+        val isCall = "call" == type || "calls" == type
+        val isGroup = "groups" == type || "user-group" == type
+        if (!isGroup) {
             drawable = if (chipResource == R.xml.chip_you) {
                 R.drawable.mention_chip
             } else {
@@ -176,8 +177,12 @@ object DisplayUtils {
         if (type == "circle" || type == "teams") {
             chip.setChipIconResource(R.drawable.icon_team)
         }
+
+        if (isCall) {
+            chip.setChipIconResource(R.drawable.icon_circular_phone)
+        }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
-        if (!isCallOrGroup) {
+        if (!isGroup) {
             var url = getUrlForAvatar(conversationUser.baseUrl, id, false)
             if ("guests" == type || "guest" == type || "email" == type) {
                 url = getUrlForGuestAvatar(
