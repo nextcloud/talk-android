@@ -164,7 +164,7 @@ object DisplayUtils {
         val drawable: Int
         val isCall = "call" == type || "calls" == type
         val isGroup = "groups" == type || "user-group" == type
-        if (!isGroup) {
+        if (!isGroup && !isCall) {
             drawable = if (chipResource == R.xml.chip_you) {
                 R.drawable.mention_chip
             } else {
@@ -178,7 +178,7 @@ object DisplayUtils {
             chip.setChipIconResource(R.drawable.icon_team)
         }
 
-        if (isCall) {
+        if (isCall && isPhoneNumber(label.toString())) {
             chip.setChipIconResource(R.drawable.icon_circular_phone)
         }
         chip.setBounds(0, 0, chip.intrinsicWidth, chip.intrinsicHeight)
@@ -535,5 +535,9 @@ object DisplayUtils {
         } else {
             text
         }
+    }
+
+    fun isPhoneNumber(input: String?): Boolean {
+        return input?.matches(Regex("^\\+?\\d+$")) == true
     }
 }

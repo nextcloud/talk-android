@@ -129,14 +129,22 @@ class MentionAutocompleteItem(
     private fun setAvatar(holder: ParticipantItemViewHolder, objectId: String?) {
         when (source) {
             SOURCE_CALLS -> {
-                run {}
                 run {
-                    holder.binding.avatarView.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.avatarView,
-                            R.drawable.ic_phone
+                    if (isPhoneNumber(displayName)) {
+                        holder.binding.avatarView.loadUserAvatar(
+                            viewThemeUtils.talk.themePlaceholderAvatar(
+                                holder.binding.avatarView,
+                                R.drawable.ic_phone
+                            )
                         )
-                    )
+                    } else {
+                        holder.binding.avatarView.loadUserAvatar(
+                            viewThemeUtils.talk.themePlaceholderAvatar(
+                                holder.binding.avatarView,
+                                R.drawable.ic_avatar_group
+                            )
+                        )
+                    }
                 }
             }
 
@@ -192,6 +200,10 @@ class MentionAutocompleteItem(
                 )
             }
         }
+    }
+
+    fun isPhoneNumber(input: String?): Boolean {
+        return input?.matches(Regex("^\\+?\\d+$")) == true
     }
 
     private fun drawStatus(holder: ParticipantItemViewHolder) {
