@@ -134,7 +134,7 @@ class MentionAutocompleteItem(
                     holder.binding.avatarView.loadUserAvatar(
                         viewThemeUtils.talk.themePlaceholderAvatar(
                             holder.binding.avatarView,
-                            R.drawable.ic_avatar_group
+                            R.drawable.ic_phone
                         )
                     )
                 }
