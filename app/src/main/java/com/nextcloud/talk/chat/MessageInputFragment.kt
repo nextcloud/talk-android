@@ -417,31 +417,9 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
-            val inputEditText = binding.fragmentMessageInputView.inputEditText!!.editableText
-            val mentionSpans = inputEditText.getSpans(
-                0,
-                inputEditText.length,
-                Spans.MentionChipSpan::class.java
-            )
-            var mentionSpan: Spans.MentionChipSpan
-            for (i in mentionSpans.indices) {
-                mentionSpan = mentionSpans[i]
-                var mentionId = mentionSpan.id
-                val shouldQuote = mentionId.contains(" ") ||
-                    mentionId.contains("@") ||
-                    mentionId.startsWith("guest/") ||
-                    mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/") ||
-                    mentionId.startsWith("team/")
-                if (shouldQuote) {
-                    mentionId = "\"" + mentionId + "\""
-                }
-                inputEditText.replace(
-                    inputEditText.getSpanStart(mentionSpan),
-                    inputEditText.getSpanEnd(mentionSpan),
-                    "@$mentionId"
-                )
-            }
+            val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
+            replaceMentionChipSpans(editable)
+            val inputEditText = editable.toString()
 
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
             if (message.message!!.trim() != inputEditText.trim()) {
@@ -449,7 +427,7 @@ class MessageInputFragment : Fragment() {
                     val editedMessage = messageUtils.processEditMessageParameters(
                         message.messageParameters!!,
                         message,
-                        inputEditText.toString()
+                        inputEditText
                     )
                     editMessageAPI(message, editedMessage.toString())
                 } else {
@@ -876,27 +854,7 @@ class MessageInputFragment : Fragment() {
     private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.fragmentMessageInputView.inputEditText != null) {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
-            val mentionSpans = editable.getSpans(
-                0,
-                editable.length,
-                Spans.MentionChipSpan::class.java
-            )
-            var mentionSpan: Spans.MentionChipSpan
-            for (i in mentionSpans.indices) {
-                mentionSpan = mentionSpans[i]
-                var mentionId = mentionSpan.id
-                val shouldQuote = mentionId.contains(" ") ||
-                    mentionId.contains("@") ||
-                    mentionId.startsWith("guest/") ||
-                    mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/") ||
-                    mentionId.startsWith("team/")
-                if (shouldQuote) {
-                    mentionId = "\"" + mentionId + "\""
-                }
-                editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
-            }
-
+            replaceMentionChipSpans(editable)
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
             val replyMessageId = binding.fragmentMessageInputView
@@ -924,6 +882,31 @@ class MessageInputFragment : Fragment() {
             replyTo ?: 0,
             sendWithoutNotification
         )
+    }
+
+    private fun replaceMentionChipSpans(editable: Editable) {
+        val mentionSpans = editable.getSpans(
+            0,
+            editable.length,
+            Spans.MentionChipSpan::class.java
+        )
+        for (mentionSpan in mentionSpans) {
+            var mentionId = mentionSpan.id
+            val shouldQuote = mentionId.contains(" ") ||
+                mentionId.contains("@") ||
+                mentionId.startsWith("guest/") ||
+                mentionId.startsWith("group/") ||
+                mentionId.startsWith("email/") ||
+                mentionId.startsWith("team/")
+            if (shouldQuote) {
+                mentionId = "\"$mentionId\""
+            }
+            editable.replace(
+                editable.getSpanStart(mentionSpan),
+                editable.getSpanEnd(mentionSpan),
+                "@$mentionId"
+            )
+        }
     }
 
     private fun showSendButtonMenu() {
