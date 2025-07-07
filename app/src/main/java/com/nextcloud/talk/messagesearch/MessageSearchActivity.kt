@@ -148,13 +148,12 @@ class MessageSearchActivity : BaseActivity() {
         adapter!!.addListener(object : FlexibleAdapter.OnItemClickListener {
             override fun onItemClick(view: View?, position: Int): Boolean {
                 val item = adapter!!.getItem(position)
-                when (item?.itemViewType) {
-                    LoadMoreResultsItem.VIEW_TYPE -> {
+                when (item) {
+                    is LoadMoreResultsItem -> {
                         viewModel.loadMore()
                     }
-                    MessageResultItem.VIEW_TYPE -> {
-                        val messageItem = item as MessageResultItem
-                        viewModel.selectMessage(messageItem.messageEntry)
+                    is MessageResultItem -> {
+                        viewModel.selectMessage(item.messageEntry)
                     }
                 }
                 return false
