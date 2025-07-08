@@ -160,7 +160,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
 import java.io.File
-import java.util.Objects
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1447,10 +1446,9 @@ class ConversationsListActivity :
     override fun onItemClick(view: View, position: Int): Boolean {
         val item = adapter?.getItem(position)
         if (item != null) {
-            when (item.itemViewType) {
-                MessageResultItem.VIEW_TYPE -> {
-                    val messageItem: MessageResultItem = item as MessageResultItem
-                    val token = messageItem.messageEntry.conversationToken
+            when (item) {
+                is MessageResultItem -> {
+                    val token = item.messageEntry.conversationToken
                     val conversationName = (
                         conversationItems.first {
                             (it is ConversationItem) && it.model.token == token
@@ -1464,27 +1462,26 @@ class ConversationsListActivity :
                             bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
                             bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
                             bundle.putString(KEY_ROOM_TOKEN, token)
-                            bundle.putString(BundleKeys.KEY_MESSAGE_ID, messageItem.messageEntry.messageId)
+                            bundle.putString(BundleKeys.KEY_MESSAGE_ID, item.messageEntry.messageId)
                             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversationName)
                             ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
                         }
                     }
                 }
 
-                LoadMoreResultsItem.VIEW_TYPE -> {
+                is LoadMoreResultsItem -> {
                     loadMoreMessages()
                 }
 
-                ConversationItem.VIEW_TYPE -> {
-                    handleConversation((Objects.requireNonNull(item) as ConversationItem).model)
+                is ConversationItem -> {
+                    handleConversation(item.model)
                 }
 
-                ContactItem.VIEW_TYPE -> {
-                    val contact = item as ContactItem
+                is ContactItem -> {
                     contactsViewModel.createRoom(
                         ROOM_TYPE_ONE_ONE,
                         null,
-                        contact.model.actorId!!,
+                        item.model.actorId!!,
                         null
                     )
                 }
