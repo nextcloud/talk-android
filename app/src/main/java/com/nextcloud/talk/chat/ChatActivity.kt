@@ -153,6 +153,7 @@ import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
@@ -1245,6 +1246,26 @@ class ChatActivity :
                         uiState.userAbsence.message
                     binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                    }
+                }
+            }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadCreationState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadCreationUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Error -> {
+                        Log.e(TAG, "Error when creating thread")
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Success -> {
+                        uiState.thread?.first?.threadId?.let {
+                            openThread(it)
+                        }
                     }
                 }
             }
@@ -3190,6 +3211,11 @@ class ChatActivity :
                 true
             }
 
+            R.id.show_threads -> {
+                openThreadsOverview()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
 
@@ -4132,15 +4158,13 @@ class ChatActivity :
 
     private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
 
-    fun openThread(chatMessage: ChatMessage) {
-        chatMessage.threadId?.let {
-            val bundle = Bundle()
-            bundle.putString(KEY_ROOM_TOKEN, roomToken)
-            bundle.putLong(KEY_THREAD_ID, it)
-            val chatIntent = Intent(context, ChatActivity::class.java)
-            chatIntent.putExtras(bundle)
-            startActivity(chatIntent)
-        }
+    fun openThread(messageId: Long) {
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        bundle.putLong(KEY_THREAD_ID, messageId)
+        val chatIntent = Intent(context, ChatActivity::class.java)
+        chatIntent.putExtras(bundle)
+        startActivity(chatIntent)
     }
 
     fun createThread(chatMessage: ChatMessage) {
@@ -4153,24 +4177,14 @@ class ChatActivity :
                 threadId = chatMessage.jsonMessageId
             )
         )
+    }
 
-        this.lifecycleScope.launch {
-            chatViewModel.threadCreationState.collect { uiState ->
-                when (uiState) {
-                    ChatViewModel.ThreadCreationUiState.None -> {
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Error -> {
-                        Log.e(TAG, "Error when creating thread")
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Success -> {
-                        openThread(chatMessage)
-                    }
-                }
-            }
-        }
+    fun openThreadsOverview() {
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
+        threadsOverviewIntent.putExtras(bundle)
+        startActivity(threadsOverviewIntent)
     }
 
     override fun joinAudioCall() {

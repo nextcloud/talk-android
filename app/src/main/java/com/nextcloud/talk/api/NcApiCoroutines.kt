@@ -20,6 +20,7 @@ import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
+import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -289,4 +290,7 @@ interface NcApiCoroutines {
 
     @POST
     suspend fun createThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
+
+    @GET
+    suspend fun getThreads(@Header("Authorization") authorization: String, @Url url: String): ThreadsOverall
 }
