@@ -49,4 +49,10 @@
         android:orderInCategory="5"
         android:title="@string/nc_shared_items"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/show_threads"
+        android:orderInCategory="6"
+        android:title="@string/show_threads_overview"
+        app:showAsAction="never" />
 </menu>

@@ -551,6 +551,8 @@ How to translate with transifex:
 
     <string name="open_thread">See thread</string>
     <string name="reply_in_thread">Reply in thread</string>
+    <string name="show_threads_overview">Show threads</string>
+    <string name="threads_overview">Threads</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>

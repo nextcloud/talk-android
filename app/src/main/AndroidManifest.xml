@@ -258,6 +258,10 @@
             android:name=".lock.LockedActivity"
             android:theme="@style/AppTheme" />
 
+        <activity
+            android:name=".threadsoverview.ThreadsOverviewActivity"
+            android:theme="@style/AppTheme" />
+
         <receiver
             android:name=".receivers.PackageReplacedReceiver"
             android:exported="false">
