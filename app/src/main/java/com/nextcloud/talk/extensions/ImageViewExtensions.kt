@@ -332,12 +332,12 @@ fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
 }
 
 fun ImageView.loadDefaultGroupCallAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group) as Any
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_group_small) as Any
     return loadUserAvatar(data)
 }
 
 fun ImageView.loadTeamAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.disposables.Disposable {
-    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.icon_team) as Any
+    val data: Any = viewThemeUtils.talk.themePlaceholderAvatar(this, R.drawable.ic_avatar_team_small) as Any
     return loadUserAvatar(data)
 }
 

@@ -177,7 +177,7 @@ class MentionAutocompleteItem(
                     val imageViewHeight = holder.binding.avatarView.height
 
                     val request = ImageRequest.Builder(context)
-                        .data(R.drawable.icon_team)
+                        .data(R.drawable.icon_circular_team)
                         .size(imageViewWidth, imageViewHeight)
                         .scale(coil.size.Scale.FILL)
                         .target(holder.binding.avatarView)
