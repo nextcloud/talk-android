@@ -54,6 +54,7 @@ import coil.request.ImageRequest
 import coil.target.Target
 import coil.transform.CircleCropTransformation
 import com.google.android.material.chip.ChipDrawable
+import com.nextcloud.talk.PhoneUtils.isPhoneNumber
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
 import com.nextcloud.talk.data.user.model.User
@@ -535,9 +536,5 @@ object DisplayUtils {
         } else {
             text
         }
-    }
-
-    fun isPhoneNumber(input: String?): Boolean {
-        return input?.matches(Regex("^\\+?\\d+$")) == true
     }
 }

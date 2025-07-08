@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import coil.Coil
 import coil.request.ImageRequest
+import com.nextcloud.talk.PhoneUtils.isPhoneNumber
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
@@ -200,10 +201,6 @@ class MentionAutocompleteItem(
                 )
             }
         }
-    }
-
-    fun isPhoneNumber(input: String?): Boolean {
-        return input?.matches(Regex("^\\+?\\d+$")) == true
     }
 
     private fun drawStatus(holder: ParticipantItemViewHolder) {
