@@ -64,6 +64,7 @@ import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.presenters.MentionAutocompletePresenter
@@ -77,6 +78,7 @@ import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.stfalcon.chatkit.commons.models.IMessage
@@ -123,6 +125,9 @@ class MessageInputFragment : Fragment() {
 
     @Inject
     lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
+    lateinit var messageUtils: MessageUtils
 
     lateinit var binding: FragmentMessageInputBinding
     private lateinit var conversationInternalId: String
@@ -412,10 +417,22 @@ class MessageInputFragment : Fragment() {
         }
 
         binding.fragmentMessageInputView.editMessageButton.setOnClickListener {
-            val text = binding.fragmentMessageInputView.inputEditText.text.toString()
+            val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
+            replaceMentionChipSpans(editable)
+            val inputEditText = editable.toString()
+
             val message = chatActivity.messageInputViewModel.getEditChatMessage.value as ChatMessage
-            if (message.message!!.trim() != text.trim()) {
-                editMessageAPI(message, text)
+            if (message.message!!.trim() != inputEditText.trim()) {
+                if (message.messageParameters != null) {
+                    val editedMessage = messageUtils.processEditMessageParameters(
+                        message.messageParameters!!,
+                        message,
+                        inputEditText
+                    )
+                    editMessageAPI(message, editedMessage.toString())
+                } else {
+                    editMessageAPI(message, inputEditText.toString())
+                }
             }
             clearEditUI()
         }
@@ -837,27 +854,7 @@ class MessageInputFragment : Fragment() {
     private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.fragmentMessageInputView.inputEditText != null) {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
-            val mentionSpans = editable.getSpans(
-                0,
-                editable.length,
-                Spans.MentionChipSpan::class.java
-            )
-            var mentionSpan: Spans.MentionChipSpan
-            for (i in mentionSpans.indices) {
-                mentionSpan = mentionSpans[i]
-                var mentionId = mentionSpan.id
-                val shouldQuote = mentionId.contains(" ") ||
-                    mentionId.contains("@") ||
-                    mentionId.startsWith("guest/") ||
-                    mentionId.startsWith("group/") ||
-                    mentionId.startsWith("email/") ||
-                    mentionId.startsWith("team/")
-                if (shouldQuote) {
-                    mentionId = "\"" + mentionId + "\""
-                }
-                editable.replace(editable.getSpanStart(mentionSpan), editable.getSpanEnd(mentionSpan), "@$mentionId")
-            }
-
+            replaceMentionChipSpans(editable)
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
             val replyMessageId = binding.fragmentMessageInputView
@@ -885,6 +882,31 @@ class MessageInputFragment : Fragment() {
             replyTo ?: 0,
             sendWithoutNotification
         )
+    }
+
+    private fun replaceMentionChipSpans(editable: Editable) {
+        val mentionSpans = editable.getSpans(
+            0,
+            editable.length,
+            Spans.MentionChipSpan::class.java
+        )
+        for (mentionSpan in mentionSpans) {
+            var mentionId = mentionSpan.id
+            val shouldQuote = mentionId.contains(" ") ||
+                mentionId.contains("@") ||
+                mentionId.startsWith("guest/") ||
+                mentionId.startsWith("group/") ||
+                mentionId.startsWith("email/") ||
+                mentionId.startsWith("team/")
+            if (shouldQuote) {
+                mentionId = "\"$mentionId\""
+            }
+            editable.replace(
+                editable.getSpanStart(mentionSpan),
+                editable.getSpanEnd(mentionSpan),
+                "@$mentionId"
+            )
+        }
     }
 
     private fun showSendButtonMenu() {
@@ -932,8 +954,12 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun setEditUI(message: ChatMessage) {
-        binding.fragmentEditView.editMessage.text = message.message
-        binding.fragmentMessageInputView.inputEditText.setText(message.message)
+        val editedMessage = ChatUtils.getParsedMessage(message.message, message.messageParameters)
+        binding.fragmentEditView.editMessage.text = editedMessage
+        binding.fragmentMessageInputView.inputEditText.setText(editedMessage)
+        if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
+            mentionAutocomplete?.dismissPopup()
+        }
         val end = binding.fragmentMessageInputView.inputEditText.text.length
         binding.fragmentMessageInputView.inputEditText.setSelection(end)
         binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
