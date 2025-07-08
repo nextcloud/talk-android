@@ -13,8 +13,6 @@ import android.content.Context
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
-import coil.Coil
-import coil.request.ImageRequest
 import com.nextcloud.talk.PhoneUtils.isPhoneNumber
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
@@ -41,8 +39,7 @@ class MentionAutocompleteItem(
     private val context: Context,
     @JvmField val roomToken: String,
     private val viewThemeUtils: ViewThemeUtils
-) : AbstractFlexibleItem<ParticipantItemViewHolder>(),
-    IFilterable<String?> {
+) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
     @JvmField
     var source: String?
 
@@ -137,7 +134,7 @@ class MentionAutocompleteItem(
                         holder.binding.avatarView.loadUserAvatar(
                             viewThemeUtils.talk.themePlaceholderAvatar(
                                 holder.binding.avatarView,
-                                R.drawable.ic_avatar_group
+                                R.drawable.ic_avatar_group_small
                             )
                         )
                     }
@@ -146,7 +143,8 @@ class MentionAutocompleteItem(
 
             SOURCE_GROUPS -> {
                 holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable.ic_avatar_group)
+                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable
+                        .ic_avatar_group_small)
                 )
             }
 
@@ -172,19 +170,10 @@ class MentionAutocompleteItem(
             }
 
             SOURCE_TEAMS -> {
-                holder.binding.avatarView.post {
-                    val imageViewWidth = holder.binding.avatarView.width
-                    val imageViewHeight = holder.binding.avatarView.height
-
-                    val request = ImageRequest.Builder(context)
-                        .data(R.drawable.icon_circular_team)
-                        .size(imageViewWidth, imageViewHeight)
-                        .scale(coil.size.Scale.FILL)
-                        .target(holder.binding.avatarView)
-                        .build()
-
-                    Coil.imageLoader(context).enqueue(request)
-                }
+                holder.binding.avatarView.loadUserAvatar(
+                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable
+                        .ic_avatar_team_small)
+                )
             }
 
             else -> {
