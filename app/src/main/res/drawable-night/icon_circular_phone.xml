@@ -1,0 +1,27 @@
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2018-2025 Google LLC
+  ~ SPDX-License-Identifier: Apache-2.0
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:pathData="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10 10,-4.48 10,-10S17.52,2 12,2z"
+        android:fillColor="#3B3B3B" />
+
+    <group
+        android:scaleX="0.55"
+        android:scaleY="0.55"
+        android:pivotX="12"
+        android:pivotY="12">
+        <path
+            android:pathData="M6.62,10.79C8.06,13.62 10.38,15.94 13.21,17.38l2.2,-2.2c0.27,-0.27 0.67,-0.36 1.02,-0.24 1.12,0.37 2.33,0.57 3.57,0.57 0.55,0 1,0.45 1,1v3.5c0,0.55 -0.45,1 -1,1C10.07,21 3,13.93 3,5.5 3,4.95 3.45,4.5 4,4.5H7.5c0.55,0 1,0.45 1,1 0,1.24 0.2,2.45 0.57,3.57 0.11,0.35 0.03,0.74 -0.25,1.02l-2.2,2.2z"
+            android:fillColor="#FFFFFF" />
+    </group>
+</vector>

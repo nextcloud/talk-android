@@ -15,6 +15,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.res.ResourcesCompat
 import coil.Coil
 import coil.request.ImageRequest
+import com.nextcloud.talk.PhoneUtils.isPhoneNumber
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ParticipantItem.ParticipantItemViewHolder
 import com.nextcloud.talk.data.user.model.User
@@ -129,14 +130,22 @@ class MentionAutocompleteItem(
     private fun setAvatar(holder: ParticipantItemViewHolder, objectId: String?) {
         when (source) {
             SOURCE_CALLS -> {
-                run {}
                 run {
-                    holder.binding.avatarView.loadUserAvatar(
-                        viewThemeUtils.talk.themePlaceholderAvatar(
-                            holder.binding.avatarView,
-                            R.drawable.ic_avatar_group
+                    if (isPhoneNumber(displayName)) {
+                        holder.binding.avatarView.loadUserAvatar(
+                            viewThemeUtils.talk.themePlaceholderAvatar(
+                                holder.binding.avatarView,
+                                R.drawable.ic_phone_small
+                            )
                         )
-                    )
+                    } else {
+                        holder.binding.avatarView.loadUserAvatar(
+                            viewThemeUtils.talk.themePlaceholderAvatar(
+                                holder.binding.avatarView,
+                                R.drawable.ic_avatar_group
+                            )
+                        )
+                    }
                 }
             }
 
