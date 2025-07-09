@@ -45,6 +45,7 @@
     <string name="edit_message_icon_description">Rediger melding</string>
     <string name="emoji_category_recent">Nylig</string>
     <string name="encrypted">Kryptert</string>
+    <string name="end_call">Avslutt samtale</string>
     <string name="end_call_for_everyone">Avslutt samtale for alle</string>
     <string name="error_loading_chats">Det oppstod et problem med å laste inn chattene dine</string>
     <string name="error_unbanning">Det oppstod feil ved oppheving av utestengelse av deltaker</string>

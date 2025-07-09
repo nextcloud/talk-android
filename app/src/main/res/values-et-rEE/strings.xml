@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Muuda sõnumit</string>
     <string name="emoji_category_recent">Hiljutised</string>
     <string name="encrypted">Krüptitud</string>
+    <string name="end_call">Lõpeta kõne</string>
     <string name="end_call_for_everyone">Lõpeta kõne kõigi jaoks</string>
     <string name="error_loading_chats">Sinu vestluste laadimisel tekkis viga</string>
     <string name="error_unbanning">Osaleja suhtluskeelu eemaldamisel tekkis viga</string>

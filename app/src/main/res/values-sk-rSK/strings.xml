@@ -50,6 +50,7 @@
     <string name="edit_message_icon_description">Upraviť správu</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
+    <string name="end_call">Ukončiť hovor</string>
     <string name="end_call_for_everyone">Ukončiť hovor pre všetkých</string>
     <string name="error_loading_chats">Nastal problém s načítaním vašich správ</string>
     <string name="error_unbanning">Pri rušení banu pre účastníka sa vyskytla chyba</string>

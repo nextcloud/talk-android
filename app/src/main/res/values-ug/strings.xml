@@ -47,6 +47,7 @@
     <string name="edit_message_icon_description">ئۇچۇرنى تەھرىرلەش</string>
     <string name="emoji_category_recent">يېقىنقى</string>
     <string name="encrypted">شىفىرلانغان</string>
+    <string name="end_call">ئاخىرلىشىش تېلېفونى</string>
     <string name="end_call_for_everyone">ھەممەيلەنگە تېلېفون قىلىش</string>
     <string name="error_loading_chats">پاراڭلىرىڭىزنى يۈكلەشتە مەسىلە كۆرۈلدى</string>
     <string name="error_unbanning">قاتناشقۇچىنى چەكلىگەندە خاتالىق كۆرۈلدى</string>

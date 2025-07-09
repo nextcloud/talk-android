@@ -26,6 +26,7 @@
     <string name="edit_message_icon_description">Επεξεργασία μηνύματος</string>
     <string name="emoji_category_recent">Πρόσφατα</string>
     <string name="encrypted">Κρυπτογραφημένο</string>
+    <string name="end_call">Τερματισμός κλήσης</string>
     <string name="failed_to_save">Αποτυχία αποθήκευσης %1$s</string>
     <string name="file_list_folder">φάκελος</string>
     <string name="file_list_loading">Φόρτωση …</string>

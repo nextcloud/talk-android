@@ -37,6 +37,7 @@
     <string name="edit_message_icon_description">编辑消息</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">已加密</string>
+    <string name="end_call">结束通话</string>
     <string name="end_call_for_everyone">为所有人结束通话</string>
     <string name="error_loading_chats">加载聊天记录时出错</string>
     <string name="failed_to_save">保存%1$s失败</string>

@@ -50,6 +50,7 @@
     <string name="edit_message_icon_description">Editar a mensaxe</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
+    <string name="end_call">Finalizar a chamada</string>
     <string name="end_call_for_everyone">Finalizar a chamada para todos</string>
     <string name="error_loading_chats">Produciuse un problema ao cargar as súas parolas</string>
     <string name="error_unbanning">Produciuse un erro ao retirar a expulsión dun participante</string>

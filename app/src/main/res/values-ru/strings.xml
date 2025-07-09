@@ -39,6 +39,7 @@
     <string name="edit_message_icon_description">Редактировать сообщение</string>
     <string name="emoji_category_recent">Недавние</string>
     <string name="encrypted">Зашифровано</string>
+    <string name="end_call">Завершить вызов</string>
     <string name="end_call_for_everyone">Завершить звонок для всех</string>
     <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="error_unbanning">Произошла ошибка при разблокировке участника</string>
