@@ -267,8 +267,10 @@ class ConversationsListActivity :
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
-        viewThemeUtils.material.themeCardView(binding.searchToolbar)
-        viewThemeUtils.material.themeSearchBarText(binding.searchText)
+
+        viewThemeUtils.material.themeSearchCardView(binding.searchToolbar)
+        viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE)
+        viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
@@ -2191,7 +2193,7 @@ class ConversationsListActivity :
             binding.filterConversationsButton.let {
                 viewThemeUtils.platform.colorImageView(
                     it,
-                    ColorRole.ON_SURFACE_VARIANT
+                    ColorRole.ON_SURFACE
                 )
             }
         }
