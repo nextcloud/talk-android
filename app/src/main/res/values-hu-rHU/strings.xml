@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Üzenet szerkesztése</string>
     <string name="emoji_category_recent">Legutóbbiak</string>
     <string name="encrypted">Titkosított</string>
+    <string name="end_call">Hívás befejezése</string>
     <string name="end_call_for_everyone">Hívás befejezése mindenki számára</string>
     <string name="error_loading_chats">Hiba történt a csevegések betöltése során</string>
     <string name="error_unbanning">Hiba történt a résztvevő tiltásának visszavonása során</string>

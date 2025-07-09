@@ -40,6 +40,7 @@
     <string name="edit_message_icon_description">メッセージを編集</string>
     <string name="emoji_category_recent">最近</string>
     <string name="encrypted">暗号化済み</string>
+    <string name="end_call">通話終了</string>
     <string name="end_call_for_everyone">全員の通話を終了する</string>
     <string name="error_loading_chats">あなたのチャットの読み込み中に問題が発生しました</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>

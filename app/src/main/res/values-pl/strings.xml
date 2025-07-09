@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Edytuj wiadomość</string>
     <string name="emoji_category_recent">Ostatnie</string>
     <string name="encrypted">Zaszyfrowane</string>
+    <string name="end_call">Zakończ połączenie</string>
     <string name="end_call_for_everyone">Zakończ połączenie dla wszystkich</string>
     <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="error_unbanning">Wystąpił błąd podczas odblokowywania uczestnika</string>

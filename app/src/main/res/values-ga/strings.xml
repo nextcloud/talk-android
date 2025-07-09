@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Cuir teachtaireacht in eagar</string>
     <string name="emoji_category_recent">le déanaí</string>
     <string name="encrypted">Criptithe</string>
+    <string name="end_call">Cuir deireadh leis an nglao</string>
     <string name="end_call_for_everyone">Cuir deireadh leis an nglao do chách</string>
     <string name="error_loading_chats">Tharla fadhb agus do chomhráite á lódáil</string>
     <string name="error_unbanning">Tharla earráid agus rannpháirtí á bhaint de</string>

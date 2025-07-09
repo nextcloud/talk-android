@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Edit message</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Encrypted</string>
+    <string name="end_call">End call</string>
     <string name="end_call_for_everyone">End call for everyone</string>
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>

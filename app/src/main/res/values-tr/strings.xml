@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">İletiyi düzenle</string>
     <string name="emoji_category_recent">Son kullanılan</string>
     <string name="encrypted">Şifrelenmiş</string>
+    <string name="end_call">Çağrıyı sonlandır</string>
     <string name="end_call_for_everyone">Çağrıyı herkes için sonlandır</string>
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="error_unbanning">Katılımcının yasaklaması kaldırılırken sorun çıktı</string>

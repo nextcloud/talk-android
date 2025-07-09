@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Editar mensagem</string>
     <string name="emoji_category_recent">Recentes</string>
     <string name="encrypted">Criptografado</string>
+    <string name="end_call">Encerrar chamada</string>
     <string name="end_call_for_everyone">Encerrar chamada para todos</string>
     <string name="error_loading_chats">Ocorreu um problema ao carregar seus bate-papos</string>
     <string name="error_unbanning">Ocorreu um erro ao cancelar o banimento do participante</string>

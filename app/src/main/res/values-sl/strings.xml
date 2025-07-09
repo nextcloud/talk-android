@@ -33,6 +33,7 @@
     <string name="edit_message_icon_description">Uredi sporočilo</string>
     <string name="emoji_category_recent">Nedavno</string>
     <string name="encrypted">Šifrirano</string>
+    <string name="end_call">Končaj klic</string>
     <string name="end_call_for_everyone">Končaj klic za vse</string>
     <string name="error_loading_chats">Prišlo je do napake nalaganja pogovorov.</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>

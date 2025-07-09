@@ -30,6 +30,7 @@
     <string name="edit_message_icon_description">Muokkaa viestiä</string>
     <string name="emoji_category_recent">Viimeaikaiset</string>
     <string name="encrypted">Salattu</string>
+    <string name="end_call">Lopeta puhelu</string>
     <string name="end_call_for_everyone">Päätä puhelu kaikkien osalta</string>
     <string name="failed_to_save">Ei voitu tallentaa %1$s</string>
     <string name="file_list_folder">kansio</string>

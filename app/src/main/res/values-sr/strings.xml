@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Уреди поруку</string>
     <string name="emoji_category_recent">Недавно</string>
     <string name="encrypted">Шифровано</string>
+    <string name="end_call">Заврши позив</string>
     <string name="end_call_for_everyone">Заврши позив за све</string>
     <string name="error_loading_chats">Дошло је до проблема приликом учитавања ваших четова</string>
     <string name="error_unbanning">Дошло је до грешке приликом укидања забране за учесника</string>

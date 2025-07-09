@@ -54,6 +54,7 @@
     <string name="edit_message_icon_description">Modifier le message</string>
     <string name="emoji_category_recent">Récent</string>
     <string name="encrypted">Chiffré</string>
+    <string name="end_call">Terminer l\'appel</string>
     <string name="end_call_for_everyone">Mettre fin à l\'appel pour tout le monde</string>
     <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="error_unbanning">Une erreur est survenue à la réintégration du participant</string>

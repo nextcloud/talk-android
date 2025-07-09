@@ -53,6 +53,7 @@
     <string name="edit_message_icon_description">Redigera meddelande</string>
     <string name="emoji_category_recent">Senaste</string>
     <string name="encrypted">Krypterad</string>
+    <string name="end_call">Avsluta samtal</string>
     <string name="end_call_for_everyone">Avsluta samtal för alla</string>
     <string name="error_loading_chats">Det gick inte att ladda dina chattar</string>
     <string name="error_unbanning">Fel uppstod när deltagare skulle avblockeras</string>
