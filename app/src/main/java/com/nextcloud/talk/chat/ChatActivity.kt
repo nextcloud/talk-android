@@ -723,7 +723,8 @@ class ChatActivity :
                         ) {
                             val retentionPeriod = retentionOfSIPRoom(spreedCapabilities)
                             val systemMessage = currentConversation?.lastMessage?.systemMessageType
-                            if (retentionPeriod != 0 && (
+                            if (retentionPeriod != 0 &&
+                                (
                                     systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
                                         systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
                                     )
@@ -740,7 +741,8 @@ class ChatActivity :
                         ) {
                             val retentionPeriod = retentionOfInstantMeetingRoom(spreedCapabilities)
                             val systemMessage = currentConversation?.lastMessage?.systemMessageType
-                            if (retentionPeriod != 0 && (
+                            if (retentionPeriod != 0 &&
+                                (
                                     systemMessage == ChatMessage.SystemMessageType.CALL_ENDED ||
                                         systemMessage == ChatMessage.SystemMessageType.CALL_ENDED_EVERYONE
                                     )

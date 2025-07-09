@@ -180,8 +180,8 @@ class ChatBlocksDaoTest {
             scheduledForDeletion = java.lang.Boolean.FALSE
         )
 
-    private fun createConversationEntity(accountId: Long, token: String, roomName: String): ConversationEntity {
-        return ConversationEntity(
+    private fun createConversationEntity(accountId: Long, token: String, roomName: String) =
+        ConversationEntity(
             internalId = "$accountId@$token",
             accountId = accountId,
             token = token,
@@ -229,5 +229,4 @@ class ChatBlocksDaoTest {
             participantType = Participant.ParticipantType.DUMMY,
             recordingConsentRequired = 1
         )
-    }
 }

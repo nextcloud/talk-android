@@ -23,8 +23,8 @@ class ShareUtilsIT {
         assertEquals(TEST_DATE_IN_MILLIS, HttpUtils.parseDate("Mon, 09 Apr 2008 23:55:38 GMT")?.time)
     }
 
-    private fun parseDate2(dateStr: String): Date {
-        return DateUtils.parseDate(
+    private fun parseDate2(dateStr: String): Date =
+        DateUtils.parseDate(
             dateStr, Locale.US,
             HttpUtils.httpDateFormatStr,
             // RFC 822, updated by RFC 1123 with any TZ
@@ -48,7 +48,6 @@ class ShareUtilsIT {
             // RI bug 6641315 claims a cookie of this format was once served by www.yahoo.com
             "EEE MMM d yyyy HH:mm:ss z"
         )
-    }
 
     companion object {
         private const val TEST_DATE_IN_MILLIS = 1207778138000

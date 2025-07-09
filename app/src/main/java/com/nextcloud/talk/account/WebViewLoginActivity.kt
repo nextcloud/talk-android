@@ -155,7 +155,9 @@ class WebViewLoginActivity : BaseActivity() {
 
         val webauthnOptionsBuilder = WebauthnDialogOptions.builder().setShowSdkLogo(true).setAllowSkipPin(true)
         webViewWebauthnBridge = WebViewWebauthnBridge.createInstanceForWebView(
-            this, binding.webview, webauthnOptionsBuilder
+            this,
+            binding.webview,
+            webauthnOptionsBuilder
         )
 
         CookieSyncManager.createInstance(this)
@@ -430,7 +432,8 @@ class WebViewLoginActivity : BaseActivity() {
                 return null
             }
         }
-        return if (!TextUtils.isEmpty(loginData.serverUrl) && !TextUtils.isEmpty(loginData.username) &&
+        return if (!TextUtils.isEmpty(loginData.serverUrl) &&
+            !TextUtils.isEmpty(loginData.username) &&
             !TextUtils.isEmpty(loginData.token)
         ) {
             loginData
