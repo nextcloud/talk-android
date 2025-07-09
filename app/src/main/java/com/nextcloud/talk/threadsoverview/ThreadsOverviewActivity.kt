@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -31,12 +32,15 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
+import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -44,12 +48,15 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
+import kotlin.toString
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ThreadsOverviewActivity : BaseActivity() {
@@ -110,7 +117,8 @@ class ThreadsOverviewActivity : BaseActivity() {
                                 roomToken,
                                 onThreadClick = { roomToken, threadId ->
                                     navigateToChatActivity(roomToken, threadId)
-                                }
+                                },
+                                threadsOverviewViewModel
                             )
                         }
                     }
@@ -142,7 +150,8 @@ class ThreadsOverviewActivity : BaseActivity() {
 fun ThreadsOverviewScreen(
     uiState: ThreadsOverviewViewModel.ThreadsListUiState,
     roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit
+    onThreadClick: (roomToken: String, threadId: Int) -> Unit,
+    threadsOverviewViewModel: ThreadsOverviewViewModel
 ) {
     when (val state = uiState) {
         is ThreadsOverviewViewModel.ThreadsListUiState.None -> {
@@ -152,7 +161,8 @@ fun ThreadsOverviewScreen(
             ThreadsList(
                 threads = state.threadsList!!,
                 roomToken = roomToken,
-                onThreadClick = onThreadClick
+                onThreadClick = onThreadClick,
+                threadsOverviewViewModel
             )
         }
         is ThreadsOverviewViewModel.ThreadsListUiState.Error -> {
@@ -165,8 +175,10 @@ fun ThreadsOverviewScreen(
 fun ThreadsList(
     threads: List<ThreadInfo>,
     roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit
+    onThreadClick: (roomToken: String, threadId: Int) -> Unit,
+    threadsOverviewViewModel: ThreadsOverviewViewModel
 ) {
+    val context = LocalContext.current
     if (threads.isEmpty()) {
         Box(
             modifier = Modifier
@@ -187,9 +199,21 @@ fun ThreadsList(
         items(
             items = threads,
             key = { threadInfo -> threadInfo.thread!!.id }
-        ) { thread ->
+        ) { threadInfo ->
+            val imageUri = ApiUtils.getUrlForAvatar(
+                threadsOverviewViewModel.currentUser.baseUrl,
+                threadInfo.first?.actorId,
+                true
+            )
+            val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
+            val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
+
             ThreadRow(
-                threadInfo = thread,
+                threadId = threadInfo.thread!!.id,
+                threadName = threadInfo.first?.actorDisplayName.orEmpty(),
+                threadMessage = threadInfo.first?.message.toString(),
+                numReplies = threadInfo.thread?.numReplies ?: 0,
+                imageRequest = imageRequest,
                 roomToken = roomToken,
                 onThreadClick = onThreadClick
             )
@@ -198,27 +222,33 @@ fun ThreadsList(
 }
 
 @Composable
-fun ThreadRow(threadInfo: ThreadInfo, roomToken: String, onThreadClick: (roomToken: String, threadId: Int) -> Unit) {
-    val threadId = threadInfo.thread?.id
-    val isClickable = threadId != null
-
+fun ThreadRow(
+    threadId: Int,
+    threadName: String,
+    threadMessage: String,
+    numReplies: Int,
+    imageRequest: ImageRequest?,
+    roomToken: String,
+    onThreadClick: ((String, Int) -> Unit?)?
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .then(
-                if (isClickable) {
-                    Modifier.clickable {
-                        onThreadClick(roomToken, threadId)
-                    }
-                } else {
-                    Modifier
+                Modifier.clickable {
+                    onThreadClick?.invoke(roomToken, threadId)
                 }
             )
             .padding(vertical = 8.dp)
     ) {
-        Text(text = threadInfo.first?.actorDisplayName.orEmpty(), style = MaterialTheme.typography.titleMedium)
-        Text(text = threadInfo.first?.message.toString(), style = MaterialTheme.typography.bodySmall)
-        val numRepliesText = threadInfo.thread?.numReplies?.toString() ?: "0"
+        AsyncImage(
+            model = imageRequest,
+            contentDescription = stringResource(R.string.user_avatar),
+            modifier = Modifier.size(width = 45.dp, height = 45.dp)
+        )
+        Text(text = threadName, style = MaterialTheme.typography.titleMedium)
+        Text(text = threadMessage, style = MaterialTheme.typography.bodySmall)
+        val numRepliesText = numReplies.toString()
         Text(text = "Replies: $numRepliesText", style = MaterialTheme.typography.bodySmall)
     }
 }
@@ -245,18 +275,32 @@ fun ErrorView(message: String) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
-fun PreviewLoadingIndicator() {
-    MaterialTheme {
-        LoadingIndicator()
-    }
+fun ThreadRowPreview() {
+    ThreadRow(
+        threadId = 123,
+        threadName = "bb",
+        threadMessage = "dfgvf",
+        numReplies = 3,
+        roomToken = "1234",
+        onThreadClick = null,
+        imageRequest = null
+    )
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewErrorView() {
-    MaterialTheme {
-        ErrorView("This is a preview error message.")
-    }
-}
+// @Preview(showBackground = true)
+// @Composable
+// fun PreviewLoadingIndicator() {
+//     MaterialTheme {
+//         LoadingIndicator()
+//     }
+// }
+//
+// @Preview(showBackground = true)
+// @Composable
+// fun PreviewErrorView() {
+//     MaterialTheme {
+//         ErrorView("This is a preview error message.")
+//     }
+// }
