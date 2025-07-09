@@ -6,8 +6,4 @@
  */
 package com.nextcloud.talk.invitation.data
 enum class ActionEnum { ACCEPT, REJECT }
-data class InvitationActionModel(
-    var action: ActionEnum,
-    var statusCode: Int,
-    var invitation: Invitation
-)
+data class InvitationActionModel(var action: ActionEnum, var statusCode: Int, var invitation: Invitation)

@@ -318,9 +318,7 @@ object CapabilitiesUtil {
         user.capabilities?.userStatusCapability?.enabled == true &&
             user.capabilities?.userStatusCapability?.supportsEmoji == true
 
-    fun isRestoreStatusAvailable(user: User): Boolean {
-        return user.capabilities?.userStatusCapability?.restore == true
-    }
+    fun isRestoreStatusAvailable(user: User): Boolean = user.capabilities?.userStatusCapability?.restore == true
 
     // endregion
 

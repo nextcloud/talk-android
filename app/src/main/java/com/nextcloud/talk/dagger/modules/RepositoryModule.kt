@@ -136,9 +136,7 @@ class RepositoryModule {
         ncApi: NcApi,
         ncApiCoroutines: NcApiCoroutines,
         userProvider: CurrentUserProviderNew
-    ): ConversationInfoEditRepository {
-        return ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
-    }
+    ): ConversationInfoEditRepository = ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
 
     @Provides
     fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)

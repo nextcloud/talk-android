@@ -38,9 +38,7 @@ object Log {
     }
 
     @JvmStatic
-    fun isLoggable(tag: String?, level: Int): Boolean {
-        return true
-    }
+    fun isLoggable(tag: String?, level: Int): Boolean = true
 
     @JvmStatic
     fun v(tag: String, msg: String): Int {

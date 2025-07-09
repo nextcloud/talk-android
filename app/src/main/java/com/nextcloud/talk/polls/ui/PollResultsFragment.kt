@@ -28,7 +28,9 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollResultsFragment : Fragment(), PollResultItemClickListener {
+class PollResultsFragment :
+    Fragment(),
+    PollResultItemClickListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -147,8 +149,6 @@ class PollResultsFragment : Fragment(), PollResultItemClickListener {
 
     companion object {
         @JvmStatic
-        fun newInstance(): PollResultsFragment {
-            return PollResultsFragment()
-        }
+        fun newInstance(): PollResultsFragment = PollResultsFragment()
     }
 }

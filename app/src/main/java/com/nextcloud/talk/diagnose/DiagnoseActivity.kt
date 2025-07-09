@@ -444,13 +444,12 @@ class DiagnoseActivity : BaseActivity() {
             "$MANUFACTURER $MODEL"
         }
 
-    private fun translateBoolean(answer: Boolean?): String {
-        return when (answer) {
+    private fun translateBoolean(answer: Boolean?): String =
+        when (answer) {
             null -> context.resources.getString(R.string.nc_common_unknown)
             true -> context.resources.getString(R.string.nc_yes)
             else -> context.resources.getString(R.string.nc_no)
         }
-    }
 
     private fun List<DiagnoseElement>.toMarkdownString(): String {
         val markdownText = SpannableStringBuilder()

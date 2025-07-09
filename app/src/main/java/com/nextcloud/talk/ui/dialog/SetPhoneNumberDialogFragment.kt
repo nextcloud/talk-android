@@ -96,8 +96,6 @@ class SetPhoneNumberDialogFragment : DialogFragment() {
     companion object {
         val TAG: String = SetPhoneNumberDialogFragment::class.java.simpleName
 
-        fun newInstance(): DialogFragment {
-            return SetPhoneNumberDialogFragment()
-        }
+        fun newInstance(): DialogFragment = SetPhoneNumberDialogFragment()
     }
 }

@@ -13,13 +13,12 @@ import com.nextcloud.talk.models.ExternalSignalingServer
 class ExternalSignalingServerConverter {
 
     @TypeConverter
-    fun fromExternalSignalingServerToString(externalSignalingServer: ExternalSignalingServer?): String {
-        return if (externalSignalingServer == null) {
+    fun fromExternalSignalingServerToString(externalSignalingServer: ExternalSignalingServer?): String =
+        if (externalSignalingServer == null) {
             ""
         } else {
             LoganSquare.serialize(externalSignalingServer)
         }
-    }
 
     @TypeConverter
     fun fromStringToExternalSignalingServer(value: String): ExternalSignalingServer? {

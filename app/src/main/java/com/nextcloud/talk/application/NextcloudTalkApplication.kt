@@ -86,7 +86,9 @@ import javax.inject.Singleton
 )
 @Singleton
 @AutoInjector(NextcloudTalkApplication::class)
-class NextcloudTalkApplication : MultiDexApplication(), LifecycleObserver {
+class NextcloudTalkApplication :
+    MultiDexApplication(),
+    LifecycleObserver {
     //region Fields (components)
     lateinit var componentApplication: NextcloudTalkApplicationComponent
         private set

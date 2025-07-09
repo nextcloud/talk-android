@@ -36,9 +36,8 @@ internal class MaterialSchemesProviderImpl @Inject constructor(
         return themeCache[url]!!
     }
 
-    override fun getMaterialSchemesForCurrentUser(): MaterialSchemes {
-        return getMaterialSchemesForUser(userProvider.currentUser.blockingGet())
-    }
+    override fun getMaterialSchemesForCurrentUser(): MaterialSchemes =
+        getMaterialSchemesForUser(userProvider.currentUser.blockingGet())
 
     override fun getMaterialSchemesForCapabilities(capabilities: Capabilities?): MaterialSchemes {
         val serverTheme = ServerThemeImpl(capabilities?.themingCapability, colorUtil)

@@ -85,9 +85,7 @@ class ChatViewModel @Inject constructor(
     var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
 
-    fun getChatRepository(): ChatMessageRepository {
-        return chatRepository
-    }
+    fun getChatRepository(): ChatMessageRepository = chatRepository
 
     override fun onResume(owner: LifecycleOwner) {
         super.onResume(owner)

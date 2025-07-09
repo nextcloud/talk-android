@@ -8,7 +8,4 @@ package com.nextcloud.talk.invitation.data
 
 import com.nextcloud.talk.data.user.model.User
 
-data class InvitationsModel(
-    var user: User,
-    var invitations: List<Invitation>
-)
+data class InvitationsModel(var user: User, var invitations: List<Invitation>)

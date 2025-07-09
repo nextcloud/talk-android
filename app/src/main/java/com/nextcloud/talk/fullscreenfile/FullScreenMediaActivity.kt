@@ -58,8 +58,8 @@ class FullScreenMediaActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
                 true
@@ -98,7 +98,6 @@ class FullScreenMediaActivity : AppCompatActivity() {
                 super.onOptionsItemSelected(item)
             }
         }
-    }
 
     @OptIn(UnstableApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

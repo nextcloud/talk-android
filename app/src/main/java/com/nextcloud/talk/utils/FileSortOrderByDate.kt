@@ -26,8 +26,7 @@ class FileSortOrderByDate internal constructor(name: String, ascending: Boolean)
      */
     class RemoteFileBrowserItemDateComparator(private val multiplier: Int) : Comparator<RemoteFileBrowserItem> {
 
-        override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int {
-            return multiplier * left.modifiedTimestamp.compareTo(right.modifiedTimestamp)
-        }
+        override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int =
+            multiplier * left.modifiedTimestamp.compareTo(right.modifiedTimestamp)
     }
 }

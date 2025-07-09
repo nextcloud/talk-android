@@ -47,8 +47,8 @@ class FileUploader(
         initHttpClient(okHttpClient, currentUser)
     }
 
-    fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> {
-        return ncApi.uploadFile(
+    fun upload(sourceFileUri: Uri, fileName: String, remotePath: String, metaData: String?): Observable<Boolean> =
+        ncApi.uploadFile(
             ApiUtils.getCredentials(
                 currentUser.username,
                 currentUser.token
@@ -82,15 +82,14 @@ class FileUploader(
                     }
                 }
             }
-    }
 
     private fun createDavResource(
         sourceFileUri: Uri,
         fileName: String,
         remotePath: String,
         metaData: String?
-    ): Observable<Boolean> {
-        return Observable.fromCallable {
+    ): Observable<Boolean> =
+        Observable.fromCallable {
             val userFileUploadPath = ApiUtils.userFileUploadPath(
                 currentUser.baseUrl!!,
                 currentUser.userId!!
@@ -115,7 +114,6 @@ class FileUploader(
         }
             .subscribeOn(Schedulers.io())
             .flatMap { upload(sourceFileUri, fileName, remotePath, metaData) }
-    }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     private fun createRequestBody(sourceFileUri: Uri): RequestBody? {

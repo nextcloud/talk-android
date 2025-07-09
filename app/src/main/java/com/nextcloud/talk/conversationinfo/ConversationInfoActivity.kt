@@ -1307,7 +1307,8 @@ class ConversationInfoActivity :
         if (hasSpreedFeatureCapability(
                 spreedCapabilities,
                 SpreedFeatures.CLEAR_HISTORY
-            ) && conversationCopy.canDeleteConversation
+            ) &&
+            conversationCopy.canDeleteConversation
         ) {
             binding.clearConversationHistory.visibility = VISIBLE
         } else {

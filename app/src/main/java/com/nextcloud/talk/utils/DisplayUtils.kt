@@ -121,18 +121,16 @@ object DisplayUtils {
     }
 
     @JvmStatic
-    fun convertDpToPixel(dp: Float, context: Context): Float {
-        return Math.round(
+    fun convertDpToPixel(dp: Float, context: Context): Float =
+        Math.round(
             TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, dp,
+                TypedValue.COMPLEX_UNIT_DIP,
+                dp,
                 context.resources.displayMetrics
             ) + ROUND_UP_BUMP
         ).toFloat()
-    }
 
-    fun convertPixelToDp(px: Float, context: Context): Float {
-        return px / context.resources.displayMetrics.density
-    }
+    fun convertPixelToDp(px: Float, context: Context): Float = px / context.resources.displayMetrics.density
 
     fun getTintedDrawable(res: Resources, @DrawableRes drawableResId: Int, @ColorRes colorResId: Int): Drawable? {
         val drawable = ResourcesCompat.getDrawable(res, drawableResId, null)
@@ -187,15 +185,19 @@ object DisplayUtils {
             var url = getUrlForAvatar(conversationUser.baseUrl, id, false)
             if ("guests" == type || "guest" == type || "email" == type) {
                 url = getUrlForGuestAvatar(
-                    conversationUser.baseUrl, label.toString(), true
+                    conversationUser.baseUrl,
+                    label.toString(),
+                    true
                 )
             }
             if (isFederated) {
                 val darkTheme = if (isDarkModeOn(context)) 1 else 0
                 url = getUrlForFederatedAvatar(
                     conversationUser.baseUrl!!,
-                    roomToken!!, id!!,
-                    darkTheme, false
+                    roomToken!!,
+                    id!!,
+                    darkTheme,
+                    false
                 )
             }
             val imageRequest: ImageRequest = ImageRequest.Builder(context)
@@ -454,8 +456,8 @@ object DisplayUtils {
     }
 
     @StringRes
-    fun getSortOrderStringId(sortOrder: FileSortOrder): Int {
-        return when (sortOrder.name) {
+    fun getSortOrderStringId(sortOrder: FileSortOrder): Int =
+        when (sortOrder.name) {
             FileSortOrder.SORT_Z_TO_A_ID -> R.string.menu_item_sort_by_name_z_a
             FileSortOrder.SORT_NEW_TO_OLD_ID -> R.string.menu_item_sort_by_date_newest_first
             FileSortOrder.SORT_OLD_TO_NEW_ID -> R.string.menu_item_sort_by_date_oldest_first
@@ -464,7 +466,6 @@ object DisplayUtils {
             FileSortOrder.SORT_A_TO_Z_ID -> R.string.menu_item_sort_by_name_a_z
             else -> R.string.menu_item_sort_by_name_a_z
         }
-    }
 
     /**
      * calculates the relative time string based on the given modification timestamp.
@@ -473,8 +474,8 @@ object DisplayUtils {
      * @param modificationTimestamp the UNIX timestamp of the file modification time in milliseconds.
      * @return a relative time string
      */
-    fun getRelativeTimestamp(context: Context, modificationTimestamp: Long, showFuture: Boolean): CharSequence {
-        return getRelativeDateTimeString(
+    fun getRelativeTimestamp(context: Context, modificationTimestamp: Long, showFuture: Boolean): CharSequence =
+        getRelativeDateTimeString(
             context,
             modificationTimestamp,
             DateUtils.SECOND_IN_MILLIS,
@@ -482,7 +483,6 @@ object DisplayUtils {
             0,
             showFuture
         )
-    }
 
     @Suppress("ReturnCount")
     private fun getRelativeDateTimeString(
@@ -530,11 +530,10 @@ object DisplayUtils {
         return df.format(date)
     }
 
-    fun ellipsize(text: String, maxLength: Int): String {
-        return if (text.length > maxLength) {
+    fun ellipsize(text: String, maxLength: Int): String =
+        if (text.length > maxLength) {
             text.substring(0, maxLength - 1) + "…"
         } else {
             text
         }
-    }
 }

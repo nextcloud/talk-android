@@ -163,7 +163,4 @@ class ReactionAnimator(
         private const val BOTTOM_MARGIN: Int = 5
     }
 }
-data class CallReaction(
-    var emoji: String,
-    var userName: String
-)
+data class CallReaction(var emoji: String, var userName: String)

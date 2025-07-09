@@ -42,8 +42,6 @@ class PollLoadingFragment : Fragment() {
         private const val HEIGHT = 300
 
         @JvmStatic
-        fun newInstance(): PollLoadingFragment {
-            return PollLoadingFragment()
-        }
+        fun newInstance(): PollLoadingFragment = PollLoadingFragment()
     }
 }

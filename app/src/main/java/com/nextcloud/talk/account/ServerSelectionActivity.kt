@@ -154,10 +154,9 @@ class ServerSelectionActivity : BaseActivity() {
         )
     }
 
-    private fun isAbleToShowProviderLink(): Boolean {
-        return !resources!!.getBoolean(R.bool.hide_provider) &&
+    private fun isAbleToShowProviderLink(): Boolean =
+        !resources!!.getBoolean(R.bool.hide_provider) &&
             !TextUtils.isEmpty(resources!!.getString(R.string.nc_providers_url))
-    }
 
     private fun showImportAccountsInfo(availableAccounts: List<Account>) {
         if (!TextUtils.isEmpty(
@@ -204,9 +203,8 @@ class ServerSelectionActivity : BaseActivity() {
         }
     }
 
-    private fun isImportAccountNameSet(): Boolean {
-        return !TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type))
-    }
+    private fun isImportAccountNameSet(): Boolean =
+        !TextUtils.isEmpty(resources!!.getString(R.string.nc_import_account_type))
 
     @SuppressLint("LongLogTag")
     @Suppress("Detekt.TooGenericExceptionCaught")
@@ -362,9 +360,8 @@ class ServerSelectionActivity : BaseActivity() {
             })
     }
 
-    private fun isServerStatusQueryable(status: Status): Boolean {
-        return status.installed && !status.maintenance && !status.needsUpgrade
-    }
+    private fun isServerStatusQueryable(status: Status): Boolean =
+        status.installed && !status.maintenance && !status.needsUpgrade
 
     private fun setErrorText(text: String?) {
         binding.errorWrapper.visibility = View.VISIBLE

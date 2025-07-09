@@ -12,8 +12,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.models.json.capabilities.ThemingCapability
 import com.nextcloud.android.common.ui.color.ColorUtil
 
-internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) :
-    ServerTheme {
+internal class ServerThemeImpl(themingCapability: ThemingCapability?, colorUtil: ColorUtil) : ServerTheme {
 
     override val primaryColor: Int
     override val colorElement: Int

@@ -23,8 +23,6 @@ abstract class UserModule {
 
     companion object {
         @Provides
-        fun provideUserManager(userRepository: UsersRepository): UserManager {
-            return UserManager(userRepository)
-        }
+        fun provideUserManager(userRepository: UsersRepository): UserManager = UserManager(userRepository)
     }
 }

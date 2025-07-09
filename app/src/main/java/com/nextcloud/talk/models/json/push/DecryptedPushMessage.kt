@@ -73,7 +73,9 @@ data class DecryptedPushMessage(
         if (notificationIds != null) {
             if (other.notificationIds == null) return false
             if (!notificationIds.contentEquals(other.notificationIds)) return false
-        } else if (other.notificationIds != null) return false
+        } else if (other.notificationIds != null) {
+            return false
+        }
         if (delete != other.delete) return false
         if (deleteAll != other.deleteAll) return false
         if (deleteMultiple != other.deleteMultiple) return false

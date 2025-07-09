@@ -19,30 +19,27 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
     override val privateBroadcastPermission: String =
         "${BuildConfig.APPLICATION_ID}.${BuildConfig.PERMISSION_LOCAL_BROADCAST}"
 
-    override fun isCameraPermissionGranted(): Boolean {
-        return PermissionChecker.checkSelfPermission(
+    override fun isCameraPermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.CAMERA
         ) == PermissionChecker.PERMISSION_GRANTED
-    }
 
     @RequiresApi(Build.VERSION_CODES.S)
-    override fun isBluetoothPermissionGranted(): Boolean {
-        return PermissionChecker.checkSelfPermission(
+    override fun isBluetoothPermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.BLUETOOTH_CONNECT
         ) == PermissionChecker.PERMISSION_GRANTED
-    }
 
-    override fun isMicrophonePermissionGranted(): Boolean {
-        return PermissionChecker.checkSelfPermission(
+    override fun isMicrophonePermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.RECORD_AUDIO
         ) == PermissionChecker.PERMISSION_GRANTED
-    }
 
-    override fun isFilesPermissionGranted(): Boolean {
-        return when {
+    override fun isFilesPermissionGranted(): Boolean =
+        when {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
                 if (
                     PermissionChecker.checkSelfPermission(context, Manifest.permission.READ_MEDIA_IMAGES)
@@ -86,15 +83,13 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
                 }
             }
         }
-    }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
-    override fun isPostNotificationsPermissionGranted(): Boolean {
-        return PermissionChecker.checkSelfPermission(
+    override fun isPostNotificationsPermissionGranted(): Boolean =
+        PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.POST_NOTIFICATIONS
         ) == PermissionChecker.PERMISSION_GRANTED
-    }
 
     companion object {
         private val TAG = PlatformPermissionUtilImpl::class.simpleName

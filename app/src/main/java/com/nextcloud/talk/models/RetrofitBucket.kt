@@ -11,7 +11,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class RetrofitBucket(
-    var url: String? = null,
-    var queryMap: MutableMap<String, String>? = null
-) : Parcelable
+data class RetrofitBucket(var url: String? = null, var queryMap: MutableMap<String, String>? = null) : Parcelable

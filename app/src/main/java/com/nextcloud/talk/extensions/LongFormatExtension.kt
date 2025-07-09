@@ -6,10 +6,9 @@
  */
 package com.nextcloud.talk.extensions
 
-fun Long.toIntOrZero(): Int {
-    return if (this >= Int.MIN_VALUE && this <= Int.MAX_VALUE) {
+fun Long.toIntOrZero(): Int =
+    if (this >= Int.MIN_VALUE && this <= Int.MAX_VALUE) {
         toInt()
     } else {
         0
     }
-}

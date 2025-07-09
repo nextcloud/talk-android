@@ -9,13 +9,9 @@ package com.nextcloud.talk.polls.adapters
 import com.nextcloud.talk.adapters.items.FlexibleItemViewType
 import com.nextcloud.talk.polls.model.PollDetails
 
-data class PollResultVotersOverviewItem(
-    val detailsList: List<PollDetails>
-) : PollResultItem {
+data class PollResultVotersOverviewItem(val detailsList: List<PollDetails>) : PollResultItem {
 
-    override fun getViewType(): Int {
-        return VIEW_TYPE
-    }
+    override fun getViewType(): Int = VIEW_TYPE
 
     companion object {
         // layout is used as view type for uniqueness

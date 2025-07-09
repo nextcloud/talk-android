@@ -41,7 +41,8 @@ class MentionAutocompleteItem(
     private val context: Context,
     @JvmField val roomToken: String,
     private val viewThemeUtils: ViewThemeUtils
-) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
+) : AbstractFlexibleItem<ParticipantItemViewHolder>(),
+    IFilterable<String?> {
     @JvmField
     var source: String?
 
@@ -75,25 +76,19 @@ class MentionAutocompleteItem(
         statusMessage = mention.statusMessage
     }
 
-    override fun equals(o: Any?): Boolean {
-        return if (o is MentionAutocompleteItem) {
+    override fun equals(o: Any?): Boolean =
+        if (o is MentionAutocompleteItem) {
             objectId == o.objectId && displayName == o.displayName
         } else {
             false
         }
-    }
 
-    override fun hashCode(): Int {
-        return Objects.hash(objectId, displayName)
-    }
+    override fun hashCode(): Int = Objects.hash(objectId, displayName)
 
-    override fun getLayoutRes(): Int {
-        return R.layout.rv_item_conversation_info_participant
-    }
+    override fun getLayoutRes(): Int = R.layout.rv_item_conversation_info_participant
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>?>?): ParticipantItemViewHolder {
-        return ParticipantItemViewHolder(view, adapter)
-    }
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>?>?): ParticipantItemViewHolder =
+        ParticipantItemViewHolder(view, adapter)
 
     @SuppressLint("SetTextI18n")
     override fun bindViewHolder(
@@ -243,8 +238,8 @@ class MentionAutocompleteItem(
         holder.binding.nameText.setLayoutParams(layoutParams)
     }
 
-    override fun filter(constraint: String?): Boolean {
-        return objectId != null &&
+    override fun filter(constraint: String?): Boolean =
+        objectId != null &&
             Pattern
                 .compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                 .matcher(objectId)
@@ -254,7 +249,6 @@ class MentionAutocompleteItem(
                 .compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                 .matcher(displayName)
                 .find()
-    }
 
     companion object {
         private const val STATUS_SIZE_IN_DP = 9f

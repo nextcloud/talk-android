@@ -35,8 +35,8 @@ class MessageUtils(val context: Context) {
         message: ChatMessage,
         incoming: Boolean,
         viewThemeUtils: ViewThemeUtils
-    ): Spanned? {
-        return if (message.message == null) {
+    ): Spanned? =
+        if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
             SpannableString(DisplayUtils.ellipsize(message.text, MAX_REPLY_LENGTH))
@@ -48,15 +48,14 @@ class MessageUtils(val context: Context) {
                 viewThemeUtils
             )
         }
-    }
 
     fun enrichChatMessageText(
         context: Context,
         message: ChatMessage,
         incoming: Boolean,
         viewThemeUtils: ViewThemeUtils
-    ): Spanned? {
-        return if (message.message == null) {
+    ): Spanned? =
+        if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
             SpannableString(message.message)
@@ -64,16 +63,13 @@ class MessageUtils(val context: Context) {
             val newMessage = message.message!!.replace("\n", "  \n", false)
             enrichChatMessageText(context, newMessage, incoming, viewThemeUtils)
         }
-    }
 
     fun enrichChatMessageText(
         context: Context,
         message: String,
         incoming: Boolean,
         viewThemeUtils: ViewThemeUtils
-    ): Spanned {
-        return viewThemeUtils.talk.themeMarkdown(context, message, incoming)
-    }
+    ): Spanned = viewThemeUtils.talk.themeMarkdown(context, message, incoming)
 
     fun processMessageParameters(
         themingContext: Context,

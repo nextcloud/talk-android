@@ -52,14 +52,13 @@ fun ImageView.loadConversationAvatar(
     conversation: Conversation,
     ignoreCache: Boolean,
     viewThemeUtils: ViewThemeUtils?
-): io.reactivex.disposables.Disposable {
-    return loadConversationAvatar(
+): io.reactivex.disposables.Disposable =
+    loadConversationAvatar(
         user,
         ConversationModel.mapToConversationModel(conversation, user),
         ignoreCache,
         viewThemeUtils
     )
-}
 
 @Suppress("ReturnCount")
 fun ImageView.loadConversationAvatar(
@@ -202,9 +201,8 @@ private fun ImageView.loadAvatarInternal(
 }
 
 @Deprecated("Use function loadAvatar", level = DeprecationLevel.WARNING)
-fun ImageView.loadAvatarWithUrl(user: User? = null, url: String): io.reactivex.disposables.Disposable {
-    return loadAvatarInternal(user, url, false, null)
-}
+fun ImageView.loadAvatarWithUrl(user: User? = null, url: String): io.reactivex.disposables.Disposable =
+    loadAvatarInternal(user, url, false, null)
 
 fun ImageView.loadThumbnail(url: String, user: User): io.reactivex.disposables.Disposable {
     val requestBuilder = ImageRequest.Builder(context)
@@ -260,21 +258,19 @@ fun ImageView.loadAvatarOrImagePreview(
     url: String,
     user: User,
     placeholder: Drawable? = null
-): io.reactivex.disposables.Disposable {
-    return if (url.contains("/avatar/")) {
+): io.reactivex.disposables.Disposable =
+    if (url.contains("/avatar/")) {
         loadAvatarInternal(user, url, false, null)
     } else {
         loadImage(url, user, placeholder)
     }
-}
 
-fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable {
-    return DisposableWrapper(
+fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable =
+    DisposableWrapper(
         load(any) {
             transformations(CircleCropTransformation())
         }
     )
-}
 
 fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
     val layers = arrayOfNulls<Drawable>(2)
@@ -319,9 +315,7 @@ fun ImageView.loadFirstLetterAvatar(name: String): io.reactivex.disposables.Disp
     )
 }
 
-fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable {
-    return loadSystemAvatar()
-}
+fun ImageView.loadChangelogBotAvatar(): io.reactivex.disposables.Disposable = loadSystemAvatar()
 
 fun ImageView.loadBotsAvatar(): io.reactivex.disposables.Disposable {
     val layers = arrayOfNulls<Drawable>(2)
@@ -362,9 +356,8 @@ fun ImageView.loadMailAvatar(viewThemeUtils: ViewThemeUtils): io.reactivex.dispo
     return loadUserAvatar(data)
 }
 
-fun ImageView.loadGuestAvatar(user: User, name: String, big: Boolean): io.reactivex.disposables.Disposable {
-    return loadGuestAvatar(user.baseUrl!!, name, big)
-}
+fun ImageView.loadGuestAvatar(user: User, name: String, big: Boolean): io.reactivex.disposables.Disposable =
+    loadGuestAvatar(user.baseUrl!!, name, big)
 
 fun ImageView.loadGuestAvatar(baseUrl: String, name: String, big: Boolean): io.reactivex.disposables.Disposable {
     val imageRequestUri = ApiUtils.getUrlForGuestAvatar(
@@ -408,14 +401,13 @@ private fun createTextDrawable(context: Context, letter: String): Drawable {
     return bitmap.toDrawable(context.resources)
 }
 
-private class DisposableWrapper(private val disposable: coil.request.Disposable) : io.reactivex.disposables
-    .Disposable {
+private class DisposableWrapper(private val disposable: coil.request.Disposable) :
+    io.reactivex.disposables
+        .Disposable {
 
     override fun dispose() {
         disposable.dispose()
     }
 
-    override fun isDisposed(): Boolean {
-        return disposable.isDisposed
-    }
+    override fun isDisposed(): Boolean = disposable.isDisposed
 }

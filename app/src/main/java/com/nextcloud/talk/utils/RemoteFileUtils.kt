@@ -35,8 +35,8 @@ object RemoteFileUtils {
         return finalPath
     }
 
-    private fun doesFileExist(ncApi: NcApi, currentUser: User, remotePath: String): Observable<Boolean> {
-        return ncApi.checkIfFileExists(
+    private fun doesFileExist(ncApi: NcApi, currentUser: User, remotePath: String): Observable<Boolean> =
+        ncApi.checkIfFileExists(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
             ApiUtils.getUrlForFileUpload(
                 currentUser.baseUrl!!,
@@ -48,7 +48,6 @@ object RemoteFileUtils {
             .observeOn(AndroidSchedulers.mainThread()).map { response ->
                 response.isSuccessful
             }
-    }
 
     private fun getFileNameWithoutCollision(ncApi: NcApi, currentUser: User, remotePath: String): String {
         val extPos = remotePath.lastIndexOf('.')

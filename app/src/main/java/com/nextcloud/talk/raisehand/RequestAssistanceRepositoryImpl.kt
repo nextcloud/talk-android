@@ -21,8 +21,8 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvi
 
     var apiVersion = 1
 
-    override fun requestAssistance(roomToken: String): Observable<RequestAssistanceModel> {
-        return ncApi.requestAssistance(
+    override fun requestAssistance(roomToken: String): Observable<RequestAssistanceModel> =
+        ncApi.requestAssistance(
             credentials,
             ApiUtils.getUrlForRequestAssistance(
                 apiVersion,
@@ -30,10 +30,9 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvi
                 roomToken
             )
         ).map { mapToRequestAssistanceModel(it.ocs?.meta!!) }
-    }
 
-    override fun withdrawRequestAssistance(roomToken: String): Observable<WithdrawRequestAssistanceModel> {
-        return ncApi.withdrawRequestAssistance(
+    override fun withdrawRequestAssistance(roomToken: String): Observable<WithdrawRequestAssistanceModel> =
+        ncApi.withdrawRequestAssistance(
             credentials,
             ApiUtils.getUrlForRequestAssistance(
                 apiVersion,
@@ -41,7 +40,6 @@ class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvi
                 roomToken
             )
         ).map { mapToWithdrawRequestAssistanceModel(it.ocs?.meta!!) }
-    }
 
     private fun mapToRequestAssistanceModel(response: GenericMeta): RequestAssistanceModel {
         val success = response.statusCode == HTTP_OK

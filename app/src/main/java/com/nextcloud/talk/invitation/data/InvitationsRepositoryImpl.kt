@@ -11,8 +11,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 
-class InvitationsRepositoryImpl(private val ncApi: NcApi) :
-    InvitationsRepository {
+class InvitationsRepositoryImpl(private val ncApi: NcApi) : InvitationsRepository {
 
     override fun fetchInvitations(user: User): Observable<InvitationsModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!

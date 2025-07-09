@@ -87,7 +87,8 @@ class MessageActionsDialog(
         ChatMessage.MessageType.SINGLE_NC_ATTACHMENT_MESSAGE == message.getCalculateMessageType()
 
     private val messageHasRegularText = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE == message
-        .getCalculateMessageType() && !message.isDeleted
+        .getCalculateMessageType() &&
+        !message.isDeleted
 
     private val isOlderThanTwentyFourHours = message
         .createdAt
@@ -98,17 +99,23 @@ class MessageActionsDialog(
         spreedCapabilities,
         SpreedFeatures
             .EDIT_MESSAGES_NOTE_TO_SELF
-    ) && currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+    ) &&
+        currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
-    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) && (
-        message.isOneToOneConversation ||
-            message.isFormerOneToOneConversation
-        ) && !isOlderThanTwentyFourHours
+    private val isMessageBotOneToOne = (message.actorType == ACTOR_BOTS) &&
+        (
+            message.isOneToOneConversation ||
+                message.isFormerOneToOneConversation
+            ) &&
+        !isOlderThanTwentyFourHours
 
     private var messageIsEditable = hasSpreedFeatureCapability(
         spreedCapabilities,
         SpreedFeatures.EDIT_MESSAGES
-    ) && messageHasRegularText && !isOlderThanTwentyFourHours && isUserAllowedToEdit
+    ) &&
+        messageHasRegularText &&
+        !isOlderThanTwentyFourHours &&
+        isUserAllowedToEdit
 
     private val isMessageEditable = isNoTimeLimitOnNoteToSelf || messageIsEditable || isMessageBotOneToOne
 
@@ -182,14 +189,11 @@ class MessageActionsDialog(
         behavior.state = BottomSheetBehavior.STATE_COLLAPSED
     }
 
-    private fun hasUserId(user: User?): Boolean {
-        return user?.userId?.isNotEmpty() == true && user.userId != "?"
-    }
+    private fun hasUserId(user: User?): Boolean = user?.userId?.isNotEmpty() == true && user.userId != "?"
 
-    private fun hasUserActorId(message: ChatMessage): Boolean {
-        return message.user.id.startsWith("users/") &&
+    private fun hasUserActorId(message: ChatMessage): Boolean =
+        message.user.id.startsWith("users/") &&
             message.user.id.substring(ACTOR_LENGTH) != currentConversation?.actorId
-    }
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initEmojiMore() {
@@ -333,14 +337,13 @@ class MessageActionsDialog(
         }
     }
 
-    private fun isPermitted(hasChatPermission: Boolean): Boolean {
-        return hasChatPermission && ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
+    private fun isPermitted(hasChatPermission: Boolean): Boolean =
+        hasChatPermission &&
+            ConversationEnums.ConversationReadOnlyState.CONVERSATION_READ_ONLY !=
             currentConversation?.conversationReadOnlyState
-    }
 
-    private fun isReactableMessageType(message: ChatMessage): Boolean {
-        return !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
-    }
+    private fun isReactableMessageType(message: ChatMessage): Boolean =
+        !(message.isCommandMessage || message.isDeletedCommentMessage || message.isDeleted)
 
     private fun checkAndSetEmojiSelfReaction(emoji: EmojiTextView) {
         if (emoji.text?.toString() != null && message.reactionsSelf?.contains(emoji.text?.toString()) == true) {
@@ -508,13 +511,12 @@ class MessageActionsDialog(
         dialogMessageActionsBinding.menuShareToNote.visibility = getVisibility(visible)
     }
 
-    private fun getVisibility(visible: Boolean): Int {
-        return if (visible) {
+    private fun getVisibility(visible: Boolean): Int =
+        if (visible) {
             View.VISIBLE
         } else {
             View.GONE
         }
-    }
 
     private fun clickOnEmoji(message: ChatMessage, emoji: String) {
         if (message.reactionsSelf?.contains(emoji) == true) {

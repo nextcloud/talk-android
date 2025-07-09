@@ -15,11 +15,9 @@ class ArbitraryStorageManager(private val arbitraryStoragesRepository: Arbitrary
         arbitraryStoragesRepository.saveArbitraryStorage(ArbitraryStorage(accountIdentifier, key, objectString, value))
     }
 
-    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): Maybe<ArbitraryStorage> {
-        return arbitraryStoragesRepository.getStorageSetting(accountIdentifier, key, objectString)
-    }
+    fun getStorageSetting(accountIdentifier: Long, key: String, objectString: String): Maybe<ArbitraryStorage> =
+        arbitraryStoragesRepository.getStorageSetting(accountIdentifier, key, objectString)
 
-    fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long): Int {
-        return arbitraryStoragesRepository.deleteArbitraryStorage(accountIdentifier)
-    }
+    fun deleteAllEntriesForAccountIdentifier(accountIdentifier: Long): Int =
+        arbitraryStoragesRepository.deleteArbitraryStorage(accountIdentifier)
 }

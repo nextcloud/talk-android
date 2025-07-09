@@ -78,8 +78,8 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REM
 */
 class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.SystemMessageType>() {
     @Suppress("Detekt.LongMethod")
-    override fun getFromString(string: String): ChatMessage.SystemMessageType {
-        return when (string) {
+    override fun getFromString(string: String): ChatMessage.SystemMessageType =
+        when (string) {
             "conversation_created" -> CONVERSATION_CREATED
             "conversation_renamed" -> CONVERSATION_RENAMED
             "description_set" -> DESCRIPTION_SET
@@ -143,11 +143,10 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "federated_user_removed" -> FEDERATED_USER_REMOVED
             else -> DUMMY
         }
-    }
 
     @Suppress("Detekt.ComplexMethod", "Detekt.LongMethod")
-    override fun convertToString(`object`: ChatMessage.SystemMessageType?): String {
-        return when (`object`) {
+    override fun convertToString(`object`: ChatMessage.SystemMessageType?): String =
+        when (`object`) {
             null -> ""
             CONVERSATION_CREATED -> "conversation_created"
             CONVERSATION_RENAMED -> "conversation_renamed"
@@ -212,5 +211,4 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             FEDERATED_USER_REMOVED -> "federated_user_removed"
             else -> ""
         }
-    }
 }

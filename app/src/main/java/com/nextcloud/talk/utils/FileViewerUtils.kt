@@ -246,8 +246,8 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         context.startActivity(fullScreenTextViewerIntent)
     }
 
-    fun isSupportedForInternalViewer(mimetype: String?): Boolean {
-        return when (mimetype) {
+    fun isSupportedForInternalViewer(mimetype: String?): Boolean =
+        when (mimetype) {
             IMAGE_PNG,
             IMAGE_JPEG,
             IMAGE_HEIC,
@@ -263,7 +263,6 @@ class FileViewerUtils(private val context: Context, private val user: User) {
             TEXT_PLAIN -> true
             else -> false
         }
-    }
 
     @SuppressLint("LongLogTag")
     private fun downloadFileToCache(
@@ -402,17 +401,9 @@ class FileViewerUtils(private val context: Context, private val user: User) {
         }
     }
 
-    data class ProgressUi(
-        val progressBar: ProgressBar?,
-        val messageText: EmojiTextView?,
-        val previewImage: ImageView
-    )
+    data class ProgressUi(val progressBar: ProgressBar?, val messageText: EmojiTextView?, val previewImage: ImageView)
 
-    data class FileInfo(
-        val fileId: String,
-        val fileName: String,
-        var fileSize: Long?
-    )
+    data class FileInfo(val fileId: String, val fileName: String, var fileSize: Long?)
 
     companion object {
         private val TAG = FileViewerUtils::class.simpleName

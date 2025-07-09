@@ -34,9 +34,7 @@ class OCId private constructor(var ocId: String?) : Property {
             return OCId("")
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

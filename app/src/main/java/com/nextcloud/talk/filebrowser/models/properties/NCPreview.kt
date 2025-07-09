@@ -34,9 +34,7 @@ class NCPreview private constructor(var isNcPreview: Boolean) : Property {
             return OCFavorite(false)
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

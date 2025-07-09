@@ -203,7 +203,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         val firstPart = message.toString().substringBefore("\n- [")
         messageTextView.text = messageUtils.enrichChatMessageText(
-            binding.messageText.context, firstPart, true, viewThemeUtils
+            binding.messageText.context,
+            firstPart,
+            true,
+            viewThemeUtils
         )
 
         val checkboxList = mutableListOf<CheckBox>()
@@ -219,7 +222,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 this.isEnabled = (
                     chatMessage.actorType == "bots" ||
                         chatActivity.userAllowedByPrivilages(chatMessage)
-                    ) && messageIsEditable
+                    ) &&
+                    messageIsEditable
 
                 setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
 

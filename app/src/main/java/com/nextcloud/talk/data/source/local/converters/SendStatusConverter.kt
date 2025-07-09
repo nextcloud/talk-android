@@ -12,12 +12,8 @@ import com.nextcloud.talk.data.database.model.SendStatus
 
 class SendStatusConverter {
     @TypeConverter
-    fun fromStatus(value: SendStatus): String {
-        return value.name
-    }
+    fun fromStatus(value: SendStatus): String = value.name
 
     @TypeConverter
-    fun toStatus(value: String): SendStatus {
-        return SendStatus.valueOf(value)
-    }
+    fun toStatus(value: String): SendStatus = SendStatus.valueOf(value)
 }

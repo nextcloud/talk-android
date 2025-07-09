@@ -23,10 +23,9 @@ import com.nextcloud.talk.R
 
 private const val KEY_ACTIVATED_INDEX = "activated_index"
 
-internal class ListItemViewHolder(
-    itemView: View,
-    private val adapter: ListIconDialogAdapter<*>
-) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+internal class ListItemViewHolder(itemView: View, private val adapter: ListIconDialogAdapter<*>) :
+    RecyclerView.ViewHolder(itemView),
+    View.OnClickListener {
     init {
         itemView.setOnClickListener(this)
     }
@@ -43,7 +42,8 @@ internal class ListIconDialogAdapter<IT : ListItemWithImage>(
     disabledItems: IntArray?,
     private var waitForPositiveButton: Boolean,
     private var selection: ListItemListener<IT>
-) : RecyclerView.Adapter<ListItemViewHolder>(), DialogAdapter<IT, ListItemListener<IT>> {
+) : RecyclerView.Adapter<ListItemViewHolder>(),
+    DialogAdapter<IT, ListItemListener<IT>> {
 
     private var disabledIndices: IntArray = disabledItems ?: IntArray(0)
 

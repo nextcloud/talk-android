@@ -49,31 +49,25 @@ class ParticipantItem(
     private val user: User,
     private val viewThemeUtils: ViewThemeUtils,
     private val conversation: ConversationModel
-) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
+) : AbstractFlexibleItem<ParticipantItemViewHolder>(),
+    IFilterable<String?> {
     var isOnline = true
-    override fun equals(o: Any?): Boolean {
-        return if (o is ParticipantItem) {
+    override fun equals(o: Any?): Boolean =
+        if (o is ParticipantItem) {
             model.calculatedActorType == o.model.calculatedActorType &&
                 model.calculatedActorId == o.model.calculatedActorId
         } else {
             false
         }
-    }
 
-    override fun hashCode(): Int {
-        return model.hashCode()
-    }
+    override fun hashCode(): Int = model.hashCode()
 
-    override fun getLayoutRes(): Int {
-        return R.layout.rv_item_conversation_info_participant
-    }
+    override fun getLayoutRes(): Int = R.layout.rv_item_conversation_info_participant
 
     override fun createViewHolder(
         view: View?,
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
-    ): ParticipantItemViewHolder {
-        return ParticipantItemViewHolder(view, adapter)
-    }
+    ): ParticipantItemViewHolder = ParticipantItemViewHolder(view, adapter)
 
     @SuppressLint("SetTextI18n")
     override fun bindViewHolder(
@@ -106,7 +100,8 @@ class ParticipantItem(
 
     @SuppressLint("SetTextI18n")
     private fun setParticipantInfo(holder: ParticipantItemViewHolder) {
-        if (TextUtils.isEmpty(model.displayName) && (
+        if (TextUtils.isEmpty(model.displayName) &&
+            (
                 model.type == Participant.ParticipantType.GUEST ||
                     model.type == Participant.ParticipantType.USER_FOLLOWING_LINK
                 )
@@ -289,14 +284,14 @@ class ParticipantItem(
         holder.binding.nameText.setLayoutParams(layoutParams)
     }
 
-    override fun filter(constraint: String?): Boolean {
-        return model.displayName != null && (
-            Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                .matcher(model.displayName!!.trim()).find() ||
+    override fun filter(constraint: String?): Boolean =
+        model.displayName != null &&
+            (
                 Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
-                    .matcher(model.calculatedActorId!!.trim()).find()
-            )
-    }
+                    .matcher(model.displayName!!.trim()).find() ||
+                    Pattern.compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
+                        .matcher(model.calculatedActorId!!.trim()).find()
+                )
 
     class ParticipantItemViewHolder internal constructor(view: View?, adapter: FlexibleAdapter<*>?) :
         FlexibleViewHolder(view, adapter) {

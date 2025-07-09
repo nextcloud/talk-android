@@ -90,8 +90,8 @@ open class BetterImageSpan @JvmOverloads constructor(
         mHeight = mBounds!!.height()
     }
 
-    private fun getOffsetAboveBaseline(fm: FontMetricsInt): Int {
-        return when (mAlignment) {
+    private fun getOffsetAboveBaseline(fm: FontMetricsInt): Int =
+        when (mAlignment) {
             ALIGN_BOTTOM -> fm.descent - mHeight
             ALIGN_CENTER -> {
                 val textHeight = fm.descent - fm.ascent
@@ -101,7 +101,6 @@ open class BetterImageSpan @JvmOverloads constructor(
             ALIGN_BASELINE -> -mHeight
             else -> -mHeight
         }
-    }
 
     companion object {
         const val ALIGN_BOTTOM = 0

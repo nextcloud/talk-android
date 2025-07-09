@@ -16,21 +16,16 @@ class ArbitraryStoragesRepositoryImpl(private val arbitraryStoragesDao: Arbitrar
         accountIdentifier: Long,
         key: String,
         objectString: String
-    ): Maybe<ArbitraryStorage> {
-        return arbitraryStoragesDao
+    ): Maybe<ArbitraryStorage> =
+        arbitraryStoragesDao
             .getStorageSetting(accountIdentifier, key, objectString)
             .map { ArbitraryStorageMapper.toModel(it) }
-    }
 
-    override fun getAll(): Maybe<List<ArbitraryStorageEntity>> {
-        return arbitraryStoragesDao.getAll()
-    }
+    override fun getAll(): Maybe<List<ArbitraryStorageEntity>> = arbitraryStoragesDao.getAll()
 
-    override fun deleteArbitraryStorage(accountIdentifier: Long): Int {
-        return arbitraryStoragesDao.deleteArbitraryStorage(accountIdentifier)
-    }
+    override fun deleteArbitraryStorage(accountIdentifier: Long): Int =
+        arbitraryStoragesDao.deleteArbitraryStorage(accountIdentifier)
 
-    override fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long {
-        return arbitraryStoragesDao.saveArbitraryStorage(ArbitraryStorageMapper.toEntity(arbitraryStorage))
-    }
+    override fun saveArbitraryStorage(arbitraryStorage: ArbitraryStorage): Long =
+        arbitraryStoragesDao.saveArbitraryStorage(ArbitraryStorageMapper.toEntity(arbitraryStorage))
 }

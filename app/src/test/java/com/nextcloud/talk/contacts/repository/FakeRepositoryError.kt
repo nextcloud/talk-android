@@ -13,9 +13,8 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 class FakeRepositoryError : ContactsRepository {
     @Suppress("Detekt.TooGenericExceptionThrown")
-    override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall {
+    override suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall =
         throw Exception("unable to fetch contacts")
-    }
 
     @Suppress("Detekt.TooGenericExceptionThrown")
     override suspend fun createRoom(
@@ -23,11 +22,8 @@ class FakeRepositoryError : ContactsRepository {
         sourceType: String?,
         userId: String,
         conversationName: String?
-    ): RoomOverall {
-        throw Exception("unable to create room")
-    }
+    ): RoomOverall = throw Exception("unable to create room")
 
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return "https://mydoman.com/index.php/avatar/$avatarId/512"
-    }
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean) =
+        "https://mydoman.com/index.php/avatar/$avatarId/512"
 }

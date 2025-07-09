@@ -44,8 +44,8 @@ class LinkedHashMapConverter {
     }
 
     @TypeConverter
-    fun linkedHashMapToString(map: LinkedHashMap<String, Int>?): String {
-        return try {
+    fun linkedHashMapToString(map: LinkedHashMap<String, Int>?): String =
+        try {
             val stringWriter = java.io.StringWriter()
             jsonFactory.createGenerator(stringWriter).use { generator ->
                 converter.serialize(map ?: linkedMapOf(), null, false, generator)
@@ -55,5 +55,4 @@ class LinkedHashMapConverter {
             // e.printStackTrace()
             ""
         }
-    }
 }

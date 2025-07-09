@@ -35,9 +35,7 @@ class NCPermission private constructor(var ncPermission: String?) : Property {
             return NCPermission("")
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

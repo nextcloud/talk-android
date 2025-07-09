@@ -142,31 +142,26 @@ class PollMainViewModel @Inject constructor(private val repository: PollReposito
         }
     }
 
-    private fun showEndPollButton(poll: Poll): Boolean {
-        return !editVotes && poll.status == Poll.STATUS_OPEN && (isPollCreatedByCurrentUser(poll) || isOwnerOrModerator)
-    }
+    private fun showEndPollButton(poll: Poll): Boolean =
+        !editVotes && poll.status == Poll.STATUS_OPEN && (isPollCreatedByCurrentUser(poll) || isOwnerOrModerator)
 
-    private fun showVotersAmount(poll: Poll): Boolean {
-        return votedForPublicPoll(poll) ||
+    private fun showVotersAmount(poll: Poll): Boolean =
+        votedForPublicPoll(poll) ||
             poll.status == Poll.STATUS_CLOSED ||
             isOwnerOrModerator ||
             isPollCreatedByCurrentUser(poll)
-    }
 
-    private fun votedForOpenHiddenPoll(poll: Poll): Boolean {
-        return poll.status == Poll.STATUS_OPEN &&
+    private fun votedForOpenHiddenPoll(poll: Poll): Boolean =
+        poll.status == Poll.STATUS_OPEN &&
             poll.resultMode == Poll.RESULT_MODE_HIDDEN &&
             poll.votedSelf?.isNotEmpty() == true
-    }
 
-    private fun votedForPublicPoll(poll: Poll): Boolean {
-        return poll.resultMode == Poll.RESULT_MODE_PUBLIC &&
+    private fun votedForPublicPoll(poll: Poll): Boolean =
+        poll.resultMode == Poll.RESULT_MODE_PUBLIC &&
             poll.votedSelf?.isNotEmpty() == true
-    }
 
-    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean {
-        return currentUserProvider.currentUser.blockingGet().userId == poll.actorId
-    }
+    private fun isPollCreatedByCurrentUser(poll: Poll): Boolean =
+        currentUserProvider.currentUser.blockingGet().userId == poll.actorId
 
     fun dismissDialog() {
         _viewState.value = DismissDialogState

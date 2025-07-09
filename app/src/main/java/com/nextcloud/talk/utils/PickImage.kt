@@ -36,10 +36,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PickImage(
-    private val activity: Activity,
-    private var currentUser: User?
-) {
+class PickImage(private val activity: Activity, private var currentUser: User?) {
 
     @Inject
     lateinit var ncApi: NcApi

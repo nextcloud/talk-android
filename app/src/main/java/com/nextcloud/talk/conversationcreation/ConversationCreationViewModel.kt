@@ -139,9 +139,8 @@ class ConversationCreationViewModel @Inject constructor(
         }
     }
 
-    fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return repository.getImageUri(avatarId, requestBigSize)
-    }
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
+        repository.getImageUri(avatarId, requestBigSize)
 }
 
 sealed class AllowGuestsUiState {

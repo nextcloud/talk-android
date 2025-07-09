@@ -8,7 +8,5 @@
 package com.nextcloud.talk.upload.chunked
 
 data class Chunk(var start: Long, var end: Long) {
-    fun length(): Long {
-        return end - start + 1
-    }
+    fun length(): Long = end - start + 1
 }

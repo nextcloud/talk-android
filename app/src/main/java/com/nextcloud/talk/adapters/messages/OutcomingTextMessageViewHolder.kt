@@ -231,13 +231,15 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         val messageIsEditable = hasSpreedFeatureCapability(
             user.capabilities?.spreedCapability!!,
             SpreedFeatures.EDIT_MESSAGES
-        ) && !isOlderThanTwentyFourHours
+        ) &&
+            !isOlderThanTwentyFourHours
 
         val isNoTimeLimitOnNoteToSelf = hasSpreedFeatureCapability(
             user.capabilities?.spreedCapability!!,
             SpreedFeatures
                 .EDIT_MESSAGES_NOTE_TO_SELF
-        ) && chatActivity.currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
+        ) &&
+            chatActivity.currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
         checkBoxContainer.removeAllViews()
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
@@ -247,7 +249,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         val firstPart = message.toString().substringBefore("\n- [")
         messageTextView.text = messageUtils.enrichChatMessageText(
-            binding.messageText.context, firstPart, true, viewThemeUtils
+            binding.messageText.context,
+            firstPart,
+            true,
+            viewThemeUtils
         )
 
         val checkboxList = mutableListOf<CheckBox>()

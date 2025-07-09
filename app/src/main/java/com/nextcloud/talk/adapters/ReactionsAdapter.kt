@@ -12,10 +12,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ReactionItemBinding
 
-class ReactionsAdapter(
-    private val clickListener: ReactionItemClickListener,
-    private val user: User?
-) : RecyclerView.Adapter<ReactionsViewHolder>() {
+class ReactionsAdapter(private val clickListener: ReactionItemClickListener, private val user: User?) :
+    RecyclerView.Adapter<ReactionsViewHolder>() {
     internal var list: MutableList<ReactionItem> = ArrayList<ReactionItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReactionsViewHolder {
@@ -27,7 +25,5 @@ class ReactionsAdapter(
         holder.bind(list[position], clickListener)
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    override fun getItemCount(): Int = list.size
 }

@@ -10,8 +10,4 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class GeocodingResult(
-    val lat: Double,
-    val lon: Double,
-    var displayName: String
-) : Parcelable
+data class GeocodingResult(val lat: Double, val lon: Double, var displayName: String) : Parcelable

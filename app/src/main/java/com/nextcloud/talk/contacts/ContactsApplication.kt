@@ -15,7 +15,9 @@ import coil.memory.MemoryCache
 import coil.util.DebugLogger
 import com.nextcloud.talk.utils.ContactUtils
 
-class ContactsApplication : Application(), ImageLoaderFactory {
+class ContactsApplication :
+    Application(),
+    ImageLoaderFactory {
     override fun newImageLoader(): ImageLoader {
         val imageLoader = ImageLoader.Builder(this)
             .memoryCache {

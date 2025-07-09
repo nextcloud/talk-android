@@ -20,24 +20,17 @@ import dagger.Provides
 class ManagerModule {
 
     @Provides
-    fun provideMediaRecorderManager(): MediaRecorderManager {
-        return MediaRecorderManager()
-    }
+    fun provideMediaRecorderManager(): MediaRecorderManager = MediaRecorderManager()
 
     @Provides
-    fun provideAudioRecorderManager(): AudioRecorderManager {
-        return AudioRecorderManager()
-    }
+    fun provideAudioRecorderManager(): AudioRecorderManager = AudioRecorderManager()
 
     @Provides
-    fun provideMediaPlayerManager(preferences: AppPreferences): MediaPlayerManager {
-        return MediaPlayerManager().apply {
+    fun provideMediaPlayerManager(preferences: AppPreferences): MediaPlayerManager =
+        MediaPlayerManager().apply {
             appPreferences = preferences
         }
-    }
 
     @Provides
-    fun provideAudioFocusManager(context: Context): AudioFocusRequestManager {
-        return AudioFocusRequestManager(context)
-    }
+    fun provideAudioFocusManager(context: Context): AudioFocusRequestManager = AudioFocusRequestManager(context)
 }

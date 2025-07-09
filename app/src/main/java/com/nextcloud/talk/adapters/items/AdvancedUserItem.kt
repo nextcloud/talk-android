@@ -35,29 +35,24 @@ class AdvancedUserItem(
     val account: Account?,
     private val viewThemeUtils: ViewThemeUtils,
     private val actionRequiredCount: Int
-) : AbstractFlexibleItem<UserItemViewHolder>(), IFilterable<String?> {
-    override fun equals(other: Any?): Boolean {
-        return if (other is AdvancedUserItem) {
+) : AbstractFlexibleItem<UserItemViewHolder>(),
+    IFilterable<String?> {
+
+    override fun equals(other: Any?): Boolean =
+        if (other is AdvancedUserItem) {
             model == other.model
         } else {
             false
         }
-    }
 
-    override fun hashCode(): Int {
-        return model.hashCode()
-    }
+    override fun hashCode(): Int = model.hashCode()
 
-    override fun getLayoutRes(): Int {
-        return R.layout.account_item
-    }
+    override fun getLayoutRes(): Int = R.layout.account_item
 
     override fun createViewHolder(
         view: View?,
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
-    ): UserItemViewHolder {
-        return UserItemViewHolder(view, adapter)
-    }
+    ): UserItemViewHolder = UserItemViewHolder(view, adapter)
 
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>,
@@ -94,13 +89,12 @@ class AdvancedUserItem(
         }
     }
 
-    override fun filter(constraint: String?): Boolean {
-        return model.displayName != null &&
+    override fun filter(constraint: String?): Boolean =
+        model.displayName != null &&
             Pattern
                 .compile(constraint, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                 .matcher(model.displayName!!.trim())
                 .find()
-    }
 
     class UserItemViewHolder(view: View?, adapter: FlexibleAdapter<*>?) : FlexibleViewHolder(view, adapter) {
         var binding: AccountItemBinding

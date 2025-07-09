@@ -19,10 +19,5 @@ interface SharedItemsRepository {
 
     fun availableTypes(parameters: Parameters): Observable<Set<SharedItemType>>
 
-    data class Parameters(
-        val userName: String,
-        val userToken: String,
-        val baseUrl: String,
-        val roomToken: String
-    )
+    data class Parameters(val userName: String, val userToken: String, val baseUrl: String, val roomToken: String)
 }

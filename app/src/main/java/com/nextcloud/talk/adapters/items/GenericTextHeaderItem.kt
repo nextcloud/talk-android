@@ -38,20 +38,14 @@ open class GenericTextHeaderItem(title: String, viewThemeUtils: ViewThemeUtils) 
         return false
     }
 
-    override fun hashCode(): Int {
-        return Objects.hash(model)
-    }
+    override fun hashCode(): Int = Objects.hash(model)
 
-    override fun getLayoutRes(): Int {
-        return R.layout.rv_item_title_header
-    }
+    override fun getLayoutRes(): Int = R.layout.rv_item_title_header
 
     override fun createViewHolder(
         view: View?,
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
-    ): HeaderViewHolder {
-        return HeaderViewHolder(view, adapter)
-    }
+    ): HeaderViewHolder = HeaderViewHolder(view, adapter)
 
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<*>?>?,

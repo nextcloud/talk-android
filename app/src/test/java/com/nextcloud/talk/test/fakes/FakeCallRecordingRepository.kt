@@ -14,11 +14,7 @@ import io.reactivex.Observable
 
 class FakeCallRecordingRepository : CallRecordingRepository {
 
-    override fun startRecording(roomToken: String): Observable<StartCallRecordingModel> {
-        return Observable.just(StartCallRecordingModel(true))
-    }
+    override fun startRecording(roomToken: String) = Observable.just(StartCallRecordingModel(true))
 
-    override fun stopRecording(roomToken: String): Observable<StopCallRecordingModel> {
-        return Observable.just(StopCallRecordingModel(true))
-    }
+    override fun stopRecording(roomToken: String) = Observable.just(StopCallRecordingModel(true))
 }

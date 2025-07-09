@@ -14,13 +14,12 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettings
 class SignalingSettingsConverter {
 
     @TypeConverter
-    fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String {
-        return if (signalingSettings == null) {
+    fun fromSignalingSettingsToString(signalingSettings: SignalingSettings?): String =
+        if (signalingSettings == null) {
             ""
         } else {
             LoganSquare.serialize(signalingSettings)
         }
-    }
 
     @TypeConverter
     fun fromStringToSignalingSettings(value: String): SignalingSettings? {

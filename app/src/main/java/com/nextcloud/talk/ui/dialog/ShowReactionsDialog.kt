@@ -49,7 +49,8 @@ class ShowReactionsDialog(
     private val user: User?,
     private val hasChatPermission: Boolean,
     private val ncApi: NcApi
-) : BottomSheetDialog(activity), ReactionItemClickListener {
+) : BottomSheetDialog(activity),
+    ReactionItemClickListener {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils

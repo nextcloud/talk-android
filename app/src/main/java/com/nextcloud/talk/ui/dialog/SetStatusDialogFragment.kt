@@ -81,7 +81,8 @@ private const val LAST_SECOND_OF_MINUTE = 59
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SetStatusDialogFragment :
-    DialogFragment(), PredefinedStatusClickListener {
+    DialogFragment(),
+    PredefinedStatusClickListener {
 
     private var selectedPredefinedStatus: PredefinedStatus? = null
 
@@ -602,9 +603,8 @@ class SetStatusDialogFragment :
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        binding.root
 
     override fun onClick(predefinedStatus: PredefinedStatus) {
         selectedPredefinedStatus = predefinedStatus

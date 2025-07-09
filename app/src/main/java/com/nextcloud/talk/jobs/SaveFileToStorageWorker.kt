@@ -95,8 +95,8 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
         }
     }
 
-    private fun getUriByType(mimeType: String): Uri {
-        return when {
+    private fun getUriByType(mimeType: String): Uri =
+        when {
             mimeType.startsWith(VIDEO_PREFIX) -> MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             mimeType.startsWith(AUDIO_PREFIX) -> MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
             mimeType.startsWith(IMAGE_PREFIX) -> MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -106,7 +106,6 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
                 MediaStore.Downloads.EXTERNAL_CONTENT_URI
             }
         }
-    }
 
     companion object {
         private val TAG = SaveFileToStorageWorker::class.java.simpleName

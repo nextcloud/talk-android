@@ -29,8 +29,8 @@ class RemoteFileBrowserItemsAdapter(
 
     var items: List<RemoteFileBrowserItem> = emptyList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteFileBrowserItemsViewHolder {
-        return if (showGrid) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RemoteFileBrowserItemsViewHolder =
+        if (showGrid) {
             RemoteFileBrowserItemsListViewHolder(
                 RvItemBrowserFileBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -61,15 +61,12 @@ class RemoteFileBrowserItemsAdapter(
                 onItemClicked(items[it])
             }
         }
-    }
 
     override fun onBindViewHolder(holder: RemoteFileBrowserItemsViewHolder, position: Int) {
         holder.onBind(items[position])
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateDataSet(browserItems: List<RemoteFileBrowserItem>) {

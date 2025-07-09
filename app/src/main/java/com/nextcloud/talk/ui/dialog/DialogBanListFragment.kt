@@ -51,17 +51,11 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
             bans = items
         }
 
-        override fun getCount(): Int {
-            return bans.size
-        }
+        override fun getCount(): Int = bans.size
 
-        override fun getItem(position: Int): Any {
-            return bans[position]
-        }
+        override fun getItem(position: Int): Any = bans[position]
 
-        override fun getItemId(position: Int): Long {
-            return bans[position].bannedTime!!.toLong()
-        }
+        override fun getItemId(position: Int): Long = bans[position].bannedTime!!.toLong()
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
             val binding = BanItemListBinding.inflate(LayoutInflater.from(context))

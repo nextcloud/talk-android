@@ -10,11 +10,7 @@ import com.nextcloud.talk.models.domain.SearchMessageEntry
 import io.reactivex.Observable
 
 interface UnifiedSearchRepository {
-    data class UnifiedSearchResults<T>(
-        val cursor: Int,
-        val hasMore: Boolean,
-        val entries: List<T>
-    )
+    data class UnifiedSearchResults<T>(val cursor: Int, val hasMore: Boolean, val entries: List<T>)
 
     fun searchMessages(
         searchTerm: String,

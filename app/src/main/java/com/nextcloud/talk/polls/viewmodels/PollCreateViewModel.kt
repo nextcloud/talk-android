@@ -137,9 +137,7 @@ class PollCreateViewModel @Inject constructor(private val repository: PollReposi
         _viewState.value = PollCreationState(enableAddOptionButton(), enableCreatePollButton())
     }
 
-    private fun enableCreatePollButton(): Boolean {
-        return _question.isNotEmpty() && atLeastTwoOptionsAreFilled()
-    }
+    private fun enableCreatePollButton(): Boolean = _question.isNotEmpty() && atLeastTwoOptionsAreFilled()
 
     private fun atLeastTwoOptionsAreFilled(): Boolean {
         if (_options.value != null) {

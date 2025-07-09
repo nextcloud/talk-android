@@ -16,10 +16,8 @@ import com.nextcloud.talk.extensions.loadGuestAvatar
 import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
 
-class ReactionsViewHolder(
-    private val binding: ReactionItemBinding,
-    private val user: User?
-) : RecyclerView.ViewHolder(binding.root) {
+class ReactionsViewHolder(private val binding: ReactionItemBinding, private val user: User?) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun bind(reactionItem: ReactionItem, clickListener: ReactionItemClickListener) {
         binding.root.setOnClickListener { clickListener.onClick(reactionItem) }

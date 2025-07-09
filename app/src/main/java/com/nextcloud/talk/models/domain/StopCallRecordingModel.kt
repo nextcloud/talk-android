@@ -6,6 +6,4 @@
  */
 package com.nextcloud.talk.models.domain
 
-data class StopCallRecordingModel(
-    var success: Boolean
-)
+data class StopCallRecordingModel(var success: Boolean)

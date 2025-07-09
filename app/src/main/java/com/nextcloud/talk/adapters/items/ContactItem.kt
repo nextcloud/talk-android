@@ -49,12 +49,10 @@ class ContactItem(
         }
         return false
     }
-    override fun hashCode(): Int {
-        return model.hashCode()
-    }
+    override fun hashCode(): Int = model.hashCode()
 
-    override fun filter(constraint: String?): Boolean {
-        return model.displayName != null &&
+    override fun filter(constraint: String?): Boolean =
+        model.displayName != null &&
             (
                 Pattern.compile(constraint!!, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                     .matcher(model.displayName!!.trim())
@@ -63,18 +61,13 @@ class ContactItem(
                         .matcher(model.calculatedActorId!!.trim())
                         .find()
                 )
-    }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.rv_item_contact
-    }
+    override fun getLayoutRes(): Int = R.layout.rv_item_contact
 
     override fun createViewHolder(
         view: View?,
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?
-    ): ContactItemViewHolder {
-        return ContactItemViewHolder(view, adapter)
-    }
+    ): ContactItemViewHolder = ContactItemViewHolder(view, adapter)
 
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<RecyclerView.ViewHolder>>?,
@@ -143,7 +136,8 @@ class ContactItem(
         } else if (model.calculatedActorType == Participant.ActorType.EMAILS) {
             setGenericAvatar(holder!!, R.drawable.ic_avatar_mail)
         } else if (model.calculatedActorType == Participant.ActorType.GUESTS ||
-            model.type == Participant.ParticipantType.GUEST || model.type == Participant.ParticipantType.GUEST_MODERATOR
+            model.type == Participant.ParticipantType.GUEST ||
+            model.type == Participant.ParticipantType.GUEST_MODERATOR
         ) {
             var displayName: String?
 
@@ -180,9 +174,7 @@ class ContactItem(
         holder.binding.avatarView.loadUserAvatar(avatar)
     }
 
-    override fun getHeader(): GenericTextHeaderItem? {
-        return header
-    }
+    override fun getHeader(): GenericTextHeaderItem? = header
 
     override fun setHeader(p0: GenericTextHeaderItem?) {
         this.header = header

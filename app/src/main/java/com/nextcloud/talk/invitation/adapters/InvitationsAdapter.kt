@@ -80,11 +80,7 @@ class InvitationsAdapter(
 }
 
 object InvitationsCallback : DiffUtil.ItemCallback<Invitation>() {
-    override fun areItemsTheSame(oldItem: Invitation, newItem: Invitation): Boolean {
-        return oldItem == newItem
-    }
+    override fun areItemsTheSame(oldItem: Invitation, newItem: Invitation): Boolean = oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: Invitation, newItem: Invitation): Boolean {
-        return oldItem.id == newItem.id
-    }
+    override fun areContentsTheSame(oldItem: Invitation, newItem: Invitation): Boolean = oldItem.id == newItem.id
 }

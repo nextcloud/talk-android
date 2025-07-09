@@ -32,9 +32,8 @@ import javax.inject.Inject
 class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, private val dateUtils: DateUtils) :
     SharedItemsRepository {
 
-    override fun media(parameters: SharedItemsRepository.Parameters, type: SharedItemType): Observable<SharedItems>? {
-        return media(parameters, type, null)
-    }
+    override fun media(parameters: SharedItemsRepository.Parameters, type: SharedItemType): Observable<SharedItems>? =
+        media(parameters, type, null)
 
     override fun media(
         parameters: SharedItemsRepository.Parameters,
@@ -192,13 +191,12 @@ class SharedItemsRepositoryImpl @Inject constructor(private val ncApi: NcApi, pr
         }
     }
 
-    private fun previewLink(fileId: String?, baseUrl: String): String {
-        return ApiUtils.getUrlForFilePreviewWithFileId(
+    private fun previewLink(fileId: String?, baseUrl: String): String =
+        ApiUtils.getUrlForFilePreviewWithFileId(
             baseUrl,
             fileId!!,
             sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
         )
-    }
 
     companion object {
         const val BATCH_SIZE: Int = 28

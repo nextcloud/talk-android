@@ -83,17 +83,12 @@ class ConversationItem(
         return result
     }
 
-    override fun getLayoutRes(): Int {
-        return R.layout.rv_item_conversation_with_last_message
-    }
+    override fun getLayoutRes(): Int = R.layout.rv_item_conversation_with_last_message
 
-    override fun getItemViewType(): Int {
-        return VIEW_TYPE
-    }
+    override fun getItemViewType(): Int = VIEW_TYPE
 
-    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>?>?): ConversationItemViewHolder {
-        return ConversationItemViewHolder(view, adapter)
-    }
+    override fun createViewHolder(view: View, adapter: FlexibleAdapter<IFlexible<*>?>?): ConversationItemViewHolder =
+        ConversationItemViewHolder(view, adapter)
 
     @SuppressLint("SetTextI18n")
     override fun bindViewHolder(
@@ -219,8 +214,8 @@ class ConversationItem(
         }
     }
 
-    private fun shouldLoadAvatar(holder: ConversationItemViewHolder): Boolean {
-        return when (model.objectType) {
+    private fun shouldLoadAvatar(holder: ConversationItemViewHolder): Boolean =
+        when (model.objectType) {
             ConversationEnums.ObjectType.SHARE_PASSWORD -> {
                 holder.binding.dialogAvatar.setImageDrawable(
                     ContextCompat.getDrawable(
@@ -243,7 +238,6 @@ class ConversationItem(
 
             else -> true
         }
-    }
 
     private fun setLastMessage(holder: ConversationItemViewHolder, appContext: Context) {
         if (chatMessage != null) {
@@ -277,8 +271,8 @@ class ConversationItem(
         }
     }
 
-    private fun calculateRegularLastMessageText(appContext: Context): CharSequence {
-        return if (chatMessage?.actorId == user.userId) {
+    private fun calculateRegularLastMessageText(appContext: Context): CharSequence =
+        if (chatMessage?.actorId == user.userId) {
             String.format(
                 appContext.getString(R.string.nc_formatted_message_you),
                 lastMessageDisplayText
@@ -301,7 +295,6 @@ class ConversationItem(
                 lastMessageDisplayText
             )
         }
-    }
 
     private fun showUnreadMessages(holder: ConversationItemViewHolder) {
         holder.binding.dialogName.setTypeface(holder.binding.dialogName.typeface, Typeface.BOLD)
@@ -343,17 +336,14 @@ class ConversationItem(
         }
     }
 
-    override fun filter(constraint: String?): Boolean {
-        return model.displayName != null &&
+    override fun filter(constraint: String?): Boolean =
+        model.displayName != null &&
             Pattern
                 .compile(constraint!!, Pattern.CASE_INSENSITIVE or Pattern.LITERAL)
                 .matcher(model.displayName.trim())
                 .find()
-    }
 
-    override fun getHeader(): GenericTextHeaderItem? {
-        return header
-    }
+    override fun getHeader(): GenericTextHeaderItem? = header
 
     override fun setHeader(header: GenericTextHeaderItem?) {
         this.header = header

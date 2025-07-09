@@ -29,8 +29,12 @@ class ChatUtils {
 
                 if (individualHashMap != null) {
                     val type = individualHashMap["type"]
-                    resultMessage = if (type == "user" || type == "guest" || type == "call" || type == "email" ||
-                        type == "user-group" || type == "circle"
+                    resultMessage = if (type == "user" ||
+                        type == "guest" ||
+                        type == "call" ||
+                        type == "email" ||
+                        type == "user-group" ||
+                        type == "circle"
                     ) {
                         resultMessage?.replace("{$key}", "@" + individualHashMap["name"])
                     } else if (type == "geo-location") {

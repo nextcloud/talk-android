@@ -8,7 +8,4 @@ package com.nextcloud.talk.adapters
 
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
 
-data class ReactionItem(
-    val reactionVoter: ReactionVoter,
-    val reaction: String?
-)
+data class ReactionItem(val reactionVoter: ReactionVoter, val reaction: String?)

@@ -228,15 +228,14 @@ class MessageSearchActivity : BaseActivity() {
             .subscribe { newText -> viewModel.onQueryTextChange(newText) }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean =
+        when (item.itemId) {
             android.R.id.home -> {
                 onBackPressedDispatcher.onBackPressed()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
 
     override fun onDestroy() {
         super.onDestroy()

@@ -8,7 +8,5 @@
 package com.nextcloud.talk
 
 object PhoneUtils {
-    fun isPhoneNumber(input: String?): Boolean {
-        return input?.matches(Regex("^\\+?\\d+$")) == true
-    }
+    fun isPhoneNumber(input: String?): Boolean = input?.matches(Regex("^\\+?\\d+$")) == true
 }

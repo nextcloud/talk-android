@@ -67,8 +67,7 @@ import kotlin.math.roundToInt
 class TalkSpecificViewThemeUtils @Inject constructor(
     schemes: MaterialSchemes,
     private val appcompat: AndroidXViewThemeUtils
-) :
-    ViewThemeUtilsBase(schemes) {
+) : ViewThemeUtilsBase(schemes) {
     private val dynamicColor = MaterialDynamicColors()
     fun themeIncomingMessageBubble(bubble: View, grouped: Boolean, deleted: Boolean, isPlayed: Boolean = false) {
         val resources = bubble.resources

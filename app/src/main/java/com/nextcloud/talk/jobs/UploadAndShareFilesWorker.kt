@@ -52,7 +52,8 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerParameters) :
-    Worker(context, workerParameters), OnDataTransferProgressListener {
+    Worker(context, workerParameters),
+    OnDataTransferProgressListener {
 
     @Inject
     lateinit var ncApi: NcApi
@@ -128,8 +129,8 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun uploadFile(sourceFileUri: Uri, metaData: String?, remotePath: String): Boolean {
-        return if (file == null) {
+    private fun uploadFile(sourceFileUri: Uri, metaData: String?, remotePath: String): Boolean =
+        if (file == null) {
             false
         } else if (isChunkedUploading) {
             Log.d(TAG, "starting chunked upload because size is " + file!!.length())
@@ -146,7 +147,6 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
                 .upload(sourceFileUri, fileName, remotePath, metaData)
                 .blockingFirst()
         }
-    }
 
     private fun getRemotePath(currentUser: User): String {
         val remotePath = CapabilitiesUtil.getAttachmentFolder(
@@ -239,27 +239,24 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         }
     }
 
-    private fun getNotificationContentText(percentage: Int): String {
-        return String.format(
+    private fun getNotificationContentText(percentage: Int): String =
+        String.format(
             getResourceString(context, R.string.nc_upload_notification_text),
             getShortenedFileName(),
             conversationName,
             percentage
         )
-    }
 
-    private fun getShortenedFileName(): String {
-        return if (fileName.length > NOTIFICATION_FILE_NAME_MAX_LENGTH) {
+    private fun getShortenedFileName(): String =
+        if (fileName.length > NOTIFICATION_FILE_NAME_MAX_LENGTH) {
             THREE_DOTS + fileName.takeLast(NOTIFICATION_FILE_NAME_MAX_LENGTH)
         } else {
             fileName
         }
-    }
 
-    private fun getCancelUploadIntent(): PendingIntent {
-        return WorkManager.getInstance(applicationContext)
+    private fun getCancelUploadIntent(): PendingIntent =
+        WorkManager.getInstance(applicationContext)
             .createCancelPendingIntent(id)
-    }
 
     private fun getIntentToOpenConversation(): PendingIntent? {
         val bundle = Bundle()
@@ -303,9 +300,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
         mNotifyManager!!.notify(SystemClock.uptimeMillis().toInt(), failureNotification)
     }
 
-    private fun getResourceString(context: Context, resourceId: Int): String {
-        return context.resources.getString(resourceId)
-    }
+    private fun getResourceString(context: Context, resourceId: Int): String = context.resources.getString(resourceId)
 
     companion object {
         private val TAG = UploadAndShareFilesWorker::class.simpleName
