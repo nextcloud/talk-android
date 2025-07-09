@@ -19,6 +19,7 @@ import androidx.lifecycle.asLiveData
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
@@ -35,6 +36,10 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
         get() = isOnline.asLiveData()
 
     override val isOnline: StateFlow<Boolean> get() = _isOnline
+
+    override val isServerReachable: StateFlow<Boolean> get() = _isServerReachable
+
+    private val _isServerReachable = MutableStateFlow(true)
 
     private val _isOnline: StateFlow<Boolean> = callbackFlow {
         val callback = object : ConnectivityManager.NetworkCallback() {
@@ -76,6 +81,10 @@ class NetworkMonitorImpl @Inject constructor(private val context: Context) : Net
         SharingStarted.WhileSubscribed(COROUTINE_TIMEOUT),
         false
     )
+
+    override fun setServerReachable(reachable: Boolean) {
+        _isServerReachable.value = reachable
+    }
 
     companion object {
         private val TAG = NetworkMonitorImpl::class.java.simpleName
