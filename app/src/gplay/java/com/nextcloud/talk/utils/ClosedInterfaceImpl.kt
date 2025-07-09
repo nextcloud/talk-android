@@ -24,7 +24,9 @@ import com.nextcloud.talk.jobs.GetFirebasePushTokenWorker
 import java.util.concurrent.TimeUnit
 
 @AutoInjector(NextcloudTalkApplication::class)
-class ClosedInterfaceImpl : ClosedInterface, ProviderInstaller.ProviderInstallListener {
+class ClosedInterfaceImpl :
+    ClosedInterface,
+    ProviderInstaller.ProviderInstallListener {
 
     override val isGooglePlayServicesAvailable: Boolean = isGPlayServicesAvailable()
 

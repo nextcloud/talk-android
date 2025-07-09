@@ -33,7 +33,9 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener {
+class PollCreateDialogFragment :
+    DialogFragment(),
+    PollCreateOptionsItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -66,9 +68,8 @@ class PollCreateDialogFragment : DialogFragment(), PollCreateOptionsItemListener
         return dialogBuilder.create()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        return binding.root
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+        binding.root
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

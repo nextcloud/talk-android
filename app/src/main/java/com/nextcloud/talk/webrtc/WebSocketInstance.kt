@@ -47,11 +47,8 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("TooManyFunctions")
-class WebSocketInstance internal constructor(
-    conversationUser: User,
-    connectionUrl: String,
-    webSocketTicket: String
-) : WebSocketListener() {
+class WebSocketInstance internal constructor(conversationUser: User, connectionUrl: String, webSocketTicket: String) :
+    WebSocketListener() {
     @JvmField
     @Inject
     var okHttpClient: OkHttpClient? = null
@@ -278,9 +275,7 @@ class WebSocketInstance internal constructor(
         }
     }
 
-    fun getUserMap(): HashMap<String?, Participant> {
-        return usersHashMap
-    }
+    fun getUserMap(): HashMap<String?, Participant> = usersHashMap
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
@@ -365,9 +360,7 @@ class WebSocketInstance internal constructor(
         closeWebSocket(webSocket)
     }
 
-    fun hasMCU(): Boolean {
-        return hasMCU
-    }
+    fun hasMCU(): Boolean = hasMCU
 
     @Suppress("Detekt.ComplexMethod")
     fun joinRoomWithRoomTokenAndSession(
@@ -464,9 +457,7 @@ class WebSocketInstance internal constructor(
         }
     }
 
-    fun getSignalingMessageReceiver(): SignalingMessageReceiver {
-        return signalingMessageReceiver
-    }
+    fun getSignalingMessageReceiver(): SignalingMessageReceiver = signalingMessageReceiver
 
     /**
      * Temporary implementation of SignalingMessageReceiver until signaling related code is extracted to a Signaling

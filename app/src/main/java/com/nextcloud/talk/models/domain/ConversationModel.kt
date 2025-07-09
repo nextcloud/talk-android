@@ -70,8 +70,8 @@ class ConversationModel(
 
     companion object {
         @Suppress("LongMethod")
-        fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel {
-            return ConversationModel(
+        fun mapToConversationModel(conversation: Conversation, user: User): ConversationModel =
+            ConversationModel(
                 internalId = user.id!!.toString() + "@" + conversation.token,
                 accountId = user.id!!,
                 token = conversation.token,
@@ -131,6 +131,5 @@ class ConversationModel(
                 hasSensitive = conversation.hasSensitive,
                 hasImportant = conversation.hasImportant
             )
-        }
     }
 }

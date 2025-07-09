@@ -47,8 +47,8 @@ class ParticipantPermissionsTest : TestCase() {
         assertTrue(attendeePermissions.canPublishVideo())
     }
 
-    private fun createConversation(): Conversation {
-        return Conversation(
+    private fun createConversation() =
+        Conversation(
             token = "test",
             name = "test",
             displayName = "test",
@@ -94,5 +94,4 @@ class ParticipantPermissionsTest : TestCase() {
             remoteServer = "",
             remoteToken = ""
         )
-    }
 }

@@ -31,13 +31,11 @@ data class MessageResultItem(
     val messageEntry: SearchMessageEntry,
     var showHeader: Boolean = false,
     private val viewThemeUtils: ViewThemeUtils
-) :
-    AbstractFlexibleItem<MessageResultItem.ViewHolder>(),
+) : AbstractFlexibleItem<MessageResultItem.ViewHolder>(),
     IFilterable<String>,
     ISectionable<MessageResultItem.ViewHolder, GenericTextHeaderItem> {
 
-    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) :
-        FlexibleViewHolder(view, adapter) {
+    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
         var binding: RvItemSearchMessageBinding
 
         init {
@@ -73,9 +71,7 @@ data class MessageResultItem(
 
     override fun filter(constraint: String?): Boolean = true
 
-    override fun getItemViewType(): Int {
-        return VIEW_TYPE
-    }
+    override fun getItemViewType(): Int = VIEW_TYPE
 
     companion object {
         const val VIEW_TYPE = FlexibleItemViewType.MESSAGE_RESULT_ITEM

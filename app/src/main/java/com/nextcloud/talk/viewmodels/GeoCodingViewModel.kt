@@ -25,21 +25,15 @@ class GeoCodingViewModel : ViewModel() {
     private val okHttpClient: OkHttpClient = OkHttpClient.Builder().build()
     private var geocodingResults: List<Address> = ArrayList()
     private var query: String = ""
-    fun getGeocodingResultsLiveData(): LiveData<List<Address>> {
-        return geocodingResultsLiveData
-    }
+    fun getGeocodingResultsLiveData(): LiveData<List<Address>> = geocodingResultsLiveData
 
-    fun getQuery(): String {
-        return query
-    }
+    fun getQuery(): String = query
 
     fun setQuery(query: String) {
         this.query = query
     }
 
-    fun getGeocodingResults(): List<Address> {
-        return geocodingResults
-    }
+    fun getGeocodingResults(): List<Address> = geocodingResults
 
     init {
         nominatimClient = TalkJsonNominatimClient(

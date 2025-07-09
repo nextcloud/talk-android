@@ -134,9 +134,8 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
         binding!!.accountsList.adapter = adapter
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return dialogView
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
+        dialogView
 
     override fun onDestroyView() {
         super.onDestroyView()
@@ -157,8 +156,6 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
 
     companion object {
         val TAG = ChooseAccountShareToDialogFragment::class.java.simpleName
-        fun newInstance(): ChooseAccountShareToDialogFragment {
-            return ChooseAccountShareToDialogFragment()
-        }
+        fun newInstance(): ChooseAccountShareToDialogFragment = ChooseAccountShareToDialogFragment()
     }
 }

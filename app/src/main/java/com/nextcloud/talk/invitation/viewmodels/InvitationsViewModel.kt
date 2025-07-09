@@ -22,8 +22,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class InvitationsViewModel @Inject constructor(private val repository: InvitationsRepository) :
-    ViewModel() {
+class InvitationsViewModel @Inject constructor(private val repository: InvitationsRepository) : ViewModel() {
 
     sealed interface ViewState
 

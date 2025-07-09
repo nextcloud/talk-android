@@ -26,8 +26,7 @@ import javax.inject.Inject
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     var userManager: UserManager
-) :
-    ViewModel() {
+) : ViewModel() {
 
     @Inject
     lateinit var invitationsRepository: InvitationsRepository

@@ -10,8 +10,8 @@ import com.nextcloud.talk.data.storage.model.ArbitraryStorage
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 
 object ArbitraryStorageMapper {
-    fun toModel(entity: ArbitraryStorageEntity?): ArbitraryStorage? {
-        return entity?.let {
+    fun toModel(entity: ArbitraryStorageEntity?): ArbitraryStorage? =
+        entity?.let {
             ArbitraryStorage(
                 it.accountIdentifier,
                 it.key,
@@ -19,14 +19,12 @@ object ArbitraryStorageMapper {
                 it.value
             )
         }
-    }
 
-    fun toEntity(model: ArbitraryStorage): ArbitraryStorageEntity {
-        return ArbitraryStorageEntity(
+    fun toEntity(model: ArbitraryStorage): ArbitraryStorageEntity =
+        ArbitraryStorageEntity(
             accountIdentifier = model.accountIdentifier,
             key = model.key,
             storageObject = model.storageObject,
             value = model.value
         )
-    }
 }

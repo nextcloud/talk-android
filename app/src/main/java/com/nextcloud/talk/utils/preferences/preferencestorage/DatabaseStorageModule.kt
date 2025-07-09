@@ -152,8 +152,8 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
         }
     }
 
-    fun getBoolean(key: String, defaultVal: Boolean): Boolean {
-        return if ("lobby_switch" == key) {
+    fun getBoolean(key: String, defaultVal: Boolean): Boolean =
+        if ("lobby_switch" == key) {
             lobbyValue
         } else {
             arbitraryStorageManager!!
@@ -161,10 +161,9 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                 .map { arbitraryStorage: ArbitraryStorage -> arbitraryStorage.value.toBoolean() }
                 .blockingGet(defaultVal)
         }
-    }
 
-    fun getString(key: String, defaultVal: String): String? {
-        return if ("conversation_settings_dropdown" == key) {
+    fun getString(key: String, defaultVal: String): String? =
+        if ("conversation_settings_dropdown" == key) {
             when (messageExpiration) {
                 EXPIRE_4_WEEKS -> "expire_2419200"
                 EXPIRE_7_DAYS -> "expire_604800"
@@ -181,7 +180,6 @@ class DatabaseStorageModule(conversationUser: User, conversationToken: String) {
                 .map(ArbitraryStorage::value)
                 .blockingGet(defaultVal)
         }
-    }
 
     fun setMessageExpiration(messageExpiration: Int) {
         this.messageExpiration = messageExpiration

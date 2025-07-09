@@ -93,17 +93,20 @@ class DummyUserDaoImpl : UsersDao() {
     )
     private var activeUserId: Long? = 1L
 
-    override fun getActiveUser(): Maybe<UserEntity> {
-        return Maybe.fromCallable { dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion } }
-    }
+    override fun getActiveUser(): Maybe<UserEntity> =
+        Maybe.fromCallable {
+            dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
+        }
 
-    override fun getActiveUserObservable(): Observable<UserEntity> {
-        return Observable.fromCallable { dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion } }
-    }
+    override fun getActiveUserObservable(): Observable<UserEntity> =
+        Observable.fromCallable {
+            dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
+        }
 
-    override fun getActiveUserSynchronously(): UserEntity? {
-        return dummyUsers.find { it.id == activeUserId && !it.scheduledForDeletion }
-    }
+    override fun getActiveUserSynchronously(): UserEntity? =
+        dummyUsers.find {
+            it.id == activeUserId && !it.scheduledForDeletion
+        }
 
     override fun deleteUser(user: UserEntity): Int {
         val initialSize = dummyUsers.size
@@ -127,37 +130,40 @@ class DummyUserDaoImpl : UsersDao() {
         return newUser.id
     }
 
-    override fun saveUsers(vararg users: UserEntity): List<Long> {
-        return users.map { saveUser(it) }
-    }
+    override fun saveUsers(vararg users: UserEntity): List<Long> = users.map { saveUser(it) }
 
-    override fun getUsers(): Single<List<UserEntity>> {
-        return Single.just(dummyUsers.filter { !it.scheduledForDeletion })
-    }
+    override fun getUsers(): Single<List<UserEntity>> = Single.just(dummyUsers.filter { !it.scheduledForDeletion })
 
-    override fun getUserWithId(id: Long): Maybe<UserEntity> {
-        return Maybe.fromCallable { dummyUsers.find { it.id == id } }
-    }
+    override fun getUserWithId(id: Long): Maybe<UserEntity> = Maybe.fromCallable { dummyUsers.find { it.id == id } }
 
-    override fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<UserEntity> {
-        return Maybe.fromCallable { dummyUsers.find { it.id == id && !it.scheduledForDeletion } }
-    }
+    override fun getUserWithIdNotScheduledForDeletion(id: Long): Maybe<UserEntity> =
+        Maybe.fromCallable {
+            dummyUsers.find { it.id == id && !it.scheduledForDeletion }
+        }
 
-    override fun getUserWithUserId(userId: String): Maybe<UserEntity> {
-        return Maybe.fromCallable { dummyUsers.find { it.userId == userId } }
-    }
+    override fun getUserWithUserId(userId: String): Maybe<UserEntity> =
+        Maybe.fromCallable {
+            dummyUsers.find { it.userId == userId }
+        }
 
-    override fun getUsersScheduledForDeletion(): Single<List<UserEntity>> {
-        return Single.just(dummyUsers.filter { it.scheduledForDeletion })
-    }
+    override fun getUsersScheduledForDeletion(): Single<List<UserEntity>> =
+        Single.just(
+            dummyUsers.filter {
+                it.scheduledForDeletion
+            }
+        )
 
-    override fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>> {
-        return Single.just(dummyUsers.filter { !it.scheduledForDeletion })
-    }
+    override fun getUsersNotScheduledForDeletion(): Single<List<UserEntity>> =
+        Single.just(
+            dummyUsers.filter {
+                !it.scheduledForDeletion
+            }
+        )
 
-    override fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity> {
-        return Maybe.fromCallable { dummyUsers.find { it.username == username } }
-    }
+    override fun getUserWithUsernameAndServer(username: String, server: String): Maybe<UserEntity> =
+        Maybe.fromCallable {
+            dummyUsers.find { it.username == username }
+        }
 
     override fun setUserAsActiveWithId(id: Long): Int {
         activeUserId = id

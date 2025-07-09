@@ -34,8 +34,8 @@ class SharedItemsAdapter(
 
     var items: List<SharedItem> = emptyList()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder {
-        return if (showGrid) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SharedItemsViewHolder =
+        if (showGrid) {
             SharedItemsGridViewHolder(
                 SharedItemGridBinding.inflate(
                     LayoutInflater.from(parent.context),
@@ -56,7 +56,6 @@ class SharedItemsAdapter(
                 viewThemeUtils
             )
         }
-    }
 
     override fun onBindViewHolder(holder: SharedItemsViewHolder, position: Int) {
         when (val item = items[position]) {
@@ -68,9 +67,7 @@ class SharedItemsAdapter(
         }
     }
 
-    override fun getItemCount(): Int {
-        return items.size
-    }
+    override fun getItemCount(): Int = items.size
 
     private fun showPoll(item: SharedItem, context: Context) {
         val pollVoteDialog = PollMainDialogFragment.newInstance(

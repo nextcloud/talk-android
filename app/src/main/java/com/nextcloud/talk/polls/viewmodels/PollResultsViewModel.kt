@@ -94,9 +94,7 @@ class PollResultsViewModel @Inject constructor() : ViewModel() {
         return votersAmountForThisOption!!
     }
 
-    private fun isOptionSelfVoted(poll: Poll, index: Int): Boolean {
-        return poll.votedSelf?.contains(index) == true
-    }
+    private fun isOptionSelfVoted(poll: Poll, index: Int): Boolean = poll.votedSelf?.contains(index) == true
 
     fun toggleDetails() {
         if (_items.value?.containsAll(itemsDetailsList) == true) {

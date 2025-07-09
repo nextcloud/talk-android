@@ -27,15 +27,14 @@ object BitmapShrinker {
     }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
-    private fun decodeBitmap(path: String, requestedWidth: Int, requestedHeight: Int): Bitmap {
-        return BitmapFactory.Options().run {
+    private fun decodeBitmap(path: String, requestedWidth: Int, requestedHeight: Int): Bitmap =
+        BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeFile(path, this)
             inSampleSize = getInSampleSize(this, requestedWidth, requestedHeight)
             inJustDecodeBounds = false
             BitmapFactory.decodeFile(path, this)
         }
-    }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
     private fun getInSampleSize(options: BitmapFactory.Options, requestedWidth: Int, requestedHeight: Int): Int {

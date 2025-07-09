@@ -50,9 +50,7 @@ class TextDrawable(val context: Context, private var text: String) : Drawable() 
     }
 
     @Deprecated("Deprecated in Java", ReplaceWith("PixelFormat.OPAQUE", "android.graphics.PixelFormat"))
-    override fun getOpacity(): Int {
-        return PixelFormat.OPAQUE
-    }
+    override fun getOpacity(): Int = PixelFormat.OPAQUE
 
     companion object {
         private const val Y_OFFSET = 5

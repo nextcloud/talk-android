@@ -18,9 +18,7 @@ interface ConversationsRepository {
 
     suspend fun allowGuests(token: String, allow: Boolean): GenericOverall
 
-    data class ResendInvitationsResult(
-        val successful: Boolean
-    )
+    data class ResendInvitationsResult(val successful: Boolean)
     fun resendInvitations(token: String): Observable<ResendInvitationsResult>
 
     suspend fun archiveConversation(credentials: String, url: String): GenericOverall

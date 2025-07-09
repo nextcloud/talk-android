@@ -23,13 +23,8 @@ object LoadMoreResultsItem :
     // layout is used as view type for uniqueness
     const val VIEW_TYPE = FlexibleItemViewType.LOAD_MORE_RESULTS_ITEM
 
-    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) :
-        FlexibleViewHolder(view, adapter) {
-        var binding: RvItemLoadMoreBinding
-
-        init {
-            binding = RvItemLoadMoreBinding.bind(view)
-        }
+    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter) {
+        var binding: RvItemLoadMoreBinding = RvItemLoadMoreBinding.bind(view)
     }
 
     override fun getLayoutRes(): Int = R.layout.rv_item_load_more
@@ -50,15 +45,9 @@ object LoadMoreResultsItem :
 
     override fun filter(constraint: String?): Boolean = true
 
-    override fun getItemViewType(): Int {
-        return VIEW_TYPE
-    }
+    override fun getItemViewType(): Int = VIEW_TYPE
 
-    override fun equals(other: Any?): Boolean {
-        return other is LoadMoreResultsItem
-    }
+    override fun equals(other: Any?): Boolean = other is LoadMoreResultsItem
 
-    override fun hashCode(): Int {
-        return 0
-    }
+    override fun hashCode(): Int = 0
 }

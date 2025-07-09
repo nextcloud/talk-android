@@ -270,9 +270,8 @@ object NotificationUtils {
         return false
     }
 
-    private fun isNotificationChannelEnabled(channel: NotificationChannel): Boolean {
-        return channel.importance != NotificationManager.IMPORTANCE_NONE
-    }
+    private fun isNotificationChannelEnabled(channel: NotificationChannel): Boolean =
+        channel.importance != NotificationManager.IMPORTANCE_NONE
 
     private fun getRingtoneUri(
         context: Context,
@@ -300,23 +299,21 @@ object NotificationUtils {
         }
     }
 
-    fun getCallRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? {
-        return getRingtoneUri(
+    fun getCallRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? =
+        getRingtoneUri(
             context,
             appPreferences.callRingtoneUri,
             DEFAULT_CALL_RINGTONE_URI,
             NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name
         )
-    }
 
-    fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? {
-        return getRingtoneUri(
+    fun getMessageRingtoneUri(context: Context, appPreferences: AppPreferences): Uri? =
+        getRingtoneUri(
             context,
             appPreferences.messageRingtoneUri,
             DEFAULT_MESSAGE_RINGTONE_URI,
             NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
         )
-    }
 
     fun loadAvatarSync(avatarUrl: String, context: Context): IconCompat? {
         var avatarIcon: IconCompat? = null
@@ -345,10 +342,5 @@ object NotificationUtils {
         return avatarIcon
     }
 
-    private data class Channel(
-        val id: String,
-        val name: String,
-        val description: String,
-        val isImportant: Boolean
-    )
+    private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)
 }

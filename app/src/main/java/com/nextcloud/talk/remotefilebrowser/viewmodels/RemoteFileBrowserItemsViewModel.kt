@@ -48,8 +48,7 @@ class RemoteFileBrowserItemsViewModel
 constructor(
     private val repository: RemoteFileBrowserItemsRepository,
     private val appPreferences: AppPreferencesImpl
-) :
-    ViewModel() {
+) : ViewModel() {
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -212,9 +211,8 @@ constructor(
         return false
     }
 
-    fun isPathSelected(path: String): Boolean {
-        return selectedPaths.value?.contains(path) == true || shouldPathBeSelectedDueToParent(path)
-    }
+    fun isPathSelected(path: String): Boolean =
+        selectedPaths.value?.contains(path) == true || shouldPathBeSelectedDueToParent(path)
 
     companion object {
         private val TAG = RemoteFileBrowserItemsViewModel::class.simpleName

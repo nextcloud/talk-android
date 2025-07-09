@@ -40,8 +40,9 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class IncomingDeckCardViewHolder(incomingView: View, payload: Any) : MessageHolders
-    .IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
+class IncomingDeckCardViewHolder(incomingView: View, payload: Any) :
+    MessageHolders
+        .IncomingTextMessageViewHolder<ChatMessage>(incomingView, payload) {
 
     private val binding: ItemCustomIncomingDeckCardMessageBinding =
         ItemCustomIncomingDeckCardMessageBinding.bind(itemView)

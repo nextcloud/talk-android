@@ -43,13 +43,11 @@ class DateUtils(val context: Context) {
         formatTime.timeZone = tz
     }
 
-    fun getLocalDateTimeStringFromTimestamp(timestampMilliseconds: Long): String {
-        return format.format(Date(timestampMilliseconds))
-    }
+    fun getLocalDateTimeStringFromTimestamp(timestampMilliseconds: Long): String =
+        format.format(Date(timestampMilliseconds))
 
-    fun getLocalTimeStringFromTimestamp(timestampSeconds: Long): String {
-        return formatTime.format(Date(timestampSeconds * DateConstants.SECOND_DIVIDER))
-    }
+    fun getLocalTimeStringFromTimestamp(timestampSeconds: Long): String =
+        formatTime.format(Date(timestampSeconds * DateConstants.SECOND_DIVIDER))
 
     fun isSameDate(date1: Date, date2: Date): Boolean {
         val startDateCalendar = Calendar.getInstance().apply { time = date1 }

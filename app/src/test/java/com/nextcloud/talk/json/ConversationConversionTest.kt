@@ -23,20 +23,17 @@ import org.junit.runners.Parameterized
 import java.io.File
 
 @RunWith(Parameterized::class)
-class ConversationConversionTest(
-    private val jsonFileName: String
-) {
+class ConversationConversionTest(private val jsonFileName: String) {
 
     companion object {
         @JvmStatic
         @Parameterized.Parameters(name = "{index}: testDeserialization({0})")
-        fun data(): List<String> {
-            return listOf(
+        fun data(): List<String> =
+            listOf(
                 "RoomOverallExample_APIv1.json",
                 "RoomOverallExample_APIv2.json",
                 "RoomOverallExample_APIv4.json"
             )
-        }
     }
 
     @Test

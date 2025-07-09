@@ -237,9 +237,7 @@ class LocationPickerActivity :
         return true
     }
 
-    override fun onQueryTextChange(newText: String?): Boolean {
-        return true
-    }
+    override fun onQueryTextChange(newText: String?): Boolean = true
 
     @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.ComplexMethod", "Detekt.LongMethod")
     private fun initMap() {
@@ -354,9 +352,7 @@ class LocationPickerActivity :
                     return true
                 }
 
-                override fun onZoom(event: ZoomEvent): Boolean {
-                    return false
-                }
+                override fun onZoom(event: ZoomEvent): Boolean = false
             }
         )
 
@@ -485,19 +481,17 @@ class LocationPickerActivity :
     }
 
     private fun isLocationPermissionsGranted(): Boolean {
-        fun isCoarseLocationGranted(): Boolean {
-            return PermissionChecker.checkSelfPermission(
+        fun isCoarseLocationGranted(): Boolean =
+            PermissionChecker.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_COARSE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
-        }
 
-        fun isFineLocationGranted(): Boolean {
-            return PermissionChecker.checkSelfPermission(
+        fun isFineLocationGranted(): Boolean =
+            PermissionChecker.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
             ) == PermissionChecker.PERMISSION_GRANTED
-        }
 
         return isCoarseLocationGranted() && isFineLocationGranted()
     }

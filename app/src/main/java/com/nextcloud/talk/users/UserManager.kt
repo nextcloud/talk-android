@@ -39,39 +39,32 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             return userRepository.getActiveUserObservable()
         }
 
-    fun deleteUser(internalId: Long): Int {
-        return userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
-    }
+    fun deleteUser(internalId: Long): Int =
+        userRepository.deleteUser(userRepository.getUserWithId(internalId).blockingGet())
 
-    fun getUserWithId(id: Long): Maybe<User> {
-        return userRepository.getUserWithId(id)
-    }
+    fun getUserWithId(id: Long): Maybe<User> = userRepository.getUserWithId(id)
 
-    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> {
-        return userRepository
+    fun checkIfUserIsScheduledForDeletion(username: String, server: String): Single<Boolean> =
+        userRepository
             .getUserWithUsernameAndServer(username, server)
             .map { it.scheduledForDeletion }
             .switchIfEmpty(Single.just(false))
-    }
 
-    fun getUserWithInternalId(id: Long): Maybe<User> {
-        return userRepository.getUserWithIdNotScheduledForDeletion(id)
-    }
+    fun getUserWithInternalId(id: Long): Maybe<User> = userRepository.getUserWithIdNotScheduledForDeletion(id)
 
-    fun checkIfUserExists(username: String, server: String): Single<Boolean> {
-        return userRepository
+    fun checkIfUserExists(username: String, server: String): Single<Boolean> =
+        userRepository
             .getUserWithUsernameAndServer(username, server)
             .map { true }
             .switchIfEmpty(Single.just(false))
-    }
 
     /**
      * Don't ask
      *
      * @return `true` if the user was updated **AND** there is another user to set as active, `false` otherwise
      */
-    fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> {
-        return userRepository.getUserWithId(id)
+    fun scheduleUserForDeletionWithId(id: Long): Single<Boolean> =
+        userRepository.getUserWithId(id)
             .map { user ->
                 user.scheduledForDeletion = true
                 user.current = false
@@ -80,7 +73,6 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .flatMap { getAnyUserAndSetAsActive() }
             .map { true }
             .switchIfEmpty(Single.just(false))
-    }
 
     private fun getAnyUserAndSetAsActive(): Maybe<User> {
         val results = userRepository.getUsersNotScheduledForDeletion()
@@ -100,35 +92,32 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             }
     }
 
-    fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> {
-        return userRepository.getUserWithId(id).map { user ->
+    fun updateExternalSignalingServer(id: Long, externalSignalingServer: ExternalSignalingServer): Single<Int> =
+        userRepository.getUserWithId(id).map { user ->
             user.externalSignalingServer = externalSignalingServer
             userRepository.updateUser(user)
         }.toSingle()
-    }
 
-    fun updateOrCreateUser(user: User): Single<Int> {
-        return Single.fromCallable {
+    fun updateOrCreateUser(user: User): Single<Int> =
+        Single.fromCallable {
             when (user.id) {
                 null -> userRepository.insertUser(user).toInt()
                 else -> userRepository.updateUser(user)
             }
         }
-    }
 
-    fun saveUser(user: User): Single<Int> {
-        return Single.fromCallable {
+    fun saveUser(user: User): Single<Int> =
+        Single.fromCallable {
             userRepository.updateUser(user)
         }
-    }
 
     fun setUserAsActive(user: User): Single<Boolean> {
         Log.d(TAG, "setUserAsActive:" + user.id!!)
         return userRepository.setUserAsActiveWithId(user.id!!)
     }
 
-    fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> {
-        return findUser(userAttributes)
+    fun storeProfile(username: String?, userAttributes: UserAttributes): Maybe<User> =
+        findUser(userAttributes)
             .map { user: User? ->
                 when (user) {
                     null -> createUser(
@@ -160,15 +149,13 @@ class UserManager internal constructor(private val userRepository: UsersReposito
             .flatMap { id ->
                 userRepository.getUserWithId(id)
             }
-    }
 
-    private fun findUser(userAttributes: UserAttributes): Maybe<User> {
-        return if (userAttributes.id != null) {
+    private fun findUser(userAttributes: UserAttributes): Maybe<User> =
+        if (userAttributes.id != null) {
             userRepository.getUserWithId(userAttributes.id)
         } else {
             Maybe.empty()
         }
-    }
 
     private fun updateUserData(user: User, userAttributes: UserAttributes) {
         user.userId = userAttributes.userId
@@ -226,9 +213,8 @@ class UserManager internal constructor(private val userRepository: UsersReposito
         return user
     }
 
-    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> {
-        return userRepository.updatePushState(id, state)
-    }
+    fun updatePushState(id: Long, state: PushConfigurationState): Single<Int> =
+        userRepository.updatePushState(id, state)
 
     companion object {
         const val TAG = "UserManager"

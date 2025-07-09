@@ -13,13 +13,12 @@ import com.nextcloud.talk.models.json.capabilities.Capabilities
 
 class CapabilitiesConverter {
     @TypeConverter
-    fun fromCapabilitiesToString(capabilities: Capabilities?): String {
-        return if (capabilities == null) {
+    fun fromCapabilitiesToString(capabilities: Capabilities?): String =
+        if (capabilities == null) {
             ""
         } else {
             LoganSquare.serialize(capabilities)
         }
-    }
 
     @TypeConverter
     fun fromStringToCapabilities(value: String): Capabilities? {

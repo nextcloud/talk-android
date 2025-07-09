@@ -140,7 +140,9 @@ class ComposeChatAdapter(
     }
 
     @AutoInjector(NextcloudTalkApplication::class)
-    inner class ComposeChatAdapterViewModel : ViewModel(), PreviewAble {
+    inner class ComposeChatAdapterViewModel :
+        ViewModel(),
+        PreviewAble {
 
         @Inject
         override lateinit var viewThemeUtils: ViewThemeUtils
@@ -172,7 +174,8 @@ class ComposeChatAdapter(
         override val chatViewModel: ChatViewModel,
         override val context: Context,
         override val userManager: UserManager
-    ) : ViewModel(), PreviewAble
+    ) : ViewModel(),
+        PreviewAble
 
     companion object {
         val TAG: String = ComposeChatAdapter::class.java.simpleName
@@ -621,7 +624,11 @@ class ComposeChatAdapter(
             )
 
             processedMessageText = viewModel.messageUtils.processMessageParameters(
-                ctx, viewModel.viewThemeUtils, processedMessageText!!, message, null
+                ctx,
+                viewModel.viewThemeUtils,
+                processedMessageText!!,
+                message,
+                null
             )
 
             EmojiTextView(ctx).apply {
@@ -979,14 +986,18 @@ fun AllMessageTypesPreview() {
         )
     }
 
-    LaunchedEffect(sampleMessages) { // Use LaunchedEffect or similar to update state once
-        if (adapter.items.isEmpty()) { // Prevent adding multiple times on recomposition
+    LaunchedEffect(sampleMessages) {
+        // Use LaunchedEffect or similar to update state once
+        if (adapter.items.isEmpty()) {
+            // Prevent adding multiple times on recomposition
             adapter.addMessages(sampleMessages.toMutableList(), append = false) // Add messages
         }
     }
 
-    MaterialTheme(colorScheme = adapter.colorScheme) { // Use the (potentially faked) color scheme
-        Box(modifier = Modifier.fillMaxSize()) { // Provide a container
+    MaterialTheme(colorScheme = adapter.colorScheme) {
+        // Use the (potentially faked) color scheme
+        Box(modifier = Modifier.fillMaxSize()) {
+            // Provide a container
             adapter.GetView() // Call the main Composable
         }
     }

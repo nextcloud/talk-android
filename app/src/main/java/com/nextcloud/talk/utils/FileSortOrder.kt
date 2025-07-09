@@ -36,13 +36,12 @@ open class FileSortOrder(var name: String, var isAscending: Boolean) {
             sort_big_to_small.name to sort_big_to_small
         )
 
-        fun getFileSortOrder(key: String?): FileSortOrder {
-            return if (TextUtils.isEmpty(key) || !sortOrders.containsKey(key)) {
+        fun getFileSortOrder(key: String?): FileSortOrder =
+            if (TextUtils.isEmpty(key) || !sortOrders.containsKey(key)) {
                 sort_a_to_z
             } else {
                 sortOrders[key]!!
             }
-        }
 
         /**
          * Sorts list by Favourites.
@@ -58,16 +57,15 @@ open class FileSortOrder(var name: String, var isAscending: Boolean) {
     val multiplier: Int
         get() = if (isAscending) 1 else -1
 
-    open fun sortCloudFiles(files: List<RemoteFileBrowserItem>): List<RemoteFileBrowserItem> {
-        return sortCloudFilesByFavourite(files)
-    }
+    open fun sortCloudFiles(files: List<RemoteFileBrowserItem>): List<RemoteFileBrowserItem> =
+        sortCloudFilesByFavourite(files)
 
     /**
      * Comparator for RemoteFileBrowserItems, sorts favorite state.
      */
     class RemoteFileBrowserItemFavoriteComparator : Comparator<RemoteFileBrowserItem> {
-        override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int {
-            return if (left.isFavorite && right.isFavorite) {
+        override fun compare(left: RemoteFileBrowserItem, right: RemoteFileBrowserItem): Int =
+            if (left.isFavorite && right.isFavorite) {
                 0
             } else if (left.isFavorite) {
                 -1
@@ -76,6 +74,5 @@ open class FileSortOrder(var name: String, var isAscending: Boolean) {
             } else {
                 0
             }
-        }
     }
 }

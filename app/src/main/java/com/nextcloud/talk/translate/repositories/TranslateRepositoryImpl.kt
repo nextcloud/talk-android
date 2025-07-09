@@ -19,11 +19,13 @@ class TranslateRepositoryImpl @Inject constructor(private val ncApi: NcApi) : Tr
         text: String,
         toLanguage: String,
         fromLanguage: String?
-    ): Observable<String> {
-        return ncApi.translateMessage(authorization, url, text, toLanguage, fromLanguage).map { it.ocs?.data!!.text }
-    }
+    ): Observable<String> =
+        ncApi.translateMessage(authorization, url, text, toLanguage, fromLanguage).map {
+            it.ocs?.data!!.text
+        }
 
-    override fun getLanguages(authorization: String, url: String): Observable<List<Language>> {
-        return ncApi.getLanguages(authorization, url).map { it.ocs?.data?.languages }
-    }
+    override fun getLanguages(authorization: String, url: String): Observable<List<Language>> =
+        ncApi.getLanguages(authorization, url).map {
+            it.ocs?.data?.languages
+        }
 }

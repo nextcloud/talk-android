@@ -75,9 +75,7 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder
-    ): Boolean {
-        return false
-    }
+    ): Boolean = false
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
         // unused atm
@@ -227,9 +225,7 @@ class MessageSwipeCallback(private val context: Context, private val messageSwip
         imageDrawable.alpha = FULLY_OPAQUE_INT
     }
 
-    private fun convertToDp(pixel: Int): Int {
-        return dp(pixel.toFloat(), context)
-    }
+    private fun convertToDp(pixel: Int): Int = dp(pixel.toFloat(), context)
 
     private fun dp(value: Float, context: Context): Int {
         if (density == DENSITY_DEFAULT) {

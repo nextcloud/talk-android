@@ -36,9 +36,7 @@ class PollCreateOptionsAdapter(
         holder.bind(currentItem, clickListener, position, focus)
     }
 
-    override fun getItemCount(): Int {
-        return list.size
-    }
+    override fun getItemCount(): Int = list.size
 
     fun updateOptionsList(optionsList: ArrayList<PollCreateOptionItem>) {
         list = optionsList

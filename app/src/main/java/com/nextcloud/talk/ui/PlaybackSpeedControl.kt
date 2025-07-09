@@ -44,9 +44,7 @@ class PlaybackSpeedControl @JvmOverloads constructor(
         text = currentSpeed.label
     }
 
-    fun getSpeed(): PlaybackSpeed {
-        return currentSpeed
-    }
+    fun getSpeed(): PlaybackSpeed = currentSpeed
 }
 
 enum class PlaybackSpeed(val value: Float) {
@@ -58,9 +56,7 @@ enum class PlaybackSpeed(val value: Float) {
     // no fixed, literal labels, since we want to obey numeric interpunctuation for different locales
     val label: String = String.format(Locale.getDefault(), "%01.1fx", value)
 
-    fun next(): PlaybackSpeed {
-        return entries[(ordinal + 1) % entries.size]
-    }
+    fun next(): PlaybackSpeed = entries[(ordinal + 1) % entries.size]
 
     companion object {
         fun byName(name: String): PlaybackSpeed {

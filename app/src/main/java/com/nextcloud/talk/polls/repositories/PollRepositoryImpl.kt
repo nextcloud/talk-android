@@ -30,8 +30,8 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
         options: List<String>,
         resultMode: Int,
         maxVotes: Int
-    ): Observable<Poll> {
-        return ncApi.createPoll(
+    ): Observable<Poll> =
+        ncApi.createPoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl!!,
@@ -42,10 +42,9 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
             resultMode,
             maxVotes
         ).map { mapToPoll(it.ocs?.data!!) }
-    }
 
-    override fun getPoll(roomToken: String, pollId: String): Observable<Poll> {
-        return ncApi.getPoll(
+    override fun getPoll(roomToken: String, pollId: String): Observable<Poll> =
+        ncApi.getPoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl!!,
@@ -53,10 +52,9 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollId
             )
         ).map { mapToPoll(it.ocs?.data!!) }
-    }
 
-    override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll> {
-        return ncApi.votePoll(
+    override fun vote(roomToken: String, pollId: String, options: List<Int>): Observable<Poll> =
+        ncApi.votePoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl!!,
@@ -65,10 +63,9 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
             ),
             options
         ).map { mapToPoll(it.ocs?.data!!) }
-    }
 
-    override fun closePoll(roomToken: String, pollId: String): Observable<Poll> {
-        return ncApi.closePoll(
+    override fun closePoll(roomToken: String, pollId: String): Observable<Poll> =
+        ncApi.closePoll(
             credentials,
             ApiUtils.getUrlForPoll(
                 currentUser.baseUrl!!,
@@ -76,7 +73,6 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
                 pollId
             )
         ).map { mapToPoll(it.ocs?.data!!) }
-    }
 
     companion object {
 
@@ -108,13 +104,12 @@ class PollRepositoryImpl(private val ncApi: NcApi, private val currentUserProvid
             return resultMap
         }
 
-        private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponse): PollDetails {
-            return PollDetails(
+        private fun mapToPollDetails(pollDetailsResponse: PollDetailsResponse): PollDetails =
+            PollDetails(
                 pollDetailsResponse.actorType,
                 pollDetailsResponse.actorId,
                 pollDetailsResponse.actorDisplayName,
                 pollDetailsResponse.optionId
             )
-        }
     }
 }

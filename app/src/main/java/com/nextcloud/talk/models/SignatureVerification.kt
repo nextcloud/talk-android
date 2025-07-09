@@ -12,7 +12,4 @@ import com.nextcloud.talk.data.user.model.User
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class SignatureVerification(
-    var signatureValid: Boolean = false,
-    var user: User? = null
-) : Parcelable
+data class SignatureVerification(var signatureValid: Boolean = false, var user: User? = null) : Parcelable

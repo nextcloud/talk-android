@@ -17,9 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ContactsViewModel @Inject constructor(
-    private val repository: ContactsRepository
-) : ViewModel() {
+class ContactsViewModel @Inject constructor(private val repository: ContactsRepository) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
@@ -141,9 +139,8 @@ class ContactsViewModel @Inject constructor(
             }
         }
     }
-    fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return repository.getImageUri(avatarId, requestBigSize)
-    }
+    fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
+        repository.getImageUri(avatarId, requestBigSize)
 }
 
 sealed class ContactsUiState {

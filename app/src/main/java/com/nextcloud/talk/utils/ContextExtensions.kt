@@ -17,13 +17,12 @@ import android.os.Build
 import android.os.Handler
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
-fun Context.registerBroadcastReceiver(receiver: BroadcastReceiver?, filter: IntentFilter, flag: ReceiverFlag): Intent? {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+fun Context.registerBroadcastReceiver(receiver: BroadcastReceiver?, filter: IntentFilter, flag: ReceiverFlag): Intent? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         registerReceiver(receiver, filter, flag.value)
     } else {
         registerReceiver(receiver, filter)
     }
-}
 
 @SuppressLint("UnspecifiedRegisterReceiverFlag")
 fun Context.registerPermissionHandlerBroadcastReceiver(
@@ -32,10 +31,9 @@ fun Context.registerPermissionHandlerBroadcastReceiver(
     broadcastPermission: String?,
     scheduler: Handler?,
     flag: ReceiverFlag
-): Intent? {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+): Intent? =
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         registerReceiver(receiver, filter, broadcastPermission, scheduler, flag.value)
     } else {
         registerReceiver(receiver, filter, broadcastPermission, scheduler)
     }
-}

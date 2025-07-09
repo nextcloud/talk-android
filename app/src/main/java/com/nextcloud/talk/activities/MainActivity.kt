@@ -49,7 +49,10 @@ import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class MainActivity : BaseActivity(), ActionBarProvider {
+class MainActivity :
+    BaseActivity(),
+    ActionBarProvider {
+
     lateinit var binding: ActivityMainBinding
 
     @Inject

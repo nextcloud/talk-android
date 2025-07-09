@@ -28,10 +28,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class TempMessageActionsDialog(
-    private val chatActivity: ChatActivity,
-    private val message: ChatMessage
-) : BottomSheetDialog(chatActivity) {
+class TempMessageActionsDialog(private val chatActivity: ChatActivity, private val message: ChatMessage) :
+    BottomSheetDialog(chatActivity) {
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils
@@ -119,13 +117,12 @@ class TempMessageActionsDialog(
         }
     }
 
-    private fun getVisibility(visible: Boolean): Int {
-        return if (visible) {
+    private fun getVisibility(visible: Boolean): Int =
+        if (visible) {
             View.VISIBLE
         } else {
             View.GONE
         }
-    }
 
     companion object {
         private val TAG = TempMessageActionsDialog::class.java.simpleName

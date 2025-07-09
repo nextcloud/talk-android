@@ -65,24 +65,20 @@ object ApiUtils {
         return retrofitBucket
     }
 
-    fun getUrlForFilePreviewWithRemotePath(baseUrl: String, remotePath: String?, px: Int): String {
-        return (
+    fun getUrlForFilePreviewWithRemotePath(baseUrl: String, remotePath: String?, px: Int): String =
+        (
             baseUrl + "/index.php/core/preview.png?file=" +
                 Uri.encode(remotePath, "UTF-8") +
                 "&x=" + px + "&y=" + px + "&a=1&mode=cover&forceIcon=1"
             )
-    }
 
-    fun getUrlForFilePreviewWithFileId(baseUrl: String, fileId: String, px: Int): String {
-        return (
+    fun getUrlForFilePreviewWithFileId(baseUrl: String, fileId: String, px: Int): String =
+        (
             baseUrl + "/index.php/core/preview?fileId=" +
                 fileId + "&x=" + px + "&y=" + px + "&a=1&mode=cover&forceIcon=1"
             )
-    }
 
-    fun getSharingUrl(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/files_sharing/api/v1/shares"
-    }
+    fun getSharingUrl(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/files_sharing/api/v1/shares"
 
     fun getRetrofitBucketForContactsSearchFor14(baseUrl: String, searchQuery: String?): RetrofitBucket {
         val retrofitBucket = getRetrofitBucketForContactsSearch(baseUrl, searchQuery)
@@ -92,14 +88,11 @@ object ApiUtils {
     }
 
     @JvmStatic
-    fun getUrlForCapabilities(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/cloud/capabilities"
-    }
+    fun getUrlForCapabilities(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/cloud/capabilities"
 
     @Throws(NoSupportedApiException::class)
-    fun getCallApiVersion(capabilities: User, versions: IntArray): Int {
-        return getConversationApiVersion(capabilities, versions)
-    }
+    fun getCallApiVersion(capabilities: User, versions: IntArray): Int =
+        getConversationApiVersion(capabilities, versions)
 
     @JvmStatic
     @Throws(NoSupportedApiException::class)
@@ -173,26 +166,19 @@ object ApiUtils {
         throw NoSupportedApiException()
     }
 
-    private fun getUrlForApi(version: Int, baseUrl: String?): String {
-        return baseUrl + SPREED_API_BASE + version
-    }
+    private fun getUrlForApi(version: Int, baseUrl: String?): String = baseUrl + SPREED_API_BASE + version
 
-    fun getUrlForRooms(version: Int, baseUrl: String?): String {
-        return getUrlForApi(version, baseUrl) + "/room"
-    }
+    fun getUrlForRooms(version: Int, baseUrl: String?): String = getUrlForApi(version, baseUrl) + "/room"
 
-    fun getUrlForNoteToSelf(version: Int, baseUrl: String?): String {
-        return getUrlForApi(version, baseUrl) + "/room/note-to-self"
-    }
+    fun getUrlForNoteToSelf(version: Int, baseUrl: String?): String =
+        getUrlForApi(version, baseUrl) + "/room/note-to-self"
 
     @JvmStatic
-    fun getUrlForRoom(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRooms(version, baseUrl) + "/" + token
-    }
+    fun getUrlForRoom(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRooms(version, baseUrl) + "/" + token
 
-    fun getUrlForAttendees(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/attendees"
-    }
+    fun getUrlForAttendees(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/attendees"
 
     fun getUrlForParticipants(version: Int, baseUrl: String?, token: String?): String {
         if (token.isNullOrEmpty()) {
@@ -201,111 +187,85 @@ object ApiUtils {
         return getUrlForRoom(version, baseUrl, token) + "/participants"
     }
 
-    fun getUrlForParticipantsActive(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForParticipants(version, baseUrl, token) + "/active"
-    }
+    fun getUrlForParticipantsActive(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForParticipants(version, baseUrl, token) + "/active"
 
-    fun getUrlForImportantConversation(baseUrl: String, roomToken: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/important"
-    }
+    fun getUrlForImportantConversation(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/important"
 
     @JvmStatic
-    fun getUrlForParticipantsSelf(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForParticipants(version, baseUrl, token) + "/self"
-    }
+    fun getUrlForParticipantsSelf(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForParticipants(version, baseUrl, token) + "/self"
 
-    fun getUrlForParticipantsResendInvitations(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForParticipants(version, baseUrl, token) + "/resend-invitations"
-    }
+    fun getUrlForParticipantsResendInvitations(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForParticipants(version, baseUrl, token) + "/resend-invitations"
 
-    fun getUrlForRoomFavorite(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/favorite"
-    }
+    fun getUrlForRoomFavorite(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/favorite"
 
-    fun getUrlForRoomModerators(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/moderators"
-    }
+    fun getUrlForRoomModerators(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/moderators"
 
     @JvmStatic
-    fun getUrlForRoomNotificationLevel(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/notify"
-    }
+    fun getUrlForRoomNotificationLevel(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/notify"
 
-    fun getUrlForRoomPublic(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/public"
-    }
+    fun getUrlForRoomPublic(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/public"
 
-    fun getUrlForRoomPassword(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/password"
-    }
+    fun getUrlForRoomPassword(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/password"
 
-    fun getUrlForConversationReadOnly(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/read-only"
-    }
+    fun getUrlForConversationReadOnly(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/read-only"
 
-    fun getUrlForRoomWebinaryLobby(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/webinar/lobby"
-    }
+    fun getUrlForRoomWebinaryLobby(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/webinar/lobby"
 
     @JvmStatic
-    fun getUrlForRoomNotificationCalls(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/notify-calls"
-    }
+    fun getUrlForRoomNotificationCalls(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/notify-calls"
 
-    fun getUrlForCall(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForApi(version, baseUrl) + "/call/" + token
-    }
+    fun getUrlForCall(version: Int, baseUrl: String?, token: String): String =
+        getUrlForApi(version, baseUrl) + "/call/" + token
 
-    fun getUrlForChat(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForApi(version, baseUrl) + "/chat/" + token
-    }
+    fun getUrlForChat(version: Int, baseUrl: String?, token: String): String =
+        getUrlForApi(version, baseUrl) + "/chat/" + token
 
     @JvmStatic
-    fun getUrlForMentionSuggestions(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForChat(version, baseUrl, token) + "/mentions"
-    }
+    fun getUrlForMentionSuggestions(version: Int, baseUrl: String?, token: String): String =
+        getUrlForChat(version, baseUrl, token) + "/mentions"
 
-    fun getUrlForChatMessage(version: Int, baseUrl: String?, token: String, messageId: String): String {
-        return getUrlForChat(version, baseUrl, token) + "/" + messageId
-    }
+    fun getUrlForChatMessage(version: Int, baseUrl: String?, token: String, messageId: String): String =
+        getUrlForChat(version, baseUrl, token) + "/" + messageId
 
-    fun getUrlForChatSharedItems(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForChat(version, baseUrl, token) + "/share"
-    }
+    fun getUrlForChatSharedItems(version: Int, baseUrl: String?, token: String): String =
+        getUrlForChat(version, baseUrl, token) + "/share"
 
-    fun getUrlForChatSharedItemsOverview(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForChatSharedItems(version, baseUrl, token) + "/overview"
-    }
+    fun getUrlForChatSharedItemsOverview(version: Int, baseUrl: String?, token: String): String =
+        getUrlForChatSharedItems(version, baseUrl, token) + "/overview"
 
-    fun getUrlForSignaling(version: Int, baseUrl: String?): String {
-        return getUrlForApi(version, baseUrl) + "/signaling"
-    }
+    fun getUrlForSignaling(version: Int, baseUrl: String?): String = getUrlForApi(version, baseUrl) + "/signaling"
 
-    fun getUrlForTestPushNotifications(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/notifications/api/v3/test/self"
-    }
+    fun getUrlForTestPushNotifications(baseUrl: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/notifications/api/v3/test/self"
 
     @JvmStatic
-    fun getUrlForSignalingBackend(version: Int, baseUrl: String?): String {
-        return getUrlForSignaling(version, baseUrl) + "/backend"
-    }
+    fun getUrlForSignalingBackend(version: Int, baseUrl: String?): String =
+        getUrlForSignaling(version, baseUrl) + "/backend"
 
     @JvmStatic
-    fun getUrlForSignalingSettings(version: Int, baseUrl: String?): String {
-        return getUrlForSignaling(version, baseUrl) + "/settings"
-    }
+    fun getUrlForSignalingSettings(version: Int, baseUrl: String?): String =
+        getUrlForSignaling(version, baseUrl) + "/settings"
 
-    fun getUrlForSignalingSettings(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForSignaling(version, baseUrl) + "/settings?token=" + token
-    }
+    fun getUrlForSignalingSettings(version: Int, baseUrl: String?, token: String): String =
+        getUrlForSignaling(version, baseUrl) + "/settings?token=" + token
 
-    fun getUrlForSignaling(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForSignaling(version, baseUrl) + "/" + token
-    }
+    fun getUrlForSignaling(version: Int, baseUrl: String?, token: String): String =
+        getUrlForSignaling(version, baseUrl) + "/" + token
 
-    fun getUrlForOpenConversations(version: Int, baseUrl: String?): String {
-        return getUrlForApi(version, baseUrl) + "/listed-room"
-    }
+    fun getUrlForOpenConversations(version: Int, baseUrl: String?): String =
+        getUrlForApi(version, baseUrl) + "/listed-room"
 
     @Suppress("LongParameterList")
     fun getRetrofitBucketForCreateRoom(
@@ -355,22 +315,16 @@ object ApiUtils {
         return retrofitBucket
     }
 
-    fun getUrlForUserProfile(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/cloud/user"
-    }
+    fun getUrlForUserProfile(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/cloud/user"
 
-    fun getUrlForUserData(baseUrl: String, userId: String): String {
-        return "$baseUrl$OCS_API_VERSION/cloud/users/$userId"
-    }
+    fun getUrlForUserData(baseUrl: String, userId: String): String = "$baseUrl$OCS_API_VERSION/cloud/users/$userId"
 
     fun getUrlForUserSettings(baseUrl: String): String {
         // FIXME Introduce API version
         return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/settings/user"
     }
 
-    fun getUrlPostfixForStatus(): String {
-        return "/status.php"
-    }
+    fun getUrlPostfixForStatus(): String = "/status.php"
 
     @JvmStatic
     fun getUrlForAvatar(baseUrl: String?, name: String?, requestBigSize: Boolean): String {
@@ -403,9 +357,8 @@ object ApiUtils {
         return baseUrl + "/index.php/avatar/guest/" + Uri.encode(name) + "/" + avatarSize
     }
 
-    fun getUrlForConversationAvatar(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/avatar"
-    }
+    fun getUrlForConversationAvatar(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/avatar"
 
     fun getUrlForConversationAvatarWithVersion(
         version: Int,
@@ -426,219 +379,152 @@ object ApiUtils {
     }
 
     @JvmStatic
-    fun getCredentials(username: String?, token: String?): String? {
-        return if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
+    fun getCredentials(username: String?, token: String?): String? =
+        if (TextUtils.isEmpty(username) && TextUtils.isEmpty(token)) {
             null
         } else {
             basic(username!!, token!!, StandardCharsets.UTF_8)
         }
-    }
 
     @JvmStatic
-    fun getUrlNextcloudPush(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/push"
-    }
+    fun getUrlNextcloudPush(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/push"
 
     @JvmStatic
-    fun getUrlPushProxy(): String {
-        return sharedApplication!!.applicationContext.resources.getString(R.string.nc_push_server_url) + "/devices"
-    }
+    fun getUrlPushProxy(): String =
+        sharedApplication!!.applicationContext.resources.getString(R.string.nc_push_server_url) + "/devices"
 
     // see https://github.com/nextcloud/notifications/blob/master/docs/ocs-endpoint-v2.md
-    fun getUrlForNcNotificationWithId(baseUrl: String, notificationId: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/notifications/$notificationId"
-    }
+    fun getUrlForNcNotificationWithId(baseUrl: String, notificationId: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/notifications/api/v2/notifications/$notificationId"
 
-    fun getUrlForSearchByNumber(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/cloud/users/search/by-phone"
-    }
+    fun getUrlForSearchByNumber(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/cloud/users/search/by-phone"
 
-    fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String {
-        return "$baseUrl/ocs/v2.php/apps/spreed/api/v4/room/$roomToken/object"
-    }
+    fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String =
+        "$baseUrl/ocs/v2.php/apps/spreed/api/v4/room/$roomToken/object"
 
-    fun getUrlForFileUpload(baseUrl: String, user: String, remotePath: String): String {
-        return "$baseUrl/remote.php/dav/files/$user$remotePath"
-    }
+    fun getUrlForFileUpload(baseUrl: String, user: String, remotePath: String): String =
+        "$baseUrl/remote.php/dav/files/$user$remotePath"
 
-    fun getUrlForChunkedUpload(baseUrl: String, user: String): String {
-        return "$baseUrl/remote.php/dav/uploads/$user"
-    }
+    fun getUrlForChunkedUpload(baseUrl: String, user: String): String = "$baseUrl/remote.php/dav/uploads/$user"
 
-    fun getUrlForFileDownload(baseUrl: String, user: String, remotePath: String): String {
-        return "$baseUrl/remote.php/dav/files/$user/$remotePath"
-    }
+    fun getUrlForFileDownload(baseUrl: String, user: String, remotePath: String): String =
+        "$baseUrl/remote.php/dav/files/$user/$remotePath"
 
-    fun userFileUploadPath(baseUrl: String, user: String): String {
-        return "$baseUrl/remote.php/dav/files/$user"
-    }
+    fun userFileUploadPath(baseUrl: String, user: String): String = "$baseUrl/remote.php/dav/files/$user"
 
-    fun userTalkAttachmentsUploadPath(baseUrl: String, user: String): String {
-        return "$baseUrl/remote.php/dav/files/$user/Talk"
-    }
+    fun userTalkAttachmentsUploadPath(baseUrl: String, user: String): String =
+        "$baseUrl/remote.php/dav/files/$user/Talk"
 
-    fun getUrlForTempAvatar(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/spreed/temp-user-avatar"
-    }
+    fun getUrlForTempAvatar(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/spreed/temp-user-avatar"
 
-    fun getUrlForSensitiveConversation(baseUrl: String, roomToken: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/sensitive"
-    }
+    fun getUrlForSensitiveConversation(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/spreed/api/v4/room/$roomToken/sensitive"
 
-    fun getUrlForUserFields(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/cloud/user/fields"
-    }
+    fun getUrlForUserFields(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/cloud/user/fields"
 
-    fun getUrlToSendLocation(version: Int, baseUrl: String?, roomToken: String): String {
-        return getUrlForChat(version, baseUrl, roomToken) + "/share"
-    }
+    fun getUrlToSendLocation(version: Int, baseUrl: String?, roomToken: String): String =
+        getUrlForChat(version, baseUrl, roomToken) + "/share"
 
-    fun getUrlForHoverCard(baseUrl: String, userId: String): String {
-        return baseUrl + OCS_API_VERSION +
+    fun getUrlForHoverCard(baseUrl: String, userId: String): String =
+        baseUrl + OCS_API_VERSION +
             "/hovercard/v1/" + userId
-    }
 
-    fun getUrlForChatReadMarker(version: Int, baseUrl: String?, roomToken: String): String {
-        return getUrlForChat(version, baseUrl, roomToken) + "/read"
-    }
+    fun getUrlForChatReadMarker(version: Int, baseUrl: String?, roomToken: String): String =
+        getUrlForChat(version, baseUrl, roomToken) + "/read"
 
     /*
      * OCS Status API
      */
     @JvmStatic
-    fun getUrlForStatus(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status"
-    }
+    fun getUrlForStatus(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status"
 
     @JvmStatic
-    fun getUrlForBackupStatus(baseUrl: String, userId: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/statuses/_$userId"
-    }
+    fun getUrlForBackupStatus(baseUrl: String, userId: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/statuses/_$userId"
 
-    fun getUrlForRevertStatus(baseUrl: String, messageId: String?): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/revert/$messageId"
-    }
+    fun getUrlForRevertStatus(baseUrl: String, messageId: String?): String =
+        "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/revert/$messageId"
 
-    fun getUrlForSetStatusType(baseUrl: String): String {
-        return getUrlForStatus(baseUrl) + "/status"
-    }
+    fun getUrlForSetStatusType(baseUrl: String): String = getUrlForStatus(baseUrl) + "/status"
 
-    fun getUrlForPredefinedStatuses(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/predefined_statuses"
-    }
+    fun getUrlForPredefinedStatuses(baseUrl: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/predefined_statuses"
 
-    fun getUrlForStatusMessage(baseUrl: String): String {
-        return getUrlForStatus(baseUrl) + "/message"
-    }
+    fun getUrlForStatusMessage(baseUrl: String): String = getUrlForStatus(baseUrl) + "/message"
 
-    fun getUrlForSetCustomStatus(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/message/custom"
-    }
+    fun getUrlForSetCustomStatus(baseUrl: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/message/custom"
 
-    fun getUrlForSetPredefinedStatus(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/message/predefined"
-    }
+    fun getUrlForSetPredefinedStatus(baseUrl: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/user_status/message/predefined"
 
-    fun getUrlForUserStatuses(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/statuses"
-    }
+    fun getUrlForUserStatuses(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/apps/user_status/api/v1/statuses"
 
-    fun getUrlForMessageReaction(baseUrl: String, roomToken: String, messageId: String): String {
-        return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/reaction/$roomToken/$messageId"
-    }
+    fun getUrlForMessageReaction(baseUrl: String, roomToken: String, messageId: String): String =
+        "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/reaction/$roomToken/$messageId"
 
-    fun getUrlForUnifiedSearch(baseUrl: String, providerId: String): String {
-        return "$baseUrl$OCS_API_VERSION/search/providers/$providerId/search"
-    }
+    fun getUrlForUnifiedSearch(baseUrl: String, providerId: String): String =
+        "$baseUrl$OCS_API_VERSION/search/providers/$providerId/search"
 
-    fun getUrlForPoll(baseUrl: String, roomToken: String, pollId: String): String {
-        return getUrlForPoll(baseUrl, roomToken) + "/" + pollId
-    }
+    fun getUrlForPoll(baseUrl: String, roomToken: String, pollId: String): String =
+        getUrlForPoll(baseUrl, roomToken) + "/" + pollId
 
-    fun getUrlForPoll(baseUrl: String, roomToken: String): String {
-        return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/poll/$roomToken"
-    }
+    fun getUrlForPoll(baseUrl: String, roomToken: String): String =
+        "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/poll/$roomToken"
 
     @JvmStatic
-    fun getUrlForMessageExpiration(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/message-expiration"
-    }
+    fun getUrlForMessageExpiration(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/message-expiration"
 
-    fun getUrlForOpenGraph(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/references/resolve"
-    }
+    fun getUrlForOpenGraph(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/references/resolve"
 
-    fun getUrlForRecording(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForApi(version, baseUrl) + "/recording/" + token
-    }
+    fun getUrlForRecording(version: Int, baseUrl: String?, token: String): String =
+        getUrlForApi(version, baseUrl) + "/recording/" + token
 
-    fun getUrlForRequestAssistance(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForApi(version, baseUrl) + "/breakout-rooms/" + token + "/request-assistance"
-    }
+    fun getUrlForRequestAssistance(version: Int, baseUrl: String?, token: String): String =
+        getUrlForApi(version, baseUrl) + "/breakout-rooms/" + token + "/request-assistance"
 
-    fun getUrlForConversationDescription(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/description"
-    }
+    fun getUrlForConversationDescription(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/description"
 
-    fun getUrlForOpeningConversations(version: Int, baseUrl: String?, token: String): String {
-        return getUrlForRoom(version, baseUrl, token) + "/listable"
-    }
+    fun getUrlForOpeningConversations(version: Int, baseUrl: String?, token: String): String =
+        getUrlForRoom(version, baseUrl, token) + "/listable"
 
-    fun getUrlForTranslation(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/translation/translate"
-    }
+    fun getUrlForTranslation(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/translation/translate"
 
-    fun getUrlForLanguages(baseUrl: String): String {
-        return "$baseUrl$OCS_API_VERSION/translation/languages"
-    }
+    fun getUrlForLanguages(baseUrl: String): String = "$baseUrl$OCS_API_VERSION/translation/languages"
 
     fun getUrlForReminder(user: User, roomToken: String, messageId: String, version: Int): String {
         val url = getUrlForChatMessage(version, user.baseUrl!!, roomToken, messageId)
         return "$url/reminder"
     }
 
-    fun getUrlForRecordingConsent(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRoom(version, baseUrl, token) + "/recording-consent"
-    }
+    fun getUrlForRecordingConsent(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRoom(version, baseUrl, token) + "/recording-consent"
 
-    fun getUrlForInvitation(baseUrl: String): String {
-        return baseUrl + OCS_API_VERSION + SPREED_API_VERSION + "/federation/invitation"
-    }
+    fun getUrlForInvitation(baseUrl: String): String =
+        baseUrl + OCS_API_VERSION + SPREED_API_VERSION + "/federation/invitation"
 
-    fun getUrlForInvitationAccept(baseUrl: String, id: Int): String {
-        return getUrlForInvitation(baseUrl) + "/" + id
-    }
+    fun getUrlForInvitationAccept(baseUrl: String, id: Int): String = getUrlForInvitation(baseUrl) + "/" + id
 
-    fun getUrlForInvitationReject(baseUrl: String, id: Int): String {
-        return getUrlForInvitation(baseUrl) + "/" + id
-    }
+    fun getUrlForInvitationReject(baseUrl: String, id: Int): String = getUrlForInvitation(baseUrl) + "/" + id
 
     @JvmStatic
-    fun getUrlForRoomCapabilities(version: Int, baseUrl: String?, token: String?): String {
-        return getUrlForRooms(version, baseUrl) + "/" + token + "/capabilities"
-    }
+    fun getUrlForRoomCapabilities(version: Int, baseUrl: String?, token: String?): String =
+        getUrlForRooms(version, baseUrl) + "/" + token + "/capabilities"
 
-    fun getUrlForBans(baseUrl: String, token: String): String {
-        return "$baseUrl/ocs/v1.php$SPREED_API_VERSION/ban/$token"
-    }
+    fun getUrlForBans(baseUrl: String, token: String): String = "$baseUrl/ocs/v1.php$SPREED_API_VERSION/ban/$token"
 
-    fun getUrlForUnban(baseUrl: String, token: String, banId: Int): String {
-        return "${getUrlForBans(baseUrl, token)}/$banId"
-    }
+    fun getUrlForUnban(baseUrl: String, token: String, banId: Int): String = "${getUrlForBans(baseUrl, token)}/$banId"
 
-    fun getUrlForArchive(version: Int, baseUrl: String?, token: String?): String {
-        return "${getUrlForRoom(version, baseUrl, token)}/archive"
-    }
+    fun getUrlForArchive(version: Int, baseUrl: String?, token: String?): String =
+        "${getUrlForRoom(version, baseUrl, token)}/archive"
 
-    fun getUrlForOutOfOffice(baseUrl: String, userId: String): String {
-        return "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
-    }
+    fun getUrlForOutOfOffice(baseUrl: String, userId: String): String =
+        "$baseUrl$OCS_API_VERSION/apps/dav/api/v1/outOfOffice/$userId/now"
 
-    fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String {
-        return "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"
-    }
+    fun getUrlForChatMessageContext(baseUrl: String, token: String, messageId: String): String =
+        "$baseUrl$OCS_API_VERSION$SPREED_API_VERSION/chat/$token/$messageId/context"
 
-    fun getUrlForProfile(baseUrl: String, userId: String): String {
-        return "$baseUrl$OCS_API_VERSION/profile/$userId"
-    }
+    fun getUrlForProfile(baseUrl: String, userId: String): String = "$baseUrl$OCS_API_VERSION/profile/$userId"
 }

@@ -42,9 +42,8 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class OutcomingDeckCardViewHolder(
-    outcomingView: View
-) : MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView),
+class OutcomingDeckCardViewHolder(outcomingView: View) :
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView),
     AdjustableMessageHolderInterface {
 
     override val binding: ItemCustomOutcomingDeckCardMessageBinding = ItemCustomOutcomingDeckCardMessageBinding.bind(

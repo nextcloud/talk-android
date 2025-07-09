@@ -15,10 +15,7 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
 
-class SSLSocketFactoryCompat(
-    keyManager: KeyManager?,
-    trustManager: X509TrustManager
-) : SSLSocketFactory() {
+class SSLSocketFactoryCompat(keyManager: KeyManager?, trustManager: X509TrustManager) : SSLSocketFactory() {
 
     private var delegate: SSLSocketFactory
 

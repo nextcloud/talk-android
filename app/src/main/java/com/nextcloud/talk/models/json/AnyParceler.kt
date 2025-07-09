@@ -10,9 +10,7 @@ import android.os.Parcel
 import kotlinx.parcelize.Parceler
 
 class AnyParceler : Parceler<Any?> {
-    override fun create(parcel: Parcel): Any? {
-        return parcel.readValue(Any::class.java.getClassLoader())
-    }
+    override fun create(parcel: Parcel): Any? = parcel.readValue(Any::class.java.getClassLoader())
 
     override fun Any?.write(parcel: Parcel, flags: Int) {
         parcel.writeValue(parcel)

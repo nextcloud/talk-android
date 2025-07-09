@@ -49,13 +49,9 @@ class GeocodingAdapter(private val context: Context, private var dataSource: Lis
         }
     }
 
-    override fun getItemCount(): Int {
-        return dataSource.size
-    }
+    override fun getItemCount(): Int = dataSource.size
 
-    fun getItem(position: Int): Any {
-        return dataSource[position]
-    }
+    fun getItem(position: Int): Any = dataSource[position]
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameView: TextView = itemView.findViewById(R.id.name)

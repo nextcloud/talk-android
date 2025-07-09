@@ -13,13 +13,12 @@ import com.nextcloud.talk.models.json.capabilities.ServerVersion
 
 class ServerVersionConverter {
     @TypeConverter
-    fun fromServerVersionToString(serverVersion: ServerVersion?): String {
-        return if (serverVersion == null) {
+    fun fromServerVersionToString(serverVersion: ServerVersion?): String =
+        if (serverVersion == null) {
             ""
         } else {
             LoganSquare.serialize(serverVersion)
         }
-    }
 
     @TypeConverter
     fun fromStringToServerVersion(value: String): ServerVersion? {

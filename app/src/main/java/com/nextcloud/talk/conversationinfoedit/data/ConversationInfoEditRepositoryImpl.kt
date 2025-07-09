@@ -24,8 +24,7 @@ class ConversationInfoEditRepositoryImpl(
     private val ncApi: NcApi,
     private val ncApiCoroutines: NcApiCoroutines,
     currentUserProvider: CurrentUserProviderNew
-) :
-    ConversationInfoEditRepository {
+) : ConversationInfoEditRepository {
 
     val currentUser: User = currentUserProvider.currentUser.blockingGet()
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
@@ -53,12 +52,11 @@ class ConversationInfoEditRepositoryImpl(
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
     }
 
-    override fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel> {
-        return ncApi.deleteConversationAvatar(
+    override fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel> =
+        ncApi.deleteConversationAvatar(
             credentials,
             ApiUtils.getUrlForConversationAvatar(1, user.baseUrl!!, roomToken)
         ).map { ConversationModel.mapToConversationModel(it.ocs?.data!!, user) }
-    }
 
     override suspend fun renameConversation(roomToken: String, newRoomName: String): GenericOverall {
         val apiVersion = ApiUtils.getConversationApiVersion(currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
@@ -77,8 +75,8 @@ class ConversationInfoEditRepositoryImpl(
     override suspend fun setConversationDescription(
         roomToken: String,
         conversationDescription: String?
-    ): GenericOverall {
-        return ncApiCoroutines.setConversationDescription(
+    ): GenericOverall =
+        ncApiCoroutines.setConversationDescription(
             credentials,
             ApiUtils.getUrlForConversationDescription(
                 apiVersion,
@@ -87,5 +85,4 @@ class ConversationInfoEditRepositoryImpl(
             ),
             conversationDescription
         )
-    }
 }

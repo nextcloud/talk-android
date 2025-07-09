@@ -40,7 +40,10 @@ import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, SwipeRefreshLayout.OnRefreshListener {
+class RemoteFileBrowserActivity :
+    AppCompatActivity(),
+    SelectionInterface,
+    SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -247,9 +250,7 @@ class RemoteFileBrowserActivity : AppCompatActivity(), SelectionInterface, Swipe
         viewModel.loadItems()
     }
 
-    override fun isPathSelected(path: String): Boolean {
-        return viewModel.isPathSelected(path)
-    }
+    override fun isPathSelected(path: String): Boolean = viewModel.isPathSelected(path)
 
     companion object {
         private val TAG = RemoteFileBrowserActivity::class.simpleName

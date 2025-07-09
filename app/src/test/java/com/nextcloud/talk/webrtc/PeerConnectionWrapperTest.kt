@@ -47,8 +47,7 @@ class PeerConnectionWrapperTest {
     /**
      * Helper answer for DataChannel methods.
      */
-    private class ReturnValueOrThrowIfDisposed<T>(val value: T) :
-        Answer<T> {
+    private class ReturnValueOrThrowIfDisposed<T>(val value: T) : Answer<T> {
         override fun answer(currentInvocation: InvocationOnMock): T {
             if (Mockito.mockingDetails(currentInvocation.mock).invocations.find {
                     it!!.method.name === "dispose"
@@ -64,9 +63,8 @@ class PeerConnectionWrapperTest {
     /**
      * Helper matcher for DataChannelMessages.
      */
-    private inner class MatchesDataChannelMessage(
-        private val expectedDataChannelMessage: DataChannelMessage
-    ) : ArgumentMatcher<DataChannel.Buffer> {
+    private inner class MatchesDataChannelMessage(private val expectedDataChannelMessage: DataChannelMessage) :
+        ArgumentMatcher<DataChannel.Buffer> {
         override fun matches(buffer: DataChannel.Buffer): Boolean {
             // DataChannel.Buffer does not implement "equals", so the comparison needs to be done on the ByteBuffer
             // instead.
@@ -74,12 +72,11 @@ class PeerConnectionWrapperTest {
         }
     }
 
-    private fun dataChannelMessageToBuffer(dataChannelMessage: DataChannelMessage): DataChannel.Buffer {
-        return DataChannel.Buffer(
+    private fun dataChannelMessageToBuffer(dataChannelMessage: DataChannelMessage) =
+        DataChannel.Buffer(
             ByteBuffer.wrap(LoganSquare.serialize(dataChannelMessage).toByteArray()),
             false
         )
-    }
 
     @Before
     fun setUp() {

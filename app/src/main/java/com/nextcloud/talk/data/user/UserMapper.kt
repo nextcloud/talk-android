@@ -10,14 +10,13 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.data.user.model.UserEntity
 
 object UserMapper {
-    fun toModel(entities: List<UserEntity?>?): List<User> {
-        return entities?.map { user: UserEntity? ->
+    fun toModel(entities: List<UserEntity?>?): List<User> =
+        entities?.map { user: UserEntity? ->
             toModel(user)!!
         } ?: emptyList()
-    }
 
-    fun toModel(entity: UserEntity?): User? {
-        return entity?.let {
+    fun toModel(entity: UserEntity?): User? =
+        entity?.let {
             User(
                 entity.id,
                 entity.userId,
@@ -34,7 +33,6 @@ object UserMapper {
                 entity.scheduledForDeletion
             )
         }
-    }
 
     fun toEntity(model: User): UserEntity {
         val userEntity = when (val id = model.id) {

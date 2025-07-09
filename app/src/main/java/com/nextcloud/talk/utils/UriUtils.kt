@@ -11,9 +11,7 @@ import androidx.core.net.toUri
 
 class UriUtils {
     companion object {
-        fun hasHttpProtocolPrefixed(uri: String): Boolean {
-            return uri.startsWith("http://") || uri.startsWith("https://")
-        }
+        fun hasHttpProtocolPrefixed(uri: String): Boolean = uri.startsWith("http://") || uri.startsWith("https://")
 
         fun extractInstanceInternalFileFileId(url: String): String {
             // https://cloud.nextcloud.com/apps/files/?dir=/Engineering&fileid=41

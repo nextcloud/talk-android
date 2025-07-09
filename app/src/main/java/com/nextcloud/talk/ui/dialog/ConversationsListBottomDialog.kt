@@ -127,17 +127,19 @@ class ConversationsListBottomDialog(
         )
 
         binding.conversationMarkAsRead.visibility = setVisibleIf(
-            conversation.unreadMessages > 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser.capabilities?.spreedCapability!!,
-                SpreedFeatures.CHAT_READ_MARKER
-            )
+            conversation.unreadMessages > 0 &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(
+                    currentUser.capabilities?.spreedCapability!!,
+                    SpreedFeatures.CHAT_READ_MARKER
+                )
         )
 
         binding.conversationMarkAsUnread.visibility = setVisibleIf(
-            conversation.unreadMessages <= 0 && CapabilitiesUtil.hasSpreedFeatureCapability(
-                currentUser.capabilities?.spreedCapability!!,
-                SpreedFeatures.CHAT_UNREAD
-            )
+            conversation.unreadMessages <= 0 &&
+                CapabilitiesUtil.hasSpreedFeatureCapability(
+                    currentUser.capabilities?.spreedCapability!!,
+                    SpreedFeatures.CHAT_UNREAD
+                )
         )
 
         binding.conversationOperationRename.visibility = setVisibleIf(
@@ -156,13 +158,12 @@ class ConversationsListBottomDialog(
         )
     }
 
-    private fun setVisibleIf(boolean: Boolean): Int {
-        return if (boolean) {
+    private fun setVisibleIf(boolean: Boolean): Int =
+        if (boolean) {
             View.VISIBLE
         } else {
             View.GONE
         }
-    }
 
     private fun initClickListeners() {
         binding.conversationAddToFavorites.setOnClickListener {
@@ -447,9 +448,8 @@ class ConversationsListBottomDialog(
         dismiss()
     }
 
-    private fun chatApiVersion(): Int {
-        return ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
-    }
+    private fun chatApiVersion(): Int =
+        ApiUtils.getChatApiVersion(currentUser.capabilities!!.spreedCapability!!, intArrayOf(ApiUtils.API_V1))
 
     companion object {
         val TAG = ConversationsListBottomDialog::class.simpleName

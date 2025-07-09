@@ -14,10 +14,7 @@ interface ListItemWithImage {
     fun populateIcon(imageView: ImageView)
 }
 
-data class BasicListItemWithImage(
-    @DrawableRes val iconRes: Int,
-    override val title: String
-) : ListItemWithImage {
+data class BasicListItemWithImage(@DrawableRes val iconRes: Int, override val title: String) : ListItemWithImage {
 
     override fun populateIcon(imageView: ImageView) {
         imageView.setImageResource(iconRes)

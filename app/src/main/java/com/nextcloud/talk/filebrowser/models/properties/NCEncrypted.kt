@@ -34,9 +34,7 @@ class NCEncrypted private constructor(var isNcEncrypted: Boolean) : Property {
             return NCEncrypted(false)
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

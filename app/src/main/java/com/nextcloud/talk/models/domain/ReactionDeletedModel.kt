@@ -8,8 +8,4 @@ package com.nextcloud.talk.models.domain
 
 import com.nextcloud.talk.chat.data.model.ChatMessage
 
-data class ReactionDeletedModel(
-    var chatMessage: ChatMessage,
-    var emoji: String,
-    var success: Boolean
-)
+data class ReactionDeletedModel(var chatMessage: ChatMessage, var emoji: String, var success: Boolean)

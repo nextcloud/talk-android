@@ -64,8 +64,8 @@ class MessageSearchHelper @JvmOverloads constructor(
     private fun searchCall(
         search: String,
         cursor: Int
-    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
-        return when {
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> =
+        when {
             fromRoom != null -> {
                 unifiedSearchRepository.searchInRoom(
                     roomToken = fromRoom,
@@ -80,7 +80,6 @@ class MessageSearchHelper @JvmOverloads constructor(
                 )
             }
         }
-    }
 
     private fun resetCachedData() {
         previousSearch = null

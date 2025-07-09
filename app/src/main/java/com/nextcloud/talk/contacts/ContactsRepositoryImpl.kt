@@ -86,13 +86,12 @@ class ContactsRepositoryImpl @Inject constructor(
         return response
     }
 
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return ApiUtils.getUrlForAvatar(
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
+        ApiUtils.getUrlForAvatar(
             _currentUser.baseUrl,
             avatarId,
             requestBigSize
         )
-    }
 
     companion object {
         private val TAG = ContactsRepositoryImpl::class.simpleName

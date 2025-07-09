@@ -157,15 +157,13 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
 
         binding.webview.webViewClient = object : WebViewClient() {
             @Deprecated("Use shouldOverrideUrlLoading(WebView view, WebResourceRequest request)")
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                return if (url != null && UriUtils.hasHttpProtocolPrefixed(url)
-                ) {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean =
+                if (url != null && UriUtils.hasHttpProtocolPrefixed(url)) {
                     view?.context?.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
                     true
                 } else {
                     false
                 }
-            }
         }
 
         val urlStringBuffer = StringBuffer("file:///android_asset/leafletMapMessagePreview.html")
@@ -268,9 +266,7 @@ class OutcomingLocationMessageViewHolder(incomingView: View) :
         }
     }
 
-    private fun addMarkerToGeoLink(locationGeoLink: String): String {
-        return locationGeoLink.replace("geo:", "geo:0,0?q=")
-    }
+    private fun addMarkerToGeoLink(locationGeoLink: String): String = locationGeoLink.replace("geo:", "geo:0,0?q=")
 
     fun assignCommonMessageInterface(commonMessageInterface: CommonMessageInterface) {
         this.commonMessageInterface = commonMessageInterface

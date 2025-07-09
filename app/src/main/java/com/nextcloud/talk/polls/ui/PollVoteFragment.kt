@@ -210,8 +210,6 @@ class PollVoteFragment : Fragment() {
         private const val UNLIMITED_VOTES = 0
 
         @JvmStatic
-        fun newInstance(): PollVoteFragment {
-            return PollVoteFragment()
-        }
+        fun newInstance(): PollVoteFragment = PollVoteFragment()
     }
 }

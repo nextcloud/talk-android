@@ -20,19 +20,13 @@ import dagger.Reusable
 class UtilsModule {
     @Provides
     @Reusable
-    fun providePermissionUtil(context: Context): PlatformPermissionUtil {
-        return PlatformPermissionUtilImpl(context)
-    }
+    fun providePermissionUtil(context: Context): PlatformPermissionUtil = PlatformPermissionUtilImpl(context)
 
     @Provides
     @Reusable
-    fun provideDateUtils(context: Context): DateUtils {
-        return DateUtils(context)
-    }
+    fun provideDateUtils(context: Context): DateUtils = DateUtils(context)
 
     @Provides
     @Reusable
-    fun provideMessageUtils(context: Context): MessageUtils {
-        return MessageUtils(context)
-    }
+    fun provideMessageUtils(context: Context): MessageUtils = MessageUtils(context)
 }

@@ -62,8 +62,8 @@ data class UserProfileData(
     // This constructor is added to work with the 'com.bluelinelabs.logansquare.annotation.JsonObject'
     constructor() : this(null, null, null, null, null, null, null, null, null, null, null, null, null, null)
 
-    fun getValueByField(field: ProfileActivity.Field?): String? {
-        return when (field) {
+    fun getValueByField(field: ProfileActivity.Field?): String? =
+        when (field) {
             ProfileActivity.Field.EMAIL -> email
             ProfileActivity.Field.DISPLAYNAME -> displayName
             ProfileActivity.Field.PHONE -> phone
@@ -72,10 +72,9 @@ data class UserProfileData(
             ProfileActivity.Field.TWITTER -> twitter
             else -> ""
         }
-    }
 
-    fun getScopeByField(field: ProfileActivity.Field?): Scope? {
-        return when (field) {
+    fun getScopeByField(field: ProfileActivity.Field?): Scope? =
+        when (field) {
             ProfileActivity.Field.EMAIL -> emailScope
             ProfileActivity.Field.DISPLAYNAME -> displayNameScope
             ProfileActivity.Field.PHONE -> phoneScope
@@ -84,5 +83,4 @@ data class UserProfileData(
             ProfileActivity.Field.TWITTER -> twitterScope
             else -> null
         }
-    }
 }

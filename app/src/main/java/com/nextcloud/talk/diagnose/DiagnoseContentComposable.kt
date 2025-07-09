@@ -229,8 +229,8 @@ fun ShowNotificationData(
     }
 }
 
-fun getMessage(context: Context, viewState: NotificationUiState): String {
-    return when (viewState) {
+fun getMessage(context: Context, viewState: NotificationUiState): String =
+    when (viewState) {
         is NotificationUiState.Success ->
             viewState.testNotification ?: context.getString(R.string.nc_push_notification_fetch_error)
 
@@ -240,7 +240,6 @@ fun getMessage(context: Context, viewState: NotificationUiState): String {
         else ->
             context.getString(R.string.nc_common_error_sorry)
     }
-}
 
 @Preview(showBackground = true)
 @Composable

@@ -37,8 +37,7 @@ import org.osmdroid.config.Configuration
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class GeocodingActivity :
-    BaseActivity() {
+class GeocodingActivity : BaseActivity() {
 
     private lateinit var binding: ActivityGeocodingBinding
 
@@ -198,9 +197,7 @@ class GeocodingActivity :
             })
 
             searchItem?.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean {
-                    return true
-                }
+                override fun onMenuItemActionExpand(menuItem: MenuItem): Boolean = true
 
                 override fun onMenuItemActionCollapse(menuItem: MenuItem): Boolean {
                     val intent = Intent(context, LocationPickerActivity::class.java)

@@ -7,15 +7,9 @@
 package com.nextcloud.talk.utils
 
 object MimetypeUtils {
-    fun isGif(mimetype: String): Boolean {
-        return Mimetype.IMAGE_GIF == mimetype
-    }
+    fun isGif(mimetype: String): Boolean = Mimetype.IMAGE_GIF == mimetype
 
-    fun isMarkdown(mimetype: String): Boolean {
-        return Mimetype.TEXT_MARKDOWN == mimetype
-    }
+    fun isMarkdown(mimetype: String): Boolean = Mimetype.TEXT_MARKDOWN == mimetype
 
-    fun isAudioOnly(mimetype: String): Boolean {
-        return mimetype.startsWith(Mimetype.AUDIO_PREFIX)
-    }
+    fun isAudioOnly(mimetype: String): Boolean = mimetype.startsWith(Mimetype.AUDIO_PREFIX)
 }

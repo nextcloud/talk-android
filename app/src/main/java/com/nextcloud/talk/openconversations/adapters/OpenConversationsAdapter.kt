@@ -24,8 +24,7 @@ class OpenConversationsAdapter(
     val user: User,
     val viewThemeUtils: ViewThemeUtils,
     private val onClick: (Conversation) -> Unit
-) :
-    ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
+) : ListAdapter<Conversation, OpenConversationsAdapter.OpenConversationsViewHolder>(ConversationsCallback) {
 
     inner class OpenConversationsViewHolder(val itemBinding: RvItemOpenConversationBinding) :
         RecyclerView.ViewHolder(itemBinding.root) {
@@ -62,15 +61,14 @@ class OpenConversationsAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OpenConversationsViewHolder {
-        return OpenConversationsViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OpenConversationsViewHolder =
+        OpenConversationsViewHolder(
             RvItemOpenConversationBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
             )
         )
-    }
 
     override fun onBindViewHolder(holder: OpenConversationsViewHolder, position: Int) {
         val conversation = getItem(position)
@@ -79,11 +77,8 @@ class OpenConversationsAdapter(
 }
 
 object ConversationsCallback : DiffUtil.ItemCallback<Conversation>() {
-    override fun areItemsTheSame(oldItem: Conversation, newItem: Conversation): Boolean {
-        return oldItem == newItem
-    }
+    override fun areItemsTheSame(oldItem: Conversation, newItem: Conversation): Boolean = oldItem == newItem
 
-    override fun areContentsTheSame(oldItem: Conversation, newItem: Conversation): Boolean {
-        return oldItem.token == newItem.token
-    }
+    override fun areContentsTheSame(oldItem: Conversation, newItem: Conversation): Boolean =
+        oldItem.token == newItem.token
 }

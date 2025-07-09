@@ -748,13 +748,12 @@ class ProfileActivity : BaseActivity() {
             }
         }
 
-        override fun getItemCount(): Int {
-            return if (profileActivity.edit) {
+        override fun getItemCount(): Int =
+            if (profileActivity.edit) {
                 displayList!!.size
             } else {
                 filteredDisplayList.size
             }
-        }
 
         fun updateScope(position: Int, scope: Scope?) {
             displayList!![position].scope = scope

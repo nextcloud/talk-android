@@ -14,13 +14,12 @@ import com.nextcloud.talk.models.json.push.PushConfigurationState
 class PushConfigurationConverter {
 
     @TypeConverter
-    fun fromPushConfigurationToString(pushConfiguration: PushConfigurationState?): String {
-        return if (pushConfiguration == null) {
+    fun fromPushConfigurationToString(pushConfiguration: PushConfigurationState?): String =
+        if (pushConfiguration == null) {
             ""
         } else {
             LoganSquare.serialize(pushConfiguration)
         }
-    }
 
     @TypeConverter
     fun fromStringToPushConfiguration(value: String?): PushConfigurationState? {

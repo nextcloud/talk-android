@@ -34,9 +34,7 @@ class OCFavorite internal constructor(var isOcFavorite: Boolean) : Property {
             return OCFavorite(false)
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

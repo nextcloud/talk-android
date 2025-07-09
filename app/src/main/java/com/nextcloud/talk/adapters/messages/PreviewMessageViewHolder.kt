@@ -316,9 +316,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         this.previewMessageInterface = previewMessageInterface
     }
 
-    fun hasBubbleBackground(message: ChatMessage): Boolean {
-        return !message.isVoiceMessage && message.message != "{file}"
-    }
+    fun hasBubbleBackground(message: ChatMessage): Boolean = !message.isVoiceMessage && message.message != "{file}"
 
     abstract val messageText: EmojiTextView
     abstract val messageCaption: EmojiTextView

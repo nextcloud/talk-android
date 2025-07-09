@@ -13,13 +13,12 @@ import com.nextcloud.talk.models.json.reactions.ReactionVoter.ReactionActorType.
 import com.nextcloud.talk.models.json.reactions.ReactionVoter
 
 class EnumReactionActorTypeConverter : StringBasedTypeConverter<ReactionVoter.ReactionActorType>() {
-    override fun getFromString(string: String): ReactionVoter.ReactionActorType {
-        return when (string) {
+    override fun getFromString(string: String): ReactionVoter.ReactionActorType =
+        when (string) {
             "guests" -> GUESTS
             "users" -> USERS
             else -> DUMMY
         }
-    }
 
     override fun convertToString(`object`: ReactionVoter.ReactionActorType?): String {
         if (`object` == null) {

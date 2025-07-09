@@ -34,9 +34,7 @@ class OCSize private constructor(var ocSize: Long) : Property {
             return OCSize(-1)
         }
 
-        override fun getName(): Property.Name {
-            return NAME
-        }
+        override fun getName(): Property.Name = NAME
     }
 
     companion object {

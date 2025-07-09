@@ -27,12 +27,11 @@ class ParticipantPermissions(
     val canPublishScreen = (conversation.permissions and PUBLISH_SCREEN) == PUBLISH_SCREEN
     private val hasChatPermission = (conversation.permissions and CHAT) == CHAT
 
-    private fun hasConversationPermissions(): Boolean {
-        return CapabilitiesUtil.hasSpreedFeatureCapability(
+    private fun hasConversationPermissions(): Boolean =
+        CapabilitiesUtil.hasSpreedFeatureCapability(
             spreedCapabilities,
             SpreedFeatures.CONVERSATION_PERMISSION
         )
-    }
 
     fun canIgnoreLobby(): Boolean {
         if (hasConversationPermissions()) {
@@ -42,29 +41,26 @@ class ParticipantPermissions(
         return false
     }
 
-    fun canStartCall(): Boolean {
-        return if (hasConversationPermissions()) {
+    fun canStartCall(): Boolean =
+        if (hasConversationPermissions()) {
             canStartCall
         } else {
             conversation.canStartCall
         }
-    }
 
-    fun canPublishAudio(): Boolean {
-        return if (hasConversationPermissions()) {
+    fun canPublishAudio(): Boolean =
+        if (hasConversationPermissions()) {
             canPublishAudio
         } else {
             true
         }
-    }
 
-    fun canPublishVideo(): Boolean {
-        return if (hasConversationPermissions()) {
+    fun canPublishVideo(): Boolean =
+        if (hasConversationPermissions()) {
             canPublishVideo
         } else {
             true
         }
-    }
 
     fun hasChatPermission(): Boolean {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.CHAT_PERMISSION)) {

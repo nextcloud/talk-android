@@ -18,8 +18,8 @@ import com.nextcloud.talk.models.json.participants.Participant.ActorType.GUESTS
 import com.nextcloud.talk.models.json.participants.Participant.ActorType.USERS
 
 class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>() {
-    override fun getFromString(string: String?): Participant.ActorType {
-        return when (string) {
+    override fun getFromString(string: String?): Participant.ActorType =
+        when (string) {
             "emails" -> EMAILS
             "groups" -> GROUPS
             "guests" -> GUESTS
@@ -28,7 +28,6 @@ class EnumActorTypeConverter : StringBasedTypeConverter<Participant.ActorType>()
             "federated_users" -> FEDERATED
             else -> DUMMY
         }
-    }
 
     override fun convertToString(`object`: Participant.ActorType?): String {
         if (`object` == null) {

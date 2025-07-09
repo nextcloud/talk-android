@@ -34,8 +34,8 @@ class ConversationCreationRepositoryImpl @Inject constructor(
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
     val apiVersion = ApiUtils.getConversationApiVersion(_currentUser, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
 
-    override suspend fun renameConversation(roomToken: String, roomNameNew: String?): GenericOverall {
-        return ncApiCoroutines.renameRoom(
+    override suspend fun renameConversation(roomToken: String, roomNameNew: String?): GenericOverall =
+        ncApiCoroutines.renameRoom(
             credentials,
             ApiUtils.getUrlForRoom(
                 apiVersion,
@@ -44,10 +44,9 @@ class ConversationCreationRepositoryImpl @Inject constructor(
             ),
             roomNameNew
         )
-    }
 
-    override suspend fun setConversationDescription(roomToken: String, description: String?): GenericOverall {
-        return ncApiCoroutines.setConversationDescription(
+    override suspend fun setConversationDescription(roomToken: String, description: String?): GenericOverall =
+        ncApiCoroutines.setConversationDescription(
             credentials,
             ApiUtils.getUrlForConversationDescription(
                 apiVersion,
@@ -56,10 +55,9 @@ class ConversationCreationRepositoryImpl @Inject constructor(
             ),
             description
         )
-    }
 
-    override suspend fun openConversation(roomToken: String, scope: Int): GenericOverall {
-        return ncApiCoroutines.openConversation(
+    override suspend fun openConversation(roomToken: String, scope: Int): GenericOverall =
+        ncApiCoroutines.openConversation(
             credentials,
             ApiUtils.getUrlForOpeningConversations(
                 apiVersion,
@@ -68,7 +66,6 @@ class ConversationCreationRepositoryImpl @Inject constructor(
             ),
             scope
         )
-    }
 
     override suspend fun addParticipants(
         conversationToken: String?,
@@ -110,13 +107,12 @@ class ConversationCreationRepositoryImpl @Inject constructor(
         return response
     }
 
-    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String {
-        return ApiUtils.getUrlForAvatar(
+    override fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
+        ApiUtils.getUrlForAvatar(
             _currentUser.baseUrl,
             avatarId,
             requestBigSize
         )
-    }
 
     override suspend fun setPassword(roomToken: String, password: String): GenericOverall {
         val result = ncApiCoroutines.setPassword(

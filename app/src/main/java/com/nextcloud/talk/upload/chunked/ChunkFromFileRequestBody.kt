@@ -36,13 +36,12 @@ class ChunkFromFileRequestBody(
     private var mTransferred: Long
     private var mDataTransferListener: OnDataTransferProgressListener
     private val mBuffer = ByteBuffer.allocate(BUFFER_CAPACITY)
-    override fun contentLength(): Long {
-        return try {
+    override fun contentLength(): Long =
+        try {
             mChunkSize.coerceAtMost(mChannel.size() - mOffset)
         } catch (e: IOException) {
             mChunkSize
         }
-    }
 
     @Throws(IOException::class)
     override fun writeTo(sink: BufferedSink) {
@@ -80,9 +79,7 @@ class ChunkFromFileRequestBody(
         }
     }
 
-    override fun contentType(): MediaType? {
-        return mContentType
-    }
+    override fun contentType(): MediaType? = mContentType
 
     companion object {
         private val TAG = ChunkFromFileRequestBody::class.java.simpleName

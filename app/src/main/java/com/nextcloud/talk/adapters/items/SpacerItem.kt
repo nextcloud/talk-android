@@ -17,9 +17,8 @@ class SpacerItem(private val height: Int) : AbstractFlexibleItem<SpacerItem.View
 
     override fun getLayoutRes(): Int = R.layout.item_spacer
 
-    override fun createViewHolder(view: View?, adapter: FlexibleAdapter<IFlexible<*>?>?): ViewHolder {
-        return ViewHolder(view!!, adapter!!)
-    }
+    override fun createViewHolder(view: View?, adapter: FlexibleAdapter<IFlexible<*>?>?): ViewHolder =
+        ViewHolder(view!!, adapter!!)
 
     override fun bindViewHolder(
         adapter: FlexibleAdapter<IFlexible<*>?>?,
@@ -32,10 +31,7 @@ class SpacerItem(private val height: Int) : AbstractFlexibleItem<SpacerItem.View
 
     override fun equals(other: Any?) = other is SpacerItem
 
-    override fun hashCode(): Int {
-        return 0
-    }
+    override fun hashCode(): Int = 0
 
-    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) :
-        FlexibleViewHolder(view, adapter)
+    class ViewHolder(view: View, adapter: FlexibleAdapter<*>) : FlexibleViewHolder(view, adapter)
 }

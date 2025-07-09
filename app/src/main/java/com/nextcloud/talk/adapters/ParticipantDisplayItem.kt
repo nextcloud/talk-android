@@ -153,8 +153,8 @@ class ParticipantDisplayItem(
         participantDisplayItemNotifier.notifyChange()
     }
 
-    private fun buildUiState(): ParticipantUiState {
-        return ParticipantUiState(
+    private fun buildUiState(): ParticipantUiState =
+        ParticipantUiState(
             sessionKey = sessionKey,
             nick = nick ?: "Guest",
             isConnected = isConnected,
@@ -164,7 +164,6 @@ class ParticipantDisplayItem(
             avatarUrl = urlForAvatar,
             mediaStream = mediaStream
         )
-    }
 
     private fun updateUrlForAvatar() {
         if (actorType == ActorType.FEDERATED) {
@@ -192,8 +191,8 @@ class ParticipantDisplayItem(
         participantDisplayItemNotifier.removeObserver(observer)
     }
 
-    override fun toString(): String {
-        return "ParticipantSession{" +
+    override fun toString(): String =
+        "ParticipantSession{" +
             "userId='" + userId + '\'' +
             ", actorType='" + actorType + '\'' +
             ", actorId='" + actorId + '\'' +
@@ -206,7 +205,6 @@ class ParticipantDisplayItem(
             ", rootEglBase=" + rootEglBase +
             ", raisedHand=" + raisedHand +
             '}'
-    }
 
     companion object {
         /**

@@ -2233,7 +2233,8 @@ class CallActivity : CallBaseActivity() {
         }
 
         if (!isSelfInCall &&
-            currentCallStatus !== CallStatus.LEAVING && ApplicationWideCurrentRoomHolder.getInstance().isInCall
+            currentCallStatus !== CallStatus.LEAVING &&
+            ApplicationWideCurrentRoomHolder.getInstance().isInCall
         ) {
             Log.d(TAG, "Most probably a moderator ended the call for all.")
             hangup(shutDownView = true, endCallForAll = false)

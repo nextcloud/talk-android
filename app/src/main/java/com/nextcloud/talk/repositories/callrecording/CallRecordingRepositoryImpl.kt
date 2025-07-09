@@ -23,8 +23,8 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
 
     var apiVersion = 1
 
-    override fun startRecording(roomToken: String): Observable<StartCallRecordingModel> {
-        return ncApi.startRecording(
+    override fun startRecording(roomToken: String): Observable<StartCallRecordingModel> =
+        ncApi.startRecording(
             credentials,
             ApiUtils.getUrlForRecording(
                 apiVersion,
@@ -33,10 +33,9 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
             ),
             1
         ).map { mapToStartCallRecordingModel(it.ocs?.meta!!) }
-    }
 
-    override fun stopRecording(roomToken: String): Observable<StopCallRecordingModel> {
-        return ncApi.stopRecording(
+    override fun stopRecording(roomToken: String): Observable<StopCallRecordingModel> =
+        ncApi.stopRecording(
             credentials,
             ApiUtils.getUrlForRecording(
                 apiVersion,
@@ -44,7 +43,6 @@ class CallRecordingRepositoryImpl(private val ncApi: NcApi, currentUserProvider:
                 roomToken
             )
         ).map { mapToStopCallRecordingModel(it.ocs?.meta!!) }
-    }
 
     private fun mapToStartCallRecordingModel(response: GenericMeta): StartCallRecordingModel {
         val success = response.statusCode == HTTP_OK
