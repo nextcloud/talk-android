@@ -143,8 +143,11 @@ class MentionAutocompleteItem(
 
             SOURCE_GROUPS -> {
                 holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable
-                        .ic_avatar_group_small)
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.avatarView,
+                        R.drawable
+                            .ic_avatar_group_small
+                    )
                 )
             }
 
@@ -171,8 +174,11 @@ class MentionAutocompleteItem(
 
             SOURCE_TEAMS -> {
                 holder.binding.avatarView.loadUserAvatar(
-                    viewThemeUtils.talk.themePlaceholderAvatar(holder.binding.avatarView, R.drawable
-                        .ic_avatar_team_small)
+                    viewThemeUtils.talk.themePlaceholderAvatar(
+                        holder.binding.avatarView,
+                        R.drawable
+                            .ic_avatar_team_small
+                    )
                 )
             }
 
