@@ -9,6 +9,7 @@ package com.nextcloud.talk.threadsoverview
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.format.DateUtils
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -219,6 +220,7 @@ fun ThreadsList(
                 threadName = threadInfo.first?.actorDisplayName.orEmpty(),
                 threadMessage = threadInfo.first?.message.toString(),
                 numReplies = threadInfo.thread?.numReplies ?: 0,
+                lastActivityDate = getLastActivityDate(threadInfo),
                 imageRequest = imageRequest,
                 roomToken = roomToken,
                 onThreadClick = onThreadClick
@@ -227,11 +229,28 @@ fun ThreadsList(
     }
 }
 
+private fun getLastActivityDate(threadInfo: ThreadInfo): String {
+    val MILLIES = 1000L
+
+    val lastActivityTimestamp = threadInfo.last?.timestamp
+        ?: threadInfo.first?.timestamp
+        ?: 0
+
+    val lastActivityDate = DateUtils.getRelativeTimeSpanString(
+        lastActivityTimestamp.times(MILLIES),
+        System.currentTimeMillis(),
+        0,
+        DateUtils.FORMAT_ABBREV_RELATIVE
+    ).toString()
+    return lastActivityDate
+}
+
 @Composable
 fun ThreadRow(
     threadId: Int,
     threadName: String,
     threadMessage: String,
+    lastActivityDate: String,
     numReplies: Int,
     imageRequest: ImageRequest?,
     roomToken: String,
@@ -275,11 +294,21 @@ fun ThreadRow(
 
         Spacer(modifier = Modifier.width(8.dp))
 
-        Text(
-            text = numReplies.toString(),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Column(
+            horizontalAlignment = Alignment.End
+        ) {
+            Text(
+                text = lastActivityDate,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = numReplies.toString(),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
 
         Spacer(modifier = Modifier.width(16.dp))
     }
@@ -315,6 +344,7 @@ fun ThreadRowPreview() {
         threadName = "actor name aka. thread name",
         threadMessage = "The message of the first message of the thread...",
         numReplies = 3,
+        lastActivityDate = "14 sec ago",
         roomToken = "1234",
         onThreadClick = null,
         imageRequest = null
