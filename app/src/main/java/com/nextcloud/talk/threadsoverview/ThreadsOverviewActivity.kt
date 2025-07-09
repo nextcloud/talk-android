@@ -16,11 +16,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -99,7 +104,8 @@ class ThreadsOverviewActivity : BaseActivity() {
                         .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
-                            title = stringResource(R.string.threads_overview),
+                            // title = stringResource(R.string.threads_overview),
+                            title = "Threads....",
                             null
                         )
                     },
@@ -193,7 +199,7 @@ fun ThreadsList(
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         items(
@@ -231,25 +237,51 @@ fun ThreadRow(
     roomToken: String,
     onThreadClick: ((String, Int) -> Unit?)?
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .then(
-                Modifier.clickable {
-                    onThreadClick?.invoke(roomToken, threadId)
-                }
-            )
-            .padding(vertical = 8.dp)
+            .clickable(enabled = onThreadClick != null) {
+                onThreadClick?.invoke(roomToken, threadId)
+            }
+            .padding(vertical = 8.dp, horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = imageRequest,
             contentDescription = stringResource(R.string.user_avatar),
-            modifier = Modifier.size(width = 45.dp, height = 45.dp)
+            modifier = Modifier
+                .size(48.dp)
         )
-        Text(text = threadName, style = MaterialTheme.typography.titleMedium)
-        Text(text = threadMessage, style = MaterialTheme.typography.bodySmall)
-        val numRepliesText = numReplies.toString()
-        Text(text = "Replies: $numRepliesText", style = MaterialTheme.typography.bodySmall)
+
+        Spacer(modifier = Modifier.width(12.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                text = threadName,
+                style = MaterialTheme.typography.titleMedium,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                text = threadMessage,
+                style = MaterialTheme.typography.bodyMedium,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = numReplies.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
     }
 }
 
@@ -280,8 +312,8 @@ fun ErrorView(message: String) {
 fun ThreadRowPreview() {
     ThreadRow(
         threadId = 123,
-        threadName = "bb",
-        threadMessage = "dfgvf",
+        threadName = "actor name aka. thread name",
+        threadMessage = "The message of the first message of the thread...",
         numReplies = 3,
         roomToken = "1234",
         onThreadClick = null,
