@@ -123,7 +123,7 @@
             android:theme="@style/AppTheme" />
 
         <activity
-            android:name=".account.WebViewLoginActivity"
+            android:name=".account.BrowserLoginActivity"
             android:theme="@style/AppTheme" />
 
         <activity android:name=".contacts.ContactsActivity"
