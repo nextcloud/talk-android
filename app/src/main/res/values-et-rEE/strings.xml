@@ -46,6 +46,7 @@
     <string name="danger_zone">Ohtlik - siin ole ettevaatlik</string>
     <string name="deck_card_description">%1$s:  %2$s</string>
     <string name="delete_avatar">Kustuta tunnuspilt</string>
+    <string name="delete_voice_recording">Kustuta helisalvestis</string>
     <string name="deleted_conversation">%1$s vestlus on kustutatud</string>
     <string name="dnd">Ära sega</string>
     <string name="dontClear">Ära tühjenda</string>
@@ -323,6 +324,7 @@
     <string name="nc_message_read">Sõnum on loetud</string>
     <string name="nc_message_sending">Saatmisel</string>
     <string name="nc_message_sent">Sõnum on saadetud</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofon on lülitatud sisse ja heli on salvestamisel</string>
     <string name="nc_microphone_permission_hint">Et saaksid suhtlemisel kasutada heliedastust, palun luba rakendusel kasutada mikrofoni.</string>
     <string name="nc_missed_call">Vastamata kõne kasutajalt %s</string>
     <string name="nc_moderator">Moderaator</string>
@@ -408,6 +410,7 @@
     <string name="nc_search_clear">Tühjenda otsing</string>
     <string name="nc_select_an_account">Otsi kasutajakontot</string>
     <string name="nc_send_edit_message">Uuenda sõnumit</string>
+    <string name="nc_send_voice_recording">Saada helisalvestis</string>
     <string name="nc_sensitive_conversation">Vestlus tundlikul teemal</string>
     <string name="nc_sensitive_conversation_hint">Sõnumite eelvaated saava vestluste loendis ja teavitustes olema peidetud</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s saatis gif-faili.</string>

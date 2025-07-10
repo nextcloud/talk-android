@@ -46,6 +46,7 @@
     <string name="danger_zone">Nebezpečná zóna</string>
     <string name="deck_card_description">%1$s v %2$s</string>
     <string name="delete_avatar">Vymazat profilový obrázek</string>
+    <string name="delete_voice_recording">Smazat hlasovou nahrávku</string>
     <string name="deleted_conversation">Konverzace %1$s smazána</string>
     <string name="dnd">Nerušit</string>
     <string name="dontClear">Nečistit</string>
@@ -54,6 +55,7 @@
     <string name="edit_message_icon_description">Upravit zprávu</string>
     <string name="emoji_category_recent">Nedávné</string>
     <string name="encrypted">Šifrované</string>
+    <string name="end_call">Ukončit hovor</string>
     <string name="end_call_for_everyone">Ukončit hovor pro všechny</string>
     <string name="error_loading_chats">Došlo k problému při načítání vašich chatů</string>
     <string name="error_unbanning">Došlo k chybě při rušení vyloučení účastníka</string>
@@ -322,6 +324,7 @@
     <string name="nc_message_read">Zpráva přečtena</string>
     <string name="nc_message_sending">Odesílání</string>
     <string name="nc_message_sent">Zpráva odeslána</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofon je povolený a zvuk se nahrává</string>
     <string name="nc_microphone_permission_hint">Pro zapnutí hlasové komunikace udělte oprávnění „Mikrofon“ .</string>
     <string name="nc_missed_call">Zmeškali jste hovor od %s</string>
     <string name="nc_moderator">Moderátor</string>
@@ -407,6 +410,7 @@
     <string name="nc_search_clear">Vyčistit hledání</string>
     <string name="nc_select_an_account">Vyberte účet</string>
     <string name="nc_send_edit_message">Aktualizovat zprávu</string>
+    <string name="nc_send_voice_recording">Odeslat hlasovou nahrávku</string>
     <string name="nc_sensitive_conversation">Citlivá konverzace</string>
     <string name="nc_sensitive_conversation_hint">Náhled zprávy bude vypnut pro seznam konverzací a notifikace</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a) GIF animaci.</string>

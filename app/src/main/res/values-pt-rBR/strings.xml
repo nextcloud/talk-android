@@ -46,6 +46,7 @@
     <string name="danger_zone">Zona de perigo</string>
     <string name="deck_card_description">%1$s em %2$s</string>
     <string name="delete_avatar">Excluir avatar</string>
+    <string name="delete_voice_recording">Excluir gravação de voz</string>
     <string name="deleted_conversation">Conversa %1$s excluída</string>
     <string name="dnd">Não perturbe</string>
     <string name="dontClear">Não limpe</string>
@@ -323,6 +324,7 @@
     <string name="nc_message_read">Mensagem lida</string>
     <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensagem enviada</string>
+    <string name="nc_microphone_enabled_audio_recording">O microfone está ativado e o áudio está sendo gravado</string>
     <string name="nc_microphone_permission_hint">Para ativar a comunicação por voz, conceda a permissão \"Microfone\".</string>
     <string name="nc_missed_call">Você perdeu uma chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
@@ -408,6 +410,7 @@
     <string name="nc_search_clear">Limpar pesquisa</string>
     <string name="nc_select_an_account">Selecionar uma conta</string>
     <string name="nc_send_edit_message">Atualizar mensagem</string>
+    <string name="nc_send_voice_recording">Enviar gravação de voz</string>
     <string name="nc_sensitive_conversation">Conversa sensível</string>
     <string name="nc_sensitive_conversation_hint">A visualização de mensagens será desativada na lista de conversas e nas notificações</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou um GIF.</string>
