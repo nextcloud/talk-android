@@ -174,7 +174,7 @@ object DisplayUtils {
             chip.setChipIconResource(R.drawable.ic_circular_group)
         }
         if (type == "circle" || type == "teams") {
-            chip.setChipIconResource(R.drawable.icon_team)
+            chip.setChipIconResource(R.drawable.icon_circular_team)
         }
 
         if (isCall && isPhoneNumber(label.toString())) {
