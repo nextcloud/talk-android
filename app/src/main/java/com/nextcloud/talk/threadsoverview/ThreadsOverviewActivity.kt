@@ -12,20 +12,13 @@ import android.os.Bundle
 import android.text.format.DateUtils
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
@@ -39,14 +32,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -56,6 +45,7 @@ import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.models.json.threads.ThreadInfo
+import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -215,12 +205,21 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
+
+
+            val lastReadMessage = threadInfo.attendee?.lastReadMessage ?: 0
+            val lastMentionMessage = threadInfo.attendee?.lastMentionMessage ?: 0
+            val lastMentionDirect = threadInfo.attendee?.lastMentionDirect ?: 0
+
+
             ThreadRow(
                 threadId = threadInfo.thread!!.id,
                 threadName = threadInfo.first?.actorDisplayName.orEmpty(),
                 threadMessage = threadInfo.first?.message.toString(),
                 numReplies = threadInfo.thread?.numReplies ?: 0,
-                lastActivityDate = getLastActivityDate(threadInfo),
+                unreadMention = lastMentionMessage > lastReadMessage,
+                unreadMentionDirect = lastMentionDirect > lastReadMessage,
+                lastActivityDate = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
                 imageRequest = imageRequest,
                 roomToken = roomToken,
                 onThreadClick = onThreadClick
@@ -246,75 +245,6 @@ private fun getLastActivityDate(threadInfo: ThreadInfo): String {
 }
 
 @Composable
-fun ThreadRow(
-    threadId: Int,
-    threadName: String,
-    threadMessage: String,
-    lastActivityDate: String,
-    numReplies: Int,
-    imageRequest: ImageRequest?,
-    roomToken: String,
-    onThreadClick: ((String, Int) -> Unit?)?
-) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable(enabled = onThreadClick != null) {
-                onThreadClick?.invoke(roomToken, threadId)
-            }
-            .padding(vertical = 8.dp, horizontal = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AsyncImage(
-            model = imageRequest,
-            contentDescription = stringResource(R.string.user_avatar),
-            modifier = Modifier
-                .size(48.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = threadName,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = threadMessage,
-                style = MaterialTheme.typography.bodyMedium,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        Column(
-            horizontalAlignment = Alignment.End
-        ) {
-            Text(
-                text = lastActivityDate,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = numReplies.toString(),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
-
-        Spacer(modifier = Modifier.width(16.dp))
-    }
-}
-
-@Composable
 fun LoadingIndicator() {
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -334,21 +264,6 @@ fun ErrorView(message: String) {
     ) {
         Text(text = message, color = MaterialTheme.colorScheme.error)
     }
-}
-
-@Preview
-@Composable
-fun ThreadRowPreview() {
-    ThreadRow(
-        threadId = 123,
-        threadName = "actor name aka. thread name",
-        threadMessage = "The message of the first message of the thread...",
-        numReplies = 3,
-        lastActivityDate = "14 sec ago",
-        roomToken = "1234",
-        onThreadClick = null,
-        imageRequest = null
-    )
 }
 
 // @Preview(showBackground = true)
