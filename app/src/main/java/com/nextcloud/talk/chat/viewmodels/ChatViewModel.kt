@@ -40,6 +40,7 @@ import com.nextcloud.talk.models.json.reminder.Reminder
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
+import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -68,6 +69,7 @@ class ChatViewModel @Inject constructor(
     private val appPreferences: AppPreferences,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val chatRepository: ChatMessageRepository,
+    private val threadsRepository: ThreadsRepository,
     private val conversationRepository: OfflineConversationsRepository,
     private val reactionsRepository: ReactionsRepository,
     private val mediaRecorderManager: MediaRecorderManager,
@@ -161,6 +163,9 @@ class ChatViewModel @Inject constructor(
 
     private val _threadCreationState = MutableStateFlow<ThreadCreationUiState>(ThreadCreationUiState.None)
     val threadCreationState: StateFlow<ThreadCreationUiState> = _threadCreationState
+
+    private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
+    val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
 
     val getOpenGraph: LiveData<Reference>
         get() = _getOpenGraph
@@ -432,6 +437,13 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             val thread = chatNetworkDataSource.createThread(credentials, url)
             _threadCreationState.value = ThreadCreationUiState.Success(thread.ocs?.data)
+        }
+    }
+
+    fun getThread(credentials: String, url: String) {
+        viewModelScope.launch {
+            val thread = threadsRepository.getThread(credentials, url)
+            _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
         }
     }
 
@@ -889,5 +901,11 @@ class ChatViewModel @Inject constructor(
         data object None : ThreadCreationUiState()
         data class Success(val thread: ThreadInfo?) : ThreadCreationUiState()
         data class Error(val message: String) : ThreadCreationUiState()
+    }
+
+    sealed class ThreadRetrieveUiState {
+        data object None : ThreadRetrieveUiState()
+        data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
+        data class Error(val message: String) : ThreadRetrieveUiState()
     }
 }
