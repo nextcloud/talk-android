@@ -148,6 +148,7 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
+import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
@@ -353,6 +354,7 @@ class ChatActivity :
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
     var threadId: Long? = null
+    var thread: ThreadInfo? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -506,6 +508,16 @@ class ChatActivity :
             roomToken,
             threadId
         )
+
+        threadId?.let{
+            val threadUrl = ApiUtils.getUrlForThread(
+                version = 1,
+                baseUrl = conversationUser!!.baseUrl,
+                token = roomToken,
+                threadId = it.toInt()
+            )
+            chatViewModel.getThread(credentials, threadUrl)
+        }
 
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
@@ -1266,6 +1278,24 @@ class ChatActivity :
                         uiState.thread?.first?.threadId?.let {
                             openThread(it)
                         }
+                    }
+                }
+            }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadRetrieveState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadRetrieveUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadRetrieveUiState.Error -> {
+                        Log.e(TAG, "Error when retrieving thread")
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadRetrieveUiState.Success -> {
+                        thread = uiState.thread
                     }
                 }
             }
@@ -2637,7 +2667,7 @@ class ChatActivity :
 
         title.text =
             if (isChatThread()) {
-                "Thread $threadId"
+                thread?.first?.message
             } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
@@ -2649,7 +2679,13 @@ class ChatActivity :
                 ""
             }
 
-        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (isChatThread()) {
+            val repliesAmountTitle = String.format(
+                resources.getString(R.string.thread_replies_amount),
+                thread?.thread?.numReplies
+            )
+            statusMessageViewContents(repliesAmountTitle)
+        } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""
             if (currentConversation?.statusIcon != null) {
                 statusMessage += currentConversation?.statusIcon

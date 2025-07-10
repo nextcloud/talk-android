@@ -553,6 +553,7 @@ How to translate with transifex:
     <string name="reply_in_thread">Reply in thread</string>
     <string name="show_threads_overview">Show threads</string>
     <string name="recent_threads">Recent threads</string>
+    <string name="thread_replies_amount">%1$d replies</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>

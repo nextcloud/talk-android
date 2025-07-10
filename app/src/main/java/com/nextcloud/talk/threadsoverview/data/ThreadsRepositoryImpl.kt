@@ -9,6 +9,7 @@ package com.nextcloud.talk.threadsoverview.data
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
@@ -22,6 +23,10 @@ class ThreadsRepositoryImpl @Inject constructor(
 
     override suspend fun getThreads(credentials: String, url: String): ThreadsOverall {
         return ncApiCoroutines.getThreads(credentials, url)
+    }
+
+    override suspend fun getThread(credentials: String, url: String): ThreadOverall {
+        return ncApiCoroutines.getThread(credentials, url)
     }
 
     companion object {
