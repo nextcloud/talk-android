@@ -46,6 +46,7 @@
     <string name="danger_zone">Gefahrenzone</string>
     <string name="deck_card_description">%1$s in %2$s</string>
     <string name="delete_avatar">Avatar löschen</string>
+    <string name="delete_voice_recording">Sprachaufnahme löschen</string>
     <string name="deleted_conversation">Unterhaltung %1$s gelöscht</string>
     <string name="dnd">Nicht stören</string>
     <string name="dontClear">Nicht löschen</string>
@@ -323,6 +324,7 @@
     <string name="nc_message_read">Nachricht gelesen</string>
     <string name="nc_message_sending">Sende</string>
     <string name="nc_message_sent">Nachricht gesendet</string>
+    <string name="nc_microphone_enabled_audio_recording">Das Mikrofon ist aktiviert und Audio wird aufgenommen</string>
     <string name="nc_microphone_permission_hint">Um Sprachkommunikation zu ermöglichen, bitte die Berechtigung \"Mikrofon\" erteilen.</string>
     <string name="nc_missed_call">Sie haben einen Anruf von %s verpasst</string>
     <string name="nc_moderator">Moderator</string>
@@ -408,6 +410,7 @@
     <string name="nc_search_clear">Suche löschen</string>
     <string name="nc_select_an_account">Konto auswählen</string>
     <string name="nc_send_edit_message">Nachricht aktualisieren</string>
+    <string name="nc_send_voice_recording">Sprachaufnahme senden</string>
     <string name="nc_sensitive_conversation">Sensible Unterhaltung</string>
     <string name="nc_sensitive_conversation_hint">Die Nachrichtenvorschau wird in der Unterhaltungsliste und den Benachrichtigungen deaktiviert</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s hat ein GIF gesendet.</string>
@@ -465,7 +468,7 @@
     <string name="nc_settings_proxy_port_title">Proxy-Port</string>
     <string name="nc_settings_proxy_type_title">Proxy-Typ</string>
     <string name="nc_settings_proxy_username_title">Proxy-Benutzername</string>
-    <string name="nc_settings_read_privacy_desc">Ihren Lesestatus teilen und den Lesestatus von anderen anzeigen</string>
+    <string name="nc_settings_read_privacy_desc">Ihren Lesestatus teilen und den anderer anzeigen</string>
     <string name="nc_settings_read_privacy_title">Lesestatus</string>
     <string name="nc_settings_reauthorize">Konto erneut autorisieren</string>
     <string name="nc_settings_remove">Entfernen</string>
@@ -486,7 +489,7 @@
     <string name="nc_settings_theme_key">Design</string>
     <string name="nc_settings_theme_light">Hell</string>
     <string name="nc_settings_theme_title">Design</string>
-    <string name="nc_settings_typing_status_desc">Meinen Schreibstatus teilen und den anderer anzeigen</string>
+    <string name="nc_settings_typing_status_desc">Ihren Schreibstatus teilen und den anderer anzeigen</string>
     <string name="nc_settings_typing_status_hpb_description">Der Eingabestatus ist nur verfügbar, wenn ein Hochleistungs-Backend (HPB) verwendet wird.</string>
     <string name="nc_settings_typing_status_title">Schreibstatus</string>
     <string name="nc_settings_use_credentials_title">Proxy erfordert eine Authentifizierung</string>

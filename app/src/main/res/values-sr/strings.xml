@@ -46,6 +46,7 @@
     <string name="danger_zone">Зона опасности</string>
     <string name="deck_card_description">%1$s у %2$s</string>
     <string name="delete_avatar">Обриши аватар</string>
+    <string name="delete_voice_recording">Обриши снимак гласа</string>
     <string name="deleted_conversation">Разговор %1$s је обрисан</string>
     <string name="dnd">Не узнемиравај</string>
     <string name="dontClear">Не бриши</string>
@@ -323,6 +324,7 @@
     <string name="nc_message_read">Порука је прочитана</string>
     <string name="nc_message_sending">Шаље се</string>
     <string name="nc_message_sent">Порука послата</string>
+    <string name="nc_microphone_enabled_audio_recording">Микрофон је укључен и снима се звук</string>
     <string name="nc_microphone_permission_hint">Ако желите да укључите аудио комуникацију, молимо вас да дате дозволу „Микрофон”</string>
     <string name="nc_missed_call">Имате пропуштен позив од %s</string>
     <string name="nc_moderator">Модератор</string>
@@ -408,6 +410,7 @@
     <string name="nc_search_clear">Обриши претрагу</string>
     <string name="nc_select_an_account">Изаберите налог</string>
     <string name="nc_send_edit_message">Ажурирај поруку</string>
+    <string name="nc_send_voice_recording">Пошаљи снимак гласа</string>
     <string name="nc_sensitive_conversation">Осетљиви разговор</string>
     <string name="nc_sensitive_conversation_hint">Преглед поруке ће се сакрити у листи разговора и у обавештењима</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s је послао GIF.</string>
