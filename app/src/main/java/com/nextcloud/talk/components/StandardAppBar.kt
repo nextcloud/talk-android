@@ -51,27 +51,29 @@ fun StandardAppBar(title: String, menuItems: List<Pair<String, () -> Unit>>?) {
             }
         },
         actions = {
-            Box {
-                IconButton(onClick = { expanded = true }) {
-                    Icon(
-                        imageVector = Icons.Default.MoreVert,
-                        contentDescription = stringResource(R.string.nc_common_more_options)
-                    )
-                }
-
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false },
-                    modifier = Modifier.background(color = colorResource(id = R.color.bg_default))
-                ) {
-                    menuItems?.forEach { (label, action) ->
-                        DropdownMenuItem(
-                            text = { Text(label) },
-                            onClick = {
-                                action()
-                                expanded = false
-                            }
+            if (!menuItems.isNullOrEmpty()) {
+                Box {
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(
+                            imageVector = Icons.Default.MoreVert,
+                            contentDescription = stringResource(R.string.nc_common_more_options)
                         )
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false },
+                        modifier = Modifier.background(color = colorResource(id = R.color.bg_default))
+                    ) {
+                        menuItems?.forEach { (label, action) ->
+                            DropdownMenuItem(
+                                text = { Text(label) },
+                                onClick = {
+                                    action()
+                                    expanded = false
+                                }
+                            )
+                        }
                     }
                 }
             }

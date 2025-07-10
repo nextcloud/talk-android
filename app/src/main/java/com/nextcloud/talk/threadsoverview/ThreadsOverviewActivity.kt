@@ -32,7 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -95,8 +95,7 @@ class ThreadsOverviewActivity : BaseActivity() {
                         .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
-                            // title = stringResource(R.string.threads_overview),
-                            title = "Threads....",
+                            title = stringResource(R.string.recent_threads),
                             null
                         )
                     },
@@ -205,24 +204,14 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
-
-
-            val lastReadMessage = threadInfo.attendee?.lastReadMessage ?: 0
-            val lastMentionMessage = threadInfo.attendee?.lastMentionMessage ?: 0
-            val lastMentionDirect = threadInfo.attendee?.lastMentionDirect ?: 0
-
-
             ThreadRow(
-                threadId = threadInfo.thread!!.id,
-                threadName = threadInfo.first?.actorDisplayName.orEmpty(),
-                threadMessage = threadInfo.first?.message.toString(),
-                numReplies = threadInfo.thread?.numReplies ?: 0,
-                unreadMention = lastMentionMessage > lastReadMessage,
-                unreadMentionDirect = lastMentionDirect > lastReadMessage,
-                lastActivityDate = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
-                imageRequest = imageRequest,
                 roomToken = roomToken,
-                onThreadClick = onThreadClick
+                threadId = threadInfo.thread!!.id,
+                firstLine = threadInfo.first?.message.toString(),
+                secondLine = threadInfo.last?.message.toString(),
+                date = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
+                imageRequest = imageRequest,
+                onClick = onThreadClick
             )
         }
     }
