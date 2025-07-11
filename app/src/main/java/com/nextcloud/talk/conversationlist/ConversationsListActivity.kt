@@ -1970,6 +1970,7 @@ class ConversationsListActivity :
 
     @SuppressLint("CheckResult")
     private fun deleteUserAndRestartApp() {
+        val userToDeleteDisplayName = currentUser!!.displayName
         userManager.scheduleUserForDeletionWithId(currentUser!!.id!!).blockingGet()
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance(applicationContext).enqueue(accountRemovalWork)
@@ -1981,7 +1982,7 @@ class ConversationsListActivity :
                     WorkInfo.State.SUCCEEDED -> {
                         val text = String.format(
                             context.resources.getString(R.string.nc_deleted_user),
-                            currentUser!!.displayName
+                            userToDeleteDisplayName
                         )
                         Toast.makeText(
                             context,
@@ -1997,7 +1998,7 @@ class ConversationsListActivity :
                             context.resources.getString(R.string.nc_common_error_sorry),
                             Toast.LENGTH_LONG
                         ).show()
-                        Log.e(TAG, "something went wrong when deleting user with id " + currentUser!!.userId)
+                        Log.e(TAG, "something went wrong when deleting user")
                         restartApp()
                     }
 

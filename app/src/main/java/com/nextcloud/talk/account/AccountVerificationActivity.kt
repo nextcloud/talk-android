@@ -22,7 +22,6 @@ import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -240,7 +239,7 @@ class AccountVerificationActivity : BaseActivity() {
             UserManager.UserAttributes(
                 id = null,
                 serverUrl = baseUrl,
-                currentUser = true,
+                currentUser = false,
                 userId = userId,
                 token = token,
                 displayName = displayName,
@@ -259,25 +258,32 @@ class AccountVerificationActivity : BaseActivity() {
 
                 @SuppressLint("SetTextI18n")
                 override fun onSuccess(user: User) {
-                    internalAccountId = user.id!!
-                    if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
-                        ClosedInterfaceImpl().setUpPushTokenRegistration()
-                    } else {
-                        Log.w(TAG, "Skipping push registration.")
-                        runOnUiThread {
-                            binding.progressText.text =
-                                """ ${binding.progressText.text}
+                    if (userManager.setUserAsActive(user).blockingGet()) {
+                        internalAccountId = user.id!!
+                        if (ClosedInterfaceImpl().isGooglePlayServicesAvailable) {
+                            ClosedInterfaceImpl().setUpPushTokenRegistration()
+                        } else {
+                            Log.w(TAG, "Skipping push registration.")
+                            runOnUiThread {
+                                binding.progressText.text =
+                                    """ ${binding.progressText.text}
                                     ${resources!!.getString(R.string.nc_push_disabled)}
-                                """.trimIndent()
+                                    """.trimIndent()
+                            }
+                            fetchAndStoreCapabilities()
                         }
-                        fetchAndStoreCapabilities()
+                    } else {
+                        Log.e(TAG, "Failed to set user active")
+                        binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
+                            resources!!.getString(R.string.nc_common_error_sorry)
+                        abortVerification()
                     }
                 }
 
                 @SuppressLint("SetTextI18n")
                 override fun onError(e: Throwable) {
                     binding.progressText.text = """ ${binding.progressText.text}""".trimIndent() +
-                        resources!!.getString(R.string.nc_display_name_not_stored)
+                        resources!!.getString(R.string.nc_common_error_sorry)
                     abortVerification()
                 }
 
@@ -371,16 +377,25 @@ class AccountVerificationActivity : BaseActivity() {
                 fetchAndStoreExternalSignalingSettings()
             }
         } else if (eventStatus.eventType == EventStatus.EventType.SIGNALING_SETTINGS) {
-            if (internalAccountId == eventStatus.userId && !eventStatus.isAllGood) {
-                runOnUiThread {
-                    binding.progressText.text =
-                        """
+            if (internalAccountId == eventStatus.userId) {
+                if (eventStatus.isAllGood) {
+                    proceedWithLogin()
+                } else {
+                    runOnUiThread {
+                        binding.progressText.text =
+                            """
                             ${binding.progressText.text}
                             ${resources!!.getString(R.string.nc_external_server_failed)}
-                        """.trimIndent()
+                            """.trimIndent()
+                    }
                 }
+            } else {
+                Log.d(
+                    TAG,
+                    "got SIGNALING_SETTINGS, internalAccountId=$internalAccountId , eventStatus.userId=" +
+                        eventStatus.userId
+                )
             }
-            proceedWithLogin()
         }
     }
 
@@ -414,33 +429,27 @@ class AccountVerificationActivity : BaseActivity() {
 
     private fun proceedWithLogin() {
         cookieManager.cookieStore.removeAll()
+        // make sure currentUser is already set! otherwise: continuing proceedWithLogin was skipped for this user
 
-        if (userManager.users.blockingGet().size == 1 ||
-            currentUserProvider.currentUser.blockingGet().id != internalAccountId
-        ) {
-            val userToSetAsActive = userManager.getUserWithId(internalAccountId).blockingGet()
-            Log.d(TAG, "userToSetAsActive: " + userToSetAsActive.username)
+        // val usersAmount = userManager.users.blockingGet().size
+        // val currentUserId = currentUserProvider.currentUser.blockingGet().id
 
-            if (userManager.setUserAsActive(userToSetAsActive).blockingGet()) {
-                runOnUiThread {
-                    if (userManager.users.blockingGet().size == 1) {
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                    } else {
-                        if (isAccountImport) {
-                            ApplicationWideMessageHolder.getInstance().messageType =
-                                ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
-                        }
-                        val intent = Intent(context, ConversationsListActivity::class.java)
-                        startActivity(intent)
-                    }
-                }
-            } else {
-                Log.e(TAG, "failed to set active user")
-                Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+        // Log.d(TAG, "usersAmount in proceedWithLogin: $usersAmount")
+        // Log.d(TAG, "currentUserId in proceedWithLogin: $currentUserId")
+        Log.d(TAG, "internalAccountId in proceedWithLogin: $internalAccountId")
+
+        runOnUiThread {
+            // if (usersAmount == 1) {
+            //     val intent = Intent(context, ConversationsListActivity::class.java)
+            //     startActivity(intent)
+            // } else {
+            if (isAccountImport) {
+                ApplicationWideMessageHolder.getInstance().messageType =
+                    ApplicationWideMessageHolder.MessageType.ACCOUNT_WAS_IMPORTED
             }
-        } else {
-            Log.d(TAG, "continuing proceedWithLogin was skipped for this user")
+            val intent = Intent(context, ConversationsListActivity::class.java)
+            startActivity(intent)
+            // }
         }
     }
 
