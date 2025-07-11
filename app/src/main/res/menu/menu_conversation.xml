@@ -6,53 +6,67 @@
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
 
     <item
         android:id="@+id/conversation_event"
         android:icon="@drawable/baseline_calendar_today_24"
         android:orderInCategory="0"
         android:title="@string/nc_event_conversation_menu"
-        app:showAsAction="ifRoom">
-
-    </item>
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
 
     <item
         android:id="@+id/conversation_voice_call"
         android:icon="@drawable/ic_call_white_24dp"
         android:orderInCategory="1"
         android:title="@string/nc_conversation_menu_voice_call"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
 
     <item
         android:id="@+id/conversation_video_call"
         android:icon="@drawable/ic_videocam_white_24px"
         android:orderInCategory="2"
         android:title="@string/nc_conversation_menu_video_call"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
 
     <item
         android:id="@+id/conversation_search"
         android:icon="@drawable/ic_search_white_24dp"
         android:orderInCategory="3"
         android:title="@string/nc_search"
-        app:showAsAction="ifRoom" />
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:visible="true" />
 
     <item
         android:id="@+id/conversation_info"
         android:orderInCategory="4"
         android:title="@string/nc_conversation_menu_conversation_info"
-        app:showAsAction="never" />
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
 
     <item
         android:id="@+id/shared_items"
         android:orderInCategory="5"
         android:title="@string/nc_shared_items"
-        app:showAsAction="never" />
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
 
     <item
         android:id="@+id/show_threads"
         android:orderInCategory="6"
         android:title="@string/show_threads_overview"
-        app:showAsAction="never" />
+        android:visible="false"
+        app:showAsAction="never"
+        tools:visible="true" />
 </menu>

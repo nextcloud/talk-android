@@ -699,7 +699,8 @@ class ChatActivity :
                         joinRoomWithPassword()
 
                         if (conversationUser?.userId != "?" &&
-                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG) &&
+                            !isChatThread()
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
@@ -3175,11 +3176,20 @@ class ChatActivity :
             }
 
             val searchItem = menu.findItem(R.id.conversation_search)
-
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
-                currentConversation!!.remoteServer.isNullOrEmpty()
+                currentConversation!!.remoteServer.isNullOrEmpty() &&
+                !isChatThread()
 
-            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
+            val sharedItemsItem = menu.findItem(R.id.shared_items)
+            sharedItemsItem.isVisible = !isChatThread()
+
+            val conversationInfoItem = menu.findItem(R.id.conversation_info)
+            conversationInfoItem.isVisible = !isChatThread()
+
+            val showThreadsItem = menu.findItem(R.id.show_threads)
+            showThreadsItem.isVisible = !isChatThread()
+
+            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) && !isChatThread()) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
