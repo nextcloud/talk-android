@@ -50,6 +50,7 @@
     <string name="edit_message_icon_description">تحرير رسالة</string>
     <string name="emoji_category_recent">مؤخّراً recednt</string>
     <string name="encrypted">مُشفّر</string>
+    <string name="end_call">إقطَع المكالمة</string>
     <string name="end_call_for_everyone">إنهاء المكالمة للجميع</string>
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
     <string name="error_unbanning">حدث خطأ عند محاولة رفع الحظر عن مشارك</string>

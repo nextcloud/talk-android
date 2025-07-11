@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">請注意，通話已經持續一個小時了。</string>
     <string name="call_without_notification">通話而不通知</string>
     <string name="camera_permission_granted">已授予相機權限。請重新選擇相機。</string>
+    <string name="cancel_login">取消登入</string>
     <string name="choose_avatar_from_cloud">從雲中選擇虛擬化身大頭照</string>
     <string name="clear_status_message">清除狀態訊息</string>
     <string name="clear_status_message_after">繼此之後清空狀態訊息</string>

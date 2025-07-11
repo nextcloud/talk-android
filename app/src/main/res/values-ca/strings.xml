@@ -53,6 +53,7 @@
     <string name="edit_message_icon_description">Edició del missatge</string>
     <string name="emoji_category_recent">Recent</string>
     <string name="encrypted">Xifrat</string>
+    <string name="end_call">Finalitzar la trucada</string>
     <string name="end_call_for_everyone">Finalitzar la trucada per a tothom</string>
     <string name="error_loading_chats">S\'ha produït un problema carregant els xats</string>
     <string name="error_unbanning">S\'ha produït un error en anul·lar la prohibició del participant</string>

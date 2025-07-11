@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Dit gesprek is actief gedurende een uur</string>
     <string name="call_without_notification">Oproepen zonder melding</string>
     <string name="camera_permission_granted">Toegang tot camera verleend. Kies aub. uw camera opnieuw.</string>
+    <string name="cancel_login">Annuleer login</string>
     <string name="choose_avatar_from_cloud">Kies een avatar uit de cloud</string>
     <string name="clear_status_message">Statusbericht wissen</string>
     <string name="clear_status_message_after">Statusbericht wissen na</string>

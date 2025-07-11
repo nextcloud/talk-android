@@ -26,6 +26,7 @@
     <string name="call_running_since_one_hour">Hovor už trvá viac ako jednu hodinu.</string>
     <string name="call_without_notification">Volať bez upozornenia</string>
     <string name="camera_permission_granted">Povolenie fotoaparátu bolo udelené. Vyberte fotoaparát znova.</string>
+    <string name="cancel_login">Zrušiť prihlasovanie</string>
     <string name="choose_avatar_from_cloud">Vyberte si avatara z cloudu</string>
     <string name="clear_status_message">Vyčistiť správu o stave</string>
     <string name="clear_status_message_after">Vyčistiť správu o stave po</string>

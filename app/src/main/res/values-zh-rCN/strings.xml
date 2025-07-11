@@ -19,6 +19,7 @@
     <string name="call_running_since_one_hour">通话已持续一小时</string>
     <string name="call_without_notification">无通知呼叫</string>
     <string name="camera_permission_granted">摄像头访问已授权。请重新选择摄像头。</string>
+    <string name="cancel_login">取消登录</string>
     <string name="choose_avatar_from_cloud">从云端选择头像</string>
     <string name="clear_status_message">清除状态消息</string>
     <string name="clear_status_message_after">过多长时间清除状态消息</string>

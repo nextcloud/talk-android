@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">A hívás egy órája tart.</string>
     <string name="call_without_notification">Hívás értesítés nélkül</string>
     <string name="camera_permission_granted">Kamera engedély megadva. Válassza újra a kamerát.</string>
+    <string name="cancel_login">Bejelentkezés megszakítása</string>
     <string name="choose_avatar_from_cloud">Profilkép választása a felhőből</string>
     <string name="clear_status_message">Állapotüzenet törlése</string>
     <string name="clear_status_message_after">Állapotüzenet törlése ennyi idő után:</string>

@@ -22,6 +22,7 @@
     <string name="call_running_since_one_hour">Deia ordubetez egon da martxan.</string>
     <string name="call_without_notification">Deitu jakinarazpenik gabe</string>
     <string name="camera_permission_granted">Kameraren baimena eman da. Aukeratu kamera berriro.</string>
+    <string name="cancel_login">Utzi saioa hasiera</string>
     <string name="choose_avatar_from_cloud">Aukeratu avatarra cloudetik</string>
     <string name="clear_status_message">Garbitu egoera-mezua</string>
     <string name="clear_status_message_after">Garbitu egoera mezua ondoren</string>

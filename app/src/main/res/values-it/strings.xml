@@ -17,6 +17,7 @@
     <string name="call_more_actions_dialog_headline">Opzioni avanzate per le chiamate</string>
     <string name="call_without_notification">Chiama senza notifica</string>
     <string name="camera_permission_granted">Autorizzazione fotocamera concessa. Scegli di nuovo la fotocamera.</string>
+    <string name="cancel_login">Annulla l\'accesso</string>
     <string name="choose_avatar_from_cloud">Scegli avatar dalla rete</string>
     <string name="clear_status_message">Cancella il messaggio di stato</string>
     <string name="clear_status_message_after">Cancella il messaggio di stato dopo</string>

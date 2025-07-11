@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Der Anruf läuft seit einer Stunde.</string>
     <string name="call_without_notification">Anruf ohne Benachrichtigung</string>
     <string name="camera_permission_granted">Kameraerlaubnis erteilt. Bitte wählen Sie die Kamera erneut.</string>
+    <string name="cancel_login">Anmelden abbrechen</string>
     <string name="choose_avatar_from_cloud">Avatar aus der Cloud auswählen</string>
     <string name="clear_status_message">Statusmeldung löschen</string>
     <string name="clear_status_message_after">Statusmeldung löschen nach</string>

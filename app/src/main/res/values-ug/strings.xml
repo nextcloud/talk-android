@@ -24,6 +24,7 @@
     <string name="call_running_since_one_hour">تېلېفون بىر سائەت داۋاملاشتى.</string>
     <string name="call_without_notification">ئۇقتۇرۇش قىلماي تېلېفون قىلىڭ</string>
     <string name="camera_permission_granted">كامېرا ئىجازەتنامىسى بېرىلگەن. كامېرانى قايتا تاللاڭ.</string>
+    <string name="cancel_login">كىرىشنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="choose_avatar_from_cloud">بۇلۇتتىن باش سۈرىتىنى تاللاڭ</string>
     <string name="clear_status_message">ھالەت ئۇچۇرىنى تازىلاش</string>
     <string name="clear_status_message_after">كېيىنكى ھالەت ئۇچۇرىنى تازىلاڭ</string>

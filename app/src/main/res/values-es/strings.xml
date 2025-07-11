@@ -26,6 +26,7 @@
     <string name="call_running_since_one_hour">La llamada ha estado activa por una hora.</string>
     <string name="call_without_notification">Llamada sin notificación</string>
     <string name="camera_permission_granted">Los permisos para la cámara fueron otorgados. Por favor seleccione la cámara nuevamente.</string>
+    <string name="cancel_login">Cancelar inicio de sesión</string>
     <string name="choose_avatar_from_cloud">Elegir avatar desde la nube</string>
     <string name="clear_status_message">Borrar el mensaje de estado</string>
     <string name="clear_status_message_after">Borrar el mensaje de estado después de</string>

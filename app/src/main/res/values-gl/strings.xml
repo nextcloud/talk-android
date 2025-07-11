@@ -26,6 +26,7 @@
     <string name="call_running_since_one_hour">A chamada leva unha hora en curso.</string>
     <string name="call_without_notification">Chamar sen notificación</string>
     <string name="camera_permission_granted">Concedeuse o permiso para a cámara. Escolla a cámara de novo.</string>
+    <string name="cancel_login">Cancelar o acceso</string>
     <string name="choose_avatar_from_cloud">Escoller un avatar da nube</string>
     <string name="clear_status_message">Limpar a mensaxe de estado</string>
     <string name="clear_status_message_after">Limpar a mensaxe de estado após</string>

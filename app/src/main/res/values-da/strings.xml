@@ -26,6 +26,7 @@
     <string name="call_running_since_one_hour">Opkaldet har været igang i en time.</string>
     <string name="call_without_notification">Ring uden notifikation</string>
     <string name="camera_permission_granted">Kameratilladelse er givet. Vælg kamera igen.</string>
+    <string name="cancel_login">Annuller log på</string>
     <string name="choose_avatar_from_cloud">Vælg avatar fra skyen</string>
     <string name="clear_status_message">Ryd status notifikation</string>
     <string name="clear_status_message_after">Ryd status notifikationer efter</string>
