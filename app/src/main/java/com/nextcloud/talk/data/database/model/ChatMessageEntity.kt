@@ -41,7 +41,8 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "id") var id: Long = 0,
     // accountId@roomtoken
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
-
+    @ColumnInfo(name = "threadId") var threadId: Long? = null,
+    @ColumnInfo(name = "isThread") var isThread: Boolean = false,
     @ColumnInfo(name = "actorDisplayName") var actorDisplayName: String,
     @ColumnInfo(name = "message") var message: String,
 
@@ -49,6 +50,7 @@ data class ChatMessageEntity(
 
     @ColumnInfo(name = "actorId") var actorId: String,
     @ColumnInfo(name = "actorType") var actorType: String,
+    @ColumnInfo(name = "childrenCount") var childrenCount: Long? = 0,
     @ColumnInfo(name = "deleted") var deleted: Boolean = false,
     @ColumnInfo(name = "expirationTimestamp") var expirationTimestamp: Int = 0,
     @ColumnInfo(name = "isReplyable") var replyable: Boolean = false,

@@ -101,7 +101,10 @@ class ReactionsRepositoryImpl @Inject constructor(
             val internalConversationId = "$accountId@$roomToken"
             val emoji = model.emoji
 
-            val message = dao.getChatMessageForConversation(internalConversationId, id).first()
+            val message = dao.getChatMessageForConversation(
+                internalConversationId,
+                id
+            ).first()
 
             // 2. Check state of entity, create params as needed
             if (message.reactions == null) {

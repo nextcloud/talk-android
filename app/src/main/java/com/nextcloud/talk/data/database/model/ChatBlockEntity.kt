@@ -35,6 +35,7 @@ data class ChatBlockEntity(
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
     @ColumnInfo(name = "accountId") var accountId: Long? = null,
     @ColumnInfo(name = "token") var token: String?,
+    @ColumnInfo(name = "threadId") var threadId: Long? = null,
     @ColumnInfo(name = "oldestMessageId") var oldestMessageId: Long,
     @ColumnInfo(name = "newestMessageId") var newestMessageId: Long,
     @ColumnInfo(name = "hasHistory") var hasHistory: Boolean

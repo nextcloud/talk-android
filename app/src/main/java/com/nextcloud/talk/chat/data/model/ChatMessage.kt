@@ -45,6 +45,12 @@ data class ChatMessage(
 
     var token: String? = null,
 
+    var threadId: Long? = null,
+
+    var isThread: Boolean = false,
+
+    // var childrenCount: Long? = 0,
+
     // guests or users
     var actorType: String? = null,
 
@@ -423,7 +429,8 @@ data class ChatMessage(
         AVATAR_SET,
         AVATAR_REMOVED,
         FEDERATED_USER_ADDED,
-        FEDERATED_USER_REMOVED
+        FEDERATED_USER_REMOVED,
+        THREAD_CREATED
     }
 
     companion object {
