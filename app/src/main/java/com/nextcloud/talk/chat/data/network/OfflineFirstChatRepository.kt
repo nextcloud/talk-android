@@ -379,7 +379,7 @@ class OfflineFirstChatRepository @Inject constructor(
         }
 
         // remove all temp messages from UI
-        val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId, threadId)
+        val oldTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
             .map(ChatMessageEntity::asModel)
         oldTempMessages.forEach {
@@ -403,7 +403,7 @@ class OfflineFirstChatRepository @Inject constructor(
         )
 
         // add the remaining temp messages to UI again
-        val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId, threadId)
+        val remainingTempMessages = chatDao.getTempMessagesForConversation(internalConversationId)
             .first()
             .sortedBy { it.internalId }
             .map(ChatMessageEntity::asModel)

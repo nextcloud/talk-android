@@ -49,11 +49,10 @@ interface ChatMessagesDao {
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
         AND isTemporary = 1
-        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getTempMessagesForConversation(internalConversationId: String, threadId: Long?): Flow<List<ChatMessageEntity>>
+    fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
