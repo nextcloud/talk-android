@@ -430,8 +430,10 @@ class MessageActionsDialog(
     private fun initMenuOpenThread(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuOpenThread.setOnClickListener {
-                chatActivity.openThread(message.jsonMessageId.toLong())
-                dismiss()
+                message.threadId?.let {
+                    chatActivity.openThread(it)
+                    dismiss()
+                }
             }
         }
 

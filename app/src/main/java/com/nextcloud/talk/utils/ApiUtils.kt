@@ -529,7 +529,7 @@ object ApiUtils {
     fun getUrlForProfile(baseUrl: String, userId: String): String = "$baseUrl$OCS_API_VERSION/profile/$userId"
 
     fun getUrlForThreads(version: Int, baseUrl: String?, token: String): String =
-        getUrlForApi(version, baseUrl) + "/chat/" + token + "/threads"
+        getUrlForChat(version, baseUrl, token) + "/threads"
 
     fun getUrlForThread(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForThreads(version, baseUrl, token) + "/$threadId"
