@@ -191,6 +191,11 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 View.GONE
             }
 
+        binding.messageQuote.quotedChatMessageView.setOnLongClickListener { l: View? ->
+            commonMessageInterface.onOpenMessageActionsDialog(message)
+            true
+        }
+
         binding.checkMark.visibility = View.INVISIBLE
         binding.sendingProgress.visibility = View.GONE
 
