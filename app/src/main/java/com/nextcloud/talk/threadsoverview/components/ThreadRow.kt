@@ -22,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,7 +34,9 @@ import com.nextcloud.talk.R
 fun ThreadRow(
     roomToken: String,
     threadId: Int,
+    firstLineTitle: String,
     firstLine: String,
+    secondLineTitle: String,
     secondLine: String,
     date: String,
     imageRequest: ImageRequest?,
@@ -57,20 +60,45 @@ fun ThreadRow(
         Spacer(modifier = Modifier.Companion.width(12.dp))
 
         Column {
-            Text(
-                text = firstLine,
-                style = MaterialTheme.typography.titleMedium,
-                maxLines = 1,
-                overflow = TextOverflow.Companion.Ellipsis
-            )
+            Row {
+                Text(
+                    text = firstLineTitle,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Companion.Ellipsis
+                )
+                Spacer(modifier = Modifier.Companion.width(4.dp))
+                Text(
+                    text = firstLine,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    fontWeight = FontWeight.Thin,
+                    maxLines = 1,
+                    overflow = TextOverflow.Companion.Ellipsis
+                )
+            }
+
             Spacer(modifier = Modifier.Companion.height(2.dp))
 
-            Row {
+            Row (
+                verticalAlignment = Alignment.Companion.CenterVertically
+            ){
+                Text(
+                    text = secondLineTitle,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Companion.Ellipsis
+                )
+                Spacer(modifier = Modifier.Companion.width(4.dp))
                 Text(
                     modifier = Modifier.Companion.weight(1f),
                     text = secondLine,
-                    style = MaterialTheme.typography.bodyMedium,
-                    maxLines = 2,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Thin,
+                    maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
                 Text(
@@ -95,6 +123,8 @@ fun ThreadRowPreview() {
         threadId = 123,
         firstLine = "first message",
         secondLine = "last message",
+        firstLineTitle = "Marsellus",
+        secondLineTitle = "Mia:",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -109,6 +139,8 @@ fun ThreadRowUnreadMessagePreview() {
         threadId = 123,
         firstLine = "first message",
         secondLine = "last message",
+        firstLineTitle = "Marsellus",
+        secondLineTitle = "Mia:",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -123,6 +155,8 @@ fun ThreadRowMentionPreview() {
         threadId = 123,
         firstLine = "first message",
         secondLine = "last message",
+        firstLineTitle = "Marsellus",
+        secondLineTitle = "Mia:",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -137,6 +171,8 @@ fun ThreadRowDirectMentionPreview() {
         threadId = 123,
         firstLine = "first message",
         secondLine = "last message",
+        firstLineTitle = "Marsellus",
+        secondLineTitle = "Mia:",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null

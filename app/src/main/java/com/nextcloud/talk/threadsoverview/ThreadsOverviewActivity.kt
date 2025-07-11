@@ -157,6 +157,7 @@ fun ThreadsOverviewScreen(
         is ThreadsOverviewViewModel.ThreadsListUiState.None -> {
             LoadingIndicator()
         }
+
         is ThreadsOverviewViewModel.ThreadsListUiState.Success -> {
             ThreadsList(
                 threads = state.threadsList!!,
@@ -165,6 +166,7 @@ fun ThreadsOverviewScreen(
                 threadsOverviewViewModel
             )
         }
+
         is ThreadsOverviewViewModel.ThreadsListUiState.Error -> {
             Log.e(TAG, "Error when retrieving threads", uiState.exception)
             ErrorView(message = stringResource(R.string.nc_common_error_sorry))
@@ -209,11 +211,16 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
+            val secondLineText =
+                threadInfo.last?.message ?: (String.format(stringResource(R.string.thread_replies_amount, 0)))
+
             ThreadRow(
                 roomToken = roomToken,
                 threadId = threadInfo.thread!!.id,
+                firstLineTitle = threadInfo.first?.actorDisplayName.orEmpty(),
                 firstLine = threadInfo.first?.message.orEmpty(),
-                secondLine = threadInfo.last?.message.orEmpty(),
+                secondLineTitle = threadInfo.last?.actorDisplayName?.let { "$it:" }.orEmpty(),
+                secondLine = secondLineText,
                 date = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick
