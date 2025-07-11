@@ -25,13 +25,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -211,16 +208,14 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
-            val secondLineText =
-                threadInfo.last?.message ?: (String.format(stringResource(R.string.thread_replies_amount, 0)))
-
             ThreadRow(
                 roomToken = roomToken,
                 threadId = threadInfo.thread!!.id,
                 firstLineTitle = threadInfo.first?.actorDisplayName.orEmpty(),
                 firstLine = threadInfo.first?.message.orEmpty(),
+                numReplies = String.format(stringResource(R.string.thread_replies_amount, threadInfo.thread?.numReplies ?: 0)),
                 secondLineTitle = threadInfo.last?.actorDisplayName?.let { "$it:" }.orEmpty(),
-                secondLine = secondLineText,
+                secondLine = threadInfo.last?.message.orEmpty(),
                 date = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick

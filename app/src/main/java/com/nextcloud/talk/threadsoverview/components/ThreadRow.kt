@@ -38,6 +38,7 @@ fun ThreadRow(
     firstLine: String,
     secondLineTitle: String,
     secondLine: String,
+    numReplies: String,
     date: String,
     imageRequest: ImageRequest?,
     onClick: ((String, Int) -> Unit?)?
@@ -71,12 +72,18 @@ fun ThreadRow(
                 )
                 Spacer(modifier = Modifier.Companion.width(4.dp))
                 Text(
+                    modifier = Modifier.Companion.weight(1f),
                     text = firstLine,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Thin,
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
+                )
+                Text(
+                    text = numReplies,
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
@@ -125,6 +132,7 @@ fun ThreadRowPreview() {
         secondLine = "last message",
         firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
+        numReplies = "12 replies",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -141,6 +149,7 @@ fun ThreadRowUnreadMessagePreview() {
         secondLine = "last message",
         firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
+        numReplies = "12 replies",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -157,6 +166,7 @@ fun ThreadRowMentionPreview() {
         secondLine = "last message",
         firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
+        numReplies = "12 replies",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
@@ -173,6 +183,7 @@ fun ThreadRowDirectMentionPreview() {
         secondLine = "last message",
         firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
+        numReplies = "12 replies",
         date = "14 sec ago",
         onClick = null,
         imageRequest = null
