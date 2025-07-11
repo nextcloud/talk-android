@@ -1063,6 +1063,7 @@ class OfflineFirstChatRepository @Inject constructor(
             internalId = "$internalConversationId@_temp_$currentTimeMillies",
             internalConversationId = internalConversationId,
             id = currentTimeWithoutYear.toLong(),
+            threadId = threadId,
             message = message,
             deleted = false,
             token = conversationModel.token,
