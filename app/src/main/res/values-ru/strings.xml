@@ -19,6 +19,7 @@
     <string name="call_running_since_one_hour">Звонок длится уже час</string>
     <string name="call_without_notification">Звонок без уведомления</string>
     <string name="camera_permission_granted">Разрешение на камеру получено. Пожалуйста, выберите камеру снова.</string>
+    <string name="cancel_login">Отменить вход</string>
     <string name="choose_avatar_from_cloud">Выберите аватар из облака</string>
     <string name="clear_status_message">Очистить сообщение о статусе</string>
     <string name="clear_status_message_after">Очищать статус после</string>

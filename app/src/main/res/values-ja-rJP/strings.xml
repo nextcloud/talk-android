@@ -20,6 +20,7 @@
     <string name="call_running_since_one_hour">通話が1 時間経過</string>
     <string name="call_without_notification">通知なしで通話</string>
     <string name="camera_permission_granted">カメラの権限が与えられました。もう一度カメラを選択してください。</string>
+    <string name="cancel_login">ログインをキャンセル</string>
     <string name="choose_avatar_from_cloud">クラウドからアバターを選択</string>
     <string name="clear_status_message">ステータスメッセージを消去</string>
     <string name="clear_status_message_after">ステータスメッセージの有効期限</string>

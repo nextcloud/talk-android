@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Позив траје један сат.</string>
     <string name="call_without_notification">Позив без обавештења</string>
     <string name="camera_permission_granted">Дозвољен је приступ камери. Молимо вас да поново изаберете камеру</string>
+    <string name="cancel_login">Откажи пријављивање</string>
     <string name="choose_avatar_from_cloud">Изаберите аватар из облака</string>
     <string name="clear_status_message">Обриши статусну поруку</string>
     <string name="clear_status_message_after">Обриши статусну поруку након</string>

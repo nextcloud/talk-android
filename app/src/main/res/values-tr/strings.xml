@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Çağrı bir saattir sürüyor.</string>
     <string name="call_without_notification">Bildirim olmadan çağrı</string>
     <string name="camera_permission_granted">Kamera izinleri verildi. Lütfen kamerayı yeniden seçin.</string>
+    <string name="cancel_login">Oturum açmaktan vazgeç</string>
     <string name="choose_avatar_from_cloud">Buluttan avatar seç</string>
     <string name="clear_status_message">Durum iletisini kaldır</string>
     <string name="clear_status_message_after">Durum iletisinin kaldırılma süresi</string>

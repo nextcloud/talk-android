@@ -16,6 +16,7 @@
     <string name="call_more_actions_dialog_headline">Розширені опції дзвінка</string>
     <string name="call_without_notification">Дзвінок без сповіщення</string>
     <string name="camera_permission_granted">Дозвіл на використання камери надано. Будь ласка, виберіть камеру ще раз.</string>
+    <string name="cancel_login">Скасувати авторизацію</string>
     <string name="choose_avatar_from_cloud">Обрати світлину в хмарі</string>
     <string name="clear_status_message">Очистити повідомлення про стан</string>
     <string name="clear_status_message_after">Очистити повідомлення про стан після</string>

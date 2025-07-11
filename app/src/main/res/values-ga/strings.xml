@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Tá an glao ar siúl ar feadh uair an chloig.</string>
     <string name="call_without_notification">Glaoigh gan fógra</string>
     <string name="camera_permission_granted">Cead ceamara tugtha. Roghnaigh ceamara arís le do thoil.</string>
+    <string name="cancel_login">Cealaigh Logáil Isteach</string>
     <string name="choose_avatar_from_cloud">Roghnaigh avatar ó scamall</string>
     <string name="clear_status_message">Glan teachtaireacht stádais</string>
     <string name="clear_status_message_after">Glan an teachtaireacht stádais ina dhiaidh</string>

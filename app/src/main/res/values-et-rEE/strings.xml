@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Kõne on kestnud üle tunni.</string>
     <string name="call_without_notification">Kõne ilma teavituseta</string>
     <string name="camera_permission_granted">Õigused kaamera kasutamiseks on nüüd olemas. Palun vali kaamera uuesti.</string>
+    <string name="cancel_login">Katkesta sisselogimine</string>
     <string name="choose_avatar_from_cloud">Vali tunnuspilt pilvest</string>
     <string name="clear_status_message">Eemalda olekuteade</string>
     <string name="clear_status_message_after">Eemalda olekuteade pärast</string>
