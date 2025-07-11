@@ -32,7 +32,7 @@ class ThreadsOverviewViewModel @Inject constructor(
     val threadsListState: StateFlow<ThreadsListUiState> = _threadsListState
 
     fun init(roomToken: String) {
-        val url = ApiUtils.getUrlForThreads(
+        val url = ApiUtils.getUrlForRecentThreads(
             version = 1,
             baseUrl = _currentUser.baseUrl,
             token = roomToken
