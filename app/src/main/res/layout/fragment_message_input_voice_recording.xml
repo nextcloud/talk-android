@@ -80,7 +80,7 @@
             android:layout_marginVertical="@dimen/standard_margin"
             android:scaleType="centerInside"
             android:src="@drawable/ic_delete"
-            android:contentDescription="@null"
+            android:contentDescription="@string/delete_voice_recording"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="1"
             />
@@ -103,7 +103,7 @@
             android:layout_marginVertical="@dimen/standard_margin"
             android:scaleType="centerInside"
             android:src="@drawable/ic_send"
-            android:contentDescription="@null"
+            android:contentDescription="@string/nc_send_voice_recording"
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:layout_weight="1"
             />
