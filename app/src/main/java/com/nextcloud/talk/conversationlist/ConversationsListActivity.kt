@@ -426,6 +426,9 @@ class ConversationsListActivity :
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
+
+                    val pair = appPreferences.conversationListPositionAndOffset
+                    layoutManager?.scrollToPositionWithOffset(pair.first, pair.second)
                 }.collect()
         }
 
@@ -1873,12 +1876,17 @@ class ConversationsListActivity :
 
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
-        // bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (selectedMessageId != null) {
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
         }
+        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val firstItem = adapter?.getItem(firstVisible)
+        val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
+        val firstOffset = firstTop?.minus(44) ?: 0
+
+        appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
 
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtras(bundle)

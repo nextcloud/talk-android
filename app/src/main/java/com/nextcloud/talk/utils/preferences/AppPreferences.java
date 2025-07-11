@@ -13,6 +13,8 @@ import android.annotation.SuppressLint;
 
 import com.nextcloud.talk.ui.PlaybackSpeed;
 
+import kotlin.Pair;
+
 @SuppressLint("NonConstantResourceId")
 public interface AppPreferences {
 
@@ -184,6 +186,10 @@ public interface AppPreferences {
     Boolean getShowRegularNotificationWarning();
 
     void setShowRegularNotificationWarning(boolean value);
+
+    void setConversationListPositionAndOffset(int position, int offset);
+
+    Pair<Integer, Integer> getConversationListPositionAndOffset();
 
     void clear();
 }
