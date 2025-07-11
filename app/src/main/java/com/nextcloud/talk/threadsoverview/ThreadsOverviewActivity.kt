@@ -212,8 +212,8 @@ fun ThreadsList(
             ThreadRow(
                 roomToken = roomToken,
                 threadId = threadInfo.thread!!.id,
-                firstLine = threadInfo.first?.message.toString(),
-                secondLine = threadInfo.last?.message.toString(),
+                firstLine = threadInfo.first?.message.orEmpty(),
+                secondLine = threadInfo.last?.message.orEmpty(),
                 date = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick
