@@ -176,6 +176,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 View.GONE
             }
 
+        binding.messageQuote.quotedChatMessageView.setOnLongClickListener { l: View? ->
+            commonMessageInterface.onOpenMessageActionsDialog(message)
+            true
+        }
+
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
         Reaction().showReactions(
