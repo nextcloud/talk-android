@@ -71,6 +71,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDIN
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STOPPED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REMOVED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PHONE_ADDED
 
 /*
 * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
@@ -141,6 +142,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "avatar_removed" -> AVATAR_REMOVED
             "federated_user_added" -> FEDERATED_USER_ADDED
             "federated_user_removed" -> FEDERATED_USER_REMOVED
+            "phone_added" -> PHONE_ADDED
             else -> DUMMY
         }
 
@@ -209,6 +211,7 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             AVATAR_REMOVED -> "avatar_removed"
             FEDERATED_USER_ADDED -> "federated_user_added"
             FEDERATED_USER_REMOVED -> "federated_user_removed"
+            PHONE_ADDED -> "phone_added"
             else -> ""
         }
 }
