@@ -435,15 +435,23 @@ class ChatViewModel @Inject constructor(
 
     fun createThread(credentials: String, url: String) {
         viewModelScope.launch {
-            val thread = chatNetworkDataSource.createThread(credentials, url)
-            _threadCreationState.value = ThreadCreationUiState.Success(thread.ocs?.data)
+            try {
+                val thread = chatNetworkDataSource.createThread(credentials, url)
+                _threadCreationState.value = ThreadCreationUiState.Success(thread.ocs?.data)
+            } catch (exception: Exception) {
+                _threadCreationState.value = ThreadCreationUiState.Error(exception)
+            }
         }
     }
 
     fun getThread(credentials: String, url: String) {
         viewModelScope.launch {
-            val thread = threadsRepository.getThread(credentials, url)
-            _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
+            try {
+                val thread = threadsRepository.getThread(credentials, url)
+                _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
+            } catch (exception: Exception) {
+                _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
+            }
         }
     }
 
@@ -900,12 +908,12 @@ class ChatViewModel @Inject constructor(
     sealed class ThreadCreationUiState {
         data object None : ThreadCreationUiState()
         data class Success(val thread: ThreadInfo?) : ThreadCreationUiState()
-        data class Error(val message: String) : ThreadCreationUiState()
+        data class Error(val exception: Exception) : ThreadCreationUiState()
     }
 
     sealed class ThreadRetrieveUiState {
         data object None : ThreadRetrieveUiState()
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
-        data class Error(val message: String) : ThreadRetrieveUiState()
+        data class Error(val exception: Exception) : ThreadRetrieveUiState()
     }
 }

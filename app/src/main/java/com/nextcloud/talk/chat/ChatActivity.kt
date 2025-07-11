@@ -1270,7 +1270,7 @@ class ChatActivity :
                     }
 
                     is ChatViewModel.ThreadCreationUiState.Error -> {
-                        Log.e(TAG, "Error when creating thread")
+                        Log.e(TAG, "Error when creating thread", uiState.exception)
                         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
 
@@ -1290,7 +1290,7 @@ class ChatActivity :
                     }
 
                     is ChatViewModel.ThreadRetrieveUiState.Error -> {
-                        Log.e(TAG, "Error when retrieving thread")
+                        Log.e(TAG, "Error when retrieving thread", uiState.exception)
                         Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                     }
 

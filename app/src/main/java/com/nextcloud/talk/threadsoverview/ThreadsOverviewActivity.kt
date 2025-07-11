@@ -10,6 +10,7 @@ package com.nextcloud.talk.threadsoverview
 import android.content.Intent
 import android.os.Bundle
 import android.text.format.DateUtils
+import android.util.Log
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -24,10 +25,13 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -41,6 +45,7 @@ import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
+import com.nextcloud.talk.chat.ChatActivity.Companion.TAG
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.contacts.loadImage
@@ -52,7 +57,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
-import kotlin.toString
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ThreadsOverviewActivity : BaseActivity() {
@@ -162,7 +166,8 @@ fun ThreadsOverviewScreen(
             )
         }
         is ThreadsOverviewViewModel.ThreadsListUiState.Error -> {
-            ErrorView(message = state.message)
+            Log.e(TAG, "Error when retrieving threads", uiState.exception)
+            ErrorView(message = stringResource(R.string.nc_common_error_sorry))
         }
     }
 }
