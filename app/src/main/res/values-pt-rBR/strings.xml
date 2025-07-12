@@ -27,7 +27,7 @@
     <string name="call_running_since_one_hour">A chamada está em andamento há uma hora.</string>
     <string name="call_without_notification">Chamada sem notificação</string>
     <string name="camera_permission_granted">Permissão da câmera concedida. Por favor, escolha a câmera novamente.</string>
-    <string name="cancel_login">Cancelar login</string>
+    <string name="cancel_login">Cancelar Login</string>
     <string name="choose_avatar_from_cloud">Escolher o avatar da nuvem</string>
     <string name="clear_status_message">Limpar mensagem de status</string>
     <string name="clear_status_message_after">Limpar mensagem de status após</string>
@@ -552,6 +552,7 @@
     <string name="open_notes">Abrir Notas</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
+    <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o processo de login no navegador</string>
     <string name="polls_add_option">Adicionar opção</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Encerrar enquete</string>

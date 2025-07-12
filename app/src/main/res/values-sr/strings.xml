@@ -552,6 +552,7 @@
     <string name="open_notes">Отвори Белешке</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
     <string name="playback_speed_control">Контрола брзине репродукције</string>
+    <string name="please_continue_the_login_process_in_the_browser">Молимо вас да процес пријаве наставите у интернет прегледачу</string>
     <string name="polls_add_option">Додај ставку</string>
     <string name="polls_edit_vote">Уреди гласање</string>
     <string name="polls_end_poll">Заврши гласање</string>
