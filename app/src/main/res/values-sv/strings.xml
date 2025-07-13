@@ -46,6 +46,7 @@
     <string name="danger_zone">Riskzon</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Ta bort avatar</string>
+    <string name="delete_voice_recording">Ta bort röstinspelning</string>
     <string name="deleted_conversation">Raderade konversationen %1$s</string>
     <string name="dnd">Stör ej</string>
     <string name="dontClear">Rensa inte</string>
@@ -323,6 +324,7 @@
     <string name="nc_message_read">Meddelande läst</string>
     <string name="nc_message_sending">Skickar</string>
     <string name="nc_message_sent">Meddelande skickat</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofonen är aktiverad och ljud spelas in</string>
     <string name="nc_microphone_permission_hint">För att aktivera röstkommunikation ange \"Mikrofon\"-tillstånd.</string>
     <string name="nc_missed_call">Du missade ett samtal från %s</string>
     <string name="nc_moderator">Moderator</string>
@@ -408,6 +410,7 @@
     <string name="nc_search_clear">Rensa sökning</string>
     <string name="nc_select_an_account">Välj ett konto</string>
     <string name="nc_send_edit_message">Uppdatera meddelande</string>
+    <string name="nc_send_voice_recording">Skicka röstinspelning</string>
     <string name="nc_sensitive_conversation">Känslig konversation</string>
     <string name="nc_sensitive_conversation_hint">Förhandsvisning av meddelanden kommer att inaktiveras i konversationslistan och i aviseringar</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s skickade en GIF.</string>
@@ -548,6 +551,7 @@
     <string name="open_notes">Öppna anteckningar</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
+    <string name="please_continue_the_login_process_in_the_browser">Fortsätt inloggningen i webbläsaren</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_edit_vote">Redigera röst</string>
     <string name="polls_end_poll">Avsluta omröstning</string>
