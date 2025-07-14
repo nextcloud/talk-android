@@ -80,6 +80,7 @@ fun ThreadRow(
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
+                Spacer(modifier = Modifier.Companion.width(4.dp))
                 Text(
                     text = numReplies,
                     style = MaterialTheme.typography.titleSmall,
@@ -108,14 +109,13 @@ fun ThreadRow(
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
+                Spacer(modifier = Modifier.Companion.width(4.dp))
                 Text(
                     text = date,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
-
-
         }
 
         Spacer(modifier = Modifier.Companion.width(16.dp))
@@ -179,8 +179,8 @@ fun ThreadRowDirectMentionPreview() {
     ThreadRow(
         roomToken = "1234",
         threadId = 123,
-        firstLine = "first message",
-        secondLine = "last message",
+        firstLine = "first message with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
+        secondLine = "last message with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
         firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
         numReplies = "12 replies",
