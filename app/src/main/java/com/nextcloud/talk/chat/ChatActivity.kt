@@ -354,7 +354,7 @@ class ChatActivity :
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
     var threadId: Long? = null
-    var thread: ThreadInfo? = null
+    var threadInfo: ThreadInfo? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -1296,7 +1296,7 @@ class ChatActivity :
                     }
 
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
-                        thread = uiState.thread
+                        threadInfo = uiState.thread
                     }
                 }
             }
@@ -2668,7 +2668,7 @@ class ChatActivity :
 
         title.text =
             if (isChatThread()) {
-                thread?.first?.message
+                threadInfo?.first?.message
             } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
@@ -2683,7 +2683,7 @@ class ChatActivity :
         if (isChatThread()) {
             val repliesAmountTitle = String.format(
                 resources.getString(R.string.thread_replies_amount),
-                thread?.thread?.numReplies
+                threadInfo?.thread?.numReplies
             )
             statusMessageViewContents(repliesAmountTitle)
         } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {

@@ -862,7 +862,7 @@ class MessageInputFragment : Fragment() {
                 .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
 
             if (replyMessageId == 0) {
-                replyMessageId = chatActivity.thread?.last?.id?.toInt() ?: 0
+                replyMessageId = chatActivity.threadInfo?.thread?.id ?: 0
             }
 
             sendMessage(

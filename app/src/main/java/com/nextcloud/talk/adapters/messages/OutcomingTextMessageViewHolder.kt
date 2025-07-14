@@ -182,9 +182,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         // parent message handling
         val chatActivity = commonMessageInterface as ChatActivity
         binding.messageQuote.quotedChatMessageView.visibility =
-            if (chatActivity.threadId == message.threadId) {
-                View.GONE
-            } else if (!message.isDeleted && message.parentMessageId != null) {
+            if (!message.isDeleted &&
+                message.parentMessageId != null &&
+                message.parentMessageId != chatActivity.threadId
+            ) {
                 processParentMessage(message)
                 View.VISIBLE
             } else {
