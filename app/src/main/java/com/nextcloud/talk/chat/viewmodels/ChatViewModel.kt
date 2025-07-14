@@ -113,7 +113,7 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
 
-        runBlocking {
+        runBlocking(Dispatchers.IO) {
             val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
             model?.let {
                 it.messageDraft = messageDraft
@@ -903,7 +903,9 @@ class ChatViewModel @Inject constructor(
 
     suspend fun updateMessageDraft() {
         val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
-        messageDraft = model?.messageDraft!!
+        model?.messageDraft?.let {
+            messageDraft = it
+        }
     }
 
     companion object {
