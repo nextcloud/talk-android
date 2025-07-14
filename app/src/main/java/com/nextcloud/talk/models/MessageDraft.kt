@@ -38,20 +38,18 @@ data class MessageDraft(
 class MessageDraftConverter {
 
     @TypeConverter
-    fun fromMessageDraftToString(messageDraft: MessageDraft?): String {
-        return if (messageDraft == null) {
+    fun fromMessageDraftToString(messageDraft: MessageDraft?): String =
+        if (messageDraft == null) {
             ""
         } else {
             LoganSquare.serialize(messageDraft)
         }
-    }
 
     @TypeConverter
-    fun fromStringToMessageDraft(value: String): MessageDraft? {
-        return if (value.isBlank()) {
+    fun fromStringToMessageDraft(value: String): MessageDraft? =
+        if (value.isBlank()) {
             null
         } else {
-            return LoganSquare.parse(value, MessageDraft::class.java)
+            LoganSquare.parse(value, MessageDraft::class.java)
         }
-    }
 }
