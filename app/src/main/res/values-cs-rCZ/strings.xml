@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">Hovor trvá už hodinu.</string>
     <string name="call_without_notification">Zavolat bez upozornění</string>
     <string name="camera_permission_granted">Oprávnění pro přístup ke kameře uděleno. Prosím vyberte kameru znovu.</string>
+    <string name="cancel_login">Zrušit přihlášení</string>
     <string name="choose_avatar_from_cloud">Vybrat profilový obrázek z cloudu</string>
     <string name="clear_status_message">Vyčistit stavovou zprávu</string>
     <string name="clear_status_message_after">Vyčistit stavovou zprávu po uplynutí</string>
@@ -551,6 +552,7 @@
     <string name="open_notes">Otevřít poznámky</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
+    <string name="please_continue_the_login_process_in_the_browser">Pokračujte v procesu přihlášení ve webovém prohlížeči</string>
     <string name="polls_add_option">Přidat volbu</string>
     <string name="polls_edit_vote">Upravit hlas</string>
     <string name="polls_end_poll">Ukončit anketu</string>
