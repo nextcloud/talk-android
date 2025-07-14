@@ -194,13 +194,11 @@ class DummyConversationDaoImpl : ConversationsDao {
 
     override fun upsertConversations(conversationEntities: List<ConversationEntity>) { /* */ }
 
-    override suspend fun insertOrUpdate(item: ConversationEntity) {
-        /**/
-    }
-
     override fun deleteConversations(conversationIds: List<String>) { /* */ }
 
     override fun updateConversation(conversationEntity: ConversationEntity) { /* */ }
+
+    override fun insertConversation(conversation: ConversationEntity) { /* */ }
 
     override fun clearAllConversationsForUser(accountId: Long) { /* */ }
 }

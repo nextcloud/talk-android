@@ -29,9 +29,6 @@ interface ConversationsDao {
     @Upsert()
     fun upsertConversations(conversationEntities: List<ConversationEntity>)
 
-    @Insert(onConflict = REPLACE)
-    suspend fun insertOrUpdate(item: ConversationEntity)
-
     @Transaction
     suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
         serverItems.forEach { serverItem ->
@@ -39,10 +36,9 @@ interface ConversationsDao {
             if (existingItem != null) {
                 val mergedItem = serverItem
                 mergedItem.messageDraft = existingItem.messageDraft
-                insertOrUpdate(mergedItem)
+                updateConversation(mergedItem)
             } else {
-                // Insert new item directly (local-only fields will be default)
-                insertOrUpdate(serverItem)
+                insertConversation(serverItem)
             }
         }
     }
@@ -60,6 +56,9 @@ interface ConversationsDao {
 
     @Update(onConflict = REPLACE)
     fun updateConversation(conversationEntity: ConversationEntity)
+
+    @Insert(onConflict = REPLACE)
+    fun insertConversation(conversation: ConversationEntity)
 
     @Query(
         """
