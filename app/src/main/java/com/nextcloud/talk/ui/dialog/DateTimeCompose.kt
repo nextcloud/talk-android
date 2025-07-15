@@ -189,21 +189,21 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(INT_18)
             .withMinute(0)
             .withSecond(0)
-        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(PATTERN))
+        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(TIME_PATTERN))
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(PATTERN))
+        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(PATTERN))
+        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
@@ -211,7 +211,7 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(PATTERN))
+        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
 
         if (currTime < laterToday) {
             TimeOption(
@@ -370,7 +370,9 @@ class DateTimeCompose(val bundle: Bundle) {
     }
 
     companion object {
-        private const val PATTERN = "dd MMM, HH:mm a"
+        private const val PATTERN = "dd MMM, HH:mm"
+        private const val TIME_PATTERN = "HH:mm"
+        private const val DAY_TIME_PATTERN = "EEE, HH:mm"
         private const val HALF_WEIGHT = 0.5f
         private const val INT_8 = 8
         private const val INT_16 = 16
