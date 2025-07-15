@@ -425,7 +425,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             async { readString(CONVERSATION_LIST_POSITION_OFFSET).first() }
         }.getCompleted()
 
-        if (pairString.isEmpty()) return Pair(0,0)
+        if (pairString.isEmpty()) return Pair(0, 0)
 
         val pairArr = pairString.split(',')
         val position = pairArr[0].toInt()

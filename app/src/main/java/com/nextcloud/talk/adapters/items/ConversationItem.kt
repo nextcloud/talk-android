@@ -61,7 +61,6 @@ class ConversationItem(
     private val chatMessage = model.lastMessage?.asModel()
     var mHolder: ConversationItemViewHolder? = null
 
-
     constructor(
         conversation: ConversationModel,
         user: User,

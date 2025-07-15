@@ -1884,7 +1884,7 @@ class ConversationsListActivity :
         val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val firstItem = adapter?.getItem(firstVisible)
         val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
-        val firstOffset = firstTop?.minus(44) ?: 0
+        val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
 
         appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
 
@@ -2229,5 +2229,6 @@ class ConversationsListActivity :
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         const val LONG_1000: Long = 1000
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
+        private const val CONVERSATION_ITEM_HEIGHT = 44
     }
 }
