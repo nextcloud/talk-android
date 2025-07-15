@@ -152,15 +152,15 @@
                     tools:text="@string/nc_server_unsupported" />
             </LinearLayout>
 
-            <com.google.android.material.button.MaterialButton
+            <ImageButton
                 android:id="@+id/scan_Qr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:iconTint="@color/white"
-                android:textColor="@color/white"
-                android:theme="@style/Widget.Material3.Button.TextButton.Icon"
-                app:icon="@drawable/outline_qr_code_24"
-                android:text="@string/scan_qr_code"/>
+                android:layout_width="@dimen/avatar_size"
+                android:layout_height="@dimen/avatar_size"
+                android:scaleType="fitXY"
+                android:background="@color/transparent"
+                android:contentDescription="@string/scan_qr_code"
+                android:src="@drawable/outline_qr_code_24"
+                app:tint="@color/white" />
 
             <TextView
                 android:id="@+id/import_or_choose_provider_text"
