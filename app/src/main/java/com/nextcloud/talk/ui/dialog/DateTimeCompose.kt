@@ -114,7 +114,7 @@ class DateTimeCompose(val bundle: Bundle) {
             ) {
                 Surface(
                     shape = RoundedCornerShape(INT_8.dp),
-                    modifier = Modifier.fillMaxWidth().animateContentSize()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
                         modifier = Modifier
