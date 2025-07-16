@@ -345,6 +345,16 @@ class ConversationsListActivity :
         showSearchOrToolbar()
     }
 
+    override fun onPause() {
+        super.onPause()
+        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val firstItem = adapter?.getItem(firstVisible)
+        val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
+        val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
+
+        appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
+    }
+
     // if edge to edge is used, add an empty item at the bottom of the list
     @Suppress("MagicNumber")
     private fun addEmptyItemForEdgeToEdgeIfNecessary() {
@@ -426,6 +436,9 @@ class ConversationsListActivity :
                         .firstOrNull { ConversationUtils.isNoteToSelfConversation(it) }
                     val isNoteToSelfAvailable = noteToSelf != null
                     handleNoteToSelfShortcut(isNoteToSelfAvailable, noteToSelf?.token ?: "")
+
+                    val pair = appPreferences.conversationListPositionAndOffset
+                    layoutManager?.scrollToPositionWithOffset(pair.first, pair.second)
                 }.collect()
         }
 
@@ -1873,7 +1886,6 @@ class ConversationsListActivity :
 
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, selectedConversation!!.token)
-        // bundle.putString(KEY_ROOM_ID, selectedConversation!!.roomId)
         bundle.putString(KEY_SHARED_TEXT, textToPaste)
         if (selectedMessageId != null) {
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
@@ -2221,5 +2233,6 @@ class ConversationsListActivity :
         private const val SIXTEEN_HOURS_IN_SECONDS: Long = 57600
         const val LONG_1000: Long = 1000
         private const val NOTE_TO_SELF_SHORTCUT_ID = "NOTE_TO_SELF_SHORTCUT_ID"
+        private const val CONVERSATION_ITEM_HEIGHT = 44
     }
 }

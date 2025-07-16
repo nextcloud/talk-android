@@ -400,6 +400,28 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun setConversationListPositionAndOffset(position: Int, offset: Int) {
+        runBlocking<Unit> {
+            async {
+                writeString(CONVERSATION_LIST_POSITION_OFFSET, "$position,$offset")
+            }
+        }
+    }
+
+    override fun getConversationListPositionAndOffset(): Pair<Int, Int> {
+        val pairString = runBlocking {
+            async { readString(CONVERSATION_LIST_POSITION_OFFSET).first() }
+        }.getCompleted()
+
+        if (pairString.isEmpty()) return Pair(0, 0)
+
+        val pairArr = pairString.split(',')
+        val position = pairArr[0].toInt()
+        val offset = pairArr[1].toInt()
+
+        return Pair(position, offset)
+    }
+
     override fun setPhoneBookIntegrationLastRun(currentTimeMillis: Long) =
         runBlocking<Unit> {
             async {
@@ -614,6 +636,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val VOICE_MESSAGE_PLAYBACK_SPEEDS = "voice_message_playback_speeds"
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
+        const val CONVERSATION_LIST_POSITION_OFFSET = "CONVERSATION_LIST_POSITION_OFFSET"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()
