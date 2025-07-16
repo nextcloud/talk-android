@@ -8,6 +8,7 @@
  */
 package com.nextcloud.talk.account
 
+import android.Manifest
 import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -21,8 +22,13 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.core.os.bundleOf
 import autodagger.AutoInjector
+import com.blikoon.qrcodescanner.QrCodeActivity
+import com.github.dhaval2404.imagepicker.util.PermissionUtil
+import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -119,6 +125,8 @@ class ServerSelectionActivity : BaseActivity() {
             false
         }
         binding.certTextView.setOnClickListener { onCertClick() }
+
+        binding.scanQr.setOnClickListener { onScan() }
 
         if (ApplicationWideMessageHolder.getInstance().messageType != null) {
             if (ApplicationWideMessageHolder.getInstance().messageType
@@ -390,6 +398,52 @@ class ServerSelectionActivity : BaseActivity() {
         }
     }
 
+    private val requestCameraPermissionLauncher =
+        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+            if (isGranted) {
+                // Permission was granted
+                startQRScanner()
+            }
+        }
+
+    fun onScan() {
+        if (PermissionUtil.isPermissionGranted(this, Manifest.permission.CAMERA)) {
+            startQRScanner()
+        } else {
+            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    private fun startQRScanner() {
+        val intent = Intent(this, QrCodeActivity::class.java)
+        qrScanResultLauncher.launch(intent)
+    }
+
+    private val qrScanResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+
+                if (data == null) {
+                    return@registerForActivityResult
+                }
+
+                val resultData = data.getStringExtra(QR_URI)
+
+                if (resultData == null || !resultData.startsWith("nc")) {
+                    Snackbar.make(binding.root, getString(R.string.qr_code_error), Snackbar.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+
+                val intent = Intent(this, BrowserLoginActivity::class.java)
+                val bundle = bundleOf().apply {
+                    putString(BundleKeys.KEY_FROM_QR, resultData)
+                }
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+        }
+
     public override fun onDestroy() {
         super.onDestroy()
         dispose()
@@ -408,5 +462,6 @@ class ServerSelectionActivity : BaseActivity() {
     companion object {
         private val TAG = ServerSelectionActivity::class.java.simpleName
         const val MIN_SERVER_MAJOR_VERSION = 13
+        private const val QR_URI = "com.blikoon.qrcodescanner.got_qr_scan_relult"
     }
 }
