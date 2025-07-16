@@ -345,6 +345,16 @@ class ConversationsListActivity :
         showSearchOrToolbar()
     }
 
+    override fun onPause() {
+        super.onPause()
+        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val firstItem = adapter?.getItem(firstVisible)
+        val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
+        val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
+
+        appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
+    }
+
     // if edge to edge is used, add an empty item at the bottom of the list
     @Suppress("MagicNumber")
     private fun addEmptyItemForEdgeToEdgeIfNecessary() {
@@ -1881,12 +1891,6 @@ class ConversationsListActivity :
             bundle.putString(BundleKeys.KEY_MESSAGE_ID, selectedMessageId)
             selectedMessageId = null
         }
-        val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
-        val firstItem = adapter?.getItem(firstVisible)
-        val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
-        val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
-
-        appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
 
         val intent = Intent(context, ChatActivity::class.java)
         intent.putExtras(bundle)
