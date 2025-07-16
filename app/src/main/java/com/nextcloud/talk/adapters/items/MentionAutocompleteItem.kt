@@ -39,7 +39,8 @@ class MentionAutocompleteItem(
     private val context: Context,
     @JvmField val roomToken: String,
     private val viewThemeUtils: ViewThemeUtils
-) : AbstractFlexibleItem<ParticipantItemViewHolder>(), IFilterable<String?> {
+) : AbstractFlexibleItem<ParticipantItemViewHolder>(),
+    IFilterable<String?> {
     @JvmField
     var source: String?
 
