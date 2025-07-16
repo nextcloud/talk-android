@@ -145,7 +145,10 @@
             <trusting group="ch.qos.logback"/>
             <trusting group="org.slf4j"/>
          </trusted-key>
-         <trusted-key id="61DEBD732F3F07771269972E2F87304808D40CEC" group="net.zetetic" name="android-database-sqlcipher" version="4.5.4"/>
+         <trusted-key id="61DEBD732F3F07771269972E2F87304808D40CEC">
+            <trusting name="android-database-sqlcipher" group="net.zetetic" version="4.5.4"/>
+            <trusting name="sqlcipher-android" group="net.zetetic" version="4.9.0"/>
+         </trusted-key>
          <trusted-key id="64B9B09F164AA0BF88742EB61188B69F6D6259CA" group="com.google.accompanist"/>
          <trusted-key id="666A4692CE11B7B3F4EB7B3410066A9707090CF9" group="org.javassist" name="javassist" version="3.26.0-GA"/>
          <trusted-key id="694621A7227D8D5289699830ABE9F3126BB741C1" group="^com[.]google($|([.].*))" regex="true"/>

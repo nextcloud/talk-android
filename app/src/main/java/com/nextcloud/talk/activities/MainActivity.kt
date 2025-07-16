@@ -251,10 +251,6 @@ class MainActivity : BaseActivity(), ActionBarProvider {
                 startActivity(chatIntent)
             }
         } else {
-            if (!appPreferences.isDbRoomMigrated) {
-                appPreferences.isDbRoomMigrated = true
-            }
-
             userManager.users.subscribe(object : SingleObserver<List<User>> {
                 override fun onSubscribe(d: Disposable) {
                     // unused atm
