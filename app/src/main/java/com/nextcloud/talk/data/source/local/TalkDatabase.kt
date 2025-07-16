@@ -9,7 +9,6 @@
 package com.nextcloud.talk.data.source.local
 
 import android.content.Context
-import android.util.Log
 import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.Room
@@ -37,10 +36,7 @@ import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
-import com.nextcloud.talk.utils.preferences.AppPreferences
-import net.sqlcipher.database.SQLiteDatabase
-import net.sqlcipher.database.SQLiteDatabaseHook
-import net.sqlcipher.database.SupportFactory
+import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import java.util.Locale
 
 @Database(
@@ -70,7 +66,6 @@ import java.util.Locale
     SendStatusConverter::class
 )
 abstract class TalkDatabase : RoomDatabase() {
-
     abstract fun usersDao(): UsersDao
     abstract fun conversationsDao(): ConversationsDao
     abstract fun chatMessagesDao(): ChatMessagesDao
@@ -79,27 +74,21 @@ abstract class TalkDatabase : RoomDatabase() {
 
     companion object {
         const val TAG = "TalkDatabase"
+        const val SQL_CIPHER_LIBRARY = "sqlcipher"
 
         @Volatile
         private var instance: TalkDatabase? = null
 
         @JvmStatic
-        fun getInstance(context: Context, appPreferences: AppPreferences): TalkDatabase =
+        fun getInstance(context: Context): TalkDatabase =
             instance ?: synchronized(this) {
-                instance ?: build(context, appPreferences).also { instance = it }
+                instance ?: build(context).also { instance = it }
             }
 
-        private fun build(context: Context, appPreferences: AppPreferences): TalkDatabase {
+        private fun build(context: Context): TalkDatabase {
             val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
-            val passphrase: ByteArray = SQLiteDatabase.getBytes(passCharArray)
-
-            val factory = if (appPreferences.isDbRoomMigrated) {
-                Log.i(TAG, "No cipher migration needed")
-                SupportFactory(passphrase)
-            } else {
-                Log.i(TAG, "Add cipher migration hook")
-                SupportFactory(passphrase, getCipherMigrationHook())
-            }
+            val passphrase: ByteArray = getBytesFromChars(passCharArray)
+            val factory = SupportOpenHelperFactory(passphrase)
 
             val dbName = context
                 .resources
@@ -108,6 +97,8 @@ abstract class TalkDatabase : RoomDatabase() {
                 .replace(" ", "_")
                 .trim() +
                 ".sqlite"
+
+            System.loadLibrary(SQL_CIPHER_LIBRARY)
 
             return Room
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
@@ -126,7 +117,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 )
                 .allowMainThreadQueries()
                 .addCallback(
-                    object : RoomDatabase.Callback() {
+                    object : Callback() {
                         override fun onOpen(db: SupportSQLiteDatabase) {
                             super.onOpen(db)
                             db.execSQL("PRAGMA defer_foreign_keys = 1")
@@ -136,17 +127,6 @@ abstract class TalkDatabase : RoomDatabase() {
                 .build()
         }
 
-        private fun getCipherMigrationHook(): SQLiteDatabaseHook =
-            object : SQLiteDatabaseHook {
-                override fun preKey(database: SQLiteDatabase) {
-                    // unused atm
-                }
-
-                override fun postKey(database: SQLiteDatabase) {
-                    Log.i(TAG, "DB cipher_migrate START")
-                    database.rawExecSQL("PRAGMA cipher_migrate;")
-                    Log.i(TAG, "DB cipher_migrate END")
-                }
-            }
+        private fun getBytesFromChars(chars: CharArray): ByteArray = String(chars).toByteArray(Charsets.UTF_8)
     }
 }
