@@ -42,9 +42,8 @@ public class DatabaseModule {
 
     @Provides
     @Singleton
-    public TalkDatabase provideTalkDatabase(@NonNull final Context context,
-                                            @NonNull final AppPreferences appPreferences) {
-        return TalkDatabase.getInstance(context, appPreferences);
+    public TalkDatabase provideTalkDatabase(@NonNull final Context context) {
+        return TalkDatabase.getInstance(context);
     }
 
     @Provides

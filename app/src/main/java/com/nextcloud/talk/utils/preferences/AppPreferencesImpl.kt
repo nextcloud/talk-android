@@ -388,18 +388,6 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
-    override fun getIsDbRoomMigrated(): Boolean =
-        runBlocking {
-            async { readBoolean(DB_ROOM_MIGRATED).first() }
-        }.getCompleted()
-
-    override fun setIsDbRoomMigrated(value: Boolean) =
-        runBlocking<Unit> {
-            async {
-                writeBoolean(DB_ROOM_MIGRATED, value)
-            }
-        }
-
     override fun getShowRegularNotificationWarning(): Boolean =
         runBlocking {
             async { readBoolean(SHOW_REGULAR_NOTIFICATION_WARNING, true).first() }

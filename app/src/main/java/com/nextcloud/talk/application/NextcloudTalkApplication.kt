@@ -58,8 +58,6 @@ import com.vanniktech.emoji.EmojiManager
 import com.vanniktech.emoji.google.GoogleEmojiProvider
 import de.cotech.hw.SecurityKeyManager
 import de.cotech.hw.SecurityKeyManagerConfig
-import net.sqlcipher.database.SQLiteDatabase
-import net.sqlcipher.database.SQLiteDatabaseHook
 import okhttp3.OkHttpClient
 import org.conscrypt.Conscrypt
 import org.webrtc.PeerConnectionFactory
@@ -102,18 +100,6 @@ class NextcloudTalkApplication :
     @Inject
     lateinit var okHttpClient: OkHttpClient
     //endregion
-
-    val hook: SQLiteDatabaseHook = object : SQLiteDatabaseHook {
-        override fun preKey(database: SQLiteDatabase) {
-            // unused atm
-        }
-
-        override fun postKey(database: SQLiteDatabase) {
-            Log.i("TalkApplication", "DB cipher_migrate START")
-            database.rawExecSQL("PRAGMA cipher_migrate;")
-            Log.i("TalkApplication", "DB cipher_migrate END")
-        }
-    }
 
     //region private methods
     private fun initializeWebRtc() {

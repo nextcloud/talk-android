@@ -143,10 +143,6 @@ public interface AppPreferences {
 
     void setDbCypherToUpgrade(boolean value);
 
-    boolean getIsDbRoomMigrated();
-
-    void setIsDbRoomMigrated(boolean value);
-
     void setPhoneBookIntegrationLastRun(long currentTimeMillis);
 
     long getPhoneBookIntegrationLastRun(Long defaultValue);
