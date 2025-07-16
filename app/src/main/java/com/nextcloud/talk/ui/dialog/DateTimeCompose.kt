@@ -31,6 +31,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -259,8 +260,9 @@ class DateTimeCompose(val bundle: Bundle) {
         Row(
             modifier = Modifier
                 .padding(INT_8.dp)
+                .fillMaxWidth()
         ) {
-            Text(stringResource(R.string.nc_remind), modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.nc_remind), modifier = Modifier.weight(HALF_WEIGHT))
 
             val reminderState = chatViewModel.getReminderExistState
                 .asFlow()
@@ -276,9 +278,16 @@ class DateTimeCompose(val bundle: Bundle) {
                 else -> {}
             }
 
-            if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
-                Text(timeState.value.format(DateTimeFormatter.ofPattern(PATTERN)))
+            val timeText = if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
+                timeState.value.format(DateTimeFormatter.ofPattern(PATTERN))
+            } else {
+                ""
             }
+
+            Text(
+                timeText,
+                modifier = Modifier.weight(HALF_WEIGHT)
+            )
         }
         HorizontalDivider()
     }
@@ -294,8 +303,24 @@ class DateTimeCompose(val bundle: Bundle) {
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             if (!isCollapsed.value) {
-                val datePickerState = rememberDatePickerState()
-                val timePickerState = rememberTimePickerState()
+                val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                val currentYear = LocalDate.now().year
+                val selectableDates = object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean =
+                        utcTimeMillis >= todayMillis
+
+                    override fun isSelectableYear(year: Int): Boolean =
+                        year >= currentYear
+                }
+
+                val datePickerState = rememberDatePickerState(
+                    selectableDates = selectableDates
+                )
+                val now = LocalDateTime.now()
+                val timePickerState = rememberTimePickerState(
+                    initialHour = now.hour,
+                    initialMinute = now.minute
+                )
 
                 BoxWithConstraints(
                     modifier = Modifier
