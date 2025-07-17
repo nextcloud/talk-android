@@ -27,6 +27,7 @@
     <string name="call_running_since_one_hour">La trucada porta una hora en marxa.</string>
     <string name="call_without_notification">Trucada sense notificació</string>
     <string name="camera_permission_granted">S\'ha concedit el permís de càmera. Torneu a triar la càmera.</string>
+    <string name="cancel_login">Cancel·la l\'inici de sessió</string>
     <string name="choose_avatar_from_cloud">Trieu un avatar del núvol</string>
     <string name="clear_status_message">Esborrar el missatge d\'estat</string>
     <string name="clear_status_message_after">Esborra el missatge d\'estat després</string>
