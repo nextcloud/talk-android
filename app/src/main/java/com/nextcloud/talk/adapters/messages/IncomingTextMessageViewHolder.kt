@@ -146,10 +146,10 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 binding.messageAuthor.visibility = View.GONE
             }
             binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
-            // binding.messageText.text = processedMessageText
+            binding.messageText.text = processedMessageText
             // just for debugging:
-            binding.messageText.text =
-                SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
+            // binding.messageText.text =
+            //     SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
             binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE

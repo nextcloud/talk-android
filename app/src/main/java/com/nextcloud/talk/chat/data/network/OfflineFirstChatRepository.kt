@@ -145,7 +145,6 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "conversationModel.internalId: " + conversationModel.internalId)
             Log.d(TAG, "conversationModel.lastReadMessage:" + conversationModel.lastReadMessage)
 
-            // var newestMessageIdFromDb = chatDao.getNewestMessageId(internalConversationId, threadId)
             var newestMessageIdFromDb = chatBlocksDao.getNewestMessageIdFromChatBlocks(internalConversationId, threadId)
             Log.d(TAG, "newestMessageIdFromDb: $newestMessageIdFromDb")
 

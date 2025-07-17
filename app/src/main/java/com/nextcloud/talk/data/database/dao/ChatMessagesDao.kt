@@ -18,20 +18,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 @Suppress("Detekt.TooManyFunctions")
 interface ChatMessagesDao {
-    // @Query(
-    //     """
-    //     SELECT MAX(id) as max_items
-    //     FROM ChatMessages
-    //     WHERE internalConversationId = :internalConversationId
-    //     AND isTemporary = 0
-    //     AND (:threadId IS NULL OR threadId = :threadId)
-    //     """
-    // )
-    // fun getNewestMessageId(
-    //     internalConversationId: String,
-    //     threadId: Long?
-    // ): Long
-
     @Query(
         """
         SELECT *

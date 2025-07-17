@@ -267,19 +267,3 @@ fun ErrorView(message: String) {
         Text(text = message, color = MaterialTheme.colorScheme.error)
     }
 }
-
-// @Preview(showBackground = true)
-// @Composable
-// fun PreviewLoadingIndicator() {
-//     MaterialTheme {
-//         LoadingIndicator()
-//     }
-// }
-//
-// @Preview(showBackground = true)
-// @Composable
-// fun PreviewErrorView() {
-//     MaterialTheme {
-//         ErrorView("This is a preview error message.")
-//     }
-// }

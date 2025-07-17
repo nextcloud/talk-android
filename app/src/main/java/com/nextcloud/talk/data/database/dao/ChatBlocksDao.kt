@@ -20,33 +20,6 @@ interface ChatBlocksDao {
     @Delete
     fun deleteChatBlocks(blocks: List<ChatBlockEntity>)
 
-    // @Query(
-    //     """
-    //     SELECT *
-    //     FROM ChatBlocks
-    //     WHERE internalConversationId in (:internalConversationId)
-    //     ORDER BY newestMessageId ASC
-    //     """
-    // )
-    // fun getChatBlocks(
-    //     internalConversationId: String
-    // ): Flow<List<ChatBlockEntity>>
-
-    // @Query(
-    //     """
-    //     SELECT *
-    //     FROM ChatBlocks
-    //     WHERE internalConversationId in (:internalConversationId)
-    //     AND newestMessageId >= :messageId
-    //     ORDER BY newestMessageId ASC
-    //     """
-    // )
-    // fun getChatBlocksThatReachMessageId(
-    //     internalConversationId: String,
-    //     messageId: Long
-    // ):
-    //     Flow<List<ChatBlockEntity>>
-
     @Query(
         """
         SELECT *
