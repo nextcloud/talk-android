@@ -10,7 +10,6 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
-import android.text.SpannableStringBuilder
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
