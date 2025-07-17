@@ -36,6 +36,7 @@ import com.nextcloud.talk.data.storage.ArbitraryStoragesDao
 import com.nextcloud.talk.data.storage.model.ArbitraryStorageEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
+import com.nextcloud.talk.models.MessageDraftConverter
 import net.zetetic.database.sqlcipher.SupportOpenHelperFactory
 import java.util.Locale
 
@@ -50,7 +51,8 @@ import java.util.Locale
     version = 19,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
-        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
+        AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
+        AutoMigration(from = 18, to = 19)
     ],
     exportSchema = true
 )
@@ -63,7 +65,8 @@ import java.util.Locale
     HashMapHashMapConverter::class,
     LinkedHashMapConverter::class,
     ArrayListConverter::class,
-    SendStatusConverter::class
+    SendStatusConverter::class,
+    MessageDraftConverter::class
 )
 @Suppress("MagicNumber")
 abstract class TalkDatabase : RoomDatabase() {
