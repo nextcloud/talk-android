@@ -20,16 +20,6 @@ import kotlinx.coroutines.flow.Flow
 interface ChatMessagesDao {
     @Query(
         """
-        SELECT MAX(id) as max_items
-        FROM ChatMessages
-        WHERE internalConversationId = :internalConversationId
-        AND isTemporary = 0
-        """
-    )
-    fun getNewestMessageId(internalConversationId: String): Long
-
-    @Query(
-        """
         SELECT *
         FROM ChatMessages
         WHERE internalConversationId = :internalConversationId
@@ -57,10 +47,14 @@ interface ChatMessagesDao {
         WHERE internalConversationId = :internalConversationId
         AND isTemporary = 1 
         AND sendStatus != 'SENT_PENDING_ACK'
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getTempUnsentMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>>
+    fun getTempUnsentMessagesForConversation(
+        internalConversationId: String,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
@@ -69,10 +63,15 @@ interface ChatMessagesDao {
         WHERE internalConversationId = :internalConversationId
         AND referenceId = :referenceId
         AND isTemporary = 1
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         """
     )
-    fun getTempMessageForConversation(internalConversationId: String, referenceId: String): Flow<ChatMessageEntity?>
+    fun getTempMessageForConversation(
+        internalConversationId: String,
+        referenceId: String,
+        threadId: Long?
+    ): Flow<ChatMessageEntity?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertChatMessages(chatMessages: List<ChatMessageEntity>)
@@ -84,7 +83,8 @@ interface ChatMessagesDao {
         """
         SELECT * 
         FROM ChatMessages
-        WHERE internalConversationId = :internalConversationId AND id = :messageId
+        WHERE internalConversationId = :internalConversationId 
+        AND id = :messageId
         """
     )
     fun getChatMessageForConversation(internalConversationId: String, messageId: Long): Flow<ChatMessageEntity>
@@ -126,10 +126,15 @@ interface ChatMessagesDao {
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId AND id >= :messageId 
         AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp ASC, id ASC
         """
     )
-    fun getMessagesForConversationSince(internalConversationId: String, messageId: Long): Flow<List<ChatMessageEntity>>
+    fun getMessagesForConversationSince(
+        internalConversationId: String,
+        messageId: Long,
+        threadId: Long?
+    ): Flow<List<ChatMessageEntity>>
 
     @Query(
         """
@@ -138,6 +143,7 @@ interface ChatMessagesDao {
         WHERE internalConversationId = :internalConversationId 
         AND isTemporary = 0
         AND id < :messageId
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
         """
@@ -145,7 +151,8 @@ interface ChatMessagesDao {
     fun getMessagesForConversationBefore(
         internalConversationId: String,
         messageId: Long,
-        limit: Int
+        limit: Int,
+        threadId: Long?
     ): Flow<List<ChatMessageEntity>>
 
     @Query(
@@ -155,6 +162,7 @@ interface ChatMessagesDao {
         WHERE internalConversationId = :internalConversationId 
         AND isTemporary = 0
         AND id <= :messageId
+        AND (:threadId IS NULL OR threadId = :threadId)
         ORDER BY timestamp DESC, id DESC
         LIMIT :limit
         """
@@ -162,7 +170,8 @@ interface ChatMessagesDao {
     fun getMessagesForConversationBeforeAndEqual(
         internalConversationId: String,
         messageId: Long,
-        limit: Int
+        limit: Int,
+        threadId: Long?
     ): Flow<List<ChatMessageEntity>>
 
     @Query(
@@ -171,10 +180,16 @@ interface ChatMessagesDao {
         FROM ChatMessages 
         WHERE internalConversationId = :internalConversationId 
         AND isTemporary = 0
+        AND (:threadId IS NULL OR threadId = :threadId)
         AND id BETWEEN :newestMessageId AND :oldestMessageId
         """
     )
-    fun getCountBetweenMessageIds(internalConversationId: String, oldestMessageId: Long, newestMessageId: Long): Int
+    fun getCountBetweenMessageIds(
+        internalConversationId: String,
+        oldestMessageId: Long,
+        newestMessageId: Long,
+        threadId: Long?
+    ): Int
 
     @Query(
         """

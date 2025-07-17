@@ -89,6 +89,13 @@ object Migrations {
         }
     }
 
+    val MIGRATION_17_18 = object : Migration(17, 18) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i("Migrations", "Migrating 17 to 18")
+            migrateToMessageThreads(db)
+        }
+    }
+
     //endregion
 
     fun migrateToRoom(db: SupportSQLiteDatabase) {
@@ -297,7 +304,7 @@ object Migrations {
                     "ADD COLUMN hasArchived INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "hasArchived already exists")
+            Log.i("Migrations", "hasArchived already exists", e)
         }
     }
 
@@ -308,7 +315,7 @@ object Migrations {
                     "ADD COLUMN objectId TEXT NOT NULL DEFAULT '';"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column objectId to table Conversations")
+            Log.i("Migrations", "Something went wrong when adding column objectId to table Conversations", e)
         }
     }
 
@@ -319,7 +326,7 @@ object Migrations {
                     "ADD COLUMN hasSensitive INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column hasSensitive to table Conversations")
+            Log.i("Migrations", "Something went wrong when adding column hasSensitive to table Conversations", e)
         }
     }
 
@@ -330,7 +337,43 @@ object Migrations {
                     "ADD COLUMN hasImportant INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations")
+            Log.i("Migrations", "Something went wrong when adding column hasImportant to table Conversations", e)
+        }
+    }
+
+    fun migrateToMessageThreads(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "ALTER TABLE ChatBlocks " +
+                    "ADD COLUMN threadId INTEGER DEFAULT NULL;"
+            )
+
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN threadId INTEGER DEFAULT NULL;"
+            )
+
+            db.execSQL(
+                "ALTER TABLE ChatMessages " +
+                    "ADD COLUMN isThread BOOLEAN DEFAULT 0;"
+            )
+
+            // Foreign key constraints are not active during migration.
+            // At least   db.execSQL("PRAGMA foreign_keys=ON;")  etc did not help.
+            // Because of this it is not enough to just clear the Conversations table (to have cascade deletion in
+            // other tables), but all related tables have to be cleared with SQL statement as well.
+
+            db.execSQL(
+                "DELETE FROM Conversations"
+            )
+            db.execSQL(
+                "DELETE FROM ChatMessages"
+            )
+            db.execSQL(
+                "DELETE FROM ChatBlocks"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong when migrating to messageThreads", e)
         }
     }
 
@@ -341,7 +384,7 @@ object Migrations {
                     "ADD COLUMN referenceId TEXT;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column referenceId to table ChatMessages")
+            Log.i("Migrations", "Something went wrong when adding column referenceId to table ChatMessages", e)
         }
 
         try {
@@ -350,7 +393,7 @@ object Migrations {
                     "ADD COLUMN isTemporary INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column isTemporary to table ChatMessages")
+            Log.i("Migrations", "Something went wrong when adding column isTemporary to table ChatMessages", e)
         }
 
         try {
@@ -359,7 +402,7 @@ object Migrations {
                     "ADD COLUMN sendingFailed INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column sendingFailed to table ChatMessages")
+            Log.i("Migrations", "Something went wrong when adding column sendingFailed to table ChatMessages", e)
         }
 
         try {
@@ -368,7 +411,7 @@ object Migrations {
                     "ADD COLUMN silent INTEGER NOT NULL DEFAULT 0;"
             )
         } catch (e: SQLException) {
-            Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages")
+            Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages", e)
         }
     }
 }

@@ -19,6 +19,12 @@ import kotlinx.parcelize.Parcelize
 data class ChatMessageJson(
     @JsonField(name = ["id"]) var id: Long = 0,
     @JsonField(name = ["token"]) var token: String? = null,
+    @JsonField(name = ["threadId"]) var threadId: Long? = null,
+
+    // Be aware that variables with "is" at the beginning will lead to the error:
+    // "@JsonField annotation can only be used on private fields if both getter and setter are present."
+    // Instead, name it with "has" at the beginning: isThread -> hasThread
+    @JsonField(name = ["isThread"]) var hasThread: Boolean = false,
     @JsonField(name = ["actorType"]) var actorType: String? = null,
     @JsonField(name = ["actorId"]) var actorId: String? = null,
     @JsonField(name = ["actorDisplayName"]) var actorDisplayName: String? = null,

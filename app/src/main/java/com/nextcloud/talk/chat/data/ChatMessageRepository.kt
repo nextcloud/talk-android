@@ -44,7 +44,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val removeMessageFlow: Flow<ChatMessage>
 
-    fun initData(credentials: String, urlForChatting: String, roomToken: String)
+    fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?)
 
     fun updateConversation(conversationModel: ConversationModel)
 

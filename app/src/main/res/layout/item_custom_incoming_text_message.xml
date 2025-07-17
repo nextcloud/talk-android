@@ -64,7 +64,6 @@
             app:layout_wrapBefore="true"
             tools:text="Talk to you later!" />
 
-
         <LinearLayout
             android:id="@+id/checkboxContainer"
             android:layout_width="wrap_content"

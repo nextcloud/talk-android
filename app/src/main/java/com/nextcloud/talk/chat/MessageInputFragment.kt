@@ -857,8 +857,13 @@ class MessageInputFragment : Fragment() {
             replaceMentionChipSpans(editable)
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
-            val replyMessageId = binding.fragmentMessageInputView
+
+            var replyMessageId = binding.fragmentMessageInputView
                 .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
+
+            if (replyMessageId == 0) {
+                replyMessageId = chatActivity.threadInfo?.thread?.id ?: 0
+            }
 
             sendMessage(
                 editable.toString(),

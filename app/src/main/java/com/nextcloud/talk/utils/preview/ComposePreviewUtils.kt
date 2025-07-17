@@ -41,6 +41,8 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
+import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
+import com.nextcloud.talk.threadsoverview.data.ThreadsRepositoryImpl
 import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
 import com.nextcloud.talk.ui.theme.TalkSpecificViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -147,6 +149,9 @@ class ComposePreviewUtils private constructor(context: Context) {
             userProvider
         )
 
+    val threadsRepository: ThreadsRepository
+        get() = ThreadsRepositoryImpl(ncApiCoroutines, userProvider)
+
     val conversationNetworkDataSource: ConversationsNetworkDataSource
         get() = RetrofitConversationsNetwork(ncApi)
 
@@ -173,6 +178,7 @@ class ComposePreviewUtils private constructor(context: Context) {
             appPreferences,
             chatNetworkDataSource,
             chatRepository,
+            threadsRepository,
             conversationRepository,
             reactionsRepository,
             mediaRecorderManager,

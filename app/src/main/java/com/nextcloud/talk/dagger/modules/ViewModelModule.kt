@@ -27,6 +27,7 @@ import com.nextcloud.talk.polls.viewmodels.PollVoteViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.remotefilebrowser.viewmodels.RemoteFileBrowserItemsViewModel
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
+import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.translate.viewmodels.TranslateViewModel
 import com.nextcloud.talk.viewmodels.CallRecordingViewModel
 import dagger.Binds
@@ -154,4 +155,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DiagnoseViewModel::class)
     abstract fun diagnoseViewModel(viewModel: DiagnoseViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ThreadsOverviewViewModel::class)
+    abstract fun threadsOverviewViewModel(viewModel: ThreadsOverviewViewModel): ViewModel
 }

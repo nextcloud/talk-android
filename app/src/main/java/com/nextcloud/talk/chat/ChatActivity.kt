@@ -148,11 +148,13 @@ import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOverall
+import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.polls.ui.PollCreateDialogFragment
 import com.nextcloud.talk.remotefilebrowser.activities.RemoteFileBrowserActivity
 import com.nextcloud.talk.shareditems.activities.SharedItemsActivity
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
+import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
@@ -197,6 +199,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SWITCH_TO_ROOM
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import com.nextcloud.talk.utils.permissions.PlatformPermissionUtil
 import com.nextcloud.talk.utils.rx.DisposableSet
 import com.nextcloud.talk.utils.singletons.ApplicationWideCurrentRoomHolder
@@ -350,6 +353,8 @@ class ChatActivity :
 
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
+    var threadId: Long? = null
+    var threadInfo: ThreadInfo? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -391,8 +396,14 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-            startActivity(intent)
+            if (isChatThread()) {
+                isEnabled = false
+                onBackPressedDispatcher.onBackPressed()
+            } else {
+                val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
+                intent.putExtras(Bundle())
+                startActivity(intent)
+            }
         }
     }
 
@@ -494,8 +505,19 @@ class ChatActivity :
         chatViewModel.initData(
             credentials!!,
             urlForChatting,
-            roomToken
+            roomToken,
+            threadId
         )
+
+        threadId?.let {
+            val threadUrl = ApiUtils.getUrlForThread(
+                version = 1,
+                baseUrl = conversationUser!!.baseUrl,
+                token = roomToken,
+                threadId = it.toInt()
+            )
+            chatViewModel.getThread(credentials, threadUrl)
+        }
 
         messageInputFragment = getMessageInputFragment()
         messageInputViewModel = ViewModelProvider(this, viewModelFactory)[MessageInputViewModel::class.java]
@@ -548,6 +570,12 @@ class ChatActivity :
         val extras: Bundle? = intent.extras
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+
+        threadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
+            extras.getLong(KEY_THREAD_ID)
+        } else {
+            null
+        }
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
@@ -671,7 +699,8 @@ class ChatActivity :
                         joinRoomWithPassword()
 
                         if (conversationUser?.userId != "?" &&
-                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG)
+                            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.MENTION_FLAG) &&
+                            !isChatThread()
                         ) {
                             binding.chatToolbar.setOnClickListener { _ -> showConversationInfoScreen() }
                         }
@@ -1230,6 +1259,44 @@ class ChatActivity :
                         uiState.userAbsence.message
                     binding.outOfOfficeContainer.findViewById<CardView>(R.id.avatar_chip).setOnClickListener {
                         joinOneToOneConversation(uiState.userAbsence.replacementUserId!!)
+                    }
+                }
+            }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadCreationState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadCreationUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Error -> {
+                        Log.e(TAG, "Error when creating thread", uiState.exception)
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadCreationUiState.Success -> {
+                        uiState.thread?.first?.threadId?.let {
+                            openThread(it)
+                        }
+                    }
+                }
+            }
+        }
+
+        this.lifecycleScope.launch {
+            chatViewModel.threadRetrieveState.collect { uiState ->
+                when (uiState) {
+                    ChatViewModel.ThreadRetrieveUiState.None -> {
+                    }
+
+                    is ChatViewModel.ThreadRetrieveUiState.Error -> {
+                        Log.e(TAG, "Error when retrieving thread", uiState.exception)
+                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+                    }
+
+                    is ChatViewModel.ThreadRetrieveUiState.Success -> {
+                        threadInfo = uiState.thread
                     }
                 }
             }
@@ -2600,7 +2667,9 @@ class ChatActivity :
         viewThemeUtils.platform.colorTextView(title, ColorRole.ON_SURFACE)
 
         title.text =
-            if (currentConversation?.displayName != null) {
+            if (isChatThread()) {
+                threadInfo?.first?.message
+            } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
                 } catch (e: java.lang.IllegalStateException) {
@@ -2611,7 +2680,13 @@ class ChatActivity :
                 ""
             }
 
-        if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
+        if (isChatThread()) {
+            val repliesAmountTitle = String.format(
+                resources.getString(R.string.thread_replies_amount),
+                threadInfo?.thread?.numReplies
+            )
+            statusMessageViewContents(repliesAmountTitle)
+        } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""
             if (currentConversation?.statusIcon != null) {
                 statusMessage += currentConversation?.statusIcon
@@ -3101,11 +3176,20 @@ class ChatActivity :
             }
 
             val searchItem = menu.findItem(R.id.conversation_search)
-
             searchItem.isVisible = CapabilitiesUtil.isUnifiedSearchAvailable(spreedCapabilities) &&
-                currentConversation!!.remoteServer.isNullOrEmpty()
+                currentConversation!!.remoteServer.isNullOrEmpty() &&
+                !isChatThread()
 
-            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities)) {
+            val sharedItemsItem = menu.findItem(R.id.shared_items)
+            sharedItemsItem.isVisible = !isChatThread()
+
+            val conversationInfoItem = menu.findItem(R.id.conversation_info)
+            conversationInfoItem.isVisible = !isChatThread()
+
+            val showThreadsItem = menu.findItem(R.id.show_threads)
+            showThreadsItem.isVisible = !isChatThread()
+
+            if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) && !isChatThread()) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
                 conversationVideoMenuItem = menu.findItem(R.id.conversation_video_call)
 
@@ -3170,6 +3254,11 @@ class ChatActivity :
             R.id.conversation_event -> {
                 val anchorView = findViewById<View>(R.id.conversation_event)
                 showPopupWindow(anchorView)
+                true
+            }
+
+            R.id.show_threads -> {
+                openThreadsOverview()
                 true
             }
 
@@ -4111,6 +4200,37 @@ class ChatActivity :
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
             startContextChatWindowForMessage(parentMessage.id)
         }
+    }
+
+    private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
+
+    fun openThread(messageId: Long) {
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        bundle.putLong(KEY_THREAD_ID, messageId)
+        val chatIntent = Intent(context, ChatActivity::class.java)
+        chatIntent.putExtras(bundle)
+        startActivity(chatIntent)
+    }
+
+    fun createThread(chatMessage: ChatMessage) {
+        chatViewModel.createThread(
+            credentials = conversationUser!!.getCredentials(),
+            url = ApiUtils.getUrlForThread(
+                version = chatApiVersion,
+                baseUrl = conversationUser!!.baseUrl!!,
+                token = roomToken,
+                threadId = chatMessage.jsonMessageId
+            )
+        )
+    }
+
+    fun openThreadsOverview() {
+        val bundle = Bundle()
+        bundle.putString(KEY_ROOM_TOKEN, roomToken)
+        val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
+        threadsOverviewIntent.putExtras(bundle)
+        startActivity(threadsOverviewIntent)
     }
 
     override fun joinAudioCall() {

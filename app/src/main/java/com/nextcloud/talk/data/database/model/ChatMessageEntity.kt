@@ -41,7 +41,8 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "id") var id: Long = 0,
     // accountId@roomtoken
     @ColumnInfo(name = "internalConversationId") var internalConversationId: String,
-
+    @ColumnInfo(name = "threadId") var threadId: Long? = null,
+    @ColumnInfo(name = "isThread") var isThread: Boolean = false,
     @ColumnInfo(name = "actorDisplayName") var actorDisplayName: String,
     @ColumnInfo(name = "message") var message: String,
 

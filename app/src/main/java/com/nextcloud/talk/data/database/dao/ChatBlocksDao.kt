@@ -25,43 +25,24 @@ interface ChatBlocksDao {
         SELECT *
         FROM ChatBlocks
         WHERE internalConversationId in (:internalConversationId)
-        ORDER BY newestMessageId ASC
-        """
-    )
-    fun getChatBlocks(internalConversationId: String): Flow<List<ChatBlockEntity>>
-
-    // @Query(
-    //     """
-    //     SELECT *
-    //     FROM ChatBlocks
-    //     WHERE internalConversationId in (:internalConversationId)
-    //     AND newestMessageId >= :messageId
-    //     ORDER BY newestMessageId ASC
-    //     """
-    // )
-    // fun getChatBlocksThatReachMessageId(
-    //     internalConversationId: String,
-    //     messageId: Long
-    // ):
-    //     Flow<List<ChatBlockEntity>>
-
-    @Query(
-        """
-        SELECT *
-        FROM ChatBlocks
-        WHERE internalConversationId in (:internalConversationId)
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         AND oldestMessageId <= :messageId
         AND newestMessageId >= :messageId
         ORDER BY newestMessageId ASC
         """
     )
-    fun getChatBlocksContainingMessageId(internalConversationId: String, messageId: Long): Flow<List<ChatBlockEntity?>>
+    fun getChatBlocksContainingMessageId(
+        internalConversationId: String,
+        threadId: Long?,
+        messageId: Long
+    ): Flow<List<ChatBlockEntity?>>
 
     @Query(
         """
         SELECT *
         FROM ChatBlocks
         WHERE internalConversationId = :internalConversationId
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         AND(
             (oldestMessageId <= :oldestMessageId AND newestMessageId >= :oldestMessageId)
             OR
@@ -74,20 +55,23 @@ interface ChatBlocksDao {
     )
     fun getConnectedChatBlocks(
         internalConversationId: String,
+        threadId: Long?,
         oldestMessageId: Long,
         newestMessageId: Long
     ): Flow<List<ChatBlockEntity>>
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertChatBlock(chatBlock: ChatBlockEntity)
-
     @Query(
         """
-        DELETE FROM ChatBlocks
-        WHERE internalConversationId LIKE :pattern
+        SELECT MAX(newestMessageId) as max_items
+        FROM ChatBlocks
+        WHERE internalConversationId = :internalConversationId
+        AND (threadId = :threadId OR (threadId IS NULL AND :threadId IS NULL))
         """
     )
-    fun clearChatBlocksForUser(pattern: String)
+    fun getNewestMessageIdFromChatBlocks(internalConversationId: String, threadId: Long?): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsertChatBlock(chatBlock: ChatBlockEntity)
 
     @Query(
         """

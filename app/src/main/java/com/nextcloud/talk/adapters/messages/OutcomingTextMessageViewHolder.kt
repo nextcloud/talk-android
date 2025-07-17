@@ -160,6 +160,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             binding.messageTime.layoutParams = layoutParams
             viewThemeUtils.platform.colorTextView(binding.messageText, ColorRole.ON_SURFACE_VARIANT)
             binding.messageText.text = processedMessageText
+            // just for debugging:
+            // binding.messageText.text =
+            //     SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
             binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE
@@ -174,12 +177,23 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         }
         viewThemeUtils.platform.colorTextView(binding.messageTime, ColorRole.ON_SURFACE_VARIANT)
         setBubbleOnChatMessage(message)
+
         // parent message handling
-        if (!message.isDeleted && message.parentMessageId != null) {
-            processParentMessage(message)
-            binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
-        } else {
-            binding.messageQuote.quotedChatMessageView.visibility = View.GONE
+        val chatActivity = commonMessageInterface as ChatActivity
+        binding.messageQuote.quotedChatMessageView.visibility =
+            if (!message.isDeleted &&
+                message.parentMessageId != null &&
+                message.parentMessageId != chatActivity.threadId
+            ) {
+                processParentMessage(message)
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+
+        binding.messageQuote.quotedChatMessageView.setOnLongClickListener { l: View? ->
+            commonMessageInterface.onOpenMessageActionsDialog(message)
+            true
         }
 
         binding.checkMark.visibility = View.INVISIBLE
@@ -194,8 +208,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         } else if (message.readStatus == ReadStatus.SENT) {
             updateStatus(R.drawable.ic_check, context.resources?.getString(R.string.nc_message_sent))
         }
-
-        val chatActivity = commonMessageInterface as ChatActivity
 
         chatActivity.lifecycleScope.launch {
             if (message.isTemporary && !networkMonitor.isOnline.value) {
