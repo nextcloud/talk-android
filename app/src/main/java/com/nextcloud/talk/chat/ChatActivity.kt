@@ -1335,7 +1335,9 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-        chatViewModel.getRoom(roomToken)
+        if (adapter == null) {
+            chatViewModel.getRoom(roomToken)
+        }
 
         actionBar?.show()
 
