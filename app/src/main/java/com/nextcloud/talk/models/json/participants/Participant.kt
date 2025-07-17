@@ -117,7 +117,8 @@ data class Participant(
         GUESTS,
         USERS,
         CIRCLES,
-        FEDERATED
+        FEDERATED,
+        PHONES
     }
 
     enum class ParticipantType {
