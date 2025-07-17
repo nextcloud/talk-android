@@ -349,7 +349,7 @@ class ConversationsListActivity :
         super.onPause()
         val firstVisible = layoutManager?.findFirstVisibleItemPosition() ?: 0
         val firstItem = adapter?.getItem(firstVisible)
-        val firstTop = (firstItem as ConversationItem).mHolder?.itemView?.top
+        val firstTop = (firstItem as? ConversationItem)?.mHolder?.itemView?.top
         val firstOffset = firstTop?.minus(CONVERSATION_ITEM_HEIGHT) ?: 0
 
         appPreferences.setConversationListPositionAndOffset(firstVisible, firstOffset)
