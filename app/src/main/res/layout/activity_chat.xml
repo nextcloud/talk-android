@@ -94,6 +94,17 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/maintenance_mode_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/nc_dialog_maintenance_mode"
+        android:textColor="@color/white"
+        android:background="@color/hwSecurityRed"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
