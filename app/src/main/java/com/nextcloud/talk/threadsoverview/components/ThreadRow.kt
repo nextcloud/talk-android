@@ -30,6 +30,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 
+@Suppress("LongParameterList", "Detekt.LongMethod")
 @Composable
 fun ThreadRow(
     roomToken: String,
@@ -84,15 +85,15 @@ fun ThreadRow(
                 Text(
                     text = numReplies,
                     style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
 
             Spacer(modifier = Modifier.Companion.height(2.dp))
 
-            Row (
+            Row(
                 verticalAlignment = Alignment.Companion.CenterVertically
-            ){
+            ) {
                 Text(
                     text = secondLineTitle,
                     style = MaterialTheme.typography.titleMedium,
@@ -113,7 +114,7 @@ fun ThreadRow(
                 Text(
                     text = date,
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }

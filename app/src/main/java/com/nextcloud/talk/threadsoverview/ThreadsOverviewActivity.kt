@@ -213,10 +213,15 @@ fun ThreadsList(
                 threadId = threadInfo.thread!!.id,
                 firstLineTitle = threadInfo.first?.actorDisplayName.orEmpty(),
                 firstLine = threadInfo.first?.message.orEmpty(),
-                numReplies = String.format(stringResource(R.string.thread_replies_amount, threadInfo.thread?.numReplies ?: 0)),
+                numReplies = String.format(
+                    stringResource(
+                        R.string.thread_replies_amount,
+                        threadInfo.thread?.numReplies ?: 0
+                    )
+                ),
                 secondLineTitle = threadInfo.last?.actorDisplayName?.let { "$it:" }.orEmpty(),
                 secondLine = threadInfo.last?.message.orEmpty(),
-                date = getLastActivityDate(threadInfo), // TODO: replace with value from api when available
+                date = getLastActivityDate(threadInfo), // replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick
             )
@@ -224,15 +229,16 @@ fun ThreadsList(
     }
 }
 
+@Suppress("MagicNumber")
 private fun getLastActivityDate(threadInfo: ThreadInfo): String {
-    val MILLIES = 1000L
+    val oneSecond = 1000L
 
     val lastActivityTimestamp = threadInfo.last?.timestamp
         ?: threadInfo.first?.timestamp
         ?: 0
 
     val lastActivityDate = DateUtils.getRelativeTimeSpanString(
-        lastActivityTimestamp.times(MILLIES),
+        lastActivityTimestamp.times(oneSecond),
         System.currentTimeMillis(),
         0,
         DateUtils.FORMAT_ABBREV_RELATIVE

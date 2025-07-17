@@ -433,6 +433,7 @@ class ChatViewModel @Inject constructor(
             })
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun createThread(credentials: String, url: String) {
         viewModelScope.launch {
             try {
@@ -444,6 +445,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun getThread(credentials: String, url: String) {
         viewModelScope.launch {
             try {

@@ -49,8 +49,6 @@ data class ChatMessage(
 
     var isThread: Boolean = false,
 
-    // var childrenCount: Long? = 0,
-
     // guests or users
     var actorType: String? = null,
 

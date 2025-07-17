@@ -21,13 +21,11 @@ class ThreadsRepositoryImpl @Inject constructor(
 
     val currentUser: User = userProvider.currentUser.blockingGet()
 
-    override suspend fun getThreads(credentials: String, url: String): ThreadsOverall {
-        return ncApiCoroutines.getThreads(credentials, url)
-    }
+    override suspend fun getThreads(credentials: String, url: String): ThreadsOverall =
+        ncApiCoroutines.getThreads(credentials, url)
 
-    override suspend fun getThread(credentials: String, url: String): ThreadOverall {
-        return ncApiCoroutines.getThread(credentials, url)
-    }
+    override suspend fun getThread(credentials: String, url: String): ThreadOverall =
+        ncApiCoroutines.getThread(credentials, url)
 
     companion object {
         val TAG = ThreadsRepositoryImpl::class.simpleName

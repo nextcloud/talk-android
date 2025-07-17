@@ -25,7 +25,6 @@ data class ChatMessageJson(
     // "@JsonField annotation can only be used on private fields if both getter and setter are present."
     // Instead, name it with "has" at the beginning: isThread -> hasThread
     @JsonField(name = ["isThread"]) var hasThread: Boolean = false,
-    // @JsonField(name = ["childrenCount"]) var childrenCount: Long? = 0,
     @JsonField(name = ["actorType"]) var actorType: String? = null,
     @JsonField(name = ["actorId"]) var actorId: String? = null,
     @JsonField(name = ["actorDisplayName"]) var actorDisplayName: String? = null,

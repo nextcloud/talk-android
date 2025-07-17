@@ -30,9 +30,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
 
     override fun getMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> = flowOf()
 
-    override fun getTempMessagesForConversation(
-        internalConversationId: String
-    ): Flow<List<ChatMessageEntity>> = flowOf()
+    override fun getTempMessagesForConversation(internalConversationId: String): Flow<List<ChatMessageEntity>> =
+        flowOf()
 
     override fun getTempUnsentMessagesForConversation(
         internalConversationId: String,

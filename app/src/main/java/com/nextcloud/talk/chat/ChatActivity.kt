@@ -509,7 +509,7 @@ class ChatActivity :
             threadId
         )
 
-        threadId?.let{
+        threadId?.let {
             val threadUrl = ApiUtils.getUrlForThread(
                 version = 1,
                 baseUrl = conversationUser!!.baseUrl,

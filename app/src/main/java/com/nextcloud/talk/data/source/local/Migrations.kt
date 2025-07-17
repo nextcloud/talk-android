@@ -358,11 +358,6 @@ object Migrations {
                     "ADD COLUMN isThread BOOLEAN DEFAULT 0;"
             )
 
-            // db.execSQL(
-            //     "ALTER TABLE ChatMessages " +
-            //         "ADD COLUMN childrenCount INTEGER DEFAULT 0;"
-            // )
-
             // Foreign key constraints are not active during migration.
             // At least   db.execSQL("PRAGMA foreign_keys=ON;")  etc did not help.
             // Because of this it is not enough to just clear the Conversations table (to have cascade deletion in
