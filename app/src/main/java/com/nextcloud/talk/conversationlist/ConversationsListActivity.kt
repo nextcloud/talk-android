@@ -2216,6 +2216,7 @@ class ConversationsListActivity :
         const val UNREAD_BUBBLE_DELAY = 2500
         const val BOTTOM_SHEET_DELAY: Long = 2500
         private const val KEY_SEARCH_QUERY = "ConversationsListActivity.searchQuery"
+        private const val CHAT_ACTIVITY_LOCAL_NAME = "com.nextcloud.talk.chat.ChatActivity"
         const val SEARCH_DEBOUNCE_INTERVAL_MS = 300
         const val SEARCH_MIN_CHARS = 1
         const val HTTP_UNAUTHORIZED = 401

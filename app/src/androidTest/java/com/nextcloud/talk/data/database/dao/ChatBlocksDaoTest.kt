@@ -57,6 +57,7 @@ class ChatBlocksDaoTest {
             val account1 = usersDao.getUserWithUserId("account1").blockingGet()
 
             conversationsDao.upsertConversations(
+                account1.id,
                 listOf(
                     createConversationEntity(
                         accountId = account1.id,
@@ -182,6 +183,7 @@ class ChatBlocksDaoTest {
             val account1 = usersDao.getUserWithUserId("account1").blockingGet()
 
             conversationsDao.upsertConversations(
+                account1.id,
                 listOf(
                     createConversationEntity(
                         accountId = account1.id,

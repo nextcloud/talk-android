@@ -27,6 +27,7 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.MessageDraft
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
@@ -89,6 +90,8 @@ class ChatViewModel @Inject constructor(
     val disposableSet = mutableSetOf<Disposable>()
     var mediaPlayerDuration = mediaPlayerManager.mediaPlayerDuration
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
+    var chatRoomToken: String = ""
+    var messageDraft: MessageDraft = MessageDraft()
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -108,6 +111,14 @@ class ChatViewModel @Inject constructor(
         mediaRecorderManager.handleOnPause()
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+            model?.let {
+                it.messageDraft = messageDraft
+                conversationRepository.updateConversation(it)
+            }
+        }
     }
 
     override fun onStop(owner: LifecycleOwner) {
@@ -283,6 +294,7 @@ class ChatViewModel @Inject constructor(
 
     fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
         chatRepository.initData(credentials, urlForChatting, roomToken, threadId)
+        chatRoomToken = roomToken
     }
 
     fun updateConversation(currentConversation: ConversationModel) {
@@ -886,6 +898,13 @@ class ChatViewModel @Inject constructor(
     fun getOpenGraph(credentials: String, baseUrl: String, urlToPreview: String) {
         viewModelScope.launch {
             _getOpenGraph.value = chatNetworkDataSource.getOpenGraph(credentials, baseUrl, urlToPreview)
+        }
+    }
+
+    suspend fun updateMessageDraft() {
+        val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+        model?.messageDraft?.let {
+            messageDraft = it
         }
     }
 
