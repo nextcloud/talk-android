@@ -13,7 +13,6 @@ import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import androidx.room.Upsert
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -26,15 +25,12 @@ interface ConversationsDao {
     @Query("SELECT * FROM Conversations where accountId = :accountId AND token = :token")
     fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?>
 
-    @Upsert()
-    fun upsertConversations(conversationEntities: List<ConversationEntity>)
-
     @Transaction
     suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) {
         serverItems.forEach { serverItem ->
             val existingItem = getConversationForUser(accountId, serverItem.token).first()
             if (existingItem != null) {
-                val mergedItem = serverItem
+                val mergedItem = serverItem.copy()
                 mergedItem.messageDraft = existingItem.messageDraft
                 updateConversation(mergedItem)
             } else {

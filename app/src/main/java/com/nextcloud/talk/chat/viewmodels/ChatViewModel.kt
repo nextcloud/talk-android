@@ -61,7 +61,6 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import java.io.File
 import javax.inject.Inject
 
@@ -113,7 +112,7 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
 
-        runBlocking(Dispatchers.IO) {
+        CoroutineScope(Dispatchers.IO).launch {
             val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
             model?.let {
                 it.messageDraft = messageDraft
@@ -295,6 +294,7 @@ class ChatViewModel @Inject constructor(
 
     fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?) {
         chatRepository.initData(credentials, urlForChatting, roomToken, threadId)
+        chatRoomToken = roomToken
     }
 
     fun updateConversation(currentConversation: ConversationModel) {

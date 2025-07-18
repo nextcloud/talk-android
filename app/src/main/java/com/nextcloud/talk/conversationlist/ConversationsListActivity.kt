@@ -307,16 +307,6 @@ class ConversationsListActivity :
         showNotificationWarning()
 
         showShareToScreen = hasActivityActionSendIntent()
-        // context.getSharedPreferences(
-        //     CHAT_ACTIVITY_LOCAL_NAME,
-        //     MODE_PRIVATE
-        // ).edit().apply {
-        //     putInt(QUOTED_MESSAGE_ID, -1)
-        //     putString(QUOTED_MESSAGE_NAME, null)
-        //     putString(QUOTED_MESSAGE_TEXT, "")
-        //     putString(QUOTED_MESSAGE_URL, null)
-        //     apply()
-        // }
 
         if (!eventBus.isRegistered(this)) {
             eventBus.register(this)
