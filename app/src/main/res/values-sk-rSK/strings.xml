@@ -554,6 +554,7 @@
     <string name="reset_status">Obnoviť status</string>
     <string name="restrict_join_other_room_while_call">Počas hovoru nie je možné pripojiť sa k iným miestnostiam</string>
     <string name="save">Uložiť</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Synchronizovať iba s dôveryhodnými servermi</string>
     <string name="scope_federated_title">Združený</string>
     <string name="scope_local_description">Viditeľné iba pre ľudí tejto inštancie a návštevníkov</string>

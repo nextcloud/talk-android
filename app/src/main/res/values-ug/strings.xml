@@ -538,6 +538,7 @@
     <string name="reset_status">ھالىتىنى ئەسلىگە كەلتۈرۈش</string>
     <string name="restrict_join_other_room_while_call">تېلېفون قىلغاندا باشقا ياتاقلارغا قوشۇلۇش مۇمكىن ئەمەس</string>
     <string name="save">ساقلاش</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">پەقەت ئىشەنچلىك مۇلازىمېتىرلارغا ماسقەدەملەڭ</string>
     <string name="scope_federated_title">فېدېراتسىيە</string>
     <string name="scope_local_description">پەقەت بۇ مىسالدىكى كىشىلەر ۋە مېھمانلارلا كۆرۈنىدۇ</string>

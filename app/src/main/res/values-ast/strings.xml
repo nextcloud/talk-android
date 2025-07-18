@@ -294,6 +294,7 @@
     <string name="renamed_conversation">Renomóse la conversación «%1$s»</string>
     <string name="reset_status">Reafitar l\'estáu</string>
     <string name="save">Guardar</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Namás sincronizar con sirvidores d\'enfotu</string>
     <string name="scope_federated_title">Federada</string>
     <string name="scope_local_description">Namás ye visible pa les persones d\'esta instancia y los convidaos</string>

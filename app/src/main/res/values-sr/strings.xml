@@ -550,6 +550,7 @@
     <string name="openConversations">Отвори разговор</string>
     <string name="open_in_files_app">Отвори у апликацији Фајлови</string>
     <string name="open_notes">Отвори Белешке</string>
+    <string name="open_thread">Иди на нит</string>
     <string name="play_pause_voice_message">Пусти/паузирај гласовну поруку</string>
     <string name="playback_speed_control">Контрола брзине репродукције</string>
     <string name="please_continue_the_login_process_in_the_browser">Молимо вас да процес пријаве наставите у интернет прегледачу</string>
@@ -570,9 +571,11 @@
     <string name="polls_submit_vote">Глас</string>
     <string name="polls_voted_hidden_success">Глас је предат</string>
     <string name="previously_set">Претходно постављено</string>
+    <string name="qr_code_error">QR кôд није могао да се прочита</string>
     <string name="raise_hand">Подигни руку</string>
     <string name="reactions_tab_all">Све</string>
     <string name="read_storage_no_permission">Дељење фајлова из складишта није могуће без дозвола</string>
+    <string name="recent_threads">Скорашње нити</string>
     <string name="record_active_info">Разговор се снима</string>
     <string name="record_cancel_start">Откажи почетак снимања</string>
     <string name="record_failed_info">Снимање није успело. Молимо вас да се обратите свом администратору.</string>
@@ -593,6 +596,7 @@
     <string name="reset_status">Ресетуј статус</string>
     <string name="restrict_join_other_room_while_call">Док сте у позиву не можете да приступите осталим собама</string>
     <string name="save">Сачувај</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Само синхронизује са серверима од поверења</string>
     <string name="scope_federated_title">Здружено</string>
     <string name="scope_local_description">Видљиво је само људима на овој инстанци и гостима</string>

@@ -473,6 +473,7 @@
     <string name="online_status">Онлайн статус</string>
     <string name="openConversations">Открыть разговоры</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
+    <string name="open_thread">Перейти в тему</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="polls_add_option">Добавить вариант</string>
     <string name="polls_edit_vote">Изменить голос</string>
@@ -492,6 +493,7 @@
     <string name="raise_hand">Поднять руку</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
+    <string name="recent_threads">Недавние темы</string>
     <string name="record_active_info">Данный звонок записывается</string>
     <string name="record_cancel_start">Отменить начало записи</string>
     <string name="record_failed_info">Не удалось записать звонок. Пожалуйста, свяжитесь с администратором.</string>
@@ -508,6 +510,7 @@
     <string name="reset_status">Сбросить статус</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>
     <string name="scope_federated_title">Федеративный доступ</string>
     <string name="scope_local_description">Видно только людям на этом сервере и гостям</string>

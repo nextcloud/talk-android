@@ -434,6 +434,7 @@
     <string name="reset_status">Restablecer estado</string>
     <string name="restrict_join_other_room_while_call">No es posible unirse a otras salas mientras se está en una llamada</string>
     <string name="save">Guardar</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Solo sincronizar con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_description">Solo visible para las personas en esta instancia y los invitados</string>

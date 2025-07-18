@@ -326,6 +326,7 @@
     <string name="raise_hand">Pakelti ranką</string>
     <string name="reactions_tab_all">Visos</string>
     <string name="save">Įrašyti</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sinchronizuoti tik į patikimus serverius</string>
     <string name="scope_federated_title">Federacinis</string>
     <string name="scope_local_description">Matoma tik žmonėms šiame egzemplioriuje ir svečiams</string>

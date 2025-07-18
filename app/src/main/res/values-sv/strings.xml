@@ -549,6 +549,7 @@
     <string name="openConversations">Öppna konversationer</string>
     <string name="open_in_files_app">Öppna i appen Filer</string>
     <string name="open_notes">Öppna anteckningar</string>
+    <string name="open_thread">Gå till tråd</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
     <string name="please_continue_the_login_process_in_the_browser">Fortsätt inloggningen i webbläsaren</string>
@@ -572,6 +573,7 @@
     <string name="raise_hand">Räck upp handen</string>
     <string name="reactions_tab_all">Alla</string>
     <string name="read_storage_no_permission">Att dela filer från lagring är inte möjligt utan behörighet</string>
+    <string name="recent_threads">Senaste trådar</string>
     <string name="record_active_info">Samtalet spelas in</string>
     <string name="record_cancel_start">Avbryt start av inspelning</string>
     <string name="record_failed_info">Samtalsinspelning misslyckades. Kontakta din administratör.</string>
@@ -592,6 +594,7 @@
     <string name="reset_status">Återställ status</string>
     <string name="restrict_join_other_room_while_call">Det är inte möjligt att gå med i andra rum under ett samtal</string>
     <string name="save">Spara</string>
+    <string name="scan_qr_code">Skanna QR-kod</string>
     <string name="scope_federated_description">Synkronisera endast med betrodda servrar</string>
     <string name="scope_federated_title">Federerad</string>
     <string name="scope_local_description">Endast synlig för personer på denna instansen och gäster</string>

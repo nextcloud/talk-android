@@ -590,6 +590,7 @@ Kies er eentje van een provider.</string>
     <string name="reset_status">Reset status</string>
     <string name="restrict_join_other_room_while_call">Het is niet mogelijk een ruimte binnen te gaan tijdens een gesprek</string>
     <string name="save">Bewaren</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Alleen synchroniseren met vertrouwde servers</string>
     <string name="scope_federated_title">Gefedereerd</string>
     <string name="scope_local_description">Alleen zichtbaar voor gebruikers op deze server en gasten</string>

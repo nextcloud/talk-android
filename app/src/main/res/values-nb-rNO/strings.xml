@@ -533,6 +533,7 @@
     <string name="reset_status">Tilbakestill status</string>
     <string name="restrict_join_other_room_while_call">Det er ikke mulig å bli med i andre rom mens du er i en samtale</string>
     <string name="save">Lagre</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Synkroniser kun til betrodde servere</string>
     <string name="scope_federated_title">Sammenknyttet</string>
     <string name="scope_local_description">Kun synlig for personer i denne installasjonen og for gjester</string>

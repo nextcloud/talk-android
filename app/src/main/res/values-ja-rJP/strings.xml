@@ -520,6 +520,7 @@
     <string name="reset_status">ステータスをリセット</string>
     <string name="restrict_join_other_room_while_call">通話中に他の部屋に参加することはできません</string>
     <string name="save">保存</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">信頼できるサーバーのみと同期</string>
     <string name="scope_federated_title">連携</string>
     <string name="scope_local_description">このインスタンスのユーザーとゲストにのみ表示</string>

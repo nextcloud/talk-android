@@ -484,6 +484,7 @@
     <string name="reset_status">重置状态</string>
     <string name="restrict_join_other_room_while_call">在通话时无法加入其他房间</string>
     <string name="save">保存</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">只同步到受信任的服务器 </string>
     <string name="scope_federated_title">联合云 </string>
     <string name="scope_local_description">仅对该实例用户和来宾可见 </string>
