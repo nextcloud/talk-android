@@ -550,6 +550,7 @@
     <string name="openConversations">開啟對話</string>
     <string name="open_in_files_app">在「檔案」應用程式中開啟</string>
     <string name="open_notes">開啟筆記</string>
+    <string name="open_thread">到討論串</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
     <string name="playback_speed_control">播放速度控制</string>
     <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入流程</string>
@@ -570,9 +571,11 @@
     <string name="polls_submit_vote">投票</string>
     <string name="polls_voted_hidden_success">投票已提交</string>
     <string name="previously_set">先前設定</string>
+    <string name="qr_code_error">無法讀取 QR code</string>
     <string name="raise_hand">舉手</string>
     <string name="reactions_tab_all">全部</string>
     <string name="read_storage_no_permission">沒有權限就無法從儲存空間分享檔案</string>
+    <string name="recent_threads">最近的討論串</string>
     <string name="record_active_info">通話正在錄製</string>
     <string name="record_cancel_start">取消錄音開始</string>
     <string name="record_failed_info">錄音失敗。請聯絡您的管理員。</string>
@@ -593,6 +596,7 @@
     <string name="reset_status">重設狀態</string>
     <string name="restrict_join_other_room_while_call">通話時無法加入其他聊天室</string>
     <string name="save">儲存</string>
+    <string name="scan_qr_code">掃描 QR Code</string>
     <string name="scope_federated_description">僅同步至受信任的伺服器</string>
     <string name="scope_federated_title">已聯盟</string>
     <string name="scope_local_description">僅對此站台上的人們與訪客可見</string>

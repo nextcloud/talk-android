@@ -430,6 +430,7 @@
     <string name="reset_status">Възстановяване на състоянието</string>
     <string name="restrict_join_other_room_while_call">Не е възможно присъединяването към други стаи, докато сте в обаждане.</string>
     <string name="save">Записване</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Синхронизиране само с доверени сървъри</string>
     <string name="scope_federated_title">Федериран</string>
     <string name="scope_local_description">Видимо за потребители на тази инстанция на сървъра, както и гости.</string>

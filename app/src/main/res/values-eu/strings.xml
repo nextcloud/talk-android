@@ -495,6 +495,7 @@
     <string name="reset_status">Berrezarri egoera</string>
     <string name="restrict_join_other_room_while_call">Ezin da beste geletan sartu dei batean ari zaren bitartean</string>
     <string name="save">Gorde</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sinkronizatu zerbitzari fidagarriekin soilik</string>
     <string name="scope_federated_title">Federatua</string>
     <string name="scope_local_description">Soilik instantzia honetako erabiltzaile eta gonbidatuentzat ikusgai</string>

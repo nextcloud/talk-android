@@ -400,6 +400,7 @@
     <string name="recording_settings_title">Registrazione</string>
     <string name="reset_status">Ripristina stato</string>
     <string name="save">Salva</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sincronizza solo con server fidati</string>
     <string name="scope_federated_title">Federato</string>
     <string name="scope_local_description">Visibile solo alle persone in questa istanza e agli ospiti</string>

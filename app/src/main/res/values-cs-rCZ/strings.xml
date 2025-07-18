@@ -593,6 +593,7 @@
     <string name="reset_status">Resetovat stav</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>
     <string name="save">Uložit</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>
     <string name="scope_local_description">Viditelné pouze lidem na této instanci a hostům</string>

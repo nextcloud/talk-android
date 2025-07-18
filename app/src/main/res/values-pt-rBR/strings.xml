@@ -550,6 +550,7 @@
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir no aplicativo Arquivos</string>
     <string name="open_notes">Abrir Notas</string>
+    <string name="open_thread">Ir para fio</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
     <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o processo de login no navegador</string>
@@ -573,6 +574,7 @@
     <string name="raise_hand">Levantar mão</string>
     <string name="reactions_tab_all">Todos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões</string>
+    <string name="recent_threads">Fios recentes</string>
     <string name="record_active_info">A chamada está sendo gravada</string>
     <string name="record_cancel_start">Cancelar início da gravação</string>
     <string name="record_failed_info">A gravação falhou. Entre em contato com o administrador.</string>
@@ -593,6 +595,7 @@
     <string name="reset_status">Redefinir status</string>
     <string name="restrict_join_other_room_while_call">Não é possível entrar em outras salas enquanto estiver em uma chamada</string>
     <string name="save">Salvar</string>
+    <string name="scan_qr_code">Digitalizar Código QR</string>
     <string name="scope_federated_description">Sincronizar apenas com servidores confiáveis</string>
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_description">Visível apenas para pessoas nesta instância e convidados</string>

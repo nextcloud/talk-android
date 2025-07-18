@@ -589,6 +589,7 @@
     <string name="reset_status">Zresetuj status</string>
     <string name="restrict_join_other_room_while_call">Podczas rozmowy nie można dołączać do innych pokoi</string>
     <string name="save">Zapisz</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Synchronizuj tylko z zaufanymi serwerami</string>
     <string name="scope_federated_title">Sfederowane</string>
     <string name="scope_local_description">Widoczne tylko dla osób w tej instancji i gości</string>

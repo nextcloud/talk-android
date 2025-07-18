@@ -420,6 +420,7 @@
     <string name="recording_settings_title">녹음/녹화 중</string>
     <string name="restrict_join_other_room_while_call">통화 중 다른 대화방에 접속할 수 없습니다</string>
     <string name="save">저장</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">신뢰할 수 있는 서버만 동기화할 수 있습니다.</string>
     <string name="scope_federated_title">연합</string>
     <string name="scope_local_description">이 인스턴스의 사용자와 손님만 볼 수 있음</string>

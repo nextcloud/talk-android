@@ -589,6 +589,7 @@
     <string name="reset_status">Stádas a athshocrú</string>
     <string name="restrict_join_other_room_while_call">Ní féidir dul isteach i seomraí eile agus tú ar ghlao</string>
     <string name="save">Sábháil</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Sioncrónaigh le freastalaithe iontaofa amháin</string>
     <string name="scope_federated_title">Cónaidhme</string>
     <string name="scope_local_description">Infheicthe ag daoine sa chás seo agus ag aíonna amháin</string>

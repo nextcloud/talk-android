@@ -550,6 +550,7 @@
     <string name="openConversations">Ava vestlused</string>
     <string name="open_in_files_app">Ava failirakenduses</string>
     <string name="open_notes">Ava märkmik</string>
+    <string name="open_thread">Ava jutulõng</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
     <string name="please_continue_the_login_process_in_the_browser">Palun jätka sisselogimisprotsessi veebibrauseris</string>
@@ -570,9 +571,11 @@
     <string name="polls_submit_vote">Hääleta</string>
     <string name="polls_voted_hidden_success">Hääletatud</string>
     <string name="previously_set">Varasemalt seatud</string>
+    <string name="qr_code_error">QR-koodi lugemine pole võimalik</string>
     <string name="raise_hand">Anna käega märku</string>
     <string name="reactions_tab_all">Kõik</string>
     <string name="read_storage_no_permission">Andmeruumist failide jagamine pole võimalik ilma vastavate õigusteta</string>
+    <string name="recent_threads">Hiljutised jutulõngad</string>
     <string name="record_active_info">Kõne on salvestamisel</string>
     <string name="record_cancel_start">Katkesta salvestamise alustamine</string>
     <string name="record_failed_info">Kõne salvestamine ei õnnestunud. Palun võta ühendust oma peakasutajaga.</string>
@@ -593,6 +596,7 @@
     <string name="reset_status">Lähesta olek</string>
     <string name="restrict_join_other_room_while_call">Käimasoleva kõne ajal ei saa liituda teiste jututubadega</string>
     <string name="save">Salvesta</string>
+    <string name="scan_qr_code">Skaneeri QR-koodi</string>
     <string name="scope_federated_description">Sünkrooni vaid usaldusväärsetesse serveritesse</string>
     <string name="scope_federated_title">Federated</string>
     <string name="scope_local_description">Nähtav vaid selle serveri kasutajatele ja külalistele</string>

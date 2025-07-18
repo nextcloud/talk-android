@@ -589,6 +589,7 @@
     <string name="reset_status">Állapot visszaállítása</string>
     <string name="restrict_join_other_room_while_call">Hívás közben nem lehet más szobákhoz csatlakozni</string>
     <string name="save">Mentés</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_federated_title">Föderált</string>
     <string name="scope_local_description">Csak az ezen a példányon lévő személyek és a vendégek láthatják</string>

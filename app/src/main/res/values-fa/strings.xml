@@ -364,6 +364,7 @@
     <string name="recording_settings_title">ضبط جلسه</string>
     <string name="reset_status">Reset status</string>
     <string name="save">ذخیره</string>
+    <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">فقط با سرورهای قابل اعتماد همگام سازی شود</string>
     <string name="scope_federated_title">فدرال</string>
     <string name="scope_local_description">فقط برای کاربران این نسخه و مهمانان قابل مشاهده است</string>
