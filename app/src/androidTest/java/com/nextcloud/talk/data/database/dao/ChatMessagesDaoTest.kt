@@ -66,6 +66,7 @@ class ChatMessagesDaoTest {
             // Problem: lets say we want to update the conv list -> We don#t know the primary keys!
             // with account@token that would be easier!
             conversationsDao.upsertConversations(
+                account1.id,
                 listOf(
                     createConversationEntity(
                         accountId = account1.id,

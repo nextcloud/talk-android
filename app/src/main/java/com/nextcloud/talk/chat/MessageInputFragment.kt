@@ -81,10 +81,12 @@ import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
 import com.otaliastudios.autocomplete.Autocomplete
 import com.vanniktech.emoji.EmojiPopup
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import java.util.Objects
 import javax.inject.Inject
 
@@ -111,10 +113,6 @@ class MessageInputFragment : Fragment() {
         private const val CONNECTION_ESTABLISHED_ANIM_DURATION: Long = 3000
         private const val FULLY_OPAQUE: Float = 1.0f
         private const val FULLY_TRANSPARENT: Float = 0.0f
-        const val QUOTED_MESSAGE_TEXT = "QUOTED_MESSAGE_TEXT"
-        const val QUOTED_MESSAGE_ID = "QUOTED_MESSAGE_ID"
-        const val QUOTED_MESSAGE_URL = "QUOTED_MESSAGE_URL"
-        const val QUOTED_MESSAGE_NAME = "QUOTED_MESSAGE_NAME"
     }
 
     @Inject
@@ -162,10 +160,6 @@ class MessageInputFragment : Fragment() {
         initVoiceRecordButton()
         restoreState()
         return binding.root
-    }
-
-    override fun onPause() {
-        super.onPause()
     }
 
     override fun onDestroyView() {
@@ -306,24 +300,26 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun restoreState() {
-        runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
             chatActivity.chatViewModel.updateMessageDraft()
-        }
 
-        val draft = chatActivity.chatViewModel.messageDraft
-        binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
-        binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
-        if (draft.messageText != "") {
-            binding.fragmentMessageInputView.messageInput.requestFocus()
-        }
+            withContext(Dispatchers.Main) {
+                val draft = chatActivity.chatViewModel.messageDraft
+                binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
+                binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
+                if (draft.messageText != "") {
+                    binding.fragmentMessageInputView.messageInput.requestFocus()
+                }
 
-        if (isInReplyState()) {
-            replyToMessage(
-                chatActivity.chatViewModel.messageDraft.quotedMessageText,
-                chatActivity.chatViewModel.messageDraft.quotedDisplayName,
-                chatActivity.chatViewModel.messageDraft.quotedImageUrl,
-                chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
-            )
+                if (isInReplyState()) {
+                    replyToMessage(
+                        chatActivity.chatViewModel.messageDraft.quotedMessageText,
+                        chatActivity.chatViewModel.messageDraft.quotedDisplayName,
+                        chatActivity.chatViewModel.messageDraft.quotedImageUrl,
+                        chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
+                    )
+                }
+            }
         }
     }
 
