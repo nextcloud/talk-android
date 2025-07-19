@@ -631,8 +631,10 @@
     <string name="shared_items_voice">音頻</string>
     <string name="show_ban_reason">顯示封禁原因</string>
     <string name="show_banned_participants">顯示被封禁的參與者</string>
+    <string name="show_threads_overview">顯示討論串</string>
     <string name="starred">我的最愛</string>
     <string name="startCallForbidden">你無權開始通話</string>
+    <string name="start_thread">開始討論串</string>
     <string name="started_a_call">發起了通話</string>
     <string name="status_message">狀態訊息</string>
     <string name="status_reverted">狀態已還原</string>
