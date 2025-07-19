@@ -631,8 +631,10 @@
     <string name="shared_items_voice">Hääl</string>
     <string name="show_ban_reason">Näita suhtluskeelu seadmise põhjus</string>
     <string name="show_banned_participants">Näita suhtluskeelu saanud osalejaid</string>
+    <string name="show_threads_overview">Näita jutulõngu</string>
     <string name="starred">Lemmik</string>
     <string name="startCallForbidden">Sul pole luba kõne algatamiseks</string>
+    <string name="start_thread">Koosta jutulõng</string>
     <string name="started_a_call">helistas</string>
     <string name="status_message">Staatuse teade</string>
     <string name="status_reverted">Olek on tagasi pööratud</string>
@@ -651,6 +653,7 @@
     <string name="thisWeek">Käesolev nädal</string>
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
+    <string name="thread_replies_amount">%1$d vastust</string>
     <string name="today">Täna</string>
     <string name="tomorrow">Homme</string>
     <string name="translate">Tõlgi</string>
