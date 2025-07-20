@@ -571,6 +571,7 @@
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="previously_set">Definido anteriormente</string>
+    <string name="qr_code_error">Não foi possível ler o código QR</string>
     <string name="raise_hand">Levantar mão</string>
     <string name="reactions_tab_all">Todos</string>
     <string name="read_storage_no_permission">O compartilhamento de arquivos do armazenamento não é possível sem permissões</string>
@@ -630,8 +631,10 @@
     <string name="shared_items_voice">Voz</string>
     <string name="show_ban_reason">Mostrar motivo do banimento</string>
     <string name="show_banned_participants">Mostrar participantes banidos</string>
+    <string name="show_threads_overview">Mostrar fios</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma chamada</string>
+    <string name="start_thread">Iniciar um fio</string>
     <string name="started_a_call">iniciou uma chamada</string>
     <string name="status_message">Mensagem de status</string>
     <string name="status_reverted">Status Revertido</string>
@@ -650,6 +653,7 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
+    <string name="thread_replies_amount">%1$d respostas</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>
     <string name="translate">Traduzir</string>
