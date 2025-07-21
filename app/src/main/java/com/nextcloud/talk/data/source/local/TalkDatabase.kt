@@ -47,7 +47,7 @@ import java.util.Locale
         ChatMessageEntity::class,
         ChatBlockEntity::class
     ],
-    version = 18,
+    version = 19,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class)
@@ -65,6 +65,7 @@ import java.util.Locale
     ArrayListConverter::class,
     SendStatusConverter::class
 )
+@Suppress("MagicNumber")
 abstract class TalkDatabase : RoomDatabase() {
     abstract fun usersDao(): UsersDao
     abstract fun conversationsDao(): ConversationsDao
@@ -104,6 +105,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
+                .fallbackToDestructiveMigrationFrom(true, 18)
                 .addMigrations(
                     Migrations.MIGRATION_6_8,
                     Migrations.MIGRATION_7_8,
@@ -114,7 +116,9 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_13_14,
                     Migrations.MIGRATION_14_15,
                     Migrations.MIGRATION_15_16,
-                    Migrations.MIGRATION_17_18
+                    // do not provide migration 18 to 19 as 17 to 18 was buggy ->
+                    // fallbackToDestructiveMigration for everyone who has db v18 and did not reinstall or clear data
+                    Migrations.MIGRATION_17_19
                 )
                 .allowMainThreadQueries()
                 .addCallback(

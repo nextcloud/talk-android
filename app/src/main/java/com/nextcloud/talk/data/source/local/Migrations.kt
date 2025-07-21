@@ -89,9 +89,13 @@ object Migrations {
         }
     }
 
-    val MIGRATION_17_18 = object : Migration(17, 18) {
+    val MIGRATION_17_19 = object : Migration(17, 19) {
         override fun migrate(db: SupportSQLiteDatabase) {
-            Log.i("Migrations", "Migrating 17 to 18")
+            Log.i(
+                "Migrations",
+                "Migrating 17 to 19 (migration 17 to 18 had bugs in app version v22.0.0 Alpha 11 and " +
+                    "v22.0.0 Alpha 12)"
+            )
             migrateToMessageThreads(db)
         }
     }
@@ -345,17 +349,17 @@ object Migrations {
         try {
             db.execSQL(
                 "ALTER TABLE ChatBlocks " +
-                    "ADD COLUMN threadId INTEGER DEFAULT NULL;"
+                    "ADD COLUMN threadId INTEGER;"
             )
 
             db.execSQL(
                 "ALTER TABLE ChatMessages " +
-                    "ADD COLUMN threadId INTEGER DEFAULT NULL;"
+                    "ADD COLUMN threadId INTEGER;"
             )
 
             db.execSQL(
                 "ALTER TABLE ChatMessages " +
-                    "ADD COLUMN isThread BOOLEAN DEFAULT 0;"
+                    "ADD COLUMN isThread INTEGER NOT NULL DEFAULT 0;"
             )
 
             // Foreign key constraints are not active during migration.
