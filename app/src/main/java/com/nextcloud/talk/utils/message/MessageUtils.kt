@@ -16,6 +16,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -208,6 +209,19 @@ class MessageUtils(val context: Context) {
         return markwon.toMarkdown(markdown)
     }
 
+    fun isMarkdownInlineLink(text: String): Boolean {
+        val markdownLinkRegex = Regex("""\[([^\]]+?)]\((.*?)(?:\s+"[^"]*")?\)""")
+        return markdownLinkRegex.containsMatchIn(text)
+    }
+
+    fun hyperLinks(view: TextView, text: String) {
+        val isMarkdownLink = isMarkdownInlineLink(text)
+        if (isMarkdownLink) {
+            view.autoLinkMask = 0
+        } else {
+            view.autoLinkMask = 15
+        }
+    }
     companion object {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
