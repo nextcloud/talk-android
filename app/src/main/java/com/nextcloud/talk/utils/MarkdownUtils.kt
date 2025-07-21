@@ -9,7 +9,7 @@ package com.nextcloud.talk.utils
 
 import android.content.Context
 import android.content.Intent
-import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.View
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
@@ -19,12 +19,12 @@ import io.noties.markwon.Markwon
 import io.noties.markwon.MarkwonConfiguration
 import io.noties.markwon.core.MarkwonTheme
 import io.noties.markwon.ext.strikethrough.StrikethroughPlugin
+import io.noties.markwon.ext.tables.TablePlugin
 import io.noties.markwon.ext.tasklist.TaskListDrawable
 import io.noties.markwon.ext.tasklist.TaskListPlugin
-import io.noties.markwon.movement.MovementMethodPlugin
 
-object MarkwonUtils {
-    private const val TAG = "MarkwonUtils"
+object MarkdownUtils {
+    private const val TAG = "MarkdownUtils"
 
     fun build(context: Context, textColor: Int): Markwon {
         val drawable = TaskListDrawable(textColor, textColor, context.getColor(R.color.bg_default))
@@ -37,6 +37,7 @@ object MarkwonUtils {
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver(object : LinkResolverDef() {
                         override fun resolve(view: View, link: String) {
+                            Log.i(TAG, "Link - $view / $link")
                             var linkToOpen = link
                             if (!(linkToOpen.contains("http://") || linkToOpen.contains("https://"))) {
                                 linkToOpen = "https://$link"
@@ -52,7 +53,7 @@ object MarkwonUtils {
             })
             .usePlugin(TaskListPlugin.create(drawable))
             .usePlugin(StrikethroughPlugin.create())
-            .usePlugin(MovementMethodPlugin.create(ScrollingMovementMethod.getInstance()))
+            .usePlugin(TablePlugin.create { _ -> })
             .build()
     }
 }

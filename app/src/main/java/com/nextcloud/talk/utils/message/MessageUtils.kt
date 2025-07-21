@@ -20,7 +20,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.MarkwonUtils
+import com.nextcloud.talk.utils.MarkdownUtils
 
 class MessageUtils(val context: Context) {
     fun enrichChatReplyMessageText(
@@ -196,7 +196,7 @@ class MessageUtils(val context: Context) {
     }
 
     fun getRenderedMarkdownText(context: Context, markdown: String, textColor: Int): Spanned {
-        val markwon = MarkwonUtils.build(context, textColor)
+        val markwon = MarkdownUtils.build(context, textColor)
         return markwon.toMarkdown(markdown)
     }
 
