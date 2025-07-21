@@ -653,6 +653,7 @@
     <string name="thisWeek">本星期</string>
     <string name="this_is_a_test_message">此乃測試訊息</string>
     <string name="this_weekend">本週末</string>
+    <string name="thread_replies_amount">%1$d 個回覆</string>
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translate">翻譯</string>

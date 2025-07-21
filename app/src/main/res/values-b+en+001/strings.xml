@@ -631,8 +631,10 @@
     <string name="shared_items_voice">Voice</string>
     <string name="show_ban_reason">Show ban reason</string>
     <string name="show_banned_participants">Show banned participants</string>
+    <string name="show_threads_overview">Show threads</string>
     <string name="starred">Favourite</string>
     <string name="startCallForbidden">You are not allowed to start a call</string>
+    <string name="start_thread">Start a thread</string>
     <string name="started_a_call">started a call</string>
     <string name="status_message">Status message</string>
     <string name="status_reverted">Status Reverted</string>
@@ -651,6 +653,7 @@
     <string name="thisWeek">This week</string>
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
+    <string name="thread_replies_amount">%1$d replies</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="translate">Translate</string>
