@@ -311,11 +311,6 @@ data class ChatMessage(
                             true
                         )
                     }
-
-                    actorType == "bots" -> {
-                        null
-                    }
-
                     else -> {
                         var apiId: String? = sharedApplication!!.getString(R.string.nc_guest)
                         if (!TextUtils.isEmpty(actorDisplayName)) {
