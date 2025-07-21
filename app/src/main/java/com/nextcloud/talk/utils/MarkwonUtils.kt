@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.utils
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.text.method.ScrollingMovementMethod
@@ -37,15 +36,11 @@ object MarkwonUtils {
 
                 override fun configureConfiguration(builder: MarkwonConfiguration.Builder) {
                     builder.linkResolver(object : LinkResolverDef() {
-                        @SuppressLint("SuspiciousIndentation")
                         override fun resolve(view: View, link: String) {
                             var linkToOpen = link
                             if (!(linkToOpen.contains("http://") || linkToOpen.contains("https://"))) {
                                 linkToOpen = "https://$link"
-                            } else {
-                                linkToOpen = link
                             }
-
                             val browserIntent = Intent(
                                 Intent.ACTION_VIEW,
                                 linkToOpen.toUri()
