@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
@@ -27,6 +28,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -306,11 +308,9 @@ class DateTimeCompose(val bundle: Bundle) {
                 val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
                 val currentYear = LocalDate.now().year
                 val selectableDates = object : SelectableDates {
-                    override fun isSelectableDate(utcTimeMillis: Long): Boolean =
-                        utcTimeMillis >= todayMillis
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayMillis
 
-                    override fun isSelectableYear(year: Int): Boolean =
-                        year >= currentYear
+                    override fun isSelectableYear(year: Int): Boolean = year >= currentYear
                 }
 
                 val datePickerState = rememberDatePickerState(
@@ -331,9 +331,14 @@ class DateTimeCompose(val bundle: Bundle) {
                     DatePicker(
                         state = datePickerState,
                         modifier = Modifier
-                            .scale(scale)
+                            .scale(scale),
+                        colors = DatePickerDefaults.colors(
+                            containerColor = Color.White
+                        )
                     )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 TimePicker(
                     state = timePickerState
