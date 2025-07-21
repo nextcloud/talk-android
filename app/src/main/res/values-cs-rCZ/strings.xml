@@ -550,6 +550,7 @@
     <string name="openConversations">Otevřít konverzace</string>
     <string name="open_in_files_app">Otevřít v aplikaci Soubory</string>
     <string name="open_notes">Otevřít poznámky</string>
+    <string name="open_thread">Přejít na vlákno</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
     <string name="please_continue_the_login_process_in_the_browser">Pokračujte v procesu přihlášení ve webovém prohlížeči</string>
@@ -570,9 +571,11 @@
     <string name="polls_submit_vote">Hlasovat</string>
     <string name="polls_voted_hidden_success">Hlas odeslán</string>
     <string name="previously_set">Dříve nastavené</string>
+    <string name="qr_code_error">QR kód se nepodařilo načíst</string>
     <string name="raise_hand">Hlásit se</string>
     <string name="reactions_tab_all">Vše</string>
     <string name="read_storage_no_permission">Sdílení souborů z úložiště není možné bez oprávnění</string>
+    <string name="recent_threads">Nedávná vlákna</string>
     <string name="record_active_info">Hovor je nahráván</string>
     <string name="record_cancel_start">Zrušit zahajování nahrávání</string>
     <string name="record_failed_info">Nahrávání se nezdařilo. Obraťte se na svého správce.</string>
@@ -593,7 +596,7 @@
     <string name="reset_status">Resetovat stav</string>
     <string name="restrict_join_other_room_while_call">Během hovoru se nelze připojit k jiným místnostem.</string>
     <string name="save">Uložit</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Naskenovat QR kód</string>
     <string name="scope_federated_description">Synchronizovat pouze s důvěryhodnými servery</string>
     <string name="scope_federated_title">Propojené</string>
     <string name="scope_local_description">Viditelné pouze lidem na této instanci a hostům</string>
@@ -628,8 +631,10 @@
     <string name="shared_items_voice">Hlas</string>
     <string name="show_ban_reason">Zobrazit důvod vyloučení</string>
     <string name="show_banned_participants">Zobrazit vyloučené účasníky</string>
+    <string name="show_threads_overview">Zobrazit vlákna</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
+    <string name="start_thread">Začít vlákno</string>
     <string name="started_a_call">zahájen hovor</string>
     <string name="status_message">Stavová zpráva</string>
     <string name="status_reverted">Stav vrácen na původní</string>
@@ -648,6 +653,7 @@
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
     <string name="this_weekend">Tento víkend</string>
+    <string name="thread_replies_amount">%1$d odpovědí</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zítra</string>
     <string name="translate">Překládání</string>
