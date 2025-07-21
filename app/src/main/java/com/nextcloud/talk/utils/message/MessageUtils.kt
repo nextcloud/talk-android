@@ -208,13 +208,15 @@ class MessageUtils(val context: Context) {
     fun hyperLinks(view: TextView, text: String) {
         val isMarkdownLink = isMarkdownInlineLink(text)
         if (isMarkdownLink) {
-            view.autoLinkMask = 0
+            view.autoLinkMask = AUTO_LINK_NONE
         } else {
-            view.autoLinkMask = 15
+            view.autoLinkMask = AUTO_LINK_ALL
         }
     }
     companion object {
         private const val TAG = "MessageUtils"
         const val MAX_REPLY_LENGTH = 250
+        const val AUTO_LINK_NONE = 0
+        const val AUTO_LINK_ALL = 15
     }
 }
