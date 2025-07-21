@@ -465,8 +465,11 @@ class OfflineFirstChatRepository @Inject constructor(
             fieldMap["lastCommonReadId"] = it
         }
 
+        threadId?.let { fieldMap["threadId"] = it.toInt() }
+
         fieldMap["timeout"] = timeout
         fieldMap["limit"] = limit
+
         fieldMap["lookIntoFuture"] = if (lookIntoFuture) 1 else 0
         fieldMap["setReadMarker"] = if (setReadMarker) 1 else 0
 

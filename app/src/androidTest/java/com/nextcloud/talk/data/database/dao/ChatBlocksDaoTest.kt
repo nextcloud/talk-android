@@ -25,6 +25,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.lang.Boolean
 
 @RunWith(AndroidJUnit4::class)
 class ChatBlocksDaoTest {
@@ -48,6 +49,73 @@ class ChatBlocksDaoTest {
 
     @After
     fun closeDb() = db.close()
+
+    @Test
+    fun testGetChatBlocksContainingMessageId() =
+        runTest {
+            val user = createUserEntity("account1", "Account 1")
+            usersDao.saveUser(user)
+            val account1 = usersDao.getUserWithUserId("account1").blockingGet()
+
+            conversationsDao.upsertConversations(
+                listOf(
+                    createConversationEntity(
+                        accountId = account1.id,
+                        "abc",
+                        roomName = "Conversation One"
+                    ),
+                    createConversationEntity(
+                        accountId = account1.id,
+                        "def",
+                        roomName = "Conversation Two"
+                    )
+                )
+            )
+
+            val conversation1 = conversationsDao.getConversationsForUser(account1.id).first()[0]
+
+            val chatBlock1 = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = 123,
+                oldestMessageId = 50,
+                newestMessageId = 60,
+                hasHistory = true
+            )
+
+            val chatBlock2 = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = 123,
+                oldestMessageId = 10,
+                newestMessageId = 20,
+                hasHistory = true
+            )
+
+            val chatBlock3 = ChatBlockEntity(
+                internalConversationId = conversation1.internalId,
+                accountId = conversation1.accountId,
+                token = conversation1.token,
+                threadId = null,
+                oldestMessageId = 50,
+                newestMessageId = 60,
+                hasHistory = true
+            )
+
+            chatBlocksDao.upsertChatBlock(chatBlock1)
+            chatBlocksDao.upsertChatBlock(chatBlock2)
+            chatBlocksDao.upsertChatBlock(chatBlock3)
+
+            val chatBlocksOfThread = chatBlocksDao.getChatBlocksContainingMessageId(
+                internalConversationId = conversation1.internalId,
+                threadId = 123,
+                messageId = 55
+            )
+
+            assertEquals(1, chatBlocksOfThread.first().size)
+        }
 
     @Test
     fun testGetConnectedChatBlocks() =
@@ -264,8 +332,8 @@ class ChatBlocksDaoTest {
             serverVersion = null,
             clientCertificate = null,
             externalSignalingServer = null,
-            current = java.lang.Boolean.FALSE,
-            scheduledForDeletion = java.lang.Boolean.FALSE
+            current = Boolean.FALSE,
+            scheduledForDeletion = Boolean.FALSE
         )
 
     private fun createConversationEntity(accountId: Long, token: String, roomName: String) =
