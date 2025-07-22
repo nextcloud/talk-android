@@ -110,4 +110,13 @@ class MigrationsTest {
         }
         helper.runMigrationsAndValidate(TEST_DB, 16, true, Migrations.MIGRATION_15_16)
     }
+
+    @Test
+    @Throws(IOException::class)
+    fun migrate17To19() {
+        helper.createDatabase(TEST_DB, 17).apply {
+            close()
+        }
+        helper.runMigrationsAndValidate(TEST_DB, 19, true, Migrations.MIGRATION_17_19)
+    }
 }
