@@ -1404,9 +1404,7 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
-
         chatViewModel.getRoom(roomToken)
-
 
         actionBar?.show()
 
@@ -2665,6 +2663,7 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+        adapter = null
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
