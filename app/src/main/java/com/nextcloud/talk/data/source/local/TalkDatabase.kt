@@ -99,7 +99,8 @@ abstract class TalkDatabase : RoomDatabase() {
             Migrations.MIGRATION_12_13,
             Migrations.MIGRATION_13_14,
             Migrations.MIGRATION_14_15,
-            Migrations.MIGRATION_15_16
+            Migrations.MIGRATION_15_16,
+            Migrations.MIGRATION_17_19
         )
 
         private fun build(context: Context): TalkDatabase {
