@@ -47,6 +47,7 @@
     <string name="danger_zone">Crios contúirte</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Scrios an avatar</string>
+    <string name="delete_voice_recording">Scrios taifeadadh gutha</string>
     <string name="deleted_conversation">Scriosadh comhrá %1$s</string>
     <string name="dnd">Ná cur as</string>
     <string name="dontClear">Ná soiléir</string>
@@ -324,6 +325,7 @@
     <string name="nc_message_read">Léadh an teachtaireacht</string>
     <string name="nc_message_sending">Ag seoladh</string>
     <string name="nc_message_sent">Teachtaireacht seolta</string>
+    <string name="nc_microphone_enabled_audio_recording">Tá an micreafón cumasaithe agus tá fuaim á taifeadadh</string>
     <string name="nc_microphone_permission_hint">Tabhair cead \"Micreafón\" le do thoil chun cumarsáid gutha a chumasú.</string>
     <string name="nc_missed_call">Chaill tú glao ó %s</string>
     <string name="nc_moderator">Modhnóir</string>
@@ -409,6 +411,7 @@
     <string name="nc_search_clear">Glan cuardach</string>
     <string name="nc_select_an_account">Roghnaigh cuntas</string>
     <string name="nc_send_edit_message">Nuashonraigh teachtaireacht</string>
+    <string name="nc_send_voice_recording">Seol taifeadadh gutha</string>
     <string name="nc_sensitive_conversation">Comhrá íogair</string>
     <string name="nc_sensitive_conversation_hint">Díchumasófar réamhamharc teachtaireachta sa liosta comhráite agus sna fógraí</string>
     <string name="nc_sent_a_gif" formatted="true">Sheol %1$s GIF.</string>
@@ -547,8 +550,10 @@
     <string name="openConversations">Oscail comhráite</string>
     <string name="open_in_files_app">Oscail san aip Comhaid</string>
     <string name="open_notes">Nótaí Oscailte</string>
+    <string name="open_thread">Téigh go dtí an snáithe</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
+    <string name="please_continue_the_login_process_in_the_browser">Lean ar aghaidh leis an bpróiseas logála isteach sa bhrabhsálaí le do thoil.</string>
     <string name="polls_add_option">Cuir rogha leis</string>
     <string name="polls_edit_vote">Cuir vóta in eagar</string>
     <string name="polls_end_poll">Deireadh vótaíocht</string>
@@ -566,9 +571,11 @@
     <string name="polls_submit_vote">Vóta</string>
     <string name="polls_voted_hidden_success">Vóta curtha isteach</string>
     <string name="previously_set">Socraíodh roimhe seo</string>
+    <string name="qr_code_error">Níorbh fhéidir an cód QR a léamh</string>
     <string name="raise_hand">Ardaigh lámh</string>
     <string name="reactions_tab_all">Gach</string>
     <string name="read_storage_no_permission">Ní féidir comhaid a roinnt ón stóras gan ceadanna</string>
+    <string name="recent_threads">Snáitheanna le déanaí</string>
     <string name="record_active_info">Tá an glao á thaifeadadh</string>
     <string name="record_cancel_start">Cealaigh tús an taifeadta</string>
     <string name="record_failed_info">Theip ar an taifeadadh. Déan teagmháil le do riarthóir.</string>
@@ -624,8 +631,10 @@
     <string name="shared_items_voice">Guth</string>
     <string name="show_ban_reason">Taispeáin Cúis Toirmeasc</string>
     <string name="show_banned_participants">Taispeáin rannpháirtithe toirmiscthe</string>
+    <string name="show_threads_overview">Taispeáin snáitheanna</string>
     <string name="starred">is fearr leat</string>
     <string name="startCallForbidden">Níl cead agat glao a thosú</string>
+    <string name="start_thread">Tosaigh snáithe</string>
     <string name="started_a_call">thosaigh glao</string>
     <string name="status_message">Teachtaireacht stádais</string>
     <string name="status_reverted">Stádas ar ais</string>
@@ -644,6 +653,7 @@
     <string name="thisWeek">An tseachtain seo</string>
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>
     <string name="this_weekend">An deireadh seachtaine seo</string>
+    <string name="thread_replies_amount">%1$d freagraí</string>
     <string name="today">Inniu</string>
     <string name="tomorrow">Amárach</string>
     <string name="translate">Aistrigh</string>
