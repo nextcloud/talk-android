@@ -89,6 +89,19 @@ abstract class TalkDatabase : RoomDatabase() {
                 instance ?: build(context).also { instance = it }
             }
 
+        // If editing the migrations, please add a test case in MigrationsTest under androidTest/data
+        val MIGRATIONS = arrayOf(
+            Migrations.MIGRATION_6_8,
+            Migrations.MIGRATION_7_8,
+            Migrations.MIGRATION_8_9,
+            Migrations.MIGRATION_10_11,
+            Migrations.MIGRATION_11_12,
+            Migrations.MIGRATION_12_13,
+            Migrations.MIGRATION_13_14,
+            Migrations.MIGRATION_14_15,
+            Migrations.MIGRATION_15_16
+        )
+
         private fun build(context: Context): TalkDatabase {
             val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
             val passphrase: ByteArray = getBytesFromChars(passCharArray)
@@ -108,21 +121,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
-                .fallbackToDestructiveMigrationFrom(true, 18)
-                .addMigrations(
-                    Migrations.MIGRATION_6_8,
-                    Migrations.MIGRATION_7_8,
-                    Migrations.MIGRATION_8_9,
-                    Migrations.MIGRATION_10_11,
-                    Migrations.MIGRATION_11_12,
-                    Migrations.MIGRATION_12_13,
-                    Migrations.MIGRATION_13_14,
-                    Migrations.MIGRATION_14_15,
-                    Migrations.MIGRATION_15_16,
-                    // do not provide migration 18 to 19 as 17 to 18 was buggy ->
-                    // fallbackToDestructiveMigration for everyone who has db v18 and did not reinstall or clear data
-                    Migrations.MIGRATION_17_19
-                )
+                .addMigrations(*MIGRATIONS) // * converts migrations to vararg
                 .allowMainThreadQueries()
                 .addCallback(
                     object : Callback() {

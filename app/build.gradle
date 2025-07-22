@@ -82,6 +82,11 @@ android {
             }
         }
 
+        sourceSets {
+            // Adds exported schema location as test app assets.
+            getByName("androidTest").assets.srcDir("$projectDir/schemas")
+        }
+
         testInstrumentationRunnerArgument "TEST_SERVER_URL", "${NC_TEST_SERVER_BASEURL}"
         testInstrumentationRunnerArgument "TEST_SERVER_USERNAME", "${NC_TEST_SERVER_USERNAME}"
         testInstrumentationRunnerArgument "TEST_SERVER_PASSWORD", "${NC_TEST_SERVER_PASSWORD}"
@@ -179,6 +184,7 @@ configurations.configureEach {
 }
 
 dependencies {
+    implementation 'androidx.room:room-testing-android:2.7.2'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.13'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
@@ -350,6 +356,7 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.4'
+    testImplementation("androidx.room:room-testing:2.7.2")
 }
 
 tasks.register('installGitHooks', Copy) {
