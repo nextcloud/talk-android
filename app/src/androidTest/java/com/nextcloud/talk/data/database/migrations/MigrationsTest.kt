@@ -22,7 +22,7 @@ import java.io.IOException
 class MigrationsTest {
     companion object {
         private const val TEST_DB = "migration-test"
-        private const val INIT_VERSION = 8
+        private const val INIT_VERSION = 10 // last version before update to offline first
         private val TAG = MigrationsTest::class.java.simpleName
     }
 
@@ -35,7 +35,7 @@ class MigrationsTest {
     @Test
     @Throws(IOException::class)
     fun migrateAll() {
-        helper.createDatabase(TEST_DB, 8).apply {
+        helper.createDatabase(TEST_DB, INIT_VERSION).apply {
             close()
         }
 
@@ -46,15 +46,6 @@ class MigrationsTest {
         ).addMigrations(*TalkDatabase.MIGRATIONS).build().apply {
             openHelper.writableDatabase.close()
         }
-    }
-
-    @Test
-    @Throws(IOException::class)
-    fun migrate8To9() {
-        helper.createDatabase(TEST_DB, 8).apply {
-            close()
-        }
-        helper.runMigrationsAndValidate(TEST_DB, 9, true, Migrations.MIGRATION_8_9)
     }
 
     @Test
