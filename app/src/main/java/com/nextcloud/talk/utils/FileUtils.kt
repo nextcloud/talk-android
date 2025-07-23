@@ -129,7 +129,10 @@ object FileUtils {
             val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    filename = cursor.getString(cursor.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+                    val displayNameColumnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+                    if (displayNameColumnIndex != -1) {
+                        filename = cursor.getString(displayNameColumnIndex)
+                    }
                 }
             } finally {
                 cursor?.close()
