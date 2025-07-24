@@ -103,6 +103,7 @@ abstract class TalkDatabase : RoomDatabase() {
             Migrations.MIGRATION_17_19
         )
 
+        @Suppress("SpreadOperator")
         private fun build(context: Context): TalkDatabase {
             val passCharArray = context.getString(R.string.nc_talk_database_encryption_key).toCharArray()
             val passphrase: ByteArray = getBytesFromChars(passCharArray)
@@ -122,6 +123,7 @@ abstract class TalkDatabase : RoomDatabase() {
                 .databaseBuilder(context.applicationContext, TalkDatabase::class.java, dbName)
                 // comment out openHelperFactory to view the database entries in Android Studio for debugging
                 .openHelperFactory(factory)
+                .fallbackToDestructiveMigrationFrom(true, 18)
                 .addMigrations(*MIGRATIONS) // * converts migrations to vararg
                 .allowMainThreadQueries()
                 .addCallback(
