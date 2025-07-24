@@ -34,6 +34,7 @@ class MigrationsTest {
 
     @Test
     @Throws(IOException::class)
+    @Suppress("SpreadOperator")
     fun migrateAll() {
         helper.createDatabase(TEST_DB, INIT_VERSION).apply {
             close()
