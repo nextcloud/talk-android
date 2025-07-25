@@ -26,6 +26,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.lang.Boolean
+import kotlin.Long
+import kotlin.String
 
 @RunWith(AndroidJUnit4::class)
 class ChatBlocksDaoTest {
@@ -58,6 +60,7 @@ class ChatBlocksDaoTest {
             val account1 = usersDao.getUserWithUserId("account1").blockingGet()
 
             conversationsDao.upsertConversations(
+                accountId = user.id,
                 listOf(
                     createConversationEntity(
                         accountId = account1.id,
