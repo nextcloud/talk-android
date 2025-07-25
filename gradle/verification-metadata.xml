@@ -14,6 +14,9 @@
          <trust file=".*-javadoc[.]jar" regex="true" reason="Android Studio downloads javadoc jars but doesn't add checksums - fixes building in AS"/>
          <trust file=".*-sources[.]jar" regex="true" reason="Android Studio downloads source jars but doesn't add checksums - fixes building in AS"/>
       </trusted-artifacts>
+      <ignored-keys>
+         <ignored-key id="A40E24B5B408DBD5" reason="Key couldn't be downloaded from any key server"/>
+      </ignored-keys>
       <trusted-keys>
          <trusted-key id="02A36B6DB7056EB5E6FFEF893DA731F041734930" group="org.parceler"/>
          <trusted-key id="03C123038C20AAE9E286C857479D601F3A7B5C1A" group="com.github.ajalt.clikt"/>
@@ -74,12 +77,17 @@
          <trusted-key id="1597AB231B7ADD7E14B1D9C43F00DB67AE236E2E">
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.2"/>
             <trusting group="org.conscrypt" name="conscrypt-android" version="2.5.3"/>
+            <trusting group="org.conscrypt" name="conscrypt-openjdk-uber" version="2.5.2"/>
          </trusted-key>
          <trusted-key id="190D5A957FF22273E601F7A7C92C5FEC70161C62" group="org.apache" name="apache" version="18"/>
          <trusted-key id="19BEAB2D799C020F17C69126B16698A4ADF4D638" group="org.checkerframework"/>
          <trusted-key id="1A55F091AD28C07F831FA44D7905DE25C78AD456" group="com.google.protobuf"/>
          <trusted-key id="1D0A8B5E77C678A7C724445ABF984B4145EA13F7" group="com.squareup" name="javapoet" version="1.13.0"/>
-         <trusted-key id="1D217F8475EEE9F19AB8DD6B793FD5751A0F0780" group="com.squareup.retrofit2"/>
+         <trusted-key id="1D217F8475EEE9F19AB8DD6B793FD5751A0F0780">
+            <trusting group="app.cash.turbine"/>
+            <trusting group="com.squareup.retrofit2"/>
+            <trusting group="^com[.]squareup($|([.].*))" regex="true"/>
+         </trusted-key>
          <trusted-key id="1D85469D8559C2E1DF5F925131D2D79DF7E85DD3" group="org.jcommander" name="jcommander" version="1.85"/>
          <trusted-key id="1D9AA7F9E1E2824728B8CD1794B291AEF984A085" group="io.reactivex.rxjava2"/>
          <trusted-key id="24D04176586361FDA94EE0315F7786DF73E61F56">
@@ -90,6 +98,7 @@
          <trusted-key id="28118C070CB22A0175A2E8D43D12CA2AC19F3181" group="^com[.]fasterxml($|([.].*))" regex="true"/>
          <trusted-key id="2AB84290BFDFE40E55852346522A2E62A5D6C31F" group="com.github.filosganga"/>
          <trusted-key id="2B34821418CF19CF1F2A8352953E02E4F573B46F" group="jakarta.platform"/>
+         <trusted-key id="2BAB4466B44F54F8F99BBBDD5ED22F661BBF0ACC" group="com.almworks.sqlite4java" name="sqlite4java" version="1.0.392"/>
          <trusted-key id="2BCBDD0F23EA1CAFCC11D4860374CF2E8DD1BDFD" group="net.java" name="jvnet-parent" version="1"/>
          <trusted-key id="2DB4F1EF0FA761ECC4EA935C86FDC7E2A11262CB">
             <trusting group="commons-codec"/>
@@ -100,6 +109,8 @@
          </trusted-key>
          <trusted-key id="2E3A1AFFE42B5F53AF19F780BCF4173966770193" group="org.jetbrains" name="annotations" version="13.0"/>
          <trusted-key id="2E92113263FC31C74CCBAAB20E91C2DE43B72BB1" group="org.ec4j.core"/>
+         <trusted-key id="2EE890070AE9318C3AD3520CE08F28E25BD93E9F" group="com.google.testparameterinjector"/>
+         <trusted-key id="2FC53E6B1F681184F4CCD637F5C81DE10A0B8ECC" group="org.yaml" name="snakeyaml" version="2.4"/>
          <trusted-key id="3051D45031E13516A6E8FAFF280D66A55F5316C5">
             <trusting group="org.bitbucket.b_c" name="jose4j" version="0.7.0"/>
             <trusting group="org.bitbucket.b_c" name="jose4j" version="0.9.5"/>
@@ -155,6 +166,7 @@
          <trusted-key id="54A26BFDC7ECDD39BA4C123AC3BAB45F4AF71FAB" group="io.opencensus" name="opencensus-proto" version="0.2.0"/>
          <trusted-key id="5897253BEA3046AEEA95A067E93671C7272B7B3F" group="org.jdom" name="jdom2" version="2.0.6"/>
          <trusted-key id="5989BAF76217B843D66BE55B2D0E1FB8FE4B68B4" group="org.eclipse.jetty" name="jetty-bom" version="9.4.54.v20240208"/>
+         <trusted-key id="59B06224FD8912E36603BE79FEFE78456EDDC34A" group="io.mockk"/>
          <trusted-key id="5F6C2148AD4911FE308110E5F0D0AE433308B042" group="io.gitlab.arturbosch.detekt"/>
          <trusted-key id="600EA202B1EC682F4A788E5AAC7A514BC9F9BB70" group="io.opencensus" name="opencensus-api" version="0.31.0"/>
          <trusted-key id="60200AC4AE761F1614D6C46766D68DAA073BE985">
@@ -187,6 +199,7 @@
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.9"/>
          </trusted-key>
          <trusted-key id="7B121B76A7ED6CE6E60AD51784E913A8E3A748C0" group="org.bouncycastle"/>
+         <trusted-key id="7B79ADD11F8A779FE90FD3D0893A028475557671" group="com.gradle" name="develocity-gradle-plugin" version="3.19.2"/>
          <trusted-key id="7E22D50A7EBD9D2CD269B2D4056ACA74D46000BF" group="io.netty"/>
          <trusted-key id="7F36E793AE3252E5D9E9B98FEE9E7DC9D92FC896" group="com.google.errorprone"/>
          <trusted-key id="8461EFA0E74ABAE010DE66994EB27DB2A3B88B8B">
@@ -248,6 +261,7 @@
             <trusting group="androidx.graphics" name="graphics-path" version="1.0.1"/>
             <trusting group="androidx.lifecycle"/>
             <trusting group="androidx.profileinstaller"/>
+            <trusting group="androidx.startup" name="startup-runtime" version="1.2.0"/>
             <trusting group="androidx.test"/>
             <trusting group="androidx.transition" name="transition" version="1.5.0"/>
             <trusting group="androidx.webkit"/>
@@ -304,6 +318,7 @@
          <trusted-key id="C70B844F002F21F6D2B9C87522E44AC0622B91C3" group="com.beust" name="jcommander" version="1.82"/>
          <trusted-key id="C7BE5BCC9FEC15518CFDA882B0F3710FA64900E7" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="CA491704D613780D2BEE00F2C6FC46EB51CF569C" group="jaxen"/>
+         <trusted-key id="CB3190CA7842439E57F3712E44CE7BF2825EA2CD" group="com.ibm.icu"/>
          <trusted-key id="CBD134820A0E04D230AEC5D5D9B2BC72A3754BEA" group="^com[.]github[.]lukaspili($|([.].*))" regex="true"/>
          <trusted-key id="CD5464315F0B98C77E6E8ECD9DAADC1C9FCC82D0" group="org.apache.commons" name="commons-lang3"/>
          <trusted-key id="CE0E1BC443809579D8718F4FB943F5CB616566CD" group="de.mannodermaus.retrofit2" name="converter-logansquare" version="1.4.1"/>
@@ -334,6 +349,7 @@
          <trusted-key id="E376140124BED4E3C06D227581C27DE945332233" group="^com[.]google[.]auto($|([.].*))" regex="true"/>
          <trusted-key id="E3A9F95079E84CE201F7CF60BEDE11EAF1164480" group="org.hamcrest"/>
          <trusted-key id="E4AC7874F3479A0F1F8ECF9960BB45F36B649F22" group="fr.dudie" name="nominatim-api" version="3.4"/>
+         <trusted-key id="E52F07877A5805F9AF4AB0ACD46C5610D06E7001" group="com.ibm.icu" name="icu4j" version="77.1"/>
          <trusted-key id="E77417AC194160A3FABD04969A259C7EE636C5ED" group="^com[.]google($|([.].*))" regex="true"/>
          <trusted-key id="E7DC75FC24FB3C8DFE8086AD3D5839A2262CBBFB" group="org.jetbrains.kotlinx"/>
          <trusted-key id="E82D2EAF2E83830CE1F7F6BE571A5291E827E1C7" group="net.java" name="jvnet-parent" version="3"/>
@@ -389,6 +405,14 @@
          </artifact>
          <artifact name="activity-1.2.4.module">
             <sha256 value="20f5634f76717910e5b4299909d6998a8078f106bdb9e15b2dd75fcfc1bd42b5" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
+      <component group="androidx.activity" name="activity" version="1.5.1">
+         <artifact name="activity-1.5.1.aar">
+            <sha256 value="4b04b42d2c1f81c02faf0f7b6e9cc9fede10fdee8f66136cd4b99f88e8f48c0f" origin="Generated by Gradle"/>
+         </artifact>
+         <artifact name="activity-1.5.1.module">
+            <sha256 value="c4317fb95ce2716b88f1f4a5334795efda084097a3f2447ffccb10a412c85be4" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="androidx.activity" name="activity" version="1.6.0">
@@ -4017,6 +4041,9 @@
          </artifact>
       </component>
       <component group="androidx.lifecycle" name="lifecycle-runtime" version="2.5.1">
+         <artifact name="lifecycle-runtime-2.5.1.aar">
+            <sha256 value="33b0d73dc2f028fceb3599bacabe563c3db6d26f3513d889595863536a4ac8c0" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
          <artifact name="lifecycle-runtime-2.5.1.module">
             <sha256 value="0027dc887fa3b243c23db40ab0f763fc7efacaafa15df923d233344acfe81a16" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
@@ -4237,6 +4264,9 @@
          </artifact>
       </component>
       <component group="androidx.lifecycle" name="lifecycle-viewmodel" version="2.5.1">
+         <artifact name="lifecycle-viewmodel-2.5.1.aar">
+            <sha256 value="14a27d5fb8a1436b1b7dec18bebaa66c830cdbbc8e28a81ce5f85b7c33b3ae9d" origin="Generated by Gradle"/>
+         </artifact>
          <artifact name="lifecycle-viewmodel-2.5.1.module">
             <sha256 value="01e413b73cbe38cb714dc5bdb21bd860931124c8e5f2369803f4aacc49081c9f" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
@@ -4394,6 +4424,9 @@
          </artifact>
       </component>
       <component group="androidx.lifecycle" name="lifecycle-viewmodel-savedstate" version="2.5.1">
+         <artifact name="lifecycle-viewmodel-savedstate-2.5.1.aar">
+            <sha256 value="8481141f97f0e6213dd33fcc89a784c4bd11a6ff7d4779a1cf6a0e9fbdbf24e0" origin="Generated by Gradle"/>
+         </artifact>
          <artifact name="lifecycle-viewmodel-savedstate-2.5.1.module">
             <sha256 value="29acd5fe614b3f89123eb838f688d625eaa8b422c8d1905b48ad8e760cd7ad8b" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
@@ -5346,6 +5379,9 @@
          </artifact>
       </component>
       <component group="androidx.savedstate" name="savedstate" version="1.2.0">
+         <artifact name="savedstate-1.2.0.aar">
+            <sha256 value="2de528d6898e95ef020d22d9ffdf9d1f77cbdd93f92d39dfaa5d5c43b0c311c8" origin="Generated by Gradle"/>
+         </artifact>
          <artifact name="savedstate-1.2.0.module">
             <sha256 value="4247c23308abcb5d0ff8cdaf7dfd583f3c2a1016f68d13f1a41c21600b6fafd7" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
@@ -5567,6 +5603,14 @@
             <sha256 value="39e978b32726354a67ea6efe8535ab6579f4760fd579c9deaacb347b0bff0c3e" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
+      <component group="androidx.test" name="core" version="1.4.0">
+         <artifact name="core-1.4.0.aar">
+            <sha256 value="671284e62e393f16ceae1a99a3a9a07bf1aacda29f8fe7b6b884355ef34c09cf" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="core-1.4.0.pom">
+            <sha256 value="33e1c5e91f1a56e29c45d002473748350a90f358cc5a44895d29ef182370ea93" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="androidx.test" name="core" version="1.5.0">
          <artifact name="core-1.5.0.aar">
             <sha256 value="2c06715c0d0843cee2143ab8bb322bb3f34d5247630402fc8c1b6a0eafa15b9f" origin="Generated by Gradle" reason="Artifact is not signed"/>
@@ -5613,6 +5657,14 @@
          </artifact>
          <artifact name="core-ktx-1.7.0.pom">
             <sha256 value="3434b2442b2748e9e30946673fb7316ba85fe43d7685413b540b4f7e261c1696" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="androidx.test" name="monitor" version="1.4.0">
+         <artifact name="monitor-1.4.0.aar">
+            <sha256 value="46a912a1e175f27a97521af3f50e5af87c22c49275dd2c57c043740012806325" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+         <artifact name="monitor-1.4.0.pom">
+            <sha256 value="d1f64233f29f0ede076b67e572a2842028a8838dbdab59193e2bfba4ddf26afe" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
       <component group="androidx.test" name="monitor" version="1.6.0">
@@ -14871,6 +14923,11 @@
             <sha256 value="e335cd1678426f15e04ae4f623c58b4c176572d7258c6ea64e3437cdc01e5707" origin="Generated by Gradle" reason="Artifact is not signed"/>
          </artifact>
       </component>
+      <component group="com.google.guava" name="guava" version="33.4.8-jre">
+         <artifact name="guava-33.4.8-android.jar">
+            <sha256 value="a1f8a4bafe5a77232d333356843e194599b30837574a7f4be1063daaaaab102c" origin="Generated by Gradle" reason="Artifact is not signed"/>
+         </artifact>
+      </component>
       <component group="com.google.guava" name="guava-parent" version="26.0-android">
          <artifact name="guava-parent-26.0-android.pom">
             <sha256 value="f8698ab46ca996ce889c1afc8ca4f25eb8ac6b034dc898d4583742360016cc04" origin="Generated by Gradle"/>
@@ -21736,6 +21793,214 @@
             <sha256 value="54ba23d87a2d438540c99ef8794a0856fc573a256b498678283c3c67ef18ada8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
          </artifact>
       </component>
+      <component group="org.robolectric" name="annotations" version="4.13">
+         <artifact name="annotations-4.13.jar">
+            <sha256 value="d813def0542230c510fb1a8f062f0e05e81b914878a4d961281437c99c177e21" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="annotations-4.13.module">
+            <sha256 value="c422d5c8842d7a01f39b323120b87dec4725337a5b03995df03494a18f88c9a8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="annotations" version="4.15.1">
+         <artifact name="annotations-4.15.1.jar">
+            <sha256 value="cf061a05d76dfcaf67f7c764dc18c9c2bb2e46337624af734d949e46579d859d" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="annotations-4.15.1.module">
+            <sha256 value="608c034e5c39e881210111400fb021e3300f7e583ea692b2cdc1766d4f870efc" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="junit" version="4.13">
+         <artifact name="junit-4.13.jar">
+            <sha256 value="945e0ac1868aa8f6550e7021ad0e00efa00f25da5a62d12583d2dbe16117b63a" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="junit-4.13.module">
+            <sha256 value="a669f1f50392b26c5d510285663f2e8a870e0a7b875e862474d476147568af5f" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="junit" version="4.15.1">
+         <artifact name="junit-4.15.1.jar">
+            <sha256 value="6dd0d61885d49bf26aebf7a73db29f40d15ab5d530336f677d8b9d355b23a9a9" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="junit-4.15.1.module">
+            <sha256 value="65f43c1416a13dee7f6dfafffc7258d1c5f20ac6ccf7e6c213987c43ed68da26" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="nativeruntime" version="4.13">
+         <artifact name="nativeruntime-4.13.jar">
+            <sha256 value="2c3d6945cdf4b8569125d35c2ffc72444ba0cfde24717127becd56cb77e0dff5" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="nativeruntime-4.13.module">
+            <sha256 value="3fcab094062f01d3a717006603f05d3ee961e843df424f0c3e4e1e6146333d64" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="nativeruntime" version="4.15.1">
+         <artifact name="nativeruntime-4.15.1.jar">
+            <sha256 value="e51f4c87a9e3441a2ceefbe442753ee45d26826a7fb52b7c4c4ddd38595fd463" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="nativeruntime-4.15.1.module">
+            <sha256 value="76fa7b98ce065c6c6a3956c40d2c30a04238f5dd3be401cda5d1626cb92098aa" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="nativeruntime-dist-compat" version="1.0.12">
+         <artifact name="nativeruntime-dist-compat-1.0.12.jar">
+            <sha256 value="688d499acc8b33315c1f799cd9afb1f0486cd4605b89e3f8e7df72588365bccd" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="nativeruntime-dist-compat-1.0.12.pom">
+            <sha256 value="4acdac5ceb7e1ed5574abe3510be76180316f60381501884d48cd770e82c33ef" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="nativeruntime-dist-compat" version="1.0.17">
+         <artifact name="nativeruntime-dist-compat-1.0.17.jar">
+            <sha256 value="4327201eeee6a50f534ef5fb26a61f54bf9c2c9efeaab842a814e7da4ee58994" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="nativeruntime-dist-compat-1.0.17.pom">
+            <sha256 value="1cf8c075d1cb72f7c96f612b7a50106875e302ef33c2b88a69e54a46513be4e2" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="pluginapi" version="4.13">
+         <artifact name="pluginapi-4.13.jar">
+            <sha256 value="48a31c50c4cfd90b2f27b70ebc5d1946b4cc6dc94df275e4743c48c75ea6a25e" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="pluginapi-4.13.module">
+            <sha256 value="e1e1fcded3313d9962150f1354e5ad2a8f9cdcae170dd23e608584ecba8a00a2" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="pluginapi" version="4.15.1">
+         <artifact name="pluginapi-4.15.1.jar">
+            <sha256 value="4f56ad63096fe70a9e3999f4d6270f477ccaeee184c1223d27427ab4427b43e9" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="pluginapi-4.15.1.module">
+            <sha256 value="2abaafe3550352c048f623001310f015537332b81f35f40070d9ec4c3460f845" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="plugins-maven-dependency-resolver" version="4.13">
+         <artifact name="plugins-maven-dependency-resolver-4.13.jar">
+            <sha256 value="0cb77f7bf1f2cb7e54b5cb72caa3ad0f0d03f856590a50dff1e50d35a1dab890" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="plugins-maven-dependency-resolver-4.13.pom">
+            <sha256 value="2a6f81f13e3f8cef1b25db4f8bbe24e8fc0486ffcc5fc9b43694a6bc4cdbe8b5" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="plugins-maven-dependency-resolver" version="4.15.1">
+         <artifact name="plugins-maven-dependency-resolver-4.15.1.jar">
+            <sha256 value="6512964ab2cf55003f37c3c33ee9ae687cea5bd289cebf0d46e715c317e5653a" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="plugins-maven-dependency-resolver-4.15.1.pom">
+            <sha256 value="88a5161436167ae0c0edb188eed171d3895cd16acdcc749a185c1a9e3b000df8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="resources" version="4.13">
+         <artifact name="resources-4.13.jar">
+            <sha256 value="a7231dd85420ef1db2b1c17da665fe12bef6b1d60f2010b7dfe349b695955fa6" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="resources-4.13.module">
+            <sha256 value="775f068c6b9c5134a7308bbfac5931ac3f2ac84b652577e639a88e6e1ca19cb2" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="resources" version="4.15.1">
+         <artifact name="resources-4.15.1.jar">
+            <sha256 value="9e49fa451bfd76b61718264f1047a5cbca0b25ffc4c34c2690fac24bd48125e8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="resources-4.15.1.module">
+            <sha256 value="422ff4f37ed5271594dced67ff07c17f292e9f270338486c27004e0fba182dcd" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="robolectric" version="4.13">
+         <artifact name="robolectric-4.13.jar">
+            <sha256 value="10006cb69518e3b29225368f4047d62f7e5a3cc0c3d9e228ff547abe40b70c6c" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="robolectric-4.13.module">
+            <sha256 value="1c4ea47a7de2c52150082e2cf99c1fb023148316bf62d4f5919ce9afb0ca1752" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="robolectric" version="4.15.1">
+         <artifact name="robolectric-4.15.1.jar">
+            <sha256 value="592ce454d42d36382194d5505fb1cdd8a19689351b5cf1049b8bbe1af4de9f81" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="robolectric-4.15.1.module">
+            <sha256 value="1dafeb956e746531de64e2de5074c9ec6960c8754cc64d27d63d68aecbd5386b" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="sandbox" version="4.13">
+         <artifact name="sandbox-4.13.jar">
+            <sha256 value="6536350562eb11ab289b1ac28423b5fdcfbfe090ef5e6360ce441333191d0cd5" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="sandbox-4.13.module">
+            <sha256 value="708a128b05c2941d16b3e1d82b4cae3da8c1f54802e79f687d7b8a72addb3fc7" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="sandbox" version="4.15.1">
+         <artifact name="sandbox-4.15.1.jar">
+            <sha256 value="27a326a22c2c8c04e4021e4802d90f60ea98d68229211e7bb124ad76ce1868d4" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="sandbox-4.15.1.module">
+            <sha256 value="1b431bd706626961613ae4da2c56d86ebb6c23778898e8d2379df76bc7cf9c32" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="shadowapi" version="4.13">
+         <artifact name="shadowapi-4.13.jar">
+            <sha256 value="277b664d4829701314dd464dfea10ce74a0bd0b2b4811ae7dcc1c335e1b440c3" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="shadowapi-4.13.module">
+            <sha256 value="5db21aa2eb063cffa3faae654ff43603f9092d7409e1fadd784e2eed115ddbfe" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="shadowapi" version="4.15.1">
+         <artifact name="shadowapi-4.15.1.jar">
+            <sha256 value="2b4312a1b3a74cb237cd443869b8d7e6cfabfd5c92beb70d4df4150f10365253" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="shadowapi-4.15.1.module">
+            <sha256 value="103f9c8957c1d1da4b28c908ca06c86654249a98577449a9dc4fe8de2c24e456" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="shadows-framework" version="4.13">
+         <artifact name="shadows-framework-4.13.jar">
+            <sha256 value="101e89d6dd3379368b113fd50883b8a5546189f6695bcde9b188ba8459e83083" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="shadows-framework-4.13.module">
+            <sha256 value="bebeb74c7a6543e6d67667906bc6a3cfb0acc080ef9c8003dfd3dcd14abfb718" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="shadows-framework" version="4.15.1">
+         <artifact name="shadows-framework-4.15.1.jar">
+            <sha256 value="5561ae64783c3cb95c64d23354f8a27bc315445eb536ab06d2b50e921083b684" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="shadows-framework-4.15.1.module">
+            <sha256 value="1f81b08889d9541da1224a19a14ad94d585b62b9b40626fc10443cf44238a645" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="utils" version="4.13">
+         <artifact name="utils-4.13.jar">
+            <sha256 value="1f55e97fdcba5b4224e6f26744a86e8545888638747f738d2eec409e91eeda05" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="utils-4.13.pom">
+            <sha256 value="59d7ac54a24460c884fbb40625dad4f989bba021429d7e055e78574abf688797" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="utils" version="4.15.1">
+         <artifact name="utils-4.15.1.jar">
+            <sha256 value="5ea6dc1c70a5c343c956b4d27715a646fdacc312a9c12be22aee3ec300745c91" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="utils-4.15.1.pom">
+            <sha256 value="f200fb62b40ee03092cd75f6f5429cf04da05be80c4527964ea7501820f22775" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="utils-reflector" version="4.13">
+         <artifact name="utils-reflector-4.13.jar">
+            <sha256 value="d54286f22b0af6491064546326221b9c593ba2a72f0a6506caf86af23f549ccd" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="utils-reflector-4.13.module">
+            <sha256 value="5ebb1c7a2a86ad1699af0e68617513f17bb6a516d24e7936ce7d14a1d66812e8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
+      <component group="org.robolectric" name="utils-reflector" version="4.15.1">
+         <artifact name="utils-reflector-4.15.1.jar">
+            <sha256 value="199ecbcc077d0b9130aae9772e48be51bdbd5d7ea2e1c20b0a48e8eaa1e2d4f8" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+         <artifact name="utils-reflector-4.15.1.module">
+            <sha256 value="afd81dedc74fe08ea18d59f8aa269749b807ec2c365106e87b5c7b1395e3140d" origin="Generated by Gradle" reason="A key couldn't be downloaded"/>
+         </artifact>
+      </component>
       <component group="org.slf4j" name="slf4j-api" version="1.7.26">
          <artifact name="slf4j-api-1.7.26.jar">
             <sha256 value="6d9e5b86cfd1dd44c676899285b5bb4fa0d371cf583e8164f9c8a0366553242b" origin="Generated by Gradle"/>
@@ -21872,6 +22137,11 @@
          </artifact>
          <artifact name="snakeyaml-engine-2.7.pom">
             <sha256 value="a52a6243f8615856791d1297f97374076bf81348061af714ad0963d375ae5cb7" origin="Generated by Gradle"/>
+         </artifact>
+      </component>
+      <component group="org.sonatype.oss" name="oss-parent" version="4">
+         <artifact name="oss-parent-4.pom">
+            <pgp value="2BCBDD0F23EA1CAFCC11D4860374CF2E8DD1BDFD"/>
          </artifact>
       </component>
       <component group="org.sonatype.oss" name="oss-parent" version="7">

@@ -9,6 +9,7 @@ package com.nextcloud.talk.dagger.modules
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -160,4 +161,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ThreadsOverviewViewModel::class)
     abstract fun threadsOverviewViewModel(viewModel: ThreadsOverviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BrowserLoginActivityViewModel::class)
+    abstract fun browserLoginActivityViewModel(viewModel: BrowserLoginActivityViewModel): ViewModel
 }

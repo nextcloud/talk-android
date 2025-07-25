@@ -100,6 +100,7 @@ android {
         unitTests.all {
             useJUnitPlatform()
         }
+        unitTests.returnDefaultValues = true
     }
 
     buildTypes {
@@ -355,8 +356,11 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
-    testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.4'
+    testImplementation("com.google.dagger:hilt-android-testing:2.57")
     testImplementation "androidx.room:room-testing:${roomVersion}"
+    testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.2' // DO NOT REMOVE
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("org.robolectric:robolectric:4.15.1")
 }
 
 tasks.register('installGitHooks', Copy) {
