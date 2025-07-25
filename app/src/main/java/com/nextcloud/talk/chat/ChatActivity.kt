@@ -3464,7 +3464,8 @@ class ChatActivity :
             if (isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
                 isPollVotedMessage(currentMessage) ||
-                isEditMessage(currentMessage)
+                isEditMessage(currentMessage) ||
+                isThreadCreatedMessage(currentMessage)
             ) {
                 chatMessageIterator.remove()
             }
@@ -3505,6 +3506,9 @@ class ChatActivity :
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_DELETED ||
             currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION_REVOKED
+
+    private fun isThreadCreatedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+        currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.THREAD_CREATED
 
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
