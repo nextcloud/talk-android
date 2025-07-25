@@ -90,6 +90,7 @@ import coil.transform.CircleCropTransformation
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import com.nextcloud.android.common.ui.color.ColorUtil
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.BuildConfig
@@ -2522,8 +2523,8 @@ class ChatActivity :
         }
     }
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
-        var metaData = ""
+    fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
+        val metaDataMap = mutableMapOf<String, Any>()
         var room = ""
 
         if (!participantPermissions.hasChatPermission()) {
@@ -2531,15 +2532,28 @@ class ChatActivity :
             return
         }
 
+        messageInputViewModel.getReplyChatMessage
+
+        var replyMessageId = messageInputViewModel.getReplyChatMessage.value?.id?.toInt()
+        if (replyMessageId == 0) {
+            replyMessageId = conversationThreadInfo?.thread?.id ?: 0
+        }
+
+        if (replyMessageId != 0) {
+            metaDataMap["replyTo"] = replyMessageId.toString()
+        }
+
         if (isVoiceMessage) {
-            metaData = VOICE_MESSAGE_META_DATA
+            metaDataMap["messageType"] = "voice-message"
         }
 
         if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
+            metaDataMap["caption"] = caption
         }
 
-        if (token == "") room = roomToken else room = token
+        val metaData = Gson().toJson(metaDataMap)
+
+        room = if (token == "") roomToken else token
 
         chatViewModel.uploadFile(fileUri, room, currentConversation?.displayName!!, metaData)
     }
@@ -4319,7 +4333,6 @@ class ChatActivity :
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
-        private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val FULLY_OPAQUE_INT: Int = 255

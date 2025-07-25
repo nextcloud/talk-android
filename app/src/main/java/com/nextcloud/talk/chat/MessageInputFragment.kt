@@ -178,7 +178,7 @@ class MessageInputFragment : Fragment() {
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
-            (message as ChatMessage?)?.let {
+            message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
                 chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
@@ -392,7 +392,7 @@ class MessageInputFragment : Fragment() {
         // See: https://developer.android.com/guide/topics/text/image-keyboard
 
         (binding.fragmentMessageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFile(it.toString(), false)
+            chatActivity.uploadFile(it.toString(), false)
         }
 
         if (chatActivity.sharedText.isNotEmpty()) {
@@ -721,8 +721,6 @@ class MessageInputFragment : Fragment() {
     ) {
         Log.d(TAG, "Reply")
         val view = binding.fragmentMessageInputView
-        view.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
-            View.GONE
         view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
             View.VISIBLE
 
@@ -757,9 +755,13 @@ class MessageInputFragment : Fragment() {
             }
         }
 
+        // TODO: set quotedMessage in viewModel
+        // hanlde this from there instead to use tag on view
+        // also use it for quote for reply with file
+        // chatActivity.messageInputViewModel.setQuotedMessage(it)
+
         val quotedChatMessageView =
             view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-        quotedChatMessageView?.tag = quotedJsonId
         quotedChatMessageView?.visibility = View.VISIBLE
     }
 
@@ -827,28 +829,6 @@ class MessageInputFragment : Fragment() {
     private fun isTypingStatusEnabled(): Boolean =
         !CapabilitiesUtil.isTypingStatusPrivate(chatActivity.conversationUser!!)
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
-        var metaData = ""
-        val room: String
-
-        if (!chatActivity.participantPermissions.hasChatPermission()) {
-            Log.w(ChatActivity.TAG, "uploading file(s) is forbidden because of missing attendee permissions")
-            return
-        }
-
-        if (isVoiceMessage) {
-            metaData = VOICE_MESSAGE_META_DATA
-        }
-
-        if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
-        }
-
-        if (token == "") room = chatActivity.roomToken else room = token
-
-        chatActivity.chatViewModel.uploadFile(fileUri, room, chatActivity.currentConversation!!.displayName, metaData)
-    }
-
     private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.fragmentMessageInputView.inputEditText != null) {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
@@ -856,9 +836,7 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
 
-            var replyMessageId = binding.fragmentMessageInputView
-                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
-
+            var replyMessageId = chatActivity.messageInputViewModel.getReplyChatMessage.value?.id?.toInt()
             if (replyMessageId == 0) {
                 replyMessageId = chatActivity.conversationThreadInfo?.thread?.id ?: 0
             }
@@ -1043,6 +1021,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun cancelReply() {
+        // TODO set id in viewmodel to null
         val quote = binding.fragmentMessageInputView
             .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quote.visibility = View.GONE
