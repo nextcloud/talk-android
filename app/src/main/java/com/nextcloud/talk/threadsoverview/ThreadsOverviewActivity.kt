@@ -69,6 +69,8 @@ class ThreadsOverviewActivity : BaseActivity() {
 
     lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
 
+    var roomToken: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -80,9 +82,7 @@ class ThreadsOverviewActivity : BaseActivity() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
         val extras: Bundle? = intent.extras
-        val roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
-
-        threadsOverviewViewModel.init(roomToken)
+        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
@@ -136,6 +136,7 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
+        threadsOverviewViewModel.init(roomToken)
     }
 
     companion object {
