@@ -157,7 +157,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
         viewThemeUtils.talk.themeIncomingMessageBubble(bubble, message.isGrouped, message.isDeleted)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -207,7 +207,15 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
                         binding.messageQuote.quoteColoredView
                     )
 
-                    binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+                    binding.messageQuote.quotedChatMessageView.visibility =
+                        if (!message.isDeleted &&
+                            message.parentMessageId != null &&
+                            message.parentMessageId != chatActivity.conversationThreadId
+                        ) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
                 } catch (e: Exception) {
                     Log.d(TAG, "Error when processing parent message in view holder", e)
                 }

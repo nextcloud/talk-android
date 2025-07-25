@@ -170,7 +170,7 @@ class OutcomingDeckCardViewHolder(outcomingView: View) :
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod")
     private fun setParentMessageDataOnMessageItem(message: ChatMessage) {
         if (message.parentMessageId != null && !message.isDeleted) {
             CoroutineScope(Dispatchers.Main).launch {
@@ -220,7 +220,15 @@ class OutcomingDeckCardViewHolder(outcomingView: View) :
                         binding.messageQuote.quoteColoredView
                     )
 
-                    binding.messageQuote.quotedChatMessageView.visibility = View.VISIBLE
+                    binding.messageQuote.quotedChatMessageView.visibility =
+                        if (!message.isDeleted &&
+                            message.parentMessageId != null &&
+                            message.parentMessageId != chatActivity.conversationThreadId
+                        ) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
                 } catch (e: Exception) {
                     Log.d(TAG, "Error when processing parent message in view holder", e)
                 }

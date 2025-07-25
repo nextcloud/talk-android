@@ -101,7 +101,6 @@ class MessageInputFragment : Fragment() {
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
-        const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
         private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
@@ -178,7 +177,7 @@ class MessageInputFragment : Fragment() {
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
-            (message as ChatMessage?)?.let {
+            message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
                 chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
@@ -392,7 +391,14 @@ class MessageInputFragment : Fragment() {
         // See: https://developer.android.com/guide/topics/text/image-keyboard
 
         (binding.fragmentMessageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFile(it.toString(), false)
+            chatActivity.chatViewModel.uploadFile(
+                fileUri = it.toString(),
+                isVoiceMessage = false,
+                caption = "",
+                roomToken = chatActivity.roomToken,
+                replyToMessageId = chatActivity.getReplyToMessageId(),
+                displayName = chatActivity.currentConversation?.displayName!!
+            )
         }
 
         if (chatActivity.sharedText.isNotEmpty()) {
@@ -564,9 +570,9 @@ class MessageInputFragment : Fragment() {
                         return@setOnTouchListener false
                     } else {
                         chatActivity.chatViewModel.stopAndSendAudioRecording(
-                            chatActivity.roomToken,
-                            chatActivity.currentConversation!!.displayName,
-                            VOICE_MESSAGE_META_DATA
+                            roomToken = chatActivity.roomToken,
+                            replyToMessageId = chatActivity.getReplyToMessageId(),
+                            displayName = chatActivity.currentConversation!!.displayName
                         )
                     }
                     resetSlider()
@@ -721,8 +727,6 @@ class MessageInputFragment : Fragment() {
     ) {
         Log.d(TAG, "Reply")
         val view = binding.fragmentMessageInputView
-        view.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
-            View.GONE
         view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
             View.VISIBLE
 
@@ -757,9 +761,7 @@ class MessageInputFragment : Fragment() {
             }
         }
 
-        val quotedChatMessageView =
-            view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-        quotedChatMessageView?.tag = quotedJsonId
+        val quotedChatMessageView = view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quotedChatMessageView?.visibility = View.VISIBLE
     }
 
@@ -827,28 +829,6 @@ class MessageInputFragment : Fragment() {
     private fun isTypingStatusEnabled(): Boolean =
         !CapabilitiesUtil.isTypingStatusPrivate(chatActivity.conversationUser!!)
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
-        var metaData = ""
-        val room: String
-
-        if (!chatActivity.participantPermissions.hasChatPermission()) {
-            Log.w(ChatActivity.TAG, "uploading file(s) is forbidden because of missing attendee permissions")
-            return
-        }
-
-        if (isVoiceMessage) {
-            metaData = VOICE_MESSAGE_META_DATA
-        }
-
-        if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
-        }
-
-        if (token == "") room = chatActivity.roomToken else room = token
-
-        chatActivity.chatViewModel.uploadFile(fileUri, room, chatActivity.currentConversation!!.displayName, metaData)
-    }
-
     private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.fragmentMessageInputView.inputEditText != null) {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
@@ -856,23 +836,15 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
 
-            var replyMessageId = binding.fragmentMessageInputView
-                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
-
-            if (replyMessageId == 0) {
-                replyMessageId = chatActivity.conversationThreadInfo?.thread?.id ?: 0
-            }
-
             sendMessage(
                 editable.toString(),
-                replyMessageId,
                 sendWithoutNotification
             )
             cancelReply()
         }
     }
 
-    private fun sendMessage(message: String, replyTo: Int?, sendWithoutNotification: Boolean) {
+    private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
@@ -882,7 +854,7 @@ class MessageInputFragment : Fragment() {
             ),
             message,
             chatActivity.conversationUser!!.displayName ?: "",
-            replyTo ?: 0,
+            chatActivity.getReplyToMessageId(),
             sendWithoutNotification
         )
     }
@@ -1043,6 +1015,7 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun cancelReply() {
+        // TODO set id in viewmodel to null
         val quote = binding.fragmentMessageInputView
             .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quote.visibility = View.GONE

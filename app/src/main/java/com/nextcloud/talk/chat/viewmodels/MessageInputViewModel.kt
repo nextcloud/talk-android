@@ -90,8 +90,8 @@ class MessageInputViewModel @Inject constructor(
     val getEditChatMessage: LiveData<IMessage?>
         get() = _getEditChatMessage
 
-    private val _getReplyChatMessage: MutableLiveData<IMessage?> = MutableLiveData()
-    val getReplyChatMessage: LiveData<IMessage?>
+    private val _getReplyChatMessage: MutableLiveData<ChatMessage?> = MutableLiveData()
+    val getReplyChatMessage: LiveData<ChatMessage?>
         get() = _getReplyChatMessage
 
     sealed interface ViewState
@@ -203,7 +203,7 @@ class MessageInputViewModel @Inject constructor(
         }
     }
 
-    fun reply(message: IMessage?) {
+    fun reply(message: ChatMessage?) {
         _getReplyChatMessage.postValue(message)
     }
 
