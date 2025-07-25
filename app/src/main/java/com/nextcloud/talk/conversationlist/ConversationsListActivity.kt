@@ -163,6 +163,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
 import java.io.File
+import java.net.ConnectException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1158,8 +1159,9 @@ class ConversationsListActivity :
         binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    private fun showMaintenanceModeWarning(show: Boolean) {
-        binding.chatListMaintenanceWarning.visibility = if (show) View.VISIBLE else View.GONE
+    private fun showWarning(show: Boolean, message:String) {
+        binding.chatListWarning.text = message
+        binding.chatListWarning.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun handleUI(show: Boolean) {
@@ -1240,7 +1242,12 @@ class ConversationsListActivity :
                     showErrorDialog()
                 }
             }
-        } else {
+        }
+        else if(throwable is ConnectException){
+            showWarning(true, context.getString(R.string.nc_server_down))
+        }
+
+        else {
             Log.e(TAG, "Exception in ConversationListActivity", throwable)
             showErrorDialog()
         }
@@ -1249,9 +1256,7 @@ class ConversationsListActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         hideLogoForBrandedClients()
-
-        showMaintenanceModeWarning(false)
-
+        showWarning(false, "")
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
@@ -1275,7 +1280,7 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
-            showMaintenanceModeWarning(false)
+            showWarning(false, "" )
             fetchRooms()
             fetchPendingInvitations()
         }
@@ -2075,7 +2080,7 @@ class ConversationsListActivity :
 
     private fun showServiceUnavailableDialog(httpException: HttpException) {
         if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            showMaintenanceModeWarning(true)
+            showWarning(true, context.getString(R.string.nc_dialog_maintenance_mode_description))
         } else {
             showErrorDialog()
         }
