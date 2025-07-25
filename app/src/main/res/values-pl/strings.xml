@@ -47,6 +47,7 @@
     <string name="danger_zone">Strefa niebezpieczeństwa</string>
     <string name="deck_card_description">%1$s w %2$s</string>
     <string name="delete_avatar">Usuń awatar</string>
+    <string name="delete_voice_recording">Usuń nagranie głosowe</string>
     <string name="deleted_conversation">Usunięto rozmowę %1$s</string>
     <string name="dnd">Nie przeszkadzać</string>
     <string name="dontClear">Nie czyść</string>
@@ -324,6 +325,7 @@
     <string name="nc_message_read">Wiadomość przeczytana</string>
     <string name="nc_message_sending">Wysyłanie</string>
     <string name="nc_message_sent">Wiadomość wysłana</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofon jest włączony i trwa nagrywanie dźwięku</string>
     <string name="nc_microphone_permission_hint">Aby włączyć komunikację głosową, należy udzielić dostępu dla \"Mikrofon\".</string>
     <string name="nc_missed_call">Nie odebrałeś połączenia od %s</string>
     <string name="nc_moderator">Moderator</string>
@@ -409,6 +411,7 @@
     <string name="nc_search_clear">Wyczyść wyszukiwanie</string>
     <string name="nc_select_an_account">Wybierz konto</string>
     <string name="nc_send_edit_message">Zaktualizuj wiadomość</string>
+    <string name="nc_send_voice_recording">Wyślij nagranie głosowe</string>
     <string name="nc_sensitive_conversation">Rozmowa poufna</string>
     <string name="nc_sensitive_conversation_hint">Podgląd wiadomości zostanie wyłączony na liście rozmów i w powiadomieniach.</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s wysłał GIF.</string>
@@ -547,8 +550,10 @@
     <string name="openConversations">Otwarte rozmowy</string>
     <string name="open_in_files_app">Otwórz w aplikacji Pliki</string>
     <string name="open_notes">Otwórz Notatki</string>
+    <string name="open_thread">Przejdź do wątku</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="playback_speed_control">Kontrola prędkości odtwarzania</string>
+    <string name="please_continue_the_login_process_in_the_browser">Proszę kontynuować proces logowania w przeglądarce</string>
     <string name="polls_add_option">Dodaj opcję</string>
     <string name="polls_edit_vote">Edytuj głos</string>
     <string name="polls_end_poll">Zakończ sondę</string>
@@ -566,9 +571,11 @@
     <string name="polls_submit_vote">Wyniki głosowania</string>
     <string name="polls_voted_hidden_success">Oddano głos</string>
     <string name="previously_set">Ustawione wcześniej</string>
+    <string name="qr_code_error">Nie można odczytać kodu QR</string>
     <string name="raise_hand">Podnieść rękę</string>
     <string name="reactions_tab_all">Wszystkie</string>
     <string name="read_storage_no_permission">Udostępnianie plików z magazynu nie jest możliwe bez uprawnień</string>
+    <string name="recent_threads">Ostatnie wątki</string>
     <string name="record_active_info">Rozmowa jest nagrywana</string>
     <string name="record_cancel_start">Anuluj rozpoczęcie nagrywania</string>
     <string name="record_failed_info">Nagrywanie nie powiodło się. Skontaktuj się z administratorem.</string>
@@ -624,8 +631,10 @@
     <string name="shared_items_voice">Połączenie głosowe</string>
     <string name="show_ban_reason">Pokaż powód zablokowania</string>
     <string name="show_banned_participants">Pokaż zablokowanych uczestników</string>
+    <string name="show_threads_overview">Pokaż wątki</string>
     <string name="starred">Ulubione</string>
     <string name="startCallForbidden">Nie możesz rozpocząć połączenia</string>
+    <string name="start_thread">Rozpocznij wątek</string>
     <string name="started_a_call">rozpoczął połączenie</string>
     <string name="status_message">Komunikat statusu</string>
     <string name="status_reverted">Status przywrócone</string>
@@ -644,6 +653,7 @@
     <string name="thisWeek">W tym tygodniu</string>
     <string name="this_is_a_test_message">To jest wiadomość testowa</string>
     <string name="this_weekend">W ten weekend</string>
+    <string name="thread_replies_amount">%1$d odpowiedzi</string>
     <string name="today">Dzisiaj</string>
     <string name="tomorrow">Jutro</string>
     <string name="translate">Tłumaczenie</string>

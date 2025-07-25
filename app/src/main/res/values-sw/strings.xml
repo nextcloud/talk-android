@@ -554,6 +554,7 @@
     <string name="openConversations">Mazungumzo ya wazi</string>
     <string name="open_in_files_app">Fungua katika faili za programu</string>
     <string name="open_notes">Nukuu za wazi</string>
+    <string name="open_thread">Nenda kwenye mjadala</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
     <string name="playback_speed_control">Udhibiti wa kasi ya mshindonyuma</string>
     <string name="please_continue_the_login_process_in_the_browser">Tafadhali endeleza mchakato wa kuingia katika kivinjari</string>
@@ -578,6 +579,7 @@
     <string name="raise_hand">Inua mkono</string>
     <string name="reactions_tab_all">Zote</string>
     <string name="read_storage_no_permission">Kushiriki faili kutoka kwa hifadhi hakuwezekani bila ruhusa</string>
+    <string name="recent_threads">Mijadala ya hivi karibuni</string>
     <string name="record_active_info">Simu inarekodiwa</string>
     <string name="record_cancel_start">Ghairi kuanza kurekodi</string>
     <string name="record_failed_info">Imeshindwa kurekodi. Tafadhali wasiliana na msimamizi wako.</string>
@@ -633,8 +635,10 @@
     <string name="shared_items_voice">Sauti</string>
     <string name="show_ban_reason">Onesha sababu ya zuio</string>
     <string name="show_banned_participants">Onesha washiriki waliozuiliwa</string>
+    <string name="show_threads_overview">Onesha mijadala</string>
     <string name="starred">Kipendwa</string>
     <string name="startCallForbidden">Huruhusiwi kuanzisha simu</string>
+    <string name="start_thread">Anza mjadala</string>
     <string name="started_a_call">Umeanzisha simu</string>
     <string name="status_message">Ujumbe wa hadhi</string>
     <string name="status_reverted">Hali Imerejeshwa</string>
@@ -653,6 +657,7 @@
     <string name="thisWeek">Wiki hii</string>
     <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>
     <string name="this_weekend">Wikendi hii</string>
+    <string name="thread_replies_amount">%1$d majibu </string>
     <string name="today">Leo</string>
     <string name="tomorrow">Kesho</string>
     <string name="translate">Tafsiri</string>
