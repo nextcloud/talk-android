@@ -192,11 +192,13 @@ class DummyConversationDaoImpl : ConversationsDao {
 
     override fun getConversationForUser(accountId: Long, token: String): Flow<ConversationEntity?> = flowOf()
 
-    override fun upsertConversations(conversationEntities: List<ConversationEntity>) { /* */ }
+    override suspend fun upsertConversations(accountId: Long, serverItems: List<ConversationEntity>) { /* */ }
 
     override fun deleteConversations(conversationIds: List<String>) { /* */ }
 
     override fun updateConversation(conversationEntity: ConversationEntity) { /* */ }
+
+    override fun insertConversation(conversation: ConversationEntity) { /* */ }
 
     override fun clearAllConversationsForUser(accountId: Long) { /* */ }
 }
