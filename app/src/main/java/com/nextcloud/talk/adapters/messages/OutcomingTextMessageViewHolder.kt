@@ -183,7 +183,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         binding.messageQuote.quotedChatMessageView.visibility =
             if (!message.isDeleted &&
                 message.parentMessageId != null &&
-                message.parentMessageId != chatActivity.threadId
+                message.parentMessageId != chatActivity.conversationThreadId
             ) {
                 processParentMessage(message)
                 View.VISIBLE
