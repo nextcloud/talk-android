@@ -353,8 +353,8 @@ class ChatActivity :
 
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
-    var threadId: Long? = null
-    var threadInfo: ThreadInfo? = null
+    var conversationThreadId: Long? = null
+    var conversationThreadInfo: ThreadInfo? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
     var chatApiVersion: Int = 1
@@ -506,10 +506,10 @@ class ChatActivity :
             credentials!!,
             urlForChatting,
             roomToken,
-            threadId
+            conversationThreadId
         )
 
-        threadId?.let {
+        conversationThreadId?.let {
             val threadUrl = ApiUtils.getUrlForThread(
                 version = 1,
                 baseUrl = conversationUser!!.baseUrl,
@@ -571,7 +571,7 @@ class ChatActivity :
 
         roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
 
-        threadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
+        conversationThreadId = if (extras?.containsKey(KEY_THREAD_ID) == true) {
             extras.getLong(KEY_THREAD_ID)
         } else {
             null
@@ -966,6 +966,7 @@ class ChatActivity :
                     var chatMessageList = triple.third
 
                     chatMessageList = handleSystemMessages(chatMessageList)
+                    chatMessageList = handleThreadMessages(chatMessageList)
                     if (chatMessageList.isEmpty()) {
                         return@onEach
                     }
@@ -1296,7 +1297,7 @@ class ChatActivity :
                     }
 
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
-                        threadInfo = uiState.thread
+                        conversationThreadInfo = uiState.thread
                     }
                 }
             }
@@ -2668,7 +2669,7 @@ class ChatActivity :
 
         title.text =
             if (isChatThread()) {
-                threadInfo?.first?.message
+                conversationThreadInfo?.first?.message
             } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
@@ -2683,7 +2684,7 @@ class ChatActivity :
         if (isChatThread()) {
             val repliesAmountTitle = String.format(
                 resources.getString(R.string.thread_replies_amount),
-                threadInfo?.thread?.numReplies
+                conversationThreadInfo?.thread?.numReplies
             )
             statusMessageViewContents(repliesAmountTitle)
         } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
@@ -3455,7 +3456,7 @@ class ChatActivity :
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
-        val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
 
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
@@ -3474,7 +3475,7 @@ class ChatActivity :
     }
 
     private fun handleExpandableSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
-        val chatMessageMap = chatMessageList.map { it.id to it }.toMap().toMutableMap()
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
@@ -3494,6 +3495,23 @@ class ChatActivity :
                 previousMessage?.expandableChildrenAmount = currentMessage.value.expandableChildrenAmount + 1
             }
         }
+        return chatMessageMap.values.toList()
+    }
+
+    private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+
+        if (conversationThreadId == null) {
+            val chatMessageIterator = chatMessageMap.iterator()
+            while (chatMessageIterator.hasNext()) {
+                val currentMessage = chatMessageIterator.next()
+
+                if (currentMessage.value.isThread) {
+                    chatMessageIterator.remove()
+                }
+            }
+        }
+
         return chatMessageMap.values.toList()
     }
 
@@ -4206,7 +4224,7 @@ class ChatActivity :
         }
     }
 
-    private fun isChatThread(): Boolean = threadId != null && threadId!! > 0
+    private fun isChatThread(): Boolean = conversationThreadId != null && conversationThreadId!! > 0
 
     fun openThread(messageId: Long) {
         val bundle = Bundle()

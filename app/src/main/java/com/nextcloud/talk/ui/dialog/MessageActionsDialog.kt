@@ -152,7 +152,7 @@ class MessageActionsDialog(
                     isOnline
             )
             initMenuStartThread(!message.isThread)
-            initMenuOpenThread(message.isThread && chatActivity.threadId == null)
+            initMenuOpenThread(message.isThread && chatActivity.conversationThreadId == null)
             initMenuEditMessage(isMessageEditable)
             initMenuDeleteMessage(showMessageDeletionButton && isOnline)
             initMenuForwardMessage(
