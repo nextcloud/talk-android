@@ -549,7 +549,7 @@
     <string name="reset_status">Nulstil status</string>
     <string name="restrict_join_other_room_while_call">Det er ikke muligt at deltage i andre rum, mens du er i et opkald</string>
     <string name="save">Gem</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Skan QR-kode</string>
     <string name="scope_federated_description">Synkroniser kun til betroede servere</string>
     <string name="scope_federated_title">Forbundet</string>
     <string name="scope_local_description">Kun synlig for personer i denne instans og gæster</string>
