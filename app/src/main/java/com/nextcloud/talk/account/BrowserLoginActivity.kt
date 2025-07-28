@@ -25,6 +25,7 @@ import androidx.work.WorkManager
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -104,7 +105,7 @@ class BrowserLoginActivity : BaseActivity() {
         binding = ActivityWebViewLoginBinding.inflate(layoutInflater)
         okHttpClient = OkHttpClient.Builder()
             .cookieJar(CookieJar.NO_COOKIES)
-            .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+            .setDebuggableConnectionSpecs()
             .sslSocketFactory(socketFactory, trustManager)
             .hostnameVerifier { _: String?, _: SSLSession? -> true }
             .build()
@@ -117,6 +118,14 @@ class BrowserLoginActivity : BaseActivity() {
         handleIntent()
         lifecycle.addObserver(lifecycleEventObserver)
     }
+
+    // CLEARTEXT is insecure, so this checks if the app is in debug mode, before enabling it
+    private fun OkHttpClient.Builder.setDebuggableConnectionSpecs(): OkHttpClient.Builder =
+        if (BuildConfig.DEBUG) {
+            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
+        } else {
+            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+        }
 
     private fun handleIntent() {
         val extras = intent.extras!!
