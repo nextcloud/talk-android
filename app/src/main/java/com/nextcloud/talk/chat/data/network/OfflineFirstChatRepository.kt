@@ -686,7 +686,24 @@ class OfflineFirstChatRepository @Inject constructor(
         messagesJson.forEach { messageJson ->
             when (messageJson.systemMessageType) {
                 ChatMessage.SystemMessageType.REACTION,
-                ChatMessage.SystemMessageType.REACTION_REVOKED,
+                ChatMessage.SystemMessageType.REACTION_REVOKED -> {
+                    messageJson.parentMessage?.let { parentMessageJson ->
+                        parentMessageJson.message?.let {
+                            val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
+                            if (parentMessageEntity.parentMessageId == null) {
+                                val existingParentMessage = chatDao
+                                    .getChatMessageForConversation(
+                                        internalConversationId,
+                                        parentMessageJson.id
+                                    )
+                                    .firstOrNull()
+                                parentMessageEntity.parentMessageId = existingParentMessage?.parentMessageId
+                            }
+                            chatDao.upsertChatMessage(parentMessageEntity)
+                            _updateMessageFlow.emit(parentMessageEntity.asModel())
+                        }
+                    }
+                }
                 ChatMessage.SystemMessageType.REACTION_DELETED,
                 ChatMessage.SystemMessageType.MESSAGE_DELETED,
                 ChatMessage.SystemMessageType.POLL_VOTED,
