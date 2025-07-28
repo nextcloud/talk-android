@@ -1410,10 +1410,6 @@ class SettingsActivity :
                                     json.toRequestBody("application/json".toMediaTypeOrNull())
                                 )
                             }
-                            withContext(Dispatchers.Main) {
-                                loadCapabilitiesAndUpdateSettings()
-                                Log.i(TAG, "typing status set")
-                            }
                         } catch (e: Exception) {
                             withContext(Dispatchers.Main) {
                                 appPreferences.typingStatus = !newBoolean
