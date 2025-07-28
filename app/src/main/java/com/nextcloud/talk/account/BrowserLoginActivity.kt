@@ -120,13 +120,12 @@ class BrowserLoginActivity : BaseActivity() {
     }
 
     // CLEARTEXT is insecure, so this checks if the app is in debug mode, before enabling it
-    private fun OkHttpClient.Builder.setDebuggableConnectionSpecs(): OkHttpClient.Builder {
-        return if (BuildConfig.DEBUG) {
+    private fun OkHttpClient.Builder.setDebuggableConnectionSpecs(): OkHttpClient.Builder =
+        if (BuildConfig.DEBUG) {
             this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
         } else {
             this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
         }
-    }
 
     private fun handleIntent() {
         val extras = intent.extras!!
