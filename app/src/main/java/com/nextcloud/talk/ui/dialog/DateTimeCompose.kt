@@ -230,16 +230,14 @@ class DateTimeCompose(val bundle: Bundle) {
             }
         }
 
-        if (tomorrow.dayOfWeek < DayOfWeek.SATURDAY) {
-            TimeOption(
-                label = stringResource(R.string.tomorrow),
-                timeString = tomorrowStr
-            ) {
-                setTime(tomorrow)
-            }
+        TimeOption(
+            label = stringResource(R.string.tomorrow),
+            timeString = tomorrowStr
+        ) {
+            setTime(tomorrow)
         }
 
-        if (currTime.dayOfWeek < DayOfWeek.SATURDAY) {
+        if (currTime.dayOfWeek < DayOfWeek.FRIDAY) {
             TimeOption(
                 label = stringResource(R.string.this_weekend),
                 timeString = thisWeekendStr
@@ -248,11 +246,13 @@ class DateTimeCompose(val bundle: Bundle) {
             }
         }
 
-        TimeOption(
-            label = stringResource(R.string.next_week),
-            timeString = nextWeekStr
-        ) {
-            setTime(nextWeek)
+        if (currTime.dayOfWeek != DayOfWeek.SUNDAY) {
+            TimeOption(
+                label = stringResource(R.string.next_week),
+                timeString = nextWeekStr
+            ) {
+                setTime(nextWeek)
+            }
         }
 
         HorizontalDivider()
