@@ -1159,7 +1159,7 @@ class ConversationsListActivity :
         binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    private fun showWarning(show: Boolean, message:String) {
+    private fun showWarning(show: Boolean, message: String) {
         binding.chatListWarning.text = message
         binding.chatListWarning.visibility = if (show) View.VISIBLE else View.GONE
     }
@@ -1242,12 +1242,9 @@ class ConversationsListActivity :
                     showErrorDialog()
                 }
             }
-        }
-        else if(throwable is ConnectException){
+        } else if (throwable is ConnectException) {
             showWarning(true, context.getString(R.string.nc_server_down))
-        }
-
-        else {
+        } else {
             Log.e(TAG, "Exception in ConversationListActivity", throwable)
             showErrorDialog()
         }
@@ -1280,7 +1277,7 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
-            showWarning(false, "" )
+            showWarning(false, "")
             fetchRooms()
             fetchPendingInvitations()
         }
