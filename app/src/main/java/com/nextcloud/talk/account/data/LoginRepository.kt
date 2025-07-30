@@ -10,7 +10,9 @@ package com.nextcloud.talk.account.data
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import androidx.work.WorkInfo
+import com.nextcloud.talk.R
 import com.nextcloud.talk.account.data.io.LocalLoginDataSource
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource.LoginCompletion
@@ -22,19 +24,24 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONException
 import java.net.URLDecoder
 
-
 // this handles communication with the network datasource and the User manager (abstraction over room)
 //   TODO test for response handling, error handling, and other edge cases from otherwise working data sources
 //      because most of the logic should be happening in the repository layer, I should test this first
-class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLoginDataSource) {
+class LoginRepository(
+    val network: NetworkLoginDataSource,
+    val local: LocalLoginDataSource
+) {
 
     companion object {
-        private const val INTERVAL = 30L
+        val TAG: String = LoginRepository::class.java.simpleName
+        private const val INTERVAL = 100L
         private const val HTTP_OK = 200
         private const val USER_KEY = "user:"
         private const val SERVER_KEY = "server:"
@@ -44,20 +51,40 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
     }
 
     private var isLoginProcessCompleted = false
+    private var shouldReauthorizeUser = false
 
-    private fun poolLogin(response: LoginResponse) {
+    private val _errorFlow = MutableSharedFlow<Int>()
+    val errorFlow: SharedFlow<Int> get() = _errorFlow
+
+    private val _launchWebFlow = MutableSharedFlow<String>()
+    val launchWebFlow: SharedFlow<String> get() = _launchWebFlow
+
+    private val _restartAppFlow = MutableSharedFlow<Boolean>()
+    val restartAppFlow: SharedFlow<Boolean> get() = _restartAppFlow
+
+    private val _continueLoginFlow = MutableSharedFlow<Bundle>()
+    val continueLoginFlow: SharedFlow<Bundle> get() = _continueLoginFlow
+
+    private fun pollLogin(response: LoginResponse) {
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO) {
                 while (!isLoginProcessCompleted) {
-                    network.performLoginFlowV2(response)
-                    // completeLoginFlow(loginData) deal with nullable response
+                    val loginData = network.performLoginFlowV2(response)
+                    loginData?.let {
+                        completeLoginFlow(it)
+                    }
                     delay(INTERVAL)
                 }
             }
         }
     }
 
-    fun parseLoginDataUrl(dataString: String) {
+    /**
+     * Entry point for QR scanner
+     *
+     * @throws IllegalArgumentException
+     */
+    fun startLoginFlowFromQR(dataString: String) {
         if (!dataString.startsWith(PREFIX)) {
             throw IllegalArgumentException("Invalid login URL detected")
         }
@@ -93,60 +120,57 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
         parseAndLogin(loginCompletion)
     }
 
-    fun startLoginFlow(baseUrl: String) {
+    /**
+     * Entry point to the login process
+     */
+    fun startLoginFlow(baseUrl: String, reAuth: Boolean) {
+        shouldReauthorizeUser = reAuth
         CoroutineScope(Dispatchers.IO).launch {
-            // set anon post request
+            val response = network.anonymouslyPostLoginRequest(baseUrl)
 
-            // start pool login
-
-            // notify view model to update state to launch web
+            if (response != null) {
+                _launchWebFlow.emit(response.loginUrl)
+                pollLogin(response)
+            } else {
+                _errorFlow.emit(R.string.nc_common_error_sorry)
+            }
         }
     }
 
     private fun completeLoginFlow(data: LoginCompletion) {
         try {
-
-            isLoginProcessCompleted =
-                (data.status == HTTP_OK
-                    && !data.server.isEmpty()
-                    && !data.loginName.isEmpty()
-                    && !data.appPassword.isEmpty())
+            isLoginProcessCompleted = (data.status == HTTP_OK)
 
             parseAndLogin(data)
         } catch (e: JSONException) {
-            // Log.e(TAG, "Error caught at completeLoginFlow: $e")
-            // _postLoginState.value = PostLoginViewState.PostLoginError(e)
+            Log.e(TAG, "Error caught at completeLoginFlow: $e")
+            _errorFlow.tryEmit(R.string.nc_common_error_sorry)
         }
     }
 
     private fun parseAndLogin(loginData: LoginCompletion) {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {
-            // TODO notify viewmodel of UI state change to show error
-            // Log.e(TAG, "Tried to add already existing user who is scheduled for deletion.")
-            // Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            _errorFlow.tryEmit(R.string.nc_common_error_sorry)
 
             // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
             val liveData = local.startAccountRemovalWorkerAndRestartApp()
             liveData.observeForever { workInfo: WorkInfo? ->
-
-                    when (workInfo?.state) {
-                        WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
-                            // TODO notify viewmodel of UI state change to restart app
-                        }
-
-                        else -> {}
+                when (workInfo?.state) {
+                    WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
+                        _restartAppFlow.tryEmit(true)
                     }
-                }
-        } else if (local.checkIfUserExists(loginData)) {
 
-            // TODO reauthorize won't work, because it links to here and not the server selection activity
-            //
-            // if (reauthorizeAccount) {
-            //     updateUserAndRestartApp(loginData)
-            // } else {
-            //     Log.w(TAG, "It was tried to add an account that account already exists. Skipped user creation.")
-            //     restartApp()
-            // }
+                    else -> {}
+                }
+            }
+        } else if (local.checkIfUserExists(loginData)) {
+            // FIXME LOW PRIORITY Refactor entry point to take you to server selection, instead of browser
+            if (shouldReauthorizeUser) {
+                local.updateUserAndRestartApp(loginData)
+            } else {
+                Log.w(TAG, "Tried to add an account that account already exists. Skipped user creation.")
+                _restartAppFlow.tryEmit(true)
+            }
         } else {
             startAccountVerification(loginData)
         }
@@ -167,10 +191,6 @@ class LoginRepository(val network: NetworkLoginDataSource, val local: LocalLogin
             bundle.putString(KEY_ORIGINAL_PROTOCOL, protocol)
         }
 
-        // TODO notify viewmodel of UI state change to restart app
-
-        // val intent = Intent(context, AccountVerificationActivity::class.java)
-        // intent.putExtras(bundle)
-        // startActivity(intent)
+        _continueLoginFlow.tryEmit(bundle)
     }
 }
