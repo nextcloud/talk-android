@@ -11,9 +11,18 @@
 package com.nextcloud.talk.extensions
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapShader
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.RectF
+import android.graphics.Shader
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.util.Log
@@ -21,6 +30,7 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import coil.annotation.ExperimentalCoilApi
 import coil.imageLoader
@@ -42,6 +52,7 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.TextDrawable
 import java.util.Locale
+import kotlin.math.min
 
 private const val ROUNDING_PIXEL = 16f
 private const val TAG = "ImageViewExtensions"
@@ -291,18 +302,12 @@ fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
     )
 }
 
-fun ImageView.loadNoteToSelfAvatar(): io.reactivex.disposables.Disposable {
+fun ImageView.loadNoteToSelfAvatar() {
     val layers = arrayOfNulls<Drawable>(2)
     layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
     layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_note_to_self)
     val layerDrawable = LayerDrawable(layers)
-    val data: Any = layerDrawable
-
-    return DisposableWrapper(
-        load(data) {
-            transformations(CircleCropTransformation())
-        }
-    )
+    setImageDrawable(CircularDrawable(layerDrawable))
 }
 
 fun ImageView.loadFirstLetterAvatar(name: String): io.reactivex.disposables.Disposable {
@@ -415,4 +420,77 @@ private class DisposableWrapper(private val disposable: coil.request.Disposable)
     }
 
     override fun isDisposed(): Boolean = disposable.isDisposed
+}
+
+private class CircularDrawable(private val sourceDrawable: Drawable) : Drawable() {
+
+    private val bitmap: Bitmap = drawableToBitmap(sourceDrawable)
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        shader = BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+    }
+
+    private val rect = RectF()
+    private var radius = 0f
+
+    override fun onBoundsChange(bounds: Rect) {
+        super.onBoundsChange(bounds)
+        rect.set(bounds)
+
+        radius = min(rect.width() / 2.0f, rect.height() / 2.0f)
+
+        val matrix = Matrix()
+        val scale: Float
+        var dx = 0f
+        var dy = 0f
+
+        if (bitmap.width * rect.height() > rect.width() * bitmap.height) {
+            // Taller than wide, scale to height and center horizontally
+            scale = rect.height() / bitmap.height.toFloat()
+            dx = (rect.width() - bitmap.width * scale) * 0.5f
+        } else {
+            // Wider than tall, scale to width and center vertically
+            scale = rect.width() / bitmap.width.toFloat()
+            dy = (rect.height() - bitmap.height * scale) * 0.5f
+        }
+
+        matrix.setScale(scale, scale)
+        matrix.postTranslate(dx.toInt().toFloat() + rect.left, dy.toInt().toFloat() + rect.top)
+        paint.shader.setLocalMatrix(matrix)
+    }
+
+    override fun draw(canvas: Canvas) {
+        canvas.drawCircle(rect.centerX(), rect.centerY(), radius, paint)
+    }
+
+    override fun setAlpha(alpha: Int) {
+        paint.alpha = alpha
+    }
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {
+        paint.colorFilter = colorFilter
+    }
+
+    @Deprecated("This method is no longer used in graphics optimizations",
+        ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat")
+    )
+    override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
+
+    override fun getIntrinsicWidth(): Int = sourceDrawable.intrinsicWidth
+
+    override fun getIntrinsicHeight(): Int = sourceDrawable.intrinsicHeight
+
+    companion object {
+
+        private fun drawableToBitmap(drawable: Drawable): Bitmap {
+            if (drawable is BitmapDrawable) {
+                if (drawable.bitmap != null) {
+                    return drawable.bitmap
+                }
+            }
+
+            val width = if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else 1
+            val height = if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else 1
+            return drawable.toBitmap(width, height, Bitmap.Config.ARGB_8888)
+        }
+    }
 }
