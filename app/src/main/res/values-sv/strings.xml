@@ -570,6 +570,7 @@
     <string name="polls_submit_vote">Rösta</string>
     <string name="polls_voted_hidden_success">Röst inlämnad</string>
     <string name="previously_set">Tidigare inställd</string>
+    <string name="qr_code_error">QR-koden kunde inte läsas</string>
     <string name="raise_hand">Räck upp handen</string>
     <string name="reactions_tab_all">Alla</string>
     <string name="read_storage_no_permission">Att dela filer från lagring är inte möjligt utan behörighet</string>
@@ -628,8 +629,10 @@
     <string name="shared_items_voice">Röst</string>
     <string name="show_ban_reason">Visa orsak till blockering</string>
     <string name="show_banned_participants">Visa blockerade deltagare</string>
+    <string name="show_threads_overview">Visa trådar</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
+    <string name="start_thread">Starta en tråd</string>
     <string name="started_a_call">startade ett samtal</string>
     <string name="status_message">Statusmeddelande</string>
     <string name="status_reverted">Status återställd</string>
@@ -648,6 +651,7 @@
     <string name="thisWeek">Denna vecka</string>
     <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
+    <string name="thread_replies_amount">%1$d svar</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>
