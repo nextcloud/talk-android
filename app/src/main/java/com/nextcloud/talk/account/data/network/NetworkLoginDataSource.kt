@@ -25,11 +25,12 @@ import javax.net.ssl.SSLSession
 //  This class handles the network and polling logic in isolation, which makes it easier to test
 //  Login and Authentication is critical, thus it needs to be working properly.
 
-//  TODO test for network correct and network error paths. Should work, but in case it doesn't, makes it easier to find
+//  TODO test for network correct and network error paths.
+//   Should work, but in case it doesn't, makes it easier to find
 //   out if the error is server side or client side
 class NetworkLoginDataSource(
-    private var trustManager: TrustManager,
-    private var socketFactory: SSLSocketFactoryCompat
+    trustManager: TrustManager,
+    socketFactory: SSLSocketFactoryCompat
 ) {
 
     companion object {
@@ -56,7 +57,6 @@ class NetworkLoginDataSource(
         val appPassword: String
     )
 
-    // TODO make these functions throw exceptions, easier to test for
     suspend fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
         val url = "$baseUrl/index.php/login/v2"
         try {
@@ -98,7 +98,6 @@ class NetworkLoginDataSource(
         return result
     }
 
-    // TODO throw error
     suspend fun performLoginFlowV2(response: LoginResponse): LoginCompletion? {
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", response.token)
