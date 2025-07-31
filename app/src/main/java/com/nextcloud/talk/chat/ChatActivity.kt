@@ -227,6 +227,7 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.io.IOException
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -2339,9 +2340,24 @@ class ChatActivity :
                 BuildConfig.APPLICATION_ID,
                 File(file.absolutePath)
             )
-            uploadFile(shareUri.toString(), false)
+            uploadFile(
+                fileUri = shareUri.toString(),
+                isVoiceMessage = false,
+                caption = "",
+                roomToken = roomToken,
+                replyToMessageId = getReplyToMessageId(),
+                displayName = currentConversation?.displayName ?: ""
+            )
         }
         cursor?.close()
+    }
+
+    fun getReplyToMessageId(): Int {
+        var replyMessageId = messageInputViewModel.getReplyChatMessage.value?.id?.toInt()
+        if (replyMessageId == null || replyMessageId == 0) {
+            replyMessageId = conversationThreadInfo?.thread?.id ?: 0
+        }
+        return replyMessageId
     }
 
     @Throws(IllegalStateException::class)
@@ -2515,33 +2531,25 @@ class ChatActivity :
     private fun uploadFiles(files: MutableList<String>, caption: String = "") {
         for (i in 0 until files.size) {
             if (i == files.size - 1) {
-                uploadFile(files[i], false, caption)
+                uploadFile(
+                    fileUri = files[i],
+                    isVoiceMessage = false,
+                    caption = caption,
+                    roomToken = roomToken,
+                    replyToMessageId = getReplyToMessageId(),
+                    displayName = currentConversation?.displayName!!
+                )
             } else {
-                uploadFile(files[i], false)
+                uploadFile(
+                    fileUri = files[i],
+                    isVoiceMessage = false,
+                    caption = "",
+                    roomToken = roomToken,
+                    replyToMessageId = getReplyToMessageId(),
+                    displayName = currentConversation?.displayName!!
+                )
             }
         }
-    }
-
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
-        var metaData = ""
-        var room = ""
-
-        if (!participantPermissions.hasChatPermission()) {
-            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
-            return
-        }
-
-        if (isVoiceMessage) {
-            metaData = VOICE_MESSAGE_META_DATA
-        }
-
-        if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
-        }
-
-        if (token == "") room = roomToken else room = token
-
-        chatViewModel.uploadFile(fileUri, room, currentConversation?.displayName!!, metaData)
     }
 
     fun showGalleryPicker() {
@@ -3872,7 +3880,14 @@ class ChatActivity :
         val type = message.getCalculateMessageType()
         when (type) {
             ChatMessage.MessageType.VOICE_MESSAGE -> {
-                uploadFile(shareUri.toString(), true, token = roomToken)
+                uploadFile(
+                    shareUri.toString(),
+                    true,
+                    roomToken = roomToken,
+                    caption = "",
+                    replyToMessageId = getReplyToMessageId(),
+                    displayName = currentConversation?.displayName ?: ""
+                )
                 showSnackBar(roomToken)
             }
 
@@ -3881,12 +3896,26 @@ class ChatActivity :
                 if (null != shareUri) {
                     try {
                         context.contentResolver.openInputStream(shareUri)?.close()
-                        uploadFile(shareUri.toString(), false, caption!!, roomToken)
+                        uploadFile(
+                            fileUri = shareUri.toString(),
+                            isVoiceMessage = false,
+                            caption = caption!!,
+                            roomToken = roomToken,
+                            replyToMessageId = getReplyToMessageId(),
+                            displayName = currentConversation?.displayName ?: ""
+                        )
                         showSnackBar(roomToken)
-                    } catch (e: java.lang.Exception) {
-                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri")
+                    } catch (e: Exception) {
+                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
                         downloadFileToCache(message, false) {
-                            uploadFile(shareUri.toString(), false, caption!!, roomToken)
+                            uploadFile(
+                                fileUri = shareUri.toString(),
+                                isVoiceMessage = false,
+                                caption = caption!!,
+                                roomToken = roomToken,
+                                replyToMessageId = getReplyToMessageId(),
+                                displayName = currentConversation?.displayName ?: ""
+                            )
                             showSnackBar(roomToken)
                         }
                     }
@@ -4300,6 +4329,33 @@ class ChatActivity :
         )
     }
 
+    fun uploadFile(
+        fileUri: String,
+        isVoiceMessage: Boolean,
+        caption: String = "",
+        roomToken: String = "",
+        replyToMessageId: Int? = null,
+        displayName: String
+    ) {
+        chatViewModel.uploadFile(
+            fileUri,
+            isVoiceMessage,
+            caption,
+            roomToken,
+            replyToMessageId,
+            displayName
+        )
+        cancelReply()
+    }
+
+    fun cancelReply() {
+        messageInputViewModel.reply(null)
+        chatViewModel.messageDraft.quotedMessageText = null
+        chatViewModel.messageDraft.quotedDisplayName = null
+        chatViewModel.messageDraft.quotedImageUrl = null
+        chatViewModel.messageDraft.quotedJsonId = null
+    }
+
     companion object {
         val TAG = ChatActivity::class.simpleName
         private const val CONTENT_TYPE_CALL_STARTED: Byte = 1
@@ -4319,7 +4375,6 @@ class ChatActivity :
         private const val REQUEST_RECORD_AUDIO_PERMISSION = 222
         private const val REQUEST_READ_CONTACT_PERMISSION = 234
         private const val REQUEST_CAMERA_PERMISSION = 223
-        private const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val FILE_DATE_PATTERN = "yyyy-MM-dd HH-mm-ss"
         private const val VIDEO_SUFFIX = ".mp4"
         private const val FULLY_OPAQUE_INT: Int = 255

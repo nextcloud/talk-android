@@ -17,6 +17,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
@@ -43,6 +44,7 @@ import com.nextcloud.talk.models.json.userAbsence.UserAbsenceData
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
+import com.nextcloud.talk.utils.ParticipantPermissions
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -92,6 +94,7 @@ class ChatViewModel @Inject constructor(
     val mediaPlayerPosition = mediaPlayerManager.mediaPlayerPosition
     var chatRoomToken: String = ""
     var messageDraft: MessageDraft = MessageDraft()
+    lateinit var participantPermissions: ParticipantPermissions
 
     fun getChatRepository(): ChatMessageRepository = chatRepository
 
@@ -316,6 +319,10 @@ class ChatViewModel @Inject constructor(
             } else {
                 _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(user.capabilities!!.spreedCapability!!)
             }
+            participantPermissions = ParticipantPermissions(
+                user.capabilities!!.spreedCapability!!,
+                conversationModel
+            )
         } else {
             chatNetworkDataSource.getCapabilities(user, token)
                 .subscribeOn(Schedulers.io())
@@ -331,6 +338,10 @@ class ChatViewModel @Inject constructor(
                         } else {
                             _getCapabilitiesViewState.value = GetCapabilitiesUpdateState(spreedCapabilities)
                         }
+                        participantPermissions = ParticipantPermissions(
+                            spreedCapabilities,
+                            conversationModel
+                        )
                     }
 
                     override fun onError(e: Throwable) {
@@ -680,13 +691,20 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun stopAndSendAudioRecording(room: String, displayName: String, metaData: String) {
+    fun stopAndSendAudioRecording(roomToken: String = "", replyToMessageId: Int? = null, displayName: String) {
         stopAudioRecording()
 
         if (mediaRecorderManager.mediaRecorderState != MediaRecorderManager.MediaRecorderState.ERROR) {
             val uri = Uri.fromFile(File(mediaRecorderManager.currentVoiceRecordFile))
             Log.d(TAG, "File uploaded")
-            uploadFile(uri.toString(), room, displayName, metaData)
+            uploadFile(
+                fileUri = uri.toString(),
+                isVoiceMessage = true,
+                caption = "",
+                roomToken = roomToken,
+                replyToMessageId = replyToMessageId,
+                displayName = displayName
+            )
         }
     }
 
@@ -699,7 +717,38 @@ class ChatViewModel @Inject constructor(
 
     fun getCurrentVoiceRecordFile(): String = mediaRecorderManager.currentVoiceRecordFile
 
-    fun uploadFile(fileUri: String, room: String, displayName: String, metaData: String) {
+    fun uploadFile(
+        fileUri: String,
+        isVoiceMessage: Boolean,
+        caption: String = "",
+        roomToken: String = "",
+        replyToMessageId: Int? = null,
+        displayName: String
+    ) {
+        val metaDataMap = mutableMapOf<String, Any>()
+        var room = ""
+
+        if (!participantPermissions.hasChatPermission()) {
+            Log.w(TAG, "uploading file(s) is forbidden because of missing attendee permissions")
+            return
+        }
+
+        if (replyToMessageId != 0) {
+            metaDataMap["replyTo"] = replyToMessageId.toString()
+        }
+
+        if (isVoiceMessage) {
+            metaDataMap["messageType"] = "voice-message"
+        }
+
+        if (caption != "") {
+            metaDataMap["caption"] = caption
+        }
+
+        val metaData = Gson().toJson(metaDataMap)
+
+        room = if (roomToken == "") chatRoomToken else roomToken
+
         try {
             require(fileUri.isNotEmpty())
             UploadAndShareFilesWorker.upload(

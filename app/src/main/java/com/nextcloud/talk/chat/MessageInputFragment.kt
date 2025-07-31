@@ -101,7 +101,6 @@ class MessageInputFragment : Fragment() {
         private const val TYPING_INTERVAL_TO_SEND_NEXT_TYPING_MESSAGE = 1000L
         private const val TYPING_STARTED_SIGNALING_MESSAGE_TYPE = "startedTyping"
         private const val TYPING_STOPPED_SIGNALING_MESSAGE_TYPE = "stoppedTyping"
-        const val VOICE_MESSAGE_META_DATA = "{\"messageType\":\"voice-message\"}"
         private const val QUOTED_MESSAGE_IMAGE_MAX_HEIGHT = 96f
         private const val MENTION_AUTO_COMPLETE_ELEVATION = 6f
         private const val MINIMUM_VOICE_RECORD_DURATION: Int = 1000
@@ -178,13 +177,17 @@ class MessageInputFragment : Fragment() {
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
-            (message as ChatMessage?)?.let {
+            message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
                 chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
                 chatActivity.chatViewModel.messageDraft.quotedJsonId = message.jsonMessageId
-                replyToMessage(message.text, message.actorDisplayName, message.imageUrl, message.jsonMessageId)
-            }
+                replyToMessage(
+                    message.text,
+                    message.actorDisplayName,
+                    message.imageUrl
+                )
+            } ?: clearReplyUi()
         }
 
         chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
@@ -315,8 +318,7 @@ class MessageInputFragment : Fragment() {
                     replyToMessage(
                         chatActivity.chatViewModel.messageDraft.quotedMessageText,
                         chatActivity.chatViewModel.messageDraft.quotedDisplayName,
-                        chatActivity.chatViewModel.messageDraft.quotedImageUrl,
-                        chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
+                        chatActivity.chatViewModel.messageDraft.quotedImageUrl
                     )
                 }
             }
@@ -392,7 +394,14 @@ class MessageInputFragment : Fragment() {
         // See: https://developer.android.com/guide/topics/text/image-keyboard
 
         (binding.fragmentMessageInputView.inputEditText as ImageEmojiEditText).onCommitContentListener = {
-            uploadFile(it.toString(), false)
+            chatActivity.chatViewModel.uploadFile(
+                fileUri = it.toString(),
+                isVoiceMessage = false,
+                caption = "",
+                roomToken = chatActivity.roomToken,
+                replyToMessageId = chatActivity.getReplyToMessageId(),
+                displayName = chatActivity.currentConversation?.displayName!!
+            )
         }
 
         if (chatActivity.sharedText.isNotEmpty()) {
@@ -461,6 +470,10 @@ class MessageInputFragment : Fragment() {
             binding.fragmentCallStarted.callAuthorChipSecondary.visibility = if (collapsed) View.VISIBLE else View.GONE
             binding.fragmentCallStarted.callStartedSecondaryText.visibility = if (collapsed) View.VISIBLE else View.GONE
             setDropDown(collapsed)
+        }
+
+        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+            cancelReply()
         }
     }
 
@@ -564,9 +577,9 @@ class MessageInputFragment : Fragment() {
                         return@setOnTouchListener false
                     } else {
                         chatActivity.chatViewModel.stopAndSendAudioRecording(
-                            chatActivity.roomToken,
-                            chatActivity.currentConversation!!.displayName,
-                            VOICE_MESSAGE_META_DATA
+                            roomToken = chatActivity.roomToken,
+                            replyToMessageId = chatActivity.getReplyToMessageId(),
+                            displayName = chatActivity.currentConversation!!.displayName
                         )
                     }
                     resetSlider()
@@ -713,16 +726,9 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun replyToMessage(
-        quotedMessageText: String?,
-        quotedActorDisplayName: String?,
-        quotedImageUrl: String?,
-        quotedJsonId: Int
-    ) {
+    private fun replyToMessage(quotedMessageText: String?, quotedActorDisplayName: String?, quotedImageUrl: String?) {
         Log.d(TAG, "Reply")
         val view = binding.fragmentMessageInputView
-        view.findViewById<ImageButton>(R.id.attachmentButton)?.visibility =
-            View.GONE
         view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
             View.VISIBLE
 
@@ -757,9 +763,7 @@ class MessageInputFragment : Fragment() {
             }
         }
 
-        val quotedChatMessageView =
-            view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-        quotedChatMessageView?.tag = quotedJsonId
+        val quotedChatMessageView = view.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
         quotedChatMessageView?.visibility = View.VISIBLE
     }
 
@@ -827,28 +831,6 @@ class MessageInputFragment : Fragment() {
     private fun isTypingStatusEnabled(): Boolean =
         !CapabilitiesUtil.isTypingStatusPrivate(chatActivity.conversationUser!!)
 
-    private fun uploadFile(fileUri: String, isVoiceMessage: Boolean, caption: String = "", token: String = "") {
-        var metaData = ""
-        val room: String
-
-        if (!chatActivity.participantPermissions.hasChatPermission()) {
-            Log.w(ChatActivity.TAG, "uploading file(s) is forbidden because of missing attendee permissions")
-            return
-        }
-
-        if (isVoiceMessage) {
-            metaData = VOICE_MESSAGE_META_DATA
-        }
-
-        if (caption != "") {
-            metaData = "{\"caption\":\"$caption\"}"
-        }
-
-        if (token == "") room = chatActivity.roomToken else room = token
-
-        chatActivity.chatViewModel.uploadFile(fileUri, room, chatActivity.currentConversation!!.displayName, metaData)
-    }
-
     private fun submitMessage(sendWithoutNotification: Boolean) {
         if (binding.fragmentMessageInputView.inputEditText != null) {
             val editable = binding.fragmentMessageInputView.inputEditText!!.editableText
@@ -856,23 +838,15 @@ class MessageInputFragment : Fragment() {
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
 
-            var replyMessageId = binding.fragmentMessageInputView
-                .findViewById<RelativeLayout>(R.id.quotedChatMessageView)?.tag as Int? ?: 0
-
-            if (replyMessageId == 0) {
-                replyMessageId = chatActivity.conversationThreadInfo?.thread?.id ?: 0
-            }
-
             sendMessage(
                 editable.toString(),
-                replyMessageId,
                 sendWithoutNotification
             )
             cancelReply()
         }
     }
 
-    private fun sendMessage(message: String, replyTo: Int?, sendWithoutNotification: Boolean) {
+    private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
             chatActivity.conversationUser!!.getCredentials(),
             ApiUtils.getUrlForChat(
@@ -882,7 +856,7 @@ class MessageInputFragment : Fragment() {
             ),
             message,
             chatActivity.conversationUser!!.displayName ?: "",
-            replyTo ?: 0,
+            chatActivity.getReplyToMessageId(),
             sendWithoutNotification
         )
     }
@@ -983,10 +957,6 @@ class MessageInputFragment : Fragment() {
     private fun themeMessageInputView() {
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
-        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
-            cancelReply()
-        }
-
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
             viewThemeUtils.platform
                 .themeImageButton(it)
@@ -1043,17 +1013,14 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun cancelReply() {
-        val quote = binding.fragmentMessageInputView
-            .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-        quote.visibility = View.GONE
-        quote.tag = null
-        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-        chatActivity.messageInputViewModel.reply(null)
+        chatActivity.cancelReply()
+        clearReplyUi()
+    }
 
-        chatActivity.chatViewModel.messageDraft.quotedMessageText = null
-        chatActivity.chatViewModel.messageDraft.quotedDisplayName = null
-        chatActivity.chatViewModel.messageDraft.quotedImageUrl = null
-        chatActivity.chatViewModel.messageDraft.quotedJsonId = null
+    private fun clearReplyUi() {
+        val quote = binding.fragmentMessageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+        quote.visibility = View.GONE
+        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
     }
 
     private fun isInReplyState(): Boolean {
