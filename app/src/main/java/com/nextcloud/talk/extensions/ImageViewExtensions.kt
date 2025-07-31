@@ -200,7 +200,9 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
+            placeholder(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             error(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
+            fallback(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
                 Log.w(TAG, "Can't load avatar with URL: $url", result.throwable)
             })
