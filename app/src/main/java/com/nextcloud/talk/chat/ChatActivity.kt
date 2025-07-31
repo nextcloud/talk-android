@@ -2340,7 +2340,7 @@ class ChatActivity :
                 BuildConfig.APPLICATION_ID,
                 File(file.absolutePath)
             )
-            chatViewModel.uploadFile(
+            uploadFile(
                 fileUri = shareUri.toString(),
                 isVoiceMessage = false,
                 caption = "",
@@ -2531,7 +2531,7 @@ class ChatActivity :
     private fun uploadFiles(files: MutableList<String>, caption: String = "") {
         for (i in 0 until files.size) {
             if (i == files.size - 1) {
-                chatViewModel.uploadFile(
+                uploadFile(
                     fileUri = files[i],
                     isVoiceMessage = false,
                     caption = caption,
@@ -2540,7 +2540,7 @@ class ChatActivity :
                     displayName = currentConversation?.displayName!!
                 )
             } else {
-                chatViewModel.uploadFile(
+                uploadFile(
                     fileUri = files[i],
                     isVoiceMessage = false,
                     caption = "",
@@ -3880,7 +3880,7 @@ class ChatActivity :
         val type = message.getCalculateMessageType()
         when (type) {
             ChatMessage.MessageType.VOICE_MESSAGE -> {
-                chatViewModel.uploadFile(
+                uploadFile(
                     shareUri.toString(),
                     true,
                     roomToken = roomToken,
@@ -3896,7 +3896,7 @@ class ChatActivity :
                 if (null != shareUri) {
                     try {
                         context.contentResolver.openInputStream(shareUri)?.close()
-                        chatViewModel.uploadFile(
+                        uploadFile(
                             fileUri = shareUri.toString(),
                             isVoiceMessage = false,
                             caption = caption!!,
@@ -3908,7 +3908,7 @@ class ChatActivity :
                     } catch (e: Exception) {
                         Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
                         downloadFileToCache(message, false) {
-                            chatViewModel.uploadFile(
+                            uploadFile(
                                 fileUri = shareUri.toString(),
                                 isVoiceMessage = false,
                                 caption = caption!!,
@@ -4327,6 +4327,33 @@ class ChatActivity :
             retrofitBucket.url!!,
             retrofitBucket.queryMap!!
         )
+    }
+
+    fun uploadFile(
+        fileUri: String,
+        isVoiceMessage: Boolean,
+        caption: String = "",
+        roomToken: String = "",
+        replyToMessageId: Int? = null,
+        displayName: String
+    ) {
+        chatViewModel.uploadFile(
+            fileUri,
+            isVoiceMessage,
+            caption,
+            roomToken,
+            replyToMessageId,
+            displayName
+        )
+        cancelReply()
+    }
+
+    fun cancelReply() {
+        messageInputViewModel.reply(null)
+        chatViewModel.messageDraft.quotedMessageText = null
+        chatViewModel.messageDraft.quotedDisplayName = null
+        chatViewModel.messageDraft.quotedImageUrl = null
+        chatViewModel.messageDraft.quotedJsonId = null
     }
 
     companion object {

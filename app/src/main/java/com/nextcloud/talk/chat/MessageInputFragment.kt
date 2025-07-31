@@ -182,8 +182,12 @@ class MessageInputFragment : Fragment() {
                 chatActivity.chatViewModel.messageDraft.quotedDisplayName = message.actorDisplayName
                 chatActivity.chatViewModel.messageDraft.quotedImageUrl = message.imageUrl
                 chatActivity.chatViewModel.messageDraft.quotedJsonId = message.jsonMessageId
-                replyToMessage(message.text, message.actorDisplayName, message.imageUrl, message.jsonMessageId)
-            }
+                replyToMessage(
+                    message.text,
+                    message.actorDisplayName,
+                    message.imageUrl
+                )
+            } ?: clearReplyUi()
         }
 
         chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
@@ -314,8 +318,7 @@ class MessageInputFragment : Fragment() {
                     replyToMessage(
                         chatActivity.chatViewModel.messageDraft.quotedMessageText,
                         chatActivity.chatViewModel.messageDraft.quotedDisplayName,
-                        chatActivity.chatViewModel.messageDraft.quotedImageUrl,
-                        chatActivity.chatViewModel.messageDraft.quotedJsonId ?: 0
+                        chatActivity.chatViewModel.messageDraft.quotedImageUrl
                     )
                 }
             }
@@ -467,6 +470,10 @@ class MessageInputFragment : Fragment() {
             binding.fragmentCallStarted.callAuthorChipSecondary.visibility = if (collapsed) View.VISIBLE else View.GONE
             binding.fragmentCallStarted.callStartedSecondaryText.visibility = if (collapsed) View.VISIBLE else View.GONE
             setDropDown(collapsed)
+        }
+
+        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
+            cancelReply()
         }
     }
 
@@ -719,12 +726,7 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun replyToMessage(
-        quotedMessageText: String?,
-        quotedActorDisplayName: String?,
-        quotedImageUrl: String?,
-        quotedJsonId: Int
-    ) {
+    private fun replyToMessage(quotedMessageText: String?, quotedActorDisplayName: String?, quotedImageUrl: String?) {
         Log.d(TAG, "Reply")
         val view = binding.fragmentMessageInputView
         view.findViewById<ImageButton>(R.id.cancelReplyButton)?.visibility =
@@ -955,10 +957,6 @@ class MessageInputFragment : Fragment() {
     private fun themeMessageInputView() {
         binding.fragmentMessageInputView.button?.let { viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY) }
 
-        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.setOnClickListener {
-            cancelReply()
-        }
-
         binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.cancelReplyButton)?.let {
             viewThemeUtils.platform
                 .themeImageButton(it)
@@ -1015,18 +1013,14 @@ class MessageInputFragment : Fragment() {
     }
 
     private fun cancelReply() {
-        // TODO set id in viewmodel to null
-        val quote = binding.fragmentMessageInputView
-            .findViewById<RelativeLayout>(R.id.quotedChatMessageView)
-        quote.visibility = View.GONE
-        quote.tag = null
-        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
-        chatActivity.messageInputViewModel.reply(null)
+        chatActivity.cancelReply()
+        clearReplyUi()
+    }
 
-        chatActivity.chatViewModel.messageDraft.quotedMessageText = null
-        chatActivity.chatViewModel.messageDraft.quotedDisplayName = null
-        chatActivity.chatViewModel.messageDraft.quotedImageUrl = null
-        chatActivity.chatViewModel.messageDraft.quotedJsonId = null
+    private fun clearReplyUi() {
+        val quote = binding.fragmentMessageInputView.findViewById<RelativeLayout>(R.id.quotedChatMessageView)
+        quote.visibility = View.GONE
+        binding.fragmentMessageInputView.findViewById<ImageButton>(R.id.attachmentButton)?.visibility = View.VISIBLE
     }
 
     private fun isInReplyState(): Boolean {

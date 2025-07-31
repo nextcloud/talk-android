@@ -445,6 +445,7 @@ class OfflineFirstChatRepository @Inject constructor(
         return loadFromServer
     }
 
+    @Suppress("LongParameterList")
     private fun getFieldMap(
         lookIntoFuture: Boolean,
         timeout: Int,
