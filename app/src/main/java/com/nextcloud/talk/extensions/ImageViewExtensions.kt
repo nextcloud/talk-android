@@ -446,11 +446,11 @@ private class CircularDrawable(private val sourceDrawable: Drawable) : Drawable(
         if (bitmap.width * rect.height() > rect.width() * bitmap.height) {
             // Taller than wide, scale to height and center horizontally
             scale = rect.height() / bitmap.height.toFloat()
-            dx = (rect.width() - bitmap.width * scale) * 0.5f
+            dx = (rect.width() - bitmap.width * scale) / 2.0f
         } else {
             // Wider than tall, scale to width and center vertically
             scale = rect.width() / bitmap.width.toFloat()
-            dy = (rect.height() - bitmap.height * scale) * 0.5f
+            dy = (rect.height() - bitmap.height * scale) / 2.0f
         }
 
         matrix.setScale(scale, scale)
@@ -470,7 +470,8 @@ private class CircularDrawable(private val sourceDrawable: Drawable) : Drawable(
         paint.colorFilter = colorFilter
     }
 
-    @Deprecated("This method is no longer used in graphics optimizations",
+    @Deprecated(
+        "This method is no longer used in graphics optimizations",
         ReplaceWith("PixelFormat.TRANSLUCENT", "android.graphics.PixelFormat")
     )
     override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
