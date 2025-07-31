@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -19,14 +19,9 @@ import com.nextcloud.talk.utils.preferences.AppPreferences
 
 // local datasource for communicating with room through account manager
 // crucial for making sure the login process interacts with the db as expected.
-
-//  TODO test for proper account management and deletion, using robolectric for Unit tests.
-//   This is helpful to know if an account management bug from
-//   from the serverside, clientside network or clientside storage or client business logic.
-//   For example the occasional multiple account creation error
 class LocalLoginDataSource(val userManager: UserManager, val appPreferences: AppPreferences, val context: Context) {
 
-    fun updateUserAndRestartApp(loginData: NetworkLoginDataSource.LoginCompletion) {
+    fun updateUser(loginData: NetworkLoginDataSource.LoginCompletion) {
         val currentUser = userManager.currentUser.blockingGet()
         if (currentUser != null) {
             currentUser.clientCertificate = appPreferences.temporaryClientCertAlias
@@ -35,7 +30,7 @@ class LocalLoginDataSource(val userManager: UserManager, val appPreferences: App
         }
     }
 
-    fun startAccountRemovalWorkerAndRestartApp(): LiveData<WorkInfo?> {
+    fun startAccountRemovalWorker(): LiveData<WorkInfo?> {
         val accountRemovalWork = OneTimeWorkRequest.Builder(AccountRemovalWorker::class.java).build()
         WorkManager.getInstance(context).enqueue(accountRemovalWork)
 

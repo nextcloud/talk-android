@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -24,10 +24,6 @@ import javax.net.ssl.SSLSession
 
 //  This class handles the network and polling logic in isolation, which makes it easier to test
 //  Login and Authentication is critical, thus it needs to be working properly.
-
-//  TODO test for network correct and network error paths.
-//   Should work, but in case it doesn't, makes it easier to find
-//   out if the error is server side or client side
 class NetworkLoginDataSource(
     trustManager: TrustManager,
     socketFactory: SSLSocketFactoryCompat
@@ -57,30 +53,33 @@ class NetworkLoginDataSource(
         val appPassword: String
     )
 
-    suspend fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
+    fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
         val url = "$baseUrl/index.php/login/v2"
+        var result: LoginResponse? = null
         try {
             val response = getResponseOfAnonymouslyPostLoginRequest(url)
             val jsonObject: JsonObject = JsonParser.parseString(response).asJsonObject
             val loginUrl: String = getLoginUrl(jsonObject)
             val token = jsonObject.getAsJsonObject("poll").get("token").asString
             val pollUrl = jsonObject.getAsJsonObject("poll").get("endpoint").asString
-            return LoginResponse(token, pollUrl, loginUrl)
+            result = LoginResponse(token, pollUrl, loginUrl)
         } catch (e: SSLHandshakeException) {
             Log.e(TAG, "Error caught at anonymouslyPostLoginRequest: $e")
-            return null
+        } catch (e: NullPointerException) {
+            Log.e(TAG, "Error caught at performLoginFlowV2: $e")
         }
+
+        return result
 
     }
 
-    private suspend fun getResponseOfAnonymouslyPostLoginRequest(url: String): String? {
+    private fun getResponseOfAnonymouslyPostLoginRequest(url: String): String? {
         val request = Request.Builder()
             .url(url)
             .post(FormBody.Builder().build())
             .addHeader("Clear-Site-Data", "cookies")
             .build()
 
-        // Blocking call using execute
         okHttpClient.newCall(request).execute().use { response ->
             if (!response.isSuccessful) {
                 throw IOException("Unexpected code $response")
@@ -98,7 +97,7 @@ class NetworkLoginDataSource(
         return result
     }
 
-    suspend fun performLoginFlowV2(response: LoginResponse): LoginCompletion? {
+    fun performLoginFlowV2(response: LoginResponse): LoginCompletion? {
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", response.token)
             .build()
@@ -110,7 +109,6 @@ class NetworkLoginDataSource(
 
         var result: LoginCompletion? = null
         try {
-            // Blocking call using execute
             okHttpClient.newCall(request).execute()
                 .use { response ->
                     if (!response.isSuccessful) {
@@ -133,6 +131,8 @@ class NetworkLoginDataSource(
                     }
                 }
         } catch (e: IllegalStateException) {
+            Log.e(TAG, "Error caught at performLoginFlowV2: $e")
+        } catch (e: NullPointerException) {
             Log.e(TAG, "Error caught at performLoginFlowV2: $e")
         }
 

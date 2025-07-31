@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -28,12 +28,9 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.json.JSONException
 import java.net.URLDecoder
 
 // this handles communication with the network datasource and the User manager (abstraction over room)
-//   TODO test for response handling, error handling, and other edge cases from otherwise working data sources
-//      because most of the logic should be happening in the repository layer, I should test this first
 class LoginRepository(
     val network: NetworkLoginDataSource,
     val local: LocalLoginDataSource
@@ -138,14 +135,8 @@ class LoginRepository(
     }
 
     private fun completeLoginFlow(data: LoginCompletion) {
-        try {
-            isLoginProcessCompleted = (data.status == HTTP_OK)
-
-            parseAndLogin(data)
-        } catch (e: JSONException) {
-            Log.e(TAG, "Error caught at completeLoginFlow: $e")
-            _errorFlow.tryEmit(R.string.nc_common_error_sorry)
-        }
+        isLoginProcessCompleted = (data.status == HTTP_OK)
+        parseAndLogin(data)
     }
 
     private fun parseAndLogin(loginData: LoginCompletion) {
@@ -153,7 +144,7 @@ class LoginRepository(
             _errorFlow.tryEmit(R.string.nc_common_error_sorry)
 
             // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
-            val liveData = local.startAccountRemovalWorkerAndRestartApp()
+            val liveData = local.startAccountRemovalWorker()
             liveData.observeForever { workInfo: WorkInfo? ->
                 when (workInfo?.state) {
                     WorkInfo.State.SUCCEEDED, WorkInfo.State.FAILED, WorkInfo.State.CANCELLED -> {
@@ -166,7 +157,7 @@ class LoginRepository(
         } else if (local.checkIfUserExists(loginData)) {
             // FIXME LOW PRIORITY Refactor entry point to take you to server selection, instead of browser
             if (shouldReauthorizeUser) {
-                local.updateUserAndRestartApp(loginData)
+                local.updateUser(loginData)
             } else {
                 Log.w(TAG, "Tried to add an account that account already exists. Skipped user creation.")
                 _restartAppFlow.tryEmit(true)
