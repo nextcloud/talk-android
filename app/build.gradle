@@ -349,6 +349,8 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
 
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.4'
+    testImplementation("com.google.dagger:hilt-android-testing:2.57")
+    testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
 }
 
 tasks.register('installGitHooks', Copy) {
