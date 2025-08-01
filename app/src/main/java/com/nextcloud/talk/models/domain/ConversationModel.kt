@@ -14,7 +14,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
-class ConversationModel(
+data class ConversationModel(
     var internalId: String,
     var accountId: Long,
     var token: String,
