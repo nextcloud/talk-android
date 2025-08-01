@@ -81,7 +81,9 @@ class LoginRepository(
      *
      * @throws IllegalArgumentException
      */
-    fun startLoginFlowFromQR(dataString: String) {
+    fun startLoginFlowFromQR(dataString: String, reAuth: Boolean = false) {
+        shouldReauthorizeUser = reAuth
+
         if (!dataString.startsWith(PREFIX)) {
             throw IllegalArgumentException("Invalid login URL detected")
         }
@@ -117,11 +119,12 @@ class LoginRepository(
         parseAndLogin(loginCompletion)
     }
 
-    /**
+    /**ur
      * Entry point to the login process
      */
-    fun startLoginFlow(baseUrl: String, reAuth: Boolean) {
+    fun startLoginFlow(baseUrl: String, reAuth: Boolean = false) {
         shouldReauthorizeUser = reAuth
+
         CoroutineScope(Dispatchers.IO).launch {
             val response = network.anonymouslyPostLoginRequest(baseUrl)
 
@@ -158,6 +161,7 @@ class LoginRepository(
             // FIXME LOW PRIORITY Refactor entry point to take you to server selection, instead of browser
             if (shouldReauthorizeUser) {
                 local.updateUser(loginData)
+                _restartAppFlow.tryEmit(true)
             } else {
                 Log.w(TAG, "Tried to add an account that account already exists. Skipped user creation.")
                 _restartAppFlow.tryEmit(true)

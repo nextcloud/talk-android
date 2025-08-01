@@ -165,5 +165,5 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(BrowserLoginActivityViewModel::class)
-    abstract fun threadsOverviewViewModel(viewModel: BrowserLoginActivityViewModel): ViewModel
+    abstract fun browserLoginActivityViewModel(viewModel: BrowserLoginActivityViewModel): ViewModel
 }
