@@ -323,7 +323,7 @@ class ComposeChatAdapter(
                     }
 
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
-                        if (message.isLinkPreview()) {
+                        if (message.extractedUrlToPreview != null || message.isLinkPreview()) {
                             LinkMessage(message, isBlinkingState)
                         } else {
                             TextMessage(message, isBlinkingState)
