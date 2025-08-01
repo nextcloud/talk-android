@@ -14,7 +14,7 @@ import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
 
-class ConversationModel(
+data class ConversationModel(
     var internalId: String,
     var accountId: Long,
     var token: String,
@@ -133,109 +133,5 @@ class ConversationModel(
                 hasSensitive = conversation.hasSensitive,
                 hasImportant = conversation.hasImportant
             )
-    }
-
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as ConversationModel
-
-        if (hasPassword != other.hasPassword) return false
-        if (favorite != other.favorite) return false
-        if (lastActivity != other.lastActivity) return false
-        if (unreadMessages != other.unreadMessages) return false
-        if (unreadMention != other.unreadMention) return false
-        if (lobbyTimer != other.lobbyTimer) return false
-        if (lastReadMessage != other.lastReadMessage) return false
-        if (lastCommonReadMessage != other.lastCommonReadMessage) return false
-        if (hasCall != other.hasCall) return false
-        if (callFlag != other.callFlag) return false
-        if (canStartCall != other.canStartCall) return false
-        if (canLeaveConversation != other.canLeaveConversation) return false
-        if (canDeleteConversation != other.canDeleteConversation) return false
-        if (unreadMentionDirect != other.unreadMentionDirect) return false
-        if (notificationCalls != other.notificationCalls) return false
-        if (permissions != other.permissions) return false
-        if (messageExpiration != other.messageExpiration) return false
-        if (statusClearAt != other.statusClearAt) return false
-        if (callRecording != other.callRecording) return false
-        if (hasCustomAvatar != other.hasCustomAvatar) return false
-        if (callStartTime != other.callStartTime) return false
-        if (recordingConsentRequired != other.recordingConsentRequired) return false
-        if (hasArchived != other.hasArchived) return false
-        if (hasSensitive != other.hasSensitive) return false
-        if (hasImportant != other.hasImportant) return false
-        if (internalId != other.internalId) return false
-        if (name != other.name) return false
-        if (displayName != other.displayName) return false
-        if (description != other.description) return false
-        if (type != other.type) return false
-        if (participantType != other.participantType) return false
-        if (lastMessage != other.lastMessage) return false
-        if (objectType != other.objectType) return false
-        if (objectId != other.objectId) return false
-        if (notificationLevel != other.notificationLevel) return false
-        if (conversationReadOnlyState != other.conversationReadOnlyState) return false
-        if (lobbyState != other.lobbyState) return false
-        if (status != other.status) return false
-        if (statusIcon != other.statusIcon) return false
-        if (statusMessage != other.statusMessage) return false
-        if (avatarVersion != other.avatarVersion) return false
-        if (remoteServer != other.remoteServer) return false
-        if (remoteToken != other.remoteToken) return false
-        if (password != other.password) return false
-        if (messageDraft != other.messageDraft) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        var result = hasPassword.hashCode()
-        result = 31 * result + favorite.hashCode()
-        result = 31 * result + lastActivity.hashCode()
-        result = 31 * result + unreadMessages
-        result = 31 * result + unreadMention.hashCode()
-        result = 31 * result + lobbyTimer.hashCode()
-        result = 31 * result + lastReadMessage
-        result = 31 * result + lastCommonReadMessage
-        result = 31 * result + hasCall.hashCode()
-        result = 31 * result + callFlag
-        result = 31 * result + canStartCall.hashCode()
-        result = 31 * result + canLeaveConversation.hashCode()
-        result = 31 * result + canDeleteConversation.hashCode()
-        result = 31 * result + unreadMentionDirect.hashCode()
-        result = 31 * result + notificationCalls
-        result = 31 * result + permissions
-        result = 31 * result + messageExpiration
-        result = 31 * result + (statusClearAt?.hashCode() ?: 0)
-        result = 31 * result + callRecording
-        result = 31 * result + hasCustomAvatar.hashCode()
-        result = 31 * result + callStartTime.hashCode()
-        result = 31 * result + recordingConsentRequired
-        result = 31 * result + hasArchived.hashCode()
-        result = 31 * result + hasSensitive.hashCode()
-        result = 31 * result + hasImportant.hashCode()
-        result = 31 * result + internalId.hashCode()
-        result = 31 * result + name.hashCode()
-        result = 31 * result + displayName.hashCode()
-        result = 31 * result + description.hashCode()
-        result = 31 * result + type.hashCode()
-        result = 31 * result + participantType.hashCode()
-        result = 31 * result + (lastMessage?.hashCode() ?: 0)
-        result = 31 * result + objectType.hashCode()
-        result = 31 * result + objectId.hashCode()
-        result = 31 * result + notificationLevel.hashCode()
-        result = 31 * result + conversationReadOnlyState.hashCode()
-        result = 31 * result + lobbyState.hashCode()
-        result = 31 * result + (status?.hashCode() ?: 0)
-        result = 31 * result + (statusIcon?.hashCode() ?: 0)
-        result = 31 * result + (statusMessage?.hashCode() ?: 0)
-        result = 31 * result + avatarVersion.hashCode()
-        result = 31 * result + (remoteServer?.hashCode() ?: 0)
-        result = 31 * result + (remoteToken?.hashCode() ?: 0)
-        result = 31 * result + (password?.hashCode() ?: 0)
-        result = 31 * result + (messageDraft?.hashCode() ?: 0)
-        return result
     }
 }
