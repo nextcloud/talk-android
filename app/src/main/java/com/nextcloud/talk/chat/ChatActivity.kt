@@ -2663,6 +2663,7 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+        adapter = null
     }
 
     private fun isActivityNotChangingConfigurations(): Boolean = !isChangingConfigurations
