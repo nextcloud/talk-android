@@ -490,6 +490,7 @@
     <string name="polls_submit_vote">Голосовать</string>
     <string name="polls_voted_hidden_success">Голос отправлен</string>
     <string name="previously_set">Установлено ранее</string>
+    <string name="qr_code_error">QR код не может быть прочитан</string>
     <string name="raise_hand">Поднять руку</string>
     <string name="reactions_tab_all">Все</string>
     <string name="read_storage_no_permission">Общий доступ к файлам из хранилища невозможен без разрешений</string>
@@ -510,7 +511,7 @@
     <string name="reset_status">Сбросить статус</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Сканировать QR код</string>
     <string name="scope_federated_description">Выполнять синхронизацию только с доверенными серверами</string>
     <string name="scope_federated_title">Федеративный доступ</string>
     <string name="scope_local_description">Видно только людям на этом сервере и гостям</string>
@@ -542,8 +543,10 @@
     <string name="shared_items_poll">Опрос</string>
     <string name="shared_items_recording">Запись звонка</string>
     <string name="shared_items_voice">Голосовая почта</string>
+    <string name="show_threads_overview">Показать темы</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
+    <string name="start_thread">Начать тему</string>
     <string name="status_message">Описание статуса</string>
     <string name="switch_to_breakout_room">Перейти в комнат отдыха</string>
     <string name="switch_to_main_room">Перейти в основную комнату</string>
@@ -559,6 +562,7 @@
     <string name="thirtyMinutes">30 минут</string>
     <string name="thisWeek">Эта неделя</string>
     <string name="this_weekend">Эти выходные</string>
+    <string name="thread_replies_amount">%1$d ответов</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>
