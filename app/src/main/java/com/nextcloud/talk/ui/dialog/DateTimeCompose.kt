@@ -10,6 +10,7 @@ package com.nextcloud.talk.ui.dialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -50,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -185,27 +187,31 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @Composable
     private fun Body() {
+        val context = LocalContext.current
         val currTime = LocalDateTime.now()
+
+        val timeFormatter = DateTimeFormatter.ofPattern(timePattern(context))
+        val dayTimeFormatter = DateTimeFormatter.ofPattern(dayTimePattern(context))
 
         val laterToday = LocalDateTime.now()
             .withHour(INT_18)
             .withMinute(0)
             .withSecond(0)
-        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(TIME_PATTERN))
+        val laterTodayStr = laterToday.format(timeFormatter)
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
+        val tomorrowStr = tomorrow.format(dayTimeFormatter)
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
+        val thisWeekendStr = thisWeekend.format(dayTimeFormatter)
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
@@ -213,7 +219,7 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(DAY_TIME_PATTERN))
+        val nextWeekStr = nextWeek.format(dayTimeFormatter)
 
         if (currTime < laterToday) {
             TimeOption(
@@ -259,6 +265,7 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @Composable
     private fun Header() {
+        val context = LocalContext.current
         Row(
             modifier = Modifier
                 .padding(INT_8.dp)
@@ -281,7 +288,7 @@ class DateTimeCompose(val bundle: Bundle) {
             }
 
             val timeText = if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
-                timeState.value.format(DateTimeFormatter.ofPattern(PATTERN))
+                timeState.value.format(DateTimeFormatter.ofPattern(fullPattern(context)))
             } else {
                 ""
             }
@@ -319,7 +326,8 @@ class DateTimeCompose(val bundle: Bundle) {
                 val now = LocalDateTime.now()
                 val timePickerState = rememberTimePickerState(
                     initialHour = now.hour,
-                    initialMinute = now.minute
+                    initialMinute = now.minute,
+                    is24Hour = DateFormat.is24HourFormat(LocalContext.current)
                 )
 
                 BoxWithConstraints(
@@ -385,6 +393,14 @@ class DateTimeCompose(val bundle: Bundle) {
         }
     }
 
+    private fun timePattern(context: Context): String = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
+
+    private fun dayTimePattern(context: Context): String =
+        if (DateFormat.is24HourFormat(context)) "EEE, HH:mm" else "EEE, hh:mm a"
+
+    private fun fullPattern(context: Context): String =
+        if (DateFormat.is24HourFormat(context)) "dd MMM, HH:mm" else "dd MMM, hh:mm a"
+
     @Composable
     private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
         Row(
@@ -399,9 +415,6 @@ class DateTimeCompose(val bundle: Bundle) {
     }
 
     companion object {
-        private const val PATTERN = "dd MMM, HH:mm"
-        private const val TIME_PATTERN = "HH:mm"
-        private const val DAY_TIME_PATTERN = "EEE, HH:mm"
         private const val HALF_WEIGHT = 0.5f
         private const val INT_8 = 8
         private const val INT_16 = 16
