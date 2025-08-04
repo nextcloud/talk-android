@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import androidx.work.WorkInfo
-import com.nextcloud.talk.R
 import com.nextcloud.talk.account.data.io.LocalLoginDataSource
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource.LoginCompletion
@@ -24,10 +23,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 
 // this handles communication with the network datasource and the User manager (abstraction over room)
@@ -38,7 +36,9 @@ class LoginRepository(
 
     companion object {
         val TAG: String = LoginRepository::class.java.simpleName
-        private const val INTERVAL = 100L
+        const val START_LOGIN_FLOW = "startLoginFlow"
+        const val PARSE_LOGIN = "parseAndLogin"
+        private const val INTERVAL = 250L
         private const val HTTP_OK = 200
         private const val USER_KEY = "user:"
         private const val SERVER_KEY = "server:"
@@ -47,32 +47,33 @@ class LoginRepository(
         private const val MAX_ARGS = 3
     }
 
-    private var isLoginProcessCompleted = false
     private var shouldReauthorizeUser = false
 
-    private val _errorFlow = MutableSharedFlow<Int>()
-    val errorFlow: SharedFlow<Int> get() = _errorFlow
+    private val _errorFlow = MutableSharedFlow<Pair<String, String>>()
+    val errorFlow: Flow<Pair<String, String>> get() = _errorFlow
 
     private val _launchWebFlow = MutableSharedFlow<String>()
-    val launchWebFlow: SharedFlow<String> get() = _launchWebFlow
+    val launchWebFlow: Flow<String> get() = _launchWebFlow
 
     private val _restartAppFlow = MutableSharedFlow<Boolean>()
-    val restartAppFlow: SharedFlow<Boolean> get() = _restartAppFlow
+    val restartAppFlow: Flow<Boolean> get() = _restartAppFlow
 
     private val _continueLoginFlow = MutableSharedFlow<Bundle>()
-    val continueLoginFlow: SharedFlow<Bundle> get() = _continueLoginFlow
+    val continueLoginFlow: Flow<Bundle> get() = _continueLoginFlow
 
-    private fun pollLogin(response: LoginResponse) {
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO) {
-                while (!isLoginProcessCompleted) {
-                    val loginData = network.performLoginFlowV2(response)
-                    loginData?.let {
-                        completeLoginFlow(it)
-                    }
-                    delay(INTERVAL)
-                }
+    private suspend fun pollLogin(response: LoginResponse) {
+        while (true) {
+            val loginData = network.performLoginFlowV2(response)
+            if (loginData == null) {
+                break // Error occurred, terminating
             }
+
+            if (loginData.status != HTTP_OK) {
+                delay(INTERVAL) // No response yet, retry
+            }
+
+            parseAndLogin(loginData)
+            break // process completed
         }
     }
 
@@ -132,19 +133,16 @@ class LoginRepository(
                 _launchWebFlow.emit(response.loginUrl)
                 pollLogin(response)
             } else {
-                _errorFlow.emit(R.string.nc_common_error_sorry)
+                val pair = Pair(START_LOGIN_FLOW, "No Response from anonymous request")
+                _errorFlow.emit(pair)
             }
         }
     }
 
-    private fun completeLoginFlow(data: LoginCompletion) {
-        isLoginProcessCompleted = (data.status == HTTP_OK)
-        parseAndLogin(data)
-    }
-
     private fun parseAndLogin(loginData: LoginCompletion) {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {
-            _errorFlow.tryEmit(R.string.nc_common_error_sorry)
+            val pair = Pair(PARSE_LOGIN, "User is scheduled for deletion")
+            _errorFlow.tryEmit(pair)
 
             // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
             val liveData = local.startAccountRemovalWorker()

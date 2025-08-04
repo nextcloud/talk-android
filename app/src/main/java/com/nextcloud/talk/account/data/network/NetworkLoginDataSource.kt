@@ -112,6 +112,7 @@ class NetworkLoginDataSource(
             okHttpClient.newCall(request).execute()
                 .use { response ->
                     if (!response.isSuccessful) {
+                        result = LoginCompletion(404, "", "", "")
                         throw IOException("Unexpected code $response")
                     }
                     val status: Int = response.code
@@ -130,9 +131,7 @@ class NetworkLoginDataSource(
                         result = LoginCompletion(status, server, loginName, appPassword)
                     }
                 }
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "Error caught at performLoginFlowV2: $e")
-        } catch (e: NullPointerException) {
+        } catch (e: Exception) {
             Log.e(TAG, "Error caught at performLoginFlowV2: $e")
         }
 

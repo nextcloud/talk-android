@@ -7,10 +7,17 @@
 
 package com.nextcloud.talk.account.viewmodels
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
-import com.nextcloud.talk.models.LoginData
+import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.LoginRepository.Companion.PARSE_LOGIN
+import com.nextcloud.talk.account.data.LoginRepository.Companion.START_LOGIN_FLOW
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 //  the point of the view model is to maintain the state of the view (Activity or Activity+XML)
@@ -19,10 +26,7 @@ import javax.inject.Inject
 
 //  TODO test for proper state changes upon an otherwise working repository and UI layer, making sure the view model
 //      properly models the view's state
-class BrowserLoginActivityViewModel @Inject constructor(
-    // TODO set up provide login repository and connect the dots
-): ViewModel() {
-
+class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRepository): ViewModel() {
 
     companion object {
         private val TAG = BrowserLoginActivityViewModel::class.java.simpleName
@@ -31,7 +35,7 @@ class BrowserLoginActivityViewModel @Inject constructor(
     sealed class InitialLoginViewState {
         data object None : InitialLoginViewState()
         data class InitialLoginRequestSuccess(val loginUrl: String): InitialLoginViewState()
-        data class InitialLoginRequestError(val exception: Exception): InitialLoginViewState()
+        data object InitialLoginRequestError: InitialLoginViewState()
     }
 
     private val _initialLoginRequestState = MutableStateFlow<InitialLoginViewState>(InitialLoginViewState.None)
@@ -40,16 +44,59 @@ class BrowserLoginActivityViewModel @Inject constructor(
 
     sealed class PostLoginViewState {
         data object None: PostLoginViewState()
-        data object PostLoginRestart: PostLoginViewState()
-        data object PostLoginAccountRemovalAndRestart: PostLoginViewState()
-        data class PostLoginError(val e: Exception): PostLoginViewState()
-        data class PostLoginUserExists(val data: LoginData): PostLoginViewState()
-        data class PostLoginAccountVerification(val data: LoginData): PostLoginViewState()
+        data object PostLoginRestartApp: PostLoginViewState()
+        data object PostLoginError: PostLoginViewState()
+        data class PostLoginContinue(val data: Bundle): PostLoginViewState()
     }
 
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
     val postLoginState: Flow<PostLoginViewState>
         get() = _postLoginState
 
-    // TODO start pool login and notify UI on result(s). Don't make viewmodel lifecycle aware, breaks MVVM
+    /**
+     * Login Repository exit points
+     */
+    val errorFlow: Flow<Pair<String, String>> get() = repository.errorFlow.onEach { pair ->
+        val tag = pair.first
+
+        when (tag) {
+            START_LOGIN_FLOW -> _initialLoginRequestState.value = InitialLoginViewState.InitialLoginRequestError
+            PARSE_LOGIN -> _postLoginState.value = PostLoginViewState.PostLoginError
+
+            else -> {}
+        }
+    }
+
+    val launchWebFlow: Flow<String> get() = repository.launchWebFlow.onEach { url ->
+        _initialLoginRequestState.value = InitialLoginViewState.InitialLoginRequestSuccess(url)
+    }
+
+    val restartAppFlow: Flow<Boolean> get() = repository.restartAppFlow.onEach {
+        _postLoginState.value = PostLoginViewState.PostLoginRestartApp
+    }
+
+    val continueLoginFlow: Flow<Bundle> get() = repository.continueLoginFlow.onEach { bundle ->
+        _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
+    }
+
+    init {
+        viewModelScope.launch { errorFlow.collect() }
+
+        viewModelScope.launch { launchWebFlow.collect() }
+
+        viewModelScope.launch { restartAppFlow.collect() }
+
+        viewModelScope.launch { continueLoginFlow.collect() }
+    }
+
+    /**
+     * Login Repository Entry points
+     */
+
+    fun loginNormally(baseUrl: String, reAuth: Boolean = false) = repository.startLoginFlow(baseUrl, reAuth)
+
+    fun loginWithQR(dataString: String, reAuth: Boolean = false) = repository.startLoginFlowFromQR(dataString, reAuth)
+
+
+
 }
