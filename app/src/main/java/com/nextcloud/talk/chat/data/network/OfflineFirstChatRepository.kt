@@ -163,8 +163,11 @@ class OfflineFirstChatRepository @Inject constructor(
             } else {
                 if (!weAlreadyHaveSomeOfflineMessages) {
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
-                    if (networkMonitor.isOnline.value.not() || !networkMonitor.isServerReachable.value) {
+                    if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    }
+                    if(!networkMonitor.isServerReachable.value){
+                        _generalUIFlow.emit(ChatActivity.UNABLE_TO_LOAD_MESSAGES)
                     }
                 } else {
                     Log.d(
