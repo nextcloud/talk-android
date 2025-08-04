@@ -25,7 +25,6 @@ import io.reactivex.schedulers.Schedulers
 class LinkPreview {
 
     fun showLink(message: ChatMessage, ncApi: NcApi, binding: ReferenceInsideMessageBinding, context: Context) {
-
         if (message.extractedUrlToPreview.isNullOrEmpty()) {
             binding.referenceName.visibility = View.GONE
             binding.referenceDescription.visibility = View.GONE
