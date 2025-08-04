@@ -10,7 +10,7 @@ package com.nextcloud.talk.ui.dialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import androidx.compose.animation.animateContentSize
+import android.text.format.DateFormat
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredSizeIn
 import androidx.compose.foundation.layout.size
@@ -28,10 +29,12 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SelectableDates
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -48,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -114,7 +118,7 @@ class DateTimeCompose(val bundle: Bundle) {
             ) {
                 Surface(
                     shape = RoundedCornerShape(INT_8.dp),
-                    modifier = Modifier.fillMaxWidth().animateContentSize()
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Column(
                         modifier = Modifier
@@ -183,27 +187,31 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @Composable
     private fun Body() {
+        val context = LocalContext.current
         val currTime = LocalDateTime.now()
+
+        val timeFormatter = DateTimeFormatter.ofPattern(timePattern(context))
+        val dayTimeFormatter = DateTimeFormatter.ofPattern(dayTimePattern(context))
 
         val laterToday = LocalDateTime.now()
             .withHour(INT_18)
             .withMinute(0)
             .withSecond(0)
-        val laterTodayStr = laterToday.format(DateTimeFormatter.ofPattern(PATTERN))
+        val laterTodayStr = laterToday.format(timeFormatter)
 
         val tomorrow = LocalDateTime.now()
             .plusDays(1)
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val tomorrowStr = tomorrow.format(DateTimeFormatter.ofPattern(PATTERN))
+        val tomorrowStr = tomorrow.format(dayTimeFormatter)
 
         val thisWeekend = LocalDateTime.now()
             .with(nextOrSame(DayOfWeek.SATURDAY))
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val thisWeekendStr = thisWeekend.format(DateTimeFormatter.ofPattern(PATTERN))
+        val thisWeekendStr = thisWeekend.format(dayTimeFormatter)
 
         val nextWeek = LocalDateTime.now()
             .plusWeeks(1)
@@ -211,7 +219,7 @@ class DateTimeCompose(val bundle: Bundle) {
             .withHour(INT_8)
             .withMinute(0)
             .withSecond(0)
-        val nextWeekStr = nextWeek.format(DateTimeFormatter.ofPattern(PATTERN))
+        val nextWeekStr = nextWeek.format(dayTimeFormatter)
 
         if (currTime < laterToday) {
             TimeOption(
@@ -222,16 +230,14 @@ class DateTimeCompose(val bundle: Bundle) {
             }
         }
 
-        if (tomorrow.dayOfWeek < DayOfWeek.SATURDAY) {
-            TimeOption(
-                label = stringResource(R.string.tomorrow),
-                timeString = tomorrowStr
-            ) {
-                setTime(tomorrow)
-            }
+        TimeOption(
+            label = stringResource(R.string.tomorrow),
+            timeString = tomorrowStr
+        ) {
+            setTime(tomorrow)
         }
 
-        if (currTime.dayOfWeek < DayOfWeek.SATURDAY) {
+        if (currTime.dayOfWeek < DayOfWeek.FRIDAY) {
             TimeOption(
                 label = stringResource(R.string.this_weekend),
                 timeString = thisWeekendStr
@@ -240,11 +246,13 @@ class DateTimeCompose(val bundle: Bundle) {
             }
         }
 
-        TimeOption(
-            label = stringResource(R.string.next_week),
-            timeString = nextWeekStr
-        ) {
-            setTime(nextWeek)
+        if (currTime.dayOfWeek != DayOfWeek.SUNDAY) {
+            TimeOption(
+                label = stringResource(R.string.next_week),
+                timeString = nextWeekStr
+            ) {
+                setTime(nextWeek)
+            }
         }
 
         HorizontalDivider()
@@ -257,11 +265,13 @@ class DateTimeCompose(val bundle: Bundle) {
 
     @Composable
     private fun Header() {
+        val context = LocalContext.current
         Row(
             modifier = Modifier
                 .padding(INT_8.dp)
+                .fillMaxWidth()
         ) {
-            Text(stringResource(R.string.nc_remind), modifier = Modifier.weight(1f))
+            Text(stringResource(R.string.nc_remind), modifier = Modifier.weight(HALF_WEIGHT))
 
             val reminderState = chatViewModel.getReminderExistState
                 .asFlow()
@@ -277,9 +287,16 @@ class DateTimeCompose(val bundle: Bundle) {
                 else -> {}
             }
 
-            if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
-                Text(timeState.value.format(DateTimeFormatter.ofPattern(PATTERN)))
+            val timeText = if (timeState.value != LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN)) {
+                timeState.value.format(DateTimeFormatter.ofPattern(fullPattern(context)))
+            } else {
+                ""
             }
+
+            Text(
+                timeText,
+                modifier = Modifier.weight(HALF_WEIGHT)
+            )
         }
         HorizontalDivider()
     }
@@ -295,8 +312,23 @@ class DateTimeCompose(val bundle: Bundle) {
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             if (!isCollapsed.value) {
-                val datePickerState = rememberDatePickerState()
-                val timePickerState = rememberTimePickerState()
+                val todayMillis = LocalDate.now().atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                val currentYear = LocalDate.now().year
+                val selectableDates = object : SelectableDates {
+                    override fun isSelectableDate(utcTimeMillis: Long): Boolean = utcTimeMillis >= todayMillis
+
+                    override fun isSelectableYear(year: Int): Boolean = year >= currentYear
+                }
+
+                val datePickerState = rememberDatePickerState(
+                    selectableDates = selectableDates
+                )
+                val now = LocalDateTime.now()
+                val timePickerState = rememberTimePickerState(
+                    initialHour = now.hour,
+                    initialMinute = now.minute,
+                    is24Hour = DateFormat.is24HourFormat(LocalContext.current)
+                )
 
                 BoxWithConstraints(
                     modifier = Modifier
@@ -307,9 +339,14 @@ class DateTimeCompose(val bundle: Bundle) {
                     DatePicker(
                         state = datePickerState,
                         modifier = Modifier
-                            .scale(scale)
+                            .scale(scale),
+                        colors = DatePickerDefaults.colors(
+                            containerColor = Color.White
+                        )
                     )
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 TimePicker(
                     state = timePickerState
@@ -356,6 +393,14 @@ class DateTimeCompose(val bundle: Bundle) {
         }
     }
 
+    private fun timePattern(context: Context): String = if (DateFormat.is24HourFormat(context)) "HH:mm" else "hh:mm a"
+
+    private fun dayTimePattern(context: Context): String =
+        if (DateFormat.is24HourFormat(context)) "EEE, HH:mm" else "EEE, hh:mm a"
+
+    private fun fullPattern(context: Context): String =
+        if (DateFormat.is24HourFormat(context)) "dd MMM, HH:mm" else "dd MMM, hh:mm a"
+
     @Composable
     private fun TimeOption(label: String, timeString: String, onClick: () -> Unit) {
         Row(
@@ -370,7 +415,6 @@ class DateTimeCompose(val bundle: Bundle) {
     }
 
     companion object {
-        private const val PATTERN = "dd MMM, HH:mm a"
         private const val HALF_WEIGHT = 0.5f
         private const val INT_8 = 8
         private const val INT_16 = 16
