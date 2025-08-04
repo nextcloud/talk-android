@@ -166,7 +166,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
                     }
-                    if(!networkMonitor.isServerReachable.value){
+                    if (!networkMonitor.isServerReachable.value) {
                         _generalUIFlow.emit(ChatActivity.UNABLE_TO_LOAD_MESSAGES)
                     }
                 } else {
