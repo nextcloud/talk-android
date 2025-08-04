@@ -4115,7 +4115,7 @@ class ChatActivity :
             CONTENT_TYPE_LOCATION -> message.hasGeoLocation()
             CONTENT_TYPE_VOICE_MESSAGE -> message.isVoiceMessage
             CONTENT_TYPE_POLL -> message.isPoll()
-            CONTENT_TYPE_LINK_PREVIEW -> message.extractedUrlToPreview != null || message.isLinkPreview()
+            CONTENT_TYPE_LINK_PREVIEW -> message.isLinkPreview()
             CONTENT_TYPE_SYSTEM_MESSAGE -> !TextUtils.isEmpty(message.systemMessage)
             CONTENT_TYPE_UNREAD_NOTICE_MESSAGE -> message.id == UNREAD_MESSAGES_MARKER_ID.toString()
             CONTENT_TYPE_CALL_STARTED -> message.id == "-2"
