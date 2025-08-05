@@ -72,6 +72,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import androidx.core.net.toUri
 import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -236,7 +237,7 @@ class ChooseAccountDialogFragment : DialogFragment() {
                             }
                         }
                     }
-                    TextButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { openSettings() }, modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
@@ -319,6 +320,13 @@ class ChooseAccountDialogFragment : DialogFragment() {
         startActivity(intent)
         dismiss()
     }
+
+    private fun openSettings() {
+        val intent = Intent(context, SettingsActivity::class.java)
+        startActivity(intent)
+        dismiss()
+    }
+
 
     @Composable
     private fun StatusIndicator(modifier: Modifier = Modifier) {
