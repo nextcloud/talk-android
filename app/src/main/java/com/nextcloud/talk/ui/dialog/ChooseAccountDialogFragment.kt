@@ -6,411 +6,329 @@
  * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-package com.nextcloud.talk.ui.dialog;
+package com.nextcloud.talk.ui.dialog
 
-import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.content.Intent;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
+import android.app.Dialog
+import android.content.Intent
+import android.os.Bundle
+import android.util.Log
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.fragment.app.DialogFragment
+import autodagger.AutoInjector
+import coil.compose.AsyncImage
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.nextcloud.talk.R
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.conversationlist.ConversationsListActivity
+import com.nextcloud.talk.data.network.NetworkMonitor
+import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.invitation.data.InvitationsModel
+import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.models.json.status.Status
+import com.nextcloud.talk.models.json.status.StatusOverall
+import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.ui.StatusDrawable
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil
+import com.nextcloud.talk.utils.DisplayUtils
+import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import java.net.CookieManager
+import javax.inject.Inject
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
+import androidx.core.net.toUri
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.account.ServerSelectionActivity;
-import com.nextcloud.talk.adapters.items.AdvancedUserItem;
-import com.nextcloud.talk.api.NcApi;
-import com.nextcloud.talk.application.NextcloudTalkApplication;
-import com.nextcloud.talk.conversationlist.ConversationsListActivity;
-import com.nextcloud.talk.data.network.NetworkMonitor;
-import com.nextcloud.talk.data.user.model.User;
-import com.nextcloud.talk.databinding.DialogChooseAccountBinding;
-import com.nextcloud.talk.extensions.ImageViewExtensionsKt;
-import com.nextcloud.talk.invitation.data.InvitationsModel;
-import com.nextcloud.talk.invitation.data.InvitationsRepository;
-import com.nextcloud.talk.models.json.participants.Participant;
-import com.nextcloud.talk.models.json.status.Status;
-import com.nextcloud.talk.models.json.status.StatusOverall;
-import com.nextcloud.talk.settings.SettingsActivity;
-import com.nextcloud.talk.ui.StatusDrawable;
-import com.nextcloud.talk.ui.theme.ViewThemeUtils;
-import com.nextcloud.talk.users.UserManager;
-import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.CapabilitiesUtil;
-import com.nextcloud.talk.utils.DisplayUtils;
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
-
-import java.net.CookieManager;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
-import javax.inject.Inject;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import autodagger.AutoInjector;
-import eu.davidea.flexibleadapter.FlexibleAdapter;
-import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-
-import static com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT;
-
-@AutoInjector(NextcloudTalkApplication.class)
-public class ChooseAccountDialogFragment extends DialogFragment {
-    public static final String TAG = ChooseAccountDialogFragment.class.getSimpleName();
-
-    private static final float STATUS_SIZE_IN_DP = 9f;
-
-    Disposable disposable;
-
-    @Inject
-    UserManager userManager;
-
-    @Inject
-    CurrentUserProviderNew currentUserProvider;
-
-    @Inject
-    CookieManager cookieManager;
-
-    @Inject
-    NcApi ncApi;
-
-    @Inject
-    ViewThemeUtils viewThemeUtils;
-
-    @Inject
-    InvitationsRepository invitationsRepository;
-
-    @Inject
-    NetworkMonitor networkMonitor;
-
-    private DialogChooseAccountBinding binding;
-    private View dialogView;
-
-    private FlexibleAdapter<AdvancedUserItem> adapter;
-    private final List<AdvancedUserItem> userItems = new ArrayList<>();
-
-    private Status status;
-
-    @SuppressLint("InflateParams")
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        binding = DialogChooseAccountBinding.inflate(getLayoutInflater());
-        dialogView = binding.getRoot();
-
-        return new MaterialAlertDialogBuilder(requireContext()).setView(dialogView).create();
+@AutoInjector(NextcloudTalkApplication::class)
+class ChooseAccountDialogFragment : DialogFragment() {
+    companion object {
+        const val TAG = "ChooseAccountDialogFragment"
+        private const val STATUS_SIZE_IN_DP = 9f
+        fun newInstance() = ChooseAccountDialogFragment()
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        Objects.requireNonNull(NextcloudTalkApplication.Companion.getSharedApplication()).getComponentApplication().inject(this);
-        User user = currentUserProvider.getCurrentUser().blockingGet();
+    @Inject
+    lateinit var userManager: UserManager
+    @Inject lateinit var currentUserProvider: CurrentUserProviderNew
+    @Inject lateinit var cookieManager: CookieManager
+    @Inject lateinit var ncApi: NcApi
+    @Inject lateinit var viewThemeUtils: ViewThemeUtils
+    @Inject lateinit var invitationsRepository: InvitationsRepository
+    @Inject lateinit var networkMonitor: NetworkMonitor
 
-        themeViews();
-        setupCurrentUser(user);
-        setupListeners();
-        setupAdapter();
-        networkMonitor.isOnlineLiveData().observe(this, this::prepareViews);
+    private var disposable: Disposable? = null
+
+    private var status by mutableStateOf<Status?>(null)
+    private var currentUser by mutableStateOf<User?>(null)
+    private var isOnline by mutableStateOf(true)
+    private var isStatusAvailable by mutableStateOf(false)
+    private val userItems = mutableStateListOf<AccountItem>()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
     }
 
-    private void setupCurrentUser(User user) {
-        // Defining user picture
-        binding.currentAccount.userIcon.setTag("");
-        if (user != null) {
-            binding.currentAccount.userName.setText(user.getDisplayName());
-            binding.currentAccount.ticker.setVisibility(View.GONE);
-            binding.currentAccount.account.setText((Uri.parse(user.getBaseUrl()).getHost()));
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val composeView = ComposeView(requireContext())
+        composeView.setContent {
+            ChooseAccountDialogView()
+        }
+        return MaterialAlertDialogBuilder(requireContext())
+            .setView(composeView)
+            .create()
+    }
 
-            viewThemeUtils.platform.colorImageView(binding.currentAccount.accountMenu);
-
-
-            if (user.getBaseUrl() != null &&
-                (user.getBaseUrl().startsWith("http://") || user.getBaseUrl().startsWith("https://"))) {
-                binding.currentAccount.userIcon.setVisibility(View.VISIBLE);
-                ImageViewExtensionsKt.loadUserAvatar(binding.currentAccount.userIcon, user, user.getUserId(), true,
-                                                     false);
-            } else {
-                binding.currentAccount.userIcon.setVisibility(View.INVISIBLE);
+    override fun onStart() {
+        super.onStart()
+        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser?.let { user ->
+            isStatusAvailable = CapabilitiesUtil.isUserStatusAvailable(user)
+            if (isStatusAvailable) {
+                loadCurrentStatus(user)
             }
-            loadCurrentStatus(user);
+            setupAccounts(user)
+        }
+        networkMonitor.isOnlineLiveData.observe(this) { online ->
+            isOnline = online
         }
     }
 
-    private void setupAdapter() {
-        if (adapter == null) {
-            adapter = new FlexibleAdapter<>(userItems, getActivity(), false);
+    override fun onDestroyView() {
+        super.onDestroyView()
+        if (disposable != null && !disposable!!.isDisposed) {
+            disposable!!.dispose()
+        }
+    }
 
-            User userEntity;
+    private fun setupAccounts(user: User) {
+        userManager.users.blockingGet().forEach { u ->
+            if (!u.current) {
+                val userId = u.userId ?: u.username
+                invitationsRepository.fetchInvitations(u)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<InvitationsModel> {
+                        override fun onSubscribe(d: Disposable) {
+                            disposable = d
+                        }
+                        override fun onNext(model: InvitationsModel) {
+                            addAccountToList(u, userId, model.invitations.size)
+                        }
+                        override fun onError(e: Throwable) {
+                            Log.e(TAG, "Failed to fetch invitations", e)
+                            addAccountToList(u, userId, 0)
+                        }
+                        override fun onComplete() {}
+                    })
+            }
+        }
+    }
 
-            for (User userItem : userManager.getUsers().blockingGet()) {
-                userEntity = userItem;
-                Log.d(TAG, "---------------------");
-                Log.d(TAG, "userEntity.getUserId() " + userEntity.getUserId());
-                Log.d(TAG, "userEntity.getCurrent() " + userEntity.getCurrent());
-                Log.d(TAG, "---------------------");
+    private fun addAccountToList(user: User, userId: String?, actionsRequired: Int) {
+        userItems.add(AccountItem(user, userId, actionsRequired))
+    }
 
-                if (!userEntity.getCurrent()) {
-                    String userId;
-                    if (userEntity.getUserId() != null) {
-                        userId = userEntity.getUserId();
-                    } else {
-                        userId = userEntity.getUsername();
+    private fun loadCurrentStatus(user: User) {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
+        ncApi.status(credentials, ApiUtils.getUrlForStatus(user.baseUrl!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<StatusOverall> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(result: StatusOverall) {
+                    result.ocs?.data?.let { status = it }
+                }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Can't receive user status from server. ", e)
+                }
+                override fun onComplete() {}
+            })
+    }
+
+    private fun switchAccount(user: User) {
+        if (userManager.setUserAsActive(user).blockingGet()) {
+            cookieManager.cookieStore.removeAll()
+            val intent = Intent(context, ConversationsListActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(intent)
+            dismiss()
+        }
+    }
+
+
+
+    @Composable
+    private fun ChooseAccountDialogView() {
+        val context = LocalContext.current
+        MaterialTheme(colorScheme = viewThemeUtils.getColorScheme(context)) {
+            Surface {
+                Column(modifier = Modifier.padding(4.dp)) {
+                    currentUser?.let { user ->
+                        CurrentAccount(user)
                     }
-
-                    User finalUserEntity = userEntity;
-                    invitationsRepository.fetchInvitations(userItem)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<>() {
-                            @Override
-                            public void onSubscribe(Disposable d) {
-                                disposable = d;
+                    if (isStatusAvailable) {
+                        TextButton(
+                            onClick = {  },
+                            enabled = status != null,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(painterResource(R.drawable.ic_edit), contentDescription = null)
+                                Spacer(Modifier.size(8.dp))
+                                Text(stringResource(R.string.set_status))
                             }
-
-                            @Override
-                            public void onNext(InvitationsModel invitationsModel) {
-                                addAccountToSwitcherList(
-                                    userId,
-                                    finalUserEntity,
-                                    invitationsModel.getInvitations().size()
-                                );
+                        }
+                    }
+                    HorizontalDivider()
+                    LazyColumn {
+                        items(userItems) { item ->
+                            AccountItemRow(item)
+                        }
+                    }
+                    if (isOnline) {
+                        TextButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(painterResource(R.drawable.ic_account_plus), contentDescription = null)
+                                Spacer(Modifier.size(8.dp))
+                                Text(stringResource(R.string.nc_account_chooser_add_account))
                             }
-
-                            @Override
-                            public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                                Log.e(TAG, "Failed to fetch invitations", e);
-                                addAccountToSwitcherList(
-                                    userId,
-                                    finalUserEntity,
-                                    0
-                                );
-                            }
-
-                            @Override
-                            public void onComplete() {
-                                // no actions atm
-                            }
-                        });
+                        }
+                    }
+                    TextButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
+                            Spacer(Modifier.size(8.dp))
+                            Text(stringResource(R.string.nc_settings))
+                        }
+                    }
                 }
             }
         }
     }
 
-    private void addAccountToSwitcherList(
-        String userId,
-        User finalUserEntity,
-        int actionsRequiredCount
-    ) {
-        Participant participant;
-        participant = new Participant();
-        participant.setActorType(Participant.ActorType.USERS);
-        participant.setActorId(userId);
-        participant.setDisplayName(finalUserEntity.getDisplayName());
-        userItems.add(
-            new AdvancedUserItem(
-                participant,
-                finalUserEntity,
-                null,
-                viewThemeUtils,
-                actionsRequiredCount
-            ));
-        adapter.addListener(onSwitchItemClickListener);
-        adapter.addListener(onSwitchItemLongClickListener);
-        adapter.updateDataSet(userItems, false);
-    }
-
-    private void setupListeners() {
-        // Creating listeners for quick-actions
-        binding.currentAccount.getRoot().setOnClickListener(v -> dismiss());
-
-        binding.addAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ServerSelectionActivity.class);
-            intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true);
-            startActivity(intent);
-            dismiss();
-        });
-        binding.manageSettings.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), SettingsActivity.class);
-            startActivity(intent);
-            dismiss();
-        });
-
-
-        binding.onlineStatus.setOnClickListener(v -> {
-            dismiss();
-            if(status!= null && getActivity()!= null){
-                OnlineStatusBottomDialogFragment bottomDialog =
-                    OnlineStatusBottomDialogFragment.newInstance(status);
-                bottomDialog.show(requireActivity().getSupportFragmentManager(),
-                                  "fragment_online_status_bottom_dialog");
-
+    @Composable
+    private fun CurrentAccount(user: User) {
+        val context = LocalContext.current
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { dismiss() }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box {
+                val avatarUrl = ApiUtils.getUrlForAvatar(user.baseUrl, user.userId, true)
+                val request = loadImage(
+                    avatarUrl,
+                    context,
+                    R.drawable.account_circle_96dp
+                )
+                AsyncImage(
+                    model = request,
+                    contentDescription = stringResource(R.string.user_avatar),
+                    modifier = Modifier.size(48.dp)
+                )
+                StatusIndicator(modifier = Modifier.align(Alignment.BottomEnd))
             }
-        });
-        binding.statusMessage.setOnClickListener(v -> {
-
-            dismiss();
-            if(status!= null && getActivity()!= null){
-                StatusMessageBottomDialogFragment bottomDialog =
-                    StatusMessageBottomDialogFragment.newInstance(status);
-                bottomDialog.show(getActivity().getSupportFragmentManager(),
-                                  "fragment_status_message_bottom_dialog");
-
-            }
-        });
-    }
-
-    private void themeViews() {
-        viewThemeUtils.platform.themeDialog(binding.getRoot());
-        viewThemeUtils.platform.themeDialogDivider(binding.divider);
-
-        viewThemeUtils.material.colorMaterialTextButton(binding.onlineStatus);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.onlineStatus);
-        viewThemeUtils.material.colorMaterialTextButton(binding.statusMessage);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.statusMessage);
-        viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.addAccount);
-        viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.manageSettings);
-    }
-
-    private void loadCurrentStatus(User user) {
-        String credentials = ApiUtils.getCredentials(user.getUsername(), user.getToken());
-
-        if (CapabilitiesUtil.isUserStatusAvailable(currentUserProvider.getCurrentUser().blockingGet())) {
-            binding.statusView.setVisibility(View.VISIBLE);
-
-            ncApi.status(credentials, ApiUtils.getUrlForStatus(user.getBaseUrl())).
-                subscribeOn(Schedulers.io()).
-                observeOn(AndroidSchedulers.mainThread()).
-                subscribe(new Observer<StatusOverall>() {
-
-                    @Override
-                    public void onSubscribe(@NonNull Disposable d) {
-                        // unused atm
-                    }
-
-                    @Override
-                    public void onNext(@NonNull StatusOverall statusOverall) {
-                        if (statusOverall.getOcs() != null) {
-                            status = statusOverall.getOcs().getData();
-                        }
-
-                        try {
-                            binding.onlineStatus.setEnabled(true);
-                            binding.statusMessage.setEnabled(true);
-                            drawStatus();
-                        } catch (NullPointerException npe) {
-                            Log.i(TAG, "UI already teared down", npe);
-                        }
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-                        Log.e(TAG, "Can't receive user status from server. ", e);
-                        try {
-                            binding.statusView.setVisibility(View.GONE);
-                        } catch (NullPointerException npe) {
-                            Log.i(TAG, "UI already teared down", npe);
-                        }
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // unused atm
-                    }
-                });
-        }
-    }
-
-    private void prepareViews(Boolean isOnline) {
-        if (getActivity() != null) {
-            LinearLayoutManager layoutManager = new SmoothScrollLinearLayoutManager(getActivity());
-            binding.accountsList.setLayoutManager(layoutManager);
-        }
-        binding.accountsList.setHasFixedSize(true);
-        binding.accountsList.setAdapter(adapter);
-
-        if (!isOnline) {
-            binding.addAccount.setVisibility(View.GONE);
-        }
-    }
-
-    public static ChooseAccountDialogFragment newInstance() {
-        return new ChooseAccountDialogFragment();
-    }
-
-    @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return dialogView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
-        }
-        binding = null;
-    }
-
-    private final FlexibleAdapter.OnItemClickListener onSwitchItemClickListener =
-        new FlexibleAdapter.OnItemClickListener() {
-            @Override
-            public boolean onItemClick(View view, int position) {
-                if (userItems.size() > position) {
-                    User user = (userItems.get(position)).user;
-
-                    if (userManager.setUserAsActive(user).blockingGet()) {
-                        cookieManager.getCookieStore().removeAll();
-
-                        Intent intent = new Intent(getContext(), ConversationsListActivity.class);
-                        // TODO: might be better with FLAG_ACTIVITY_SINGLE_TOP instead than FLAG_ACTIVITY_CLEAR_TOP to
-                        // have a smoother transition. However the handling in onNewIntent() in
-                        // ConversationListActivity must be improved for this.
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-
-                        dismiss();
-                    }
+            Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
+                Text(user.displayName ?: "")
+                Text(user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
+                status?.message?.takeIf { it.isNotEmpty() }?.let {
+                    Text(it, style = MaterialTheme.typography.bodySmall)
                 }
-
-                return true;
             }
-        };
-
-        private final FlexibleAdapter.OnItemLongClickListener onSwitchItemLongClickListener =
-            position -> {
-                // do nothing. OnItemLongClickListener is necessary anyway so the activity won't handle the event
-            };
-
-    private void drawStatus() {
-        float size = DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, getContext());
-        binding.currentAccount.ticker.setBackground(null);
-        StatusDrawable drawable = new StatusDrawable(
-            status.getStatus(),
-            status.getIcon(),
-            size,
-            0,
-            getContext());
-        viewThemeUtils.talk.themeStatusDrawable(binding.currentAccount.ticker.getContext(), drawable);
-        binding.currentAccount.ticker.setImageDrawable(drawable);
-        binding.currentAccount.ticker.setVisibility(View.VISIBLE);
-
-        if (status.getMessage() != null && !status.getMessage().isEmpty()) {
-            binding.currentAccount.status.setText(status.getMessage());
-            binding.currentAccount.status.setVisibility(View.VISIBLE);
-        } else {
-            binding.currentAccount.status.setText("");
-            binding.currentAccount.status.setVisibility(View.GONE);
         }
     }
+
+    @Composable
+    private fun AccountItemRow(item: AccountItem) {
+        val context = LocalContext.current
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { switchAccount(item.user) }
+                .padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            val avatarUrl = ApiUtils.getUrlForAvatar(item.user.baseUrl, item.userId, true)
+            val request = loadImage(
+                avatarUrl,
+                context,
+                R.drawable.account_circle_96dp
+            )
+            AsyncImage(
+                model = request,
+                contentDescription = stringResource(R.string.user_avatar),
+                modifier = Modifier.size(48.dp)
+            )
+            Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
+                Text(item.user.displayName ?: "")
+                Text(item.user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
+
+    @Composable
+    private fun StatusIndicator(modifier: Modifier = Modifier) {
+        status?.let {
+            val context = LocalContext.current
+            val size = remember { DisplayUtils.convertDpToPixel(STATUS_SIZE_IN_DP, context) }
+            val drawable = remember(it) { StatusDrawable(it.status, it.icon, size, 0, context) }
+            viewThemeUtils.talk.themeStatusDrawable(context, drawable)
+            AndroidView(
+                factory = { android.widget.ImageView(it) },
+                modifier = modifier.size(16.dp)
+            ) { imageView ->
+                imageView.setImageDrawable(drawable)
+            }
+        }
+    }
+
+    data class AccountItem(val user: User, val userId: String?, val pendingInvitations: Int)
 }
