@@ -14,6 +14,7 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
@@ -76,6 +77,10 @@ class SystemMessageViewHolder(itemView: View) :
             R.drawable.shape_grouped_incoming_message
         )
         ViewCompat.setBackground(background, bubbleDrawable)
+        binding.messageText.setTextSize(
+            TypedValue.COMPLEX_UNIT_PX,
+            resources.getDimension(R.dimen.chat_system_message_text_size)
+        )
         var messageString: Spannable = SpannableString(message.text)
         if (message.messageParameters != null && message.messageParameters!!.size > 0) {
             for (key in message.messageParameters!!.keys) {
@@ -89,7 +94,13 @@ class SystemMessageViewHolder(itemView: View) :
                     } else {
                         individualMap["name"]
                     }
-                    messageString = DisplayUtils.searchAndColor(messageString, searchText!!, mentionColor)
+                    messageString =
+                        DisplayUtils.searchAndColor(
+                            messageString,
+                            searchText!!,
+                            mentionColor,
+                            resources.getDimensionPixelSize(R.dimen.chat_system_message_text_size)
+                        )
                     if (individualMap["link"] != null) {
                         val displayName = individualMap["name"] ?: ""
                         val link = (user.baseUrl + individualMap["link"])

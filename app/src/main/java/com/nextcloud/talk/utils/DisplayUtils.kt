@@ -292,7 +292,7 @@ object DisplayUtils {
         return spannableString
     }
 
-    fun searchAndColor(text: Spannable, searchText: String, @ColorInt color: Int): Spannable {
+    fun searchAndColor(text: Spannable, searchText: String, @ColorInt color: Int, textSize: Int): Spannable {
         val spannableString: Spannable = SpannableString(text)
         val stringText = text.toString()
         if (TextUtils.isEmpty(text) || TextUtils.isEmpty(searchText)) {
@@ -303,7 +303,6 @@ object DisplayUtils {
             Pattern.CASE_INSENSITIVE or Pattern.LITERAL or Pattern.MULTILINE
         )
             .matcher(spannableString)
-        val textSize = sharedApplication!!.resources.getDimensionPixelSize(R.dimen.chat_text_size)
         var lastStartIndex = -1
         while (m.find()) {
             val start = stringText.indexOf(m.group(), lastStartIndex)
