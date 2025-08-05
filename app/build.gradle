@@ -30,7 +30,7 @@ apply plugin: 'kotlinx-serialization'
 android {
     compileSdk 35
 
-    namespace 'com.nextcloud.talk'
+    namespace = 'com.nextcloud.talk'
 
     defaultConfig {
         minSdkVersion 26
