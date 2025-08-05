@@ -47,7 +47,6 @@ import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
-import com.nextcloud.talk.account.ServerSelectionActivity
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -58,14 +57,12 @@ import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.contacts.loadImage
-import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.DisplayUtils
-import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import java.net.CookieManager
 import javax.inject.Inject
@@ -74,6 +71,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import androidx.core.net.toUri
+import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.utils.bundle.BundleKeys.ADD_ADDITIONAL_ACCOUNT
 
 @AutoInjector(NextcloudTalkApplication::class)
 class ChooseAccountDialogFragment : DialogFragment() {
@@ -205,7 +205,7 @@ class ChooseAccountDialogFragment : DialogFragment() {
                     }
                     if (isStatusAvailable) {
                         TextButton(
-                            onClick = {  },
+                            onClick = { openStatus() },
                             enabled = status != null,
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -226,7 +226,7 @@ class ChooseAccountDialogFragment : DialogFragment() {
                         }
                     }
                     if (isOnline) {
-                        TextButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+                        TextButton(onClick = { addAccount() }, modifier = Modifier.fillMaxWidth()) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 verticalAlignment = Alignment.CenterVertically
@@ -237,7 +237,7 @@ class ChooseAccountDialogFragment : DialogFragment() {
                             }
                         }
                     }
-                    TextButton(onClick = {  }, modifier = Modifier.fillMaxWidth()) {
+                    TextButton(onClick = { openSettings() }, modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
@@ -313,6 +313,29 @@ class ChooseAccountDialogFragment : DialogFragment() {
             }
         }
     }
+
+    private fun addAccount() {
+        val intent = Intent(context, ServerSelectionActivity::class.java)
+        intent.putExtra(ADD_ADDITIONAL_ACCOUNT, true)
+        startActivity(intent)
+        dismiss()
+    }
+
+    private fun openSettings() {
+        val intent = Intent(context, SettingsActivity::class.java)
+        startActivity(intent)
+        dismiss()
+    }
+
+    private fun openStatus() {
+        dismiss()
+        status?.let {
+            val setStatusDialog = SetStatusDialogFragment.newInstance(it)
+            setStatusDialog.show(parentFragmentManager, "fragment_set_status")
+        } ?: Log.w(TAG, "status was null")
+    }
+
+
 
     @Composable
     private fun StatusIndicator(modifier: Modifier = Modifier) {
