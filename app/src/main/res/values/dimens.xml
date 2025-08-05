@@ -28,7 +28,7 @@
     <dimen name="chat_text_size">16sp</dimen>
     <dimen name="chat_system_message_text_size">14sp</dimen>
     <dimen name="message_bubble_corners_radius">20dp</dimen>
-    <dimen name="message_bubble_corners_horizontal_padding">16dp</dimen>
+    <dimen name="message_bubble_corners_horizontal_padding">14dp</dimen>
     <dimen name="message_bubble_corners_vertical_padding">12dp</dimen>
     <dimen name="message_bubble_checkmark_height">18dp</dimen>
 
