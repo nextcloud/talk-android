@@ -696,6 +696,19 @@ class OfflineFirstChatRepository @Inject constructor(
                     messageJson.parentMessage?.let { parentMessageJson ->
                         parentMessageJson.message?.let {
                             val parentMessageEntity = parentMessageJson.asEntity(currentUser.id!!)
+                            val existingParentMessage = chatDao.getChatMessageForConversation(
+                                internalConversationId,
+                                parentMessageJson.id.toLong()
+                            ).firstOrNull()
+
+                            existingParentMessage?.let { existing ->
+                                if (parentMessageEntity.parentMessageId == null) {
+                                    parentMessageEntity.parentMessageId = existing.parentMessageId
+                                }
+                                if (parentMessageEntity.messageParameters == null) {
+                                    parentMessageEntity.messageParameters = existing.messageParameters
+                                }
+                            }
                             chatDao.upsertChatMessage(parentMessageEntity)
                             _updateMessageFlow.emit(parentMessageEntity.asModel())
                         }
