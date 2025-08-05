@@ -30,7 +30,7 @@ apply plugin: 'kotlinx-serialization'
 android {
     compileSdk 35
 
-    namespace 'com.nextcloud.talk'
+    namespace = 'com.nextcloud.talk'
 
     defaultConfig {
         minSdkVersion 26
@@ -43,7 +43,7 @@ android {
         versionName "22.0.0 Alpha 16"
 
         flavorDimensions "default"
-        renderscriptTargetApi 19
+        renderscriptTargetApi = 19
         renderscriptSupportModeEnabled true
 
         productFlavors {
@@ -65,7 +65,7 @@ android {
         }
 
         // Enabling multidex support.
-        multiDexEnabled true
+        multiDexEnabled = true
 
         vectorDrawables.useSupportLibrary = true
 
@@ -129,7 +129,7 @@ android {
     }
 
     buildFeatures {
-        viewBinding true
+        viewBinding = true
         buildConfig = true
         compose = true
     }
@@ -139,10 +139,10 @@ android {
     }
 
     lint {
-        abortOnError false
+        abortOnError = false
         disable 'MissingTranslation','PrivateResource'
-        htmlOutput file("$project.buildDir/reports/lint/lint.html")
-        htmlReport true
+        htmlOutput = file("$project.buildDir/reports/lint/lint.html")
+        htmlReport = true
     }
 }
 kapt {
