@@ -38,7 +38,7 @@ jobs:
 
       - name: Build ${{ matrix.flavor }}
         run: |
-          echo "org.gradle.jvmargs=-Xmx2g -XX:MaxMetaspaceSize=512m -XX:+HeapDumpOnOutOfMemoryError" >> gradle.properties
+          echo "org.gradle.jvmargs=-Xmx4g -XX:MaxMetaspaceSize=1g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8" >> gradle.properties
           ./gradlew assemble${{ matrix.flavor }}
 
       - name: Archive apk
