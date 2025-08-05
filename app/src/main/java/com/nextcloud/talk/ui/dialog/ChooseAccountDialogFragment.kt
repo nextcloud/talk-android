@@ -205,7 +205,7 @@ class ChooseAccountDialogFragment : DialogFragment() {
                     }
                     if (isStatusAvailable) {
                         TextButton(
-                            onClick = {  },
+                            onClick = { openStatus() },
                             enabled = status != null,
                             modifier = Modifier.fillMaxWidth()
                         ) {
@@ -326,6 +326,15 @@ class ChooseAccountDialogFragment : DialogFragment() {
         startActivity(intent)
         dismiss()
     }
+
+    private fun openStatus() {
+        dismiss()
+        status?.let {
+            val setStatusDialog = SetStatusDialogFragment.newInstance(it)
+            setStatusDialog.show(parentFragmentManager, "fragment_set_status")
+        } ?: Log.w(TAG, "status was null")
+    }
+
 
 
     @Composable
