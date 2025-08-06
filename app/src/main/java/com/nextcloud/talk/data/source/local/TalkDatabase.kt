@@ -19,9 +19,11 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.database.model.FileUploadEntity
 import com.nextcloud.talk.data.source.local.Migrations.AutoMigration16To17
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
@@ -46,9 +48,10 @@ import java.util.Locale
         ArbitraryStorageEntity::class,
         ConversationEntity::class,
         ChatMessageEntity::class,
-        ChatBlockEntity::class
+        ChatBlockEntity::class,
+        FileUploadEntity::class,
     ],
-    version = 20,
+    version = 21,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
@@ -74,6 +77,7 @@ abstract class TalkDatabase : RoomDatabase() {
     abstract fun conversationsDao(): ConversationsDao
     abstract fun chatMessagesDao(): ChatMessagesDao
     abstract fun chatBlocksDao(): ChatBlocksDao
+    abstract fun fileUploadsDao(): FileUploadsDao
     abstract fun arbitraryStoragesDao(): ArbitraryStoragesDao
 
     companion object {
@@ -121,7 +125,8 @@ abstract class TalkDatabase : RoomDatabase() {
                     Migrations.MIGRATION_15_16,
                     // do not provide migration 18 to 19 as 17 to 18 was buggy ->
                     // fallbackToDestructiveMigration for everyone who has db v18 and did not reinstall or clear data
-                    Migrations.MIGRATION_17_19
+                    Migrations.MIGRATION_17_19,
+                    Migrations.MIGRATION_20_21
                 )
                 .allowMainThreadQueries()
                 .addCallback(
