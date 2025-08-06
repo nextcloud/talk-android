@@ -446,6 +446,7 @@
     <string name="online_status">在线状态</string>
     <string name="openConversations">开启对话</string>
     <string name="open_in_files_app">在 Files 应用中打开</string>
+    <string name="open_thread">转到帖子</string>
     <string name="play_pause_voice_message">播放/暂停语音消息</string>
     <string name="polls_add_option">添加选项</string>
     <string name="polls_edit_vote">编辑投票</string>
@@ -465,6 +466,7 @@
     <string name="raise_hand">举起手 </string>
     <string name="reactions_tab_all">所有</string>
     <string name="read_storage_no_permission">如果没有权限，不能分享来自存储的文件</string>
+    <string name="recent_threads">最近的帖子</string>
     <string name="record_active_info">通话正在被录制</string>
     <string name="record_cancel_start">取消录制开始</string>
     <string name="record_failed_info">录制失败。请联系您的管理员。</string>
@@ -534,6 +536,7 @@
     <string name="thisWeek">本周</string>
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="this_weekend">本周末</string>
+    <string name="thread_replies_amount">%1$d 个回复</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="translate">翻译</string>
