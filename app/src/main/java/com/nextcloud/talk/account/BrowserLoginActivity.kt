@@ -59,11 +59,14 @@ class BrowserLoginActivity : BaseActivity() {
         initViews()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()
+        observe()
     }
 
     init {
         sharedApplication!!.componentApplication.inject(this)
+    }
 
+    private fun observe() {
         lifecycleScope.launch {
             viewModel.initialLoginRequestState.collect { state ->
                 when (state) {
@@ -100,7 +103,6 @@ class BrowserLoginActivity : BaseActivity() {
             }
         }
     }
-
 
     private fun handleIntent() {
         val extras = intent.extras!!
