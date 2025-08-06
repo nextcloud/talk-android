@@ -285,10 +285,11 @@ class ChooseAccountDialogFragment : DialogFragment() {
             }
             Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
                 Text(user.displayName ?: "")
-                Text(user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
                 status?.message?.takeIf { it.isNotEmpty() }?.let {
                     Text(it, style = MaterialTheme.typography.bodySmall)
                 }
+                Text(user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
+
             }
         }
     }
