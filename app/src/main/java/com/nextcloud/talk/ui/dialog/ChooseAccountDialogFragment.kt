@@ -131,11 +131,17 @@ class ChooseAccountDialogFragment : DialogFragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        userItems.clear()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         if (disposable != null && !disposable!!.isDisposed) {
             disposable!!.dispose()
         }
+
     }
 
     private fun setupAccounts(user: User) {
