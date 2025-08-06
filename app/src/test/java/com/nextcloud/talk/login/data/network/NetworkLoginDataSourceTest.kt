@@ -7,9 +7,7 @@
 
 package com.nextcloud.talk.login.data.network
 
-import dagger.hilt.android.testing.HiltAndroidTest
-
-@HiltAndroidTest
+// @HiltAndroidTest
 class NetworkLoginDataSourceTest {
 
     // @Inject lateinit var trustManager: TrustManager

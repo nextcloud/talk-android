@@ -10,6 +10,7 @@ package com.nextcloud.talk.account.data.network
 import android.util.Log
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.nextcloud.talk.BuildConfig
 import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
 import com.nextcloud.talk.utils.ssl.TrustManager
 import okhttp3.ConnectionSpec
@@ -35,10 +36,18 @@ class NetworkLoginDataSource(
 
     private var okHttpClient: OkHttpClient = OkHttpClient.Builder()
         .cookieJar(CookieJar.NO_COOKIES)
-        .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+        .setDebuggableConnectionSpecs()
         .sslSocketFactory(socketFactory, trustManager)
         .hostnameVerifier { _: String?, _: SSLSession? -> true }
         .build()
+
+    // CLEARTEXT is insecure, so this checks if the app is in debug mode, before enabling it
+    private fun OkHttpClient.Builder.setDebuggableConnectionSpecs(): OkHttpClient.Builder =
+        if (BuildConfig.DEBUG) {
+            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
+        } else {
+            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
+        }
 
     data class LoginResponse(
         val token: String,
@@ -112,7 +121,7 @@ class NetworkLoginDataSource(
             okHttpClient.newCall(request).execute()
                 .use { response ->
                     if (!response.isSuccessful) {
-                        result = LoginCompletion(404, "", "", "")
+                        result = LoginCompletion(response.code, "", "", "")
                         throw IOException("Unexpected code $response")
                     }
                     val status: Int = response.code

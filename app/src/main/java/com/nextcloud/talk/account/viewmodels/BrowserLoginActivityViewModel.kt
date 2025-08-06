@@ -20,12 +20,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-//  the point of the view model is to maintain the state of the view (Activity or Activity+XML)
-//  thus all the business logic like parsing loginData should be in the repository, only returned to
-//  the viewModel and then to the activity to reflect changes to the app state -> app UI
-
-//  TODO test for proper state changes upon an otherwise working repository and UI layer, making sure the view model
-//      properly models the view's state
 class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRepository): ViewModel() {
 
     companion object {
@@ -96,6 +90,8 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     fun loginNormally(baseUrl: String, reAuth: Boolean = false) = repository.startLoginFlow(baseUrl, reAuth)
 
     fun loginWithQR(dataString: String, reAuth: Boolean = false) = repository.startLoginFlowFromQR(dataString, reAuth)
+
+    fun cancelLogin() = repository.cancelLoginFlow()
 
 
 

@@ -11,6 +11,7 @@ package com.nextcloud.talk.account.data
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.os.bundleOf
 import androidx.work.WorkInfo
 import com.nextcloud.talk.account.data.io.LocalLoginDataSource
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
@@ -22,13 +23,13 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import java.net.URLDecoder
 
-// this handles communication with the network datasource and the User manager (abstraction over room)
 class LoginRepository(
     val network: NetworkLoginDataSource,
     val local: LocalLoginDataSource
@@ -48,17 +49,18 @@ class LoginRepository(
     }
 
     private var shouldReauthorizeUser = false
+    private var pollScope: CoroutineScope? = null
 
-    private val _errorFlow = MutableSharedFlow<Pair<String, String>>()
+    private val _errorFlow = MutableStateFlow<Pair<String, String>>(Pair("", ""))
     val errorFlow: Flow<Pair<String, String>> get() = _errorFlow
 
-    private val _launchWebFlow = MutableSharedFlow<String>()
+    private val _launchWebFlow = MutableStateFlow<String>("")
     val launchWebFlow: Flow<String> get() = _launchWebFlow
 
-    private val _restartAppFlow = MutableSharedFlow<Boolean>()
+    private val _restartAppFlow = MutableStateFlow<Boolean>(false)
     val restartAppFlow: Flow<Boolean> get() = _restartAppFlow
 
-    private val _continueLoginFlow = MutableSharedFlow<Bundle>()
+    private val _continueLoginFlow = MutableStateFlow<Bundle>(bundleOf())
     val continueLoginFlow: Flow<Bundle> get() = _continueLoginFlow
 
     private suspend fun pollLogin(response: LoginResponse) {
@@ -68,12 +70,12 @@ class LoginRepository(
                 break // Error occurred, terminating
             }
 
-            if (loginData.status != HTTP_OK) {
-                delay(INTERVAL) // No response yet, retry
+            if (loginData.status == HTTP_OK) {
+                parseAndLogin(loginData)
+                break // process completed
             }
 
-            parseAndLogin(loginData)
-            break // process completed
+            delay(INTERVAL) // No response yet, retry
         }
     }
 
@@ -126,7 +128,8 @@ class LoginRepository(
     fun startLoginFlow(baseUrl: String, reAuth: Boolean = false) {
         shouldReauthorizeUser = reAuth
 
-        CoroutineScope(Dispatchers.IO).launch {
+        pollScope = CoroutineScope(Dispatchers.IO) // creates new scope on every call
+        pollScope?.launch {
             val response = network.anonymouslyPostLoginRequest(baseUrl)
 
             if (response != null) {
@@ -138,6 +141,12 @@ class LoginRepository(
             }
         }
     }
+
+    /**
+     * Ends normal login process by canceling the polling
+     */
+    fun cancelLoginFlow() = pollScope?.cancel()
+
 
     private fun parseAndLogin(loginData: LoginCompletion) {
         if (local.checkIfUserIsScheduledForDeletion(loginData)) {

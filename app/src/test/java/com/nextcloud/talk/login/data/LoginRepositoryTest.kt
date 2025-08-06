@@ -7,10 +7,7 @@
 
 package com.nextcloud.talk.login.data
 
-import org.junit.runner.RunWith
-import org.mockito.junit.MockitoJUnitRunner
-
-@RunWith(MockitoJUnitRunner::class)
+// @RunWith(MockitoJUnitRunner::class)
 class LoginRepositoryTest {
 
     // @get:Rule
