@@ -86,11 +86,17 @@ class ChooseAccountDialogFragment : DialogFragment() {
 
     @Inject
     lateinit var userManager: UserManager
+
     @Inject lateinit var currentUserProvider: CurrentUserProviderNew
+
     @Inject lateinit var cookieManager: CookieManager
+
     @Inject lateinit var ncApi: NcApi
+
     @Inject lateinit var viewThemeUtils: ViewThemeUtils
+
     @Inject lateinit var invitationsRepository: InvitationsRepository
+
     @Inject lateinit var networkMonitor: NetworkMonitor
 
     private var disposable: Disposable? = null
@@ -141,7 +147,6 @@ class ChooseAccountDialogFragment : DialogFragment() {
         if (disposable != null && !disposable!!.isDisposed) {
             disposable!!.dispose()
         }
-
     }
 
     private fun setupAccounts(user: User) {
@@ -198,8 +203,6 @@ class ChooseAccountDialogFragment : DialogFragment() {
             dismiss()
         }
     }
-
-
 
     @Composable
     private fun ChooseAccountDialogView() {
@@ -289,7 +292,6 @@ class ChooseAccountDialogFragment : DialogFragment() {
                     Text(it, style = MaterialTheme.typography.bodySmall)
                 }
                 Text(user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
-
             }
         }
     }
@@ -350,8 +352,6 @@ class ChooseAccountDialogFragment : DialogFragment() {
             setStatusDialog.show(parentFragmentManager, "fragment_set_status")
         } ?: Log.w(TAG, "status was null")
     }
-
-
 
     @Composable
     private fun StatusIndicator(modifier: Modifier = Modifier) {

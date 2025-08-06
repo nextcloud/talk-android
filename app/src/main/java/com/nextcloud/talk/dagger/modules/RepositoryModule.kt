@@ -147,7 +147,8 @@ class RepositoryModule {
     ): ConversationInfoEditRepository = ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
 
     @Provides
-    fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
+    fun provideInvitationsRepository(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): InvitationsRepository =
+        InvitationsRepositoryImpl(ncApi, ncApiCoroutines)
 
     @Provides
     fun provideOfflineFirstChatRepository(

@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
@@ -20,6 +21,7 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InvitationsViewModel @Inject constructor(private val repository: InvitationsRepository) : ViewModel() {
@@ -51,6 +53,23 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(FetchInvitationsObserver())
+    }
+
+
+    fun getInvitations(user:User){
+        viewModelScope.launch{
+            try{
+                val invitationsModel = repository.getInvitations(user)
+                if(invitationsModel.invitations.isEmpty()){
+                    _fetchInvitationsViewState.value = FetchInvitationsEmptyState
+                }else{
+                    _fetchInvitationsViewState.value = FetchInvitationsSuccessState(invitationsModel.invitations)
+                }
+
+            }catch(_:Exception){
+                _fetchInvitationsViewState.value = FetchInvitationsErrorState
+            }
+        }
     }
 
     fun acceptInvitation(user: User, invitation: Invitation) {
