@@ -36,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -311,6 +312,14 @@ class ChooseAccountDialogFragment : DialogFragment() {
                 Text(item.user.displayName ?: "")
                 Text(item.user.baseUrl!!.toUri().host ?: "", style = MaterialTheme.typography.bodySmall)
             }
+            if (item.actionsRequired > 0) {
+                Icon(
+                    painterResource(R.drawable.accent_circle),
+                    contentDescription = null,
+                    modifier = Modifier.size(24.dp),
+                    tint = Color.Red
+                )
+            }
         }
     }
 
@@ -353,5 +362,5 @@ class ChooseAccountDialogFragment : DialogFragment() {
         }
     }
 
-    data class AccountItem(val user: User, val userId: String?, val pendingInvitations: Int)
+    data class AccountItem(val user: User, val userId: String?, val actionsRequired: Int)
 }
