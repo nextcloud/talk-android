@@ -8,7 +8,9 @@
 package com.nextcloud.talk.data.source.local
 
 import android.util.Log
+import androidx.room.ColumnInfo
 import androidx.room.DeleteColumn
+import androidx.room.PrimaryKey
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -97,6 +99,16 @@ object Migrations {
                     "v22.0.0 Alpha 12)"
             )
             migrateToMessageThreads(db)
+        }
+    }
+
+    val MIGRATION_20_21 = object : Migration(20, 21) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            Log.i(
+                "Migrations",
+                "Migrating 20 to 21"
+            )
+            migrateToFileUploads(db)
         }
     }
 
@@ -416,6 +428,30 @@ object Migrations {
             )
         } catch (e: SQLException) {
             Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages", e)
+        }
+    }
+
+    fun migrateToFileUploads(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS FileUploads (" +
+                    "id INTEGER NOT NULL, " +
+                    "`internalConversationId` TEXT NOT NULL, " +
+                    "`fileName` TEXT, " +
+                    "`progress` REAL NOT NULL, " +
+                    "`status` TEXT, " +
+                    "`hidden` INTEGER NOT NULL, " +
+                    "`timestamp` INTEGER NOT NULL, " +
+                    "PRIMARY KEY(`id`), " +
+                    "FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE" +
+                    ")"
+            )
+
+            db.execSQL(
+                "CREATE INDEX `index_FileUploads_internalConversationId` ON `FileUploads` (`internalConversationId`);"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong while creating the FileUploads table", e)
         }
     }
 }
