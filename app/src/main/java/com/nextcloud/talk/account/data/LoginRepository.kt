@@ -7,7 +7,6 @@
 
 package com.nextcloud.talk.account.data
 
-
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
@@ -19,7 +18,9 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_USERNAME
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.net.URLDecoder
 
 class LoginRepository(
@@ -41,20 +42,20 @@ class LoginRepository(
     private var shouldReauthorizeUser = false
     private var shouldLoop = true
 
-    suspend fun pollLogin(response: LoginResponse): LoginCompletion? {
+    suspend fun pollLogin(response: LoginResponse): LoginCompletion? = withContext(Dispatchers.IO) {
         while (shouldLoop) {
             val loginData = network.performLoginFlowV2(response)
             if (loginData == null) {
-               break
+                break
             }
 
             if (loginData.status == HTTP_OK) {
-                return loginData
+                return@withContext loginData
             }
 
             delay(INTERVAL) // No response yet, retry
         }
-        return null
+        return@withContext null
     }
 
     /**
@@ -103,12 +104,10 @@ class LoginRepository(
     /**
      * Entry point to the login process
      */
-    suspend fun startLoginFlow(baseUrl: String, reAuth: Boolean = false): LoginResponse? {
+    suspend fun startLoginFlow(baseUrl: String, reAuth: Boolean = false): LoginResponse? = withContext(Dispatchers.IO) {
         shouldReauthorizeUser = reAuth
-
-        // All network functions are blocking
         val response = network.anonymouslyPostLoginRequest(baseUrl)
-        return response
+        return@withContext response
     }
 
     /**
@@ -126,9 +125,7 @@ class LoginRepository(
             // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
             local.startAccountRemovalWorker()
             return null
-
         } else if (local.checkIfUserExists(loginData)) {
-            // FIXME LOW PRIORITY Refactor entry point to take you to server selection, instead of browser
             if (shouldReauthorizeUser) {
                 local.updateUser(loginData)
             } else {

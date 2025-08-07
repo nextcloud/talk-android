@@ -7,48 +7,60 @@
 
 package com.nextcloud.talk.login.data
 
-// @RunWith(MockitoJUnitRunner::class)
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.io.LocalLoginDataSource
+import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import org.mockito.Mock
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
+
 class LoginRepositoryTest {
 
-    // @get:Rule
-    // val rule = InstantTaskExecutorRule()
-    //
-    // // Repository dependencies
-    // @Mock lateinit var networkLoginDataSource: NetworkLoginDataSource
-    // @Mock lateinit var localLoginDataSource: LocalLoginDataSource
-    // lateinit var repo: LoginRepository
-    //
-    // @Before
-    // fun setup() {
-    //     MockitoAnnotations.openMocks(this)
-    //
-    //     repo = LoginRepository(networkLoginDataSource, localLoginDataSource)
-    // }
-    //
-    // /**
-    //  * QR Login Tests
-    //  */
-    //
-    // @Test
-    // fun `test startLoginFlowFromQr start account verification path`() = runTest {
-    //     val expected = NetworkLoginDataSource.LoginCompletion(
-    //         status = 200,
-    //         server = "https://sermo.nextcloud.com",
-    //         loginName = "user1",
-    //         appPassword = "asdjasd9810d01gd80b1dby87"
-    //     )
-    //     `when`(localLoginDataSource.checkIfUserIsScheduledForDeletion(expected)).thenReturn(false)
-    //     `when`(localLoginDataSource.checkIfUserExists(expected)).thenReturn(false)
-    //
-    //     val mockDataURI = "nc://login/server:https://sermo.nextcloud.com&user:user1&password:asdjasd9810d01gd80b1dby87"
-    //     repo.startLoginFlowFromQR(mockDataURI)
-    //
-    //     val bundle = repo.continueLoginFlow.first() // will throw error if empty
-    //     assert(bundle.getString("KEY_USERNAME") == "user1")
-    //     assert(bundle.getString("KEY_TOKEN") == "asdjasd9810d01gd80b1dby87")
-    //     assert(bundle.getString("KEY_BASE_URL") == "https://sermo.nextcloud.com")
-    //     assert(bundle.getString("KEY_ORIGINAL_PROTOCOL") == "https://")
-    // }
+    @get:Rule
+    val rule = InstantTaskExecutorRule()
+
+    // Repository dependencies
+    @Mock
+    lateinit var networkLoginDataSource: NetworkLoginDataSource
+    @Mock lateinit var localLoginDataSource: LocalLoginDataSource
+    lateinit var repo: LoginRepository
+
+    @Before
+    fun setup() {
+        MockitoAnnotations.openMocks(this)
+
+        repo = LoginRepository(networkLoginDataSource, localLoginDataSource)
+    }
+
+    /**
+     * QR Login Tests
+     */
+
+    @Test
+    fun `test startLoginFlowFromQr start account verification path`() = runTest {
+        val expected = NetworkLoginDataSource.LoginCompletion(
+            status = 200,
+            server = "https://sermo.nextcloud.com",
+            loginName = "user1",
+            appPassword = "asdjasd9810d01gd80b1dby87"
+        )
+        `when`(localLoginDataSource.checkIfUserIsScheduledForDeletion(expected)).thenReturn(false)
+        `when`(localLoginDataSource.checkIfUserExists(expected)).thenReturn(false)
+
+        val mockDataURI = "nc://login/server:https://sermo.nextcloud.com&user:user1&password:asdjasd9810d01gd80b1dby87"
+        repo.startLoginFlowFromQR(mockDataURI)
+
+        // val bundle = repo.continueLoginFlow.first() // will throw error if empty
+        // assert(bundle.getString("KEY_USERNAME") == "user1")
+        // assert(bundle.getString("KEY_TOKEN") == "asdjasd9810d01gd80b1dby87")
+        // assert(bundle.getString("KEY_BASE_URL") == "https://sermo.nextcloud.com")
+        // assert(bundle.getString("KEY_ORIGINAL_PROTOCOL") == "https://")
+    }
     //
     // @Test
     // fun `test startLoginFlowFromQr malformed uri`() = runTest {

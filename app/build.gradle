@@ -350,7 +350,8 @@ dependencies {
 
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.4'
     testImplementation("com.google.dagger:hilt-android-testing:2.57")
-    testImplementation("com.squareup.okhttp3:mockwebserver3:5.1.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
+    testImplementation("org.robolectric:robolectric:4.15.1")
 }
 
 tasks.register('installGitHooks', Copy) {
