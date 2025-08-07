@@ -10,76 +10,46 @@ package com.nextcloud.talk.account.data.network
 import android.util.Log
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import com.nextcloud.talk.BuildConfig
-import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
-import com.nextcloud.talk.utils.ssl.TrustManager
-import okhttp3.ConnectionSpec
-import okhttp3.CookieJar
+import com.nextcloud.talk.account.data.model.LoginCompletion
+import com.nextcloud.talk.account.data.model.LoginResponse
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.IOException
 import javax.net.ssl.SSLHandshakeException
-import javax.net.ssl.SSLSession
 
 //  This class handles the network and polling logic in isolation, which makes it easier to test
 //  Login and Authentication is critical, thus it needs to be working properly.
-class NetworkLoginDataSource(
-    trustManager: TrustManager,
-    socketFactory: SSLSocketFactoryCompat
-) {
+class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
 
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
     }
 
-    private var okHttpClient: OkHttpClient = OkHttpClient.Builder()
-        .cookieJar(CookieJar.NO_COOKIES)
-        .setDebuggableConnectionSpecs()
-        .sslSocketFactory(socketFactory, trustManager)
-        .hostnameVerifier { _: String?, _: SSLSession? -> true }
-        .build()
-
-    // CLEARTEXT is insecure, so this checks if the app is in debug mode, before enabling it
-    private fun OkHttpClient.Builder.setDebuggableConnectionSpecs(): OkHttpClient.Builder =
-        if (BuildConfig.DEBUG) {
-            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
-        } else {
-            this.connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS))
-        }
-
-    data class LoginResponse(
-        val token: String,
-        val pollUrl: String,
-        val loginUrl: String
-    )
-
-    data class LoginCompletion(
-        val status: Int,
-        val server: String,
-        val loginName: String,
-        val appPassword: String
-    )
-
     fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
         val url = "$baseUrl/index.php/login/v2"
         var result: LoginResponse? = null
-        try {
+        runCatching {
             val response = getResponseOfAnonymouslyPostLoginRequest(url)
             val jsonObject: JsonObject = JsonParser.parseString(response).asJsonObject
             val loginUrl: String = getLoginUrl(jsonObject)
             val token = jsonObject.getAsJsonObject("poll").get("token").asString
             val pollUrl = jsonObject.getAsJsonObject("poll").get("endpoint").asString
             result = LoginResponse(token, pollUrl, loginUrl)
-        } catch (e: SSLHandshakeException) {
-            Log.e(TAG, "Error caught at anonymouslyPostLoginRequest: $e")
-        } catch (e: NullPointerException) {
-            Log.e(TAG, "Error caught at performLoginFlowV2: $e")
+        }.getOrElse { e ->
+            when (e) {
+                is SSLHandshakeException,
+                is NullPointerException,
+                is IOException -> {
+                    Log.e(TAG, "Error caught at anonymouslyPostLoginRequest: $e")
+                }
+
+                else -> throw e
+            }
         }
 
         return result
-
     }
 
     private fun getResponseOfAnonymouslyPostLoginRequest(url: String): String? {
@@ -131,10 +101,6 @@ class NetworkLoginDataSource(
                     val server: String = jsonObject.get("server").asString
                     val loginName: String = jsonObject.get("loginName").asString
                     val appPassword: String = jsonObject.get("appPassword").asString
-
-
-                    Log.d(TAG, "performLoginFlowV2 status: $status")
-                    Log.d(TAG, "performLoginFlowV2 response: $response")
 
                     if (response?.isNotEmpty() == true) {
                         result = LoginCompletion(status, server, loginName, appPassword)

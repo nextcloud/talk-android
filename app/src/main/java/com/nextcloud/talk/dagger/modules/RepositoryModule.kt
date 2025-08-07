@@ -66,8 +66,6 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
-import com.nextcloud.talk.utils.ssl.SSLSocketFactoryCompat
-import com.nextcloud.talk.utils.ssl.TrustManager
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -202,10 +200,8 @@ class RepositoryModule {
     ): ThreadsRepository = ThreadsRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
 
     @Provides
-    fun provideNetworkDataSource(
-        trustManager: TrustManager,
-        sslSocketFactoryCompat: SSLSocketFactoryCompat
-    ): NetworkLoginDataSource = NetworkLoginDataSource(trustManager, sslSocketFactoryCompat)
+    fun provideNetworkDataSource(okHttpClient: OkHttpClient): NetworkLoginDataSource =
+        NetworkLoginDataSource(okHttpClient)
 
     @Provides
     fun providesLocalDataSource(

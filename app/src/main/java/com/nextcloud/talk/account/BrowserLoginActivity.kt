@@ -78,7 +78,6 @@ class BrowserLoginActivity : BaseActivity() {
                     }
                     BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                 }
-
             }
         }
 
@@ -99,7 +98,6 @@ class BrowserLoginActivity : BaseActivity() {
                         restartApp()
                     }
                 }
-
             }
         }
     }
