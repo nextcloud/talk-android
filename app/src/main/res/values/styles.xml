@@ -89,10 +89,12 @@
 
     <style name="ChipIncomingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">#de000000</item>
+        <item name="android:textSize">@dimen/chat_text_size</item>
     </style>
 
     <style name="ChipOutgoingTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:textColor">@color/textColorOnPrimaryBackground</item>
+        <item name="android:textSize">@dimen/chat_text_size</item>
     </style>
 
     <style name="ChipUnreadMessagesTextAppearance" parent="TextAppearance.MaterialComponents.Chip">
