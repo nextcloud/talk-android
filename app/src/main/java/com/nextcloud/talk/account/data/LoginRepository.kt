@@ -97,8 +97,11 @@ class LoginRepository(
             }
         }
 
-        val loginCompletion = LoginCompletion(HTTP_OK, server, loginName, appPassword)
-        return loginCompletion
+        return if (server.isNotEmpty() && loginName.isNotEmpty() && appPassword.isNotEmpty()) {
+            LoginCompletion(HTTP_OK, server, loginName, appPassword)
+        } else {
+            null
+        }
     }
 
     /**
