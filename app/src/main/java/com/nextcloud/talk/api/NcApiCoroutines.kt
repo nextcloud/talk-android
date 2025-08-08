@@ -14,6 +14,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
@@ -22,6 +23,7 @@ import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
+import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.http.Body
@@ -296,4 +298,8 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
+
+    @GET
+    suspend fun getServerStatus(@Url url: String?): Status
+
 }
