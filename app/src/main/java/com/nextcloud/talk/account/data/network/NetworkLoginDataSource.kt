@@ -10,6 +10,8 @@ package com.nextcloud.talk.account.data.network
 import android.util.Log
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
+import com.nextcloud.talk.account.data.model.LoginCompletion
+import com.nextcloud.talk.account.data.model.LoginResponse
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -26,19 +28,6 @@ class NetworkLoginDataSource(
     companion object {
         val TAG: String = NetworkLoginDataSource::class.java.simpleName
     }
-
-    data class LoginResponse(
-        val token: String,
-        val pollUrl: String,
-        val loginUrl: String
-    )
-
-    data class LoginCompletion(
-        val status: Int,
-        val server: String,
-        val loginName: String,
-        val appPassword: String
-    )
 
     fun anonymouslyPostLoginRequest(baseUrl: String): LoginResponse? {
         val url = "$baseUrl/index.php/login/v2"

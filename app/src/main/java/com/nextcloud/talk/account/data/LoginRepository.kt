@@ -11,9 +11,9 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import com.nextcloud.talk.account.data.io.LocalLoginDataSource
+import com.nextcloud.talk.account.data.model.LoginCompletion
+import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
-import com.nextcloud.talk.account.data.network.NetworkLoginDataSource.LoginCompletion
-import com.nextcloud.talk.account.data.network.NetworkLoginDataSource.LoginResponse
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_TOKEN

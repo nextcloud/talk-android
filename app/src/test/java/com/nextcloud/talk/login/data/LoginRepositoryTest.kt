@@ -14,6 +14,8 @@ import androidx.lifecycle.LiveData
 import androidx.work.WorkInfo
 import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.account.data.io.LocalLoginDataSource
+import com.nextcloud.talk.account.data.model.LoginCompletion
+import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import io.mockk.every
 import io.mockk.mockkStatic
@@ -84,8 +86,8 @@ class LoginRepositoryTest {
     fun `pollLogin returns successful LoginCompletion when network returns HTTP 200`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val successfulLoginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val successfulLoginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(successfulLoginData)
@@ -105,7 +107,7 @@ class LoginRepositoryTest {
     fun `pollLogin returns null when network returns null`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(null)
 
@@ -120,9 +122,9 @@ class LoginRepositoryTest {
     fun `pollLogin continues polling when status is not HTTP 200 then returns successful result`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val pendingLoginData = NetworkLoginDataSource.LoginCompletion(202, "https://server.com", "testuser", "apppass123")
-            val successfulLoginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val pendingLoginData = LoginCompletion(202, "https://server.com", "testuser", "apppass123")
+            val successfulLoginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(pendingLoginData)
@@ -141,11 +143,11 @@ class LoginRepositoryTest {
     fun `pollLogin handles slow connection by continuing to poll with delays`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val slowResponse1 = NetworkLoginDataSource.LoginCompletion(202, "https://server.com", "testuser", "apppass123")
-            val slowResponse2 = NetworkLoginDataSource.LoginCompletion(404, "https://server.com", "testuser", "apppass123")
-            val slowResponse3 = NetworkLoginDataSource.LoginCompletion(500, "https://server.com", "testuser", "apppass123")
-            val successResponse = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val slowResponse1 = LoginCompletion(202, "https://server.com", "testuser", "apppass123")
+            val slowResponse2 = LoginCompletion(404, "https://server.com", "testuser", "apppass123")
+            val slowResponse3 = LoginCompletion(500, "https://server.com", "testuser", "apppass123")
+            val successResponse = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(slowResponse1)
@@ -166,9 +168,9 @@ class LoginRepositoryTest {
     fun `pollLogin handles network timeouts during slow connection gracefully`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val timeoutResponse = NetworkLoginDataSource.LoginCompletion(408, "https://server.com", "testuser", "apppass123")
-            val successResponse = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val timeoutResponse = LoginCompletion(408, "https://server.com", "testuser", "apppass123")
+            val successResponse = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(timeoutResponse)
@@ -188,9 +190,11 @@ class LoginRepositoryTest {
     fun `pollLogin stops when cancelLoginFlow is called`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val pendingLoginData = NetworkLoginDataSource.LoginCompletion(202, "https://server.com", "testuser",
-                "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val pendingLoginData = LoginCompletion(
+                202, "https://server.com", "testuser",
+                "apppass123"
+            )
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(pendingLoginData)
@@ -319,7 +323,7 @@ class LoginRepositoryTest {
         runTest {
             // Arrange
             val baseUrl = "https://example.com"
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://example.com/poll", "https://example.com/login")
+            val mockResponse = LoginResponse("token123", "https://example.com/poll", "https://example.com/login")
             whenever(networkLoginDataSource.anonymouslyPostLoginRequest(baseUrl))
                 .thenReturn(mockResponse)
 
@@ -351,7 +355,7 @@ class LoginRepositoryTest {
         runTest {
             // Arrange
             val baseUrl = "https://example.com"
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://example.com/poll", "https://example.com/login")
+            val mockResponse = LoginResponse("token123", "https://example.com/poll", "https://example.com/login")
             whenever(networkLoginDataSource.anonymouslyPostLoginRequest(baseUrl))
                 .thenReturn(mockResponse)
 
@@ -384,8 +388,8 @@ class LoginRepositoryTest {
     fun `cancelLoginFlow stops polling loop`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val pendingLoginData = NetworkLoginDataSource.LoginCompletion(202, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val pendingLoginData = LoginCompletion(202, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(pendingLoginData)
@@ -403,7 +407,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin returns null when user is scheduled for deletion`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(true)
         whenever(localLoginDataSource.startAccountRemovalWorker())
@@ -420,7 +424,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin returns null when user exists and reAuth is false`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -440,7 +444,7 @@ class LoginRepositoryTest {
         val qrData = "nc://login/server:https%3A//example.com"
         repo.startLoginFlowFromQR(qrData, reAuth = true)
 
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -458,7 +462,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin returns Bundle for new user with https protocol`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -475,7 +479,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin returns Bundle for new user with http protocol`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "http://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "http://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -492,7 +496,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin returns Bundle for new user without protocol prefix`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -511,7 +515,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserIsScheduledForDeletion`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(true)
         whenever(localLoginDataSource.startAccountRemovalWorker())
@@ -528,7 +532,7 @@ class LoginRepositoryTest {
     @Test
     fun `parseAndLogin properly integrates with LocalLoginDataSource checkIfUserExists`() {
         // Arrange
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -548,7 +552,7 @@ class LoginRepositoryTest {
         val qrData = "nc://login/server:https%3A//example.com"
         repo.startLoginFlowFromQR(qrData, reAuth = true)
 
-        val loginData = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+        val loginData = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
         whenever(localLoginDataSource.checkIfUserIsScheduledForDeletion(loginData))
             .thenReturn(false)
         whenever(localLoginDataSource.checkIfUserExists(loginData))
@@ -567,9 +571,9 @@ class LoginRepositoryTest {
     fun `pollLogin handles performLoginFlowV2 returning error status codes`() =
         runTest {
             // Arrange
-            val mockResponse = NetworkLoginDataSource.LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
-            val errorResponse = NetworkLoginDataSource.LoginCompletion(404, "", "", "")
-            val successResponse = NetworkLoginDataSource.LoginCompletion(200, "https://server.com", "testuser", "apppass123")
+            val mockResponse = LoginResponse("token123", "https://server.com/poll", "https://server.com/login")
+            val errorResponse = LoginCompletion(404, "", "", "")
+            val successResponse = LoginCompletion(200, "https://server.com", "testuser", "apppass123")
 
             whenever(networkLoginDataSource.performLoginFlowV2(mockResponse))
                 .thenReturn(errorResponse)

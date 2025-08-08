@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.login.data.network
 
+import com.nextcloud.talk.account.data.model.LoginResponse
 import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
@@ -104,7 +105,7 @@ class NetworkLoginDataSourceTest {
         server.enqueue(validResponse)
         server.start()
         val httpUrl = server.url("login/v2/poll")
-        val loginResponse = NetworkLoginDataSource.LoginResponse(
+        val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
             pollUrl = httpUrl.toString(),
             loginUrl = "https:\\/\\/cloud.example.com\\/login\\/v2\\/flow\\/guyjGtcKPTKCi4epIRIupIexgJ8wNInMFSfHabACRPZUkmEaWZSM54bFkFuzWksbps7jmTFQjeskLpyJXyhpHlgK8sZBn9HXLXjohIx5iXgJKdOkkZTYCzUWHlsg3YFg"
@@ -128,7 +129,7 @@ class NetworkLoginDataSourceTest {
         server.enqueue(invalidResponse)
         server.start()
         val httpUrl = server.url("login/v2/poll")
-        val loginResponse = NetworkLoginDataSource.LoginResponse(
+        val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
             pollUrl = httpUrl.toString(),
             loginUrl = "https:\\/\\/cloud.example.com\\/login\\/v2\\/flow\\/guyjGtcKPTKCi4epIRIupIexgJ8wNInMFSfHabACRPZUkmEaWZSM54bFkFuzWksbps7jmTFQjeskLpyJXyhpHlgK8sZBn9HXLXjohIx5iXgJKdOkkZTYCzUWHlsg3YFg"
@@ -154,7 +155,7 @@ class NetworkLoginDataSourceTest {
         server.enqueue(validResponse)
         server.start()
         val httpUrl = server.url("login/v2/poll")
-        val loginResponse = NetworkLoginDataSource.LoginResponse(
+        val loginResponse = LoginResponse(
             token = "mQUYQdffOSAMJYtm8pVpkOsVqXt5hglnuSpO5EMbgJMNEPFGaiDe8OUjvrJ2WcYcBSLgqynu9jaPFvZHMl83ybMvp6aDIDARjTFIBpRWod6p32fL9LIpIStvc6k8Wrs1",
             pollUrl = httpUrl.toString(),
             loginUrl = "https:\\/\\/cloud.example.com\\/login\\/v2\\/flow\\/guyjGtcKPTKCi4epIRIupIexgJ8wNInMFSfHabACRPZUkmEaWZSM54bFkFuzWksbps7jmTFQjeskLpyJXyhpHlgK8sZBn9HXLXjohIx5iXgJKdOkkZTYCzUWHlsg3YFg"
