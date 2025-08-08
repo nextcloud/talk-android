@@ -34,9 +34,10 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.X509KeyManager;
@@ -48,6 +49,7 @@ import dagger.Provides;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Authenticator;
 import okhttp3.Cache;
+import okhttp3.ConnectionSpec;
 import okhttp3.Credentials;
 import okhttp3.Dispatcher;
 import okhttp3.Interceptor;
@@ -60,7 +62,6 @@ import okhttp3.internal.tls.OkHostnameVerifier;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 @Module(includes = DatabaseModule.class)
 public class RestModule {
@@ -218,6 +219,16 @@ public class RestModule {
 
         httpClient.addInterceptor(new HeadersInterceptor());
 
+        List<ConnectionSpec> specs = new ArrayList<>();
+        if (BuildConfig.DEBUG) {
+            specs.add(ConnectionSpec.COMPATIBLE_TLS);
+            specs.add(ConnectionSpec.CLEARTEXT);
+            httpClient.connectionSpecs(specs);
+        } else {
+            specs.add(ConnectionSpec.COMPATIBLE_TLS);
+            httpClient.connectionSpecs(specs);
+        }
+
         if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -257,8 +268,8 @@ public class RestModule {
 
     public static class HttpAuthenticator implements Authenticator {
 
-        private String credentials;
-        private String authenticatorType;
+        private final String credentials;
+        private final String authenticatorType;
 
         public HttpAuthenticator(@NonNull String credentials, @NonNull String authenticatorType) {
             this.credentials = credentials;
@@ -291,7 +302,7 @@ public class RestModule {
 
     private class GetProxyRunnable implements Runnable {
         private volatile Proxy proxy;
-        private AppPreferences appPreferences;
+        private final AppPreferences appPreferences;
 
         GetProxyRunnable(AppPreferences appPreferences) {
             this.appPreferences = appPreferences;
