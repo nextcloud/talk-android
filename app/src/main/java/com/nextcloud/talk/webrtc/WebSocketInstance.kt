@@ -21,6 +21,7 @@ import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.models.json.signaling.settings.FederationSettings
+import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessageInterface
 import com.nextcloud.talk.models.json.websocket.BaseWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.ByeWebSocketMessage
 import com.nextcloud.talk.models.json.websocket.CallOverallWebSocketMessage
@@ -76,7 +77,9 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     private var currentFederation: FederationSettings? = null
     private var reconnecting = false
     private val usersHashMap: HashMap<String?, Participant>
-    private var messagesQueue: MutableList<String> = ArrayList()
+    private var messagesQueue: MutableList<Pair<BaseWebSocketMessageInterface, ((String) -> Unit)?>> = ArrayList()
+    private var callbacks: MutableMap<String, (String) -> Unit> = HashMap()
+    private var lastCallbackId: Int = 1
     private val signalingMessageReceiver = ExternalSignalingMessageReceiver()
     val signalingMessageSender = ExternalSignalingMessageSender()
 
@@ -137,6 +140,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     fun restartWebSocket() {
         reconnecting = true
+        callbacks.clear()
         Log.d(TAG, "restartWebSocket: $connectionUrl")
         val request = Request.Builder().url(connectionUrl).build()
         okHttpClient!!.newWebSocket(request, this)
@@ -146,12 +150,18 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         if (webSocket === internalWebSocket) {
             Log.d(TAG, "Receiving : $webSocket $text")
             try {
-                val (messageType) = LoganSquare.parse(text, BaseWebSocketMessage::class.java)
+                val (id, messageType) = LoganSquare.parse(text, BaseWebSocketMessage::class.java)
+
+                if (callbacks.contains(id)) {
+                    val callback = callbacks[id]!!
+                    callbacks.remove(id)
+                    callback(text)
+                }
+
                 if (messageType != null) {
                     when (messageType) {
                         "hello" -> processHelloMessage(webSocket, text)
                         "error" -> processErrorMessage(webSocket, text)
-                        "room" -> processJoinedRoomMessage(text)
                         "event" -> processEventMessage(text)
                         "message" -> processMessage(text)
                         "bye" -> {
@@ -172,7 +182,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     @Throws(IOException::class)
     private fun processMessage(text: String) {
-        val (_, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
+        val (_, _, callWebSocketMessage) = LoganSquare.parse(text, CallOverallWebSocketMessage::class.java)
         if (callWebSocketMessage != null) {
             val ncSignalingMessage = callWebSocketMessage.ncSignalingMessage
 
@@ -279,7 +289,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     @Throws(IOException::class)
     private fun processJoinedRoomMessage(text: String) {
-        val (_, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
+        val (_, _, roomWebSocketMessage) = LoganSquare.parse(text, JoinedRoomOverallWebSocketMessage::class.java)
         if (roomWebSocketMessage != null) {
             currentRoomToken = roomWebSocketMessage.roomId
             if (roomWebSocketMessage.roomPropertiesWebSocketMessage != null && !TextUtils.isEmpty(currentRoomToken)) {
@@ -291,7 +301,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
     @Throws(IOException::class)
     private fun processErrorMessage(webSocket: WebSocket, text: String) {
         Log.e(TAG, "Received error: $text")
-        val (_, message) = LoganSquare.parse(text, ErrorOverallWebSocketMessage::class.java)
+        val (_, _, message) = LoganSquare.parse(text, ErrorOverallWebSocketMessage::class.java)
         if (message != null) {
             if ("no_such_session" == message.code) {
                 Log.d(TAG, "WebSocket " + webSocket.hashCode() + " resumeID " + resumeId + " expired")
@@ -310,7 +320,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         isConnected = true
         reconnecting = false
         val oldResumeId = resumeId
-        val (_, helloResponseWebSocketMessage1) = LoganSquare.parse(
+        val (_, _, helloResponseWebSocketMessage1) = LoganSquare.parse(
             text,
             HelloResponseOverallWebSocketMessage::class.java
         )
@@ -320,7 +330,12 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             hasMCU = helloResponseWebSocketMessage1.serverHasMCUSupport()
         }
         for (i in messagesQueue.indices) {
-            webSocket.send(messagesQueue[i])
+            // Safety check to ensure that it will not end in an endless loop
+            // trying to send the messages, queueing them, and then trying to
+            // send them again and again.
+            if (isConnected && !reconnecting) {
+                sendMessage(messagesQueue[i].first, messagesQueue[i].second)
+            }
         }
         messagesQueue = ArrayList()
         val helloHashMap = HashMap<String, String?>()
@@ -372,14 +387,15 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         Log.d(TAG, "   roomToken: $roomToken")
         Log.d(TAG, "   session: $normalBackendSession")
         try {
-            val message = LoganSquare.serialize(
-                webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
-            )
+            val message = webSocketConnectionHelper.getAssembledJoinOrLeaveRoomModel(roomToken, normalBackendSession, federation)
+            val processJoinedRoomMessageCallback = { text: String ->
+                processJoinedRoomMessage(text)
+            }
             if (roomToken == "") {
                 Log.d(TAG, "sending 'leave room' via websocket")
                 currentNormalBackendSession = ""
                 currentFederation = null
-                sendMessage(message)
+                sendMessage(message, processJoinedRoomMessageCallback)
             } else if (
                 roomToken == currentRoomToken &&
                 normalBackendSession == currentNormalBackendSession &&
@@ -392,7 +408,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 Log.d(TAG, "Sending join room message via websocket")
                 currentNormalBackendSession = normalBackendSession
                 currentFederation = federation
-                sendMessage(message)
+                sendMessage(message, processJoinedRoomMessageCallback)
             }
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
@@ -401,27 +417,33 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
 
     private fun sendCallMessage(ncSignalingMessage: NCSignalingMessage) {
         try {
-            val message = LoganSquare.serialize(
-                webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
-            )
+            val message = webSocketConnectionHelper.getAssembledCallMessageModel(ncSignalingMessage)
             sendMessage(message)
         } catch (e: IOException) {
             Log.e(TAG, "Failed to serialize signaling message", e)
         }
     }
 
-    private fun sendMessage(message: String) {
+    private fun sendMessage(message: BaseWebSocketMessageInterface, callback: ((String) -> Unit)? = null) {
         if (!isConnected || reconnecting) {
-            messagesQueue.add(message)
+            messagesQueue.add(Pair(message, callback))
 
             if (!reconnecting) {
                 restartWebSocket()
             }
-        } else {
-            if (!internalWebSocket!!.send(message)) {
-                messagesQueue.add(message)
-                restartWebSocket()
-            }
+
+            return
+        }
+
+        if (callback != null) {
+            val callbackId = lastCallbackId++
+            callbacks[callbackId.toString()] = callback
+            message.id = callbackId.toString()
+        }
+
+        if (!internalWebSocket!!.send(LoganSquare.serialize(message))) {
+            messagesQueue.add(Pair(message, callback))
+            restartWebSocket()
         }
     }
 
