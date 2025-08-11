@@ -26,7 +26,6 @@ class StatusRepositoryImplementation @Inject constructor (private val ncApiCorou
         val statusOverall = credentials?.let {
             ncApiCoroutines.status(credentials, url)
         }
-
         return statusOverall!!
     }
 }
