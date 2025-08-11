@@ -65,7 +65,6 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
                 }else{
                     _fetchInvitationsViewState.value = FetchInvitationsSuccessState(invitationsModel.invitations)
                 }
-
             }catch(_:Exception){
                 _fetchInvitationsViewState.value = FetchInvitationsErrorState
             }
