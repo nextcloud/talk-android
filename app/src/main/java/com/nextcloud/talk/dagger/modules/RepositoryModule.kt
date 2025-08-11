@@ -19,6 +19,8 @@ import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
+import com.nextcloud.talk.chooseaccount.StatusRepository
+import com.nextcloud.talk.chooseaccount.StatusRepositoryImplementation
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
@@ -216,4 +218,11 @@ class RepositoryModule {
         networkLoginDataSource: NetworkLoginDataSource,
         localLoginDataSource: LocalLoginDataSource
     ): LoginRepository = LoginRepository(networkLoginDataSource, localLoginDataSource)
+
+    @Provides
+    fun provideStatusRepository(
+        ncApiCoroutines: NcApiCoroutines,
+        currentUserProviderNew: CurrentUserProviderNew
+    ): StatusRepository = StatusRepositoryImplementation(ncApiCoroutines, currentUserProviderNew)
+
 }
