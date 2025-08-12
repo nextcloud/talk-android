@@ -14,14 +14,15 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import javax.inject.Inject
 
-class StatusRepositoryImplementation @Inject constructor (private val ncApiCoroutines: NcApiCoroutines,
-    private val currentUserProvider: CurrentUserProviderNew): StatusRepository {
+class StatusRepositoryImplementation @Inject constructor(
+    private val ncApiCoroutines: NcApiCoroutines,
+    private val currentUserProvider: CurrentUserProviderNew
+) : StatusRepository {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
 
     override suspend fun setStatus(): StatusOverall {
-
         val url = ApiUtils.getUrlForStatus(currentUser.baseUrl!!)
         val statusOverall = credentials?.let {
             ncApiCoroutines.status(credentials, url)
