@@ -668,7 +668,7 @@ class SetStatusDialogFragment :
         private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
         @JvmStatic
-        fun newInstance(status: Status): SetStatusDialogFragment {
+        fun newInstance(status: Status?): SetStatusDialogFragment {
             val args = Bundle()
             args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
 

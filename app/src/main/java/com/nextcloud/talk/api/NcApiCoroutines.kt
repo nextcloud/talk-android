@@ -300,10 +300,7 @@ interface NcApiCoroutines {
     suspend fun getThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
 
     @GET
-    suspend fun getInvitations(
-        @Header("Authorization") authorization: String,
-        @Url url: String
-    ): InvitationOverall
+    suspend fun getInvitations(@Header("Authorization") authorization: String, @Url url: String): InvitationOverall
 
     @GET
     suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall

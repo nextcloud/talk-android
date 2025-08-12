@@ -13,5 +13,5 @@ interface InvitationsRepository {
     fun fetchInvitations(user: User): Observable<InvitationsModel>
     fun acceptInvitation(user: User, invitation: Invitation): Observable<InvitationActionModel>
     fun rejectInvitation(user: User, invitation: Invitation): Observable<InvitationActionModel>
-    suspend fun getInvitations(user:User) : InvitationsModel
+    suspend fun getInvitations(user: User): InvitationsModel
 }
