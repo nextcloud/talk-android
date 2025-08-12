@@ -224,5 +224,4 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         currentUserProviderNew: CurrentUserProviderNew
     ): StatusRepository = StatusRepositoryImplementation(ncApiCoroutines, currentUserProviderNew)
-
 }
