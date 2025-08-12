@@ -15,15 +15,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class StatusRepositoryViewModel @Inject constructor(
-    private val repository: StatusRepository
-) : ViewModel(){
+class StatusViewModel @Inject constructor(private val repository: StatusRepository) : ViewModel() {
 
     private val _statusViewState = MutableStateFlow<StatusUiState>(StatusUiState.None)
     val statusViewState: StateFlow<StatusUiState> = _statusViewState
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun setStatus() {
+    fun getStatus() {
         viewModelScope.launch {
             try {
                 val status = repository.setStatus()
@@ -37,6 +35,6 @@ class StatusRepositoryViewModel @Inject constructor(
 
 sealed class StatusUiState {
     data object None : StatusUiState()
-    data class Success(val status: StatusOverall) : StatusUiState()
-    data class Error(val message: String) : StatusUiState()
+    open class Success(val status: StatusOverall) : StatusUiState()
+    open class Error(val message: String) : StatusUiState()
 }
