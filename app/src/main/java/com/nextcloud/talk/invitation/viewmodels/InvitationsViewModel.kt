@@ -21,6 +21,8 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -36,6 +38,14 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
     private val _fetchInvitationsViewState: MutableLiveData<ViewState> = MutableLiveData(FetchInvitationsStartState)
     val fetchInvitationsViewState: LiveData<ViewState>
         get() = _fetchInvitationsViewState
+
+    object GetInvitationsStartState : ViewState
+    object GetInvitationsEmptyState : ViewState
+    open class GetInvitationsErrorState(val error: Exception) : ViewState
+    open class GetInvitationsSuccessState(val invitations: List<Invitation>) : ViewState
+
+    private val _getInvitationsViewState = MutableStateFlow<ViewState>(GetInvitationsStartState)
+    val getInvitationsViewState: StateFlow<ViewState> = _getInvitationsViewState
 
     object InvitationActionStartState : ViewState
     object InvitationActionErrorState : ViewState
@@ -55,18 +65,17 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
             ?.subscribe(FetchInvitationsObserver())
     }
 
-
-    fun getInvitations(user:User){
-        viewModelScope.launch{
-            try{
+    fun getInvitations(user: User) {
+        viewModelScope.launch {
+            try {
                 val invitationsModel = repository.getInvitations(user)
-                if(invitationsModel.invitations.isEmpty()){
-                    _fetchInvitationsViewState.value = FetchInvitationsEmptyState
-                }else{
-                    _fetchInvitationsViewState.value = FetchInvitationsSuccessState(invitationsModel.invitations)
+                if (invitationsModel.invitations.isEmpty()) {
+                    _getInvitationsViewState.value = GetInvitationsEmptyState
+                } else {
+                    _getInvitationsViewState.value = GetInvitationsSuccessState(invitationsModel.invitations)
                 }
-            }catch(_:Exception){
-                _fetchInvitationsViewState.value = FetchInvitationsErrorState
+            } catch (e: Exception) {
+                _getInvitationsViewState.value = GetInvitationsErrorState(e)
             }
         }
     }

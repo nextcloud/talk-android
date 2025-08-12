@@ -112,7 +112,7 @@ import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
-import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
+import com.nextcloud.talk.ui.dialog.ChooseAccountDialogCompose
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
@@ -824,6 +824,15 @@ class ConversationsListActivity :
         }
     }
 
+    private fun showChooseAccountDialog() {
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                ChooseAccountDialogCompose().GetChooseAccountDialog(shouldDismiss, this@ConversationsListActivity)
+            }
+        }
+    }
+
     private fun loadUserAvatar(button: MaterialButton) {
         val target = object : Target {
             override fun onStart(placeholder: Drawable?) {
@@ -1175,8 +1184,7 @@ class ConversationsListActivity :
 
             if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
                 dialogBuilder.setPositiveButton(R.string.nc_switch_account) { _, _ ->
-                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                    showChooseAccountDialog()
                 }
             }
 
@@ -1295,8 +1303,7 @@ class ConversationsListActivity :
 
         binding.switchAccountButton.setOnClickListener {
             if (resources != null && resources!!.getBoolean(R.bool.multiaccount_support)) {
-                val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                showChooseAccountDialog()
             } else {
                 val intent = Intent(context, SettingsActivity::class.java)
                 startActivity(intent)
@@ -2068,8 +2075,7 @@ class ConversationsListActivity :
 
             if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
                 dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
-                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                    showChooseAccountDialog()
                 }
             }
 
@@ -2112,8 +2118,7 @@ class ConversationsListActivity :
 
             if (resources!!.getBoolean(R.bool.multiaccount_support) && userManager.users.blockingGet().size > 1) {
                 dialogBuilder.setNegativeButton(R.string.nc_switch_account) { _, _ ->
-                    val newFragment: DialogFragment = ChooseAccountDialogFragment.newInstance()
-                    newFragment.show(supportFragmentManager, ChooseAccountDialogFragment.TAG)
+                    showChooseAccountDialog()
                 }
             }
 
