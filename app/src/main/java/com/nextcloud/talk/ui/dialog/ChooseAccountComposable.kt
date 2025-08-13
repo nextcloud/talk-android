@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.widget.ImageView
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -112,6 +114,7 @@ class ChooseAccountDialogCompose {
             if (isStatusAvailable) {
                 statusViewModel.getStatus()
             }
+            setupAccounts()
         }
 
         val statusViewState by statusViewModel.statusViewState.collectAsState()
@@ -130,8 +133,6 @@ class ChooseAccountDialogCompose {
             StatusUiState.None -> {
             }
         }
-
-        SetupAccounts(invitationsState)
 
         MaterialTheme(colorScheme = colorScheme) {
             Dialog(onDismissRequest = { shouldDismiss.value = true }) {
@@ -204,24 +205,24 @@ class ChooseAccountDialogCompose {
                             }
                         }
 
-                        // val hasInvitations =
-                        //     (invitationsState as? InvitationsViewModel.FetchInvitationsSuccessState)
-                        //         ?.invitations
-                        //         ?.isNotEmpty() == true
-                        // if (hasInvitations) {
-                        //     Text(
-                        //         text = activity.getString(R.string.nc_federation_pending_invitation_hint),
-                        //         modifier = Modifier.padding(top = 4.dp)
-                        //     )
-                        // }
                         HorizontalDivider(
                             modifier = Modifier.padding(vertical = 8.dp)
                         )
                         LazyColumn(modifier = Modifier.weight(1f, fill = false)) {
                             items(userItems) { user ->
                                 if (user.userId != currentUser.userId) {
-                                    AccountRow(userItems, activity) { shouldDismiss.value = true }
+                                    AccountRow(user, invitationsState, activity) { shouldDismiss.value = true }
                                 }
+                               // val pendingInvitations = getPendingInvitations(invitationsState)
+                               //
+                               //  if(pendingInvitations > 0){
+                               //      Icon(
+                               //          painterResource(R.drawable.accent_circle),
+                               //          contentDescription = null,
+                               //          modifier = Modifier.size(24.dp),
+                               //          tint = Color.Red
+                               //      )
+                               //  }
                             }
                         }
                         if (isOnline) {
@@ -279,8 +280,8 @@ class ChooseAccountDialogCompose {
     }
 
     @Composable
-    private fun AccountRow(userItem: List<AccountItem>, activity: Activity, onSelected: () -> Unit) {
-        userItem.forEach { userItem ->
+    private fun AccountRow(userItem: AccountItem, invitationsUiState: InvitationsViewModel.ViewState, activity:
+    Activity, onSelected: () -> Unit) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -310,40 +311,47 @@ class ChooseAccountDialogCompose {
                 )
                 Text(
                     text = userItem.user.displayName ?: userItem.user.username ?: "",
-                    modifier = Modifier.padding(start = 8.dp)
+                    modifier = Modifier.padding(start = 8.dp).weight(1f)
                 )
+                val users = userManager.users.blockingGet()
+                val pendingInvitations = getPendingInvitations(invitationsUiState, users)
+                if(pendingInvitations > 0){
+                    Box(
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clip(CircleShape)
+                            .background(Color.Red)
+                    )
+                }
+            }
+    }
+
+
+    private fun setupAccounts() {
+        userManager.users.blockingGet().forEach { user ->
+            if (!user.current) {
+                addAccountToList(user, user.userId ?: user.username)
             }
         }
     }
 
-    @Composable
-    private fun SetupAccounts(invitationsUiState: InvitationsViewModel.ViewState) {
-        userManager.users.blockingGet().forEach { user ->
+    fun getPendingInvitations(invitationsUiState: InvitationsViewModel.ViewState, users: List<User>): Int {
+        users.forEach { user ->
             if (!user.current) {
-                addAccountToList(user, user.userId ?: user.username, 0)
-            }
-        }
-        userManager.users.blockingGet().forEach { user ->
-            if (!user.current) {
-                val userId = user.userId ?: user.username
-
-                when (invitationsUiState) {
-                    InvitationsViewModel.GetInvitationsEmptyState -> {
-                    }
-                    is InvitationsViewModel.GetInvitationsErrorState -> {
-                        addAccountToList(user, userId, 0)
-                    }
-                    InvitationsViewModel.GetInvitationsStartState -> {
-                    }
+                return when (invitationsUiState) {
                     is InvitationsViewModel.GetInvitationsSuccessState -> {
-                        addAccountToList(user, userId, invitationsUiState.invitations.size)
+                        invitationsUiState.invitations.size
                     }
+
                     else -> {
+                        0
                     }
                 }
             }
         }
+        return 0
     }
+
 
     @Composable
     private fun StatusIndicator(modifier: Modifier = Modifier, status: Status?, context: Context) {
@@ -364,9 +372,9 @@ class ChooseAccountDialogCompose {
         private val TAG = ChooseAccountDialogCompose::class.simpleName
     }
 
-    private fun addAccountToList(user: User, userId: String?, actionsRequired: Int) {
-        userItems.add(AccountItem(user, userId, actionsRequired))
+    private fun addAccountToList(user: User, userId: String?) {
+        userItems.add(AccountItem(user, userId))
     }
 }
 
-data class AccountItem(val user: User, val userId: String?, val pendingInvitations: Int)
+data class AccountItem(val user: User, val userId: String?)
