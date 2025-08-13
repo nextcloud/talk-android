@@ -48,6 +48,7 @@ import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
 import com.vanniktech.emoji.recent.RecentEmojiManager
 import com.vanniktech.emoji.search.SearchEmojiManager
+import com.vanniktech.ui.animateText
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -388,9 +389,16 @@ class MessageActionsDialog(
 
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {
+            var doubleTap = false
             dialogMessageActionsBinding.menuDeleteMessage.setOnClickListener {
-                chatActivity.deleteMessage(message)
-                dismiss()
+                if (doubleTap) {
+                    chatActivity.deleteMessage(message)
+                    dismiss()
+                } else {
+                    doubleTap = true
+                    val text = context.resources.getString(R.string.message_delete_are_you_sure)
+                    dialogMessageActionsBinding.menuTextDeleteMessage.animateText(text)
+                }
             }
         }
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
