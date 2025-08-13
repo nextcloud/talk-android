@@ -646,6 +646,7 @@
             </LinearLayout>
 
             <com.google.android.material.divider.MaterialDivider
+                android:id="@+id/menu_delete_message_divider"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
                 android:layout_margin="@dimen/standard_half_margin"

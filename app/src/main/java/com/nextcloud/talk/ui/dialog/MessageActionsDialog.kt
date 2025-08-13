@@ -394,6 +394,7 @@ class MessageActionsDialog(
             }
         }
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
+        dialogMessageActionsBinding.menuDeleteMessageDivider.visibility = getVisibility(visible)
     }
 
     private fun initMenuEditMessage(visible: Boolean) {
