@@ -191,7 +191,6 @@ class ChooseAccountDialogCompose {
                                     shouldDismiss.value = true
                                     openStatus(status.value, activity)
                                 },
-                                enabled = status != null,
                                 modifier = Modifier.fillMaxWidth()
                             ) {
                                 Row(
