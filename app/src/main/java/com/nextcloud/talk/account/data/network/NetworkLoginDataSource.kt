@@ -87,27 +87,34 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
             .build()
 
         var result: LoginCompletion? = null
-        try {
+        runCatching {
             okHttpClient.newCall(request).execute()
                 .use { response ->
-                    if (!response.isSuccessful) {
-                        result = LoginCompletion(response.code, "", "", "")
-                        throw IOException("Unexpected code $response")
-                    }
                     val status: Int = response.code
-                    val response = response.body?.string()
-                    val jsonObject = JsonParser.parseString(response).asJsonObject
+                    val responseBody = response.body?.string()
 
-                    val server: String = jsonObject.get("server").asString
-                    val loginName: String = jsonObject.get("loginName").asString
-                    val appPassword: String = jsonObject.get("appPassword").asString
+                    result = if (response.isSuccessful && responseBody?.isNotEmpty() == true) {
+                        val jsonObject = JsonParser.parseString(responseBody).asJsonObject
+                        val server: String = jsonObject.get("server").asString
+                        val loginName: String = jsonObject.get("loginName").asString
+                        val appPassword: String = jsonObject.get("appPassword").asString
 
-                    if (response?.isNotEmpty() == true) {
-                        result = LoginCompletion(status, server, loginName, appPassword)
+                        LoginCompletion(status, server, loginName, appPassword)
+                    } else {
+                        LoginCompletion(status, "", "", "")
                     }
                 }
-        } catch (e: Exception) {
-            Log.e(TAG, "Error caught at performLoginFlowV2: $e")
+        }.getOrElse { e ->
+            when (e) {
+                is NullPointerException,
+                is SSLHandshakeException,
+                is IllegalStateException,
+                is IOException -> {
+                    Log.e(TAG, "Error caught at performLoginFlowV2: $e")
+                }
+
+                else -> throw e
+            }
         }
 
         return result

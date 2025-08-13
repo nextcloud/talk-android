@@ -353,7 +353,6 @@ dependencies {
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.10.2' // DO NOT REMOVE
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("org.robolectric:robolectric:4.15.1")
-    testImplementation("app.cash.turbine:turbine:1.2.1")
 }
 
 tasks.register('installGitHooks', Copy) {
