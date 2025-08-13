@@ -212,16 +212,16 @@ class ChooseAccountDialogCompose {
                                 if (user.userId != currentUser.userId) {
                                     AccountRow(user, invitationsState, activity) { shouldDismiss.value = true }
                                 }
-                               // val pendingInvitations = getPendingInvitations(invitationsState)
-                               //
-                               //  if(pendingInvitations > 0){
-                               //      Icon(
-                               //          painterResource(R.drawable.accent_circle),
-                               //          contentDescription = null,
-                               //          modifier = Modifier.size(24.dp),
-                               //          tint = Color.Red
-                               //      )
-                               //  }
+                                // val pendingInvitations = getPendingInvitations(invitationsState)
+                                //
+                                //  if(pendingInvitations > 0){
+                                //      Icon(
+                                //          painterResource(R.drawable.accent_circle),
+                                //          contentDescription = null,
+                                //          modifier = Modifier.size(24.dp),
+                                //          tint = Color.Red
+                                //      )
+                                //  }
                             }
                         }
                         if (isOnline) {
@@ -279,52 +279,55 @@ class ChooseAccountDialogCompose {
     }
 
     @Composable
-    private fun AccountRow(userItem: AccountItem, invitationsUiState: InvitationsViewModel.ViewState, activity:
-    Activity, onSelected: () -> Unit) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        if (userManager.setUserAsActive(userItem.user).blockingGet()) {
-                            cookieManager.cookieStore.removeAll()
-                            val intent = Intent(activity, ConversationsListActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            activity.startActivity(intent)
-                            onSelected()
-                        }
+    private fun AccountRow(
+        userItem: AccountItem,
+        invitationsUiState: InvitationsViewModel.ViewState,
+        activity: Activity,
+        onSelected: () -> Unit
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable {
+                    if (userManager.setUserAsActive(userItem.user).blockingGet()) {
+                        cookieManager.cookieStore.removeAll()
+                        val intent = Intent(activity, ConversationsListActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        activity.startActivity(intent)
+                        onSelected()
                     }
-                    .padding(8.dp)
-            ) {
-                AsyncImage(
-                    model = ApiUtils.getUrlForAvatar(
-                        userItem.user.baseUrl,
-                        userItem.user.userId ?: userItem.user.username,
-                        true
-                    ),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape)
-                )
-                Text(
-                    text = userItem.user.displayName ?: userItem.user.username ?: "",
-                    modifier = Modifier.padding(start = 8.dp).weight(1f)
-                )
-                val users = userManager.users.blockingGet()
-                val pendingInvitations = getPendingInvitations(invitationsUiState, users)
-                if(pendingInvitations > 0){
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clip(CircleShape)
-                            .background(Color.Red)
-                    )
                 }
+                .padding(8.dp)
+        ) {
+            AsyncImage(
+                model = ApiUtils.getUrlForAvatar(
+                    userItem.user.baseUrl,
+                    userItem.user.userId ?: userItem.user.username,
+                    true
+                ),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+            )
+            Text(
+                text = userItem.user.displayName ?: userItem.user.username ?: "",
+                modifier = Modifier.padding(start = 8.dp).weight(1f)
+            )
+            val users = userManager.users.blockingGet()
+            val pendingInvitations = getPendingInvitations(invitationsUiState, users)
+            if (pendingInvitations > 0) {
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(CircleShape)
+                        .background(Color.Red)
+                )
             }
+        }
     }
-
 
     private fun setupAccounts() {
         userManager.users.blockingGet().forEach { user ->
@@ -350,7 +353,6 @@ class ChooseAccountDialogCompose {
         }
         return 0
     }
-
 
     @Composable
     private fun StatusIndicator(modifier: Modifier = Modifier, status: Status?, context: Context) {
