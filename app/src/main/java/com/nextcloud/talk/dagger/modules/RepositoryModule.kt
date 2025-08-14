@@ -128,6 +128,12 @@ class RepositoryModule {
     fun translateRepository(ncApi: NcApi): TranslateRepository = TranslateRepositoryImpl(ncApi)
 
     @Provides
+    fun provideServerStatusRepository(
+        ncApiCoroutines: NcApiCoroutines,
+        currentUserProviderNew: CurrentUserProviderNew
+    ): ServerStatusRepository = ServerStatusRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
+
+    @Provides
     fun provideChatNetworkDataSource(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): ChatNetworkDataSource =
         RetrofitChatNetwork(ncApi, ncApiCoroutines)
 
@@ -197,9 +203,4 @@ class RepositoryModule {
         currentUserProviderNew: CurrentUserProviderNew
     ): ThreadsRepository = ThreadsRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
 
-    @Provides
-    fun provideServerStatusRepository(
-        ncApiCoroutines: NcApiCoroutines,
-        currentUserProviderNew: CurrentUserProviderNew
-    ) = ServerStatusRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
 }

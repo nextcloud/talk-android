@@ -11,8 +11,9 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import javax.inject.Inject
 
-class ServerStatusRepositoryImpl (private val ncApiCoroutines: NcApiCoroutines,
+class ServerStatusRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines,
     private val currentUserProvider: CurrentUserProviderNew) : ServerStatusRepository {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
