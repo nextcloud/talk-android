@@ -200,6 +200,7 @@ private fun ImageView.loadAvatarInternal(
                 )
             }
             transformations(CircleCropTransformation())
+            placeholder(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             error(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             fallback(errorPlaceholder ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))
             listener(onError = { _, result ->
@@ -288,19 +289,12 @@ fun ImageView.loadUserAvatar(any: Any?): io.reactivex.disposables.Disposable =
         }
     )
 
-fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable {
-    val layers = arrayOfNulls<Drawable>(2)
-    layers[0] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
-    layers[1] = ContextCompat.getDrawable(context, R.drawable.ic_launcher_foreground)
-    val layerDrawable = LayerDrawable(layers)
-    val data: Any = layerDrawable
-
-    return DisposableWrapper(
-        load(data) {
+fun ImageView.loadSystemAvatar(): io.reactivex.disposables.Disposable =
+    DisposableWrapper(
+        load(R.drawable.ic_talk_blue_background) {
             transformations(CircleCropTransformation())
         }
     )
-}
 
 fun ImageView.loadNoteToSelfAvatar() {
     val layers = arrayOfNulls<Drawable>(2)
