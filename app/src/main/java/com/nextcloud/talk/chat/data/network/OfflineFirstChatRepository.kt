@@ -50,7 +50,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
-import java.net.ConnectException
 import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")

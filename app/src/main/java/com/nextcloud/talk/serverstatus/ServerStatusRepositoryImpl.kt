@@ -9,7 +9,6 @@ package com.nextcloud.talk.serverstatus
 
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.models.json.generic.Status
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 
