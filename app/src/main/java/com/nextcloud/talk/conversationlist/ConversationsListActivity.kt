@@ -110,6 +110,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.serverstatus.ServerStatusRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
@@ -205,6 +206,9 @@ class ConversationsListActivity :
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
 
+    @Inject
+    lateinit var serverStatusRepository: ServerStatusRepository
+
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
 
@@ -261,6 +265,14 @@ class ConversationsListActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         currentUser = currentUserProvider.currentUser.blockingGet()
+
+        lifecycleScope.launch {
+            try {
+                serverStatusRepository.getServerStatus()
+            } catch (e: Exception) {
+                Log.e(TAG, "Failed to fetch server status", e)
+            }
+        }
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 

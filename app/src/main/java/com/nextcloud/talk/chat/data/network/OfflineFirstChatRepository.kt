@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.serverstatus.ServerStatusRepository
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -49,6 +50,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
+import java.net.ConnectException
 import javax.inject.Inject
 
 @Suppress("LargeClass", "TooManyFunctions")
@@ -57,6 +59,7 @@ class OfflineFirstChatRepository @Inject constructor(
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
+    private val serverStatusRepository: ServerStatusRepository,
     userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
@@ -166,7 +169,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
                     }
-                    if (!networkMonitor.isServerReachable.value) {
+                    if(serverStatusRepository.isServerReachable == true){
                         _generalUIFlow.emit(ChatActivity.UNABLE_TO_LOAD_MESSAGES)
                     }
                 } else {
