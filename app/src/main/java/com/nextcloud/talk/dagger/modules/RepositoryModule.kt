@@ -15,6 +15,8 @@ import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.data.network.OfflineFirstChatRepository
 import com.nextcloud.talk.chat.data.network.RetrofitChatNetwork
+import com.nextcloud.talk.chooseaccount.StatusRepository
+import com.nextcloud.talk.chooseaccount.StatusRepositoryImplementation
 import com.nextcloud.talk.contacts.ContactsRepository
 import com.nextcloud.talk.contacts.ContactsRepositoryImpl
 import com.nextcloud.talk.conversationcreation.ConversationCreationRepository
@@ -141,7 +143,8 @@ class RepositoryModule {
     ): ConversationInfoEditRepository = ConversationInfoEditRepositoryImpl(ncApi, ncApiCoroutines, userProvider)
 
     @Provides
-    fun provideInvitationsRepository(ncApi: NcApi): InvitationsRepository = InvitationsRepositoryImpl(ncApi)
+    fun provideInvitationsRepository(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): InvitationsRepository =
+        InvitationsRepositoryImpl(ncApi, ncApiCoroutines)
 
     @Provides
     fun provideOfflineFirstChatRepository(
@@ -192,4 +195,10 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         currentUserProviderNew: CurrentUserProviderNew
     ): ThreadsRepository = ThreadsRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
+
+    @Provides
+    fun provideStatusRepository(
+        ncApiCoroutines: NcApiCoroutines,
+        currentUserProviderNew: CurrentUserProviderNew
+    ): StatusRepository = StatusRepositoryImplementation(ncApiCoroutines, currentUserProviderNew)
 }
