@@ -308,7 +308,7 @@
         android:layout_marginStart="88dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="88dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="36dp"
         android:minHeight="@dimen/min_size_clickable_area"
         android:text="@string/nc_new_mention"
         app:background="@color/colorPrimary"
