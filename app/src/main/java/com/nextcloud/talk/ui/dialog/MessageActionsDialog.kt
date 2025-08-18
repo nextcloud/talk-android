@@ -17,10 +17,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -48,7 +50,6 @@ import com.vanniktech.emoji.installDisableKeyboardInput
 import com.vanniktech.emoji.installForceSingleEmoji
 import com.vanniktech.emoji.recent.RecentEmojiManager
 import com.vanniktech.emoji.search.SearchEmojiManager
-import com.vanniktech.ui.animateText
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -389,20 +390,28 @@ class MessageActionsDialog(
 
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {
-            var doubleTap = false
             dialogMessageActionsBinding.menuDeleteMessage.setOnClickListener {
-                if (doubleTap) {
-                    chatActivity.deleteMessage(message)
-                    dismiss()
-                } else {
-                    doubleTap = true
-                    val text = context.resources.getString(R.string.message_delete_are_you_sure)
-                    dialogMessageActionsBinding.menuTextDeleteMessage.animateText(text)
-                }
+                val areYouSure = context.resources.getString(R.string.message_delete_are_you_sure)
+                val deleteMessage = context.resources.getString(R.string.nc_delete_message)
+                val delete = context.resources.getString(R.string.nc_delete)
+                val cancel = context.resources.getString(R.string.nc_cancel)
+                val builder = MaterialAlertDialogBuilder(context)
+                builder
+                    .setMessage(areYouSure)
+                    .setTitle(deleteMessage)
+                    .setPositiveButton(delete) { dialog, which ->
+                        chatActivity.deleteMessage(message)
+                        dismiss()
+                    }
+                    .setNegativeButton(cancel) { dialog, which ->
+                        // unused atm
+                    }
+
+                val dialog: AlertDialog = builder.create()
+                dialog.show()
             }
         }
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)
-        dialogMessageActionsBinding.menuDeleteMessageDivider.visibility = getVisibility(visible)
     }
 
     private fun initMenuEditMessage(visible: Boolean) {
