@@ -66,6 +66,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
+@Suppress("LongParameterList")
 @Module
 class RepositoryModule {
 

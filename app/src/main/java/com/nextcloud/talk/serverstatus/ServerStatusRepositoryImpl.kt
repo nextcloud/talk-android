@@ -31,6 +31,7 @@ class ServerStatusRepositoryImpl @Inject constructor(
         serverStatus()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private suspend fun serverStatus() {
         val baseUrl = currentUser.baseUrl
         val url = baseUrl + ApiUtils.getUrlPostfixForStatus()
