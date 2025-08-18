@@ -1228,7 +1228,6 @@ class ConversationsListActivity :
                         openConversationItems.add(conversationItem)
                     }
                     searchableConversationItems.addAll(openConversationItems)
-                    networkMonitor.setServerReachable(true)
                 }, { throwable: Throwable ->
                     Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
                     handleHttpExceptions(throwable)
@@ -1257,7 +1256,6 @@ class ConversationsListActivity :
                 }
             }
         } else if (throwable is ConnectException) {
-            networkMonitor.setServerReachable(false)
             showWarning(true, context.getString(R.string.nc_server_down))
         } else {
             Log.e(TAG, "Exception in ConversationListActivity", throwable)

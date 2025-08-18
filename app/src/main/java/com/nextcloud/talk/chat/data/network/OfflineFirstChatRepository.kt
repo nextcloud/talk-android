@@ -62,8 +62,6 @@ class OfflineFirstChatRepository @Inject constructor(
     userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
-
-
     val currentUser: User = userProvider.currentUser.blockingGet()
 
     override val messageFlow:
@@ -170,7 +168,7 @@ class OfflineFirstChatRepository @Inject constructor(
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
                     }
-                    if(!serverStatusRepository.isServerReachable.value){
+                    if (!serverStatusRepository.isServerReachable.value) {
                         _generalUIFlow.emit(ChatActivity.UNABLE_TO_LOAD_MESSAGES)
                     }
                 } else {
@@ -582,7 +580,7 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "Device is offline, can't load chat messages from server")
             return null
         }
-        if(!serverStatusRepository.isServerReachable.value){
+        if (!serverStatusRepository.isServerReachable.value) {
             return null
         }
 

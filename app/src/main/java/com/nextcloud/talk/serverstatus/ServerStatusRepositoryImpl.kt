@@ -16,8 +16,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
-class ServerStatusRepositoryImpl @Inject constructor(private val ncApiCoroutines: NcApiCoroutines,
-    private val currentUserProvider: CurrentUserProviderNew) : ServerStatusRepository {
+class ServerStatusRepositoryImpl @Inject constructor(
+    private val ncApiCoroutines: NcApiCoroutines,
+    private val currentUserProvider: CurrentUserProviderNew
+) : ServerStatusRepository {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
 
@@ -25,11 +27,11 @@ class ServerStatusRepositoryImpl @Inject constructor(private val ncApiCoroutines
     override val isServerReachable: StateFlow<Boolean>
         get() = _isServerReachable.asStateFlow()
 
-    override suspend fun getServerStatus(){
+    override suspend fun getServerStatus() {
         serverStatus()
     }
 
-    private suspend fun serverStatus(){
+    private suspend fun serverStatus() {
         val baseUrl = currentUser.baseUrl
         val url = baseUrl + ApiUtils.getUrlPostfixForStatus()
         _isServerReachable.value = try {

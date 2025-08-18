@@ -300,5 +300,4 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getServerStatus(@Url url: String?): Status
-
 }

@@ -202,5 +202,4 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         currentUserProviderNew: CurrentUserProviderNew
     ): ThreadsRepository = ThreadsRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
-
 }

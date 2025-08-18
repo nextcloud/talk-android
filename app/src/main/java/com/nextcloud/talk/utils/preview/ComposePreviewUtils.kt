@@ -145,7 +145,6 @@ class ComposePreviewUtils private constructor(context: Context) {
     val serverStatusRepository: ServerStatusRepository
         get() = ServerStatusRepositoryImpl(ncApiCoroutines, userProvider)
 
-
     val chatRepository: ChatMessageRepository
         get() = OfflineFirstChatRepository(
             chatMessagesDao,

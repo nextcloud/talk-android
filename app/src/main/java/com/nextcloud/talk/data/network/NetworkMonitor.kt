@@ -25,7 +25,4 @@ interface NetworkMonitor {
      */
     val isOnlineLiveData: LiveData<Boolean>
 
-    val isServerReachable: StateFlow<Boolean>
-
-    fun setServerReachable(reachable: Boolean)
 }
