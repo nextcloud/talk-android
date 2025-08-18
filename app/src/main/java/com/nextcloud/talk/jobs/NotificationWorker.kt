@@ -490,15 +490,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
 
-        // Use unique request code to make sure that a new PendingIntent gets created for each notification
-        // See https://github.com/nextcloud/talk-android/issues/2111
-        val requestCode = System.currentTimeMillis().toInt()
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            0
-        }
-        val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag)
+        val pendingIntent = createUniquePendingIntent(intent)
         val uri = signatureVerification.user!!.baseUrl!!.toUri()
         val baseUrl = uri.host
 
@@ -955,6 +947,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     .NOTIFICATION_CHANNEL_MESSAGES_V4.name
             )
 
+            val intent = createMainActivityIntent()
+
             val notification: Notification = notificationBuilder
                 .setContentTitle(
                     String.format(
@@ -966,7 +960,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setOngoing(false)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentIntent(getIntentToOpenConversation())
+                .setContentIntent(createUniquePendingIntent(intent))
                 .build()
 
             val notificationId: Int = SystemClock.uptimeMillis().toInt()
@@ -997,14 +991,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return intent
     }
 
-    private fun getIntentToOpenConversation(): PendingIntent? {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
-        intent.putExtras(bundle)
-
+    private fun createUniquePendingIntent(intent: Intent): PendingIntent? {
+        // Use unique request code to make sure that a new PendingIntent gets created for each notification
+        // See https://github.com/nextcloud/talk-android/issues/2111
         val requestCode = System.currentTimeMillis().toInt()
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             PendingIntent.FLAG_MUTABLE
