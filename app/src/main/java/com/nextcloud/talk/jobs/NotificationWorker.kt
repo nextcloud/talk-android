@@ -651,7 +651,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
-        notificationBuilder.setOnlyAlertOnce(true)
+        notificationBuilder.setOnlyAlertOnce(false)
 
         if ("user" == userType || "guest" == userType) {
             val baseUrl = signatureVerification.user!!.baseUrl
