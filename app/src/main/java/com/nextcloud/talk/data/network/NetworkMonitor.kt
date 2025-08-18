@@ -24,5 +24,4 @@ interface NetworkMonitor {
      * Returns the device's current connectivity status as LiveData for better interop with Java code.
      */
     val isOnlineLiveData: LiveData<Boolean>
-
 }
