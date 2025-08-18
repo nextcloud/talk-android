@@ -7,7 +7,9 @@
 
 package com.nextcloud.talk.serverstatus
 
+import kotlinx.coroutines.flow.StateFlow
+
 interface ServerStatusRepository {
-    val isServerReachable: Boolean?
+    val isServerReachable: StateFlow<Boolean>
     suspend fun getServerStatus()
 }
