@@ -547,6 +547,7 @@
     <string name="openConversations">Discussions en cours</string>
     <string name="open_in_files_app">Ouvrir dans l\'application Fichiers</string>
     <string name="open_notes">Ouvrir les Notes</string>
+    <string name="open_thread">Aller à la conversation</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
     <string name="polls_add_option">Ajouter une option</string>
@@ -569,6 +570,7 @@
     <string name="raise_hand">Lever la main</string>
     <string name="reactions_tab_all">Tout</string>
     <string name="read_storage_no_permission">le partage de fichier n\'est pas possible sans les permissions</string>
+    <string name="recent_threads">Conversations récentes</string>
     <string name="record_active_info">L\'appel est enregistré</string>
     <string name="record_cancel_start">Annuler le lancement de l\'enregistrement</string>
     <string name="record_failed_info">L\'enregistrement a échoué. Veuillez contacter votre administrateur.</string>
@@ -644,6 +646,7 @@
     <string name="thisWeek">Cette semaine</string>
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="this_weekend">Ce week-end</string>
+    <string name="thread_replies_amount">%1$d réponses</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
     <string name="translate">Traduire</string>
