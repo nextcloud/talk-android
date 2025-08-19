@@ -38,6 +38,7 @@
 
     <dimen name="corner_radius">16dp</dimen>
     <dimen name="button_corner_radius">24dp</dimen>
+    <dimen name="status_corner_radius">12dp</dimen>
     <dimen name="standard_margin">16dp</dimen>
     <dimen name="two_line_primary_text_size">16sp</dimen>
     <dimen name="headline_text_size">16sp</dimen>
@@ -60,7 +61,7 @@
     <dimen name="call_self_participant_progress_bar_size">48dp</dimen>
     <dimen name="zero">0dp</dimen>
 
-    <dimen name="online_status_item_height">52dp</dimen>
+    <dimen name="online_status_item_height">48dp</dimen>
     <dimen name="standard_quarter_margin">4dp</dimen>
     <dimen name="activity_list_item_title_header_text_size">16sp</dimen>
     <dimen name="activity_row_layout_height">48dp</dimen>

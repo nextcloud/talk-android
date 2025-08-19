@@ -235,7 +235,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
 
     fun themeStatusCardView(cardView: MaterialCardView) {
         withScheme(cardView) { scheme ->
-            val background = cardView.context.getColor(R.color.grey_200)
             cardView.backgroundTintList =
                 ColorStateList(
                     arrayOf(
@@ -244,7 +243,7 @@ class TalkSpecificViewThemeUtils @Inject constructor(
                     ),
                     intArrayOf(
                         dynamicColor.secondaryContainer().getArgb(scheme),
-                        background
+                        dynamicColor.surfaceContainerHigh().getArgb(scheme)
                     )
                 )
             cardView.setStrokeColor(
