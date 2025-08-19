@@ -528,7 +528,7 @@ How to translate with transifex:
         <item quantity="one">This conversation will be automatically deleted for everyone in %1$d day of no activity</item>
         <item quantity="other">This conversation will be automatically deleted for everyone in %1$d days of no activity</item>
     </plurals>
-    <string name="nc_delete_message">Delete</string>
+    <string name="nc_delete_message">Delete Message</string>
     <string name="nc_delete_now">Delete now</string>
     <string name="nc_keep">Keep</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
@@ -880,5 +880,5 @@ How to translate with transifex:
     <string name="please_continue_the_login_process_in_the_browser">Please continue the login process in the browser</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="qr_code_error">QR code could not be read</string>
-    <string name="message_delete_are_you_sure">Are you sure?</string>
+    <string name="message_delete_are_you_sure">Are you sure you want to delete this message?</string>
 </resources>
