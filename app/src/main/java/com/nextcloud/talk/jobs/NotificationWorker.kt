@@ -134,8 +134,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private lateinit var signatureVerification: SignatureVerification
     private var context: Context? = null
     private var conversationType: String? = "one2one"
-    private var muteCall = false
-    private var importantConversation = false
     private lateinit var notificationManager: NotificationManagerCompat
 
     override fun doWork(): Result {
@@ -425,7 +423,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         pushMessage.timestamp = ncNotification.datetime!!.millis
 
         if (ncNotification.messageRichParameters != null &&
-            ncNotification.messageRichParameters!!.size > 0
+            ncNotification.messageRichParameters!!.isNotEmpty()
         ) {
             pushMessage.text = getParsedMessage(
                 ncNotification.messageRich,
@@ -436,11 +434,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val subjectRichParameters = ncNotification.subjectRichParameters
-        if (subjectRichParameters != null && subjectRichParameters.size > 0) {
+        if (subjectRichParameters != null && subjectRichParameters.isNotEmpty()) {
             val callHashMap = subjectRichParameters["call"]
             val userHashMap = subjectRichParameters["user"]
             val guestHashMap = subjectRichParameters["guest"]
-            if (callHashMap != null && callHashMap.size > 0 && callHashMap.containsKey("name")) {
+            if (callHashMap != null && callHashMap.isNotEmpty() && callHashMap.containsKey("name")) {
                 if (subjectRichParameters.containsKey("reaction")) {
                     pushMessage.subject = ""
                 } else if (ncNotification.objectType == "chat") {
@@ -522,7 +520,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
             pushMessage.notificationUser != null
         ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
         }
@@ -628,8 +626,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun prepareChatNotification(
         notificationBuilder: NotificationCompat.Builder,
-        activeStatusBarNotification: StatusBarNotification?,
-        systemNotificationId: Int
+        activeStatusBarNotification: StatusBarNotification?
     ) {
         val notificationUser = pushMessage.notificationUser
         val userType = notificationUser!!.type
@@ -939,9 +936,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
 
         if (isOngoingCallNotificationVisible) {
-            val notificationBuilder: NotificationCompat.Builder?
-
-            notificationBuilder = NotificationCompat.Builder(
+            val notificationBuilder = NotificationCompat.Builder(
                 context!!,
                 NotificationUtils.NotificationChannels
                     .NOTIFICATION_CHANNEL_MESSAGES_V4.name
