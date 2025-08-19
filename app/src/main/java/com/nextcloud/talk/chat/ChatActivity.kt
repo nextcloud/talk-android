@@ -38,6 +38,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.AbsListView
 import android.widget.FrameLayout
@@ -1138,6 +1139,11 @@ class ChatActivity :
 
         chatViewModel.getVoiceRecordingInProgress.observe(this) { voiceRecordingInProgress ->
             VibrationUtils.vibrateShort(context)
+            if (voiceRecordingInProgress) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
             binding.voiceRecordingLock.visibility = if (
                 voiceRecordingInProgress &&
                 chatViewModel.getVoiceRecordingLocked.value != true
