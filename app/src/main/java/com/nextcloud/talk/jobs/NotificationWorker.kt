@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2021-2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -186,7 +186,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleTestPushMessage() {
         val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = getIntentFlags()
         showNotification(intent, null)
     }
 
@@ -201,7 +201,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleRemoteTalkSharePushMessage() {
         val mainActivityIntent = Intent(context, MainActivity::class.java)
-        mainActivityIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        mainActivityIntent.flags = getIntentFlags()
         val bundle = Bundle()
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
@@ -255,7 +255,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val bundle = createBundle(conversation)
 
             fullScreenIntent.putExtras(bundle)
-            fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            fullScreenIntent.flags = getIntentFlags()
 
             val requestCode = System.currentTimeMillis().toInt()
 
@@ -983,7 +983,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun createMainActivityIntent(): Intent {
         val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = getIntentFlags()
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
@@ -1002,6 +1002,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
+
+    private fun getIntentFlags(): Int = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
     companion object {
         val TAG = NotificationWorker::class.simpleName
