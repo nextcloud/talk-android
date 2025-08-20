@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 21,
-    "identityHash": "2202f3317d579a6c81e4aa31448da2da",
+    "identityHash": "4e52afb49ca1953a4a8d5b0c0272d62b",
     "entities": [
       {
         "tableName": "User",
@@ -744,7 +744,7 @@
       },
       {
         "tableName": "FileUploads",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `internalConversationId` TEXT NOT NULL, `fileName` TEXT, `progress` REAL NOT NULL, `status` TEXT, `hidden` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `internalConversationId` TEXT NOT NULL, `fileName` TEXT, `progress` REAL NOT NULL, `status` TEXT, `hidden` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`internalId`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -788,7 +788,7 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": false,
+          "autoGenerate": true,
           "columnNames": [
             "id"
           ]
@@ -821,7 +821,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2202f3317d579a6c81e4aa31448da2da')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4e52afb49ca1953a4a8d5b0c0272d62b')"
     ]
   }
 }

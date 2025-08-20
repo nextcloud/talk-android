@@ -8,12 +8,17 @@
 package com.nextcloud.talk.data.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.nextcloud.talk.data.database.model.FileUploadEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FileUploadsDao {
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun createFileUpload(entity: FileUploadEntity): Long
 
     @Query("""
         SELECT *
@@ -25,4 +30,13 @@ interface FileUploadsDao {
 
     @Query("UPDATE FileUploads SET progress = :progress WHERE id = :id")
     fun updateProgress(id: Int, progress: Float)
+
+    @Query("UPDATE FileUploads SET status = 'STARTED' WHERE id = :id")
+    fun setStarted(id: Long)
+
+    @Query("UPDATE FileUploads SET status = 'COMPLETED' WHERE id = :id")
+    fun setCompleted(id: Long)
+
+    @Query("UPDATE FileUploads SET status = 'FAILED' WHERE id = :id")
+    fun setFailed(id: Long)
 }
