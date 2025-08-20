@@ -707,6 +707,7 @@ class ConversationsListActivity :
             binding.newMentionPopupBubble.visibility = View.GONE
         }
 
+        layoutManager?.scrollToPositionWithOffset(0, 0)
         updateFilterConversationButtonColor()
     }
 
