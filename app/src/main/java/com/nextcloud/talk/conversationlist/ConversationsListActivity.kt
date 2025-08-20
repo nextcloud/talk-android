@@ -167,6 +167,7 @@ import java.io.File
 import java.net.ConnectException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -271,6 +272,9 @@ class ConversationsListActivity :
             try {
                 serverStatusRepository.getServerStatus()
             } catch (e: Exception) {
+                if (e is CancellationException) {
+                    throw e
+                }
                 Log.e(TAG, "Failed to fetch server status", e)
             }
         }
