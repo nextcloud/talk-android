@@ -53,7 +53,6 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
 import com.nextcloud.talk.serverstatus.ServerStatusRepository
-import com.nextcloud.talk.serverstatus.ServerStatusRepositoryImpl
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -127,12 +126,6 @@ class RepositoryModule {
 
     @Provides
     fun translateRepository(ncApi: NcApi): TranslateRepository = TranslateRepositoryImpl(ncApi)
-
-    @Provides
-    fun provideServerStatusRepository(
-        ncApiCoroutines: NcApiCoroutines,
-        currentUserProviderNew: CurrentUserProviderNew
-    ): ServerStatusRepository = ServerStatusRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
 
     @Provides
     fun provideChatNetworkDataSource(ncApi: NcApi, ncApiCoroutines: NcApiCoroutines): ChatNetworkDataSource =

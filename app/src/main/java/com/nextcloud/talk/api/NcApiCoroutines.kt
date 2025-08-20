@@ -299,5 +299,5 @@ interface NcApiCoroutines {
     suspend fun getThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
 
     @GET
-    suspend fun getServerStatus(@Url url: String?): Status
+    suspend fun getServerStatus(@Url url: String): Status
 }

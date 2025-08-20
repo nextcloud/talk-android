@@ -11,11 +11,9 @@ import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.cancellation.CancellationException
@@ -34,8 +32,7 @@ class ServerStatusRepositoryImpl @Inject constructor(
 
     @Suppress("Detekt.TooGenericExceptionCaught")
     override suspend fun getServerStatus() {
-        withContext(Dispatchers.IO) {
-            val baseUrl = _currentUser.baseUrl
+        _currentUser.baseUrl?.let { baseUrl ->
             val url = baseUrl + ApiUtils.getUrlPostfixForStatus()
             _isServerReachable.value = try {
                 ncApiCoroutines.getServerStatus(url)
