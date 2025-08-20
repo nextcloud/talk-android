@@ -397,6 +397,10 @@ class MessageActionsDialog(
                 val cancel = context.resources.getString(R.string.nc_cancel)
                 val builder = MaterialAlertDialogBuilder(context)
                 builder
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+                    )
                     .setMessage(areYouSure)
                     .setTitle(deleteMessage)
                     .setPositiveButton(delete) { dialog, which ->
@@ -406,8 +410,18 @@ class MessageActionsDialog(
                     .setNegativeButton(cancel) { dialog, which ->
                         // unused atm
                     }
+                    .let { dialogBuilder ->
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogBackground(context, dialogBuilder)
+                    }
 
                 val dialog: AlertDialog = builder.create()
+                dialog.setOnShowListener {
+                    viewThemeUtils.platform.colorTextButtons(
+                        dialog.getButton(BUTTON_POSITIVE),
+                        dialog.getButton(BUTTON_NEGATIVE)
+                    )
+                }
                 dialog.show()
             }
         }
