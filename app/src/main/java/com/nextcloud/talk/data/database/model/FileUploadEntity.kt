@@ -29,8 +29,8 @@ import androidx.room.PrimaryKey
     ]
 )
 data class FileUploadEntity(
-    @PrimaryKey
-    @ColumnInfo(name = "id") var id: Int,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "id") var id: Long = 0,
     @ColumnInfo(name = "internalConversationId") val internalConversationId: String,
     @ColumnInfo(name = "fileName") val fileName: String? = null,
     @ColumnInfo(name = "progress") var progress: Float = 0f,
