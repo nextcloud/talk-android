@@ -3501,22 +3501,26 @@ class ChatActivity :
     private fun handleExpandableSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
         val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
         val chatMessageIterator = chatMessageMap.iterator()
+
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
 
-            val previousMessage = chatMessageMap[currentMessage.value.previousMessageId.toString()]
-            if (isSystemMessage(currentMessage.value) &&
-                previousMessage?.systemMessageType == currentMessage.value.systemMessageType
-            ) {
-                previousMessage?.expandableParent = true
-                currentMessage.value.expandableParent = false
+            chatMessageMap[currentMessage.value.previousMessageId.toString()]?.let { previousMessage ->
 
-                if (currentMessage.value.lastItemOfExpandableGroup == 0) {
-                    currentMessage.value.lastItemOfExpandableGroup = currentMessage.value.jsonMessageId
+                if (isSystemMessage(currentMessage.value) &&
+                    previousMessage.systemMessageType == currentMessage.value.systemMessageType &&
+                    isSameDayMessages(previousMessage, currentMessage.value)
+                ) {
+                    previousMessage.expandableParent = true
+                    currentMessage.value.expandableParent = false
+
+                    if (currentMessage.value.lastItemOfExpandableGroup == 0) {
+                        currentMessage.value.lastItemOfExpandableGroup = currentMessage.value.jsonMessageId
+                    }
+
+                    previousMessage.lastItemOfExpandableGroup = currentMessage.value.lastItemOfExpandableGroup
+                    previousMessage.expandableChildrenAmount = currentMessage.value.expandableChildrenAmount + 1
                 }
-
-                previousMessage?.lastItemOfExpandableGroup = currentMessage.value.lastItemOfExpandableGroup
-                previousMessage?.expandableChildrenAmount = currentMessage.value.expandableChildrenAmount + 1
             }
         }
         return chatMessageMap.values.toList()
