@@ -208,6 +208,7 @@ class MessageInputFragment : Fragment() {
             when (state) {
                 is MessageInputViewModel.CreateThreadStartState ->
                     binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
+
                 is MessageInputViewModel.CreateThreadEditState -> {
                     binding.fragmentCreateThreadView.createThreadView.visibility = View.VISIBLE
                     binding.fragmentCreateThreadView.createThreadView
@@ -215,8 +216,10 @@ class MessageInputFragment : Fragment() {
                             chatActivity.chatViewModel.messageDraft.threadTitle
                         )
                 }
+
                 else -> {}
             }
+            initVoiceRecordButton()
         }
 
         chatActivity.chatViewModel.leaveRoomViewState.observe(viewLifecycleOwner) { state ->
@@ -522,31 +525,10 @@ class MessageInputFragment : Fragment() {
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
     private fun initVoiceRecordButton() {
-        if (binding.fragmentMessageInputView.messageInput.text.isNullOrBlank()) {
-            binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
-        } else {
-            binding.fragmentMessageInputView.messageSendButton.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
-        }
-        binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
-            binding.fragmentMessageInputView.recordAudioButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() &&
-                    chatActivity.messageInputViewModel.getEditChatMessage.value == null
-                ) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+        handleButtonsVisibility()
 
-            binding.fragmentMessageInputView.messageSendButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
-                    binding.fragmentEditView.editMessageView.isVisible
-                ) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
+        binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
+            handleButtonsVisibility()
         }
 
         var prevDx = 0f
@@ -658,6 +640,33 @@ class MessageInputFragment : Fragment() {
                 }
             }
             v?.onTouchEvent(event) != false
+        }
+    }
+
+    private fun handleButtonsVisibility() {
+        fun View.setVisible(isVisible: Boolean) {
+            visibility = if (isVisible) View.VISIBLE else View.GONE
+        }
+
+        val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
+        val isThreadCreateModeActive = binding.fragmentCreateThreadView.createThreadView.isVisible
+        val inputContainsText = binding.fragmentMessageInputView.messageInput.text.isNotEmpty()
+
+        binding.fragmentMessageInputView.apply {
+            when {
+                isEditModeActive -> {
+                    messageSendButton.setVisible(false)
+                    recordAudioButton.setVisible(false)
+                }
+                inputContainsText || isThreadCreateModeActive -> {
+                    messageSendButton.setVisible(true)
+                    recordAudioButton.setVisible(false)
+                }
+                else -> {
+                    messageSendButton.setVisible(false)
+                    recordAudioButton.setVisible(true)
+                }
+            }
         }
     }
 
@@ -986,6 +995,7 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
         chatActivity.messageInputViewModel.edit(null)
+        handleButtonsVisibility()
     }
 
     private fun themeMessageInputView() {
