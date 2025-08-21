@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2021-2023 Marcel Hibbe <dev@mhibbe.de>
+ * SPDX-FileCopyrightText: 2021-2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Andy Scherzinger <info@andy-scherzinger.de>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
@@ -134,8 +134,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
     private lateinit var signatureVerification: SignatureVerification
     private var context: Context? = null
     private var conversationType: String? = "one2one"
-    private var muteCall = false
-    private var importantConversation = false
     private lateinit var notificationManager: NotificationManagerCompat
 
     override fun doWork(): Result {
@@ -186,7 +184,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleTestPushMessage() {
         val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = getIntentFlags()
         showNotification(intent, null)
     }
 
@@ -201,7 +199,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleRemoteTalkSharePushMessage() {
         val mainActivityIntent = Intent(context, MainActivity::class.java)
-        mainActivityIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        mainActivityIntent.flags = getIntentFlags()
         val bundle = Bundle()
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
@@ -255,7 +253,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             val bundle = createBundle(conversation)
 
             fullScreenIntent.putExtras(bundle)
-            fullScreenIntent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+            fullScreenIntent.flags = getIntentFlags()
 
             val requestCode = System.currentTimeMillis().toInt()
 
@@ -425,7 +423,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         pushMessage.timestamp = ncNotification.datetime!!.millis
 
         if (ncNotification.messageRichParameters != null &&
-            ncNotification.messageRichParameters!!.size > 0
+            ncNotification.messageRichParameters!!.isNotEmpty()
         ) {
             pushMessage.text = getParsedMessage(
                 ncNotification.messageRich,
@@ -436,11 +434,11 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         val subjectRichParameters = ncNotification.subjectRichParameters
-        if (subjectRichParameters != null && subjectRichParameters.size > 0) {
+        if (subjectRichParameters != null && subjectRichParameters.isNotEmpty()) {
             val callHashMap = subjectRichParameters["call"]
             val userHashMap = subjectRichParameters["user"]
             val guestHashMap = subjectRichParameters["guest"]
-            if (callHashMap != null && callHashMap.size > 0 && callHashMap.containsKey("name")) {
+            if (callHashMap != null && callHashMap.isNotEmpty() && callHashMap.containsKey("name")) {
                 if (subjectRichParameters.containsKey("reaction")) {
                     pushMessage.subject = ""
                 } else if (ncNotification.objectType == "chat") {
@@ -490,15 +488,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             else -> Log.e(TAG, "unknown pushMessage.type")
         }
 
-        // Use unique request code to make sure that a new PendingIntent gets created for each notification
-        // See https://github.com/nextcloud/talk-android/issues/2111
-        val requestCode = System.currentTimeMillis().toInt()
-        val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
-        } else {
-            0
-        }
-        val pendingIntent = PendingIntent.getActivity(context, requestCode, intent, intentFlag)
+        val pendingIntent = createUniquePendingIntent(intent)
         val uri = signatureVerification.user!!.baseUrl!!.toUri()
         val baseUrl = uri.host
 
@@ -530,7 +520,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
             pushMessage.notificationUser != null
         ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification, systemNotificationId)
+            prepareChatNotification(notificationBuilder, activeStatusBarNotification)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
         }
@@ -636,8 +626,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun prepareChatNotification(
         notificationBuilder: NotificationCompat.Builder,
-        activeStatusBarNotification: StatusBarNotification?,
-        systemNotificationId: Int
+        activeStatusBarNotification: StatusBarNotification?
     ) {
         val notificationUser = pushMessage.notificationUser
         val userType = notificationUser!!.type
@@ -947,13 +936,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
 
         if (isOngoingCallNotificationVisible) {
-            val notificationBuilder: NotificationCompat.Builder?
-
-            notificationBuilder = NotificationCompat.Builder(
+            val notificationBuilder = NotificationCompat.Builder(
                 context!!,
                 NotificationUtils.NotificationChannels
                     .NOTIFICATION_CHANNEL_MESSAGES_V4.name
             )
+
+            val intent = createMainActivityIntent()
 
             val notification: Notification = notificationBuilder
                 .setContentTitle(
@@ -966,7 +955,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setOngoing(false)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setContentIntent(getIntentToOpenConversation())
+                .setContentIntent(createUniquePendingIntent(intent))
                 .build()
 
             val notificationId: Int = SystemClock.uptimeMillis().toInt()
@@ -989,7 +978,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun createMainActivityIntent(): Intent {
         val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.flags = getIntentFlags()
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
@@ -997,22 +986,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return intent
     }
 
-    private fun getIntentToOpenConversation(): PendingIntent? {
-        val intent = Intent(context, MainActivity::class.java)
-        intent.flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
-        val bundle = Bundle()
-        bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
-        bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
-        intent.putExtras(bundle)
-
+    private fun createUniquePendingIntent(intent: Intent): PendingIntent? {
+        // Use unique request code to make sure that a new PendingIntent gets created for each notification
+        // See https://github.com/nextcloud/talk-android/issues/2111
         val requestCode = System.currentTimeMillis().toInt()
         val intentFlag: Int = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            PendingIntent.FLAG_MUTABLE
+            PendingIntent.FLAG_MUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         } else {
-            0
+            PendingIntent.FLAG_UPDATE_CURRENT
         }
         return PendingIntent.getActivity(context, requestCode, intent, intentFlag)
     }
+
+    private fun getIntentFlags(): Int = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
     companion object {
         val TAG = NotificationWorker::class.simpleName
