@@ -110,6 +110,7 @@ import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.serverstatus.ServerStatusRepository
 import com.nextcloud.talk.settings.SettingsActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
@@ -155,6 +156,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -163,8 +165,10 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import retrofit2.HttpException
 import java.io.File
+import java.net.ConnectException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @SuppressLint("StringFormatInvalid")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -203,6 +207,9 @@ class ConversationsListActivity :
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
+
+    @Inject
+    lateinit var serverStatusRepository: ServerStatusRepository
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -255,11 +262,23 @@ class ConversationsListActivity :
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         currentUser = currentUserProvider.currentUser.blockingGet()
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            try {
+                serverStatusRepository.getServerStatus()
+            } catch (e: Exception) {
+                if (e is CancellationException) {
+                    throw e
+                }
+                Log.e(TAG, "Failed to fetch server status", e)
+            }
+        }
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 
@@ -1159,8 +1178,9 @@ class ConversationsListActivity :
         binding.chatListConnectionLost.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    private fun showMaintenanceModeWarning(show: Boolean) {
-        binding.chatListMaintenanceWarning.visibility = if (show) View.VISIBLE else View.GONE
+    private fun showWarning(show: Boolean, message: String) {
+        binding.chatListWarning.text = message
+        binding.chatListWarning.visibility = if (show) View.VISIBLE else View.GONE
     }
 
     private fun handleUI(show: Boolean) {
@@ -1241,6 +1261,8 @@ class ConversationsListActivity :
                     showErrorDialog()
                 }
             }
+        } else if (throwable is ConnectException) {
+            showWarning(true, context.getString(R.string.nc_server_down))
         } else {
             Log.e(TAG, "Exception in ConversationListActivity", throwable)
             showErrorDialog()
@@ -1250,9 +1272,7 @@ class ConversationsListActivity :
     @SuppressLint("ClickableViewAccessibility")
     private fun prepareViews() {
         hideLogoForBrandedClients()
-
-        showMaintenanceModeWarning(false)
-
+        showWarning(false, "")
         layoutManager = SmoothScrollLinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.setHasFixedSize(true)
@@ -1276,7 +1296,7 @@ class ConversationsListActivity :
             false
         }
         binding.swipeRefreshLayoutView.setOnRefreshListener {
-            showMaintenanceModeWarning(false)
+            showWarning(false, "")
             fetchRooms()
             fetchPendingInvitations()
         }
@@ -2076,7 +2096,7 @@ class ConversationsListActivity :
 
     private fun showServiceUnavailableDialog(httpException: HttpException) {
         if (httpException.response()?.headers()?.get(MAINTENANCE_MODE_HEADER_KEY) == "1") {
-            showMaintenanceModeWarning(true)
+            showWarning(true, context.getString(R.string.nc_dialog_maintenance_mode_description))
         } else {
             showErrorDialog()
         }

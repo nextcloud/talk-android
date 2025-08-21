@@ -29,6 +29,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.serverstatus.ServerStatusRepository
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -51,12 +52,13 @@ import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
-@Suppress("LargeClass", "TooManyFunctions")
+@Suppress("LargeClass", "TooManyFunctions", "LongParameterList")
 class OfflineFirstChatRepository @Inject constructor(
     private val chatDao: ChatMessagesDao,
     private val chatBlocksDao: ChatBlocksDao,
     private val network: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
+    private val serverStatusRepository: ServerStatusRepository,
     userProvider: CurrentUserProviderNew
 ) : ChatMessageRepository {
 
@@ -165,6 +167,9 @@ class OfflineFirstChatRepository @Inject constructor(
                     Log.d(TAG, "An online request for newest 100 messages is made because offline chat is empty")
                     if (networkMonitor.isOnline.value.not()) {
                         _generalUIFlow.emit(ChatActivity.NO_OFFLINE_MESSAGES_FOUND)
+                    }
+                    if (!serverStatusRepository.isServerReachable.value) {
+                        _generalUIFlow.emit(ChatActivity.UNABLE_TO_LOAD_MESSAGES)
                     }
                 } else {
                     Log.d(
@@ -573,6 +578,9 @@ class OfflineFirstChatRepository @Inject constructor(
     private suspend fun sync(bundle: Bundle): List<ChatMessageEntity>? {
         if (!networkMonitor.isOnline.value) {
             Log.d(TAG, "Device is offline, can't load chat messages from server")
+            return null
+        }
+        if (!serverStatusRepository.isServerReachable.value) {
             return null
         }
 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2024 Sowjanya Kota <sowjanya.kch@gmail.com>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/unable_to_load_messages_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/unable_to_load_messages_image_view"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_above="@id/unable_to_load_messages_text_view"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/margin_between_elements"
+        android:contentDescription="@string/nc_lobby"
+        android:src="@drawable/warning"
+        app:tint="@color/grey_600" />
+
+    <TextView
+        android:id="@+id/unable_to_load_messages_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_margin="@dimen/standard_margin"
+        android:text="@string/messages_could_not_be_loaded"
+        android:textAlignment="center"
+        android:textColor="@color/grey_600"
+        android:textSize="16sp"
+        android:autoLink="web" />
+
+</RelativeLayout>
