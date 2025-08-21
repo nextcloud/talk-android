@@ -865,7 +865,8 @@ class OfflineFirstChatRepository @Inject constructor(
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): Flow<Result<ChatMessage?>> {
         if (!networkMonitor.isOnline.value) {
             return flow {
@@ -881,7 +882,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 displayName,
                 replyTo,
                 sendWithoutNotification,
-                referenceId
+                referenceId,
+                threadTitle
             )
 
             val chatMessageModel = response.ocs?.data?.asModel()
@@ -942,13 +944,14 @@ class OfflineFirstChatRepository @Inject constructor(
             _updateMessageFlow.emit(messageToResendModel)
 
             sendChatMessage(
-                credentials,
-                url,
-                message,
-                displayName,
-                replyTo,
-                sendWithoutNotification,
-                referenceId
+                credentials = credentials,
+                url = url,
+                message = message,
+                displayName = displayName,
+                replyTo = replyTo,
+                sendWithoutNotification = sendWithoutNotification,
+                referenceId = referenceId,
+                threadTitle = null
             )
         } else {
             flow {
@@ -1005,7 +1008,8 @@ class OfflineFirstChatRepository @Inject constructor(
                 it.actorDisplayName,
                 it.parentMessageId?.toIntOrZero() ?: 0,
                 it.silent,
-                it.referenceId.orEmpty()
+                it.referenceId.orEmpty(),
+                null
             ).collect { result ->
                 if (result.isSuccess) {
                     Log.d(TAG, "Sent temp message")

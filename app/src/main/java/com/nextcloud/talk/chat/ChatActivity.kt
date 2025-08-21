@@ -4250,6 +4250,10 @@ class ChatActivity :
         pollVoteDialog.show(supportFragmentManager, TAG)
     }
 
+    fun createThread() {
+        messageInputViewModel.startThreadCreation()
+    }
+
     fun jumpToQuotedMessage(parentMessage: ChatMessage) {
         var foundMessage = false
         for (position in 0 until (adapter!!.items.size)) {
@@ -4367,6 +4371,10 @@ class ChatActivity :
         chatViewModel.messageDraft.quotedDisplayName = null
         chatViewModel.messageDraft.quotedImageUrl = null
         chatViewModel.messageDraft.quotedJsonId = null
+    }
+
+    fun cancelCreateThread() {
+        chatViewModel.clearThreadTitle()
     }
 
     companion object {

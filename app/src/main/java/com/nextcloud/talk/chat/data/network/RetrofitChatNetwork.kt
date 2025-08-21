@@ -145,7 +145,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): ChatOverallSingleMessage =
         ncApiCoroutines.sendChatMessage(
             credentials,
@@ -154,7 +155,8 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             displayName,
             replyTo,
             sendWithoutNotification,
-            referenceId
+            referenceId,
+            threadTitle
         )
 
     override fun pullChatMessages(

@@ -115,6 +115,10 @@ class ChatViewModel @Inject constructor(
         chatRepository.handleOnPause()
         mediaPlayerManager.handleOnPause()
 
+        saveMessageDraft()
+    }
+
+    private fun saveMessageDraft() {
         CoroutineScope(Dispatchers.IO).launch {
             val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
             model?.let {
@@ -955,6 +959,11 @@ class ChatViewModel @Inject constructor(
         model?.messageDraft?.let {
             messageDraft = it
         }
+    }
+
+    fun clearThreadTitle() {
+        messageDraft.threadTitle = ""
+        saveMessageDraft()
     }
 
     companion object {

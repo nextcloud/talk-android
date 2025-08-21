@@ -84,7 +84,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
         displayName: String,
         replyTo: Int,
         sendWithoutNotification: Boolean,
-        referenceId: String
+        referenceId: String,
+        threadTitle: String?
     ): Flow<Result<ChatMessage?>>
 
     @Suppress("LongParameterList")

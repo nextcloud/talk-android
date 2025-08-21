@@ -42,6 +42,14 @@
         android:layout_marginEnd="6dp">
     </include>
 
+    <include
+        android:id="@+id/fragment_create_thread_view"
+        layout="@layout/create_thread_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="6dp">
+    </include>
+
     <com.nextcloud.talk.ui.MessageInput
         android:id="@+id/fragment_message_input_view"
         android:layout_width="match_parent"
