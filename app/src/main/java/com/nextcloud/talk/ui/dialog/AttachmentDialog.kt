@@ -81,7 +81,11 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
             dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE
         }
 
-        if (false) { // TODO set condition
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(
+                chatActivity.spreedCapabilities,
+                SpreedFeatures.THREADS
+            )
+        ) {
             dialogAttachmentBinding.menuCreateThread.visibility = View.GONE
         }
 

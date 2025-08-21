@@ -60,7 +60,8 @@ enum class SpreedFeatures(val value: String) {
     CONVERSATION_CREATION_ALL("conversation-creation-all"),
     UNBIND_CONVERSATION("unbind-conversation"),
     SENSITIVE_CONVERSATIONS("sensitive-conversations"),
-    IMPORTANT_CONVERSATIONS("important-conversations")
+    IMPORTANT_CONVERSATIONS("important-conversations"),
+    THREADS("threads")
 }
 
 @Suppress("TooManyFunctions")

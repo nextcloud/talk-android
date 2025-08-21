@@ -14,7 +14,7 @@
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/editIcon"
+        android:id="@+id/threadIcon"
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:layout_gravity="start|top"
