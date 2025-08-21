@@ -29,7 +29,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -339,10 +338,7 @@ class DateTimeCompose(val bundle: Bundle) {
                     DatePicker(
                         state = datePickerState,
                         modifier = Modifier
-                            .scale(scale),
-                        colors = DatePickerDefaults.colors(
-                            containerColor = Color.White
-                        )
+                            .scale(scale)
                     )
                 }
 
