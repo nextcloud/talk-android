@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.chooseaccount.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
@@ -160,4 +161,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ThreadsOverviewViewModel::class)
     abstract fun threadsOverviewViewModel(viewModel: ThreadsOverviewViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatusViewModel::class)
+    abstract fun statusRepositoryViewModel(viewModel: StatusViewModel): ViewModel
 }
