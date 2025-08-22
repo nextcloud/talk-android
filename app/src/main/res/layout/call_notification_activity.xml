@@ -13,7 +13,8 @@
     android:id="@+id/callNotificationLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey950">
+    android:background="@color/grey950"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
         android:id="@+id/callAnswerButtons"
