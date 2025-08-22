@@ -484,22 +484,20 @@ class ChatActivity :
         setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
-                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
-
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
-
+                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else systemBars.bottom
                 view.setPadding(
                     view.paddingLeft,
-                    statusBarInsets.top,
+                    systemBars.top,
                     view.paddingRight,
                     bottomPadding
                 )
                 WindowInsetsCompat.CONSUMED
             }
+            ViewCompat.requestApplyInsets(binding.chatContainer)
         } else {
             colorizeStatusBar()
             colorizeNavigationBar()
