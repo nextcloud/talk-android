@@ -209,19 +209,20 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
+            val messagePreview = threadInfo.last ?: threadInfo.first
+
             ThreadRow(
                 roomToken = roomToken,
                 threadId = threadInfo.thread!!.id,
-                firstLineTitle = threadInfo.first?.actorDisplayName.orEmpty(),
-                firstLine = threadInfo.first?.message.orEmpty(),
+                title = threadInfo.thread?.title.orEmpty(),
                 numReplies = String.format(
                     stringResource(
                         R.string.thread_replies_amount,
                         threadInfo.thread?.numReplies ?: 0
                     )
                 ),
-                secondLineTitle = threadInfo.last?.actorDisplayName?.let { "$it:" }.orEmpty(),
-                secondLine = threadInfo.last?.message.orEmpty(),
+                secondLineTitle = messagePreview?.actorDisplayName?.let { "$it:" }.orEmpty(),
+                secondLine = messagePreview?.message.orEmpty(),
                 date = getLastActivityDate(threadInfo), // replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick
@@ -234,9 +235,7 @@ fun ThreadsList(
 private fun getLastActivityDate(threadInfo: ThreadInfo): String {
     val oneSecond = 1000L
 
-    val lastActivityTimestamp = threadInfo.last?.timestamp
-        ?: threadInfo.first?.timestamp
-        ?: 0
+    val lastActivityTimestamp = threadInfo.thread?.lastActivity ?: 0
 
     val lastActivityDate = DateUtils.getRelativeTimeSpanString(
         lastActivityTimestamp.times(oneSecond),
