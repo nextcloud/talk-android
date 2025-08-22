@@ -74,6 +74,7 @@ class RemoteFileBrowserActivity :
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
         binding = ActivityRemoteFileBrowserBinding.inflate(layoutInflater)
+        binding.root.fitsSystemWindows = true
         setSupportActionBar(binding.remoteFileBrowserItemsToolbar)
         viewThemeUtils.material.themeToolbar(binding.remoteFileBrowserItemsToolbar)
         viewThemeUtils.talk.themeSortListButtonGroup(binding.sortListButtonGroup)

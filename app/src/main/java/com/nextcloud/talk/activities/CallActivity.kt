@@ -3242,7 +3242,7 @@ class CallActivity : CallBaseActivity() {
     }
 
     override fun suppressFitsSystemWindows() {
-        binding!!.callLayout.fitsSystemWindows = false
+        binding!!.callLayout.fitsSystemWindows = true
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
