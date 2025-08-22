@@ -9,6 +9,10 @@
  */
 package com.nextcloud.talk.dagger.modules
 
+import android.content.Context
+import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.io.LocalLoginDataSource
+import com.nextcloud.talk.account.data.network.NetworkLoginDataSource
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.chat.data.ChatMessageRepository
@@ -59,8 +63,10 @@ import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepositoryImpl
 import com.nextcloud.talk.translate.repositories.TranslateRepository
 import com.nextcloud.talk.translate.repositories.TranslateRepositoryImpl
+import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.preferences.AppPreferences
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -196,4 +202,21 @@ class RepositoryModule {
         ncApiCoroutines: NcApiCoroutines,
         currentUserProviderNew: CurrentUserProviderNew
     ): ThreadsRepository = ThreadsRepositoryImpl(ncApiCoroutines, currentUserProviderNew)
+
+    @Provides
+    fun provideNetworkDataSource(okHttpClient: OkHttpClient): NetworkLoginDataSource =
+        NetworkLoginDataSource(okHttpClient)
+
+    @Provides
+    fun providesLocalDataSource(
+        userManager: UserManager,
+        appPreferences: AppPreferences,
+        context: Context
+    ): LocalLoginDataSource = LocalLoginDataSource(userManager, appPreferences, context)
+
+    @Provides
+    fun provideLoginRepository(
+        networkLoginDataSource: NetworkLoginDataSource,
+        localLoginDataSource: LocalLoginDataSource
+    ): LoginRepository = LoginRepository(networkLoginDataSource, localLoginDataSource)
 }
