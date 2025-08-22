@@ -2692,7 +2692,7 @@ class ChatActivity :
 
         title.text =
             if (isChatThread()) {
-                conversationThreadInfo?.first?.message
+                conversationThreadInfo?.thread?.title
             } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
