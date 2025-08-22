@@ -25,6 +25,8 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import autodagger.AutoInjector
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
@@ -119,18 +121,20 @@ open class BaseActivity : AppCompatActivity() {
      * May be aligned with android-common lib in the future: .../ui/util/extensions/AppCompatActivityExtensions.kt
      */
     fun initSystemBars() {
-        window.decorView.setOnApplyWindowInsetsListener { view, insets ->
+        val decorView = window.decorView
+        decorView.setOnApplyWindowInsetsListener { view, insets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                val statusBarHeight = insets.getInsets(WindowInsets.Type.statusBars()).top
-                view.setPadding(0, statusBarHeight, 0, 0)
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
                 val color = ResourcesCompat.getColor(resources, R.color.bg_default, context.theme)
                 view.setBackgroundColor(color)
+                view.setPadding(0, systemBars.top, 0, systemBars.bottom)
             } else {
                 colorizeStatusBar()
                 colorizeNavigationBar()
             }
             insets
         }
+        ViewCompat.requestApplyInsets(decorView)
     }
 
     open fun colorizeStatusBar() {
