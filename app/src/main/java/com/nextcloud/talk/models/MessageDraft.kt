@@ -30,9 +30,11 @@ data class MessageDraft(
     @JsonField(name = ["quotedMessageText"])
     var quotedMessageText: String? = null,
     @JsonField(name = ["quoteImageUrl"])
-    var quotedImageUrl: String? = null
+    var quotedImageUrl: String? = null,
+    @JsonField(name = ["threadTitle"])
+    var threadTitle: String? = null
 ) : Parcelable {
-    constructor() : this("", 0, null, null, null, null)
+    constructor() : this("", 0, null, null, null, null, null)
 }
 
 class MessageDraftConverter {

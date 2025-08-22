@@ -1176,6 +1176,7 @@ class ChatActivity :
 
                     chatMenu?.removeItem(R.id.conversation_event)
                 }
+
                 is ChatViewModel.UnbindRoomUiState.Error -> {
                     Snackbar.make(
                         binding.root,
@@ -1183,7 +1184,8 @@ class ChatActivity :
                         Snackbar.LENGTH_LONG
                     ).show()
                 }
-                else -> { }
+
+                else -> {}
             }
         }
 
@@ -3209,7 +3211,8 @@ class ChatActivity :
             conversationInfoItem.isVisible = !isChatThread()
 
             val showThreadsItem = menu.findItem(R.id.show_threads)
-            showThreadsItem.isVisible = !isChatThread()
+            showThreadsItem.isVisible = !isChatThread() &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
             if (CapabilitiesUtil.isAbleToCall(spreedCapabilities) && !isChatThread()) {
                 conversationVoiceCallMenuItem = menu.findItem(R.id.conversation_voice_call)
@@ -4250,6 +4253,10 @@ class ChatActivity :
         pollVoteDialog.show(supportFragmentManager, TAG)
     }
 
+    fun createThread() {
+        messageInputViewModel.startThreadCreation()
+    }
+
     fun jumpToQuotedMessage(parentMessage: ChatMessage) {
         var foundMessage = false
         for (position in 0 until (adapter!!.items.size)) {
@@ -4367,6 +4374,10 @@ class ChatActivity :
         chatViewModel.messageDraft.quotedDisplayName = null
         chatViewModel.messageDraft.quotedImageUrl = null
         chatViewModel.messageDraft.quotedJsonId = null
+    }
+
+    fun cancelCreateThread() {
+        chatViewModel.clearThreadTitle()
     }
 
     companion object {

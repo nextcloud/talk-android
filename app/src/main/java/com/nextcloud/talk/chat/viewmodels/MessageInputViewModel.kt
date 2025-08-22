@@ -94,7 +94,15 @@ class MessageInputViewModel @Inject constructor(
     val getReplyChatMessage: LiveData<ChatMessage?>
         get() = _getReplyChatMessage
 
+    object CreateThreadStartState : ViewState
+    class CreateThreadEditState : ViewState
+
+    private val _createThreadViewState: MutableLiveData<ViewState> = MutableLiveData(CreateThreadStartState)
+    val createThreadViewState: LiveData<ViewState>
+        get() = _createThreadViewState
+
     sealed interface ViewState
+
     object SendChatMessageStartState : ViewState
     class SendChatMessageSuccessState(val message: CharSequence) : ViewState
     class SendChatMessageErrorState(val message: CharSequence) : ViewState
@@ -125,7 +133,8 @@ class MessageInputViewModel @Inject constructor(
         message: String,
         displayName: String,
         replyTo: Int,
-        sendWithoutNotification: Boolean
+        sendWithoutNotification: Boolean,
+        threadTitle: String?
     ) {
         val referenceId = SendMessageUtils().generateReferenceId()
         Log.d(TAG, "Random SHA-256 Hash: $referenceId")
@@ -156,7 +165,8 @@ class MessageInputViewModel @Inject constructor(
                 displayName,
                 replyTo,
                 sendWithoutNotification,
-                referenceId
+                referenceId,
+                threadTitle
             ).collect { result ->
                 if (result.isSuccess) {
                     Log.d(TAG, "received ref id: " + (result.getOrNull()?.referenceId ?: "none"))
@@ -254,6 +264,14 @@ class MessageInputViewModel @Inject constructor(
 
     fun showCallStartedIndicator(recent: ChatMessage, show: Boolean) {
         _callStartedFlow.postValue(Pair(recent, show))
+    }
+
+    fun startThreadCreation() {
+        _createThreadViewState.postValue(CreateThreadEditState())
+    }
+
+    fun stopThreadCreation() {
+        _createThreadViewState.postValue(CreateThreadStartState)
     }
 
     companion object {

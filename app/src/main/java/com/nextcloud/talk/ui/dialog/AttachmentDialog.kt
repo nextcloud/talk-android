@@ -81,6 +81,14 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
             dialogAttachmentBinding.menuAttachPoll.visibility = View.GONE
         }
 
+        if (!CapabilitiesUtil.hasSpreedFeatureCapability(
+                chatActivity.spreedCapabilities,
+                SpreedFeatures.THREADS
+            )
+        ) {
+            dialogAttachmentBinding.menuCreateThread.visibility = View.GONE
+        }
+
         if (!context.packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
             dialogAttachmentBinding.menuAttachVideoFromCam.visibility = View.GONE
         }
@@ -109,6 +117,11 @@ class AttachmentDialog(val activity: Activity, var chatActivity: ChatActivity) :
 
         dialogAttachmentBinding.menuAttachVideoFromCam.setOnClickListener {
             chatActivity.sendVideoFromCamIntent()
+            dismiss()
+        }
+
+        dialogAttachmentBinding.menuCreateThread.setOnClickListener {
+            chatActivity.createThread()
             dismiss()
         }
 

@@ -60,6 +60,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.callbacks.MentionAutocompleteCallback
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
+import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -74,6 +75,7 @@ import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CharPolicy
+import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
@@ -172,6 +174,14 @@ class MessageInputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initObservers()
+
+        binding.fragmentCreateThreadView.createThreadView.findViewById<EmojiTextInputEditText>(
+            R.id
+                .createThread
+        ).doAfterTextChanged { text ->
+            val threadTitle = text.toString()
+            chatActivity.chatViewModel.messageDraft.threadTitle = threadTitle
+        }
     }
 
     private fun initObservers() {
@@ -192,6 +202,24 @@ class MessageInputFragment : Fragment() {
 
         chatActivity.messageInputViewModel.getEditChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let { setEditUI(it as ChatMessage) }
+        }
+
+        chatActivity.messageInputViewModel.createThreadViewState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is MessageInputViewModel.CreateThreadStartState ->
+                    binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
+
+                is MessageInputViewModel.CreateThreadEditState -> {
+                    binding.fragmentCreateThreadView.createThreadView.visibility = View.VISIBLE
+                    binding.fragmentCreateThreadView.createThreadView
+                        .findViewById<EmojiTextInputEditText>(R.id.createThread)?.setText(
+                            chatActivity.chatViewModel.messageDraft.threadTitle
+                        )
+                }
+
+                else -> {}
+            }
+            initVoiceRecordButton()
         }
 
         chatActivity.chatViewModel.leaveRoomViewState.observe(viewLifecycleOwner) { state ->
@@ -310,6 +338,11 @@ class MessageInputFragment : Fragment() {
                 val draft = chatActivity.chatViewModel.messageDraft
                 binding.fragmentMessageInputView.messageInput.setText(draft.messageText)
                 binding.fragmentMessageInputView.messageInput.setSelection(draft.messageCursor)
+
+                if (draft.threadTitle?.isNotEmpty() == true) {
+                    chatActivity.messageInputViewModel.startThreadCreation()
+                }
+
                 if (draft.messageText != "") {
                     binding.fragmentMessageInputView.messageInput.requestFocus()
                 }
@@ -444,6 +477,9 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.clearEdit.setOnClickListener {
             clearEditUI()
         }
+        binding.fragmentCreateThreadView.abortCreateThread.setOnClickListener {
+            cancelCreateThread()
+        }
 
         if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
             binding.fragmentMessageInputView.button?.setOnLongClickListener {
@@ -489,31 +525,10 @@ class MessageInputFragment : Fragment() {
 
     @Suppress("ClickableViewAccessibility", "CyclomaticComplexMethod", "LongMethod")
     private fun initVoiceRecordButton() {
-        if (binding.fragmentMessageInputView.messageInput.text.isNullOrBlank()) {
-            binding.fragmentMessageInputView.messageSendButton.visibility = View.GONE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.VISIBLE
-        } else {
-            binding.fragmentMessageInputView.messageSendButton.visibility = View.VISIBLE
-            binding.fragmentMessageInputView.recordAudioButton.visibility = View.GONE
-        }
-        binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
-            binding.fragmentMessageInputView.recordAudioButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() &&
-                    chatActivity.messageInputViewModel.getEditChatMessage.value == null
-                ) {
-                    View.VISIBLE
-                } else {
-                    View.GONE
-                }
+        handleButtonsVisibility()
 
-            binding.fragmentMessageInputView.messageSendButton.visibility =
-                if (binding.fragmentMessageInputView.inputEditText.text.isEmpty() ||
-                    binding.fragmentEditView.editMessageView.isVisible
-                ) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
+        binding.fragmentMessageInputView.inputEditText.doAfterTextChanged {
+            handleButtonsVisibility()
         }
 
         var prevDx = 0f
@@ -625,6 +640,33 @@ class MessageInputFragment : Fragment() {
                 }
             }
             v?.onTouchEvent(event) != false
+        }
+    }
+
+    private fun handleButtonsVisibility() {
+        fun View.setVisible(isVisible: Boolean) {
+            visibility = if (isVisible) View.VISIBLE else View.GONE
+        }
+
+        val isEditModeActive = binding.fragmentEditView.editMessageView.isVisible
+        val isThreadCreateModeActive = binding.fragmentCreateThreadView.createThreadView.isVisible
+        val inputContainsText = binding.fragmentMessageInputView.messageInput.text.isNotEmpty()
+
+        binding.fragmentMessageInputView.apply {
+            when {
+                isEditModeActive -> {
+                    messageSendButton.setVisible(false)
+                    recordAudioButton.setVisible(false)
+                }
+                inputContainsText || isThreadCreateModeActive -> {
+                    messageSendButton.setVisible(true)
+                    recordAudioButton.setVisible(false)
+                }
+                else -> {
+                    messageSendButton.setVisible(false)
+                    recordAudioButton.setVisible(true)
+                }
+            }
         }
     }
 
@@ -837,27 +879,28 @@ class MessageInputFragment : Fragment() {
             replaceMentionChipSpans(editable)
             binding.fragmentMessageInputView.inputEditText?.setText("")
             sendStopTypingMessage()
-
             sendMessage(
                 editable.toString(),
                 sendWithoutNotification
             )
             cancelReply()
+            cancelCreateThread()
         }
     }
 
     private fun sendMessage(message: String, sendWithoutNotification: Boolean) {
         chatActivity.messageInputViewModel.sendChatMessage(
-            chatActivity.conversationUser!!.getCredentials(),
-            ApiUtils.getUrlForChat(
+            credentials = chatActivity.conversationUser!!.getCredentials(),
+            url = ApiUtils.getUrlForChat(
                 chatActivity.chatApiVersion,
                 chatActivity.conversationUser!!.baseUrl!!,
                 chatActivity.roomToken
             ),
-            message,
-            chatActivity.conversationUser!!.displayName ?: "",
-            chatActivity.getReplyToMessageId(),
-            sendWithoutNotification
+            message = message,
+            displayName = chatActivity.conversationUser!!.displayName ?: "",
+            replyTo = chatActivity.getReplyToMessageId(),
+            sendWithoutNotification = sendWithoutNotification,
+            threadTitle = chatActivity.chatViewModel.messageDraft.threadTitle
         )
     }
 
@@ -952,6 +995,7 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.attachmentButton.visibility = View.VISIBLE
         chatActivity.messageInputViewModel.edit(null)
+        handleButtonsVisibility()
     }
 
     private fun themeMessageInputView() {
@@ -994,6 +1038,9 @@ class MessageInputFragment : Fragment() {
         binding.fragmentEditView.clearEdit.let {
             viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
         }
+        binding.fragmentCreateThreadView.abortCreateThread.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.PRIMARY)
+        }
 
         binding.fragmentCallStarted.callStartedBackground.apply {
             viewThemeUtils.talk.themeOutgoingMessageBubble(this, grouped = true, false)
@@ -1010,6 +1057,12 @@ class MessageInputFragment : Fragment() {
         binding.fragmentCallStarted.callStartedCloseBtn.apply {
             viewThemeUtils.platform.colorImageView(this, ColorRole.PRIMARY)
         }
+    }
+
+    private fun cancelCreateThread() {
+        chatActivity.cancelCreateThread()
+        chatActivity.messageInputViewModel.stopThreadCreation()
+        binding.fragmentCreateThreadView.createThreadView.visibility = View.GONE
     }
 
     private fun cancelReply() {
