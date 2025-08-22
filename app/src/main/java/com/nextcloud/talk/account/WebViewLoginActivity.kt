@@ -288,22 +288,18 @@ class WebViewLoginActivity : BaseActivity() {
             }
 
             @SuppressLint("DiscouragedPrivateApi")
-            @Suppress("Detekt.TooGenericExceptionCaught")
+            @Suppress("Detekt.TooGenericExceptionCaught", "WebViewClientOnReceivedSslError")
             override fun onReceivedSslError(view: WebView, handler: SslErrorHandler, error: SslError) {
                 try {
                     val sslCertificate = error.certificate
                     val f: Field = sslCertificate.javaClass.getDeclaredField("mX509Certificate")
                     f.isAccessible = true
                     val cert = f[sslCertificate] as X509Certificate
-                    if (cert == null) {
-                        handler.cancel()
-                    } else {
-                        try {
-                            trustManager.checkServerTrusted(arrayOf(cert), "generic")
-                            handler.proceed()
-                        } catch (exception: CertificateException) {
-                            eventBus.post(CertificateEvent(cert, trustManager, handler))
-                        }
+                    try {
+                        trustManager.checkServerTrusted(arrayOf(cert), "generic")
+                        handler.proceed()
+                    } catch (exception: CertificateException) {
+                        eventBus.post(CertificateEvent(cert, trustManager, handler))
                     }
                 } catch (exception: Exception) {
                     handler.cancel()
