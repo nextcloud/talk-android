@@ -654,6 +654,7 @@
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
     <string name="thread_replies_amount">%1$d replies</string>
+    <string name="thread_title">Thread title</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="translate">Translate</string>

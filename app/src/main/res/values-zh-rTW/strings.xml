@@ -654,6 +654,7 @@
     <string name="this_is_a_test_message">這是測試訊息</string>
     <string name="this_weekend">本週末</string>
     <string name="thread_replies_amount">%1$d 個回覆</string>
+    <string name="thread_title">討論串標題</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="translate">翻譯</string>

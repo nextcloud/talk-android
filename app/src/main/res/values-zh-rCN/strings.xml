@@ -537,6 +537,7 @@
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="this_weekend">本周末</string>
     <string name="thread_replies_amount">%1$d 个回复</string>
+    <string name="thread_title">帖子‌标题</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="translate">翻译</string>
