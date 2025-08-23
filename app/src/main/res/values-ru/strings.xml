@@ -275,6 +275,7 @@
     <string name="nc_message_offline">Не в сети</string>
     <string name="nc_message_quote_cancel_reply">Отменить ответ</string>
     <string name="nc_message_read">Сообщение прочитано</string>
+    <string name="nc_message_sending">Отправка</string>
     <string name="nc_message_sent">Сообщение отправлено</string>
     <string name="nc_microphone_permission_hint">Для включения голосовой связи предоставьте разрешение «Микрофон».</string>
     <string name="nc_missed_call">Вы пропустили звонок от %s</string>
@@ -473,6 +474,7 @@
     <string name="online_status">Онлайн статус</string>
     <string name="openConversations">Открыть разговоры</string>
     <string name="open_in_files_app">Открыть в приложении Файлы</string>
+    <string name="open_notes">Открыть примечания</string>
     <string name="open_thread">Перейти в тему</string>
     <string name="play_pause_voice_message">Воспроизведение/пауза голосового сообщения</string>
     <string name="polls_add_option">Добавить вариант</string>
@@ -508,6 +510,7 @@
     <string name="recording_consent_for_conversation_title">Согласие на запись вызова</string>
     <string name="recording_consent_title">Звонок может быть записан.</string>
     <string name="recording_settings_title">Запись</string>
+    <string name="resend_message">Отправить заново</string>
     <string name="reset_status">Сбросить статус</string>
     <string name="restrict_join_other_room_while_call">Невозможно присоединиться к другим комнатам находясь в звонке</string>
     <string name="save">Сохранить</string>
@@ -563,6 +566,7 @@
     <string name="thisWeek">Эта неделя</string>
     <string name="this_weekend">Эти выходные</string>
     <string name="thread_replies_amount">%1$d ответов</string>
+    <string name="thread_title">Заголовок темы</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>

@@ -655,6 +655,7 @@
     <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
     <string name="thread_replies_amount">%1$d respuestas</string>
+    <string name="thread_title">Título del hilo</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
     <string name="translate">Traducir</string>

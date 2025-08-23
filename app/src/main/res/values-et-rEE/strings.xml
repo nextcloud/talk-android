@@ -96,6 +96,7 @@
     <string name="message_search_begin_typing">Otsimiseks alusta kirjutamist…</string>
     <string name="message_search_hint">Otsi…</string>
     <string name="messages">Sõnumid</string>
+    <string name="messages_could_not_be_loaded">Sõnumite laadimine ei õnnestunud</string>
     <string name="nc_Server_account_imported">Valitud kasutajakonto on nüüd imporditud ja saadaval</string>
     <string name="nc_about">Info</string>
     <string name="nc_account_chooser_active_user">Aktiivne kasutaja</string>
@@ -425,6 +426,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s saatis kanbani kaardi</string>
     <string name="nc_server_connect">Testi ühendust serveriga</string>
     <string name="nc_server_db_upgrade_needed">Palun uuenda oma %1$si andmebaasi</string>
+    <string name="nc_server_down">Ei õnnestu luua ühendust serveriga</string>
     <string name="nc_server_failed_to_import_account">Valitud kasutajakonto importimine ei õnnestunud</string>
     <string name="nc_server_helper_text">See on sinu %1$s kasutajaliidese veebiaadress, kui sa avad ta veebibrauseris.</string>
     <string name="nc_server_import_account">Impordi kasutajakonto rakendusest %1$s</string>
@@ -654,6 +656,7 @@
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
     <string name="thread_replies_amount">%1$d vastust</string>
+    <string name="thread_title">Jutulõnga pealkiri</string>
     <string name="today">Täna</string>
     <string name="tomorrow">Homme</string>
     <string name="translate">Tõlgi</string>

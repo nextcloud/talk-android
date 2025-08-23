@@ -654,6 +654,7 @@
     <string name="this_is_a_test_message">Це тестове повідомлення</string>
     <string name="this_weekend">Цими вихідними</string>
     <string name="thread_replies_amount">%1$d відповідей</string>
+    <string name="thread_title">Назва гілки</string>
     <string name="today">Сьогодні</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Перекласти</string>
