@@ -655,6 +655,7 @@
     <string name="thisWeek">Käesolev nädal</string>
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
+    <string name="thread_cancel">Katkesta jutulõnga koostamine</string>
     <string name="thread_replies_amount">%1$d vastust</string>
     <string name="thread_title">Jutulõnga pealkiri</string>
     <string name="today">Täna</string>

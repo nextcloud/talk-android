@@ -96,6 +96,7 @@
     <string name="message_search_begin_typing">Що шукаємо?</string>
     <string name="message_search_hint">Пошук …</string>
     <string name="messages">Повідомлення</string>
+    <string name="messages_could_not_be_loaded">Не вдалося отримати повідомлення</string>
     <string name="nc_Server_account_imported">Обраний обліковий запис імпортовано і він доступний</string>
     <string name="nc_about">Про застосунок</string>
     <string name="nc_account_chooser_active_user">Активний користувач</string>
@@ -425,6 +426,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s надіслав карту колоди</string>
     <string name="nc_server_connect">Перевірка з\'єднання з сервером</string>
     <string name="nc_server_db_upgrade_needed">Будь ласка, оновіть вашу %1$s базу даних</string>
+    <string name="nc_server_down">Не вдалося з\'єднатися з сервером</string>
     <string name="nc_server_failed_to_import_account">Не вдалося імпортувати обраний акаунт.</string>
     <string name="nc_server_helper_text">Посилання на ваш веб-інтерфейс %1$s, коли ви відкриєте його у веб-переглядачі.</string>
     <string name="nc_server_import_account">Імпортувати обліковий запис із застосунку %1$s</string>
@@ -653,6 +655,7 @@
     <string name="thisWeek">Цього тижня</string>
     <string name="this_is_a_test_message">Це тестове повідомлення</string>
     <string name="this_weekend">Цими вихідними</string>
+    <string name="thread_cancel">Відхилити створення гілки</string>
     <string name="thread_replies_amount">%1$d відповідей</string>
     <string name="thread_title">Назва гілки</string>
     <string name="today">Сьогодні</string>

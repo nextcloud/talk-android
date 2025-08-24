@@ -96,6 +96,7 @@
     <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_hint">Search …</string>
     <string name="messages">Messages</string>
+    <string name="messages_could_not_be_loaded">Messages could not be loaded</string>
     <string name="nc_Server_account_imported">Selected account is now imported and available</string>
     <string name="nc_about">About</string>
     <string name="nc_account_chooser_active_user">Active user</string>
@@ -425,6 +426,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s sent a deck card</string>
     <string name="nc_server_connect">Test server connection</string>
     <string name="nc_server_db_upgrade_needed">Please upgrade your %1$s database</string>
+    <string name="nc_server_down">Unable to connect to server</string>
     <string name="nc_server_failed_to_import_account">Failed to import selected account</string>
     <string name="nc_server_helper_text">The link to your %1$s web interface when you open it in the browser.</string>
     <string name="nc_server_import_account">Import account from the %1$s app</string>
@@ -653,6 +655,7 @@
     <string name="thisWeek">This week</string>
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
+    <string name="thread_cancel">Cancel thread creation</string>
     <string name="thread_replies_amount">%1$d replies</string>
     <string name="thread_title">Thread title</string>
     <string name="today">Today</string>

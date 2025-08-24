@@ -655,6 +655,7 @@
     <string name="thisWeek">Diese Woche</string>
     <string name="this_is_a_test_message">Dies ist eine Testnachricht</string>
     <string name="this_weekend">Dieses Wochenende</string>
+    <string name="thread_cancel">Themenerstellung abbrechen</string>
     <string name="thread_replies_amount">%1$d Antworten</string>
     <string name="thread_title">Thementitel</string>
     <string name="today">Heute</string>
