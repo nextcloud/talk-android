@@ -78,6 +78,7 @@ import com.nextcloud.talk.utils.CharPolicy
 import com.nextcloud.talk.utils.EmojiTextInputEditText
 import com.nextcloud.talk.utils.ImageEmojiEditText
 import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.text.Spans
@@ -146,6 +147,12 @@ class MessageInputFragment : Fragment() {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         conversationInternalId = arguments?.getString(ChatActivity.CONVERSATION_INTERNAL_ID).orEmpty()
+        chatActivity = requireActivity() as ChatActivity
+        val sharedText = arguments?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
+        if (sharedText.isNotEmpty()) {
+            chatActivity.chatViewModel.messageDraft.messageText = sharedText
+            chatActivity.chatViewModel.saveMessageDraft()
+        }
         if (conversationInternalId.isEmpty()) {
             Log.e(TAG, "internalId for conversation passed to MessageInputFragment is empty")
         }
@@ -153,7 +160,6 @@ class MessageInputFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMessageInputBinding.inflate(inflater)
-        chatActivity = requireActivity() as ChatActivity
         themeMessageInputView()
         initMessageInputView()
         initSmileyKeyboardToggler()
@@ -435,10 +441,6 @@ class MessageInputFragment : Fragment() {
                 replyToMessageId = chatActivity.getReplyToMessageId(),
                 displayName = chatActivity.currentConversation?.displayName!!
             )
-        }
-
-        if (chatActivity.sharedText.isNotEmpty()) {
-            binding.fragmentMessageInputView.inputEditText?.setText(chatActivity.sharedText)
         }
 
         binding.fragmentMessageInputView.setAttachmentsListener {

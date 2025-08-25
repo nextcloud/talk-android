@@ -118,16 +118,6 @@ class ChatViewModel @Inject constructor(
         saveMessageDraft()
     }
 
-    private fun saveMessageDraft() {
-        CoroutineScope(Dispatchers.IO).launch {
-            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
-            model?.let {
-                it.messageDraft = messageDraft
-                conversationRepository.updateConversation(it)
-            }
-        }
-    }
-
     override fun onStop(owner: LifecycleOwner) {
         super.onStop(owner)
         currentLifeCycleFlag = LifeCycleFlag.STOPPED
@@ -958,6 +948,16 @@ class ChatViewModel @Inject constructor(
         val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
         model?.messageDraft?.let {
             messageDraft = it
+        }
+    }
+
+    fun saveMessageDraft() {
+        CoroutineScope(Dispatchers.IO).launch {
+            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+            model?.let {
+                it.messageDraft = messageDraft
+                conversationRepository.updateConversation(it)
+            }
         }
     }
 
