@@ -228,7 +228,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -545,6 +544,7 @@ class ChatActivity :
         return MessageInputFragment().apply {
             arguments = Bundle().apply {
                 putString(CONVERSATION_INTERNAL_ID, internalId)
+                putString(BundleKeys.KEY_SHARED_TEXT, sharedText)
             }
         }
     }
