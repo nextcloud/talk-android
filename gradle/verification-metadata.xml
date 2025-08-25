@@ -175,6 +175,7 @@
          </trusted-key>
          <trusted-key id="61DEBD732F3F07771269972E2F87304808D40CEC">
             <trusting group="net.zetetic" name="android-database-sqlcipher" version="4.5.4"/>
+            <trusting group="net.zetetic" name="sqlcipher-android" version="4.10.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.9.0"/>
          </trusted-key>
          <trusted-key id="64B9B09F164AA0BF88742EB61188B69F6D6259CA" group="com.google.accompanist"/>
