@@ -189,6 +189,9 @@ class ConversationItem(
             shouldLoadAvatar = false
         }
         if (shouldLoadAvatar) {
+            // reset before loading
+            holder.binding.dialogAvatar.setImageDrawable(null)
+
             when (model.type) {
                 ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
