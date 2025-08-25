@@ -17,10 +17,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.ChatActivity
@@ -389,8 +391,38 @@ class MessageActionsDialog(
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {
             dialogMessageActionsBinding.menuDeleteMessage.setOnClickListener {
-                chatActivity.deleteMessage(message)
-                dismiss()
+                val areYouSure = context.resources.getString(R.string.message_delete_are_you_sure)
+                val deleteMessage = context.resources.getString(R.string.nc_delete_message)
+                val delete = context.resources.getString(R.string.nc_delete)
+                val cancel = context.resources.getString(R.string.nc_cancel)
+                val builder = MaterialAlertDialogBuilder(context)
+                builder
+                    .setIcon(
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogIcon(context, R.drawable.ic_delete_black_24dp)
+                    )
+                    .setMessage(areYouSure)
+                    .setTitle(deleteMessage)
+                    .setPositiveButton(delete) { dialog, which ->
+                        chatActivity.deleteMessage(message)
+                        dismiss()
+                    }
+                    .setNegativeButton(cancel) { dialog, which ->
+                        // unused atm
+                    }
+                    .let { dialogBuilder ->
+                        viewThemeUtils.dialog
+                            .colorMaterialAlertDialogBackground(context, dialogBuilder)
+                    }
+
+                val dialog: AlertDialog = builder.create()
+                dialog.setOnShowListener {
+                    viewThemeUtils.platform.colorTextButtons(
+                        dialog.getButton(BUTTON_POSITIVE),
+                        dialog.getButton(BUTTON_NEGATIVE)
+                    )
+                }
+                dialog.show()
             }
         }
         dialogMessageActionsBinding.menuDeleteMessage.visibility = getVisibility(visible)

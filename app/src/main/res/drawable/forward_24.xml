@@ -1,0 +1,16 @@
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2023-2025 Google LLC
+  ~ SPDX-License-Identifier: Apache-2.0
+-->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="960"
+    android:viewportHeight="960">
+  <path
+      android:pathData="m640,680 l-57,-56 184,-184 -184,-184 57,-56 240,240 -240,240ZM80,760v-160q0,-83 58.5,-141.5T280,400h247L383,256l57,-56 240,240 -240,240 -57,-56 144,-144L280,480q-50,0 -85,35t-35,85v160L80,760Z"
+      android:fillColor="#222222"/>
+</vector>
