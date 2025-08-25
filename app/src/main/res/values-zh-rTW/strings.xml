@@ -96,6 +96,7 @@
     <string name="message_search_begin_typing">輸入文字以搜尋 …</string>
     <string name="message_search_hint">搜尋 …</string>
     <string name="messages">訊息</string>
+    <string name="messages_could_not_be_loaded">無法載入訊息</string>
     <string name="nc_Server_account_imported">選擇已匯入且可用的帳號</string>
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍使用者</string>
@@ -425,6 +426,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s 傳送了一張卡片</string>
     <string name="nc_server_connect">測試伺服器連線</string>
     <string name="nc_server_db_upgrade_needed">請升級你的%1$s資料庫</string>
+    <string name="nc_server_down">無法連線至伺服器</string>
     <string name="nc_server_failed_to_import_account">無法匯入所選的帳戶</string>
     <string name="nc_server_helper_text">在瀏覽器中開啟您 %1$s 網頁介面的連結。</string>
     <string name="nc_server_import_account">從%1$s應用程式匯入帳戶</string>
@@ -653,6 +655,7 @@
     <string name="thisWeek">這個禮拜</string>
     <string name="this_is_a_test_message">這是測試訊息</string>
     <string name="this_weekend">本週末</string>
+    <string name="thread_cancel">取消建立討論串</string>
     <string name="thread_replies_amount">%1$d 個回覆</string>
     <string name="thread_title">討論串標題</string>
     <string name="today">今天</string>
