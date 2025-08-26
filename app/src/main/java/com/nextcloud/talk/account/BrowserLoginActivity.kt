@@ -85,7 +85,6 @@ class BrowserLoginActivity : BaseActivity() {
     private val loginFlowExecutorService: ScheduledExecutorService? = Executors.newSingleThreadScheduledExecutor()
     private var isLoginProcessCompleted = false
     private var token: String = ""
-    private var pollUrl: String = ""
 
     private lateinit var okHttpClient: OkHttpClient
 
@@ -164,7 +163,6 @@ class BrowserLoginActivity : BaseActivity() {
                     launchDefaultWebBrowser(loginUrl)
                 }
                 token = jsonObject.getAsJsonObject("poll").get("token").asString
-                pollUrl = jsonObject.getAsJsonObject("poll").get("endpoint").asString
             } catch (e: SSLHandshakeException) {
                 Log.e(TAG, "Error caught at anonymouslyPostLoginRequest: $e")
             }
@@ -217,12 +215,14 @@ class BrowserLoginActivity : BaseActivity() {
     }
 
     private fun performLoginFlowV2() {
+        val postRequestUrl = "$baseUrl/login/v2/poll"
+
         val requestBody: RequestBody = FormBody.Builder()
             .add("token", token)
             .build()
 
         val request = Request.Builder()
-            .url(pollUrl)
+            .url(postRequestUrl)
             .post(requestBody)
             .build()
 
