@@ -34,7 +34,6 @@ import com.nextcloud.talk.databinding.ActivityWebViewLoginBinding
 import com.nextcloud.talk.jobs.AccountRemovalWorker
 import com.nextcloud.talk.models.LoginData
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_BASE_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ORIGINAL_PROTOCOL
@@ -177,7 +176,6 @@ class BrowserLoginActivity : BaseActivity() {
             .url(url)
             .post(FormBody.Builder().build())
             .addHeader("Clear-Site-Data", "cookies")
-            .addHeader("User-Agent", ApiUtils.userAgent)
             .build()
 
         okHttpClient.newCall(request).execute().use { response ->
