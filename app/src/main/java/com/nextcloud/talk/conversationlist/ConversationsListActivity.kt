@@ -47,7 +47,6 @@ import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
 import androidx.core.os.bundleOf
 import androidx.core.view.MenuItemCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
@@ -269,7 +268,6 @@ class ConversationsListActivity :
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
-        ViewCompat.requestApplyInsets(binding.genericRvLayout)
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbar)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE)
         viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
