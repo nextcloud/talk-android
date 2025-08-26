@@ -150,29 +150,28 @@ class BrowserLoginActivity : BaseActivity() {
         }
     }
 
-    private val qrScanResultLauncher =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == RESULT_OK) {
-                val data = result.data
+    private val qrScanResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val data = result.data
 
-                if (data == null) {
-                    return@registerForActivityResult
-                }
+            if (data == null) {
+                return@registerForActivityResult
+            }
 
-                val resultData = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult")
+            val resultData = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult")
 
-                if (resultData == null || !resultData.startsWith("nc")) {
-                    Snackbar.make(binding.root, getString(R.string.qr_code_error), Snackbar.LENGTH_SHORT).show()
-                    return@registerForActivityResult
-                }
+            if (resultData == null || !resultData.startsWith("nc")) {
+                Snackbar.make(binding.root, getString(R.string.qr_code_error), Snackbar.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
 
-                try {
-                    parseLoginDataUrl(resultData)
-                } catch (e: IllegalArgumentException) {
-                    Log.e(TAG, "Error in scanning QR Code: $e")
-                }
+            try {
+                parseLoginDataUrl(resultData)
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "Error in scanning QR Code: $e")
             }
         }
+    }
 
     private fun anonymouslyPostLoginRequest() {
         CoroutineScope(Dispatchers.IO).launch {
@@ -277,13 +276,13 @@ class BrowserLoginActivity : BaseActivity() {
      */
     fun parseLoginDataUrl(dataString: String) {
         if (!dataString.startsWith(PREFIX)) {
-            throw IllegalArgumentException("Invalid login URL detected")
+            throw IllegalArgumentException("Invalid login URL detected" )
         }
 
         val data = dataString.removePrefix(PREFIX)
         val values = data.split('&')
 
-        if (values.size !in 1..MAX_ARGS) {
+        if(values.size !in 1..3) {
             throw IllegalArgumentException("Illegal number of login URL elements detected: ${values.size}")
         }
 
@@ -294,11 +293,9 @@ class BrowserLoginActivity : BaseActivity() {
                 value.startsWith(USER_KEY) -> {
                     loginData.username = URLDecoder.decode(value.removePrefix(USER_KEY), "UTF-8")
                 }
-
                 value.startsWith(PASS_KEY) -> {
                     loginData.token = URLDecoder.decode(value.removePrefix(PASS_KEY), "UTF-8")
                 }
-
                 value.startsWith(SERVER_KEY) -> {
                     loginData.serverUrl = URLDecoder.decode(value.removePrefix(SERVER_KEY), "UTF-8")
                     baseUrl = loginData.serverUrl
@@ -434,6 +431,5 @@ class BrowserLoginActivity : BaseActivity() {
         private const val SERVER_KEY = "server:"
         private const val PASS_KEY = "password:"
         private const val PREFIX = "nc://login/"
-        private const val MAX_ARGS = 3
     }
 }

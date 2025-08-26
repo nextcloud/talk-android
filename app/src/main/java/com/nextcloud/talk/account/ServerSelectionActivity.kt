@@ -396,13 +396,12 @@ class ServerSelectionActivity : BaseActivity() {
         }
     }
 
-    private val requestCameraPermissionLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-            if (isGranted) {
-                // Permission was granted
-                startQRScanner()
-            }
+    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
+        if (isGranted) {
+            // Permission was granted
+            startQRScanner()
         }
+    }
 
     fun onScan() {
         if (PermissionUtil.isPermissionGranted(this, Manifest.permission.CAMERA)) {
