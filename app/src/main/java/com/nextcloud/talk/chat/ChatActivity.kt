@@ -485,7 +485,8 @@ class ChatActivity :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
+                     WindowInsetsCompat.Type.displayCutout())
                 val bottomInsects = insets.getInsets(
                     WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.ime()
                 )
