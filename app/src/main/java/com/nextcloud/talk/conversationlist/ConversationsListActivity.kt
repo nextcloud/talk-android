@@ -377,7 +377,7 @@ class ConversationsListActivity :
     @Suppress("MagicNumber")
     private fun addEmptyItemForEdgeToEdgeIfNecessary() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            adapter?.addScrollableFooter(SpacerItem(200))
+            adapter?.addScrollableFooter(SpacerItem(100))
         }
     }
 
