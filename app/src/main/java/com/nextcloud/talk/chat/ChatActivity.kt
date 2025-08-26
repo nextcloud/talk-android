@@ -486,9 +486,14 @@ class ChatActivity :
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
                 val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
                 val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else systemBars.bottom
+                val bottomPadding = if (isKeyboardVisible) {
+                    imeInsets.bottom + navBarInsets.bottom
+                } else {
+                    navBarInsets.bottom
+                }
                 view.setPadding(
                     view.paddingLeft,
                     systemBars.top,
