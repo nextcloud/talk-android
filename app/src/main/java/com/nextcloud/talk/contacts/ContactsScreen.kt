@@ -10,8 +10,11 @@ package com.nextcloud.talk.contacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,7 +37,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
 
     Scaffold(
         modifier = Modifier
-            .systemBarsPadding(),
+            .windowInsetsPadding(WindowInsets.safeContent),
         topBar = {
             if (isSearchActive) {
                 ContactsSearchAppBar(

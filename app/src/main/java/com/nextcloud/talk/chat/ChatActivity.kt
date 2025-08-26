@@ -228,7 +228,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.File
 import java.io.IOException
-import java.lang.Exception
 import java.net.HttpURLConnection
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -475,7 +474,8 @@ class ChatActivity :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
+                     WindowInsetsCompat.Type.displayCutout())
                 val bottomInsects = insets.getInsets(
                     WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.ime()
                 )
