@@ -16,6 +16,7 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -23,6 +24,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
+import com.blikoon.qrcodescanner.QrCodeActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
 import com.nextcloud.talk.R
@@ -131,12 +133,8 @@ class BrowserLoginActivity : BaseActivity() {
         }
 
         if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
-            val resultData = extras.getString(BundleKeys.KEY_FROM_QR)
-            try {
-                parseLoginDataUrl(resultData!!)
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "Error in scanning QR Code: $e")
-            }
+            val intent = Intent(this, QrCodeActivity::class.java)
+            qrScanResultLauncher.launch(intent)
         } else {
             anonymouslyPostLoginRequest()
         }
@@ -151,6 +149,30 @@ class BrowserLoginActivity : BaseActivity() {
             onBackPressedDispatcher.onBackPressed()
         }
     }
+
+    private val qrScanResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val data = result.data
+
+                if (data == null) {
+                    return@registerForActivityResult
+                }
+
+                val resultData = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult")
+
+                if (resultData == null || !resultData.startsWith("nc")) {
+                    Snackbar.make(binding.root, getString(R.string.qr_code_error), Snackbar.LENGTH_SHORT).show()
+                    return@registerForActivityResult
+                }
+
+                try {
+                    parseLoginDataUrl(resultData)
+                } catch (e: IllegalArgumentException) {
+                    Log.e(TAG, "Error in scanning QR Code: $e")
+                }
+            }
+        }
 
     private fun anonymouslyPostLoginRequest() {
         CoroutineScope(Dispatchers.IO).launch {

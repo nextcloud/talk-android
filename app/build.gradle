@@ -210,7 +210,7 @@ dependencies {
         exclude group: 'org.ogce', module: 'xpp3'	// Android comes with its own XmlPullParser
     })
     implementation 'org.conscrypt:conscrypt-android:2.5.3'
-    implementation "com.github.nextcloud-deps:qrcodescanner:0.1.2.4" // "com.github.blikoon:QRCodeScanner:0.1.2"
+    implementation 'com.github.blikoon:QRCodeScanner:0.1.2'
 
     implementation "androidx.camera:camera-core:${androidxCameraVersion}"
     implementation "androidx.camera:camera-camera2:${androidxCameraVersion}"
