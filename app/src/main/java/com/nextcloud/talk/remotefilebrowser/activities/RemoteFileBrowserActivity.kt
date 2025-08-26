@@ -182,7 +182,6 @@ class RemoteFileBrowserActivity :
         showList()
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_share_files, menu)
@@ -251,8 +250,10 @@ class RemoteFileBrowserActivity :
         val decorView = window.decorView
         decorView.setOnApplyWindowInsetsListener { view, insets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
-                    WindowInsetsCompat.Type.displayCutout())
+                val systemBars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+                )
                 view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             }
             insets
