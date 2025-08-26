@@ -485,8 +485,10 @@ class ChatActivity :
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
-                val systemBarInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
-                     WindowInsetsCompat.Type.displayCutout())
+                val systemBarInsets = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+                )
                 val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())

@@ -123,8 +123,10 @@ open class BaseActivity : AppCompatActivity() {
         val decorView = window.decorView
         decorView.setOnApplyWindowInsetsListener { view, insets ->
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or
-                    WindowInsetsCompat.Type.displayCutout())
+                val systemBars = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+                )
                 val color = ResourcesCompat.getColor(resources, R.color.bg_default, context.theme)
                 view.setBackgroundColor(color)
                 view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
