@@ -333,12 +333,16 @@ class WebViewLoginActivity : BaseActivity() {
             dispose()
             cookieManager.cookieStore.removeAll()
 
-            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, loginData.serverUrl!!).blockingGet()) {
+            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, loginData.serverUrl!!)
+                    .blockingGet()
+            ) {
                 Log.e(TAG, "Tried to add already existing user who is scheduled for deletion.")
                 Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
                 startAccountRemovalWorkerAndRestartApp()
-            } else if (userManager.checkIfUserExists(loginData.username!!, loginData.serverUrl!!).blockingGet()) {
+            } else if (userManager.checkIfUserExists(loginData.username!!, loginData.serverUrl!!)
+                    .blockingGet()
+            ) {
                 if (reauthorizeAccount) {
                     updateUserAndRestartApp(loginData)
                 } else {
