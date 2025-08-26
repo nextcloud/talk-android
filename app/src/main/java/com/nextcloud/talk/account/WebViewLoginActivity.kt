@@ -114,7 +114,7 @@ class WebViewLoginActivity : BaseActivity() {
         setContentView(binding.root)
         actionBar?.hide()
         initSystemBars()
-
+        assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()
     }
@@ -143,7 +143,6 @@ class WebViewLoginActivity : BaseActivity() {
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
-        assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
         binding.webview.settings.allowFileAccess = false
         binding.webview.settings.allowFileAccessFromFileURLs = false
         binding.webview.settings.javaScriptEnabled = true
