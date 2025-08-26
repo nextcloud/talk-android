@@ -8,7 +8,6 @@
  */
 package com.nextcloud.talk.account
 
-import android.Manifest
 import android.accounts.Account
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -22,11 +21,8 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import autodagger.AutoInjector
-import com.github.dhaval2404.imagepicker.util.PermissionUtil
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.api.NcApi
@@ -123,8 +119,6 @@ class ServerSelectionActivity : BaseActivity() {
             false
         }
         binding.certTextView.setOnClickListener { onCertClick() }
-
-        binding.scanQr.setOnClickListener { onScan() }
 
         if (ApplicationWideMessageHolder.getInstance().messageType != null) {
             if (ApplicationWideMessageHolder.getInstance().messageType
@@ -394,30 +388,6 @@ class ServerSelectionActivity : BaseActivity() {
             }
             hideserverEntryProgressBar()
         }
-    }
-
-    private val requestCameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted: Boolean ->
-        if (isGranted) {
-            // Permission was granted
-            startQRScanner()
-        }
-    }
-
-    fun onScan() {
-        if (PermissionUtil.isPermissionGranted(this, Manifest.permission.CAMERA)) {
-            startQRScanner()
-        } else {
-            requestCameraPermissionLauncher.launch(Manifest.permission.CAMERA)
-        }
-    }
-
-    private fun startQRScanner() {
-        val intent = Intent(this, BrowserLoginActivity::class.java)
-        val bundle = bundleOf().apply {
-            putBoolean(BundleKeys.KEY_FROM_QR, true)
-        }
-        intent.putExtras(bundle)
-        startActivity(intent)
     }
 
     public override fun onDestroy() {

@@ -16,7 +16,6 @@ import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -24,7 +23,6 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
 import autodagger.AutoInjector
-import com.blikoon.qrcodescanner.QrCodeActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
 import com.nextcloud.talk.R
@@ -57,7 +55,6 @@ import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
-import java.net.URLDecoder
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -116,6 +113,7 @@ class BrowserLoginActivity : BaseActivity() {
         initViews()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()
+        anonymouslyPostLoginRequest()
         lifecycle.addObserver(lifecycleEventObserver)
     }
 
@@ -131,13 +129,6 @@ class BrowserLoginActivity : BaseActivity() {
         if (extras.containsKey(BundleKeys.KEY_PASSWORD)) {
             password = extras.getString(BundleKeys.KEY_PASSWORD)
         }
-
-        if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
-            val intent = Intent(this, QrCodeActivity::class.java)
-            qrScanResultLauncher.launch(intent)
-        } else {
-            anonymouslyPostLoginRequest()
-        }
     }
 
     private fun initViews() {
@@ -147,29 +138,6 @@ class BrowserLoginActivity : BaseActivity() {
         binding.cancelLoginBtn.setOnClickListener {
             lifecycle.removeObserver(lifecycleEventObserver)
             onBackPressedDispatcher.onBackPressed()
-        }
-    }
-
-    private val qrScanResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            val data = result.data
-
-            if (data == null) {
-                return@registerForActivityResult
-            }
-
-            val resultData = data.getStringExtra("com.blikoon.qrcodescanner.got_qr_scan_relult")
-
-            if (resultData == null || !resultData.startsWith("nc")) {
-                Snackbar.make(binding.root, getString(R.string.qr_code_error), Snackbar.LENGTH_SHORT).show()
-                return@registerForActivityResult
-            }
-
-            try {
-                parseLoginDataUrl(resultData)
-            } catch (e: IllegalArgumentException) {
-                Log.e(TAG, "Error in scanning QR Code: $e")
-            }
         }
     }
 
@@ -266,44 +234,6 @@ class BrowserLoginActivity : BaseActivity() {
         } catch (e: IllegalStateException) {
             Log.e(TAG, "Error caught at performLoginFlowV2: $e")
         }
-    }
-
-    /**
-     * QR returns a URI of format `nc://login/server:xxx&user:xxx&password:xxx`
-     * with the variables not always been in the provided order
-     *
-     * @throws IllegalArgumentException
-     */
-    fun parseLoginDataUrl(dataString: String) {
-        if (!dataString.startsWith(PREFIX)) {
-            throw IllegalArgumentException("Invalid login URL detected" )
-        }
-
-        val data = dataString.removePrefix(PREFIX)
-        val values = data.split('&')
-
-        if(values.size !in 1..3) {
-            throw IllegalArgumentException("Illegal number of login URL elements detected: ${values.size}")
-        }
-
-        val loginData = LoginData()
-
-        values.forEach { value ->
-            when {
-                value.startsWith(USER_KEY) -> {
-                    loginData.username = URLDecoder.decode(value.removePrefix(USER_KEY), "UTF-8")
-                }
-                value.startsWith(PASS_KEY) -> {
-                    loginData.token = URLDecoder.decode(value.removePrefix(PASS_KEY), "UTF-8")
-                }
-                value.startsWith(SERVER_KEY) -> {
-                    loginData.serverUrl = URLDecoder.decode(value.removePrefix(SERVER_KEY), "UTF-8")
-                    baseUrl = loginData.serverUrl
-                }
-            }
-        }
-
-        parseAndLogin(loginData)
     }
 
     private fun completeLoginFlow(response: String, status: Int) {
@@ -427,9 +357,5 @@ class BrowserLoginActivity : BaseActivity() {
         private val TAG = BrowserLoginActivity::class.java.simpleName
         private const val INTERVAL = 30L
         private const val HTTP_OK = 200
-        private const val USER_KEY = "user:"
-        private const val SERVER_KEY = "server:"
-        private const val PASS_KEY = "password:"
-        private const val PREFIX = "nc://login/"
     }
 }

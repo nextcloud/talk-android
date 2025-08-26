@@ -871,6 +871,4 @@ How to translate with transifex:
     <string name="open_notes">Open Notes</string>
     <string name="cancel_login">Cancel Login</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue the login process in the browser</string>
-    <string name="scan_qr_code">Scan QR Code</string>
-    <string name="qr_code_error">QR code could not be read</string>
 </resources>
