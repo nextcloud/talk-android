@@ -392,7 +392,7 @@ class MessageActionsDialog(
         if (visible) {
             dialogMessageActionsBinding.menuDeleteMessage.setOnClickListener {
                 val areYouSure = context.resources.getString(R.string.message_delete_are_you_sure)
-                val deleteMessage = context.resources.getString(R.string.nc_delete_message)
+                val deleteMessage = context.resources.getString(R.string.delete_message)
                 val delete = context.resources.getString(R.string.nc_delete)
                 val cancel = context.resources.getString(R.string.nc_cancel)
                 val builder = MaterialAlertDialogBuilder(context)
