@@ -150,8 +150,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             // binding.messageText.text =
             //     SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
-            binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE
+            binding.messageText.visibility =
+                if (binding.messageText.text.isBlank()) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
         }
 
         if (message.lastEditTimestamp != 0L && !message.isDeleted) {
@@ -211,11 +216,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
         checkBoxContainer.removeAllViews()
         val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
-        val matches = regex.findAll(message)
+        val matches = regex.findAll(message).toList()
 
-        if (matches.none()) return false
+        if (matches.isEmpty()) return false
 
-        val firstPart = message.toString().substringBefore("\n- [")
+        val firstPartIndex = matches.first().range.first
+        val firstPart = message.substring(0, firstPartIndex).trim()
+
         messageTextView.text = messageUtils.enrichChatMessageText(
             binding.messageText.context,
             firstPart,
