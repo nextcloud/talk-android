@@ -3504,26 +3504,28 @@ class ChatActivity :
 
         while (chatMessageIterator.hasNext()) {
             val currentMessage = chatMessageIterator.next()
-
             chatMessageMap[currentMessage.value.previousMessageId.toString()]?.let { previousMessage ->
-
                 if (isSystemMessage(currentMessage.value) &&
                     previousMessage.systemMessageType == currentMessage.value.systemMessageType &&
                     isSameDayMessages(previousMessage, currentMessage.value)
                 ) {
-                    previousMessage.expandableParent = true
-                    currentMessage.value.expandableParent = false
-
-                    if (currentMessage.value.lastItemOfExpandableGroup == 0) {
-                        currentMessage.value.lastItemOfExpandableGroup = currentMessage.value.jsonMessageId
-                    }
-
-                    previousMessage.lastItemOfExpandableGroup = currentMessage.value.lastItemOfExpandableGroup
-                    previousMessage.expandableChildrenAmount = currentMessage.value.expandableChildrenAmount + 1
+                    groupSystemMessages(previousMessage, currentMessage.value)
                 }
             }
         }
         return chatMessageMap.values.toList()
+    }
+
+    private fun groupSystemMessages(previousMessage: ChatMessage, currentMessage: ChatMessage) {
+        previousMessage.expandableParent = true
+        currentMessage.expandableParent = false
+
+        if (currentMessage.lastItemOfExpandableGroup == 0) {
+            currentMessage.lastItemOfExpandableGroup = currentMessage.jsonMessageId
+        }
+
+        previousMessage.lastItemOfExpandableGroup = currentMessage.lastItemOfExpandableGroup
+        previousMessage.expandableChildrenAmount = currentMessage.expandableChildrenAmount + 1
     }
 
     private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
