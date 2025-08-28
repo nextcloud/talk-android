@@ -135,7 +135,6 @@
     <string name="nc_delete_all">Изтриване на всички</string>
     <string name="nc_delete_call">Изтриване на разговора</string>
     <string name="nc_delete_conversation_more">Ако изтриете разговора, той ще бъде изтрит и за всички останали участници.</string>
-    <string name="nc_delete_message">Изтрий</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Съобщението е изтрито успешно, но може да е изтекло към други услуги</string>
     <string name="nc_demote">Понижаване от модератор</string>
     <string name="nc_description_record_voice">Запис на гласово съобщение</string>

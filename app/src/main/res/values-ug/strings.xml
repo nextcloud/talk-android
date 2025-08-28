@@ -169,7 +169,6 @@
     <string name="nc_delete_all">ھەممىنى ئۆچۈرۈڭ</string>
     <string name="nc_delete_call">سۆھبەتنى ئۆچۈرۈڭ</string>
     <string name="nc_delete_conversation_more">ئەگەر سۆھبەتنى ئۆچۈرسىڭىز ، ئۇ باشقا بارلىق قاتناشقۇچىلار ئۈچۈن ئۆچۈرۈلىدۇ.</string>
-    <string name="nc_delete_message">ئۆچۈرۈش</string>
     <string name="nc_delete_message_leaked_to_matterbridge">ئۇچۇر مۇۋەپپەقىيەتلىك ئۆچۈرۈلدى ، ئەمما ئۇ باشقا مۇلازىمەتلەرگە ئاشكارىلانغان بولۇشى مۇمكىن</string>
     <string name="nc_deleted_user">ئىشلەتكۈچى%1$s چىقىرىۋېتىلدى</string>
     <string name="nc_demote">رىياسەتچىدىن تۆۋەنلەش</string>

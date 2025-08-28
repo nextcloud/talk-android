@@ -172,7 +172,6 @@
     <string name="nc_delete_all">Vymazať všetko</string>
     <string name="nc_delete_call">Zmazať konverzáciu</string>
     <string name="nc_delete_conversation_more">Ak zmažete konverzáciu, bude takisto zmazaná pre všetkých ostatných zúčastnených</string>
-    <string name="nc_delete_message">Zmazať</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Správa úspešne odstránená, ale mohla uniknúť na iné serveri.</string>
     <string name="nc_deleted_user">Užívateľ %1$s bol vymazaný</string>
     <string name="nc_demote">Odobrať moderovanie</string>

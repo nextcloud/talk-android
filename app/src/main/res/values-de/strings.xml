@@ -181,7 +181,6 @@
     <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
-    <string name="nc_delete_message">Löschen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_delete_now">Jetzt löschen</string>
     <string name="nc_deleted_user">Benutzer %1$s wurde entfernt</string>
@@ -555,7 +554,6 @@
     <string name="open_thread">Zu Thema gehen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
-    <string name="please_continue_the_login_process_in_the_browser">Bitte den Anmeldeprozess im Browser fortsetzen</string>
     <string name="polls_add_option">Option hinzufügen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>

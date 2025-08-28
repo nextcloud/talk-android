@@ -181,7 +181,6 @@
     <string name="nc_delete_all">Вилучити все</string>
     <string name="nc_delete_call">Вилучити розмову</string>
     <string name="nc_delete_conversation_more">Якщо ви вилучите розмову, її буде вилучено у всіх інших учасників цієї розмови.</string>
-    <string name="nc_delete_message">Вилучити</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Повідомлення вилучено, але воно могло потрапити до інших сервісів</string>
     <string name="nc_delete_now">Видалити зараз</string>
     <string name="nc_deleted_user">Користувача %1$s було видалено</string>
@@ -555,7 +554,6 @@
     <string name="open_thread">Перейти до теми</string>
     <string name="play_pause_voice_message">Відтворення/пауза голосового повідомлення</string>
     <string name="playback_speed_control">Регулювання швидкості відтворення</string>
-    <string name="please_continue_the_login_process_in_the_browser">Будь ласка, продовжте процес входу в браузері</string>
     <string name="polls_add_option">Додати варіант</string>
     <string name="polls_edit_vote">Змінити голос</string>
     <string name="polls_end_poll">Завершити опитування</string>

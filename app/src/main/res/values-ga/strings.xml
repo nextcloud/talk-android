@@ -96,6 +96,7 @@
     <string name="message_search_begin_typing">Tosaigh ag clóscríobh chun cuardach a dhéanamh…</string>
     <string name="message_search_hint">Cuardaigh…</string>
     <string name="messages">Teachtaireachtaí</string>
+    <string name="messages_could_not_be_loaded">Níorbh fhéidir teachtaireachtaí a lódáil</string>
     <string name="nc_Server_account_imported">Tá cuntas roghnaithe iompórtáilte anois agus ar fáil</string>
     <string name="nc_about">Faoi</string>
     <string name="nc_account_chooser_active_user">Úsáideoir gníomhach</string>
@@ -180,7 +181,6 @@
     <string name="nc_delete_all">Scrios go léir</string>
     <string name="nc_delete_call">Scrios an comhrá</string>
     <string name="nc_delete_conversation_more">Má scriosann tú an comhrá, scriosfar é do gach rannpháirtí eile freisin.</string>
-    <string name="nc_delete_message">Scrios</string>
     <string name="nc_delete_message_leaked_to_matterbridge">D\'éirigh leis an teachtaireacht a scriosadh, ach seans gur sceitheadh ​​chuig seirbhísí eile í</string>
     <string name="nc_delete_now">Scrios anois</string>
     <string name="nc_deleted_user">Baineadh úsáideoir %1$s</string>
@@ -425,6 +425,7 @@
     <string name="nc_sent_deck_card" formatted="true">Sheol %1$s cárta deic</string>
     <string name="nc_server_connect">Nasc freastalaí tástála</string>
     <string name="nc_server_db_upgrade_needed">Uasghrádaigh do bhunachar sonraí %1$s le do thoil</string>
+    <string name="nc_server_down">Ní féidir ceangal leis an bhfreastalaí</string>
     <string name="nc_server_failed_to_import_account">Theip ar iompórtáil an chuntais roghnaithe</string>
     <string name="nc_server_helper_text">An nasc chuig do chomhéadan gréasáin %1$s nuair a osclaíonn tú é sa bhrabhsálaí.</string>
     <string name="nc_server_import_account">Iompórtáil cuntas ón aip %1$s</string>
@@ -553,7 +554,6 @@
     <string name="open_thread">Téigh go dtí an snáithe</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
-    <string name="please_continue_the_login_process_in_the_browser">Lean ar aghaidh leis an bpróiseas logála isteach sa bhrabhsálaí le do thoil.</string>
     <string name="polls_add_option">Cuir rogha leis</string>
     <string name="polls_edit_vote">Cuir vóta in eagar</string>
     <string name="polls_end_poll">Deireadh vótaíocht</string>
@@ -653,6 +653,7 @@
     <string name="thisWeek">An tseachtain seo</string>
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>
     <string name="this_weekend">An deireadh seachtaine seo</string>
+    <string name="thread_cancel">Cealaigh cruthú snáithe</string>
     <string name="thread_replies_amount">%1$d freagraí</string>
     <string name="thread_title">Teideal an snáithe</string>
     <string name="today">Inniu</string>

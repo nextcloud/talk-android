@@ -180,7 +180,6 @@
     <string name="nc_delete_all">Eliminar todos</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
-    <string name="nc_delete_message">Eliminar</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensaje borrado con éxito, pero puede haber sido filtrado a otros servicios</string>
     <string name="nc_delete_now">Eliminar ahora</string>
     <string name="nc_deleted_user">El Usuario %1$s fue eliminado</string>
@@ -554,7 +553,6 @@
     <string name="open_thread">Ir al hilo</string>
     <string name="play_pause_voice_message">Reproducir/pausar mensaje de voz</string>
     <string name="playback_speed_control">Control de velocidad de reproducción</string>
-    <string name="please_continue_the_login_process_in_the_browser">Por favor, continúe el proceso de inicio de sesión en el navegador</string>
     <string name="polls_add_option">Añadir opción</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Cerrar la encuesta</string>

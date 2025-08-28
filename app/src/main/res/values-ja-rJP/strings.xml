@@ -160,7 +160,6 @@
     <string name="nc_delete_all">全て削除</string>
     <string name="nc_delete_call">会話を削除</string>
     <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者でも一緒に解除されます。</string>
-    <string name="nc_delete_message">削除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">メッセージは削除されましたが、他サービスへは転送されている可能性があります。</string>
     <string name="nc_deleted_user">ユーザー%1$sは削除されました</string>
     <string name="nc_demote">モデレータから降格</string>

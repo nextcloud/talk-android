@@ -172,7 +172,6 @@
     <string name="nc_delete_all">حذف الكل</string>
     <string name="nc_delete_call">احذف المحادثة</string>
     <string name="nc_delete_conversation_more">إذا قمت بحذف المحادثة، سوف يتم حذفها أيضًا لدى المشاركين الآخرين.</string>
-    <string name="nc_delete_message">حذف </string>
     <string name="nc_delete_message_leaked_to_matterbridge">تم حذف الرسالة بنجاح، لكن من الممكن أن تم تسريبها لخدمات أخرى</string>
     <string name="nc_deleted_user">تمّ حذف المستخدِم %1$s </string>
     <string name="nc_demote">تخفيض رتبة مشرف</string>

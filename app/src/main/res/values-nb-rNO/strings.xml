@@ -167,7 +167,6 @@
     <string name="nc_delete_all">Slett alle</string>
     <string name="nc_delete_call">Slett samtale</string>
     <string name="nc_delete_conversation_more">Hvis du sletter samtalen, blir den også slettet for alle andre deltakere.</string>
-    <string name="nc_delete_message">Slett</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Meldingen ble slettet, men den kan ha blitt lekket til andre tjenester</string>
     <string name="nc_deleted_user">Bruker %1$s ble fjernet</string>
     <string name="nc_demote">Fjern moderatorstatus</string>
