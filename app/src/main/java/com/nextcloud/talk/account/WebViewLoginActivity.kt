@@ -114,10 +114,9 @@ class WebViewLoginActivity : BaseActivity() {
         setContentView(binding.root)
         actionBar?.hide()
         initSystemBars()
-
+        assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()
-        setupWebView()
     }
 
     private fun handleIntent() {
@@ -132,11 +131,18 @@ class WebViewLoginActivity : BaseActivity() {
         if (extras.containsKey(BundleKeys.KEY_PASSWORD)) {
             password = extras.getString(BundleKeys.KEY_PASSWORD)
         }
+
+        if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
+            extras.getString(BundleKeys.KEY_FROM_QR)?.let {
+                parseAndLoginFromWebView(it)
+            }
+        } else {
+            setupWebView()
+        }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView() {
-        assembledPrefix = resources!!.getString(R.string.nc_talk_login_scheme) + PROTOCOL_SUFFIX + "login/"
         binding.webview.settings.allowFileAccess = false
         binding.webview.settings.allowFileAccessFromFileURLs = false
         binding.webview.settings.javaScriptEnabled = true
@@ -327,12 +333,16 @@ class WebViewLoginActivity : BaseActivity() {
             dispose()
             cookieManager.cookieStore.removeAll()
 
-            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, baseUrl!!).blockingGet()) {
+            if (userManager.checkIfUserIsScheduledForDeletion(loginData.username!!, loginData.serverUrl!!)
+                    .blockingGet()
+            ) {
                 Log.e(TAG, "Tried to add already existing user who is scheduled for deletion.")
                 Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
                 // however the user is not yet deleted, just start AccountRemovalWorker again to make sure to delete it.
                 startAccountRemovalWorkerAndRestartApp()
-            } else if (userManager.checkIfUserExists(loginData.username!!, baseUrl!!).blockingGet()) {
+            } else if (userManager.checkIfUserExists(loginData.username!!, loginData.serverUrl!!)
+                    .blockingGet()
+            ) {
                 if (reauthorizeAccount) {
                     updateUserAndRestartApp(loginData)
                 } else {
@@ -342,6 +352,9 @@ class WebViewLoginActivity : BaseActivity() {
             } else {
                 startAccountVerification(loginData)
             }
+        } else {
+            Log.e(TAG, "Login Data was null")
+            restartApp()
         }
     }
 
@@ -351,9 +364,9 @@ class WebViewLoginActivity : BaseActivity() {
         bundle.putString(KEY_TOKEN, loginData.token)
         bundle.putString(KEY_BASE_URL, loginData.serverUrl)
         var protocol = ""
-        if (baseUrl!!.startsWith("http://")) {
+        if (loginData.serverUrl!!.startsWith("http://")) {
             protocol = "http://"
-        } else if (baseUrl!!.startsWith("https://")) {
+        } else if (loginData.serverUrl!!.startsWith("https://")) {
             protocol = "https://"
         }
         if (!TextUtils.isEmpty(protocol)) {
@@ -411,17 +424,17 @@ class WebViewLoginActivity : BaseActivity() {
             return null
         }
         for (value in values) {
-            if (value.startsWith("user" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR)) {
+            if (value.startsWith("user$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR")) {
                 loginData.username = URLDecoder.decode(
-                    value.substring(("user" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR).length)
+                    value.substring(("user$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR").length)
                 )
-            } else if (value.startsWith("password" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR)) {
+            } else if (value.startsWith("password$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR")) {
                 loginData.token = URLDecoder.decode(
-                    value.substring(("password" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR).length)
+                    value.substring(("password$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR").length)
                 )
-            } else if (value.startsWith("server" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR)) {
+            } else if (value.startsWith("server$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR")) {
                 loginData.serverUrl = URLDecoder.decode(
-                    value.substring(("server" + LOGIN_URL_DATA_KEY_VALUE_SEPARATOR).length)
+                    value.substring(("server$LOGIN_URL_DATA_KEY_VALUE_SEPARATOR").length)
                 )
             } else {
                 return null
