@@ -182,16 +182,16 @@ class ConversationItem(
     }
 
     private fun showAvatar(holder: ConversationItemViewHolder) {
+        // reset before loading
+        holder.binding.dialogAvatar.setImageDrawable(null)
         holder.binding.dialogAvatar.visibility = View.VISIBLE
+
         var shouldLoadAvatar = shouldLoadAvatar(holder)
         if (ConversationEnums.ConversationType.ROOM_SYSTEM == model.type) {
             holder.binding.dialogAvatar.loadSystemAvatar()
             shouldLoadAvatar = false
         }
         if (shouldLoadAvatar) {
-            // reset before loading
-            holder.binding.dialogAvatar.setImageDrawable(null)
-
             when (model.type) {
                 ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL -> {
                     if (!TextUtils.isEmpty(model.name)) {
