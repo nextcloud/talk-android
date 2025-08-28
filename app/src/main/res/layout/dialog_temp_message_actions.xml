@@ -152,7 +152,7 @@
                     android:layout_gravity="start|center_vertical"
                     android:paddingStart="@dimen/standard_double_padding"
                     android:paddingEnd="@dimen/standard_padding"
-                    android:text="@string/nc_delete_message"
+                    android:text="@string/delete_message"
                     android:textAlignment="viewStart"
                     android:textColor="@color/high_emphasis_text"
                     android:textSize="@dimen/bottom_sheet_text_size" />
