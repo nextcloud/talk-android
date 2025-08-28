@@ -181,7 +181,6 @@
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
-    <string name="nc_delete_message">刪除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">使用 %1$s 已移除</string>
@@ -555,7 +554,6 @@
     <string name="open_thread">到討論串</string>
     <string name="play_pause_voice_message">播放/暫停語音訊息</string>
     <string name="playback_speed_control">播放速度控制</string>
-    <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入流程</string>
     <string name="polls_add_option">新增選項</string>
     <string name="polls_edit_vote">編輯投票</string>
     <string name="polls_end_poll">結束投票</string>

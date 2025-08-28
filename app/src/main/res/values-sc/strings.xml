@@ -108,7 +108,6 @@
     <string name="nc_delete_all">Cantzella totu</string>
     <string name="nc_delete_call">Cantzella resonada</string>
     <string name="nc_delete_conversation_more">Si cantzellas sa resonada, s\'at a cantzellare puru pro su restu de partetzipantes.</string>
-    <string name="nc_delete_message">Cantzella</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Messàgiu cantzelladu, ma diat pòdere èssere istadu dispensadu a àteros servìtzios</string>
     <string name="nc_demote">Lea·ssi su permissu de moderare</string>
     <string name="nc_description_record_voice">Registra messàgiu de boghe</string>

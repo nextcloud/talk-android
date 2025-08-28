@@ -168,7 +168,6 @@
     <string name="nc_delete_all">Slet alt</string>
     <string name="nc_delete_call">Slet samtale</string>
     <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
-    <string name="nc_delete_message">Slet</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Besked slettet, men kan kan være lækket til andre services</string>
     <string name="nc_deleted_user">Brugeren %1$s blev fjernet</string>
     <string name="nc_demote">Degrader fra moderator</string>

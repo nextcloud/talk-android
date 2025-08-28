@@ -181,7 +181,6 @@
     <string name="nc_delete_all">Futa zote</string>
     <string name="nc_delete_call">Futa mazungumzo</string>
     <string name="nc_delete_conversation_more">Ukifuta mazungumzo, yatafutwa pia kwa washiriki wengine wote.</string>
-    <string name="nc_delete_message">Futa</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Ujumbe umefutwa kikamilifu, lakini huenda umevuja kwa huduma zingine</string>
     <string name="nc_delete_now">Futa sasa</string>
     <string name="nc_deleted_user">Mtumiaji %1$s aliondolewa</string>
@@ -557,7 +556,6 @@
     <string name="open_thread">Nenda kwenye mjadala</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
     <string name="playback_speed_control">Udhibiti wa kasi ya mshindonyuma</string>
-    <string name="please_continue_the_login_process_in_the_browser">Tafadhali endeleza mchakato wa kuingia katika kivinjari</string>
     <string name="polls_add_option">Ongeza mbadala</string>
     <string name="polls_edit_vote">Hariri kura</string>
     <string name="polls_end_poll">Maliza kura ya maoni</string>

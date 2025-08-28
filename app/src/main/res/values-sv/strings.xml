@@ -179,7 +179,6 @@
     <string name="nc_delete_all">Ta bort alla</string>
     <string name="nc_delete_call">Ta bort konversation</string>
     <string name="nc_delete_conversation_more">Om du raderar konversationen, kommer den även att raderas för alla andra deltagare.</string>
-    <string name="nc_delete_message">Radera</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Meddelandet har raderats, men kan ha läckt till andra tjänster</string>
     <string name="nc_delete_now">Ta bort nu</string>
     <string name="nc_deleted_user">Användare %1$s togs bort</string>
@@ -552,7 +551,6 @@
     <string name="open_thread">Gå till tråd</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
-    <string name="please_continue_the_login_process_in_the_browser">Fortsätt inloggningen i webbläsaren</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_edit_vote">Redigera röst</string>
     <string name="polls_end_poll">Avsluta omröstning</string>

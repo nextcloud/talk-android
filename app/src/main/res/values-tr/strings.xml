@@ -181,7 +181,6 @@
     <string name="nc_delete_all">Tümünü sil</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
-    <string name="nc_delete_message">Sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
     <string name="nc_delete_now">Şimdi sil</string>
     <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>
@@ -555,7 +554,6 @@
     <string name="open_thread">Yazışmaya git</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="playback_speed_control">Oynatma hızı denetimi</string>
-    <string name="please_continue_the_login_process_in_the_browser">Lütfen oturum açma işlemini tarayıcınızdan sürdürün</string>
     <string name="polls_add_option">Seçenek ekle</string>
     <string name="polls_edit_vote">Oyu düzenle</string>
     <string name="polls_end_poll">Anleti sonlandır</string>
@@ -662,7 +660,7 @@
     <string name="tomorrow">Yarın</string>
     <string name="translate">Çevir</string>
     <string name="translation">Çeviri</string>
-    <string name="translation_copy_translated_text">Çevrilmiş metni kopyala</string>
+    <string name="translation_copy_translated_text">Çevrilmiş yazıyı kopyala</string>
     <string name="translation_detect_language">Dili algıla</string>
     <string name="translation_device_settings">Aygıt ayarları</string>
     <string name="translation_error_message">Dil algılanamadı</string>

@@ -140,7 +140,6 @@
     <string name="nc_delete_all">Izbriši vse</string>
     <string name="nc_delete_call">Izbriši pogovor</string>
     <string name="nc_delete_conversation_more">Če izbrišete pogovor, bo ta izbrisan za vse udeležence.</string>
-    <string name="nc_delete_message">Izbriši</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sporočilo je uspešno izbrisano, a je lahko že poslano na druge storitve.</string>
     <string name="nc_delete_now">Izbriši</string>
     <string name="nc_demote">Ponižaj iz moderatorja</string>
