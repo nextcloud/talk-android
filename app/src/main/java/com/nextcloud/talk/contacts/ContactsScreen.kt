@@ -10,14 +10,15 @@ package com.nextcloud.talk.contacts
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.safeContent
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.contacts.components.ContactsAppBar
@@ -35,7 +36,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
 
     Scaffold(
         modifier = Modifier
-            .statusBarsPadding(),
+            .windowInsetsPadding(WindowInsets.safeContent),
         topBar = {
             if (isSearchActive) {
                 ContactsSearchAppBar(
@@ -64,7 +65,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
         content = { paddingValues ->
             Column(
                 Modifier
-                    .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
+                    .padding(paddingValues)
                     .background(colorResource(id = R.color.bg_default))
             ) {
                 if (!isAddParticipants) {

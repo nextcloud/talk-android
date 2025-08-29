@@ -286,7 +286,6 @@ class ConversationsListActivity :
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
-
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbar)
         viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE)
         viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
@@ -378,7 +377,7 @@ class ConversationsListActivity :
     @Suppress("MagicNumber")
     private fun addEmptyItemForEdgeToEdgeIfNecessary() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            adapter?.addScrollableFooter(SpacerItem(200))
+            adapter?.addScrollableFooter(SpacerItem(100))
         }
     }
 
