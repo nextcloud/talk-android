@@ -22,6 +22,7 @@ import android.view.View
 import android.widget.RelativeLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import coil.dispose
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.items.ConversationItem.ConversationItemViewHolder
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -182,8 +183,7 @@ class ConversationItem(
     }
 
     private fun showAvatar(holder: ConversationItemViewHolder) {
-        // reset before loading
-        holder.binding.dialogAvatar.setImageDrawable(null)
+        holder.binding.dialogAvatar.dispose()
         holder.binding.dialogAvatar.visibility = View.VISIBLE
 
         var shouldLoadAvatar = shouldLoadAvatar(holder)
