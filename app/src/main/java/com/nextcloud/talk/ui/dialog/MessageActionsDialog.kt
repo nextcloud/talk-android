@@ -59,6 +59,7 @@ import java.util.Date
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
+@Suppress("LongParameterList", "TooManyFunctions")
 class MessageActionsDialog(
     private val chatActivity: ChatActivity,
     private val message: ChatMessage,

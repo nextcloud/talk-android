@@ -21,6 +21,7 @@ import com.stfalcon.chatkit.messages.MessageInput
 class MessageInput : MessageInput {
     lateinit var audioRecordDuration: Chronometer
     lateinit var recordAudioButton: ImageButton
+    lateinit var submitThreadButton: ImageButton
     lateinit var slideToCancelDescription: TextView
     lateinit var microphoneEnabledInfo: ImageView
     lateinit var microphoneEnabledInfoBackground: ImageView
@@ -47,6 +48,7 @@ class MessageInput : MessageInput {
     private fun init() {
         audioRecordDuration = findViewById(R.id.audioRecordDuration)
         recordAudioButton = findViewById(R.id.recordAudioButton)
+        submitThreadButton = findViewById(R.id.submitThreadButton)
         slideToCancelDescription = findViewById(R.id.slideToCancelDescription)
         microphoneEnabledInfo = findViewById(R.id.microphoneEnabledInfo)
         microphoneEnabledInfoBackground = findViewById(R.id.microphoneEnabledInfoBackground)
