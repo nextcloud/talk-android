@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Обриши све</string>
     <string name="nc_delete_call">Обриши разговор</string>
     <string name="nc_delete_conversation_more">Ако обришете разговор, он ће бити обрисан и за све друге учеснике.</string>
+    <string name="nc_delete_message">Обриши поруку</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Порука је успешно обрисана, али је можда процурела на друге сервисе</string>
     <string name="nc_delete_now">Обриши одмах</string>
     <string name="nc_deleted_user">Корисник %1$s је уклоњен</string>

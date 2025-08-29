@@ -180,6 +180,7 @@
     <string name="nc_delete_all">Excluir todos</string>
     <string name="nc_delete_call">Excluir conversa</string>
     <string name="nc_delete_conversation_more">Se você excluir a conversa, ela também será excluída para todos os outros participantes.</string>
+    <string name="nc_delete_message">Excluir mensagem</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensagem excluída com sucesso, mas pode ter sido vazada para outros serviços </string>
     <string name="nc_delete_now">Excluir agora</string>
     <string name="nc_deleted_user">Usuário %1$s foi removido</string>

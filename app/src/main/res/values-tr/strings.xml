@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Büyükten küçüğe</string>
     <string name="menu_item_sort_by_size_smallest_first">Küçükten büyüğe</string>
     <string name="message_copied">İleti kopyalandı</string>
+    <string name="message_delete_are_you_sure">Bu iletiyi silmek istediğinize emin misiniz?</string>
     <string name="message_deleted_by_you">İleti sizin tarafınızdan silindi</string>
     <string name="message_last_edited_by">%1$s tarafından düzenlendi</string>
     <string name="message_poll_tap_to_open">Anketi açmak için dokunun</string>
@@ -181,6 +182,7 @@
     <string name="nc_delete_all">Tümünü sil</string>
     <string name="nc_delete_call">Görüşmeyi sil</string>
     <string name="nc_delete_conversation_more">Görüşmeyi silerseniz tüm diğer katılımcılar için de silinecek.</string>
+    <string name="nc_delete_message">İletiyi sil</string>
     <string name="nc_delete_message_leaked_to_matterbridge">İleti silindi ancak başka hizmetlere aktarılmış olabilir</string>
     <string name="nc_delete_now">Şimdi sil</string>
     <string name="nc_deleted_user">%1$s kullanıcısı kaldırıldı</string>

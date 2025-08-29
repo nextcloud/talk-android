@@ -179,6 +179,7 @@
     <string name="nc_delete_all">Supprimer tout</string>
     <string name="nc_delete_call">Supprimer la conversation</string>
     <string name="nc_delete_conversation_more">Si vous supprimez la conversation, elle sera supprimée pour tous les participants.</string>
+    <string name="nc_delete_message">Supprimer le message</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message supprimé avec succès, mais il pourrait avoir été divulgué à d’autres services</string>
     <string name="nc_delete_now">Supprimer maintenant</string>
     <string name="nc_deleted_user">L\'utilisateur %1$s a été supprimé</string>

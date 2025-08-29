@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Delete all</string>
     <string name="nc_delete_call">Delete conversation</string>
     <string name="nc_delete_conversation_more">If you delete the conversation, it will also be deleted for all other participants.</string>
+    <string name="nc_delete_message">Delete message</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Message deleted successfully, but it might have been leaked to other services</string>
     <string name="nc_delete_now">Delete now</string>
     <string name="nc_deleted_user">User %1$s was removed</string>

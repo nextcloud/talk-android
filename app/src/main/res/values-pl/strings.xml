@@ -180,6 +180,7 @@
     <string name="nc_delete_all">Usuń wszystko</string>
     <string name="nc_delete_call">Usuń rozmowę</string>
     <string name="nc_delete_conversation_more">Jeśli usuniesz rozmowę, zostanie ona również usunięta dla wszystkich pozostałych uczestników.</string>
+    <string name="nc_delete_message">Usuń wiadomość</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Wiadomość została pomyślnie usunięta, ale mogła przedostać się do innych usług</string>
     <string name="nc_delete_now">Usuń teraz</string>
     <string name="nc_deleted_user">Użytkownik %1$s został usunięty</string>
