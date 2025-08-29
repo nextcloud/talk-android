@@ -3628,6 +3628,10 @@ class ChatActivity :
         }
     }
 
+    override fun openThread(chatMessage: ChatMessage) {
+        openThread(chatMessage.jsonMessageId.toLong())
+    }
+
     override fun onLongClickReactions(chatMessage: ChatMessage) {
         ShowReactionsDialog(
             this,

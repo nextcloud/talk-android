@@ -203,6 +203,10 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
         commonMessageInterface.onClickReaction(chatMessage, emoji)
     }
 
+    private fun openThread(chatMessage: ChatMessage) {
+        commonMessageInterface.openThread(chatMessage)
+    }
+
     override fun getPayloadForImageLoader(message: ChatMessage?): Any? {
         if (message!!.selectedIndividualHashMap!!.containsKey(KEY_CONTACT_NAME)) {
             previewContainer.visibility = View.GONE

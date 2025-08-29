@@ -39,9 +39,10 @@ import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) :
-    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload) {
+    MessageHolders.OutcomingTextMessageViewHolder<ChatMessage>(outcomingView, payload),
+    AdjustableMessageHolderInterface {
 
-    private val binding: ItemCustomOutcomingPollMessageBinding = ItemCustomOutcomingPollMessageBinding.bind(itemView)
+    override val binding: ItemCustomOutcomingPollMessageBinding = ItemCustomOutcomingPollMessageBinding.bind(itemView)
 
     @Inject
     lateinit var context: Context
@@ -103,6 +104,19 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) :
 
         setPollPreview(message)
 
+        val chatActivity = commonMessageInterface as ChatActivity
+        val showThreadButton = chatActivity.conversationThreadId == null && message.isThread
+        if (showThreadButton) {
+            binding.reactions.threadButton.visibility = View.VISIBLE
+            binding.reactions.threadButton.setContent {
+                ThreadButtonComposable(
+                    onButtonClick = { openThread(message) }
+                )
+            }
+        } else {
+            binding.reactions.threadButton.visibility = View.GONE
+        }
+
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -120,6 +134,10 @@ class OutcomingPollMessageViewHolder(outcomingView: View, payload: Any) :
 
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
+    }
+
+    private fun openThread(chatMessage: ChatMessage) {
+        commonMessageInterface.openThread(chatMessage)
     }
 
     private fun setPollPreview(message: ChatMessage) {

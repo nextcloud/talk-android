@@ -73,6 +73,12 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof OutcomingDeckCardViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
             holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+
+        } else if (holder instanceof IncomingPollMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingPollMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
         }
 
         super.onBindViewHolder(holder, position);

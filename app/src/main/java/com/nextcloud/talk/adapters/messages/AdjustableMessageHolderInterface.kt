@@ -37,6 +37,8 @@ interface AdjustableMessageHolderInterface {
                     (viewHolder.binding as ItemCustomOutcomingVoiceMessageBinding).bubble
                 ItemCustomOutcomingLocationMessageBinding::class.java ->
                     (viewHolder.binding as ItemCustomOutcomingLocationMessageBinding).bubble
+                ItemCustomOutcomingPollMessageBinding::class.java ->
+                    (viewHolder.binding as ItemCustomOutcomingPollMessageBinding).bubble
                 else -> null
             }?.let {
                 RelativeLayout.LayoutParams(binding.root.layoutParams).apply {
