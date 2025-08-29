@@ -178,6 +178,7 @@
     <string name="nc_delete_all">Alles verwijderen</string>
     <string name="nc_delete_call">Verwijder gesprek</string>
     <string name="nc_delete_conversation_more">Als je het gesprek verwijdert, wordt het ook verwijderd voor alle andere deelnemers.</string>
+    <string name="nc_delete_message">Bericht verwijderen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Het bericht is verwijderd, maar het is mogelijk gelekt naar andere services</string>
     <string name="nc_delete_now">Verwijder nu</string>
     <string name="nc_deleted_user">Gebruiker %1$s is verwijderd</string>

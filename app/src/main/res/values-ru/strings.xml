@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Удалить все</string>
     <string name="nc_delete_call">Удалить беседу</string>
     <string name="nc_delete_conversation_more">При удалении беседы, она будет также удалена у других участников</string>
+    <string name="nc_delete_message">Удалить сообщение</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Сообщение удалено, но его содержимое могло быть прочитано другими службами</string>
     <string name="nc_delete_now">Удалить сейчас</string>
     <string name="nc_deleted_user">Пользователь %1$s был удален</string>

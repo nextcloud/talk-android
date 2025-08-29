@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Alle löschen</string>
     <string name="nc_delete_call">Unterhaltung löschen</string>
     <string name="nc_delete_conversation_more">Wenn Sie diese Unterhaltung löschen, dann wird diese auch für alle anderen Teilnehmer gelöscht.</string>
+    <string name="nc_delete_message">Nachricht löschen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Nachricht gelöscht, sie wurde aber möglicherweise an andere Dienste weitergegeben.</string>
     <string name="nc_delete_now">Jetzt löschen</string>
     <string name="nc_deleted_user">Benutzer %1$s wurde entfernt</string>

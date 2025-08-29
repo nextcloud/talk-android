@@ -179,6 +179,7 @@
     <string name="nc_delete_all">Összes törlése</string>
     <string name="nc_delete_call">Beszélgetés törlése</string>
     <string name="nc_delete_conversation_more">Ha törli a beszélgetést, akkor az összes többi résztvevő számára is törölve lesz.</string>
+    <string name="nc_delete_message">Üzenet törlése</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Az üzenet törlése sikeresen megtörtént, de lehet, hogy az már megjelent más szolgáltatásokon</string>
     <string name="nc_delete_now">Törlés most</string>
     <string name="nc_deleted_user">%1$s felhasználó el lett távolítva</string>

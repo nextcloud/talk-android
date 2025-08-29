@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Scrios go léir</string>
     <string name="nc_delete_call">Scrios an comhrá</string>
     <string name="nc_delete_conversation_more">Má scriosann tú an comhrá, scriosfar é do gach rannpháirtí eile freisin.</string>
+    <string name="nc_delete_message">Scrios teachtaireacht</string>
     <string name="nc_delete_message_leaked_to_matterbridge">D\'éirigh leis an teachtaireacht a scriosadh, ach seans gur sceitheadh ​​chuig seirbhísí eile í</string>
     <string name="nc_delete_now">Scrios anois</string>
     <string name="nc_deleted_user">Baineadh úsáideoir %1$s</string>

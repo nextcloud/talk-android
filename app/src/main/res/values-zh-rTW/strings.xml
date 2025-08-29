@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">最大優先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小優先</string>
     <string name="message_copied">已複製訊息</string>
+    <string name="message_delete_are_you_sure">您確定要刪除此訊息？</string>
     <string name="message_deleted_by_you">訊息已被您刪除</string>
     <string name="message_last_edited_by">由 %1$s 編輯</string>
     <string name="message_poll_tap_to_open">點按開啟投票</string>
@@ -181,6 +182,7 @@
     <string name="nc_delete_all">全部刪除</string>
     <string name="nc_delete_call">刪除對話</string>
     <string name="nc_delete_conversation_more">如果您刪除了此對話，它也將會從所有其他參與者處刪除。</string>
+    <string name="nc_delete_message">刪除訊息</string>
     <string name="nc_delete_message_leaked_to_matterbridge">訊息已成功刪除，但可能已分發到其他服務</string>
     <string name="nc_delete_now">立刻刪除</string>
     <string name="nc_deleted_user">使用 %1$s 已移除</string>

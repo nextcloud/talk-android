@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Kustuta kõik</string>
     <string name="nc_delete_call">Kustuta vestlus</string>
     <string name="nc_delete_conversation_more">Kui kustutad selle vestluse, siis kustub see ka kõikide osalejate jaoks.</string>
+    <string name="nc_delete_message">Kustuta kiri</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sõnumi kustutamine õnnestus, kuid võis juhtuda, et ta oli juba teistesse sõnumiteenustesse edastatud</string>
     <string name="nc_delete_now">Kustuta kohe</string>
     <string name="nc_deleted_user">Kasutaja „%1$s“ on eemaldatud</string>

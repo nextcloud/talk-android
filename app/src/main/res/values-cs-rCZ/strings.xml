@@ -180,6 +180,7 @@
     <string name="nc_delete_all">Smazat vše</string>
     <string name="nc_delete_call">Smazat konverzaci</string>
     <string name="nc_delete_conversation_more">Pokud konverzaci smažete, bude smazána také pro všechny její ostatní účastníky.</string>
+    <string name="nc_delete_message">Smazat zprávu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Zpráva úspěšně smazána, ale možná unikla do jiných služeb</string>
     <string name="nc_delete_now">Smazat nyní</string>
     <string name="nc_deleted_user">Uživatel %1$s byl odebrán</string>

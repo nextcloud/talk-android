@@ -160,6 +160,7 @@
     <string name="nc_delete_all">Ezabatu denak</string>
     <string name="nc_delete_call">Ezabatu elkarrizketa</string>
     <string name="nc_delete_conversation_more">Elkarrizketa hau ezabatzen baduzu beste kideentzat ere ezabatuko da.</string>
+    <string name="nc_delete_message">Mezua ezabatzen</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mezua ondo ezabatu da, baina baliteke beste zerbitzu batzuetara filtratu izana</string>
     <string name="nc_deleted_user"> %1$s erabiltzailea kendu da</string>
     <string name="nc_demote">Moderatzailetik degradatua</string>

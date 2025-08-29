@@ -175,6 +175,7 @@
     <string name="nc_delete_all">Suprimir-ho tot</string>
     <string name="nc_delete_call">Suprimir la conversa</string>
     <string name="nc_delete_conversation_more">Al suprimir la conversa, també serà suprimit per a la resta de participants.</string>
+    <string name="nc_delete_message">Suprimeix el missatge</string>
     <string name="nc_delete_message_leaked_to_matterbridge">El missatge s\'ha suprimit correctament, però podria haver-se filtrat a altres serveis</string>
     <string name="nc_deleted_user">S\'ha suprimit l\'usuari %1$s</string>
     <string name="nc_demote">Deposat des del moderador</string>

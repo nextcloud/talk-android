@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Вилучити все</string>
     <string name="nc_delete_call">Вилучити розмову</string>
     <string name="nc_delete_conversation_more">Якщо ви вилучите розмову, її буде вилучено у всіх інших учасників цієї розмови.</string>
+    <string name="nc_delete_message">Вилучити повідомлення</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Повідомлення вилучено, але воно могло потрапити до інших сервісів</string>
     <string name="nc_delete_now">Видалити зараз</string>
     <string name="nc_deleted_user">Користувача %1$s було видалено</string>

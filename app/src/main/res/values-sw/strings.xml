@@ -181,6 +181,7 @@
     <string name="nc_delete_all">Futa zote</string>
     <string name="nc_delete_call">Futa mazungumzo</string>
     <string name="nc_delete_conversation_more">Ukifuta mazungumzo, yatafutwa pia kwa washiriki wengine wote.</string>
+    <string name="nc_delete_message">Futa ujumbe</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Ujumbe umefutwa kikamilifu, lakini huenda umevuja kwa huduma zingine</string>
     <string name="nc_delete_now">Futa sasa</string>
     <string name="nc_deleted_user">Mtumiaji %1$s aliondolewa</string>

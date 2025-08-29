@@ -154,6 +154,7 @@
     <string name="nc_delete_all">删除全部</string>
     <string name="nc_delete_call">删除对话</string>
     <string name="nc_delete_conversation_more">如果你删除了该对话，它也会被从其他所有与会者那里删除。</string>
+    <string name="nc_delete_message">删除邮件</string>
     <string name="nc_delete_message_leaked_to_matterbridge">消息已成功删除，但可能已泄漏给其他服务</string>
     <string name="nc_delete_now">立即删除</string>
     <string name="nc_demote">取消主持人资格</string>

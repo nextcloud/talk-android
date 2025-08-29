@@ -138,6 +138,7 @@
     <string name="nc_delete_all">Borrar todo</string>
     <string name="nc_delete_call">Borrar conversación</string>
     <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para todos los demás participantes.</string>
+    <string name="nc_delete_message">Eliminar mensaje</string>
     <string name="nc_delete_message_leaked_to_matterbridge">El mensaje se borró correctamente, pero podría haber sido filtrado a otros servicios</string>
     <string name="nc_demote">Degradar de moderador</string>
     <string name="nc_description_record_voice">Grabar mensaje de voz</string>
