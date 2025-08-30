@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Maior primeiro</string>
     <string name="menu_item_sort_by_size_smallest_first">Menor primeiro</string>
     <string name="message_copied">Mensagem copiada</string>
+    <string name="message_delete_are_you_sure">Tem certeza de que deseja excluir esta mensagem?</string>
     <string name="message_deleted_by_you">Mensagem excluída por você</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir enquete</string>
@@ -96,6 +97,7 @@
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="messages">Mensagens</string>
+    <string name="messages_could_not_be_loaded">Não foi possível carregar as mensagens</string>
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo</string>
@@ -425,6 +427,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s enviou um cartão de Deck</string>
     <string name="nc_server_connect">Testar a conexão do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
+    <string name="nc_server_down">Não é possível conectar ao servidor</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
     <string name="nc_server_helper_text">O link da interface da web do seu %1$s quando você o abre no navegador.</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
@@ -652,6 +655,7 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
+    <string name="thread_cancel">Cancelar a criação do fio</string>
     <string name="thread_replies_amount">%1$d respostas</string>
     <string name="thread_title">Título do fio</string>
     <string name="today">Hoje</string>
