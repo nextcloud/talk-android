@@ -2692,7 +2692,7 @@ class ChatActivity :
 
         title.text =
             if (isChatThread()) {
-                conversationThreadInfo?.first?.message
+                conversationThreadInfo?.thread?.title
             } else if (currentConversation?.displayName != null) {
                 try {
                     EmojiCompat.get().process(currentConversation?.displayName as CharSequence).toString()
@@ -3523,6 +3523,10 @@ class ChatActivity :
     }
 
     private fun handleThreadMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
+        fun isThreadChildMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            currentMessage.value.isThread &&
+                currentMessage.value.threadId?.toInt() != currentMessage.value.jsonMessageId
+
         val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
 
         if (conversationThreadId == null) {
@@ -3530,7 +3534,7 @@ class ChatActivity :
             while (chatMessageIterator.hasNext()) {
                 val currentMessage = chatMessageIterator.next()
 
-                if (currentMessage.value.isThread) {
+                if (isThreadChildMessage(currentMessage)) {
                     chatMessageIterator.remove()
                 }
             }
@@ -3622,6 +3626,10 @@ class ChatActivity :
         } else {
             chatViewModel.addReaction(roomToken, chatMessage, emoji)
         }
+    }
+
+    override fun openThread(chatMessage: ChatMessage) {
+        openThread(chatMessage.jsonMessageId.toLong())
     }
 
     override fun onLongClickReactions(chatMessage: ChatMessage) {

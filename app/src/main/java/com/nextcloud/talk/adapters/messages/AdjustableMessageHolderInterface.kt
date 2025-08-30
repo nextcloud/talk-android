@@ -22,21 +22,21 @@ interface AdjustableMessageHolderInterface {
 
     val binding: ViewBinding
 
-    fun adjustIfNoteToSelf(viewHolder: AdjustableMessageHolderInterface, currentConversation: ConversationModel?) {
+    fun adjustIfNoteToSelf(currentConversation: ConversationModel?) {
         if (currentConversation?.type == ConversationType.NOTE_TO_SELF) {
-            when (viewHolder.binding.javaClass) {
+            when (this.binding.javaClass) {
                 ItemCustomOutcomingTextMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingTextMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingTextMessageBinding).bubble
                 ItemCustomOutcomingDeckCardMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingDeckCardMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingDeckCardMessageBinding).bubble
                 ItemCustomOutcomingLinkPreviewMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingLinkPreviewMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingLinkPreviewMessageBinding).bubble
                 ItemCustomOutcomingPollMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingPollMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingPollMessageBinding).bubble
                 ItemCustomOutcomingVoiceMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingVoiceMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingVoiceMessageBinding).bubble
                 ItemCustomOutcomingLocationMessageBinding::class.java ->
-                    (viewHolder.binding as ItemCustomOutcomingLocationMessageBinding).bubble
+                    (this.binding as ItemCustomOutcomingLocationMessageBinding).bubble
                 else -> null
             }?.let {
                 RelativeLayout.LayoutParams(binding.root.layoutParams).apply {

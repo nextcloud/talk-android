@@ -250,39 +250,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/menu_start_thread"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/bottom_sheet_item_height"
-                android:background="?android:attr/selectableItemBackground"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                tools:ignore="UseCompoundDrawables">
-
-                <ImageView
-                    android:id="@+id/menu_icon_start_thread"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@null"
-                    android:paddingStart="@dimen/standard_padding"
-                    android:paddingEnd="@dimen/zero"
-                    android:src="@drawable/outline_forum_24"
-                    app:tint="@color/high_emphasis_menu_icon" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/menu_text_start_thread"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|center_vertical"
-                    android:paddingStart="@dimen/standard_dialog_padding"
-                    android:paddingEnd="@dimen/standard_padding"
-                    android:text="@string/start_thread"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/high_emphasis_text"
-                    android:textSize="@dimen/bottom_sheet_text_size" />
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/menu_open_thread"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/bottom_sheet_item_height"

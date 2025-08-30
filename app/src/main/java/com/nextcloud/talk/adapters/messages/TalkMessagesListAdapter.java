@@ -39,19 +39,19 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
             holderInstance.assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingTextMessageViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
-            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
 
         } else if (holder instanceof IncomingLocationMessageViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingLocationMessageViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
-            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
 
         } else if (holder instanceof IncomingLinkPreviewMessageViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingLinkPreviewMessageViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
-            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
 
         } else if (holder instanceof IncomingVoiceMessageViewHolder holderInstance) {
             holderInstance.assignVoiceMessageInterface(chatActivity);
@@ -59,7 +59,7 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
         } else if (holder instanceof OutcomingVoiceMessageViewHolder holderInstance) {
             holderInstance.assignVoiceMessageInterface(chatActivity);
             holderInstance.assignCommonMessageInterface(chatActivity);
-            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
 
         } else if (holder instanceof PreviewMessageViewHolder holderInstance) {
             holderInstance.assignPreviewMessageInterface(chatActivity);
@@ -72,7 +72,13 @@ public class TalkMessagesListAdapter<M extends IMessage> extends MessagesListAda
             holderInstance.assignCommonMessageInterface(chatActivity);
         } else if (holder instanceof OutcomingDeckCardViewHolder holderInstance) {
             holderInstance.assignCommonMessageInterface(chatActivity);
-            holderInstance.adjustIfNoteToSelf(holderInstance, chatActivity.getCurrentConversation());
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
+
+        } else if (holder instanceof IncomingPollMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+        } else if (holder instanceof OutcomingPollMessageViewHolder holderInstance) {
+            holderInstance.assignCommonMessageInterface(chatActivity);
+            holderInstance.adjustIfNoteToSelf(chatActivity.getCurrentConversation());
         }
 
         super.onBindViewHolder(holder, position);

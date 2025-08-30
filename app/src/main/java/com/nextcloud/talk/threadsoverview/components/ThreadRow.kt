@@ -35,8 +35,7 @@ import com.nextcloud.talk.R
 fun ThreadRow(
     roomToken: String,
     threadId: Int,
-    firstLineTitle: String,
-    firstLine: String,
+    title: String,
     secondLineTitle: String,
     secondLine: String,
     numReplies: String,
@@ -64,17 +63,8 @@ fun ThreadRow(
         Column {
             Row {
                 Text(
-                    text = firstLineTitle,
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Companion.Ellipsis
-                )
-                Spacer(modifier = Modifier.Companion.width(4.dp))
-                Text(
                     modifier = Modifier.Companion.weight(1f),
-                    text = firstLine,
+                    text = title,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.Thin,
@@ -97,7 +87,7 @@ fun ThreadRow(
                 Text(
                     text = secondLineTitle,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    fontWeight = FontWeight.Normal,
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
@@ -129,9 +119,8 @@ fun ThreadRowPreview() {
     ThreadRow(
         roomToken = "1234",
         threadId = 123,
-        firstLine = "first message",
+        title = "title",
         secondLine = "last message",
-        firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
         numReplies = "12 replies",
         date = "14 sec ago",
@@ -146,9 +135,8 @@ fun ThreadRowUnreadMessagePreview() {
     ThreadRow(
         roomToken = "1234",
         threadId = 123,
-        firstLine = "first message",
+        title = "title",
         secondLine = "last message",
-        firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
         numReplies = "12 replies",
         date = "14 sec ago",
@@ -163,9 +151,8 @@ fun ThreadRowMentionPreview() {
     ThreadRow(
         roomToken = "1234",
         threadId = 123,
-        firstLine = "first message",
+        title = "title",
         secondLine = "last message",
-        firstLineTitle = "Marsellus",
         secondLineTitle = "Mia:",
         numReplies = "12 replies",
         date = "14 sec ago",
@@ -180,9 +167,8 @@ fun ThreadRowDirectMentionPreview() {
     ThreadRow(
         roomToken = "1234",
         threadId = 123,
-        firstLine = "first message with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
-        secondLine = "last message with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
-        firstLineTitle = "Marsellus",
+        title = "title with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
+        secondLine = "title with a verrrrrrrrrrrrrrrrrrrrrrrrry long text",
         secondLineTitle = "Mia:",
         numReplies = "12 replies",
         date = "14 sec ago",

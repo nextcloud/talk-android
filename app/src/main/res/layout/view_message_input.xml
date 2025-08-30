@@ -225,6 +225,16 @@
             android:src="@drawable/ic_baseline_mic_24"
             android:contentDescription="@string/nc_description_record_voice" />
 
+        <ImageButton
+            android:id="@+id/submitThreadButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_below="@id/quotedChatMessageView"
+            android:layout_alignParentEnd="true"
+            android:background="@color/transparent"
+            android:contentDescription="@string/start_thread"
+            android:src="@drawable/outline_forum_24"
+            app:tint="@color/grey_600" />
 
         <ImageButton
             android:id="@+id/editMessageButton"

@@ -12,4 +12,5 @@ interface CommonMessageInterface {
     fun onLongClickReactions(chatMessage: ChatMessage)
     fun onClickReaction(chatMessage: ChatMessage, emoji: String)
     fun onOpenMessageActionsDialog(chatMessage: ChatMessage)
+    fun openThread(chatMessage: ChatMessage)
 }

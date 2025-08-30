@@ -5,20 +5,31 @@
   ~ SPDX-FileCopyrightText: 2022 Marcel Hibbe <dev@mhibbe.de>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/reactions_emoji_horizontal_scroller"
-    android:layout_width="fill_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_alignParentTop="true"
-    android:fillViewport="true"
-    android:measureAllChildren="false"
-    android:scrollbars="none">
+    android:orientation="horizontal">
 
-    <LinearLayout
-        android:id="@+id/reactions_emoji_wrapper"
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/thread_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_half_margin"
-        android:gravity="center_vertical"
-        android:orientation="horizontal" />
-</HorizontalScrollView>
+        android:layout_marginEnd="8dp" />
+
+    <HorizontalScrollView
+        android:id="@+id/reactions_emoji_horizontal_scroller"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:measureAllChildren="false"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/reactions_emoji_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_half_margin"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
+</LinearLayout>

@@ -15,17 +15,5 @@ import kotlinx.parcelize.Parcelize
 @JsonObject
 data class ThreadAttendee(
     @JsonField(name = ["notificationLevel"])
-    var notificationLevel: Int = 0,
-
-    @JsonField(name = ["lastReadMessage"])
-    var lastReadMessage: Int = 0,
-
-    @JsonField(name = ["lastMentionMessage"])
-    var lastMentionMessage: Int = 0,
-
-    @JsonField(name = ["lastMentionDirect"])
-    var lastMentionDirect: Int = 0,
-
-    @JsonField(name = ["readPrivacy"])
-    var readPrivacy: Int = 0
+    var notificationLevel: Int = 0
 ) : Parcelable
