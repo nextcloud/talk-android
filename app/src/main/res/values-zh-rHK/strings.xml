@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">最大先</string>
     <string name="menu_item_sort_by_size_smallest_first">最小先</string>
     <string name="message_copied">已複製訊息</string>
+    <string name="message_delete_are_you_sure">您確定要刪除此訊息？</string>
     <string name="message_deleted_by_you">訊息被您刪除</string>
     <string name="message_last_edited_by">由 %1$s 編輯</string>
     <string name="message_poll_tap_to_open">點按即可打開民意調查</string>

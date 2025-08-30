@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">An ceann is mó ar dtús</string>
     <string name="menu_item_sort_by_size_smallest_first">Is lú ar dtús</string>
     <string name="message_copied">Teachtaireacht cóipeáilte</string>
+    <string name="message_delete_are_you_sure">An bhfuil tú cinnte gur mian leat an teachtaireacht seo a scriosadh?</string>
     <string name="message_deleted_by_you">Scrios tú an teachtaireacht</string>
     <string name="message_last_edited_by">Curtha in eagar ag %1$s</string>
     <string name="message_poll_tap_to_open">Tapáil chun vótaíocht a oscailt</string>
