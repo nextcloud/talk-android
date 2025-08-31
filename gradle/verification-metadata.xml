@@ -284,6 +284,7 @@
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.11"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.12"/>
             <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.13"/>
+            <trusting group="com.mebigfatguy.fb-contrib" name="fb-contrib" version="7.6.14"/>
          </trusted-key>
          <trusted-key id="AFCC4C7594D09E2182C60E0F7A01B0F236E5430F" group="com.google.code.gson"/>
          <trusted-key id="B02335AA54CCF21E52BBF9ABD9C565AA72BA2FDD" group="io.grpc"/>
