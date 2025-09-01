@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Kubwa zaidi kwanza</string>
     <string name="menu_item_sort_by_size_smallest_first">Ndogo zaidi kwanza</string>
     <string name="message_copied">Ujumbe umenakiliwa</string>
+    <string name="message_delete_are_you_sure">Je, una uhakika unataka kufuta ujumbe huu?</string>
     <string name="message_deleted_by_you">Ujumbe umefutwa na wewe</string>
     <string name="message_last_edited_by">Imehaririwa na %1$s</string>
     <string name="message_poll_tap_to_open">Bonyeza kufungua poll</string>
@@ -96,6 +97,7 @@
     <string name="message_search_begin_typing">Anza kuchapa ili kutafuta </string>
     <string name="message_search_hint">Tafuta...</string>
     <string name="messages">Jumbe</string>
+    <string name="messages_could_not_be_loaded">Ujumbe haukuweza kupakiwa</string>
     <string name="nc_Server_account_imported">Akaunti iliyochaguliwa sasa imeingizwa na inapatikana</string>
     <string name="nc_about">Kuhusu</string>
     <string name="nc_account_chooser_active_user">Mtumiaji anayetumia</string>
@@ -429,6 +431,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$sametuma kadi ya deck</string>
     <string name="nc_server_connect">Jaribu mtandao wa seva</string>
     <string name="nc_server_db_upgrade_needed">Tafadhali pandisha viwango kanzidata yako %1$s</string>
+    <string name="nc_server_down">Imeshindwa kuunganisha kwenye seva</string>
     <string name="nc_server_failed_to_import_account">Imeshindwa kuingiza akaunti iliyochaguliwa</string>
     <string name="nc_server_helper_text">Kiungo cha kiolesura chako cha %1$s unapokifungua kwenye kivinjari.</string>
     <string name="nc_server_import_account">Ingiza akaunti kutoka kwenye programu %1$s</string>
@@ -656,6 +659,7 @@
     <string name="thisWeek">Wiki hii</string>
     <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>
     <string name="this_weekend">Wikendi hii</string>
+    <string name="thread_cancel">Ghairi uundaji wa mjadala</string>
     <string name="thread_replies_amount">%1$d majibu </string>
     <string name="thread_title">Kichwa cha mjadala</string>
     <string name="today">Leo</string>
