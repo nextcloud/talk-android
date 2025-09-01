@@ -173,6 +173,64 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/busyStatus"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/online_status_item_height"
+            android:layout_gravity="center_vertical"
+            android:layout_marginBottom="@dimen/standard_half_margin"
+            android:layout_weight="1"
+            android:checkable="true"
+            android:orientation="horizontal"
+            app:cardBackgroundColor="@color/grey_200"
+            app:cardCornerRadius="@dimen/status_corner_radius"
+            app:cardElevation="0dp"
+            app:checkedIcon="@null">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/standard_margin"
+                android:layout_marginEnd="@dimen/standard_margin"
+                android:orientation="horizontal"
+                tools:ignore="UnusedAttribute">
+
+                <ImageView
+                    android:id="@+id/busy_icon"
+                    android:layout_width="@dimen/iconized_single_line_item_icon_size"
+                    android:layout_height="@dimen/iconized_single_line_item_icon_size"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="top|start"
+                    android:layout_marginEnd="@dimen/standard_half_margin"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_user_status_busy" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_toEndOf="@id/busy_icon"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/busy_headline"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:gravity="bottom"
+                        android:maxLines="1"
+                        android:text="@string/busy"
+                        android:textAppearance="?android:attr/textAppearanceListItem" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/dndStatus"
             android:layout_width="match_parent"

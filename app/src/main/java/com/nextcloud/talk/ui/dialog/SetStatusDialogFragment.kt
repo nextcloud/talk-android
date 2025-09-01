@@ -347,11 +347,13 @@ class SetStatusDialogFragment :
         binding.onlineStatus.setOnClickListener { setStatus(StatusType.ONLINE) }
         binding.dndStatus.setOnClickListener { setStatus(StatusType.DND) }
         binding.awayStatus.setOnClickListener { setStatus(StatusType.AWAY) }
+        binding.busyStatus.setOnClickListener { setStatus(StatusType.BUSY) }
         binding.invisibleStatus.setOnClickListener { setStatus(StatusType.INVISIBLE) }
 
         viewThemeUtils.talk.themeStatusCardView(binding.onlineStatus)
         viewThemeUtils.talk.themeStatusCardView(binding.dndStatus)
         viewThemeUtils.talk.themeStatusCardView(binding.awayStatus)
+        viewThemeUtils.talk.themeStatusCardView(binding.busyStatus)
         viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
     }
 
@@ -511,6 +513,7 @@ class SetStatusDialogFragment :
             StatusType.ONLINE -> Triple(binding.onlineStatus, binding.onlineHeadline, binding.onlineIcon)
             StatusType.AWAY -> Triple(binding.awayStatus, binding.awayHeadline, binding.awayIcon)
             StatusType.DND -> Triple(binding.dndStatus, binding.dndHeadline, binding.dndIcon)
+            StatusType.BUSY -> Triple(binding.busyStatus, binding.busyHeadline, binding.busyIcon)
             StatusType.INVISIBLE -> Triple(binding.invisibleStatus, binding.invisibleHeadline, binding.invisibleIcon)
             else -> {
                 Log.d(TAG, "unknown status")
@@ -525,17 +528,20 @@ class SetStatusDialogFragment :
         context?.let {
             binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
             binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
+            binding.busyHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
             binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
             binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
 
             binding.onlineIcon.imageTintList = null
             binding.awayIcon.imageTintList = null
             binding.dndIcon.imageTintList = null
+            binding.busyIcon.imageTintList = null
             binding.invisibleIcon.imageTintList = null
 
             binding.onlineStatus.isChecked = false
             binding.awayStatus.isChecked = false
             binding.dndStatus.isChecked = false
+            binding.busyStatus.isChecked = false
             binding.invisibleStatus.isChecked = false
         }
     }
