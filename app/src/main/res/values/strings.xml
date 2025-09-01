@@ -550,10 +550,9 @@ How to translate with transifex:
     <string name="deck_card_description">%1$s in %2$s</string>
 
     <string name="open_thread">Go to thread</string>
-    <string name="start_thread">Start a thread</string>
+    <string name="start_thread">Create a thread</string>
     <string name="thread_title">Thread title</string>
     <string name="thread_cancel">Cancel thread creation</string>
-    <string name="show_threads_overview">Show threads</string>
     <string name="recent_threads">Recent threads</string>
     <string name="thread_replies_amount">%1$d replies</string>
 
