@@ -127,6 +127,19 @@ class OutcomingDeckCardViewHolder(outcomingView: View) :
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
+        val chatActivity = commonMessageInterface as ChatActivity
+        val showThreadButton = chatActivity.conversationThreadId == null && message.isThread
+        if (showThreadButton) {
+            binding.reactions.threadButton.visibility = View.VISIBLE
+            binding.reactions.threadButton.setContent {
+                ThreadButtonComposable(
+                    onButtonClick = { openThread(message) }
+                )
+            }
+        } else {
+            binding.reactions.threadButton.visibility = View.GONE
+        }
+
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -168,6 +181,10 @@ class OutcomingDeckCardViewHolder(outcomingView: View) :
 
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
+    }
+
+    private fun openThread(chatMessage: ChatMessage) {
+        commonMessageInterface.openThread(chatMessage)
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught", "Detekt.LongMethod")

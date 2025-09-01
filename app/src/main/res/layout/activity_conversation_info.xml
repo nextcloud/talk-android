@@ -249,6 +249,32 @@
                         android:textSize="@dimen/two_line_primary_text_size" />
 
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/showThreadsButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/standard_padding">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="40dp"
+                        android:layout_marginEnd="@dimen/standard_margin"
+                        android:contentDescription="@null"
+                        android:src="@drawable/outline_forum_24"
+                        app:tint="@color/grey_600" />
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/show_threads_overview"
+                        android:textSize="@dimen/two_line_primary_text_size" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
             <include

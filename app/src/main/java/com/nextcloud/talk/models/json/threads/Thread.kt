@@ -17,11 +17,17 @@ data class Thread(
     @JsonField(name = ["id"])
     var id: Int = 0,
 
-    @JsonField(name = ["roomId"])
-    var roomId: Int = 0,
+    @JsonField(name = ["roomToken"])
+    var roomToken: String = "",
+
+    @JsonField(name = ["title"])
+    var title: String = "",
 
     @JsonField(name = ["lastMessageId"])
     var lastMessageId: Int = 0,
+
+    @JsonField(name = ["lastActivity"])
+    var lastActivity: Int = 0,
 
     @JsonField(name = ["numReplies"])
     var numReplies: Int = 0
