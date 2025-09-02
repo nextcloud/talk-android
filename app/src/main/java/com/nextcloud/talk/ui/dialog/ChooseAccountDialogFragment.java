@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.nextcloud.talk.R;
 import com.nextcloud.talk.account.ServerSelectionActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -245,15 +246,20 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         });
 
 
-        binding.setStatus.setOnClickListener(v -> {
+        binding.onlineStatus.setOnClickListener(v -> {
+            OnlineStatusBottomDialogFragment bottomDialog =
+                OnlineStatusBottomDialogFragment.newInstance(status != null ? status : new Status());
+            bottomDialog.show(requireActivity().getSupportFragmentManager(),
+                              "fragment_online_status_bottom_dialog");
             dismiss();
+        });
 
-            if (status != null && getActivity() != null) {
-                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(status);
-                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
-            } else {
-                Log.w(TAG, "status was null");
-            }
+        binding.statusMessage.setOnClickListener(v -> {
+            StatusMessageBottomDialogFragment bottomDialog =
+                StatusMessageBottomDialogFragment.newInstance(status != null ? status : new Status());
+            bottomDialog.show(requireActivity().getSupportFragmentManager(),
+                              "fragment_status_message_bottom_dialog");
+            dismiss();
         });
     }
 
@@ -261,8 +267,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.platform.themeDialog(binding.getRoot());
         viewThemeUtils.platform.themeDialogDivider(binding.divider);
 
-        viewThemeUtils.material.colorMaterialTextButton(binding.setStatus);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.onlineStatus);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.onlineStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.statusMessage);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.statusMessage);
         viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
         viewThemeUtils.dialog.colorDialogMenuText(binding.addAccount);
         viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
@@ -292,7 +300,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                         }
 
                         try {
-                            binding.setStatus.setEnabled(true);
+                            binding.onlineStatus.setEnabled(true);
+                            binding.statusMessage.setEnabled(true);
                             drawStatus();
                         } catch (NullPointerException npe) {
                             Log.i(TAG, "UI already teared down", npe);
@@ -390,6 +399,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.talk.themeStatusDrawable(binding.currentAccount.ticker.getContext(), drawable);
         binding.currentAccount.ticker.setImageDrawable(drawable);
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
+        binding.onlineStatus.setText(R.string.online_status);
+        binding.statusMessage.setText(R.string.status_message);
 
 
         if (status.getMessage() != null && !status.getMessage().isEmpty()) {

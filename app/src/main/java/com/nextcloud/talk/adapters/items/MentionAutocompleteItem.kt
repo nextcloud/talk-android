@@ -221,7 +221,12 @@ class MentionAutocompleteItem(
             if (statusMessage.isNullOrEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.dnd)
             }
-        } else if (status != null && status == StatusType.AWAY.string) {
+        }else if (status != null && status == StatusType.BUSY.string) {
+            if (statusMessage.isNullOrEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.busy)
+            }
+        }
+        else if (status != null && status == StatusType.AWAY.string) {
             if (statusMessage.isNullOrEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.away)
             }
