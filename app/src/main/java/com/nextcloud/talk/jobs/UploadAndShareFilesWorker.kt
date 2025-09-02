@@ -96,12 +96,7 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
     override fun doWork(): Result {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        var fileUploadEntity = FileUploadEntity(
-            internalConversationId = "${UserIdUtils.getIdForUser(currentUser)}:$roomToken"
-        )
-        val id = fileUploadsDao.createFileUpload(fileUploadEntity)
-        fileUploadEntity = fileUploadEntity.copy(id = id)
-
+        var uploadFileId: Long? = null
         try {
             currentUser = currentUserProvider.currentUser.blockingGet()
             val sourceFile = inputData.getString(DEVICE_SOURCE_FILE)
@@ -122,6 +117,12 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             initNotificationSetup()
             file?.let { isChunkedUploading = it.length() > CHUNK_UPLOAD_THRESHOLD_SIZE }
 
+            var fileUploadEntity = FileUploadEntity(
+                internalConversationId = "${UserIdUtils.getIdForUser(currentUser)}@$roomToken"
+            )
+            uploadFileId = fileUploadsDao.createFileUpload(fileUploadEntity)
+            fileUploadEntity = fileUploadEntity.copy(id = uploadFileId)
+
             fileUploadsDao.setStarted(fileUploadEntity.id)
             val uploadSuccess: Boolean = uploadFile(sourceFileUri, metaData, remotePath)
 
@@ -141,9 +142,10 @@ class UploadAndShareFilesWorker(val context: Context, workerParameters: WorkerPa
             return Result.failure()
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong when trying to upload file", e)
-            fileUploadsDao.setFailed(fileUploadEntity.id)
+            if (uploadFileId != null) {
+                fileUploadsDao.setFailed(uploadFileId)
+            }
             showFailedToUploadNotification()
-
             return Result.failure()
         }
     }

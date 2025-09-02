@@ -10,9 +10,11 @@ package com.nextcloud.talk.utils.preview
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.database.model.FileUploadEntity
 import com.nextcloud.talk.data.user.UsersDao
 import com.nextcloud.talk.data.user.model.UserEntity
 import com.nextcloud.talk.models.json.push.PushConfigurationState
@@ -226,4 +228,19 @@ class DummyChatBlocksDaoImpl : ChatBlocksDao {
     override suspend fun upsertChatBlock(chatBlock: ChatBlockEntity) { /* */ }
 
     override fun deleteChatBlocksOlderThan(internalConversationId: String, messageId: Long) { /* */ }
+}
+
+class DummyFileUploadsDaoImpl : FileUploadsDao {
+
+    override fun createFileUpload(entity: FileUploadEntity): Long = 0L
+
+    override fun getFileUploadsForConversation(internalConversationId: String): Flow<List<FileUploadEntity>> = flowOf()
+
+    override fun updateProgress(id: Int, progress: Float) { /* */}
+
+    override fun setStarted(id: Long) { /* */ }
+
+    override fun setCompleted(id: Long) { /* */ }
+
+    override fun setFailed(id: Long) { /* */ }
 }

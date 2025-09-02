@@ -203,6 +203,8 @@ class ChatViewModel @Inject constructor(
             _getRoomViewState.value = GetRoomErrorState
         }
 
+    val getUploadsFlow = chatRepository.uploadsFlow
+
     val getGeneralUIFlow = chatRepository.generalUIFlow
 
     sealed interface ViewState
