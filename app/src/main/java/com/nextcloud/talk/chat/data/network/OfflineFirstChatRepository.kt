@@ -482,6 +482,9 @@ class OfflineFirstChatRepository @Inject constructor(
         return fieldMap
     }
 
+    override suspend fun getNumberOfThreadReplies(threadId: Long): Int =
+        chatDao.getNumberOfThreadReplies(internalConversationId, threadId)
+
     override suspend fun getMessage(messageId: Long, bundle: Bundle): Flow<ChatMessage> {
         Log.d(TAG, "Get message with id $messageId")
         val loadFromServer = hasToLoadPreviousMessagesFromServer(messageId, 1)

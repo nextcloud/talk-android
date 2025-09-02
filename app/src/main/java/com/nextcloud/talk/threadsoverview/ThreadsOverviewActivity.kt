@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -215,11 +216,10 @@ fun ThreadsList(
                 roomToken = roomToken,
                 threadId = threadInfo.thread!!.id,
                 title = threadInfo.thread?.title.orEmpty(),
-                numReplies = String.format(
-                    stringResource(
-                        R.string.thread_replies_amount,
-                        threadInfo.thread?.numReplies ?: 0
-                    )
+                numReplies = pluralStringResource(
+                    R.plurals.thread_replies,
+                    threadInfo.thread?.numReplies ?: 0,
+                    threadInfo.thread?.numReplies ?: 0
                 ),
                 secondLineTitle = messagePreview?.actorDisplayName?.let { "$it:" }.orEmpty(),
                 secondLine = messagePreview?.message.orEmpty(),

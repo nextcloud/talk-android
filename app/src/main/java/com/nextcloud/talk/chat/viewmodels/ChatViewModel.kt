@@ -789,6 +789,8 @@ class ChatViewModel @Inject constructor(
             emit(message.first())
         }
 
+    suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
+
     fun setPlayBack(speed: PlaybackSpeed) {
         mediaPlayerManager.setPlayBackSpeed(speed)
         CoroutineScope(Dispatchers.Default).launch {

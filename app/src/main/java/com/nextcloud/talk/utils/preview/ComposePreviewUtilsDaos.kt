@@ -89,6 +89,8 @@ class DummyChatMessagesDaoImpl : ChatMessagesDao {
     override fun clearAllMessagesForUser(pattern: String) { /* */ }
 
     override fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long) { /* */ }
+
+    override fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int = 0
 }
 
 class DummyUserDaoImpl : UsersDao() {
