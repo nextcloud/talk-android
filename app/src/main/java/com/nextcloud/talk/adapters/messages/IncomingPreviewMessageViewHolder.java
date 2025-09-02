@@ -17,6 +17,7 @@ import android.widget.ProgressBar;
 import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
+import com.nextcloud.talk.databinding.ItemThreadTitleBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
 import com.nextcloud.talk.chat.data.model.ChatMessage;
 import com.nextcloud.talk.utils.TextMatchers;
@@ -138,4 +139,7 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
 
     @Override
     public ReactionsInsideMessageBinding getReactionsBinding(){ return binding.reactions; }
+
+    @Override
+    public ItemThreadTitleBinding getThreadsBinding(){ return binding.threadTitleWrapper; }
 }
