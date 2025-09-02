@@ -18,6 +18,7 @@ import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.domain.FileUploadModel
 import com.nextcloud.talk.utils.CapabilitiesUtil.isUserStatusAvailable
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
@@ -40,8 +41,9 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val network: ConversationsNetworkDataSource,
     private val chatNetworkDataSource: ChatNetworkDataSource,
     private val networkMonitor: NetworkMonitor,
-    private val currentUserProviderNew: CurrentUserProviderNew
+    private val currentUserProviderNew: CurrentUserProviderNew,
 ) : OfflineConversationsRepository {
+
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
     private val _roomListFlow: MutableSharedFlow<List<ConversationModel>> = MutableSharedFlow()
