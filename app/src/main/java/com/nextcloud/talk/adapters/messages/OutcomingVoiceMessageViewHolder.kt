@@ -148,19 +148,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
         binding.playbackSpeedControlBtn.setSpeed(appPreferences.getPreferredPlayback(message.actorId))
 
-        val chatActivity = commonMessageInterface as ChatActivity
-        val showThreadButton = chatActivity.conversationThreadId == null && message.isThread
-        if (showThreadButton) {
-            binding.reactions.threadButton.visibility = View.VISIBLE
-            binding.reactions.threadButton.setContent {
-                ThreadButtonComposable(
-                    onButtonClick = { openThread(message) }
-                )
-            }
-        } else {
-            binding.reactions.threadButton.visibility = View.GONE
-        }
-
         Reaction().showReactions(
             message,
             ::clickOnReaction,
@@ -202,10 +189,6 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
 
     private fun clickOnReaction(chatMessage: ChatMessage, emoji: String) {
         commonMessageInterface.onClickReaction(chatMessage, emoji)
-    }
-
-    private fun openThread(chatMessage: ChatMessage) {
-        commonMessageInterface.openThread(chatMessage)
     }
 
     private fun handleResetVoiceMessageState(message: ChatMessage) {
