@@ -12,9 +12,6 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ItemThreadTitleBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class Thread {
 
@@ -34,17 +31,11 @@ class Thread {
 
             reactionsBinding.threadButton.visibility = View.VISIBLE
 
-            CoroutineScope(Dispatchers.Main).launch {
-                val replyAmount: Int = message.threadId?.let { threadId ->
-                    chatActivity.chatViewModel.getNumberOfThreadReplies(threadId)
-                } ?: 0
-
-                reactionsBinding.threadButton.setContent {
-                    ThreadButtonComposable(
-                        replyAmount,
-                        onButtonClick = { openThread(message) }
-                    )
-                }
+            reactionsBinding.threadButton.setContent {
+                ThreadButtonComposable(
+                    message.threadReplies ?: 0,
+                    onButtonClick = { openThread(message) }
+                )
             }
         } else {
             threadBinding.threadTitleLayout.visibility = View.GONE
