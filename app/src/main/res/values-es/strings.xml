@@ -89,6 +89,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Más grandes primero</string>
     <string name="menu_item_sort_by_size_smallest_first">Más pequeñas primero</string>
     <string name="message_copied">Mensaje copiado</string>
+    <string name="message_delete_are_you_sure">¿Está seguro que desea eliminar este mensaje?</string>
     <string name="message_deleted_by_you">Has eliminado este mensaje</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Pulse para abrir la encuesta</string>
@@ -96,6 +97,7 @@
     <string name="message_search_begin_typing">Empiece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar …</string>
     <string name="messages">Mensajes</string>
+    <string name="messages_could_not_be_loaded">Los mensajes no pudieron ser cargados</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
@@ -180,7 +182,7 @@
     <string name="nc_delete_all">Eliminar todos</string>
     <string name="nc_delete_call">Eliminar conversación</string>
     <string name="nc_delete_conversation_more">Si borras la conversación, también se borrará para los demás participantes.</string>
-    <string name="nc_delete_message">Borrar mensaje</string>
+    <string name="nc_delete_message">Eliminar mensaje</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Mensaje borrado con éxito, pero puede haber sido filtrado a otros servicios</string>
     <string name="nc_delete_now">Eliminar ahora</string>
     <string name="nc_deleted_user">El Usuario %1$s fue eliminado</string>
@@ -425,6 +427,7 @@
     <string name="nc_sent_deck_card" formatted="true">%1$senvió una tarjeta de deck</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
+    <string name="nc_server_down">No fue posible conectarse al servidor</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
     <string name="nc_server_helper_text">El link a tu interfaz web %1$s cuando la abras en el navegador.</string>
     <string name="nc_server_import_account">Importar cuenta desde la app %1$s</string>
@@ -653,6 +656,7 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
+    <string name="thread_cancel">Cancelar la creación del hilo</string>
     <string name="thread_replies_amount">%1$d respuestas</string>
     <string name="thread_title">Título del hilo</string>
     <string name="today">Hoy</string>
