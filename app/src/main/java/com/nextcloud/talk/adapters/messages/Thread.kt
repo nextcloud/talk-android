@@ -30,7 +30,7 @@ class Thread {
             threadBinding.threadTitleLayout.visibility = View.VISIBLE
 
             threadBinding.threadTitleLayout.findViewById<androidx.emoji2.widget.EmojiTextView>(R.id.threadTitle).text =
-                "This is a random and long placeholder thread title"
+                message.threadTitle
 
             reactionsBinding.threadButton.visibility = View.VISIBLE
 

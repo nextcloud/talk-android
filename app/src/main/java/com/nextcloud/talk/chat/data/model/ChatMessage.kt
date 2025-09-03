@@ -49,6 +49,10 @@ data class ChatMessage(
 
     var isThread: Boolean = false,
 
+    var threadTitle: String? = null,
+
+    var threadReplies: Int? = 0,
+
     // guests or users
     var actorType: String? = null,
 

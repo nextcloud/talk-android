@@ -68,5 +68,7 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "sendStatus") var sendStatus: SendStatus? = null,
     @ColumnInfo(name = "silent") var silent: Boolean = false,
     @ColumnInfo(name = "systemMessage") var systemMessageType: ChatMessage.SystemMessageType,
+    @ColumnInfo(name = "threadTitle") var threadTitle: String? = null,
+    @ColumnInfo(name = "threadReplies") var threadReplies: Int? = 0,
     @ColumnInfo(name = "timestamp") var timestamp: Long = 0
 )
