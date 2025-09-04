@@ -56,7 +56,6 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl
-import com.nextcloud.talk.serverstatus.ServerStatusRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepository
 import com.nextcloud.talk.shareditems.repositories.SharedItemsRepositoryImpl
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
@@ -71,7 +70,6 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
-@Suppress("LongParameterList")
 @Module
 class RepositoryModule {
 
@@ -157,7 +155,6 @@ class RepositoryModule {
         chatBlocksDao: ChatBlocksDao,
         dataSource: ChatNetworkDataSource,
         networkMonitor: NetworkMonitor,
-        serverStatusRepository: ServerStatusRepository,
         userProvider: CurrentUserProviderNew
     ): ChatMessageRepository =
         OfflineFirstChatRepository(
@@ -165,7 +162,6 @@ class RepositoryModule {
             chatBlocksDao,
             dataSource,
             networkMonitor,
-            serverStatusRepository,
             userProvider
         )
 

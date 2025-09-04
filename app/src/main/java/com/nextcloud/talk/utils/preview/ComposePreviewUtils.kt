@@ -41,8 +41,6 @@ import com.nextcloud.talk.data.user.UsersRepository
 import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.repositories.reactions.ReactionsRepositoryImpl
-import com.nextcloud.talk.serverstatus.ServerStatusRepository
-import com.nextcloud.talk.serverstatus.ServerStatusRepositoryImpl
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepositoryImpl
 import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
@@ -142,16 +140,12 @@ class ComposePreviewUtils private constructor(context: Context) {
     val networkMonitor: NetworkMonitor
         get() = NetworkMonitorImpl(mContext)
 
-    val serverStatusRepository: ServerStatusRepository
-        get() = ServerStatusRepositoryImpl(ncApiCoroutines, userProvider)
-
     val chatRepository: ChatMessageRepository
         get() = OfflineFirstChatRepository(
             chatMessagesDao,
             chatBlocksDao,
             chatNetworkDataSource,
             networkMonitor,
-            serverStatusRepository,
             userProvider
         )
 
