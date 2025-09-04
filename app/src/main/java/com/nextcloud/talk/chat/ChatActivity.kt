@@ -1042,12 +1042,6 @@ class ChatActivity :
                         binding.offline.root.visibility = View.VISIBLE
                     }
 
-                    UNABLE_TO_LOAD_MESSAGES -> {
-                        binding.progressBar.visibility = View.GONE
-                        binding.messagesListView.visibility = View.GONE
-                        binding.unableToLoadMessages.root.visibility = View.VISIBLE
-                    }
-
                     else -> {}
                 }
             }.collect()
@@ -4507,7 +4501,6 @@ class ChatActivity :
         private const val ACTOR_TYPE = "users"
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
-        const val UNABLE_TO_LOAD_MESSAGES = "UNABLE_TO_LOAD_MESSAGES"
         const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5
         const val VOICE_MESSAGE_CONTINUOUS_AFTER = 5
         const val VOICE_MESSAGE_PLAY_ADD_THRESHOLD = 0.1

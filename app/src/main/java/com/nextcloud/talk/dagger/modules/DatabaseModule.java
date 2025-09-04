@@ -9,13 +9,9 @@ package com.nextcloud.talk.dagger.modules;
 
 import android.content.Context;
 
-import com.nextcloud.talk.api.NcApiCoroutines;
 import com.nextcloud.talk.data.network.NetworkMonitor;
 import com.nextcloud.talk.data.network.NetworkMonitorImpl;
 import com.nextcloud.talk.data.source.local.TalkDatabase;
-import com.nextcloud.talk.serverstatus.ServerStatusRepository;
-import com.nextcloud.talk.serverstatus.ServerStatusRepositoryImpl;
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
 import com.nextcloud.talk.utils.preferences.AppPreferences;
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl;
 
@@ -55,13 +51,4 @@ public class DatabaseModule {
     public NetworkMonitor provideNetworkMonitor(@NonNull final Context poContext) {
         return new NetworkMonitorImpl(poContext);
     }
-
-    @Provides
-    @Singleton
-    public ServerStatusRepository provideServerStatusRepository(@NonNull final NcApiCoroutines ncApiCoroutines, @NonNull final CurrentUserProviderNew currentUserProviderNew) {
-        return new ServerStatusRepositoryImpl(ncApiCoroutines, currentUserProviderNew);
-    }
 }
-
-
-
