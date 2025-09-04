@@ -887,4 +887,8 @@ How to translate with transifex:
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="qr_code_error">QR code could not be read</string>
     <string name="message_delete_are_you_sure">Are you sure you want to delete this message?</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_permission_denied_msg">Please enable it in the app settings</string>
+    <string name="location_services_disabled">Location services disabled</string>
+    <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
 </resources>
