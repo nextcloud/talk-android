@@ -652,6 +652,7 @@
     <string name="thisWeek">Tento týden</string>
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
     <string name="this_weekend">Tento víkend</string>
+    <string name="thread_cancel">Zrušit vytváření vlákna</string>
     <string name="thread_replies_amount">%1$d odpovědí</string>
     <string name="thread_title">Název vlákna</string>
     <string name="today">Dnes</string>
