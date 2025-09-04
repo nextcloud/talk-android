@@ -2630,7 +2630,7 @@ class ChatActivity :
         val explanation = resources.getString(R.string.location_services_disabled_msg)
         val positive = resources.getString(R.string.nc_permissions_settings)
         val cancel = resources.getString(R.string.nc_cancel)
-        AlertDialog.Builder(this)
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(title)
             .setMessage(explanation)
             .setPositiveButton(positive) { _, _ ->
@@ -2638,7 +2638,13 @@ class ChatActivity :
                 startActivity(intent)
             }
             .setNegativeButton(cancel, null)
-            .show()
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun showLocationPermissionDeniedDialog() {
@@ -2646,7 +2652,7 @@ class ChatActivity :
         val explanation = resources.getString(R.string.location_permission_denied_msg)
         val positive = resources.getString(R.string.nc_permissions_settings)
         val cancel = resources.getString(R.string.nc_cancel)
-        AlertDialog.Builder(this)
+        val dialogBuilder = MaterialAlertDialogBuilder(this)
             .setTitle(title)
             .setMessage(explanation)
             .setPositiveButton(positive) { _, _ ->
@@ -2656,7 +2662,13 @@ class ChatActivity :
                 startActivity(intent)
             }
             .setNegativeButton(cancel, null)
-            .show()
+
+        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(this, dialogBuilder)
+        val dialog = dialogBuilder.show()
+        viewThemeUtils.platform.colorTextButtons(
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE),
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+        )
     }
 
     private fun showConversationInfoScreen() {

@@ -91,7 +91,7 @@ class PlatformPermissionUtilImpl(private val context: Context) : PlatformPermiss
             Manifest.permission.POST_NOTIFICATIONS
         ) == PermissionChecker.PERMISSION_GRANTED
 
-    override fun isLocationPermissionGranted(): Boolean  =
+    override fun isLocationPermissionGranted(): Boolean =
         PermissionChecker.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
