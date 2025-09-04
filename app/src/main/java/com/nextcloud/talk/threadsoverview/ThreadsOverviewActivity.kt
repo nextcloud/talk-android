@@ -17,7 +17,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,6 +49,7 @@ import com.nextcloud.talk.chat.ChatActivity.Companion.TAG
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
 import com.nextcloud.talk.contacts.loadImage
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
@@ -180,6 +183,7 @@ fun ThreadsList(
     onThreadClick: (roomToken: String, threadId: Int) -> Unit,
     threadsOverviewViewModel: ThreadsOverviewViewModel
 ) {
+    val space = ' '
     val context = LocalContext.current
     if (threads.isEmpty()) {
         Box(
@@ -210,7 +214,8 @@ fun ThreadsList(
             val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
             val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
 
-            val messagePreview = threadInfo.last ?: threadInfo.first
+            val messageJson = threadInfo.last ?: threadInfo.first
+            val messageModel = messageJson?.asModel()
 
             ThreadRow(
                 roomToken = roomToken,
@@ -221,12 +226,15 @@ fun ThreadsList(
                     threadInfo.thread?.numReplies ?: 0,
                     threadInfo.thread?.numReplies ?: 0
                 ),
-                secondLineTitle = messagePreview?.actorDisplayName?.let { "$it:" }.orEmpty(),
-                secondLine = messagePreview?.message.orEmpty(),
+                secondLineTitle = messageModel?.actorDisplayName?.substringBefore(space)?.let { "$it:" }.orEmpty(),
+                secondLine = messageModel?.text.orEmpty(),
                 date = getLastActivityDate(threadInfo), // replace with value from api when available
                 imageRequest = imageRequest,
                 onClick = onThreadClick
             )
+        }
+        item {
+            Spacer(modifier = Modifier.height(32.dp))
         }
     }
 }
