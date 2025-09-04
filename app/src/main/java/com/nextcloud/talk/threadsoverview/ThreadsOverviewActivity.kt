@@ -180,6 +180,7 @@ fun ThreadsList(
     onThreadClick: (roomToken: String, threadId: Int) -> Unit,
     threadsOverviewViewModel: ThreadsOverviewViewModel
 ) {
+    val space = ' '
     val context = LocalContext.current
     if (threads.isEmpty()) {
         Box(
@@ -221,7 +222,7 @@ fun ThreadsList(
                     threadInfo.thread?.numReplies ?: 0,
                     threadInfo.thread?.numReplies ?: 0
                 ),
-                secondLineTitle = messagePreview?.actorDisplayName?.let { "$it:" }.orEmpty(),
+                secondLineTitle = messagePreview?.actorDisplayName?.substringBefore(space)?.let { "$it:" }.orEmpty(),
                 secondLine = messagePreview?.message.orEmpty(),
                 date = getLastActivityDate(threadInfo), // replace with value from api when available
                 imageRequest = imageRequest,
