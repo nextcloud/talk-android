@@ -45,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
+        android:paddingBottom="16dp"
         android:layout_toEndOf="@id/messageUserAvatar"
         android:layout_below="@id/messageAuthor"
         android:orientation="vertical"
@@ -52,6 +53,16 @@
         app:alignItems="stretch"
         app:flexWrap="wrap"
         app:justifyContent="flex_end">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+            <include
+                android:id="@+id/threadTitleWrapper"
+                layout="@layout/item_thread_title"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/preview_container"

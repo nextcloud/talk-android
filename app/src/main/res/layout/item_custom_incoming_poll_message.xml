@@ -49,6 +49,11 @@
             android:textColor="@color/textColorMaxContrast"
             android:textSize="12sp" />
 
+        <include
+            android:id="@+id/threadTitleWrapper"
+            layout="@layout/item_thread_title"
+            android:visibility="gone"/>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

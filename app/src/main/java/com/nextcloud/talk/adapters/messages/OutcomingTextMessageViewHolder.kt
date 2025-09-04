@@ -220,17 +220,13 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
 
-        val showThreadButton = chatActivity.conversationThreadId == null && message.isThread
-        if (showThreadButton) {
-            binding.reactions.threadButton.visibility = View.VISIBLE
-            binding.reactions.threadButton.setContent {
-                ThreadButtonComposable(
-                    onButtonClick = { openThread(message) }
-                )
-            }
-        } else {
-            binding.reactions.threadButton.visibility = View.GONE
-        }
+        Thread().showThreadPreview(
+            chatActivity,
+            message,
+            threadBinding = binding.threadTitleWrapper,
+            reactionsBinding = binding.reactions,
+            openThread = { openThread(message) }
+        )
 
         Reaction().showReactions(
             message,

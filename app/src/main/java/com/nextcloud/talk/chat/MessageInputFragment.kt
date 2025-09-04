@@ -649,11 +649,13 @@ class MessageInputFragment : Fragment() {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
+                    attachmentButton.setVisible(true)
                 }
 
                 isThreadCreateModeActive -> {
                     messageSendButton.setVisible(false)
                     recordAudioButton.setVisible(false)
+                    attachmentButton.setVisible(false)
                     submitThreadButton.setVisible(true)
                     if (inputContainsText && threadTitleContainsText) {
                         submitThreadButton.isEnabled = true
@@ -668,12 +670,14 @@ class MessageInputFragment : Fragment() {
                     recordAudioButton.setVisible(false)
                     submitThreadButton.setVisible(false)
                     messageSendButton.setVisible(true)
+                    attachmentButton.setVisible(true)
                 }
 
                 else -> {
                     messageSendButton.setVisible(false)
                     submitThreadButton.setVisible(false)
                     recordAudioButton.setVisible(true)
+                    attachmentButton.setVisible(true)
                 }
             }
         }

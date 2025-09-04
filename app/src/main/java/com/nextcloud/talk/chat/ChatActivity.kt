@@ -2705,10 +2705,13 @@ class ChatActivity :
             }
 
         if (isChatThread()) {
-            val repliesAmountTitle = String.format(
-                resources.getString(R.string.thread_replies_amount),
-                conversationThreadInfo?.thread?.numReplies
+            val replyAmount = conversationThreadInfo?.thread?.numReplies ?: 0
+            val repliesAmountTitle = resources.getQuantityString(
+                R.plurals.thread_replies,
+                replyAmount,
+                replyAmount
             )
+
             statusMessageViewContents(repliesAmountTitle)
         } else if (currentConversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL) {
             var statusMessage = ""

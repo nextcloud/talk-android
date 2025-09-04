@@ -207,4 +207,18 @@ interface ChatMessagesDao {
         """
     )
     fun deleteMessagesOlderThan(internalConversationId: String, messageId: Long)
+
+    @Query(
+        """
+        SELECT COUNT(*)
+        FROM ChatMessages AS child
+        INNER JOIN ChatMessages AS parent
+        ON child.parent = parent.id
+        WHERE child.internalConversationId = :internalConversationId
+        AND child.isTemporary = 0
+        AND child.messageType = 'comment'
+        AND parent.threadId = :threadId
+    """
+    )
+    fun getNumberOfThreadReplies(internalConversationId: String, threadId: Long): Int
 }

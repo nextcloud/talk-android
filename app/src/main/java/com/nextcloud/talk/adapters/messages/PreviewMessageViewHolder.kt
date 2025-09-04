@@ -28,8 +28,10 @@ import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
+import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.databinding.ItemThreadTitleBinding
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.extensions.loadChangelogBotAvatar
 import com.nextcloud.talk.extensions.loadFederatedUserAvatar
@@ -78,6 +80,7 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
     var okHttpClient: OkHttpClient? = null
     open var progressBar: ProgressBar? = null
     open var reactionsBinding: ReactionsInsideMessageBinding? = null
+    open var threadsBinding: ItemThreadTitleBinding? = null
     var fileViewerUtils: FileViewerUtils? = null
     var clickView: View? = null
 
@@ -150,6 +153,16 @@ abstract class PreviewMessageViewHolder(itemView: View?, payload: Any?) :
             messageText.text = ""
         }
         itemView.setTag(R.string.replyable_message_view_tag, message.replyable)
+
+        val chatActivity = commonMessageInterface as ChatActivity
+        Thread().showThreadPreview(
+            chatActivity,
+            message,
+            threadBinding = threadsBinding!!,
+            reactionsBinding = reactionsBinding!!,
+            openThread = { openThread(message) }
+        )
+
         val paddingSide = DisplayUtils.convertDpToPixel(HORIZONTAL_REACTION_PADDING, context!!).toInt()
         Reaction().showReactions(
             message,
