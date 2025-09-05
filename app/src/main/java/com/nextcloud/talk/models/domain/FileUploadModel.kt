@@ -7,8 +7,4 @@
 
 package com.nextcloud.talk.models.domain
 
-data class FileUploadModel(
-    val id: Long,
-    val fileName: String?,
-    var progress: Float = 0f,
-)
+data class FileUploadModel(val id: Long, val fileName: String?, var progress: Float = 0f)
