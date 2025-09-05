@@ -57,7 +57,8 @@ import java.util.Locale
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
         AutoMigration(from = 19, to = 20),
-        AutoMigration(from = 20, to = 21)
+        AutoMigration(from = 20, to = 21),
+        AutoMigration(from = 21, to = 22)
     ],
     exportSchema = true
 )
@@ -106,8 +107,7 @@ abstract class TalkDatabase : RoomDatabase() {
             Migrations.MIGRATION_13_14,
             Migrations.MIGRATION_14_15,
             Migrations.MIGRATION_15_16,
-            Migrations.MIGRATION_17_19,
-            Migrations.MIGRATION_21_22
+            Migrations.MIGRATION_17_19
         )
 
         @Suppress("SpreadOperator")
