@@ -48,13 +48,11 @@ import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.ChatActivity.Companion.TAG
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
-import com.nextcloud.talk.contacts.loadImage
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.models.json.threads.ThreadInfo
 import com.nextcloud.talk.threadsoverview.components.ThreadRow
 import com.nextcloud.talk.threadsoverview.viewmodels.ThreadsOverviewViewModel
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
@@ -206,14 +204,6 @@ fun ThreadsList(
             items = threads,
             key = { threadInfo -> threadInfo.thread!!.id }
         ) { threadInfo ->
-            val imageUri = ApiUtils.getUrlForAvatar(
-                threadsOverviewViewModel.currentUser.baseUrl,
-                threadInfo.first?.actorId,
-                true
-            )
-            val errorPlaceholderImage: Int = R.drawable.account_circle_96dp
-            val imageRequest = loadImage(imageUri, context, errorPlaceholderImage)
-
             val messageJson = threadInfo.last ?: threadInfo.first
             val messageModel = messageJson?.asModel()
 
@@ -229,7 +219,6 @@ fun ThreadsList(
                 secondLineTitle = messageModel?.actorDisplayName?.substringBefore(space)?.let { "$it:" }.orEmpty(),
                 secondLine = messageModel?.text.orEmpty(),
                 date = getLastActivityDate(threadInfo), // replace with value from api when available
-                imageRequest = imageRequest,
                 onClick = onThreadClick
             )
         }
