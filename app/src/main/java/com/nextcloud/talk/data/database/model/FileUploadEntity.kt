@@ -36,5 +36,5 @@ data class FileUploadEntity(
     @ColumnInfo(name = "progress") var progress: Float = 0f,
     @ColumnInfo(name = "status") var status: String? = null,
     @ColumnInfo(name = "hidden") var hidden: Boolean = false,
-    @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
+    @ColumnInfo(name = "timestamp") var timestamp: Long = 0
 )

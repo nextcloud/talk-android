@@ -236,7 +236,7 @@ class DummyFileUploadsDaoImpl : FileUploadsDao {
 
     override fun getFileUploadsForConversation(internalConversationId: String): Flow<List<FileUploadEntity>> = flowOf()
 
-    override fun updateProgress(id: Int, progress: Float) { /* */}
+    override fun updateProgress(id: Int, progress: Float) { /* */ }
 
     override fun setStarted(id: Long) { /* */ }
 

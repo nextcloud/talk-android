@@ -50,7 +50,7 @@ import java.util.Locale
         ConversationEntity::class,
         ChatMessageEntity::class,
         ChatBlockEntity::class,
-        FileUploadEntity::class,
+        FileUploadEntity::class
     ],
     version = 22,
     autoMigrations = [
@@ -107,7 +107,7 @@ abstract class TalkDatabase : RoomDatabase() {
             Migrations.MIGRATION_14_15,
             Migrations.MIGRATION_15_16,
             Migrations.MIGRATION_17_19,
-            Migrations.MIGRATION_21_22,
+            Migrations.MIGRATION_21_22
         )
 
         @Suppress("SpreadOperator")
