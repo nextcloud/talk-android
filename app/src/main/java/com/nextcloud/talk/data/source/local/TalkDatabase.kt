@@ -24,7 +24,6 @@ import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
 import com.nextcloud.talk.data.database.model.FileUploadEntity
-import com.nextcloud.talk.data.source.local.Migrations
 import com.nextcloud.talk.data.source.local.Migrations.AutoMigration16To17
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
