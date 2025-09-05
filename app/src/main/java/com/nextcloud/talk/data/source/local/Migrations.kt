@@ -8,9 +8,7 @@
 package com.nextcloud.talk.data.source.local
 
 import android.util.Log
-import androidx.room.ColumnInfo
 import androidx.room.DeleteColumn
-import androidx.room.PrimaryKey
 import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -436,14 +434,17 @@ object Migrations {
             db.execSQL(
                 "CREATE TABLE IF NOT EXISTS FileUploads (" +
                     "id INTEGER NOT NULL, " +
-                    "`internalConversationId` TEXT NOT NULL, " +
-                    "`fileName` TEXT, " +
-                    "`progress` REAL NOT NULL, " +
-                    "`status` TEXT, " +
-                    "`hidden` INTEGER NOT NULL, " +
-                    "`timestamp` INTEGER NOT NULL, " +
-                    "PRIMARY KEY(`id`), " +
-                    "FOREIGN KEY(`internalConversationId`) REFERENCES `Conversations`(`id`) ON UPDATE CASCADE ON DELETE CASCADE" +
+                    "internalConversationId TEXT NOT NULL, " +
+                    "fileName TEXT, " +
+                    "progress REAL NOT NULL, " +
+                    "status TEXT, " +
+                    "hidden INTEGER NOT NULL, " +
+                    "timestamp INTEGER NOT NULL, " +
+                    "PRIMARY KEY (id), " +
+                    "FOREIGN KEY (internalConversationId) " +
+                    "REFERENCES Conversations(id) " +
+                    "ON UPDATE CASCADE " +
+                    "ON DELETE CASCADE" +
                     ")"
             )
 

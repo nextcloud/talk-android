@@ -20,12 +20,14 @@ interface FileUploadsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun createFileUpload(entity: FileUploadEntity): Long
 
-    @Query("""
+    @Query(
+"""
         SELECT *
         FROM FileUploads
         WHERE internalConversationId = :internalConversationId
         ORDER BY timestamp DESC, id DESC
-    """)
+        """
+    )
     fun getFileUploadsForConversation(internalConversationId: String): Flow<List<FileUploadEntity>>
 
     @Query("UPDATE FileUploads SET progress = :progress WHERE id = :id")

@@ -8,7 +8,6 @@
 package com.nextcloud.talk.conversationlist.data
 
 import com.nextcloud.talk.models.domain.ConversationModel
-import com.nextcloud.talk.models.domain.FileUploadModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
