@@ -649,6 +649,17 @@ class ChatActivity :
                 }.collect()
         }
 
+        this.lifecycleScope.launch {
+            chatViewModel.getUploadsFlow
+                .onEach {
+                    val builder = StringBuilder()
+                    it.forEach { item ->
+                        builder.append("${item.fileName} ${item.progress}")
+                    }
+                    binding.fileUploadText.text = builder.toString()
+                }.collect()
+        }
+
         chatViewModel.getRoomViewState.observe(this) { state ->
             when (state) {
                 is ChatViewModel.GetRoomSuccessState -> {
