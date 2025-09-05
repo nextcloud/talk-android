@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
     <string name="message_search_hint">Recherche…</string>
     <string name="messages">Messages</string>
-    <string name="messages_could_not_be_loaded">Le message n\'a pas pu être chargé</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_about">À propos</string>
     <string name="nc_account_chooser_active_user">Utilisateur actif</string>
@@ -290,7 +289,7 @@
     <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Ceci devrait être modifié pour vous assurer que les notifications fonctionnent en arrière-plan. Merci de cliquer OK et sélectionner \"Toutes les applications\" -> %1$s -> Ne pas optimiser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
-    <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes.</string>
+    <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes</string>
     <string name="nc_invalid_time">Heure invalide</string>
     <string name="nc_invitations">Invitations</string>
     <string name="nc_join_open_conversations">Rejoindre des conversations ouvertes</string>
@@ -327,7 +326,7 @@
     <string name="nc_message_read">Message lu</string>
     <string name="nc_message_sending">Envoi en cours</string>
     <string name="nc_message_sent">Message envoyé</string>
-    <string name="nc_microphone_enabled_audio_recording">Le microphone est activé et le son est enregistré</string>
+    <string name="nc_microphone_enabled_audio_recording">Le micro est activé et le son est enregistré</string>
     <string name="nc_microphone_permission_hint">Pour autoriser la communication audio, merci de donner l\'autorisation « Microphone ».</string>
     <string name="nc_missed_call">Vous avez manqué un appel de %s</string>
     <string name="nc_moderator">Modérateur</string>
@@ -397,7 +396,7 @@
     <string name="nc_rename_confirm">Renommer</string>
     <string name="nc_reply">Répondre</string>
     <string name="nc_reply_privately">Répondre en privé</string>
-    <string name="nc_room_retention">Salle retenue avec succès</string>
+    <string name="nc_room_retention">Salle réservée avec succès</string>
     <string name="nc_save_message">Enregistrer</string>
     <string name="nc_save_success">Enregistré avec succès</string>
     <string name="nc_screen_lock_timeout_30">30 secondes</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s a envoyé un deck de carte</string>
     <string name="nc_server_connect">Test de la connexion au serveur</string>
     <string name="nc_server_db_upgrade_needed">Veuillez mettre à jour votre base de données %1$s</string>
-    <string name="nc_server_down">Impossible de se connecter au serveur</string>
     <string name="nc_server_failed_to_import_account">Échec lors de l\'importation des comptes sélectionnés</string>
     <string name="nc_server_helper_text">Adresse URL visible dans la barre d\'adresse de votre navigateur Web lorsque vous êtes connecté à %1$s.</string>
     <string name="nc_server_import_account">Importer le compte depuis l\'application %1$s</string>
@@ -598,7 +596,7 @@
     <string name="reset_status">Réinitialiser l\'état</string>
     <string name="restrict_join_other_room_while_call">Il est impossible de rejoindre une autre salle pendant un appel</string>
     <string name="save">Sauvegarder</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Scanner le QR Code</string>
     <string name="scope_federated_description">Synchronisation avec les serveurs de confiance uniquement</string>
     <string name="scope_federated_title">Fédéré</string>
     <string name="scope_local_description">Visible uniquement aux personnes dans l\'instance et aux invités</string>
@@ -633,7 +631,6 @@
     <string name="shared_items_voice">Voix</string>
     <string name="show_ban_reason">Montrer la raison du bannissement</string>
     <string name="show_banned_participants">Afficher les participants bannis</string>
-    <string name="show_threads_overview">Afficher les conversations</string>
     <string name="starred">Favori</string>
     <string name="startCallForbidden">Vous n\'êtes pas autorisé à lancer un appel</string>
     <string name="start_thread">Créer une conversation</string>
@@ -656,7 +653,6 @@
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="this_weekend">Ce week-end</string>
     <string name="thread_cancel">Annuler la création de la conversation</string>
-    <string name="thread_replies_amount">%1$d réponses</string>
     <string name="thread_title">Titre de la conversation</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>

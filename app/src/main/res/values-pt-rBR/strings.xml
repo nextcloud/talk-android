@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="messages">Mensagens</string>
-    <string name="messages_could_not_be_loaded">Não foi possível carregar as mensagens</string>
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s enviou um cartão de Deck</string>
     <string name="nc_server_connect">Testar a conexão do servidor</string>
     <string name="nc_server_db_upgrade_needed">Atualize seu banco de dados %1$s</string>
-    <string name="nc_server_down">Não é possível conectar ao servidor</string>
     <string name="nc_server_failed_to_import_account">Falha ao importar a conta</string>
     <string name="nc_server_helper_text">O link da interface da web do seu %1$s quando você o abre no navegador.</string>
     <string name="nc_server_import_account">Importar conta do aplicativo %1$s</string>
@@ -633,10 +631,9 @@
     <string name="shared_items_voice">Voz</string>
     <string name="show_ban_reason">Mostrar motivo do banimento</string>
     <string name="show_banned_participants">Mostrar participantes banidos</string>
-    <string name="show_threads_overview">Mostrar fios</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Você não tem permissão para iniciar uma chamada</string>
-    <string name="start_thread">Iniciar um fio</string>
+    <string name="start_thread">Criar um fio</string>
     <string name="started_a_call">iniciou uma chamada</string>
     <string name="status_message">Mensagem de status</string>
     <string name="status_reverted">Status Revertido</string>
@@ -656,7 +653,6 @@
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
     <string name="thread_cancel">Cancelar a criação do fio</string>
-    <string name="thread_replies_amount">%1$d respostas</string>
     <string name="thread_title">Título do fio</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>

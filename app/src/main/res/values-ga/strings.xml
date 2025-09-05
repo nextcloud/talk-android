@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Tosaigh ag clóscríobh chun cuardach a dhéanamh…</string>
     <string name="message_search_hint">Cuardaigh…</string>
     <string name="messages">Teachtaireachtaí</string>
-    <string name="messages_could_not_be_loaded">Níorbh fhéidir teachtaireachtaí a lódáil</string>
     <string name="nc_Server_account_imported">Tá cuntas roghnaithe iompórtáilte anois agus ar fáil</string>
     <string name="nc_about">Faoi</string>
     <string name="nc_account_chooser_active_user">Úsáideoir gníomhach</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">Sheol %1$s cárta deic</string>
     <string name="nc_server_connect">Nasc freastalaí tástála</string>
     <string name="nc_server_db_upgrade_needed">Uasghrádaigh do bhunachar sonraí %1$s le do thoil</string>
-    <string name="nc_server_down">Ní féidir ceangal leis an bhfreastalaí</string>
     <string name="nc_server_failed_to_import_account">Theip ar iompórtáil an chuntais roghnaithe</string>
     <string name="nc_server_helper_text">An nasc chuig do chomhéadan gréasáin %1$s nuair a osclaíonn tú é sa bhrabhsálaí.</string>
     <string name="nc_server_import_account">Iompórtáil cuntas ón aip %1$s</string>
@@ -633,10 +631,9 @@
     <string name="shared_items_voice">Guth</string>
     <string name="show_ban_reason">Taispeáin Cúis Toirmeasc</string>
     <string name="show_banned_participants">Taispeáin rannpháirtithe toirmiscthe</string>
-    <string name="show_threads_overview">Taispeáin snáitheanna</string>
     <string name="starred">is fearr leat</string>
     <string name="startCallForbidden">Níl cead agat glao a thosú</string>
-    <string name="start_thread">Tosaigh snáithe</string>
+    <string name="start_thread">Cruthaigh snáithe</string>
     <string name="started_a_call">thosaigh glao</string>
     <string name="status_message">Teachtaireacht stádais</string>
     <string name="status_reverted">Stádas ar ais</string>
@@ -656,7 +653,7 @@
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>
     <string name="this_weekend">An deireadh seachtaine seo</string>
     <string name="thread_cancel">Cealaigh cruthú snáithe</string>
-    <string name="thread_replies_amount">%1$d freagraí</string>
+    <string name="thread_reply">Freagra</string>
     <string name="thread_title">Teideal an snáithe</string>
     <string name="today">Inniu</string>
     <string name="tomorrow">Amárach</string>

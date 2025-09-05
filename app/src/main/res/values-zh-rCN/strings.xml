@@ -519,6 +519,7 @@
     <string name="shared_items_voice">语音</string>
     <string name="starred">收藏</string>
     <string name="startCallForbidden">您没有开始通话的权限。</string>
+    <string name="start_thread">创建帖子</string>
     <string name="started_a_call">发起了通话</string>
     <string name="status_message">状态消息</string>
     <string name="switch_to_breakout_room">切换到分组讨论</string>
@@ -536,7 +537,6 @@
     <string name="thisWeek">本周</string>
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="this_weekend">本周末</string>
-    <string name="thread_replies_amount">%1$d 个回复</string>
     <string name="thread_title">帖子‌标题</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
