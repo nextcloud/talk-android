@@ -100,16 +100,6 @@ object Migrations {
         }
     }
 
-    val MIGRATION_21_22 = object : Migration(21, 22) {
-        override fun migrate(db: SupportSQLiteDatabase) {
-            Log.i(
-                "Migrations",
-                "Migrating 21 to 22"
-            )
-            migrateToFileUploads(db)
-        }
-    }
-
     //endregion
 
     fun migrateToRoom(db: SupportSQLiteDatabase) {
