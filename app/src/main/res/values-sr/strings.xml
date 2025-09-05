@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Крените да куцате и претрага почиње ...</string>
     <string name="message_search_hint">Претрага ...</string>
     <string name="messages">Поруке</string>
-    <string name="messages_could_not_be_loaded">Нису могле да се учитају поруке</string>
     <string name="nc_Server_account_imported">Одабрани налог је сада увезен и доступан</string>
     <string name="nc_about">О програму</string>
     <string name="nc_account_chooser_active_user">Активни корисник</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s је послао картицу шпила</string>
     <string name="nc_server_connect">Испробај везу са сервером</string>
     <string name="nc_server_db_upgrade_needed">Ажурирајте своју %1$s базу</string>
-    <string name="nc_server_down">Не може да се повеже са сервером</string>
     <string name="nc_server_failed_to_import_account">Грешка при учитавању одабраног налога</string>
     <string name="nc_server_helper_text">Линк на ваш %1$s веб интерфејс када га отворите у прегледачу.</string>
     <string name="nc_server_import_account">Увези налог из апликације %1$s</string>
@@ -633,10 +631,9 @@
     <string name="shared_items_voice">Гласовна пошта</string>
     <string name="show_ban_reason">Прикажи разлог забране</string>
     <string name="show_banned_participants">Прикажи забрањене кориснике</string>
-    <string name="show_threads_overview">Прикажи нити</string>
     <string name="starred">Омиљени</string>
     <string name="startCallForbidden">Није вам дозвољене да започнете позив</string>
-    <string name="start_thread">Започни нит</string>
+    <string name="start_thread">Креирај нит</string>
     <string name="started_a_call">је започео позив</string>
     <string name="status_message">Порука стања</string>
     <string name="status_reverted">Враћено је старо стање статуса</string>
@@ -656,7 +653,6 @@
     <string name="this_is_a_test_message">Ово је тест порука</string>
     <string name="this_weekend">Овог викенда</string>
     <string name="thread_cancel">Откажи креирање нити</string>
-    <string name="thread_replies_amount">%1$d одговора</string>
     <string name="thread_title">Наслов нити</string>
     <string name="today">Данас</string>
     <string name="tomorrow">Сутра</string>

@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
     <string name="message_search_hint">Поиск …</string>
     <string name="messages">Сообщения</string>
-    <string name="messages_could_not_be_loaded">Сообщение не может быть загружено</string>
     <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_about">О программе</string>
     <string name="nc_account_chooser_active_user">Активный пользователь</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">%1$s отправил карточку</string>
     <string name="nc_server_connect">Проверить соединение с сервером</string>
     <string name="nc_server_db_upgrade_needed">Обновите базу данных %1$s</string>
-    <string name="nc_server_down">Не удалось подключиться к серверу</string>
     <string name="nc_server_failed_to_import_account">Не удалось импортировать выбранную учётную запись</string>
     <string name="nc_server_helper_text">Ссылка на ваш %1$s веб-интерфейс, когда вы открываете его в браузере.</string>
     <string name="nc_server_import_account">Импортировать учётную запись из приложения %1$s </string>
@@ -633,10 +631,9 @@
     <string name="shared_items_voice">Голосовая почта</string>
     <string name="show_ban_reason">Показать причину блокировки</string>
     <string name="show_banned_participants">Показать заблокированных участников</string>
-    <string name="show_threads_overview">Показать темы</string>
     <string name="starred">Избранное</string>
     <string name="startCallForbidden">Вам не разрешено звонить</string>
-    <string name="start_thread">Начать тему</string>
+    <string name="start_thread">Создать тему</string>
     <string name="started_a_call">начал(-а) звонок</string>
     <string name="status_message">Описание статуса</string>
     <string name="status_reverted">Статус возвращен</string>
@@ -656,7 +653,7 @@
     <string name="this_is_a_test_message">Это тестовое сообщение</string>
     <string name="this_weekend">Эти выходные</string>
     <string name="thread_cancel">Отменить создание темы</string>
-    <string name="thread_replies_amount">%1$d ответов</string>
+    <string name="thread_reply">Ответ</string>
     <string name="thread_title">Заголовок темы</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>

@@ -319,8 +319,8 @@
     <string name="nc_no_open_conversations_headline">Non hai conversas abertas</string>
     <string name="nc_no_open_conversations_text">Non hai conversas abertas ás que poida unirse.\nNon hai conversas abertas ou xa se uníu a todas.</string>
     <string name="nc_no_proxy">Sen proxy</string>
-    <string name="nc_not_allowed_to_activate_audio">Non ten permiso para activar o son!</string>
-    <string name="nc_not_allowed_to_activate_video">Non ten permiso para activar o vídeo!</string>
+    <string name="nc_not_allowed_to_activate_audio">Vde. non ten permiso para activar o son!</string>
+    <string name="nc_not_allowed_to_activate_video">Vde. non ten permiso para activar o vídeo!</string>
     <string name="nc_not_now">Agora non</string>
     <string name="nc_notification_channel">%1$s na canle de notificación %2$s</string>
     <string name="nc_notification_channel_calls">Chamadas</string>
@@ -572,7 +572,7 @@
     <string name="selected_list_item">Seleccionado</string>
     <string name="send_email">Enviar o correo</string>
     <string name="send_to">Enviar a</string>
-    <string name="send_to_forbidden">Non ten permiso para compartir contido nesta parola</string>
+    <string name="send_to_forbidden">Vde. non ten permiso para compartir contido nesta parola</string>
     <string name="send_to_three_dots">Enviar a…</string>
     <string name="send_without_notification">Enviar sen notificación</string>
     <string name="set">Definir</string>
@@ -591,7 +591,7 @@
     <string name="show_ban_reason">Amosar o motivo da expulsión</string>
     <string name="show_banned_participants">Amosar os participantes expulsados</string>
     <string name="starred">Favorito</string>
-    <string name="startCallForbidden">Non ten permiso para iniciar unha chamada</string>
+    <string name="startCallForbidden">Vde. non ten permiso para iniciar unha chamada</string>
     <string name="started_a_call">iniciar unha chamada</string>
     <string name="status_message">Mensaxe de estado</string>
     <string name="status_reverted">Estado revertido</string>

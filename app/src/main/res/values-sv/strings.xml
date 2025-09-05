@@ -88,6 +88,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Störst först</string>
     <string name="menu_item_sort_by_size_smallest_first">Minst först</string>
     <string name="message_copied">Meddelandet kopierat</string>
+    <string name="message_delete_are_you_sure">Är du säker på att du vill ta bort detta meddelande?</string>
     <string name="message_deleted_by_you">Meddelandet togs bort av dig</string>
     <string name="message_last_edited_by">Redigerad av %1$s</string>
     <string name="message_poll_tap_to_open">Tryck för att öppna omröstningen</string>
@@ -628,10 +629,9 @@
     <string name="shared_items_voice">Röst</string>
     <string name="show_ban_reason">Visa orsak till blockering</string>
     <string name="show_banned_participants">Visa blockerade deltagare</string>
-    <string name="show_threads_overview">Visa trådar</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du får inte starta ett samtal</string>
-    <string name="start_thread">Starta en tråd</string>
+    <string name="start_thread">Skapa en tråd</string>
     <string name="started_a_call">startade ett samtal</string>
     <string name="status_message">Statusmeddelande</string>
     <string name="status_reverted">Status återställd</string>
@@ -650,7 +650,8 @@
     <string name="thisWeek">Denna vecka</string>
     <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
-    <string name="thread_replies_amount">%1$d svar</string>
+    <string name="thread_cancel">Avbryt skapande av tråd</string>
+    <string name="thread_title">Trådtitel</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>

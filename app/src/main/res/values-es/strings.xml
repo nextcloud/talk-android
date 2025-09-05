@@ -97,7 +97,6 @@
     <string name="message_search_begin_typing">Empiece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar …</string>
     <string name="messages">Mensajes</string>
-    <string name="messages_could_not_be_loaded">Los mensajes no pudieron ser cargados</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
@@ -427,7 +426,6 @@
     <string name="nc_sent_deck_card" formatted="true">%1$senvió una tarjeta de deck</string>
     <string name="nc_server_connect">Probar conexión al servidor</string>
     <string name="nc_server_db_upgrade_needed">Por favor actualiza la base de datos de %1$s</string>
-    <string name="nc_server_down">No fue posible conectarse al servidor</string>
     <string name="nc_server_failed_to_import_account">No se ha podido importar la cuenta seleccionada</string>
     <string name="nc_server_helper_text">El link a tu interfaz web %1$s cuando la abras en el navegador.</string>
     <string name="nc_server_import_account">Importar cuenta desde la app %1$s</string>
@@ -634,10 +632,9 @@
     <string name="shared_items_voice">Voz</string>
     <string name="show_ban_reason">Mostrar razón de bloqueo</string>
     <string name="show_banned_participants">Mostrar participantes bloqueados</string>
-    <string name="show_threads_overview">Mostrar hilos</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">No está autorizado a iniciar una llamada</string>
-    <string name="start_thread">Iniciar un hilo</string>
+    <string name="start_thread">Crear un hilo</string>
     <string name="started_a_call">inició una llamada</string>
     <string name="status_message">Mensaje de estado</string>
     <string name="status_reverted">El estado ha sido revertido</string>
@@ -657,7 +654,6 @@
     <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
     <string name="thread_cancel">Cancelar la creación del hilo</string>
-    <string name="thread_replies_amount">%1$d respuestas</string>
     <string name="thread_title">Título del hilo</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
