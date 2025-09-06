@@ -234,7 +234,7 @@ class CallNotificationActivity : CallBaseActivity() {
     }
 
     override fun suppressFitsSystemWindows() {
-        binding!!.callNotificationLayout.fitsSystemWindows = false
+        binding!!.callNotificationLayout.fitsSystemWindows = true
     }
 
     companion object {
