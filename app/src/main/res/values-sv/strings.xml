@@ -75,6 +75,10 @@
     <string name="left_conversation">Du lämnade konversationen %1$s</string>
     <string name="load_more_results">Visa fler resultat</string>
     <string name="local_time">Lokal tid: %1$s</string>
+    <string name="location_permission_denied">Behörighet för plats nekad</string>
+    <string name="location_permission_denied_msg">Aktivera det i appens inställningar</string>
+    <string name="location_services_disabled">Platstjänster inaktiverat</string>
+    <string name="location_services_disabled_msg">Aktivera platstjänster (GPS) för att använda denna funktion</string>
     <string name="lock_conversation">Lås konversation</string>
     <string name="lock_symbol">Låssymbol</string>
     <string name="lower_hand">Ta ner handen</string>
@@ -651,6 +655,7 @@
     <string name="this_is_a_test_message">Detta är ett testmeddelande</string>
     <string name="this_weekend">Denna helgen</string>
     <string name="thread_cancel">Avbryt skapande av tråd</string>
+    <string name="thread_reply">Svara</string>
     <string name="thread_title">Trådtitel</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
@@ -696,6 +701,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dag utan aktivitet</item>
         <item quantity="other">Den här konversationen kommer automatiskt att tas bort för alla om %1$d dagar utan aktivitet</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d svar</item>
+        <item quantity="other">%d svar</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d röst</item>

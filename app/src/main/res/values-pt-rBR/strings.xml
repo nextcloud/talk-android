@@ -76,6 +76,10 @@
     <string name="left_conversation">Você saiu da conversa %1$s</string>
     <string name="load_more_results">Carregar mais resultados</string>
     <string name="local_time">Horário local: %1$s</string>
+    <string name="location_permission_denied">Permissão de localização negada</string>
+    <string name="location_permission_denied_msg">Por favor, ative-a nas configurações do aplicativo</string>
+    <string name="location_services_disabled">Serviços de localização desativados</string>
+    <string name="location_services_disabled_msg">Ative os serviços de localização (GPS) para usar este recurso</string>
     <string name="lock_conversation">Bloquear conversa</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar mão</string>
@@ -653,6 +657,7 @@
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
     <string name="thread_cancel">Cancelar a criação do fio</string>
+    <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fio</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>
@@ -700,6 +705,11 @@
         <item quantity="one">Esta conversa será excluída automaticamente para todos em %1$d dia sem atividade</item>
         <item quantity="many">Esta conversa será excluída automaticamente para todos em %1$d de dias sem atividade</item>
         <item quantity="other">Esta conversa será excluída automaticamente para todos em %1$d dias sem atividade</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d resposta</item>
+        <item quantity="many">%d de respostas</item>
+        <item quantity="other">%d respostas</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>

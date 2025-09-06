@@ -76,6 +76,10 @@
     <string name="left_conversation">Umeacha mazungumzo %1$s</string>
     <string name="load_more_results">Pakia matokeo zaidi</string>
     <string name="local_time">Muda wa kawaida: %1$s</string>
+    <string name="location_permission_denied">Ruhusa ya eneo imekataliwa</string>
+    <string name="location_permission_denied_msg">Tafadhali iwashe katika mipangilio ya programu</string>
+    <string name="location_services_disabled">Huduma za eneo zimezimwa</string>
+    <string name="location_services_disabled_msg">Tafadhali wezesha huduma za eneo (GPS) ili kutumia kipengele hiki</string>
     <string name="lock_conversation">Funga mazungumzo</string>
     <string name="lock_symbol">Funga ishara</string>
     <string name="lower_hand">Mkono wa chini</string>
@@ -191,8 +195,7 @@
     <string name="nc_description_send_message_button">Tuma ujumbe</string>
     <string name="nc_diagnose_account_category_title">Akaunti ya sasa</string>
     <string name="nc_diagnose_account_server">Seva</string>
-    <string name="nc_diagnose_account_server_notification_app">Programu ya arifa ya seva imesakinishwa?
- </string>
+    <string name="nc_diagnose_account_server_notification_app">Programu ya arifa ya seva imesakinishwa?</string>
     <string name="nc_diagnose_account_user_name">Mtumiaji</string>
     <string name="nc_diagnose_account_user_status_enabled">Je, hali ya mtumiaji imewezeshwa?</string>
     <string name="nc_diagnose_android_version_title">Toleo la Android </string>
@@ -702,8 +705,11 @@
     </plurals>
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">This conversation will be automatically deleted for everyone in %1$d day of no activity</item>
-        <item quantity="other">Mazungumzo haya yatafutwa kiotomatiki kwa kila mtu baada ya siku %1$d bila shughuli yoyote
- </item>
+        <item quantity="other">Mazungumzo haya yatafutwa kiotomatiki kwa kila mtu baada ya siku %1$d bila shughuli yoyote</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d reply</item>
+        <item quantity="other">%dmajibu</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>

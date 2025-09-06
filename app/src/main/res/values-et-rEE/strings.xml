@@ -76,6 +76,10 @@
     <string name="left_conversation">Sa lahkusid %1$s vestlusest</string>
     <string name="load_more_results">Laadi veel tulemusi</string>
     <string name="local_time">Kohalik aeg: %1$s</string>
+    <string name="location_permission_denied">Õigused asukoha tuvastamiseks on keelatud</string>
+    <string name="location_permission_denied_msg">Palun luba see rakenduse seadistustest</string>
+    <string name="location_services_disabled">Asukohateenused pole sisse lülitatud</string>
+    <string name="location_services_disabled_msg">Selle funktsionaalsuses kasutamiseks palun luba asukohateenused (GPS)</string>
     <string name="lock_conversation">Lukusta vestlus</string>
     <string name="lock_symbol">Lukuikoon</string>
     <string name="lower_hand">Lase käsi alla</string>
@@ -89,6 +93,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Suuremad esimesena</string>
     <string name="menu_item_sort_by_size_smallest_first">Väiksemad esimesenaa</string>
     <string name="message_copied">Sõnum on kopeeritud</string>
+    <string name="message_delete_are_you_sure">Kas oled kindel, et tahad selle sõnumi kustutada?</string>
     <string name="message_deleted_by_you">Sina kustutasid sõnumi</string>
     <string name="message_last_edited_by">%1$s muutis sõnumit</string>
     <string name="message_poll_tap_to_open">Küsitluse avamiseks klõpsi</string>
@@ -180,7 +185,7 @@
     <string name="nc_delete_all">Kustuta kõik</string>
     <string name="nc_delete_call">Kustuta vestlus</string>
     <string name="nc_delete_conversation_more">Kui kustutad selle vestluse, siis kustub see ka kõikide osalejate jaoks.</string>
-    <string name="nc_delete_message">Kustuta kiri</string>
+    <string name="nc_delete_message">Kustuta sõnum</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Sõnumi kustutamine õnnestus, kuid võis juhtuda, et ta oli juba teistesse sõnumiteenustesse edastatud</string>
     <string name="nc_delete_now">Kustuta kohe</string>
     <string name="nc_deleted_user">Kasutaja „%1$s“ on eemaldatud</string>
@@ -652,6 +657,7 @@
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
     <string name="thread_cancel">Katkesta jutulõnga koostamine</string>
+    <string name="thread_reply">Vasta</string>
     <string name="thread_title">Jutulõnga pealkiri</string>
     <string name="today">Täna</string>
     <string name="tomorrow">Homme</string>
@@ -697,6 +703,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">See vestlus kustub automaatselt kõigi osalejate jaoks, kui siin pole olnud tegevust %1$d päeva jooksul.</item>
         <item quantity="other">See vestlus kustub automaatselt kõigi osalejate jaoks, kui siin pole olnud tegevust %1$d päeva jooksul.</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d vastus</item>
+        <item quantity="other">%d vastust</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hääl</item>
