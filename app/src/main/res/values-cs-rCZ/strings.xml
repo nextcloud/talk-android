@@ -632,6 +632,7 @@
     <string name="show_banned_participants">Zobrazit vyloučené účasníky</string>
     <string name="starred">Oblíbené</string>
     <string name="startCallForbidden">Nemáte oprávnění pro zahájení hovoru</string>
+    <string name="start_thread">Vytvořit vlákno</string>
     <string name="started_a_call">zahájen hovor</string>
     <string name="status_message">Stavová zpráva</string>
     <string name="status_reverted">Stav vrácen na původní</string>
@@ -651,6 +652,7 @@
     <string name="this_is_a_test_message">Toto je zkušební zpráva</string>
     <string name="this_weekend">Tento víkend</string>
     <string name="thread_cancel">Zrušit vytváření vlákna</string>
+    <string name="thread_reply">Odpověď</string>
     <string name="thread_title">Název vlákna</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zítra</string>

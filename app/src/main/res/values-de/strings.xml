@@ -76,6 +76,10 @@
     <string name="left_conversation">Sie haben die Unterhaltung %1$s verlassen</string>
     <string name="load_more_results">Weitere Ergebnisse laden</string>
     <string name="local_time">Ortszeit: %1$s</string>
+    <string name="location_permission_denied">Standort-Berechtigung abgelehnt</string>
+    <string name="location_permission_denied_msg">Dies bitte in in App-Einstellungen aktivieren</string>
+    <string name="location_services_disabled">Standortdienste deaktiviert</string>
+    <string name="location_services_disabled_msg">Bitte die Standortdienste (GPS) aktivieren, um diese Funktion zu nutzen</string>
     <string name="lock_conversation">Unterhaltung sperren</string>
     <string name="lock_symbol">Schloss-Symbol</string>
     <string name="lower_hand">Hand herunternehmen</string>
@@ -699,6 +703,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tag gelöscht</item>
         <item quantity="other">Diese Unterhaltung wird für alle bei Inaktivität in %1$d Tagen gelöscht</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d Antwort</item>
+        <item quantity="other">%d Antworten</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d Stimme</item>
