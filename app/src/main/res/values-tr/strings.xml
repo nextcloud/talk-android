@@ -76,6 +76,10 @@
     <string name="left_conversation">%1$s görüşmesinden çıktınız</string>
     <string name="load_more_results">Diğer sonuçları yükle</string>
     <string name="local_time">Yerel zaman: %1$s</string>
+    <string name="location_permission_denied">Konum izni reddedildi</string>
+    <string name="location_permission_denied_msg">Lütfen Ayarlar içinden izin verin</string>
+    <string name="location_services_disabled">Konum hizmetleri kapalı</string>
+    <string name="location_services_disabled_msg">Bu özelliği kullanabilmek için konum hizmetlerini (GPS) açın</string>
     <string name="lock_conversation">Görüşmeyi kilitle</string>
     <string name="lock_symbol">Kilit simgesi</string>
     <string name="lower_hand">Eli indir</string>
@@ -653,6 +657,7 @@
     <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
     <string name="this_weekend">Bu hafta sonu</string>
     <string name="thread_cancel">Yazışma başlatmaktan vazgeç</string>
+    <string name="thread_reply">Yanıtla</string>
     <string name="thread_title">Yazışma başlığı</string>
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>
@@ -698,6 +703,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Bu görüşme, %1$d gün boyunca etkileşim olmazsa herkesten otomatik olarak silinecek.</item>
         <item quantity="other">Bu görüşme, %1$d gün boyunca etkileşim olmazsa herkesten otomatik olarak silinecek.</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d yanıt</item>
+        <item quantity="other">%d yanıt</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d oy</item>

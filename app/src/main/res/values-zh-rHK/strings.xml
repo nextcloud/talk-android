@@ -76,6 +76,10 @@
     <string name="left_conversation">你離開了對話 %1$s</string>
     <string name="load_more_results">正在載入更多結果</string>
     <string name="local_time">本地時間︰%1$s</string>
+    <string name="location_permission_denied">位置權限被拒絕</string>
+    <string name="location_permission_denied_msg">請在「應用程式設定」中啟用</string>
+    <string name="location_services_disabled">已停用位置服務</string>
+    <string name="location_services_disabled_msg">您必須啟用位置服務 (GPS) 以使用此功能</string>
     <string name="lock_conversation">鎖定對話</string>
     <string name="lock_symbol">鎖符號</string>
     <string name="lower_hand">放下手</string>
@@ -697,6 +701,9 @@
     </plurals>
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="other">此對話如無人於%1$d天內互動，將會自動為所有人刪除。</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="other">%d 個回覆</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 選票</item>
