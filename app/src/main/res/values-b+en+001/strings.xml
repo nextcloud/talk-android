@@ -76,6 +76,10 @@
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">Load more results</string>
     <string name="local_time">Local time: %1$s</string>
+    <string name="location_permission_denied">Location permission denied</string>
+    <string name="location_permission_denied_msg">Please enable it in the app settings</string>
+    <string name="location_services_disabled">Location services disabled</string>
+    <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
     <string name="lock_conversation">Lock conversation</string>
     <string name="lock_symbol">Lock symbol</string>
     <string name="lower_hand">Lower hand</string>
@@ -653,6 +657,7 @@
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
     <string name="thread_cancel">Cancel thread creation</string>
+    <string name="thread_reply">Reply</string>
     <string name="thread_title">Thread title</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
@@ -698,6 +703,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">This conversation will be automatically deleted for everyone in %1$d day of no activity</item>
         <item quantity="other">This conversation will be automatically deleted for everyone in %1$d days of no activity</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d reply</item>
+        <item quantity="other">%d replies</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
