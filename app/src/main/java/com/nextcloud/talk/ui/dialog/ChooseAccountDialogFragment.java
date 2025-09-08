@@ -247,19 +247,25 @@ public class ChooseAccountDialogFragment extends DialogFragment {
 
 
         binding.onlineStatus.setOnClickListener(v -> {
-            OnlineStatusBottomDialogFragment bottomDialog =
-                OnlineStatusBottomDialogFragment.newInstance(status != null ? status : new Status());
-            bottomDialog.show(requireActivity().getSupportFragmentManager(),
-                              "fragment_online_status_bottom_dialog");
             dismiss();
-        });
+            if(status!= null && getActivity()!= null){
+                OnlineStatusBottomDialogFragment bottomDialog =
+                    OnlineStatusBottomDialogFragment.newInstance(status);
+                bottomDialog.show(requireActivity().getSupportFragmentManager(),
+                                  "fragment_online_status_bottom_dialog");
 
+            }
+        });
         binding.statusMessage.setOnClickListener(v -> {
-            StatusMessageBottomDialogFragment bottomDialog =
-                StatusMessageBottomDialogFragment.newInstance(status != null ? status : new Status());
-            bottomDialog.show(requireActivity().getSupportFragmentManager(),
-                              "fragment_status_message_bottom_dialog");
+
             dismiss();
+            if(status!= null && getActivity()!= null){
+                StatusMessageBottomDialogFragment bottomDialog =
+                    StatusMessageBottomDialogFragment.newInstance(status);
+                bottomDialog.show(getActivity().getSupportFragmentManager(),
+                                  "fragment_status_message_bottom_dialog");
+
+            }
         });
     }
 

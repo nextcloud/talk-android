@@ -9,7 +9,6 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -23,7 +22,6 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
@@ -65,10 +63,12 @@ private const val POS_AN_HOUR = 2
 private const val POS_FOUR_HOURS = 3
 private const val POS_TODAY = 4
 private const val POS_END_OF_WEEK = 5
+private const val POS_FIFTEEN_MINUTES = 6
 
 private const val ONE_SECOND_IN_MILLIS = 1000
 private const val ONE_MINUTE_IN_SECONDS = 60
 private const val THIRTY_MINUTES = 30
+private const val FIFTEEN_MINUTES = 15
 private const val FOUR_HOURS = 4
 private const val LAST_HOUR_OF_DAY = 23
 private const val LAST_MINUTE_OF_HOUR = 59
@@ -205,15 +205,12 @@ class StatusMessageBottomDialogFragment :
                 }
             })
     }
-
-    @SuppressLint("InflateParams")
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        binding = DialogSetStatusMessageBinding.inflate(layoutInflater)
-        dialog.setContentView(binding.root)
-        viewThemeUtils.material.colorBottomSheetBackground(binding.root)
-        return dialog
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DialogSetStatusMessageBinding.inflate(inflater, container, false)
+        viewThemeUtils.platform.themeDialog(binding.root)
+        return binding.root
     }
+
 
     @SuppressLint("DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -382,6 +379,11 @@ class StatusMessageBottomDialogFragment :
                 clearAt = null
             }
 
+            POS_FIFTEEN_MINUTES -> {
+
+                clearAt = currentTime + FIFTEEN_MINUTES *  ONE_MINUTE_IN_SECONDS
+            }
+
             POS_HALF_AN_HOUR -> {
                 // 30 minutes
                 clearAt = currentTime + THIRTY_MINUTES * ONE_MINUTE_IN_SECONDS
@@ -522,8 +524,6 @@ class StatusMessageBottomDialogFragment :
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-        binding.root
 
     override fun onClick(predefinedStatus: PredefinedStatus) {
         selectedPredefinedStatus = predefinedStatus
@@ -551,6 +551,7 @@ class StatusMessageBottomDialogFragment :
                 "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
                 "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
                 "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
+                "900"   -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
                 else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
             }
         } else if (clearAt.type == "end-of") {
