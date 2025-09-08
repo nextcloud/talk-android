@@ -79,7 +79,6 @@ class StatusMessageBottomDialogFragment :
     BottomSheetDialogFragment(),
     PredefinedStatusClickListener {
 
-
     private var selectedPredefinedStatus: PredefinedStatus? = null
 
     private lateinit var binding: DialogSetStatusMessageBinding
@@ -211,7 +210,6 @@ class StatusMessageBottomDialogFragment :
         return binding.root
     }
 
-
     @SuppressLint("DefaultLocale")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -290,7 +288,6 @@ class StatusMessageBottomDialogFragment :
             })
     }
 
-
     private fun setupCurrentStatus() {
         currentStatus?.let {
             binding.emoji.setText(it.icon)
@@ -356,7 +353,6 @@ class StatusMessageBottomDialogFragment :
         }
     }
 
-
     private fun createClearTimesArrayAdapter(): ArrayAdapter<String> {
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -381,7 +377,7 @@ class StatusMessageBottomDialogFragment :
             }
 
             POS_FIFTEEN_MINUTES -> {
-                clearAt = currentTime + FIFTEEN_MINUTES *  ONE_MINUTE_IN_SECONDS
+                clearAt = currentTime + FIFTEEN_MINUTES * ONE_MINUTE_IN_SECONDS
             }
 
             POS_HALF_AN_HOUR -> {
@@ -457,7 +453,6 @@ class StatusMessageBottomDialogFragment :
         popup.show()
     }
 
-
     private fun setStatusMessage() {
         val inputText = binding.customStatusInput.text.toString().ifEmpty { "" }
         // The endpoint '/message/custom' expects a valid emoji as string or null
@@ -524,7 +519,6 @@ class StatusMessageBottomDialogFragment :
         }
     }
 
-
     override fun onClick(predefinedStatus: PredefinedStatus) {
         selectedPredefinedStatus = predefinedStatus
 
@@ -548,7 +542,7 @@ class StatusMessageBottomDialogFragment :
     private fun setClearAt(clearAt: ClearAt) {
         if (clearAt.type == "period") {
             when (clearAt.time) {
-                "900"   -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
+                "900" -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
                 "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
                 "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
                 "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
@@ -580,16 +574,16 @@ class StatusMessageBottomDialogFragment :
      * Fragment creator
      */
     companion object {
-        private val TAG =  StatusMessageBottomDialogFragment::class.simpleName
+        private val TAG = StatusMessageBottomDialogFragment::class.simpleName
         private const val HTTP_STATUS_CODE_OK = 200
         private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
         @JvmStatic
-        fun newInstance(status: Status):  StatusMessageBottomDialogFragment {
+        fun newInstance(status: Status): StatusMessageBottomDialogFragment {
             val args = Bundle()
             args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
 
-            val dialogFragment =  StatusMessageBottomDialogFragment()
+            val dialogFragment = StatusMessageBottomDialogFragment()
             dialogFragment.arguments = args
             return dialogFragment
         }

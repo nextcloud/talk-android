@@ -43,6 +43,7 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
     private val disposables: MutableList<Disposable> = ArrayList()
 
     @Inject lateinit var ncApi: NcApi
+
     @Inject lateinit var viewThemeUtils: ViewThemeUtils
 
     var currentUserProvider: CurrentUserProviderNew? = null
@@ -67,7 +68,6 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         return binding.root
     }
 
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupGeneralStatusOptions()
@@ -88,8 +88,6 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
     }
 
-
-
     private fun setStatus(statusType: StatusType) {
         visualizeStatus(statusType)
 
@@ -97,9 +95,15 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) { disposables.add(d) }
-                override fun onNext(t: GenericOverall) { dismiss() }
-                override fun onError(e: Throwable) { Log.e(TAG, "Failed to set statusType", e) }
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
+                override fun onNext(t: GenericOverall) {
+                    dismiss()
+                }
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Failed to set statusType", e)
+                }
                 override fun onComplete() { }
             })
     }
@@ -165,4 +169,3 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         }
     }
 }
-
