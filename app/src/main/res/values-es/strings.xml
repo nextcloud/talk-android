@@ -76,6 +76,10 @@
     <string name="left_conversation">Ud. Abandonó la conversación %1$s</string>
     <string name="load_more_results">Cargar más resultados</string>
     <string name="local_time">Hora local: %1$s</string>
+    <string name="location_permission_denied">Se denegó el permiso de ubicación</string>
+    <string name="location_permission_denied_msg">Por favor, habilítelo en los ajustes de aplicación</string>
+    <string name="location_services_disabled">Servicios de ubicación desactivados</string>
+    <string name="location_services_disabled_msg">Por favor, habilite los servicios de ubicación (GPS) para utilizar esta característica</string>
     <string name="lock_conversation">Bloquear conversación</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Bajar la mano</string>
@@ -654,6 +658,7 @@
     <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
     <string name="thread_cancel">Cancelar la creación del hilo</string>
+    <string name="thread_reply">Responder</string>
     <string name="thread_title">Título del hilo</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
@@ -701,6 +706,11 @@
         <item quantity="one">Esta conversación será eliminada automáticamente para todos tras %1$d día de inactividad</item>
         <item quantity="many">Esta conversación será eliminada automáticamente para todos tras %1$d días de inactividad</item>
         <item quantity="other">Esta conversación será eliminada automáticamente para todos tras %1$d días de inactividad</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d respuesta</item>
+        <item quantity="many">%d respuestas</item>
+        <item quantity="other">%d respuestas</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
