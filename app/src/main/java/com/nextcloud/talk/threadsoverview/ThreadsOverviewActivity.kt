@@ -33,7 +33,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
@@ -116,8 +115,7 @@ class ThreadsOverviewActivity : BaseActivity() {
                                 roomToken,
                                 onThreadClick = { roomToken, threadId ->
                                     navigateToChatActivity(roomToken, threadId)
-                                },
-                                threadsOverviewViewModel
+                                }
                             )
                         }
                     }
@@ -150,8 +148,7 @@ class ThreadsOverviewActivity : BaseActivity() {
 fun ThreadsOverviewScreen(
     uiState: ThreadsOverviewViewModel.ThreadsListUiState,
     roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit,
-    threadsOverviewViewModel: ThreadsOverviewViewModel
+    onThreadClick: (roomToken: String, threadId: Int) -> Unit
 ) {
     when (val state = uiState) {
         is ThreadsOverviewViewModel.ThreadsListUiState.None -> {
@@ -162,8 +159,7 @@ fun ThreadsOverviewScreen(
             ThreadsList(
                 threads = state.threadsList!!,
                 roomToken = roomToken,
-                onThreadClick = onThreadClick,
-                threadsOverviewViewModel
+                onThreadClick = onThreadClick
             )
         }
 
@@ -178,11 +174,9 @@ fun ThreadsOverviewScreen(
 fun ThreadsList(
     threads: List<ThreadInfo>,
     roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit,
-    threadsOverviewViewModel: ThreadsOverviewViewModel
+    onThreadClick: (roomToken: String, threadId: Int) -> Unit
 ) {
     val space = ' '
-    val context = LocalContext.current
     if (threads.isEmpty()) {
         Box(
             modifier = Modifier

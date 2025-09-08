@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -117,19 +117,19 @@ fun ThreadRow(
 
 @Composable
 fun ThreadsIcon(title: String) {
+    val baseColorInt = ColorGenerator.usernameToColor(title)
+
     Box(
         modifier = Modifier
             .size(48.dp)
             .clip(CircleShape)
-            .background(MaterialTheme.colorScheme.onPrimary),
+            .background(Color(baseColorInt).copy(alpha = 0.1f)),
         contentAlignment = Alignment.Center
     ) {
-        val baseColorInt = ColorGenerator.usernameToColor(title)
-
         Icon(
             imageVector = ImageVector.vectorResource(R.drawable.outline_forum_24),
             contentDescription = null,
-            tint = Color(baseColorInt),
+            tint = Color(baseColorInt).copy(alpha = 0.9f),
             modifier = Modifier.size(32.dp)
         )
     }
