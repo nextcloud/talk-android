@@ -58,12 +58,12 @@ private const val ARG_CURRENT_USER_PARAM = "currentUser"
 private const val ARG_CURRENT_STATUS_PARAM = "currentStatus"
 
 private const val POS_DONT_CLEAR = 0
-private const val POS_HALF_AN_HOUR = 1
-private const val POS_AN_HOUR = 2
-private const val POS_FOUR_HOURS = 3
-private const val POS_TODAY = 4
-private const val POS_END_OF_WEEK = 5
-private const val POS_FIFTEEN_MINUTES = 6
+private const val POS_FIFTEEN_MINUTES = 1
+private const val POS_HALF_AN_HOUR = 2
+private const val POS_AN_HOUR = 3
+private const val POS_FOUR_HOURS = 4
+private const val POS_TODAY = 5
+private const val POS_END_OF_WEEK = 6
 
 private const val ONE_SECOND_IN_MILLIS = 1000
 private const val ONE_MINUTE_IN_SECONDS = 60
@@ -361,6 +361,7 @@ class StatusMessageBottomDialogFragment :
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapter.add(getString(R.string.dontClear))
+        adapter.add(getString(R.string.fifteenMinutes))
         adapter.add(getString(R.string.thirtyMinutes))
         adapter.add(getString(R.string.oneHour))
         adapter.add(getString(R.string.fourHours))
@@ -380,7 +381,6 @@ class StatusMessageBottomDialogFragment :
             }
 
             POS_FIFTEEN_MINUTES -> {
-
                 clearAt = currentTime + FIFTEEN_MINUTES *  ONE_MINUTE_IN_SECONDS
             }
 
@@ -548,10 +548,10 @@ class StatusMessageBottomDialogFragment :
     private fun setClearAt(clearAt: ClearAt) {
         if (clearAt.type == "period") {
             when (clearAt.time) {
+                "900"   -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
                 "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
                 "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
                 "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
-                "900"   -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
                 else -> binding.clearStatusAfterSpinner.setSelection(POS_DONT_CLEAR)
             }
         } else if (clearAt.type == "end-of") {
