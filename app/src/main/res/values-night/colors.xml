@@ -13,7 +13,6 @@
     <color name="colorAccent">@color/colorPrimary</color>
     <color name="disabled_text">#ff6F6F6F</color>
 
-
     <!-- App bar -->
     <color name="appbar">#1E1E1E</color>
     <color name="fontAppbar">#FFFFFF</color>
@@ -39,6 +38,9 @@
     <color name="conversation_unread_bubble_text">#D8D8D8</color>
 
     <color name="chat_separator">#484848</color>
+
+    <!-- Background for replied messages -->
+    <color name="reply_background">#33000000</color>
 
     <!-- Chat window incoming message text & informational -->
     <color name="bg_bottom_sheet">#121212</color>

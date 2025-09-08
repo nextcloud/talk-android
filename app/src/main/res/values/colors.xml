@@ -14,8 +14,6 @@
     <color name="textColorOnPrimaryBackground">#ffffff</color> <!-- white/black depending on primary color -->
     <color name="nc_login_text_color">#B3FFFFFF</color>
 
-
-
     <!-- App bar -->
     <color name="appbar">@android:color/white</color>
     <color name="fontAppbar">#666666</color>
@@ -39,6 +37,8 @@
     <color name="nc_outcoming_text_default">#FFFFFF</color>
     <!-- Text color of received messages -->
     <color name="nc_incoming_text_default">@color/high_emphasis_text</color>
+    <!-- Background for replied messages -->
+    <color name="reply_background">#55FFFFFF</color>
 
     <!-- Name of person or group for the chat conversation -->
     <color name="conversation_item_header">@color/high_emphasis_text</color>

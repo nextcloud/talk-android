@@ -349,7 +349,11 @@ class OutcomingVoiceMessageViewHolder(outcomingView: View) :
                         )
                     viewThemeUtils.talk.colorOutgoingQuoteText(binding.messageQuote.quotedMessage)
                     viewThemeUtils.talk.colorOutgoingQuoteAuthorText(binding.messageQuote.quotedMessageAuthor)
-                    viewThemeUtils.talk.colorOutgoingQuoteBackground(binding.messageQuote.quoteColoredView)
+                    viewThemeUtils.talk.themeParentMessage(
+                        parentChatMessage,
+                        message,
+                        binding.messageQuote.quotedChatMessageView
+                    )
 
                     binding.messageQuote.quotedChatMessageView.visibility =
                         if (!message.isDeleted &&
