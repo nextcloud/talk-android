@@ -217,7 +217,7 @@ class OutcomingDeckCardViewHolder(outcomingView: View) :
                     viewThemeUtils.talk.themeParentMessage(
                         parentChatMessage,
                         message,
-                        binding.messageQuote.quoteColoredView
+                        binding.messageQuote.quotedChatMessageView
                     )
 
                     binding.messageQuote.quotedChatMessageView.visibility =

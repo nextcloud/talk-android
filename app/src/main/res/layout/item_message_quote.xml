@@ -12,24 +12,19 @@
     android:id="@+id/quotedChatMessageView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/reply_background"
+    android:paddingStart="12dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="4dp"
+    android:paddingTop="4dp"
     android:layout_marginBottom="8dp">
-
-    <View
-        android:id="@+id/quoteColoredView"
-        android:layout_width="2dp"
-        android:layout_height="match_parent"
-        android:layout_alignBottom="@id/flexboxQuoted"
-        android:layout_alignParentStart="true"
-        android:layout_marginEnd="8dp"
-        android:background="@color/high_emphasis_text" />
 
     <androidx.emoji2.widget.EmojiTextView
         android:id="@+id/quotedMessageAuthor"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
         android:layout_marginEnd="8dp"
-        android:layout_toEndOf="@id/quoteColoredView"
         android:alpha="0.6"
         android:ellipsize="end"
         android:textAlignment="viewStart"

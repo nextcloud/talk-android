@@ -14,6 +14,7 @@ import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.text.Spannable
 import android.text.Spanned
@@ -128,12 +129,6 @@ class TalkSpecificViewThemeUtils @Inject constructor(
     fun colorOutgoingQuoteAuthorText(textView: TextView) {
         withScheme(textView) { scheme ->
             ColorUtils.setAlphaComponent(dynamicColor.onSurfaceVariant().getArgb(scheme), ALPHA_80_INT)
-        }
-    }
-
-    fun colorOutgoingQuoteBackground(view: View) {
-        withScheme(view) { scheme ->
-            view.setBackgroundColor(dynamicColor.onSurfaceVariant().getArgb(scheme))
         }
     }
 
@@ -379,11 +374,18 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         @ColorRes quoteColorNonSelf: Int = R.color.textColorMaxContrast
     ) {
         withScheme(quoteColoredView) { scheme ->
+            val shapeRectangle = ContextCompat.getDrawable(
+                quoteColoredView.context,
+                R.drawable.reply_background
+            )
+                as LayerDrawable
+            val gradient = shapeRectangle.findDrawableByLayerId(R.id.quoteLine) as GradientDrawable
             if (parentChatMessage.actorId?.equals(message.activeUser!!.userId) == true) {
-                quoteColoredView.setBackgroundColor(dynamicColor.primary().getArgb(scheme))
+                gradient.setColor(dynamicColor.primary().getArgb(scheme))
             } else {
-                quoteColoredView.setBackgroundResource(quoteColorNonSelf)
+                gradient.setColor(dynamicColor.onSurfaceVariant().getArgb(scheme))
             }
+            quoteColoredView.background = shapeRectangle
         }
     }
 

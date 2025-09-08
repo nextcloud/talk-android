@@ -395,7 +395,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     viewThemeUtils.talk.themeParentMessage(
                         parentChatMessage,
                         message,
-                        binding.messageQuote.quoteColoredView,
+                        binding.messageQuote.quotedChatMessageView,
                         R.color.high_emphasis_text
                     )
 
