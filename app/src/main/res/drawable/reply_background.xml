@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Nextcloud Talk - Android Client
+  ~
+  ~ SPDX-FileCopyrightText: 2025 Andy Scherzinger <info@andy-scherzinger.de>
+  ~ SPDX-License-Identifier: GPL-3.0-or-later
+  -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/quoteLine" android:width="4dp">
+        <shape android:shape="rectangle">
+            <corners
+                android:bottomLeftRadius="8dp"
+                android:bottomRightRadius="0dp"
+                android:topLeftRadius="8dp"
+                android:topRightRadius="0dp" />
+            <solid android:color="@color/textColorMaxContrast" />
+        </shape>
+    </item>
+    <item
+        android:bottom="0dp"
+        android:left="4dp"
+        android:right="0dp"
+        android:top="0dp">
+        <shape android:shape="rectangle">
+            <corners
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="8dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="8dp" />
+            <solid android:color="@color/reply_background" />
+        </shape>
+    </item>
+</layer-list>
