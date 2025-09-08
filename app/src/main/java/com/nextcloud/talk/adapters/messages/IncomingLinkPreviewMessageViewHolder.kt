@@ -221,7 +221,7 @@ class IncomingLinkPreviewMessageViewHolder(incomingView: View, payload: Any) :
                     viewThemeUtils.talk.themeParentMessage(
                         parentChatMessage,
                         message,
-                        binding.messageQuote.quoteColoredView
+                        binding.messageQuote.quotedChatMessageView
                     )
 
                     binding.messageQuote.quotedChatMessageView.visibility =
