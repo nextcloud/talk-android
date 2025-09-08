@@ -69,7 +69,7 @@ fun ThreadRow(
                     text = title,
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontWeight = FontWeight.Thin,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
@@ -89,7 +89,7 @@ fun ThreadRow(
                 Text(
                     text = secondLineTitle,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Normal,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
@@ -98,7 +98,8 @@ fun ThreadRow(
                     modifier = Modifier.Companion.weight(1f),
                     text = secondLine,
                     style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Thin,
+                    fontWeight = FontWeight.Normal,
+                    color = MaterialTheme.colorScheme.outline,
                     maxLines = 1,
                     overflow = TextOverflow.Companion.Ellipsis
                 )
