@@ -6,18 +6,22 @@
  */
 package com.nextcloud.talk.ui.dialog
 
-import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import autodagger.AutoInjector
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.card.MaterialCardView
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
+import com.nextcloud.talk.databinding.DialogSetOnlineStatusBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusType
@@ -30,10 +34,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import java.util.Locale
 import javax.inject.Inject
-import com.google.android.material.card.MaterialCardView
-import android.widget.TextView
-import android.widget.ImageView
-import com.nextcloud.talk.databinding.DialogSetOnlineStatusBinding
 
 @AutoInjector(NextcloudTalkApplication::class)
 class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
@@ -61,13 +61,12 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = BottomSheetDialog(requireContext(), theme)
-        binding = DialogSetOnlineStatusBinding.inflate(layoutInflater)
-        dialog.setContentView(binding.root)
-        viewThemeUtils.material.colorBottomSheetBackground(binding.root)
-        return dialog
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DialogSetOnlineStatusBinding.inflate(inflater, container, false)
+        viewThemeUtils.platform.themeDialog(binding.root)
+        return binding.root
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -89,6 +88,8 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
     }
 
+
+
     private fun setStatus(statusType: StatusType) {
         visualizeStatus(statusType)
 
@@ -104,7 +105,7 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun visualizeStatus(statusType: String) {
-        StatusType.values().firstOrNull { it.name == statusType.uppercase(Locale.ROOT) }?.let { visualizeStatus(it) }
+        StatusType.entries.firstOrNull { it.name == statusType.uppercase(Locale.ROOT) }?.let { visualizeStatus(it) }
     }
 
     private fun visualizeStatus(statusType: StatusType) {
