@@ -50,7 +50,7 @@ fun ParticipantTile(
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean
 ) {
-    val colorInt = ColorGenerator.shared.usernameToColor(participantUiState.nick)
+    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick)
 
     BoxWithConstraints(
         modifier = modifier
