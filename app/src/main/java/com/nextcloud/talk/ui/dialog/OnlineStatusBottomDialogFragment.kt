@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.ui.dialog
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.card.MaterialCardView
@@ -66,6 +69,13 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
         binding = DialogSetOnlineStatusBinding.inflate(inflater, container, false)
         viewThemeUtils.platform.themeDialog(binding.root)
         viewThemeUtils.material.themeDragHandleView(binding.dragHandle)
+
+        dialog?.window?.let { window ->
+            window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.bg_default)
+            val inLightMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_YES
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = inLightMode
+        }
         return binding.root
     }
 
