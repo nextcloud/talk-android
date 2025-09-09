@@ -10,6 +10,7 @@ package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -19,6 +20,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
@@ -207,6 +210,12 @@ class StatusMessageBottomDialogFragment :
         binding = DialogSetStatusMessageBinding.inflate(inflater, container, false)
         viewThemeUtils.platform.themeDialog(binding.root)
         viewThemeUtils.material.themeDragHandleView(binding.dragHandle)
+        dialog?.window?.let { window ->
+            window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.bg_default)
+            val inLightMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_YES
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = inLightMode
+        }
         return binding.root
     }
 
