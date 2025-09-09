@@ -59,7 +59,12 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -284,6 +289,9 @@ class ChatActivity :
     lateinit var messageInputViewModel: MessageInputViewModel
 
     private var chatMenu: Menu? = null
+
+    private var overflowMenuHostView: ComposeView? = null
+    private var isThreadMenuExpanded by mutableStateOf(false)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -3301,6 +3309,10 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_video_call)
                 menu.removeItem(R.id.conversation_voice_call)
             }
+
+            val threadNotifications = menu.findItem(R.id.thread_notifications)
+            threadNotifications.isVisible = isChatThread() &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
         }
         return true
     }
@@ -3334,7 +3346,7 @@ class ChatActivity :
 
             R.id.conversation_event -> {
                 val anchorView = findViewById<View>(R.id.conversation_event)
-                showPopupWindow(anchorView)
+                showConversationEventMenu(anchorView)
                 true
             }
 
@@ -3343,11 +3355,102 @@ class ChatActivity :
                 true
             }
 
+            R.id.thread_notifications -> {
+                showThreadNotificationMenu()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
 
+    private fun showThreadNotificationMenu() {
+        if (overflowMenuHostView == null) {
+            val threadNotificationsAnchor: View? = findViewById(R.id.thread_notifications)
+
+            val colorScheme = viewThemeUtils.getColorScheme(this)
+
+            overflowMenuHostView = ComposeView(this).apply {
+                setContent {
+                    MaterialTheme(
+                        colorScheme = colorScheme
+                    ) {
+                        val items = listOf(
+                            MenuItemData(
+                                title = context.resources.getString(R.string.thread_notifications_default),
+                                subtitle = context.resources.getString(
+                                    R.string.thread_notifications_default_description
+                                ),
+                                icon = R.drawable.baseline_notifications_24,
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "a",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.nc_notify_me_always),
+                                subtitle = "",
+                                icon = R.drawable.outline_notifications_active_24,
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "b",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.nc_notify_me_mention),
+                                subtitle = "",
+                                icon = R.drawable.baseline_notifications_24,
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "c",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.nc_notify_me_never),
+                                subtitle = "",
+                                icon = R.drawable.ic_baseline_notifications_off_24,
+                                onClick = {
+                                    Toast.makeText(
+                                        context,
+                                        "d",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                            )
+
+                        )
+
+                        OverflowMenu(
+                            anchor = threadNotificationsAnchor,
+                            expanded = isThreadMenuExpanded,
+                            items = items,
+                            onDismiss = { isThreadMenuExpanded = false }
+                        )
+                    }
+                }
+            }
+
+            addContentView(
+                overflowMenuHostView,
+                CoordinatorLayout.LayoutParams(
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
+        isThreadMenuExpanded = true
+    }
+
     @SuppressLint("InflateParams")
-    private fun showPopupWindow(anchorView: View) {
+    private fun showConversationEventMenu(anchorView: View) {
         val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
 
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
