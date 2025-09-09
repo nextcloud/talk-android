@@ -289,12 +289,17 @@ interface NcApiCoroutines {
     @DELETE
     suspend fun unbindRoom(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
-    @POST
-    suspend fun createThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
-
     @GET
     suspend fun getThreads(@Header("Authorization") authorization: String, @Url url: String): ThreadsOverall
 
     @GET
     suspend fun getThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun setThreadNotificationLevel(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("level") level: Int
+    ): ThreadOverall
 }

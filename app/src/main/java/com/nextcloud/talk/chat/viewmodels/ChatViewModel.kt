@@ -459,6 +459,18 @@ class ChatViewModel @Inject constructor(
         }
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
+    fun setThreadNotificationLevel(credentials: String, url: String, level: Int) {
+        viewModelScope.launch {
+            try {
+                val thread = threadsRepository.setThreadNotificationLevel(credentials, url, level)
+                // _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
+            } catch (exception: Exception) {
+                // _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
+            }
+        }
+    }
+
     fun loadMessages(withCredentials: String, withUrl: String) {
         val bundle = Bundle()
         bundle.putString(BundleKeys.KEY_CHAT_URL, withUrl)

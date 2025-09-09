@@ -27,6 +27,9 @@ class ThreadsRepositoryImpl @Inject constructor(
     override suspend fun getThread(credentials: String, url: String): ThreadOverall =
         ncApiCoroutines.getThread(credentials, url)
 
+    override suspend fun setThreadNotificationLevel(credentials: String, url: String, level: Int): ThreadOverall =
+        ncApiCoroutines.setThreadNotificationLevel(credentials, url, level)
+
     companion object {
         val TAG = ThreadsRepositoryImpl::class.simpleName
     }
