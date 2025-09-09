@@ -3355,6 +3355,7 @@ class ChatActivity :
             else -> super.onOptionsItemSelected(item)
         }
 
+    @Suppress("Detekt.LongMethod")
     private fun showThreadNotificationMenu() {
         fun setThreadNotificationLevel(level: Int) {
             val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
@@ -3696,7 +3697,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_DELETED
+                .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3709,7 +3710,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-            .SystemMessageType.MESSAGE_EDITED
+                .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -4034,7 +4035,7 @@ class ChatActivity :
                     val lon = data["longitude"]!!
                     metaData =
                         "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                            "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                        "\"longitude\":\"$lon\",\"name\":\"$name\"}"
                 }
 
                 shareToNotes(shareUri, noteToSelfConversation.token, message, objectId, metaData)
