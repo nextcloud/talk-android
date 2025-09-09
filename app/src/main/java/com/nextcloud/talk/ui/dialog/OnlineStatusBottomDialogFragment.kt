@@ -115,7 +115,9 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
                 override fun onError(e: Throwable) {
                     Log.e(TAG, "Failed to set statusType", e)
                 }
-                override fun onComplete() { }
+                override fun onComplete() {
+                    // unused atm
+                }
             })
     }
 
