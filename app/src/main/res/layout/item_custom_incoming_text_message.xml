@@ -61,7 +61,6 @@
             android:id="@id/messageText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:lineSpacingMultiplier="1.2"
             android:textAlignment="viewStart"
             android:textIsSelectable="false"
             app:layout_alignSelf="flex_start"
