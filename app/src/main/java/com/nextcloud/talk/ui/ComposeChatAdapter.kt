@@ -318,6 +318,10 @@ class ComposeChatAdapter(
                         DeckMessage(message, isBlinkingState)
                     }
 
+                    ChatMessage.MessageType.FILE_UPLOAD_MESSAGE -> {
+
+                    }
+
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
                         if (message.isLinkPreview()) {
                             LinkMessage(message, isBlinkingState)
