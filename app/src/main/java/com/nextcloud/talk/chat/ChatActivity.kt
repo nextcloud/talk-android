@@ -1285,26 +1285,6 @@ class ChatActivity :
         }
 
         this.lifecycleScope.launch {
-            chatViewModel.threadCreationState.collect { uiState ->
-                when (uiState) {
-                    ChatViewModel.ThreadCreationUiState.None -> {
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Error -> {
-                        Log.e(TAG, "Error when creating thread", uiState.exception)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Success -> {
-                        uiState.thread?.first?.threadId?.let {
-                            openThread(it)
-                        }
-                    }
-                }
-            }
-        }
-
-        this.lifecycleScope.launch {
             chatViewModel.threadRetrieveState.collect { uiState ->
                 when (uiState) {
                     ChatViewModel.ThreadRetrieveUiState.None -> {
@@ -4455,18 +4435,6 @@ class ChatActivity :
         val chatIntent = Intent(context, ChatActivity::class.java)
         chatIntent.putExtras(bundle)
         startActivity(chatIntent)
-    }
-
-    fun createThread(chatMessage: ChatMessage) {
-        chatViewModel.createThread(
-            credentials = conversationUser!!.getCredentials(),
-            url = ApiUtils.getUrlForThread(
-                version = chatApiVersion,
-                baseUrl = conversationUser!!.baseUrl!!,
-                token = roomToken,
-                threadId = chatMessage.jsonMessageId
-            )
-        )
     }
 
     fun openThreadsOverview() {
