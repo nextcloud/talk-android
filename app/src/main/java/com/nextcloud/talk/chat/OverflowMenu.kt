@@ -11,7 +11,6 @@ import android.view.View
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -74,40 +73,33 @@ fun OverflowMenu(anchor: View?, expanded: Boolean, items: List<MenuItemData>, on
 
 @Composable
 fun DynamicMenuItem(item: MenuItemData) {
-    val hasSubtitle = item.subtitle != null
-
     Row(
+        verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
             .wrapContentWidth()
             .clickable(
                 onClick = item.onClick,
                 interactionSource = remember { MutableInteractionSource() }
             )
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+            .padding(horizontal = 12.dp, vertical = 12.dp)
     ) {
         item.icon?.let { icon ->
             Icon(
                 painter = painterResource(icon),
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = if (hasSubtitle) {
-                    Modifier.align(
-                        Alignment.Top
-                    )
-                } else {
-                    Modifier.align(Alignment.CenterVertically)
-                }
+                tint = MaterialTheme.colorScheme.onSurface
             )
             Spacer(Modifier.width(8.dp))
         }
 
-        Column(
-            verticalArrangement = Arrangement.Center
-        ) {
+        Column {
             Text(item.title, color = MaterialTheme.colorScheme.onSurface)
             item.subtitle?.let {
-                Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(
+                    it,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
     }
@@ -136,13 +128,19 @@ fun OverflowMenuPreview() {
         ),
         MenuItemData(
             title = "second item title",
-            subtitle = "second item subtitle",
+            subtitle = null,
             icon = R.drawable.outline_notifications_active_24,
             onClick = {}
         ),
         MenuItemData(
             title = "third item title",
-            subtitle = "",
+            subtitle = null,
+            icon = R.drawable.baseline_notifications_24,
+            onClick = {}
+        ),
+        MenuItemData(
+            title = "fourth item title",
+            subtitle = null,
             icon = R.drawable.baseline_notifications_24,
             onClick = {}
         )

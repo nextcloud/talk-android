@@ -3389,7 +3389,7 @@ class ChatActivity :
                             ),
                             MenuItemData(
                                 title = context.resources.getString(R.string.nc_notify_me_always),
-                                subtitle = "",
+                                subtitle = null,
                                 icon = R.drawable.outline_notifications_active_24,
                                 onClick = {
                                     setThreadNotificationLevel(1)
@@ -3397,7 +3397,7 @@ class ChatActivity :
                             ),
                             MenuItemData(
                                 title = context.resources.getString(R.string.nc_notify_me_mention),
-                                subtitle = "",
+                                subtitle = null,
                                 icon = R.drawable.baseline_notifications_24,
                                 onClick = {
                                     setThreadNotificationLevel(2)
@@ -3405,7 +3405,7 @@ class ChatActivity :
                             ),
                             MenuItemData(
                                 title = context.resources.getString(R.string.nc_notify_me_never),
-                                subtitle = "",
+                                subtitle = null,
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
                                     setThreadNotificationLevel(3)
