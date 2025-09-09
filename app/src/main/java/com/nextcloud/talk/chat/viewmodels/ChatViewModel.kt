@@ -464,9 +464,9 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val thread = threadsRepository.setThreadNotificationLevel(credentials, url, level)
-                // _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
+                _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
-                // _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
+                _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
             }
         }
     }
