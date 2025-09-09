@@ -3379,9 +3379,9 @@ class ChatActivity :
                     ) {
                         val items = listOf(
                             MenuItemData(
-                                title = context.resources.getString(R.string.thread_notifications_default),
+                                title = context.resources.getString(R.string.notifications_default),
                                 subtitle = context.resources.getString(
-                                    R.string.thread_notifications_default_description
+                                    R.string.notifications_default_description
                                 ),
                                 icon = R.drawable.baseline_notifications_24,
                                 onClick = {
@@ -3389,7 +3389,7 @@ class ChatActivity :
                                 }
                             ),
                             MenuItemData(
-                                title = context.resources.getString(R.string.nc_notify_me_always),
+                                title = context.resources.getString(R.string.notification_all_messages),
                                 subtitle = null,
                                 icon = R.drawable.outline_notifications_active_24,
                                 onClick = {
@@ -3397,7 +3397,7 @@ class ChatActivity :
                                 }
                             ),
                             MenuItemData(
-                                title = context.resources.getString(R.string.nc_notify_me_mention),
+                                title = context.resources.getString(R.string.notification_mention_only),
                                 subtitle = null,
                                 icon = R.drawable.baseline_notifications_24,
                                 onClick = {
@@ -3405,7 +3405,7 @@ class ChatActivity :
                                 }
                             ),
                             MenuItemData(
-                                title = context.resources.getString(R.string.nc_notify_me_never),
+                                title = context.resources.getString(R.string.notification_off),
                                 subtitle = null,
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
