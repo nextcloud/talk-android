@@ -246,6 +246,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import androidx.core.content.ContextCompat
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -1297,6 +1298,7 @@ class ChatActivity :
 
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
                         conversationThreadInfo = uiState.thread
+                        invalidateOptionsMenu()
                     }
                 }
             }
@@ -3290,11 +3292,21 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_voice_call)
             }
 
-            val threadNotifications = menu.findItem(R.id.thread_notifications)
-            threadNotifications.isVisible = isChatThread() &&
-                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
+            handleThreadNotificationIcon(menu.findItem(R.id.thread_notifications))
         }
         return true
+    }
+
+    private fun handleThreadNotificationIcon(threadNotificationItem: MenuItem) {
+        threadNotificationItem.isVisible = isChatThread() &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
+
+        val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
+            1 -> R.drawable.outline_notifications_active_24
+            3 -> R.drawable.ic_baseline_notifications_off_24
+            else -> R.drawable.baseline_notifications_24
+        }
+        threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
@@ -3684,7 +3696,7 @@ class ChatActivity :
     private fun isInfoMessageAboutDeletion(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_DELETED
+            .SystemMessageType.MESSAGE_DELETED
 
     private fun isReactionsMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -3697,7 +3709,7 @@ class ChatActivity :
     private fun isEditMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.parentMessageId != null &&
             currentMessage.value.systemMessageType == ChatMessage
-                .SystemMessageType.MESSAGE_EDITED
+            .SystemMessageType.MESSAGE_EDITED
 
     private fun isPollVotedMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
         currentMessage.value.systemMessageType == ChatMessage.SystemMessageType.POLL_VOTED
@@ -4022,7 +4034,7 @@ class ChatActivity :
                     val lon = data["longitude"]!!
                     metaData =
                         "{\"type\":\"geo-location\",\"id\":\"geo:$lat,$lon\",\"latitude\":\"$lat\"," +
-                        "\"longitude\":\"$lon\",\"name\":\"$name\"}"
+                            "\"longitude\":\"$lon\",\"name\":\"$name\"}"
                 }
 
                 shareToNotes(shareUri, noteToSelfConversation.token, message, objectId, metaData)
