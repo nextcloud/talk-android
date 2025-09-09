@@ -293,4 +293,18 @@
         <item name="cornerSize">50%</item>
     </style>
 
+    <style name="LinkPreviewStyle">
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+    </style>
+
+    <style name="LinkPreviewStyleLand">
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerFamilyTopRight">rounded</item>
+        <item name="cornerSizeBottomLeft">12dp</item>
+        <item name="cornerFamilyTopLeft">rounded</item>
+    </style>
+
 </resources>

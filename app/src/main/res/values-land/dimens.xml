@@ -2,10 +2,12 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2025 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">24dp</dimen>
+    <dimen name="link_preview_height">110dp</dimen>
 </resources>
