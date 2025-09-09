@@ -26,6 +26,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
@@ -50,7 +51,7 @@ fun OverflowMenu(anchor: View?, expanded: Boolean, items: List<MenuItemData>, on
         Column(
             modifier = Modifier
                 .wrapContentWidth()
-                .background(MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(1.dp))
+                .background(colorResource(id = R.color.bg_default), shape = RoundedCornerShape(1.dp))
                 .shadow(
                     elevation = 1.dp,
                     shape = RoundedCornerShape(1.dp),
