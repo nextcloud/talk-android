@@ -76,6 +76,10 @@
     <string name="left_conversation">D\'fhág tú an comhrá %1$s</string>
     <string name="load_more_results">Íoslódáil níos mó torthaí</string>
     <string name="local_time">Am áitiúil: %1$s</string>
+    <string name="location_permission_denied">Cead suímh diúltaithe</string>
+    <string name="location_permission_denied_msg">Cumasaigh é i socruithe an aip le do thoil</string>
+    <string name="location_services_disabled">Seirbhísí suímh díchumasaithe</string>
+    <string name="location_services_disabled_msg">Cumasaigh seirbhísí suímh (GPS) le go mbeidh tú in ann an ghné seo a úsáid</string>
     <string name="lock_conversation">Cuir glas ar an gcomhrá</string>
     <string name="lock_symbol">Siombail ghlais</string>
     <string name="lower_hand">Lámh íochtair</string>
@@ -705,6 +709,13 @@
         <item quantity="few">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
         <item quantity="many">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
         <item quantity="other">Scriosfar an comhrá seo go huathoibríoch do gach duine i %1$d lá gan aon ghníomhaíocht</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d freagra</item>
+        <item quantity="two">%d freagraí</item>
+        <item quantity="few">%d freagraí</item>
+        <item quantity="many">%d freagraí</item>
+        <item quantity="other">%d freagraí</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vóta</item>

@@ -76,6 +76,10 @@
     <string name="left_conversation">Напустили сте разговор %1$s</string>
     <string name="load_more_results">Учитај још резултата</string>
     <string name="local_time">Локално време: %1$s</string>
+    <string name="location_permission_denied">Одбијена је дозвола за локацију</string>
+    <string name="location_permission_denied_msg">Молимо вас да је укључите у подешавањима апликације</string>
+    <string name="location_services_disabled">Искључени су сервиси локације</string>
+    <string name="location_services_disabled_msg">Да бисте користили ову функционалност, молимо вас да укључите сервисе локације (GPS)</string>
     <string name="lock_conversation">Закључај разговор</string>
     <string name="lock_symbol">Симбол катанца</string>
     <string name="lower_hand">Спуштена рука</string>
@@ -653,6 +657,7 @@
     <string name="this_is_a_test_message">Ово је тест порука</string>
     <string name="this_weekend">Овог викенда</string>
     <string name="thread_cancel">Откажи креирање нити</string>
+    <string name="thread_reply">Одговори</string>
     <string name="thread_title">Наслов нити</string>
     <string name="today">Данас</string>
     <string name="tomorrow">Сутра</string>
@@ -700,6 +705,11 @@
         <item quantity="one">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
         <item quantity="few">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
         <item quantity="other">Овај разговор ће се аутоматски обрисати за све након %1$d дана неактивности</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d одговор</item>
+        <item quantity="few">%d одговора</item>
+        <item quantity="other">%d одговора</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d глас</item>
