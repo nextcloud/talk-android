@@ -54,7 +54,6 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-private const val ARG_CURRENT_USER_PARAM = "currentUser"
 private const val ARG_CURRENT_STATUS_PARAM = "currentStatus"
 
 private const val POS_DONT_CLEAR = 0
@@ -207,6 +206,7 @@ class StatusMessageBottomDialogFragment :
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogSetStatusMessageBinding.inflate(inflater, container, false)
         viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.themeDragHandleView(binding.dragHandle)
         return binding.root
     }
 

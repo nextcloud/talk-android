@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kota@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 package com.nextcloud.talk.ui.dialog
@@ -65,6 +65,7 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DialogSetOnlineStatusBinding.inflate(inflater, container, false)
         viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.themeDragHandleView(binding.dragHandle)
         return binding.root
     }
 
