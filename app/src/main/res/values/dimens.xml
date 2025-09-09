@@ -2,6 +2,7 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2025 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
   ~ SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
@@ -31,6 +32,9 @@
     <dimen name="message_bubble_corners_horizontal_padding">12dp</dimen>
     <dimen name="message_bubble_corners_vertical_padding">12dp</dimen>
     <dimen name="message_bubble_checkmark_height">18dp</dimen>
+
+    <dimen name="link_preview_height">120dp</dimen>
+    <dimen name="link_preview_width">220dp</dimen>
 
     <dimen name="geocoding_result_text_size">18sp</dimen>
 
@@ -84,6 +88,5 @@
     <dimen name="notification_icon_height">24dp</dimen>
     <dimen name="notification_icon_layout_right_end_margin">21dp</dimen>
     <dimen name="sm_text_size">12sp</dimen>
-
 
 </resources>
