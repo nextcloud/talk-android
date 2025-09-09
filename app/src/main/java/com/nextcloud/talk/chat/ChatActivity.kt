@@ -3344,6 +3344,16 @@ class ChatActivity :
         }
 
     private fun showThreadNotificationMenu() {
+        fun setThreadNotificationLevel(level: Int) {
+            val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
+                version = 1,
+                baseUrl = conversationUser!!.baseUrl,
+                token = roomToken,
+                threadId = conversationThreadId!!.toInt()
+            )
+            chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
+        }
+
         if (overflowMenuHostView == null) {
             val threadNotificationsAnchor: View? = findViewById(R.id.thread_notifications)
 
@@ -3362,11 +3372,7 @@ class ChatActivity :
                                 ),
                                 icon = R.drawable.baseline_notifications_24,
                                 onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        "a",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    setThreadNotificationLevel(0)
                                 }
                             ),
                             MenuItemData(
@@ -3374,11 +3380,7 @@ class ChatActivity :
                                 subtitle = "",
                                 icon = R.drawable.outline_notifications_active_24,
                                 onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        "b",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    setThreadNotificationLevel(1)
                                 }
                             ),
                             MenuItemData(
@@ -3386,11 +3388,7 @@ class ChatActivity :
                                 subtitle = "",
                                 icon = R.drawable.baseline_notifications_24,
                                 onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        "c",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    setThreadNotificationLevel(2)
                                 }
                             ),
                             MenuItemData(
@@ -3398,14 +3396,9 @@ class ChatActivity :
                                 subtitle = "",
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
-                                    Toast.makeText(
-                                        context,
-                                        "d",
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    setThreadNotificationLevel(3)
                                 }
                             )
-
                         )
 
                         OverflowMenu(
