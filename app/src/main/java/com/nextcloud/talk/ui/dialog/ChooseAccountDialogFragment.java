@@ -19,7 +19,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.nextcloud.talk.R;
 import com.nextcloud.talk.account.ServerSelectionActivity;
 import com.nextcloud.talk.adapters.items.AdvancedUserItem;
 import com.nextcloud.talk.api.NcApi;
@@ -405,9 +404,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.talk.themeStatusDrawable(binding.currentAccount.ticker.getContext(), drawable);
         binding.currentAccount.ticker.setImageDrawable(drawable);
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
-        binding.onlineStatus.setText(R.string.online_status);
-        binding.statusMessage.setText(R.string.status_message);
-
 
         if (status.getMessage() != null && !status.getMessage().isEmpty()) {
             binding.currentAccount.status.setText(status.getMessage());

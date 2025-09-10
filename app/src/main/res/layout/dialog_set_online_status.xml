@@ -8,11 +8,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    style="@style/Widget.Material3.BottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    style="@style/Widget.Material3.BottomSheet"
-    android:padding="@dimen/standard_padding">
+    android:paddingStart="@dimen/standard_padding"
+    android:paddingEnd="@dimen/standard_padding"
+    android:paddingBottom="@dimen/standard_padding"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:id="@+id/dragHandle"
@@ -27,6 +30,7 @@
         android:text="@string/online_status"
         android:textColor="@color/high_emphasis_text"
         android:textSize="@dimen/activity_list_item_title_header_text_size"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
