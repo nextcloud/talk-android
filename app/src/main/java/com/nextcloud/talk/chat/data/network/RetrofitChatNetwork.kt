@@ -17,7 +17,6 @@ import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.models.json.reminder.Reminder
-import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
@@ -174,9 +173,6 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         ncApi.createRoom(credentials, url, map).map {
             it
         }
-
-    override suspend fun createThread(credentials: String, url: String): ThreadOverall =
-        ncApiCoroutines.createThread(credentials, url)
 
     override fun setChatReadMarker(
         credentials: String,
