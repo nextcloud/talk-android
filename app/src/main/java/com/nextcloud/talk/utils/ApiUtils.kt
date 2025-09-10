@@ -531,6 +531,9 @@ object ApiUtils {
     fun getUrlForRecentThreads(version: Int, baseUrl: String?, token: String): String =
         getUrlForChat(version, baseUrl, token) + "/threads/recent"
 
+    fun getUrlForSubscribedThreads(version: Int, baseUrl: String?): String =
+        getUrlForApi(version, baseUrl) + "/chat/subscribed-threads"
+
     fun getUrlForThread(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId"
 

@@ -111,6 +111,7 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
@@ -264,6 +265,16 @@ class ConversationsListActivity :
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
+
+        binding.conversationListThreadsItem.setContent {
+            ConversationListThreadsButton(
+                onClick = {
+                    val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
+                    startActivity(threadsOverviewIntent)
+                }
+            )
+        }
+
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()

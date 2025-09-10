@@ -559,6 +559,7 @@ How to translate with transifex:
     <string name="thread_title">Thread title</string>
     <string name="thread_cancel">Cancel thread creation</string>
     <string name="recent_threads">Recent threads</string>
+    <string name="followed_threads">Followed threads</string>
     <string name="thread_reply">Reply</string>
     <plurals name="thread_replies">
         <item quantity="one">%d reply</item>
