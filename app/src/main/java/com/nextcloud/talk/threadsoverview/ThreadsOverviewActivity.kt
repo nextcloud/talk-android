@@ -88,6 +88,12 @@ class ThreadsOverviewActivity : BaseActivity() {
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
 
+            val title = if (roomToken.isEmpty()) {
+                stringResource(R.string.followed_threads)
+            } else {
+                stringResource(R.string.recent_threads)
+            }
+
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
@@ -97,7 +103,7 @@ class ThreadsOverviewActivity : BaseActivity() {
                         .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
-                            title = stringResource(R.string.recent_threads),
+                            title = title,
                             null
                         )
                     },
@@ -112,7 +118,6 @@ class ThreadsOverviewActivity : BaseActivity() {
                         ) {
                             ThreadsOverviewScreen(
                                 uiState,
-                                roomToken,
                                 onThreadClick = { roomToken, threadId ->
                                     navigateToChatActivity(roomToken, threadId)
                                 }
@@ -147,7 +152,6 @@ class ThreadsOverviewActivity : BaseActivity() {
 @Composable
 fun ThreadsOverviewScreen(
     uiState: ThreadsOverviewViewModel.ThreadsListUiState,
-    roomToken: String,
     onThreadClick: (roomToken: String, threadId: Int) -> Unit
 ) {
     when (val state = uiState) {
@@ -158,7 +162,6 @@ fun ThreadsOverviewScreen(
         is ThreadsOverviewViewModel.ThreadsListUiState.Success -> {
             ThreadsList(
                 threads = state.threadsList!!,
-                roomToken = roomToken,
                 onThreadClick = onThreadClick
             )
         }
@@ -171,11 +174,7 @@ fun ThreadsOverviewScreen(
 }
 
 @Composable
-fun ThreadsList(
-    threads: List<ThreadInfo>,
-    roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit
-) {
+fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, threadId: Int) -> Unit) {
     val space = ' '
     if (threads.isEmpty()) {
         Box(
@@ -202,7 +201,7 @@ fun ThreadsList(
             val messageModel = messageJson?.asModel()
 
             ThreadRow(
-                roomToken = roomToken,
+                roomToken = threadInfo.thread!!.roomToken,
                 threadId = threadInfo.thread!!.id,
                 title = threadInfo.thread?.title.orEmpty(),
                 numReplies = pluralStringResource(

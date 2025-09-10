@@ -31,12 +31,19 @@ class ThreadsOverviewViewModel @Inject constructor(
     private val _threadsListState = MutableStateFlow<ThreadsListUiState>(ThreadsListUiState.None)
     val threadsListState: StateFlow<ThreadsListUiState> = _threadsListState
 
-    fun init(roomToken: String) {
-        val url = ApiUtils.getUrlForRecentThreads(
-            version = 1,
-            baseUrl = _currentUser.baseUrl,
-            token = roomToken
-        )
+    fun init(roomToken: String?) {
+        val url = if (roomToken.isNullOrEmpty()) {
+            ApiUtils.getUrlForSubscribedThreads(
+                version = 1,
+                baseUrl = _currentUser.baseUrl
+            )
+        } else {
+            ApiUtils.getUrlForRecentThreads(
+                version = 1,
+                baseUrl = _currentUser.baseUrl,
+                token = roomToken
+            )
+        }
 
         getThreads(credentials, url)
     }

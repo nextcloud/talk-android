@@ -278,6 +278,11 @@
                 android:id="@+id/conversation_list_notification_warning"
                 layout="@layout/notifications_warning" />
 
+            <androidx.compose.ui.platform.ComposeView
+                android:id="@+id/conversation_list_threads_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
