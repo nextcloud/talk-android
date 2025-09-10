@@ -16,6 +16,7 @@ plugins {
     id "org.jetbrains.kotlin.plugin.compose" version "2.2.20"
     id "org.jetbrains.kotlin.kapt"
     id 'com.google.devtools.ksp' version '2.2.20-2.0.3'
+    id "de.undercouch.download" version "5.6.0" // Download task and extension for retrieving files during a build
 }
 
 apply plugin: 'com.android.application'
@@ -183,6 +184,9 @@ configurations.configureEach {
     exclude group: 'com.google.firebase', module: 'firebase-measurement-connector'
     exclude group: 'org.jetbrains', module: 'annotations-java5' // via prism4j, already using annotations explicitly
 }
+
+project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
+apply from: 'download_model.gradle'
 
 dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
@@ -362,6 +366,10 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.57.1")
     testImplementation("org.robolectric:robolectric:4.16")
+
+    // Computer Vision - for background effects during video calls
+    implementation 'com.google.mediapipe:tasks-vision:0.10.26'
+    implementation 'org.opencv:opencv:4.12.0'
 }
 
 tasks.register('installGitHooks', Copy) {

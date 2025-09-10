@@ -116,4 +116,37 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/background_blur"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/bottom_sheet_item_height"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/standard_padding"
+        android:paddingEnd="@dimen/standard_padding"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/background_blur_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@null"
+            android:src="@drawable/background_replace_24px"
+            app:tint="@color/high_emphasis_menu_icon_inverse" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/background_blur_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start|center_vertical"
+            android:paddingStart="@dimen/standard_double_padding"
+            android:paddingEnd="@dimen/zero"
+            android:text="@string/turn_on_background_blur"
+            android:textAlignment="viewStart"
+            android:textColor="@color/high_emphasis_text_dark_background"
+            android:textSize="@dimen/bottom_sheet_text_size" />
+
+    </LinearLayout>
+
 </LinearLayout>
