@@ -12,11 +12,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -50,8 +51,11 @@ fun OverflowMenu(anchor: View?, expanded: Boolean, items: List<MenuItemData>, on
     ) {
         Column(
             modifier = Modifier
-                .wrapContentWidth()
-                .background(colorResource(id = R.color.bg_default), shape = RoundedCornerShape(1.dp))
+                .width(IntrinsicSize.Max)
+                .background(
+                    color = colorResource(id = R.color.bg_default),
+                    shape = RoundedCornerShape(1.dp)
+                )
                 .shadow(
                     elevation = 1.dp,
                     shape = RoundedCornerShape(1.dp),
@@ -77,7 +81,7 @@ fun DynamicMenuItem(item: MenuItemData) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
-            .wrapContentWidth()
+            .fillMaxWidth()
             .clickable(
                 onClick = item.onClick,
                 interactionSource = remember { MutableInteractionSource() }
