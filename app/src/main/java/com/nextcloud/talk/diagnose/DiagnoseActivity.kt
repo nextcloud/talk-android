@@ -19,6 +19,7 @@ import android.widget.Toast
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.displayCutoutPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -29,7 +30,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -114,7 +114,8 @@ class DiagnoseActivity : BaseActivity() {
                 ColoredStatusBar()
                 Scaffold(
                     modifier = Modifier
-                        .statusBarsPadding(),
+                        .statusBarsPadding()
+                        .displayCutoutPadding(),
                     topBar = {
                         StandardAppBar(
                             title = stringResource(R.string.nc_settings_diagnose_title),
@@ -126,7 +127,7 @@ class DiagnoseActivity : BaseActivity() {
 
                         Column(
                             Modifier
-                                .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, 0.dp)
+                                .padding(paddingValues)
                                 .background(backgroundColor)
                                 .fillMaxSize()
                         ) {

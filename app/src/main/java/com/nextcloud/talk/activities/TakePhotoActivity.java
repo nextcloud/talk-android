@@ -104,8 +104,6 @@ public class TakePhotoActivity extends AppCompatActivity {
         binding = ActivityTakePictureBinding.inflate(getLayoutInflater());
         viewModel = new ViewModelProvider(this).get(TakePictureViewModel.class);
 
-        binding.getRoot().setFitsSystemWindows(true);
-
         setContentView(binding.getRoot());
 
         viewThemeUtils.material.themeFAB(binding.takePhoto);
