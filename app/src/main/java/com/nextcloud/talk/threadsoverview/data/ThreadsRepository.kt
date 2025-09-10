@@ -15,4 +15,6 @@ interface ThreadsRepository {
     suspend fun getThreads(credentials: String, url: String): ThreadsOverall
 
     suspend fun getThread(credentials: String, url: String): ThreadOverall
+
+    suspend fun setThreadNotificationLevel(credentials: String, url: String, level: Int): ThreadOverall
 }

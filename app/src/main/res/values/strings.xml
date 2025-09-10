@@ -559,6 +559,12 @@ How to translate with transifex:
         <item quantity="one">%d reply</item>
         <item quantity="other">%d replies</item>
     </plurals>
+    <string name="thread_notifications">Thread notifications</string>
+    <string name="notifications_default">Default</string>
+    <string name="notifications_default_description">Follow conversation settings</string>
+    <string name="notification_all_messages">All messages</string>
+    <string name="notification_mention_only">\@-mentions only</string>
+    <string name="notification_off">Off</string>
 
     <!-- Upload -->
     <string name="nc_add_file">Add to conversation</string>

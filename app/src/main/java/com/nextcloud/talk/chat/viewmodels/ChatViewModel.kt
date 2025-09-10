@@ -169,9 +169,6 @@ class ChatViewModel @Inject constructor(
     val getContextChatMessages: LiveData<List<ChatMessageJson>>
         get() = _getContextChatMessages
 
-    private val _threadCreationState = MutableStateFlow<ThreadCreationUiState>(ThreadCreationUiState.None)
-    val threadCreationState: StateFlow<ThreadCreationUiState> = _threadCreationState
-
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
 
@@ -451,22 +448,22 @@ class ChatViewModel @Inject constructor(
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun createThread(credentials: String, url: String) {
+    fun getThread(credentials: String, url: String) {
         viewModelScope.launch {
             try {
-                val thread = chatNetworkDataSource.createThread(credentials, url)
-                _threadCreationState.value = ThreadCreationUiState.Success(thread.ocs?.data)
+                val thread = threadsRepository.getThread(credentials, url)
+                _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
-                _threadCreationState.value = ThreadCreationUiState.Error(exception)
+                _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
             }
         }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
-    fun getThread(credentials: String, url: String) {
+    fun setThreadNotificationLevel(credentials: String, url: String, level: Int) {
         viewModelScope.launch {
             try {
-                val thread = threadsRepository.getThread(credentials, url)
+                val thread = threadsRepository.setThreadNotificationLevel(credentials, url, level)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
                 _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)
@@ -984,12 +981,6 @@ class ChatViewModel @Inject constructor(
         data object None : UnbindRoomUiState()
         data class Success(val statusCode: Int) : UnbindRoomUiState()
         data class Error(val message: String) : UnbindRoomUiState()
-    }
-
-    sealed class ThreadCreationUiState {
-        data object None : ThreadCreationUiState()
-        data class Success(val thread: ThreadInfo?) : ThreadCreationUiState()
-        data class Error(val exception: Exception) : ThreadCreationUiState()
     }
 
     sealed class ThreadRetrieveUiState {

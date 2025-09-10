@@ -533,4 +533,7 @@ object ApiUtils {
 
     fun getUrlForThread(version: Int, baseUrl: String?, token: String, threadId: Int): String =
         getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId"
+
+    fun getUrlForThreadNotificationLevel(version: Int, baseUrl: String?, token: String, threadId: Int): String =
+        getUrlForChat(version, baseUrl, token) + "/threads" + "/$threadId" + "/notify"
 }

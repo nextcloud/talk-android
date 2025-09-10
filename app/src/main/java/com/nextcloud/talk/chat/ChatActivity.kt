@@ -59,7 +59,12 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.ComposeView
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -241,6 +246,7 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import androidx.core.content.ContextCompat
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -284,6 +290,9 @@ class ChatActivity :
     lateinit var messageInputViewModel: MessageInputViewModel
 
     private var chatMenu: Menu? = null
+
+    private var overflowMenuHostView: ComposeView? = null
+    private var isThreadMenuExpanded by mutableStateOf(false)
 
     private val startSelectContactForResult = registerForActivityResult(
         ActivityResultContracts
@@ -1277,26 +1286,6 @@ class ChatActivity :
         }
 
         this.lifecycleScope.launch {
-            chatViewModel.threadCreationState.collect { uiState ->
-                when (uiState) {
-                    ChatViewModel.ThreadCreationUiState.None -> {
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Error -> {
-                        Log.e(TAG, "Error when creating thread", uiState.exception)
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
-                    }
-
-                    is ChatViewModel.ThreadCreationUiState.Success -> {
-                        uiState.thread?.first?.threadId?.let {
-                            openThread(it)
-                        }
-                    }
-                }
-            }
-        }
-
-        this.lifecycleScope.launch {
             chatViewModel.threadRetrieveState.collect { uiState ->
                 when (uiState) {
                     ChatViewModel.ThreadRetrieveUiState.None -> {
@@ -1309,6 +1298,7 @@ class ChatActivity :
 
                     is ChatViewModel.ThreadRetrieveUiState.Success -> {
                         conversationThreadInfo = uiState.thread
+                        invalidateOptionsMenu()
                     }
                 }
             }
@@ -3301,8 +3291,22 @@ class ChatActivity :
                 menu.removeItem(R.id.conversation_video_call)
                 menu.removeItem(R.id.conversation_voice_call)
             }
+
+            handleThreadNotificationIcon(menu.findItem(R.id.thread_notifications))
         }
         return true
+    }
+
+    private fun handleThreadNotificationIcon(threadNotificationItem: MenuItem) {
+        threadNotificationItem.isVisible = isChatThread() &&
+            hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
+
+        val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
+            1 -> R.drawable.outline_notifications_active_24
+            3 -> R.drawable.ic_baseline_notifications_off_24
+            else -> R.drawable.baseline_notifications_24
+        }
+        threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean =
@@ -3334,7 +3338,7 @@ class ChatActivity :
 
             R.id.conversation_event -> {
                 val anchorView = findViewById<View>(R.id.conversation_event)
-                showPopupWindow(anchorView)
+                showConversationEventMenu(anchorView)
                 true
             }
 
@@ -3343,11 +3347,96 @@ class ChatActivity :
                 true
             }
 
+            R.id.thread_notifications -> {
+                showThreadNotificationMenu()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
 
+    @Suppress("Detekt.LongMethod")
+    private fun showThreadNotificationMenu() {
+        fun setThreadNotificationLevel(level: Int) {
+            val threadNotificationUrl = ApiUtils.getUrlForThreadNotificationLevel(
+                version = 1,
+                baseUrl = conversationUser!!.baseUrl,
+                token = roomToken,
+                threadId = conversationThreadId!!.toInt()
+            )
+            chatViewModel.setThreadNotificationLevel(credentials!!, threadNotificationUrl, level)
+        }
+
+        if (overflowMenuHostView == null) {
+            val threadNotificationsAnchor: View? = findViewById(R.id.thread_notifications)
+
+            val colorScheme = viewThemeUtils.getColorScheme(this)
+
+            overflowMenuHostView = ComposeView(this).apply {
+                setContent {
+                    MaterialTheme(
+                        colorScheme = colorScheme
+                    ) {
+                        val items = listOf(
+                            MenuItemData(
+                                title = context.resources.getString(R.string.notifications_default),
+                                subtitle = context.resources.getString(
+                                    R.string.notifications_default_description
+                                ),
+                                icon = R.drawable.baseline_notifications_24,
+                                onClick = {
+                                    setThreadNotificationLevel(0)
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.notification_all_messages),
+                                subtitle = null,
+                                icon = R.drawable.outline_notifications_active_24,
+                                onClick = {
+                                    setThreadNotificationLevel(1)
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.notification_mention_only),
+                                subtitle = null,
+                                icon = R.drawable.baseline_notifications_24,
+                                onClick = {
+                                    setThreadNotificationLevel(2)
+                                }
+                            ),
+                            MenuItemData(
+                                title = context.resources.getString(R.string.notification_off),
+                                subtitle = null,
+                                icon = R.drawable.ic_baseline_notifications_off_24,
+                                onClick = {
+                                    setThreadNotificationLevel(3)
+                                }
+                            )
+                        )
+
+                        OverflowMenu(
+                            anchor = threadNotificationsAnchor,
+                            expanded = isThreadMenuExpanded,
+                            items = items,
+                            onDismiss = { isThreadMenuExpanded = false }
+                        )
+                    }
+                }
+            }
+
+            addContentView(
+                overflowMenuHostView,
+                CoordinatorLayout.LayoutParams(
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT,
+                    CoordinatorLayout.LayoutParams.MATCH_PARENT
+                )
+            )
+        }
+        isThreadMenuExpanded = true
+    }
+
     @SuppressLint("InflateParams")
-    private fun showPopupWindow(anchorView: View) {
+    private fun showConversationEventMenu(anchorView: View) {
         val popupView = layoutInflater.inflate(R.layout.item_event_schedule, null)
 
         val subtitleTextView = popupView.findViewById<TextView>(R.id.meetingTime)
@@ -4352,18 +4441,6 @@ class ChatActivity :
         val chatIntent = Intent(context, ChatActivity::class.java)
         chatIntent.putExtras(bundle)
         startActivity(chatIntent)
-    }
-
-    fun createThread(chatMessage: ChatMessage) {
-        chatViewModel.createThread(
-            credentials = conversationUser!!.getCredentials(),
-            url = ApiUtils.getUrlForThread(
-                version = chatApiVersion,
-                baseUrl = conversationUser!!.baseUrl!!,
-                token = roomToken,
-                threadId = chatMessage.jsonMessageId
-            )
-        )
     }
 
     fun openThreadsOverview() {
