@@ -362,6 +362,8 @@ dependencies {
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
     testImplementation("com.google.dagger:hilt-android-testing:2.57.1")
     testImplementation("org.robolectric:robolectric:4.16")
+
+    implementation 'com.google.mediapipe:tasks-vision:0.10.26'
 }
 
 tasks.register('installGitHooks', Copy) {

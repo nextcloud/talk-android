@@ -1,0 +1,249 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+package com.nextcloud.talk.camera
+
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.os.SystemClock
+import android.util.Log
+import androidx.camera.core.ImageProxy
+import androidx.core.graphics.createBitmap
+import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.framework.image.ByteBufferExtractor
+import com.google.mediapipe.framework.image.MPImage
+import com.google.mediapipe.tasks.core.BaseOptions
+import com.google.mediapipe.tasks.core.Delegate
+import com.google.mediapipe.tasks.vision.core.RunningMode
+import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
+import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import java.nio.ByteBuffer
+
+class ImageSegmenterHelper(
+    var currentDelegate: Int = DELEGATE_CPU,
+    var runningMode: RunningMode = RunningMode.LIVE_STREAM,
+    val context: Context,
+    var imageSegmenterListener: SegmenterListener? = null
+) {
+
+    // TODO maybe make this lazy
+    // For this example this needs to be a var so it can be reset on changes.
+    // If the ImageSegmenter will not change, a lazy val would be preferable.
+    private var imageSegmenter: ImageSegmenter? = null
+
+    init {
+        setupImageSegmenter()
+    }
+
+    // Segmenter must be closed when creating a new one to avoid returning results to a non-existent object
+    fun clearImageSegmenter() {
+        imageSegmenter?.close()
+        imageSegmenter = null
+    }
+
+    fun setListener(listener: SegmenterListener) {
+        imageSegmenterListener = listener
+    }
+
+    fun clearListener() {
+        imageSegmenterListener = null
+    }
+
+    // Return running status of image segmenter helper
+    fun isClosed(): Boolean {
+        return imageSegmenter == null
+    }
+
+    /**
+     * Initialize the image segmenter using current settings on the
+     * thread that is using it. CPU can be used with detectors
+     * that are created on the main thread and used on a background thread, but
+     * the GPU delegate needs to be used on the thread that initialized the
+     * segmenter
+     *
+     * @throws IllegalStateException
+     */
+    fun setupImageSegmenter() {
+        val baseOptionsBuilder = BaseOptions.builder()
+        when (currentDelegate) {
+            DELEGATE_CPU -> {
+                baseOptionsBuilder.setDelegate(Delegate.CPU)
+            }
+            DELEGATE_GPU -> {
+                baseOptionsBuilder.setDelegate(Delegate.GPU)
+            }
+        }
+
+        baseOptionsBuilder.setModelAssetPath(MODEL_SELFIE_SEGMENTER_PATH)
+
+        if (imageSegmenterListener == null) {
+            throw IllegalStateException("ImageSegmenterListener must be set.")
+        }
+
+        runCatching {
+            val baseOptions = baseOptionsBuilder.build()
+            val optionsBuilder = ImageSegmenter.ImageSegmenterOptions.builder()
+                .setRunningMode(runningMode)
+                .setBaseOptions(baseOptions)
+                .setOutputCategoryMask(true)
+                .setOutputConfidenceMasks(false)
+
+            if (runningMode == RunningMode.LIVE_STREAM) {
+                optionsBuilder
+                    .setResultListener(this::returnSegmentationResult)
+                    .setErrorListener(this::returnSegmentationHelperError)
+            }
+
+            val options = optionsBuilder.build()
+            imageSegmenter = ImageSegmenter.createFromOptions(context, options)
+        }.getOrElse { e ->
+            when(e) {
+                is IllegalStateException -> {
+                    imageSegmenterListener?.onError(
+                        "Image segmenter failed to initialize. See error logs for details"
+                    )
+                    Log.e(TAG, "Image segmenter failed to load model with error: ${e.message}")
+                }
+
+                is RuntimeException -> {
+                    // This occurs if the model being used does not support GPU
+                    imageSegmenterListener?.onError(
+                        "Image segmenter failed to initialize. See error logs for details",
+                        GPU_ERROR
+                    )
+                    Log.e(TAG, "Image segmenter failed to load model with error: ${e.message}")
+                }
+            }
+        }
+    }
+
+    // Runs image segmentation on live streaming cameras frame-by-frame and
+    // returns the results asynchronously to the caller.
+    fun segmentLiveStreamFrame(imageProxy: ImageProxy, isFrontCamera: Boolean) {
+        if (runningMode != RunningMode.LIVE_STREAM) {
+            throw IllegalArgumentException(
+                "Attempting to call segmentLiveStreamFrame while not using RunningMode.LIVE_STREAM"
+            )
+        }
+
+        val frameTime = SystemClock.uptimeMillis()
+        val bitmapBuffer = createBitmap(imageProxy.width, imageProxy.height)
+
+        imageProxy.use {
+            bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer)
+        }
+
+        // Used for rotating the frame image so it matches our models
+        val matrix = Matrix().apply {
+            postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
+
+            if(isFrontCamera) {
+                postScale(
+                    -1f,
+                    1f,
+                    imageProxy.width.toFloat(),
+                    imageProxy.height.toFloat()
+                )
+            }
+        }
+
+        imageProxy.close()
+
+        val rotatedBitmap = Bitmap.createBitmap(
+            bitmapBuffer,
+            0,
+            0,
+            bitmapBuffer.width,
+            bitmapBuffer.height,
+            matrix,
+            true
+        )
+
+        val mpImage = BitmapImageBuilder(rotatedBitmap).build()
+
+        imageSegmenter?.segmentAsync(mpImage, frameTime)
+    }
+
+
+    // MPImage isn't necessary for this example, but the listener requires it
+    private fun returnSegmentationResult(
+        result: ImageSegmenterResult, image: MPImage
+    ) {
+        val finishTimeMs = SystemClock.uptimeMillis()
+
+        val inferenceTime = finishTimeMs - result.timestampMs()
+
+        // We only need the first mask for this sample because we are using
+        // the OutputType CATEGORY_MASK, which only provides a single mask.
+        val mpImage = result.categoryMask().get()
+
+        imageSegmenterListener?.onResults(
+            ResultBundle(
+                ByteBufferExtractor.extract(mpImage),
+                mpImage.width,
+                mpImage.height,
+                inferenceTime
+            )
+        )
+    }
+
+    // Return errors thrown during segmentation to this ImageSegmenterHelper's caller
+    private fun returnSegmentationHelperError(error: RuntimeException) {
+        imageSegmenterListener?.onError(
+            error.message ?: "An unknown error has occurred"
+        )
+    }
+
+    // Wraps results from inference, the time it takes for inference to be performed.
+    data class ResultBundle(
+        val results: ByteBuffer,
+        val width: Int,
+        val height: Int,
+        val inferenceTime: Long,
+    )
+
+    companion object {
+        const val DELEGATE_CPU = 0
+        const val DELEGATE_GPU = 1
+        const val OTHER_ERROR = 0
+        const val GPU_ERROR = 1
+
+        const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
+
+        private const val TAG = "ImageSegmenterHelper"
+
+        val labelColors = listOf(
+            -16777216,
+            -8388608,
+            -16744448,
+            -8355840,
+            -16777088,
+            -8388480,
+            -16744320,
+            -8355712,
+            -12582912,
+            -4194304,
+            -12550144,
+            -4161536,
+            -12582784,
+            -4194176,
+            -12550016,
+            -4161408,
+            -16760832,
+            -8372224,
+            -16728064,
+            -8339456,
+            -16760704
+        )
+    }
+
+    interface SegmenterListener {
+        fun onError(error: String, errorCode: Int = OTHER_ERROR)
+        fun onResults(resultBundle: ResultBundle)
+    }
+}
