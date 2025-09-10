@@ -9,8 +9,8 @@
 package com.nextcloud.talk.ui.dialog
 
 import android.annotation.SuppressLint
-import android.app.Dialog
 import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,27 +20,23 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.fragment.app.DialogFragment
+import androidx.core.content.ContextCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import autodagger.AutoInjector
 import com.bluelinelabs.logansquare.LoganSquare
-import com.google.android.material.card.MaterialCardView
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.nextcloud.android.common.ui.theme.utils.ColorRole
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.PredefinedStatusClickListener
 import com.nextcloud.talk.adapters.PredefinedStatusListAdapter
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.databinding.DialogSetStatusBinding
+import com.nextcloud.talk.databinding.DialogSetStatusMessageBinding
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.status.ClearAt
 import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusOverall
-import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatus
 import com.nextcloud.talk.models.json.status.predefined.PredefinedStatusOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -61,32 +57,33 @@ import java.util.Calendar
 import java.util.Locale
 import javax.inject.Inject
 
-private const val ARG_CURRENT_USER_PARAM = "currentUser"
 private const val ARG_CURRENT_STATUS_PARAM = "currentStatus"
 
 private const val POS_DONT_CLEAR = 0
-private const val POS_HALF_AN_HOUR = 1
-private const val POS_AN_HOUR = 2
-private const val POS_FOUR_HOURS = 3
-private const val POS_TODAY = 4
-private const val POS_END_OF_WEEK = 5
+private const val POS_FIFTEEN_MINUTES = 1
+private const val POS_HALF_AN_HOUR = 2
+private const val POS_AN_HOUR = 3
+private const val POS_FOUR_HOURS = 4
+private const val POS_TODAY = 5
+private const val POS_END_OF_WEEK = 6
 
 private const val ONE_SECOND_IN_MILLIS = 1000
 private const val ONE_MINUTE_IN_SECONDS = 60
 private const val THIRTY_MINUTES = 30
+private const val FIFTEEN_MINUTES = 15
 private const val FOUR_HOURS = 4
 private const val LAST_HOUR_OF_DAY = 23
 private const val LAST_MINUTE_OF_HOUR = 59
 private const val LAST_SECOND_OF_MINUTE = 59
 
 @AutoInjector(NextcloudTalkApplication::class)
-class SetStatusDialogFragment :
-    DialogFragment(),
+class StatusMessageBottomDialogFragment :
+    BottomSheetDialogFragment(),
     PredefinedStatusClickListener {
 
     private var selectedPredefinedStatus: PredefinedStatus? = null
 
-    private lateinit var binding: DialogSetStatusBinding
+    private lateinit var binding: DialogSetStatusMessageBinding
 
     private var currentUser: User? = null
     private var currentStatus: Status? = null
@@ -209,15 +206,17 @@ class SetStatusDialogFragment :
                 }
             })
     }
-
-    @SuppressLint("InflateParams")
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        binding = DialogSetStatusBinding.inflate(layoutInflater)
-
-        val dialogBuilder = MaterialAlertDialogBuilder(binding.root.context).setView(binding.root)
-        viewThemeUtils.dialog.colorMaterialAlertDialogBackground(binding.root.context, dialogBuilder)
-
-        return dialogBuilder.create()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = DialogSetStatusMessageBinding.inflate(inflater, container, false)
+        viewThemeUtils.platform.themeDialog(binding.root)
+        viewThemeUtils.material.themeDragHandleView(binding.dragHandle)
+        dialog?.window?.let { window ->
+            window.navigationBarColor = ContextCompat.getColor(requireContext(), R.color.bg_default)
+            val inLightMode = resources.configuration.uiMode and
+                Configuration.UI_MODE_NIGHT_MASK != Configuration.UI_MODE_NIGHT_YES
+            WindowInsetsControllerCompat(window, window.decorView).isAppearanceLightNavigationBars = inLightMode
+        }
+        return binding.root
     }
 
     @SuppressLint("DefaultLocale")
@@ -231,8 +230,6 @@ class SetStatusDialogFragment :
 
         binding.predefinedStatusList.adapter = adapter
         binding.predefinedStatusList.layoutManager = LinearLayoutManager(context)
-
-        setupGeneralStatusOptions()
 
         if (currentStatus?.icon == null) {
             binding.emoji.setText(getString(R.string.default_emoji))
@@ -277,12 +274,34 @@ class SetStatusDialogFragment :
         viewThemeUtils.material.colorTextInputLayout(binding.customStatusInputContainer)
     }
 
+    private fun clearStatus() {
+        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl!!))
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
+                override fun onSubscribe(d: Disposable) {
+                    disposables.add(d)
+                }
+
+                override fun onNext(statusOverall: GenericOverall) {
+                    // unused atm
+                }
+
+                override fun onError(e: Throwable) {
+                    Log.e(TAG, "Failed to clear status", e)
+                }
+
+                override fun onComplete() {
+                    dismiss()
+                }
+            })
+    }
+
     private fun setupCurrentStatus() {
         currentStatus?.let {
             binding.emoji.setText(it.icon)
             binding.customStatusInput.text?.clear()
             binding.customStatusInput.setText(it.message?.trim())
-            visualizeStatus(it.status)
 
             if (it.clearAt > 0) {
                 binding.clearStatusAfterSpinner.visibility = View.GONE
@@ -343,22 +362,11 @@ class SetStatusDialogFragment :
         }
     }
 
-    private fun setupGeneralStatusOptions() {
-        binding.onlineStatus.setOnClickListener { setStatus(StatusType.ONLINE) }
-        binding.dndStatus.setOnClickListener { setStatus(StatusType.DND) }
-        binding.awayStatus.setOnClickListener { setStatus(StatusType.AWAY) }
-        binding.invisibleStatus.setOnClickListener { setStatus(StatusType.INVISIBLE) }
-
-        viewThemeUtils.talk.themeStatusCardView(binding.onlineStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.dndStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.awayStatus)
-        viewThemeUtils.talk.themeStatusCardView(binding.invisibleStatus)
-    }
-
     private fun createClearTimesArrayAdapter(): ArrayAdapter<String> {
         val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         adapter.add(getString(R.string.dontClear))
+        adapter.add(getString(R.string.fifteenMinutes))
         adapter.add(getString(R.string.thirtyMinutes))
         adapter.add(getString(R.string.oneHour))
         adapter.add(getString(R.string.fourHours))
@@ -375,6 +383,10 @@ class SetStatusDialogFragment :
             POS_DONT_CLEAR -> {
                 // don't clear
                 clearAt = null
+            }
+
+            POS_FIFTEEN_MINUTES -> {
+                clearAt = currentTime + FIFTEEN_MINUTES * ONE_MINUTE_IN_SECONDS
             }
 
             POS_HALF_AN_HOUR -> {
@@ -450,96 +462,6 @@ class SetStatusDialogFragment :
         popup.show()
     }
 
-    private fun clearStatus() {
-        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
-        ncApi.statusDeleteMessage(credentials, ApiUtils.getUrlForStatusMessage(currentUser?.baseUrl!!))
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(statusOverall: GenericOverall) {
-                    // unused atm
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to clear status", e)
-                }
-
-                override fun onComplete() {
-                    dismiss()
-                }
-            })
-    }
-
-    private fun setStatus(statusType: StatusType) {
-        visualizeStatus(statusType)
-
-        ncApi.setStatusType(credentials, ApiUtils.getUrlForSetStatusType(currentUser?.baseUrl!!), statusType.string)
-            .subscribeOn(
-                Schedulers
-                    .io()
-            )
-            .observeOn(AndroidSchedulers.mainThread()).subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    disposables.add(d)
-                }
-
-                override fun onNext(statusOverall: GenericOverall) {
-                    Log.d(TAG, "statusType successfully set")
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to set statusType", e)
-                    clearTopStatus()
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
-    }
-
-    private fun visualizeStatus(statusType: String) {
-        StatusType.values().firstOrNull { it.name == statusType.uppercase(Locale.ROOT) }?.let { visualizeStatus(it) }
-    }
-
-    private fun visualizeStatus(statusType: StatusType) {
-        clearTopStatus()
-        val views: Triple<MaterialCardView, TextView, ImageView> = when (statusType) {
-            StatusType.ONLINE -> Triple(binding.onlineStatus, binding.onlineHeadline, binding.onlineIcon)
-            StatusType.AWAY -> Triple(binding.awayStatus, binding.awayHeadline, binding.awayIcon)
-            StatusType.DND -> Triple(binding.dndStatus, binding.dndHeadline, binding.dndIcon)
-            StatusType.INVISIBLE -> Triple(binding.invisibleStatus, binding.invisibleHeadline, binding.invisibleIcon)
-            else -> {
-                Log.d(TAG, "unknown status")
-                return
-            }
-        }
-        views.first.isChecked = true
-        viewThemeUtils.platform.colorTextView(views.second, ColorRole.ON_SECONDARY_CONTAINER)
-    }
-
-    private fun clearTopStatus() {
-        context?.let {
-            binding.onlineHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-            binding.awayHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-            binding.dndHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-            binding.invisibleHeadline.setTextColor(resources.getColor(R.color.high_emphasis_text, null))
-
-            binding.onlineIcon.imageTintList = null
-            binding.awayIcon.imageTintList = null
-            binding.dndIcon.imageTintList = null
-            binding.invisibleIcon.imageTintList = null
-
-            binding.onlineStatus.isChecked = false
-            binding.awayStatus.isChecked = false
-            binding.dndStatus.isChecked = false
-            binding.invisibleStatus.isChecked = false
-        }
-    }
-
     private fun setStatusMessage() {
         val inputText = binding.customStatusInput.text.toString().ifEmpty { "" }
         // The endpoint '/message/custom' expects a valid emoji as string or null
@@ -606,9 +528,6 @@ class SetStatusDialogFragment :
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-        binding.root
-
     override fun onClick(predefinedStatus: PredefinedStatus) {
         selectedPredefinedStatus = predefinedStatus
 
@@ -632,6 +551,7 @@ class SetStatusDialogFragment :
     private fun setClearAt(clearAt: ClearAt) {
         if (clearAt.type == "period") {
             when (clearAt.time) {
+                "900" -> binding.clearStatusAfterSpinner.setSelection(POS_FIFTEEN_MINUTES)
                 "1800" -> binding.clearStatusAfterSpinner.setSelection(POS_HALF_AN_HOUR)
                 "3600" -> binding.clearStatusAfterSpinner.setSelection(POS_AN_HOUR)
                 "14400" -> binding.clearStatusAfterSpinner.setSelection(POS_FOUR_HOURS)
@@ -663,16 +583,16 @@ class SetStatusDialogFragment :
      * Fragment creator
      */
     companion object {
-        private val TAG = SetStatusDialogFragment::class.simpleName
+        private val TAG = StatusMessageBottomDialogFragment::class.simpleName
         private const val HTTP_STATUS_CODE_OK = 200
         private const val HTTP_STATUS_CODE_NOT_FOUND = 404
 
         @JvmStatic
-        fun newInstance(status: Status): SetStatusDialogFragment {
+        fun newInstance(status: Status): StatusMessageBottomDialogFragment {
             val args = Bundle()
             args.putParcelable(ARG_CURRENT_STATUS_PARAM, status)
 
-            val dialogFragment = SetStatusDialogFragment()
+            val dialogFragment = StatusMessageBottomDialogFragment()
             dialogFragment.arguments = args
             return dialogFragment
         }

@@ -54,10 +54,16 @@ public class StatusDrawable extends Drawable {
                     icon = StatusDrawableType.ONLINE;
                     this.context = context;
                 }
+
+                case "busy" -> {
+                    icon = StatusDrawableType.BUSY;
+                    this.context = context;
+                }
                 case "away" -> {
                     icon = StatusDrawableType.AWAY;
                     this.context = context;
                 }
+
                 default -> {
                 }
                 // do not show
@@ -124,6 +130,7 @@ public class StatusDrawable extends Drawable {
     private enum StatusDrawableType {
         DND(R.drawable.ic_user_status_dnd),
         ONLINE(R.drawable.online_status),
+        BUSY(R.drawable.ic_user_status_busy),
         AWAY(R.drawable.ic_user_status_away),
         UNDEFINED(-1);
 

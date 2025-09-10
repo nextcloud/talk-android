@@ -276,6 +276,10 @@ class ParticipantItem(
             if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.dnd)
             }
+        } else if (model.status != null && model.status == StatusType.BUSY.string) {
+            if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
+                holder.binding.conversationInfoStatusMessage.setText(R.string.busy)
+            }
         } else if (model.status != null && model.status == StatusType.AWAY.string) {
             if (model.statusMessage == null || model.statusMessage!!.isEmpty()) {
                 holder.binding.conversationInfoStatusMessage.setText(R.string.away)

@@ -245,14 +245,25 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         });
 
 
-        binding.setStatus.setOnClickListener(v -> {
+        binding.onlineStatus.setOnClickListener(v -> {
             dismiss();
+            if(status!= null && getActivity()!= null){
+                OnlineStatusBottomDialogFragment bottomDialog =
+                    OnlineStatusBottomDialogFragment.newInstance(status);
+                bottomDialog.show(requireActivity().getSupportFragmentManager(),
+                                  "fragment_online_status_bottom_dialog");
 
-            if (status != null && getActivity() != null) {
-                SetStatusDialogFragment setStatusDialog = SetStatusDialogFragment.newInstance(status);
-                setStatusDialog.show(getActivity().getSupportFragmentManager(), "fragment_set_status");
-            } else {
-                Log.w(TAG, "status was null");
+            }
+        });
+        binding.statusMessage.setOnClickListener(v -> {
+
+            dismiss();
+            if(status!= null && getActivity()!= null){
+                StatusMessageBottomDialogFragment bottomDialog =
+                    StatusMessageBottomDialogFragment.newInstance(status);
+                bottomDialog.show(getActivity().getSupportFragmentManager(),
+                                  "fragment_status_message_bottom_dialog");
+
             }
         });
     }
@@ -261,8 +272,10 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.platform.themeDialog(binding.getRoot());
         viewThemeUtils.platform.themeDialogDivider(binding.divider);
 
-        viewThemeUtils.material.colorMaterialTextButton(binding.setStatus);
-        viewThemeUtils.dialog.colorDialogMenuText(binding.setStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.onlineStatus);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.onlineStatus);
+        viewThemeUtils.material.colorMaterialTextButton(binding.statusMessage);
+        viewThemeUtils.dialog.colorDialogMenuText(binding.statusMessage);
         viewThemeUtils.material.colorMaterialTextButton(binding.addAccount);
         viewThemeUtils.dialog.colorDialogMenuText(binding.addAccount);
         viewThemeUtils.material.colorMaterialTextButton(binding.manageSettings);
@@ -292,7 +305,8 @@ public class ChooseAccountDialogFragment extends DialogFragment {
                         }
 
                         try {
-                            binding.setStatus.setEnabled(true);
+                            binding.onlineStatus.setEnabled(true);
+                            binding.statusMessage.setEnabled(true);
                             drawStatus();
                         } catch (NullPointerException npe) {
                             Log.i(TAG, "UI already teared down", npe);
@@ -390,7 +404,6 @@ public class ChooseAccountDialogFragment extends DialogFragment {
         viewThemeUtils.talk.themeStatusDrawable(binding.currentAccount.ticker.getContext(), drawable);
         binding.currentAccount.ticker.setImageDrawable(drawable);
         binding.currentAccount.ticker.setVisibility(View.VISIBLE);
-
 
         if (status.getMessage() != null && !status.getMessage().isEmpty()) {
             binding.currentAccount.status.setText(status.getMessage());
