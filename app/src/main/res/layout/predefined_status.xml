@@ -6,47 +6,58 @@
   ~ SPDX-FileCopyrightText: 2020 Tobias Kaminsky <tobias@kaminsky.me>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/icon"
-        android:layout_width="48dp"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:textSize="25sp"
-        tools:text="📆" />
+    android:layout_height="48dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingHorizontal="8dp">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_weight="1"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/icon"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textSize="25sp"
+            tools:text="📆" />
 
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
             android:textAppearance="?android:attr/textAppearanceListItem"
             tools:text="In a meeting" />
 
         <TextView
+            android:id="@+id/divider"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/standard_half_margin"
+            android:gravity="center_vertical"
+            android:text="@string/divider"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="?android:attr/textColorSecondary" />
+
+        <TextView
             android:id="@+id/clearAt"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:textAppearance="?android:attr/textAppearanceListItemSecondary"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textAppearance="?android:attr/textAppearanceListItem"
             android:textColor="?android:attr/textColorSecondary"
             tools:text="an hour" />
     </LinearLayout>
+
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/reset_status_button"
@@ -54,13 +65,11 @@
         android:layout_height="wrap_content"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:layout_gravity="center"
         android:backgroundTint="@color/secondary_button_background"
         android:textColor="@android:color/black"
-        android:text= "@string/reset_status"
+        android:text="@string/reset_status"
         android:textSize="14sp"
         android:padding="8dp"
         android:visibility="gone"
         tools:visibility="visible"/>
-
 </LinearLayout>

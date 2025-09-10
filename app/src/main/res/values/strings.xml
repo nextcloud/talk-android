@@ -389,7 +389,11 @@ How to translate with transifex:
     <string name="online">Online</string>
     <string name="dnd">Do not disturb</string>
     <string name="away">Away</string>
+    <string name="busy">Busy</string>
     <string name="invisible">Invisible</string>
+    <string name="divider" translatable="false">—</string>
+    <string name="mute_all_notifications">Mute all notifications</string>
+    <string name="appear_offline">Appear offline</string>
     <string name="default_emoji" translatable="false">😃</string>
     <string name="emoji_thumbsUp" translatable="false">👍</string>
     <string name="emoji_thumbsDown" translatable="false">👎</string>
@@ -401,6 +405,7 @@ How to translate with transifex:
     <string name="emoji_more" translatable="false">More emojis</string>
     <string name="dontClear">Don\'t clear</string>
     <string name="today">Today</string>
+    <string name="fifteenMinutes">15 minutes</string>
     <string name="thirtyMinutes">30 minutes</string>
     <string name="oneHour">1 hour</string>
     <string name="fourHours">4 hours</string>

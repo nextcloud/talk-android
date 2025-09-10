@@ -11,5 +11,6 @@ enum class StatusType(val string: String) {
     OFFLINE("offline"),
     DND("dnd"),
     AWAY("away"),
+    BUSY("busy"),
     INVISIBLE("invisible")
 }
