@@ -277,6 +277,7 @@ class ConversationsListActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
+        checkThreadsExistence()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -426,6 +427,23 @@ class ConversationsListActivity :
                 }
 
                 else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.threadsExistState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.ThreadsExistUiState.Success -> {
+                        binding.threadsButton.visibility = if (state.threadsExistence == true) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                    }
+                    else -> {
+                        binding.threadsButton.visibility = View.GONE
+                    }
+                }
             }
         }
 
@@ -2215,6 +2233,10 @@ class ConversationsListActivity :
                 )
             }
         }
+    }
+
+    fun checkThreadsExistence() {
+        conversationsListViewModel.checkIfThreadsExist()
     }
 
     fun openFollowedThreadsOverview() {

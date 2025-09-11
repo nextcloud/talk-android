@@ -10,31 +10,53 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
+    private val threadsRepository: ThreadsRepository,
+    private val currentUserProvider: CurrentUserProviderNew,
     var userManager: UserManager
 ) : ViewModel() {
 
     @Inject
     lateinit var invitationsRepository: InvitationsRepository
 
-    @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    // @Inject
+    // lateinit var currentUserProvider: CurrentUserProviderNew
+
+    private val _currentUser = currentUserProvider.currentUser.blockingGet()
+    val currentUser: User = _currentUser
+    val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
 
     sealed interface ViewState
+
+    sealed class ThreadsExistUiState {
+        data object None : ThreadsExistUiState()
+        data class Success(val threadsExistence: Boolean?) : ThreadsExistUiState()
+        data class Error(val exception: Exception) : ThreadsExistUiState()
+    }
+
+    private val _threadsExistState = MutableStateFlow<ThreadsExistUiState>(ThreadsExistUiState.None)
+    val threadsExistState: StateFlow<ThreadsExistUiState> = _threadsExistState
 
     object GetRoomsStartState : ViewState
     object GetRoomsErrorState : ViewState
@@ -85,6 +107,22 @@ class ConversationsListViewModel @Inject constructor(
         val startNanoTime = System.nanoTime()
         Log.d(TAG, "fetchData - getRooms - calling: $startNanoTime")
         repository.getRooms()
+    }
+
+    fun checkIfThreadsExist() {
+        val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
+            version = 1,
+            baseUrl = currentUser.baseUrl
+        )
+
+        viewModelScope.launch {
+            try {
+                val threads = threadsRepository.getThreads(credentials, threadsUrl, 1)
+                _threadsExistState.value = ThreadsExistUiState.Success(threads.ocs?.data?.isNotEmpty())
+            } catch (exception: Exception) {
+                _threadsExistState.value = ThreadsExistUiState.Error(exception)
+            }
+        }
     }
 
     inner class FederatedInvitationsObserver : Observer<InvitationsModel> {
