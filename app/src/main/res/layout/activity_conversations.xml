@@ -108,6 +108,18 @@
                     android:src="@drawable/ic_baseline_filter_list_24"
                     app:layout_constraintBaseline_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/threads_button"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/threads_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/followed_threads"
+                    android:padding="12dp"
+                    android:src="@drawable/outline_forum_24"
+                    app:layout_constraintBaseline_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/rightContainer"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -277,11 +289,6 @@
             <include
                 android:id="@+id/conversation_list_notification_warning"
                 layout="@layout/notifications_warning" />
-
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/conversation_list_threads_item"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view"
