@@ -70,7 +70,8 @@ class ThreadsOverviewActivity : BaseActivity() {
 
     lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
 
-    var roomToken: String = ""
+    var threadsSourceUrl: String = ""
+    var appbarTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,16 +84,11 @@ class ThreadsOverviewActivity : BaseActivity() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
         val extras: Bundle? = intent.extras
-        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+        threadsSourceUrl = extras?.getString(KEY_THREADS_SOURCE_URL).orEmpty()
+        appbarTitle = extras?.getString(KEY_APPBAR_TITLE).orEmpty()
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
-
-            val title = if (roomToken.isEmpty()) {
-                stringResource(R.string.followed_threads)
-            } else {
-                stringResource(R.string.recent_threads)
-            }
 
             MaterialTheme(
                 colorScheme = colorScheme
@@ -103,7 +99,7 @@ class ThreadsOverviewActivity : BaseActivity() {
                         .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
-                            title = title,
+                            title = appbarTitle,
                             null
                         )
                     },
@@ -141,11 +137,13 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
-        threadsOverviewViewModel.init(roomToken)
+        threadsOverviewViewModel.init(threadsSourceUrl)
     }
 
     companion object {
         val TAG = ThreadsOverviewActivity::class.java.simpleName
+        val KEY_APPBAR_TITLE = "KEY_APPBAR_TITLE"
+        val KEY_THREADS_SOURCE_URL = "KEY_THREADS_SOURCE_URL"
     }
 }
 
