@@ -38,7 +38,7 @@ class ThreadsOverviewViewModel @Inject constructor(
     fun getThreads(credentials: String, url: String) {
         viewModelScope.launch {
             try {
-                val threads = threadsRepository.getThreads(credentials, url)
+                val threads = threadsRepository.getThreads(credentials, url, null)
                 _threadsListState.value = ThreadsListUiState.Success(threads.ocs?.data)
             } catch (exception: Exception) {
                 _threadsListState.value = ThreadsListUiState.Error(exception)
