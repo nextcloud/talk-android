@@ -1327,6 +1327,9 @@ class ConversationsListActivity :
         binding.threadsButton.setOnClickListener {
             openFollowedThreadsOverview()
         }
+        binding.threadsButton.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE)
+        }
 
         binding.newMentionPopupBubble.visibility = View.GONE
         binding.newMentionPopupBubble.setOnClickListener {
@@ -2236,7 +2239,9 @@ class ConversationsListActivity :
     }
 
     fun checkThreadsExistence() {
-        conversationsListViewModel.checkIfThreadsExist()
+        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.THREADS)) {
+            conversationsListViewModel.checkIfThreadsExist()
+        }
     }
 
     fun openFollowedThreadsOverview() {
