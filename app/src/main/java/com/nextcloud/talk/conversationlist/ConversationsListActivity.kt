@@ -265,25 +265,6 @@ class ConversationsListActivity :
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
-
-        binding.conversationListThreadsItem.setContent {
-            ConversationListThreadsButton(
-                onClick = {
-                    val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
-                        version = 1,
-                        baseUrl = currentUser!!.baseUrl
-                    )
-
-                    val bundle = Bundle()
-                    bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.followed_threads))
-                    bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
-                    val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
-                    threadsOverviewIntent.putExtras(bundle)
-                    startActivity(threadsOverviewIntent)
-                }
-            )
-        }
-
         setupActionBar()
         setContentView(binding.root)
         initSystemBars()
@@ -1325,6 +1306,10 @@ class ConversationsListActivity :
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
         }
 
+        binding.threadsButton.setOnClickListener {
+            openFollowedThreadsOverview()
+        }
+
         binding.newMentionPopupBubble.visibility = View.GONE
         binding.newMentionPopupBubble.setOnClickListener {
             val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
@@ -2230,6 +2215,20 @@ class ConversationsListActivity :
                 )
             }
         }
+    }
+
+    fun openFollowedThreadsOverview() {
+        val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
+            version = 1,
+            baseUrl = currentUser!!.baseUrl
+        )
+
+        val bundle = Bundle()
+        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.followed_threads))
+        bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
+        val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
+        threadsOverviewIntent.putExtras(bundle)
+        startActivity(threadsOverviewIntent)
     }
 
     companion object {
