@@ -127,8 +127,8 @@ class DiagnoseActivity : BaseActivity() {
 
                         Column(
                             Modifier
-                                .padding(paddingValues)
                                 .background(backgroundColor)
+                                .padding(paddingValues)
                                 .fillMaxSize()
                         ) {
                             DiagnoseContentComposable(
