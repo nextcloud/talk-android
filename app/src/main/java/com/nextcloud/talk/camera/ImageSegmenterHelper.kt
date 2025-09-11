@@ -12,7 +12,6 @@ import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.os.SystemClock
 import android.util.Log
-import androidx.camera.core.ImageProxy
 import androidx.core.graphics.createBitmap
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.ByteBufferExtractor
@@ -22,18 +21,17 @@ import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import org.webrtc.VideoFrame
+import java.nio.Buffer
 import java.nio.ByteBuffer
 
 class ImageSegmenterHelper(
-    var currentDelegate: Int = DELEGATE_CPU,
+    var currentDelegate: Int = DELEGATE_GPU,
     var runningMode: RunningMode = RunningMode.LIVE_STREAM,
     val context: Context,
     var imageSegmenterListener: SegmenterListener? = null
 ) {
 
-    // TODO maybe make this lazy
-    // For this example this needs to be a var so it can be reset on changes.
-    // If the ImageSegmenter will not change, a lazy val would be preferable.
     private var imageSegmenter: ImageSegmenter? = null
 
     init {
@@ -41,22 +39,9 @@ class ImageSegmenterHelper(
     }
 
     // Segmenter must be closed when creating a new one to avoid returning results to a non-existent object
-    fun clearImageSegmenter() {
+    fun destroyImageSegmenter() {
         imageSegmenter?.close()
         imageSegmenter = null
-    }
-
-    fun setListener(listener: SegmenterListener) {
-        imageSegmenterListener = listener
-    }
-
-    fun clearListener() {
-        imageSegmenterListener = null
-    }
-
-    // Return running status of image segmenter helper
-    fun isClosed(): Boolean {
-        return imageSegmenter == null
     }
 
     /**
@@ -122,9 +107,13 @@ class ImageSegmenterHelper(
         }
     }
 
-    // Runs image segmentation on live streaming cameras frame-by-frame and
-    // returns the results asynchronously to the caller.
-    fun segmentLiveStreamFrame(imageProxy: ImageProxy, isFrontCamera: Boolean) {
+    /**
+     * Runs image segmentation on live streaming cameras frame-by-frame and
+     * returns the results asynchronously to the given `imageSegmenterListener`
+     *
+     * @throws IllegalArgumentException
+     */
+    fun segmentLiveStreamFrame(videoFrame: VideoFrame, isFrontCamera: Boolean) {
         if (runningMode != RunningMode.LIVE_STREAM) {
             throw IllegalArgumentException(
                 "Attempting to call segmentLiveStreamFrame while not using RunningMode.LIVE_STREAM"
@@ -132,27 +121,22 @@ class ImageSegmenterHelper(
         }
 
         val frameTime = SystemClock.uptimeMillis()
-        val bitmapBuffer = createBitmap(imageProxy.width, imageProxy.height)
-
-        imageProxy.use {
-            bitmapBuffer.copyPixelsFromBuffer(imageProxy.planes[0].buffer)
-        }
+        val bitmapBuffer = createBitmap(videoFrame.buffer.width, videoFrame.buffer.height)
+        bitmapBuffer.copyPixelsFromBuffer(videoFrame.buffer as Buffer)
 
         // Used for rotating the frame image so it matches our models
         val matrix = Matrix().apply {
-            postRotate(imageProxy.imageInfo.rotationDegrees.toFloat())
+            postRotate(videoFrame.rotation.toFloat())
 
             if(isFrontCamera) {
                 postScale(
                     -1f,
                     1f,
-                    imageProxy.width.toFloat(),
-                    imageProxy.height.toFloat()
+                    bitmapBuffer.width.toFloat(),
+                    bitmapBuffer.height.toFloat()
                 )
             }
         }
-
-        imageProxy.close()
 
         val rotatedBitmap = Bitmap.createBitmap(
             bitmapBuffer,
@@ -216,30 +200,6 @@ class ImageSegmenterHelper(
         const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
 
         private const val TAG = "ImageSegmenterHelper"
-
-        val labelColors = listOf(
-            -16777216,
-            -8388608,
-            -16744448,
-            -8355840,
-            -16777088,
-            -8388480,
-            -16744320,
-            -8355712,
-            -12582912,
-            -4194304,
-            -12550144,
-            -4161536,
-            -12582784,
-            -4194176,
-            -12550016,
-            -4161408,
-            -16760832,
-            -8372224,
-            -16728064,
-            -8339456,
-            -16760704
-        )
     }
 
     interface SegmenterListener {

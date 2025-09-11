@@ -1106,6 +1106,9 @@ class CallActivity : CallBaseActivity() {
                 rootEglBase!!.eglBaseContext
             )
             videoSource = peerConnectionFactory!!.createVideoSource(false)
+
+            // TODO implement a FrameProcessor, attach to videoSource
+
             videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource!!.capturerObserver)
         }
         localVideoTrack = peerConnectionFactory!!.createVideoTrack("NCv0", videoSource)
