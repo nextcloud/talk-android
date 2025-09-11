@@ -10,29 +10,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/referenceWrapper"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="@dimen/standard_half_margin"
-    android:layout_marginBottom="@dimen/standard_quarter_margin">
+    android:layout_marginBottom="@dimen/standard_quarter_margin"
+    android:gravity="end">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/referenceThumbImage"
-        android:layout_width="@dimen/link_preview_width"
-        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:background="@color/reply_background"
-        android:visibility="gone"
+        android:maxWidth="@dimen/link_preview_width"
         android:maxHeight="@dimen/link_preview_height"
-        app:shapeAppearanceOverlay="@style/LinkPreviewStyle"
+        android:scaleType="fitCenter"
+        android:visibility="gone"
+        app:shapeAppearanceOverlay="@style/LinkPreviewStyleLand"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_add_attachment"
         tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/referenceMetadataContainer"
-        android:layout_width="@dimen/link_preview_width"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/referenceThumbImage"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toEndOf="@id/referenceThumbImage"
         android:background="@drawable/link_text_background"
         android:orientation="vertical"
         android:paddingStart="@dimen/standard_half_margin"
