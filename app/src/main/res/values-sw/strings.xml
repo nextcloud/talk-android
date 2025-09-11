@@ -5,6 +5,7 @@
     <string name="add_to_notes">Ongeza katika kumbukumbu</string>
     <string name="added_to_favorites">Mazungumzo yaliyoongezwa %1$skatika vipendwa</string>
     <string name="appbar_search_in">Tafuta katika %s</string>
+    <string name="appear_offline">Tokea nje ya mtandao</string>
     <string name="archive_conversation">Hifadhi mazungumzo</string>
     <string name="archive_hint">Mara tu mazungumzo yanapowekwa kwenye kumbukumbu, yatafichwa kwa chaguo-msingi. Chagua kichujio \"Kilichohifadhiwa\" ili kutazama mazungumzo yaliyohifadhiwa. Matangazo ya moja kwa moja bado yatapokelewa.</string>
     <string name="archived">Imewekwa katika kumbukumbu</string>
@@ -22,6 +23,7 @@
     <string name="ban">Piga marufuku</string>
     <string name="ban_participant">Mshiriki aliyepigwa marufuku</string>
     <string name="bans_list">Orodha iliyopigwa marufuku</string>
+    <string name="busy">Bize</string>
     <string name="calendar">Kalenda</string>
     <string name="call_more_actions_dialog_headline">Chaguzi za simu za hali ya juu</string>
     <string name="call_running_since_one_hour">Simu imekuwa ikifanya kazi kwa saa moja.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Kulikuwa na tatizo kupakia chati zako</string>
     <string name="error_unbanning">Hitilafu ilitokea wakati wa kubatilisha mshiriki</string>
     <string name="failed_to_save">Imeshindwa kuhifadhi %1$s</string>
+    <string name="fifteenMinutes">Dakika 15</string>
     <string name="file_list_folder">folda</string>
     <string name="file_list_loading">Inapakia</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Anza kuchapa ili kutafuta </string>
     <string name="message_search_hint">Tafuta...</string>
     <string name="messages">Jumbe</string>
+    <string name="mute_all_notifications">Zima arifu zote</string>
     <string name="nc_Server_account_imported">Akaunti iliyochaguliwa sasa imeingizwa na inapatikana</string>
     <string name="nc_about">Kuhusu</string>
     <string name="nc_account_chooser_active_user">Mtumiaji anayetumia</string>
@@ -552,6 +556,11 @@
     <string name="no_conversations_archived">Hakuna mazungumzo yaliyohifadhiwa kwenye kumbukumbu</string>
     <string name="no_offline_messages_saved">Hakuna jumbe za nje ya mtandao zilizohifadhiwa</string>
     <string name="no_phone_book_integration_due_to_permissions">Hakuna muunganisho wa nambari ya simu kwa sababu ya kukosa ruhusa</string>
+    <string name="notification_all_messages">Jumbe zote</string>
+    <string name="notification_mention_only">\@-mitajo pekee</string>
+    <string name="notification_off">Imezimwa</string>
+    <string name="notifications_default">Chaguo msingi</string>
+    <string name="notifications_default_description">Fuata mipangilio ya mazungumzo</string>
     <string name="oneHour">Saa 1</string>
     <string name="online">Mtandaoni</string>
     <string name="online_status">Hadhi ya mtandaoni</string>
@@ -660,6 +669,7 @@
     <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>
     <string name="this_weekend">Wikendi hii</string>
     <string name="thread_cancel">Ghairi uundaji wa mjadala</string>
+    <string name="thread_notifications">Arifa za mjadala</string>
     <string name="thread_reply">Jibu</string>
     <string name="thread_title">Kichwa cha mjadala</string>
     <string name="today">Leo</string>

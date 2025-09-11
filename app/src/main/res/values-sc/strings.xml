@@ -3,11 +3,13 @@
     <string name= "nc_edit">Modìfica</string>
     <string name="add_participants">Agiunghe</string>
     <string name="appbar_search_in">Chirca in %s</string>
+    <string name="appear_offline">Mustra•ti foras de lìnia</string>
     <string name="archived">Archiviadu</string>
     <string name="audio_output_phone">Telèfonu</string>
     <string name="audio_output_speaker">Altoparlante</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="busy">Impinnadu</string>
     <string name="calendar">Calendàriu</string>
     <string name="choose_avatar_from_cloud">Sèbera s\'avatar dae sa nue virtuale</string>
     <string name="clear_status_message">Lìmpia su messàgiu de istadu</string>
@@ -24,6 +26,7 @@
     <string name="emoji_category_recent">Reghente</string>
     <string name="encrypted">Tzifradu</string>
     <string name="failed_to_save">No at fatu a sarvare %1$s</string>
+    <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">cartella</string>
     <string name="file_list_loading">Carrigamentu …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -43,6 +46,7 @@
     <string name="message_deleted_by_you">Messàgiu cantzelladu dae tue</string>
     <string name="message_search_begin_empty">Perunu resurtadu de chirca</string>
     <string name="messages">Messàgios</string>
+    <string name="mute_all_notifications">Istuda totu is notìficas</string>
     <string name="nc_Server_account_imported">Su contu seletzionadu est importadu e a disponimentu</string>
     <string name="nc_about">In contu de</string>
     <string name="nc_account_chooser_active_user">Utèntzia ativa</string>
@@ -323,6 +327,7 @@
     <string name="nc_yes">Eja</string>
     <string name="next_week">Sa chida chi benit</string>
     <string name="no_phone_book_integration_due_to_permissions">Peruna integratzione de nùmeru de telèfonu pro farta de permissos</string>
+    <string name="notifications_default">Predefinidu</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In lìnia</string>
     <string name="online_status">Istadu in lìnia</string>

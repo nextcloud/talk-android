@@ -5,6 +5,7 @@
     <string name="add_to_notes">Добавить в заметки</string>
     <string name="added_to_favorites">Обсуждение добавлено %1$s в избранное</string>
     <string name="appbar_search_in">Искать в %s</string>
+    <string name="appear_offline">\"Не в сети\" для остальных</string>
     <string name="archive_conversation">Архивировать обсуждение</string>
     <string name="archive_hint">После архивации обсуждение будет скрыто по-умолчанию. Выберите фильтр \"Архивировано\", чтобы увидеть архивированные обсуждения. Прямые упоминания все еще будут получены.</string>
     <string name="archived">В архиве</string>
@@ -22,6 +23,7 @@
     <string name="ban">Заблокировать</string>
     <string name="ban_participant">Заблокировать участника</string>
     <string name="bans_list">Список заблокированных</string>
+    <string name="busy">Занят</string>
     <string name="calendar">Календарь</string>
     <string name="call_more_actions_dialog_headline">Дополнительные настройки звонка</string>
     <string name="call_running_since_one_hour">Звонок длится уже час</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Возникла проблема при загрузке ваших чатов</string>
     <string name="error_unbanning">Произошла ошибка при разблокировке участника</string>
     <string name="failed_to_save">Не удалось сохранить %1$s</string>
+    <string name="fifteenMinutes">15 минут</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Загрузка …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -97,6 +100,7 @@
     <string name="message_search_begin_typing">Начните печатать для поиска …</string>
     <string name="message_search_hint">Поиск …</string>
     <string name="messages">Сообщения</string>
+    <string name="mute_all_notifications">Без уведомлений</string>
     <string name="nc_Server_account_imported">Выбранная учётная запись теперь доступна</string>
     <string name="nc_about">О программе</string>
     <string name="nc_account_chooser_active_user">Активный пользователь</string>
@@ -545,6 +549,9 @@
     <string name="no_conversations_archived">Отсутствуют архивированные обсуждения</string>
     <string name="no_offline_messages_saved">Нет сохраненных оффлайн сообщений</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="notification_off">Отключить</string>
+    <string name="notifications_default">По умолчанию</string>
+    <string name="notifications_default_description">Следовать настройкам обсуждения</string>
     <string name="oneHour">1 час</string>
     <string name="online">В сети</string>
     <string name="online_status">Онлайн статус</string>
@@ -653,6 +660,7 @@
     <string name="this_is_a_test_message">Это тестовое сообщение</string>
     <string name="this_weekend">Эти выходные</string>
     <string name="thread_cancel">Отменить создание темы</string>
+    <string name="thread_notifications">Уведомления для темы</string>
     <string name="thread_reply">Ответ</string>
     <string name="thread_title">Заголовок темы</string>
     <string name="today">Сегодня</string>

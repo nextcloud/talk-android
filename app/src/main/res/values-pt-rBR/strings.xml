@@ -5,6 +5,7 @@
     <string name="add_to_notes">Adicionar a Notas</string>
     <string name="added_to_favorites">Conversa %1$s adicionada para favoritos</string>
     <string name="appbar_search_in">Pesquisar em %s</string>
+    <string name="appear_offline">Aparecer off-line</string>
     <string name="archive_conversation">Arquivar conversa</string>
     <string name="archive_hint">Quando uma conversa for arquivada, ela ficará oculta por padrão. Selecione o filtro \"Arquivada\" para visualizar as conversas arquivadas. As menções diretas ainda serão recebidas.</string>
     <string name="archived">Arquivada</string>
@@ -22,6 +23,7 @@
     <string name="ban">Banir</string>
     <string name="ban_participant">Banir participante</string>
     <string name="bans_list">Lista de banimentos</string>
+    <string name="busy">Ocupado</string>
     <string name="calendar">Calendário</string>
     <string name="call_more_actions_dialog_headline">Opções avançadas de chamada</string>
     <string name="call_running_since_one_hour">A chamada está em andamento há uma hora.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Ocorreu um problema ao carregar seus bate-papos</string>
     <string name="error_unbanning">Ocorreu um erro ao cancelar o banimento do participante</string>
     <string name="failed_to_save">Falha ao salvar %1$s</string>
+    <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Comece a digitar para pesquisar …</string>
     <string name="message_search_hint">Pesquisar …</string>
     <string name="messages">Mensagens</string>
+    <string name="mute_all_notifications">Silenciar todas as notificações</string>
     <string name="nc_Server_account_imported">A conta selecionada agora está importada e disponível</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuário ativo</string>
@@ -549,6 +553,9 @@
     <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
+    <string name="notification_off">Desativado</string>
+    <string name="notifications_default">Padrão</string>
+    <string name="notifications_default_description">Seguir as configurações da conversa</string>
     <string name="oneHour">1 hora</string>
     <string name="online">On-line</string>
     <string name="online_status">Status on-line</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">Esta é uma mensagem de teste</string>
     <string name="this_weekend">Este fim de semana</string>
     <string name="thread_cancel">Cancelar a criação do fio</string>
+    <string name="thread_notifications">Notificações de fios</string>
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fio</string>
     <string name="today">Hoje</string>

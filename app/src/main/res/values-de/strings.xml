@@ -5,6 +5,7 @@
     <string name="add_to_notes">Zu Notizen hinzufügen</string>
     <string name="added_to_favorites">Unterhaltung %1$s zu Favoriten hinzugefügt</string>
     <string name="appbar_search_in">Suche in %s</string>
+    <string name="appear_offline">Offline erscheinen</string>
     <string name="archive_conversation">Unterhaltung archivieren</string>
     <string name="archive_hint">Sobald eine Unterhaltung archiviert ist, wird sie standardmäßig ausgeblendet. Wählen Sie den Filter \"Archiviert\", um archivierte Unterhaltungen anzuzeigen. Direkte Erwähnungen werden weiterhin empfangen.</string>
     <string name="archived">Archiviert</string>
@@ -22,6 +23,7 @@
     <string name="ban">Sperren</string>
     <string name="ban_participant">Teilnehmer sperren</string>
     <string name="bans_list">Sperrliste</string>
+    <string name="busy">Beschäftigt</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Erweiterte Anrufoptionen</string>
     <string name="call_running_since_one_hour">Der Anruf läuft seit einer Stunde.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Beim Laden Ihrer Chats ist ein Problem aufgetreten</string>
     <string name="error_unbanning">Fehler beim Entsperren des Teilnehmers</string>
     <string name="failed_to_save">%1$s konnte nicht gespeichert werden</string>
+    <string name="fifteenMinutes">15 Minuten</string>
     <string name="file_list_folder">Ordner</string>
     <string name="file_list_loading">Lade …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Beginnen Sie mit der Eingabe, um zu suchen …</string>
     <string name="message_search_hint">Suche …</string>
     <string name="messages">Nachrichten</string>
+    <string name="mute_all_notifications">Alle Benachrichtigungen stummschalten</string>
     <string name="nc_Server_account_imported">Das ausgewählte Konto ist nun importiert und verfügbar</string>
     <string name="nc_about">Über</string>
     <string name="nc_account_chooser_active_user">Aktiver Benutzer</string>
@@ -549,6 +553,9 @@
     <string name="no_conversations_archived">Keine archivierten Unterhaltungen</string>
     <string name="no_offline_messages_saved">Keine Offlinenachrichten gespeichert</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
+    <string name="notification_off">Aus</string>
+    <string name="notifications_default">Standard</string>
+    <string name="notifications_default_description">Unterhaltungseinstellungen folgen</string>
     <string name="oneHour">1 Stunde</string>
     <string name="online">Online</string>
     <string name="online_status">Online-Status</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">Dies ist eine Testnachricht</string>
     <string name="this_weekend">Dieses Wochenende</string>
     <string name="thread_cancel">Themenerstellung abbrechen</string>
+    <string name="thread_notifications">Thread-Benachrichtigungen</string>
     <string name="thread_reply">Antwort</string>
     <string name="thread_title">Thementitel</string>
     <string name="today">Heute</string>

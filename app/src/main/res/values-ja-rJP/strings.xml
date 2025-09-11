@@ -5,6 +5,7 @@
     <string name="add_to_notes">メモに追加する</string>
     <string name="added_to_favorites">%1$s会話をお気に入りに追加した</string>
     <string name="appbar_search_in">%sを検索</string>
+    <string name="appear_offline">オフライン</string>
     <string name="archive_conversation">会話をアーカイブ</string>
     <string name="archived">アーカイブ済み</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -15,6 +16,7 @@
     <string name="automatic_status_set">あなたのステータスは自動的に設定されました</string>
     <string name="avatar">アバター</string>
     <string name="away">離席中</string>
+    <string name="busy">ビジー</string>
     <string name="calendar">カレンダー</string>
     <string name="call_more_actions_dialog_headline">高度なコールオプション</string>
     <string name="call_running_since_one_hour">通話が1 時間経過</string>
@@ -45,6 +47,7 @@
     <string name="end_call_for_everyone">全員の通話を終了する</string>
     <string name="error_loading_chats">あなたのチャットの読み込み中に問題が発生しました</string>
     <string name="failed_to_save">%1$sの保存に失敗しました</string>
+    <string name="fifteenMinutes">15分</string>
     <string name="file_list_folder">フォルダー</string>
     <string name="file_list_loading">読み込み中…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -77,6 +80,7 @@
     <string name="message_search_begin_typing">入力して検索を開始 …</string>
     <string name="message_search_hint">検索…</string>
     <string name="messages">メッセージ</string>
+    <string name="mute_all_notifications">全ての通知をミュートします</string>
     <string name="nc_Server_account_imported">選択したアカウントがインポートされ、使用可能になりました</string>
     <string name="nc_about">バージョン情報</string>
     <string name="nc_account_chooser_active_user">アクティブなユーザー</string>
@@ -478,6 +482,8 @@
     <string name="nc_yes">はい</string>
     <string name="next_week">来週</string>
     <string name="no_phone_book_integration_due_to_permissions">利用権限がないため、電話番号統合ができません。</string>
+    <string name="notification_mention_only">\@で直接会話</string>
+    <string name="notifications_default">デフォルト</string>
     <string name="oneHour">1時間</string>
     <string name="online">オンライン</string>
     <string name="online_status">オンラインステータス</string>

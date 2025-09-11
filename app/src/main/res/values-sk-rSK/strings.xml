@@ -21,6 +21,7 @@
     <string name="ban">Ban</string>
     <string name="ban_participant">Udeliť účastníkovy ban</string>
     <string name="bans_list">Zoznam banov</string>
+    <string name="busy">Zaneprázdnený</string>
     <string name="calendar">Kalendár</string>
     <string name="call_more_actions_dialog_headline">Pokročilé možnosti hovoru</string>
     <string name="call_running_since_one_hour">Hovor už trvá viac ako jednu hodinu.</string>
@@ -56,6 +57,7 @@
     <string name="error_loading_chats">Nastal problém s načítaním vašich správ</string>
     <string name="error_unbanning">Pri rušení banu pre účastníka sa vyskytla chyba</string>
     <string name="failed_to_save">Nepodarilo sa uložiť %1$s</string>
+    <string name="fifteenMinutes">15 minút</string>
     <string name="file_list_folder">priečinok</string>
     <string name="file_list_loading">Načítavam …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -507,6 +509,9 @@
     <string name="next_week">Nasledujúci týždeň</string>
     <string name="no_offline_messages_saved">Žiadne správy pri odpojení neboli uložené</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre chýbajúce oprávnenia</string>
+    <string name="notification_mention_only">Iba zmienky v tvare @-meno</string>
+    <string name="notification_off">Vypnúť</string>
+    <string name="notifications_default">Predvolené</string>
     <string name="oneHour">1 hodina</string>
     <string name="online">Pripojený</string>
     <string name="online_status">Stav pripojenia</string>

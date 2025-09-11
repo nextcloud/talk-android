@@ -3,6 +3,7 @@
     <string name= "nc_edit">Muokkaa</string>
     <string name="add_participants">Lisää</string>
     <string name="appbar_search_in">Etsi kohteesta %s</string>
+    <string name="appear_offline">Näytä olevan poissa</string>
     <string name="archived">Arkistoitu</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Äänen ulostulo</string>
@@ -12,6 +13,7 @@
     <string name="automatic_status_set">Tilatietosi asetettiin automaattisesti</string>
     <string name="avatar">Profiilikuva</string>
     <string name="away">Poissa</string>
+    <string name="busy">Varattu</string>
     <string name="calendar">Kalenteri</string>
     <string name="call_running_since_one_hour">Tämä puhelu on kestänyt yhden tunnin.</string>
     <string name="call_without_notification">Puhelu ilman ilmoitusta</string>
@@ -34,6 +36,7 @@
     <string name="end_call">Lopeta puhelu</string>
     <string name="end_call_for_everyone">Päätä puhelu kaikkien osalta</string>
     <string name="failed_to_save">Ei voitu tallentaa %1$s</string>
+    <string name="fifteenMinutes">15 minuuttia</string>
     <string name="file_list_folder">kansio</string>
     <string name="file_list_loading">Ladataan…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -55,6 +58,7 @@
     <string name="message_search_begin_typing">Aloita kirjoittaminen hakeaksesi…</string>
     <string name="message_search_hint">Hae…</string>
     <string name="messages">Viestit</string>
+    <string name="mute_all_notifications">Mykistä kaikki ilmoitukset</string>
     <string name="nc_Server_account_imported">Valittu tili on nyt tuotu ja käytettävissä</string>
     <string name="nc_about">Tietoja</string>
     <string name="nc_account_chooser_active_user">Aktiivinen käyttäjä</string>

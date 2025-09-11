@@ -5,6 +5,7 @@
     <string name="add_to_notes">Ajouter à Notes</string>
     <string name="added_to_favorites">La conversation %1$s a été ajoutée aux favoris</string>
     <string name="appbar_search_in">Rechercher dans %s</string>
+    <string name="appear_offline">Apparaître hors-ligne</string>
     <string name="archive_conversation">Archiver la conversation</string>
     <string name="archive_hint">Lorsqu\'une conversation est archivée, elle est cachée par défaut. Choisissez le filtre \"Archivés\" pour voir les conversations archivées. Les mentions directes seront toujours bien reçues.</string>
     <string name="archived">Archivé</string>
@@ -22,6 +23,7 @@
     <string name="ban">Bannir</string>
     <string name="ban_participant">Bannir le participant</string>
     <string name="bans_list">Liste des bannis</string>
+    <string name="busy">Occupé</string>
     <string name="calendar">Agenda</string>
     <string name="call_more_actions_dialog_headline">Options d\'appel avancées</string>
     <string name="call_running_since_one_hour">L\'appel est en cours depuis une heure.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Un problème est survenu lors du chargement de vos discussions</string>
     <string name="error_unbanning">Une erreur est survenue à la réintégration du participant</string>
     <string name="failed_to_save">Échec de la sauvegarde de %1$s</string>
+    <string name="fifteenMinutes">15 minutes</string>
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -99,6 +102,7 @@
     <string name="message_search_begin_typing">Commencer à taper pour lancer la recherche…</string>
     <string name="message_search_hint">Recherche…</string>
     <string name="messages">Messages</string>
+    <string name="mute_all_notifications">Désactiver les notifications</string>
     <string name="nc_Server_account_imported">Le compte sélectionné est maintenant importé et disponible</string>
     <string name="nc_about">À propos</string>
     <string name="nc_account_chooser_active_user">Utilisateur actif</string>
@@ -547,6 +551,9 @@
     <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="notification_mention_only">Seulement les mentions @</string>
+    <string name="notification_off">Désactiver</string>
+    <string name="notifications_default_description">Utiliser les paramètres de la conversation</string>
     <string name="oneHour">1 heure</string>
     <string name="online">En ligne</string>
     <string name="online_status">Statut de connexion</string>
@@ -655,6 +662,7 @@
     <string name="this_is_a_test_message">Ceci est un message de test</string>
     <string name="this_weekend">Ce week-end</string>
     <string name="thread_cancel">Annuler la création de la conversation</string>
+    <string name="thread_notifications">Notifications de conversation</string>
     <string name="thread_reply">Répondre</string>
     <string name="thread_title">Titre de la conversation</string>
     <string name="today">Aujourd\'hui</string>

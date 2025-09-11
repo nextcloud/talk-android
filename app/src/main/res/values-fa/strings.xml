@@ -5,6 +5,7 @@
     <string name="add_to_notes">افزودن به یادداشت‌ها</string>
     <string name="added_to_favorites">گفتگوی %1$sبه علاقه‌مندی‌ها افزوده شد</string>
     <string name="appbar_search_in">جستجو در %s</string>
+    <string name="appear_offline">نمایش آفلاین</string>
     <string name="archived">Archived</string>
     <string name="audio_output_bluetooth">بلوتوث</string>
     <string name="audio_output_dialog_headline">خروجی صدا</string>
@@ -18,6 +19,7 @@
     <string name="ban">انسداد</string>
     <string name="ban_participant">مسدود کردن شرکت‌کننده</string>
     <string name="bans_list">فهرست مسدودی‌ها</string>
+    <string name="busy">مشغول</string>
     <string name="calendar">تقویم</string>
     <string name="call_more_actions_dialog_headline">گزینه‌های پیشرفتهٔ تماس</string>
     <string name="clear_status_message">پیام وضعیت را پاک کن</string>
@@ -36,6 +38,7 @@
     <string name="emoji_category_recent">اخیر</string>
     <string name="encrypted">Encrypted</string>
     <string name="end_call_for_everyone">End call for everyone</string>
+    <string name="fifteenMinutes">۱۵ دقیقه</string>
     <string name="file_list_folder">پوشه</string>
     <string name="file_list_loading">بارگذاری …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -57,6 +60,7 @@
     <string name="message_search_begin_empty">جستجو نتیجه‌ای نداشت</string>
     <string name="message_search_hint">جستجو ...</string>
     <string name="messages">پیام ها</string>
+    <string name="mute_all_notifications">خاموش کردن همه اعلانات</string>
     <string name="nc_Server_account_imported"> حساب  انتخاب‌شده  اکنون  وارد  شده و  در دسترس  است .</string>
     <string name="nc_about">درباره</string>
     <string name="nc_account_chooser_active_user">کاربر فعال</string>
@@ -348,6 +352,8 @@
     <string name="nc_webinar">وبینار</string>
     <string name="nc_yes">بله</string>
     <string name="next_week">هفتهٔ بعد</string>
+    <string name="notification_all_messages">All messages</string>
+    <string name="notification_mention_only">\@-mentions only</string>
     <string name="oneHour">۱ ساعت</string>
     <string name="online">برخط</string>
     <string name="online_status">وضعیت برخط</string>

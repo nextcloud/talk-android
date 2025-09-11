@@ -5,6 +5,7 @@
     <string name="add_to_notes">新增至筆記</string>
     <string name="added_to_favorites">已新增對話 %1$s 至最愛</string>
     <string name="appbar_search_in">在 %s內搜尋</string>
+    <string name="appear_offline">顯示為離線</string>
     <string name="archive_conversation">封存對話</string>
     <string name="archive_hint">對話封存後，預設會隱藏。選取篩選條件「已封存」可檢視已封存的對話。仍會收到直接提及。</string>
     <string name="archived">已封存</string>
@@ -22,6 +23,7 @@
     <string name="ban">封鎖</string>
     <string name="ban_participant">封鎖參與者</string>
     <string name="bans_list">封鎖清單</string>
+    <string name="busy">忙碌</string>
     <string name="calendar">日曆</string>
     <string name="call_more_actions_dialog_headline">進階通話選項</string>
     <string name="call_running_since_one_hour">通話已經持續一個小時了。</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">在載入您的對話時出現錯誤</string>
     <string name="error_unbanning">解除封鎖參與者時遇到錯誤</string>
     <string name="failed_to_save">儲存 %1$s 失敗</string>
+    <string name="fifteenMinutes">15分鐘</string>
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">輸入文字以搜尋 …</string>
     <string name="message_search_hint">搜尋 …</string>
     <string name="messages">訊息</string>
+    <string name="mute_all_notifications">靜音所有通知</string>
     <string name="nc_Server_account_imported">選擇已匯入且可用的帳號</string>
     <string name="nc_about">關於</string>
     <string name="nc_account_chooser_active_user">活躍使用者</string>
@@ -549,6 +553,10 @@
     <string name="no_conversations_archived">無封存的對話</string>
     <string name="no_offline_messages_saved">未儲存離線訊息</string>
     <string name="no_phone_book_integration_due_to_permissions">因為缺少權限而無法整合電話號碼</string>
+    <string name="notification_mention_only">僅被 @ - 提及 的訊息</string>
+    <string name="notification_off">關閉</string>
+    <string name="notifications_default">預設</string>
+    <string name="notifications_default_description">遵循對話設定</string>
     <string name="oneHour">1小時</string>
     <string name="online">線上</string>
     <string name="online_status">線上狀態</string>
@@ -657,6 +665,7 @@
     <string name="this_is_a_test_message">這是測試訊息</string>
     <string name="this_weekend">本週末</string>
     <string name="thread_cancel">取消建立討論串</string>
+    <string name="thread_notifications">討論串通知</string>
     <string name="thread_reply">回覆</string>
     <string name="thread_title">討論串標題</string>
     <string name="today">今天</string>

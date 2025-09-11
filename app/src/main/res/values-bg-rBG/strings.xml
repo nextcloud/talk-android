@@ -12,6 +12,7 @@
     <string name="automatic_status_set">Състоянието ви беше зададено автоматично</string>
     <string name="avatar">Аватар</string>
     <string name="away">Винаги</string>
+    <string name="busy">Зает</string>
     <string name="calendar">Kалендар</string>
     <string name="call_more_actions_dialog_headline">Разширени опции за повикване</string>
     <string name="call_without_notification">Обаждане без известие</string>
@@ -35,6 +36,7 @@
     <string name="end_call_for_everyone">Прекратяване на разговора за всички</string>
     <string name="error_loading_chats">Имаше проблем със зареждането на вашите чатове</string>
     <string name="failed_to_save">Неуспешно записване %1$s</string>
+    <string name="fifteenMinutes">15 минути</string>
     <string name="file_list_folder">папка</string>
     <string name="file_list_loading">Зареждане …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -394,6 +396,10 @@
     <string name="nc_yes">Да</string>
     <string name="next_week">Следваща седмица</string>
     <string name="no_phone_book_integration_due_to_permissions">Няма интеграция на телефонен номер поради липсващи права</string>
+    <string name="notification_all_messages">Всички съобщения</string>
+    <string name="notification_mention_only">\@-само споменавания</string>
+    <string name="notification_off">Изключен</string>
+    <string name="notifications_default">По подразбиране</string>
     <string name="oneHour">1 час</string>
     <string name="online">На линия</string>
     <string name="online_status">Състояние</string>

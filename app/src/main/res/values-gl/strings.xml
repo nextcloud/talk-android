@@ -5,6 +5,7 @@
     <string name="add_to_notes">Engadir a Notas</string>
     <string name="added_to_favorites">Engadiuse a conversa %1$s aos favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
+    <string name="appear_offline">Aparecer como sen conexión</string>
     <string name="archive_conversation">Arquivar a conversa</string>
     <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
     <string name="archived">Arquivada</string>
@@ -21,6 +22,7 @@
     <string name="ban">Expulsión</string>
     <string name="ban_participant">Expulsar o participante</string>
     <string name="bans_list">Lista de expulsións</string>
+    <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline"> Opcións avanzadas de chamada</string>
     <string name="call_running_since_one_hour">A chamada leva unha hora en curso.</string>
@@ -56,6 +58,7 @@
     <string name="error_loading_chats">Produciuse un problema ao cargar as súas parolas</string>
     <string name="error_unbanning">Produciuse un erro ao retirar a expulsión dun participante</string>
     <string name="failed_to_save">Produciuse un fallo ao gardar %1$s</string>
+    <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">cartafol</string>
     <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -89,6 +92,7 @@
     <string name="message_search_begin_typing">Comece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar…</string>
     <string name="messages">Mensaxes</string>
+    <string name="mute_all_notifications">Enmudecer todas as notificacións</string>
     <string name="nc_Server_account_imported">A conta seleccionada foi importada e xa está dispoñíbel</string>
     <string name="nc_about">Sobre</string>
     <string name="nc_account_chooser_active_user">Usuario activo</string>
@@ -234,7 +238,8 @@
     <string name="nc_edit_message">Editar</string>
     <string name="nc_edit_message_text">Editar a mensaxe</string>
     <string name="nc_edited_by_admin">Editado por alguén de administración</string>
-    <string name="nc_event_schedule">Programa</string>
+    <string name="nc_event_conversation_menu">Menú do evento de conversa</string>
+    <string name="nc_event_schedule">Programación</string>
     <string name="nc_expire_message_eight_hours">8 horas</string>
     <string name="nc_expire_message_four_weeks">4 semanas</string>
     <string name="nc_expire_message_off">Apagado</string>
@@ -508,6 +513,8 @@
     <string name="next_week">Semana seguinte</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
+    <string name="notification_mention_only">Só as mencións con @</string>
+    <string name="notification_off">Apagado</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En liña</string>
     <string name="online_status">Estado en liña</string>

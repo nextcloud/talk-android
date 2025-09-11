@@ -3,6 +3,7 @@
     <string name= "nc_edit">편집</string>
     <string name="add_participants">추가</string>
     <string name="appbar_search_in">%s 검색</string>
+    <string name="appear_offline">접속 안함으로 표시</string>
     <string name="archived">보관된</string>
     <string name="audio_output_bluetooth">블루투스</string>
     <string name="audio_output_dialog_headline">오디오 출력</string>
@@ -11,6 +12,7 @@
     <string name="audio_output_wired_headset">유선 헤드셋</string>
     <string name="avatar">아바타</string>
     <string name="away">자리비움</string>
+    <string name="busy">바쁨</string>
     <string name="calendar">일정</string>
     <string name="call_running_since_one_hour">통화가 한 시간동안 진행되었습니다.</string>
     <string name="call_without_notification">알림 없이 전화하기</string>
@@ -35,6 +37,7 @@
     <string name="end_call_for_everyone">모든 이들에 대해 통화 끝내기</string>
     <string name="error_loading_chats">당신의 채팅을 불러들이는데 문제가 생겼습니다.</string>
     <string name="failed_to_save">%1$s 저장 실패</string>
+    <string name="fifteenMinutes">15분</string>
     <string name="file_list_folder">폴더</string>
     <string name="file_list_loading">불러오는 중 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -59,6 +62,7 @@
     <string name="message_search_begin_typing">...를 검색하기 위하여 입력을 시작합니다</string>
     <string name="message_search_hint">...를 검색</string>
     <string name="messages">메시지</string>
+    <string name="mute_all_notifications">모든 알림을 음소거</string>
     <string name="nc_Server_account_imported">선택한 계정을 가져왔고 사용할 수 있음</string>
     <string name="nc_about">정보</string>
     <string name="nc_account_chooser_active_user">활성 사용자</string>
@@ -386,6 +390,8 @@
     <string name="nc_yes">예</string>
     <string name="next_week">다음주</string>
     <string name="no_phone_book_integration_due_to_permissions">권한 없음으로 인하여 전화 번호를 통합하지 않습니다.</string>
+    <string name="notification_mention_only">\@-언급만</string>
+    <string name="notifications_default">디폴트</string>
     <string name="oneHour">1시간</string>
     <string name="online">접속 중</string>
     <string name="online_status">접속 상태</string>

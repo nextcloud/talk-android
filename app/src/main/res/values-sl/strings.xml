@@ -3,6 +3,7 @@
     <string name= "nc_edit">Uredi</string>
     <string name="add_participants">Dodaj</string>
     <string name="appbar_search_in">Poišči v %s</string>
+    <string name="appear_offline">Pokaže kot brez povezave</string>
     <string name="archived">Arhivirano</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Odvod zvoka</string>
@@ -12,6 +13,7 @@
     <string name="automatic_status_set">Stanje je določeno samodejno</string>
     <string name="avatar">Podoba</string>
     <string name="away">Ne spremljam</string>
+    <string name="busy">Zasedeno</string>
     <string name="calendar">Koledar</string>
     <string name="call_more_actions_dialog_headline">Napredne možnosti klica</string>
     <string name="call_running_since_one_hour">Pogovor traja že eno uro.</string>
@@ -37,6 +39,7 @@
     <string name="end_call_for_everyone">Končaj klic za vse</string>
     <string name="error_loading_chats">Prišlo je do napake nalaganja pogovorov.</string>
     <string name="failed_to_save">Shranjevanje %1$s je spodletelo.</string>
+    <string name="fifteenMinutes">15 minut</string>
     <string name="file_list_folder">mapa</string>
     <string name="file_list_loading">Poteka nalaganje …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -61,6 +64,7 @@
     <string name="message_search_begin_typing">Vpišite niz za iskanje …</string>
     <string name="message_search_hint">Poišči …</string>
     <string name="messages">Sporočila</string>
+    <string name="mute_all_notifications">Utiša vsa obvestila</string>
     <string name="nc_Server_account_imported">Izbran račun je uvožen in na voljo za uporabo</string>
     <string name="nc_about">O programu</string>
     <string name="nc_account_chooser_active_user">Dejavni uporabnik</string>
@@ -408,6 +412,7 @@
     <string name="nc_yes">Da</string>
     <string name="next_week">Naslednji teden</string>
     <string name="no_phone_book_integration_due_to_permissions">Povezava s telefonskim imenikom ni na voljo zaradi neustreznih dovoljenj.</string>
+    <string name="notifications_default">Privzeto</string>
     <string name="oneHour">1 uri</string>
     <string name="online">Trenutno na spletu</string>
     <string name="online_status">Povezano stanje</string>
