@@ -118,10 +118,12 @@
                     android:contentDescription="@string/followed_threads"
                     android:padding="12dp"
                     android:src="@drawable/outline_forum_24"
+                    android:visibility="gone"
                     app:layout_constraintBaseline_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/rightContainer"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible"/>
 
                 <FrameLayout
                     android:id="@+id/rightContainer"
