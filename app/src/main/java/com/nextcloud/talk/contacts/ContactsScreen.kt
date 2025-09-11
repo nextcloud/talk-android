@@ -65,7 +65,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
         content = { paddingValues ->
             Column(
                 Modifier
-                    .background(colorResource(id = R.color.bg_default_semitransparent))
+                    .background(colorResource(id = R.color.bg_default))
                     .padding(paddingValues)
             ) {
                 if (!isAddParticipants) {
