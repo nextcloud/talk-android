@@ -4,6 +4,7 @@
     <string name="add_participants">添加</string>
     <string name="added_to_favorites">对话%1$s已添加至收藏</string>
     <string name="appbar_search_in">搜索位置 %s</string>
+    <string name="appear_offline">显示为离线</string>
     <string name="archive_conversation">存档对话</string>
     <string name="archived">已存档</string>
     <string name="audio_output_bluetooth">蓝牙</string>
@@ -14,6 +15,7 @@
     <string name="automatic_status_set">您的状态已自动设定</string>
     <string name="avatar">头像</string>
     <string name="away">离开</string>
+    <string name="busy">忙碌</string>
     <string name="calendar">日历</string>
     <string name="call_more_actions_dialog_headline">高级呼叫选项</string>
     <string name="call_running_since_one_hour">通话已持续一小时</string>
@@ -42,6 +44,7 @@
     <string name="end_call_for_everyone">为所有人结束通话</string>
     <string name="error_loading_chats">加载聊天记录时出错</string>
     <string name="failed_to_save">保存%1$s失败</string>
+    <string name="fifteenMinutes">15 分钟 </string>
     <string name="file_list_folder">文件夹</string>
     <string name="file_list_loading">正在加载 …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -71,6 +74,7 @@
     <string name="message_search_begin_typing">开始输入以搜索…</string>
     <string name="message_search_hint">搜索...</string>
     <string name="messages">消息</string>
+    <string name="mute_all_notifications">静音所有通知</string>
     <string name="nc_Server_account_imported">所选帐户现已导入并可用</string>
     <string name="nc_about">关于</string>
     <string name="nc_account_chooser_active_user">活跃用户</string>
@@ -441,6 +445,10 @@
     <string name="nc_yes">是的</string>
     <string name="next_week">下周</string>
     <string name="no_phone_book_integration_due_to_permissions">由于缺少权限，没有电话集成 </string>
+    <string name="notification_mention_only">仅被@提及的消息</string>
+    <string name="notification_off">关</string>
+    <string name="notifications_default">默认</string>
+    <string name="notifications_default_description">遵循对话设置</string>
     <string name="oneHour">1小时</string>
     <string name="online">在线</string>
     <string name="online_status">在线状态</string>
@@ -537,6 +545,7 @@
     <string name="thisWeek">本周</string>
     <string name="this_is_a_test_message">这是一个测试消息</string>
     <string name="this_weekend">本周末</string>
+    <string name="thread_notifications">帖子通知</string>
     <string name="thread_title">帖子‌标题</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>

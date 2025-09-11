@@ -22,6 +22,7 @@
     <string name="ban">Blokowanie</string>
     <string name="ban_participant">Zablokuj uczestnika</string>
     <string name="bans_list">Lista zablokowanych</string>
+    <string name="busy">Brak dostępności</string>
     <string name="calendar">Kalendarz</string>
     <string name="call_more_actions_dialog_headline">Zaawansowane opcje połączeń</string>
     <string name="call_running_since_one_hour">Połączenie trwa od godziny.</string>
@@ -61,6 +62,7 @@
     <string name="error_loading_chats">Wystąpił problem z wczytaniem Twoich czatów</string>
     <string name="error_unbanning">Wystąpił błąd podczas odblokowywania uczestnika</string>
     <string name="failed_to_save">Nie udało się zapisać %1$s</string>
+    <string name="fifteenMinutes">15 minut</string>
     <string name="file_list_folder">katalog</string>
     <string name="file_list_loading">Wczytywanie…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -545,6 +547,10 @@
     <string name="no_conversations_archived">Brak zarchiwizowanych rozmów</string>
     <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
+    <string name="notification_mention_only">Tylko, gdy @-wspomniano</string>
+    <string name="notification_off">Wyłączone</string>
+    <string name="notifications_default">Domyślny</string>
+    <string name="notifications_default_description">Śledź ustawienia rozmowy</string>
     <string name="oneHour">1 godzina</string>
     <string name="online">Online</string>
     <string name="online_status">Status online</string>
@@ -653,6 +659,7 @@
     <string name="this_is_a_test_message">To jest wiadomość testowa</string>
     <string name="this_weekend">W ten weekend</string>
     <string name="thread_cancel">Anuluj tworzenie wątku</string>
+    <string name="thread_notifications">Powiadomienia wątków</string>
     <string name="thread_reply">Odpowiedź</string>
     <string name="thread_title">Tytuł wątku</string>
     <string name="today">Dzisiaj</string>

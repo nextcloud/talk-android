@@ -3,6 +3,7 @@
     <string name= "nc_edit">Taisyti</string>
     <string name="add_participants">Pridėti</string>
     <string name="appbar_search_in">Ieškoti %s</string>
+    <string name="appear_offline">Atrodyti atsijungusiu</string>
     <string name="archived">Archyvuota</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Garso išvestis</string>
@@ -10,6 +11,7 @@
     <string name="automatic_status_set">Jūsų būsena buvo nustatyta automatiškai</string>
     <string name="avatar">Avataras</string>
     <string name="away">Atsitraukęs</string>
+    <string name="busy">Užimtas laikas</string>
     <string name="calendar">Kalendorius</string>
     <string name="call_more_actions_dialog_headline">Išplėstinės skambučio parinktys</string>
     <string name="cancel_login">Atsisakyti prisijungimo</string>
@@ -28,6 +30,7 @@
     <string name="edit_message_icon_description">Taisyti laišką</string>
     <string name="emoji_category_recent">Paskiausi</string>
     <string name="failed_to_save">Nepavyko įrašyti %1$s</string>
+    <string name="fifteenMinutes">15 minučių</string>
     <string name="file_list_folder">aplankas</string>
     <string name="file_list_loading">Įkeliama…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -49,6 +52,7 @@
     <string name="message_search_begin_typing">Rašykite norėdami atlikti paiešką…</string>
     <string name="message_search_hint">Ieškoti…</string>
     <string name="messages">Žinutės</string>
+    <string name="mute_all_notifications">Išjungti visus pranešimus</string>
     <string name="nc_Server_account_imported">Dabar, pasirinkta paskyra yra importuota ir prieinama</string>
     <string name="nc_about">Apie</string>
     <string name="nc_account_chooser_active_user">Aktyvus naudotojas</string>
@@ -310,6 +314,7 @@
     <string name="nc_webinar">Internetinis seminaras</string>
     <string name="nc_yes">Taip</string>
     <string name="next_week">Kita savaitė</string>
+    <string name="notifications_default">Numatytasis</string>
     <string name="oneHour">1 valanda</string>
     <string name="online">Prisijungęs</string>
     <string name="online_status">Prisijungimo būsena</string>

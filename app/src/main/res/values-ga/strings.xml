@@ -5,6 +5,7 @@
     <string name="add_to_notes">Cuir le Nótaí</string>
     <string name="added_to_favorites">Cuireadh comhrá %1$s le ceanáin</string>
     <string name="appbar_search_in">Cuardaigh i %s</string>
+    <string name="appear_offline">Le feiceáil as líne</string>
     <string name="archive_conversation">Comhrá cartlainne</string>
     <string name="archive_hint">Nuair a bheidh comhrá curtha i gcartlann, cuirfear i bhfolach é de réir réamhshocraithe. Roghnaigh an scagaire \"Cartlannaithe\" chun féachaint ar chomhráite cartlainne. Gheofar tagairtí díreacha fós.</string>
     <string name="archived">Cartlannaithe</string>
@@ -22,6 +23,7 @@
     <string name="ban">Bac</string>
     <string name="ban_participant">Cosc ar rannpháirtí</string>
     <string name="bans_list">Liosta toirmisc</string>
+    <string name="busy">Gnóthach</string>
     <string name="calendar">Féilire</string>
     <string name="call_more_actions_dialog_headline">Ardroghanna glaonna</string>
     <string name="call_running_since_one_hour">Tá an glao ar siúl ar feadh uair an chloig.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Tharla fadhb agus do chomhráite á lódáil</string>
     <string name="error_unbanning">Tharla earráid agus rannpháirtí á bhaint de</string>
     <string name="failed_to_save">Theip ar shábháil %1$s</string>
+    <string name="fifteenMinutes">15 nóiméad</string>
     <string name="file_list_folder">fillteán</string>
     <string name="file_list_loading">Á lódáil…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Tosaigh ag clóscríobh chun cuardach a dhéanamh…</string>
     <string name="message_search_hint">Cuardaigh…</string>
     <string name="messages">Teachtaireachtaí</string>
+    <string name="mute_all_notifications">Balbhaigh gach fógra</string>
     <string name="nc_Server_account_imported">Tá cuntas roghnaithe iompórtáilte anois agus ar fáil</string>
     <string name="nc_about">Faoi</string>
     <string name="nc_account_chooser_active_user">Úsáideoir gníomhach</string>
@@ -549,6 +553,10 @@
     <string name="no_conversations_archived">Níl aon chomhráite sa chartlann</string>
     <string name="no_offline_messages_saved">Níor sábháladh aon teachtaireacht as líne</string>
     <string name="no_phone_book_integration_due_to_permissions">Níl aon chomhtháthú uimhir theileafóin mar gheall ar cheadanna in easnamh</string>
+    <string name="notification_all_messages">Gach teachtaireacht</string>
+    <string name="notification_mention_only">\@-luaite amháin</string>
+    <string name="notification_off">as</string>
+    <string name="notifications_default_description">Lean socruithe comhrá</string>
     <string name="oneHour">1 uair</string>
     <string name="online">Ar líne</string>
     <string name="online_status">Stádas ar líne</string>
@@ -657,6 +665,7 @@
     <string name="this_is_a_test_message">Is teachtaireacht tástála é seo</string>
     <string name="this_weekend">An deireadh seachtaine seo</string>
     <string name="thread_cancel">Cealaigh cruthú snáithe</string>
+    <string name="thread_notifications">Fógraí snáithe</string>
     <string name="thread_reply">Freagra</string>
     <string name="thread_title">Teideal an snáithe</string>
     <string name="today">Inniu</string>

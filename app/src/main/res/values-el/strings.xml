@@ -9,6 +9,7 @@
     <string name="audio_output_speaker">Μεγάφωνο</string>
     <string name="avatar">Εικόνα προφίλ</string>
     <string name="away">Λείπω</string>
+    <string name="busy">Απασχολημένος</string>
     <string name="calendar">Ημερολόγιο</string>
     <string name="choose_avatar_from_cloud">Επιλογή εικόνας προφίλ από το cloud</string>
     <string name="clear_status_message">Εκκαθάριση μηνύματος κατάστασης</string>
@@ -344,6 +345,7 @@
     <string name="nc_yes">Ναι</string>
     <string name="next_week">Επόμενη εβδομάδα</string>
     <string name="no_phone_book_integration_due_to_permissions">Δεν υπάρχει ενσωμάτωση αριθμού τηλεφώνου λόγω έλλειψης δικαιωμάτων</string>
+    <string name="notification_off">Απενεργοποιημένο</string>
     <string name="oneHour">1 ώρα</string>
     <string name="online">Σε σύνδεση</string>
     <string name="online_status">Κατάσταση σε σύνδεση</string>

@@ -3,6 +3,7 @@
     <string name= "nc_edit">Modifica</string>
     <string name="add_participants">Aggiungi</string>
     <string name="appbar_search_in">Cerca in %s</string>
+    <string name="appear_offline">Appari non in linea</string>
     <string name="archived">Archiviati</string>
     <string name="archived_conversation">Archiviato %1$s</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
@@ -13,6 +14,7 @@
     <string name="automatic_status_set">Stato impostato automaticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Assente</string>
+    <string name="busy">Occupato</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opzioni avanzate per le chiamate</string>
     <string name="call_without_notification">Chiama senza notifica</string>
@@ -36,6 +38,7 @@
     <string name="encrypted">Cifrato</string>
     <string name="error_loading_chats">Si è verificato un problema durante il caricamento delle tue chat</string>
     <string name="failed_to_save">Salvataggio di %1$s fallito</string>
+    <string name="fifteenMinutes">15 minuti</string>
     <string name="file_list_folder">cartella</string>
     <string name="file_list_loading">Caricamento …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -378,6 +381,8 @@
     <string name="nc_yes">Sì</string>
     <string name="next_week">Settimana successiva</string>
     <string name="no_phone_book_integration_due_to_permissions">Nessuna integrazione del numero di telefono a causa di autorizzazioni mancanti</string>
+    <string name="notification_off">Spento</string>
+    <string name="notifications_default">Predefinito</string>
     <string name="oneHour">1 ora</string>
     <string name="online">In linea</string>
     <string name="online_status">Stato in linea</string>

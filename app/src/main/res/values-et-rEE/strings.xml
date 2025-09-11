@@ -5,6 +5,7 @@
     <string name="add_to_notes">Lisa Märkmetesse</string>
     <string name="added_to_favorites">„%1$s“ vestlus on märgitud lemmikuks</string>
     <string name="appbar_search_in">Otsi siin: %s</string>
+    <string name="appear_offline">Sellega paistad olema võrgust väljas</string>
     <string name="archive_conversation">Arhiveeri vestlus</string>
     <string name="archive_hint">Kui vestlus on arhiveeritud, siis on ta vaikimisi peidetud. Saad neid leida, kui kasutad filtrivalikut „Arhiveeritud“. Otsemainimiste teave liigub sellele vaatamata.</string>
     <string name="archived">Arhiveeritud</string>
@@ -22,6 +23,7 @@
     <string name="ban">Sea suhtluskeeld</string>
     <string name="ban_participant">Sea osalejale suhtluskeeld</string>
     <string name="bans_list">Suhtluskeelu saanute loend</string>
+    <string name="busy">Hõivatud</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Kõne lisavalikud</string>
     <string name="call_running_since_one_hour">Kõne on kestnud üle tunni.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Sinu vestluste laadimisel tekkis viga</string>
     <string name="error_unbanning">Osaleja suhtluskeelu eemaldamisel tekkis viga</string>
     <string name="failed_to_save">„%1$s“ salvestamine ei õnnestunud</string>
+    <string name="fifteenMinutes">15 minutit</string>
     <string name="file_list_folder">kaust</string>
     <string name="file_list_loading">Laadimisel...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Otsimiseks alusta kirjutamist…</string>
     <string name="message_search_hint">Otsi…</string>
     <string name="messages">Sõnumid</string>
+    <string name="mute_all_notifications">Sellega summutad teavitused</string>
     <string name="nc_Server_account_imported">Valitud kasutajakonto on nüüd imporditud ja saadaval</string>
     <string name="nc_about">Info</string>
     <string name="nc_account_chooser_active_user">Aktiivne kasutaja</string>
@@ -549,6 +553,9 @@
     <string name="no_conversations_archived">Arhiveeritud vestlusi pole</string>
     <string name="no_offline_messages_saved">Ühtegi vallasrežiimis salvestatud sõnumit ei leidu</string>
     <string name="no_phone_book_integration_due_to_permissions">Telefoninumbrite lõiming ei toimi puuduvate õiguste tõttu</string>
+    <string name="notification_all_messages">Kõik sõnumid</string>
+    <string name="notification_off">Pole kasutusel</string>
+    <string name="notifications_default_description">Järgi vestluse seadistusi</string>
     <string name="oneHour">1 tund</string>
     <string name="online">Online</string>
     <string name="online_status">Võrgus staatus</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">See on testsõnum</string>
     <string name="this_weekend">See nädalavahetus</string>
     <string name="thread_cancel">Katkesta jutulõnga koostamine</string>
+    <string name="thread_notifications">Jutulõngade teavitused</string>
     <string name="thread_reply">Vasta</string>
     <string name="thread_title">Jutulõnga pealkiri</string>
     <string name="today">Täna</string>

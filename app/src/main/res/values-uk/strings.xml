@@ -5,6 +5,7 @@
     <string name="add_to_notes">Додати до нотаток</string>
     <string name="added_to_favorites">Додано розмову %1$s до обраного</string>
     <string name="appbar_search_in">Пошук у %s</string>
+    <string name="appear_offline">Перебуваю поза мережею</string>
     <string name="archive_conversation">Архівна розмова</string>
     <string name="archive_hint">Після архівування розмова буде прихована за замовчуванням. Виберіть фільтр «Архів» для перегляду архівних розмов. Прямі згадки все одно будуть надходити.</string>
     <string name="archived">Заархівовані</string>
@@ -22,6 +23,7 @@
     <string name="ban">Заборона</string>
     <string name="ban_participant">Забанити учасника</string>
     <string name="bans_list">Список заборон</string>
+    <string name="busy">Зайнято</string>
     <string name="calendar">Календар</string>
     <string name="call_more_actions_dialog_headline">Розширені опції дзвінка</string>
     <string name="call_running_since_one_hour">Дзвінок триває вже годину.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Виникла проблема під час завантаження ваших чатів</string>
     <string name="error_unbanning">Виникла помилка при знятті бану з учасника</string>
     <string name="failed_to_save">Не вдалося зберегти %1$s</string>
+    <string name="fifteenMinutes">15 хвилин</string>
     <string name="file_list_folder">каталог</string>
     <string name="file_list_loading">Завантаження …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -96,6 +99,7 @@
     <string name="message_search_begin_typing">Що шукаємо?</string>
     <string name="message_search_hint">Пошук …</string>
     <string name="messages">Повідомлення</string>
+    <string name="mute_all_notifications">Вимкнути всі сповіщення</string>
     <string name="nc_Server_account_imported">Обраний обліковий запис імпортовано і він доступний</string>
     <string name="nc_about">Про застосунок</string>
     <string name="nc_account_chooser_active_user">Активний користувач</string>
@@ -544,6 +548,9 @@
     <string name="no_conversations_archived">Розмови не архівуються</string>
     <string name="no_offline_messages_saved">Не збережено жодного офлайн-повідомлення</string>
     <string name="no_phone_book_integration_due_to_permissions">Відсутні дозволи на інтеграцію номера телефону</string>
+    <string name="notification_off">Вимкнено</string>
+    <string name="notifications_default">Типово</string>
+    <string name="notifications_default_description">Слідкувати за налаштуваннями розмови</string>
     <string name="oneHour">1 година</string>
     <string name="online">Онлайн</string>
     <string name="online_status">Статус онлайну</string>

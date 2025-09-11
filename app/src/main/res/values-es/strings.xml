@@ -5,6 +5,7 @@
     <string name="add_to_notes">Añadir a Notas</string>
     <string name="added_to_favorites">Se añadió la conversación %1$s a los favoritos</string>
     <string name="appbar_search_in">Buscar en %s</string>
+    <string name="appear_offline">Aparecer como desconectado</string>
     <string name="archive_conversation">Archivar conversación</string>
     <string name="archive_hint">Una vez que una conversación es archivada, estará escondida por defecto. Seleccione el filtro \"Archivadas\" para ver las conversaciones archivadas. Cualquier mención directa seguirá siendo recibida.</string>
     <string name="archived">Archivada</string>
@@ -22,6 +23,7 @@
     <string name="ban">Bloquear</string>
     <string name="ban_participant">Bloquear participante</string>
     <string name="bans_list">Lista de bloqueados</string>
+    <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
     <string name="call_running_since_one_hour">La llamada ha estado activa por una hora.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Hubo un problema cargando sus chats</string>
     <string name="error_unbanning">Ocurrió un error al desbloquear al participante</string>
     <string name="failed_to_save">Fallo al guardar %1$s</string>
+    <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Cargando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Empiece a escribir para buscar…</string>
     <string name="message_search_hint">Buscar …</string>
     <string name="messages">Mensajes</string>
+    <string name="mute_all_notifications">Silenciar todas las notificaciones</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca de</string>
     <string name="nc_account_chooser_active_user">Activar usuario</string>
@@ -550,6 +554,8 @@
     <string name="no_conversations_archived">No hay conversaciones archivadas</string>
     <string name="no_offline_messages_saved">No hay mensajes fuera de línea guardados</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
+    <string name="notification_off">Apagado</string>
+    <string name="notifications_default_description">Seguir los ajustes de la conversación</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
     <string name="online_status">Estado en línea</string>
@@ -658,6 +664,7 @@
     <string name="this_is_a_test_message">Esto es un mensaje de prueba</string>
     <string name="this_weekend">Este fin de semana</string>
     <string name="thread_cancel">Cancelar la creación del hilo</string>
+    <string name="thread_notifications">Notificaciones para hilos</string>
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título del hilo</string>
     <string name="today">Hoy</string>

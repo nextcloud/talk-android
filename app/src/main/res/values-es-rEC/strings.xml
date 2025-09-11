@@ -3,6 +3,7 @@
     <string name= "nc_edit">Editar</string>
     <string name="add_participants">Guardar</string>
     <string name="appbar_search_in">Compartir en %s</string>
+    <string name="appear_offline">Aparecer como desconectado</string>
     <string name="archived">Archivado</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Salida de audio</string>
@@ -12,6 +13,7 @@
     <string name="automatic_status_set">Tu estado se estableció automáticamente</string>
     <string name="avatar">Avatar</string>
     <string name="away">Ausente</string>
+    <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline">Opciones avanzadas de llamada</string>
     <string name="call_without_notification">Llamar sin notificación</string>
@@ -36,6 +38,7 @@
     <string name="end_call_for_everyone">Finalizar llamada para todos</string>
     <string name="error_loading_chats">Hubo un problema al cargar tus chats</string>
     <string name="failed_to_save">Error al guardar %1$s</string>
+    <string name="fifteenMinutes">15 minutos</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -59,6 +62,7 @@
     <string name="message_search_begin_typing">Comienza a escribir para buscar...</string>
     <string name="message_search_hint">Buscar...</string>
     <string name="messages">Mensajes</string>
+    <string name="mute_all_notifications">Silenciar todas las notificaciones</string>
     <string name="nc_Server_account_imported">La cuenta seleccionada ha sido importada y está disponible</string>
     <string name="nc_about">Acerca</string>
     <string name="nc_account_chooser_active_user">Usuario activo</string>
@@ -398,6 +402,8 @@
     <string name="nc_yes">Sí</string>
     <string name="next_week">Semana siguiente</string>
     <string name="no_phone_book_integration_due_to_permissions">No hay integración de número de teléfono debido a permisos faltantes</string>
+    <string name="notification_all_messages">Todos los mensajes</string>
+    <string name="notification_off">Apagado</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
     <string name="online_status">Estado en línea</string>

@@ -5,6 +5,7 @@
     <string name="add_to_notes">Додај у Белешке</string>
     <string name="added_to_favorites">Разговор %1$s је додат у омиљене</string>
     <string name="appbar_search_in">Тражи у %s</string>
+    <string name="appear_offline">Прикажи као ван мреже</string>
     <string name="archive_conversation">Архивирај разговор</string>
     <string name="archive_hint">Када се разговор архивира, подразумевано ће бити сакривен. Да бисте видели архивиране разговоре, изаберите филтер „Архивирано”. И даље ће се примати директна помињања.</string>
     <string name="archived">Архивирано</string>
@@ -22,6 +23,7 @@
     <string name="ban">Забрана</string>
     <string name="ban_participant">Забрани учесника</string>
     <string name="bans_list">Листа забрањених</string>
+    <string name="busy">Заузет</string>
     <string name="calendar">Календар</string>
     <string name="call_more_actions_dialog_headline">Напредне опције позива</string>
     <string name="call_running_since_one_hour">Позив траје један сат.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Дошло је до проблема приликом учитавања ваших четова</string>
     <string name="error_unbanning">Дошло је до грешке приликом укидања забране за учесника</string>
     <string name="failed_to_save">Није успело чување %1$s</string>
+    <string name="fifteenMinutes">15 минута</string>
     <string name="file_list_folder">фасцикли</string>
     <string name="file_list_loading">Учитавање…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Крените да куцате и претрага почиње ...</string>
     <string name="message_search_hint">Претрага ...</string>
     <string name="messages">Поруке</string>
+    <string name="mute_all_notifications">Искључи сва обавештења</string>
     <string name="nc_Server_account_imported">Одабрани налог је сада увезен и доступан</string>
     <string name="nc_about">О програму</string>
     <string name="nc_account_chooser_active_user">Активни корисник</string>
@@ -549,6 +553,9 @@
     <string name="no_conversations_archived">Нема архивираних разговора</string>
     <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
+    <string name="notification_off">Искључено</string>
+    <string name="notifications_default">Подразумевано</string>
+    <string name="notifications_default_description">Прати подешавања разговора</string>
     <string name="oneHour">1 сат</string>
     <string name="online">На мрежи</string>
     <string name="online_status">Мрежни статус</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">Ово је тест порука</string>
     <string name="this_weekend">Овог викенда</string>
     <string name="thread_cancel">Откажи креирање нити</string>
+    <string name="thread_notifications">Обавештења низова</string>
     <string name="thread_reply">Одговори</string>
     <string name="thread_title">Наслов нити</string>
     <string name="today">Данас</string>

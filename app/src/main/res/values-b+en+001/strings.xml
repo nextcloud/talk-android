@@ -5,6 +5,7 @@
     <string name="add_to_notes">Add to Notes</string>
     <string name="added_to_favorites">Added conversation %1$s to favourites</string>
     <string name="appbar_search_in">Search in %s</string>
+    <string name="appear_offline">Appear offline</string>
     <string name="archive_conversation">Archive conversation</string>
     <string name="archive_hint">Once a conversation is archived, it will be hidden by default. Select the filter \"Archived\" to view archived conversations. Direct mentions will still be received.</string>
     <string name="archived">Archived</string>
@@ -22,6 +23,7 @@
     <string name="ban">Ban</string>
     <string name="ban_participant">Ban participant</string>
     <string name="bans_list">Bans list</string>
+    <string name="busy">Busy</string>
     <string name="calendar">Calendar</string>
     <string name="call_more_actions_dialog_headline">Advanced call options</string>
     <string name="call_running_since_one_hour">Note: the call has been going on for an hour already.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">There was a problem loading your chats</string>
     <string name="error_unbanning">Error occurred when unbanning participant</string>
     <string name="failed_to_save">Failed to save %1$s</string>
+    <string name="fifteenMinutes">15 minutes</string>
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -101,6 +104,7 @@
     <string name="message_search_begin_typing">Start typing to search …</string>
     <string name="message_search_hint">Search …</string>
     <string name="messages">Messages</string>
+    <string name="mute_all_notifications">Mute all notifications</string>
     <string name="nc_Server_account_imported">Selected account is now imported and available</string>
     <string name="nc_about">About</string>
     <string name="nc_account_chooser_active_user">Active user</string>
@@ -549,6 +553,9 @@
     <string name="no_conversations_archived">No archived conversations</string>
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
+    <string name="notification_all_messages">All messages</string>
+    <string name="notification_off">Off</string>
+    <string name="notifications_default_description">Follow conversation settings</string>
     <string name="oneHour">1 hour</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">This is a test message</string>
     <string name="this_weekend">This weekend</string>
     <string name="thread_cancel">Cancel thread creation</string>
+    <string name="thread_notifications">Thread notifications</string>
     <string name="thread_reply">Reply</string>
     <string name="thread_title">Thread title</string>
     <string name="today">Today</string>

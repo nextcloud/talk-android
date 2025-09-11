@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name= "nc_edit">Rediger</string>
+    <string name= "nc_edit">Redigér</string>
     <string name="add_participants">Tilføj</string>
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
@@ -21,6 +21,7 @@
     <string name="ban">Bloker</string>
     <string name="ban_participant">Bloker deltager</string>
     <string name="bans_list">Liste over blokerede</string>
+    <string name="busy">Optaget</string>
     <string name="calendar">Kalender</string>
     <string name="call_more_actions_dialog_headline">Avancerede opkaldsmuligheder</string>
     <string name="call_running_since_one_hour">Opkaldet har været igang i en time.</string>
@@ -47,7 +48,7 @@
     <string name="deleted_conversation">Slettede samtale %1$s</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
-    <string name="edit">Rediger</string>
+    <string name="edit">Redigér</string>
     <string name="emoji_category_recent">Nylige</string>
     <string name="encrypted">Krypteret</string>
     <string name="end_call_for_everyone">Afslut opkald for alle</string>
@@ -217,7 +218,7 @@
     <string name="nc_dialog_maintenance_mode_description">Server er aktuelt i vedligeholdelsestilstand.</string>
     <string name="nc_dialog_outdated_client">App\'en er forældet is outdated</string>
     <string name="nc_dialog_outdated_client_description">Denne app er for gammel og understøttes ikke længere af denne server. Opdater venligst.</string>
-    <string name="nc_dialog_outdated_client_option_update">Opdater</string>
+    <string name="nc_dialog_outdated_client_option_update">Opdatér</string>
     <string name="nc_dialog_reauth_or_delete">Ønsker du at genautorisere eller slette denne konto?</string>
     <string name="nc_dialog_save_to_storage_content">Hvis du gemmer dette medie i dit lager, så vil enhver anden app på dit apparat kunne tilgå det.</string>
     <string name="nc_dialog_save_to_storage_continue">Fortsæt?</string>
@@ -227,7 +228,7 @@
     <string name="nc_display_name_not_fetched">Display navn kunne ikke hentes, afbrydes</string>
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_edit_icon">Redigér</string>
-    <string name="nc_edit_message">Rediger</string>
+    <string name="nc_edit_message">Redigér</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
     <string name="nc_expire_message_eight_hours">8 timer</string>
     <string name="nc_expire_message_four_weeks">4 uger</string>
@@ -502,6 +503,7 @@
     <string name="next_week">Næste uge</string>
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegration på grund af manglende rettigheder</string>
+    <string name="notification_off">Deaktiver</string>
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
@@ -510,7 +512,7 @@
     <string name="play_pause_voice_message">Afspil/pauser stemmebesked</string>
     <string name="playback_speed_control">Afspilningshastighedskontrol</string>
     <string name="polls_add_option">Tilføj valg</string>
-    <string name="polls_edit_vote">Rediger stemme</string>
+    <string name="polls_edit_vote">Redigér stemme</string>
     <string name="polls_end_poll">Afslut afstemning</string>
     <string name="polls_end_poll_confirm">Ønsker du virkelig at afslutte denne afstemning? Dette kan ikke fortrydes.</string>
     <string name="polls_max_votes_reached">Du kan ikke stemme med flere muligheder i denne afstemning.</string>

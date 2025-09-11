@@ -5,6 +5,7 @@
     <string name="add_to_notes">Notlar uygulamasına ekle</string>
     <string name="added_to_favorites">%1$s görüşmesi sık kullanılara eklendi</string>
     <string name="appbar_search_in">%s içinde ara</string>
+    <string name="appear_offline">Çevrim dışı görün</string>
     <string name="archive_conversation">Görüşmeyi arşivle</string>
     <string name="archive_hint">Bir görüşme arşivlendiğinde, varsayılan olarak gizlenir. Arşivlenmiş görüşmeleri görüntülemek için \"Arşivlenmiş\" süzgecini seçin. Doğrudan anmalar yine de alınır.</string>
     <string name="archived">Arşivlenmiş</string>
@@ -22,6 +23,7 @@
     <string name="ban">Yasakla</string>
     <string name="ban_participant">Katılımcıyı yasakla</string>
     <string name="bans_list">Yasaklama listesi</string>
+    <string name="busy">Meşgul</string>
     <string name="calendar">Takvim</string>
     <string name="call_more_actions_dialog_headline">Gelişmiş çağrı seçenekleri</string>
     <string name="call_running_since_one_hour">Çağrı bir saattir sürüyor.</string>
@@ -61,6 +63,7 @@
     <string name="error_loading_chats">Çizelgeleriniz yüklenirken bir sorun çıktı</string>
     <string name="error_unbanning">Katılımcının yasaklaması kaldırılırken sorun çıktı</string>
     <string name="failed_to_save">%1$s kaydedilemedi</string>
+    <string name="fifteenMinutes">15 dakika</string>
     <string name="file_list_folder">klasör</string>
     <string name="file_list_loading">Yükleniyor…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -549,6 +552,10 @@
     <string name="no_conversations_archived">Arşivlenmiş bir görüşme yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
+    <string name="notification_mention_only">Yalnızca @-anmaları</string>
+    <string name="notification_off">Kapalı</string>
+    <string name="notifications_default">Varsayılan</string>
+    <string name="notifications_default_description">Görüşme ayarları kullanılsın</string>
     <string name="oneHour">1 saat</string>
     <string name="online">Çevrim içi</string>
     <string name="online_status">Çevrim içi durumu</string>
@@ -657,6 +664,7 @@
     <string name="this_is_a_test_message">Bu bir deneme iletisidir</string>
     <string name="this_weekend">Bu hafta sonu</string>
     <string name="thread_cancel">Yazışma başlatmaktan vazgeç</string>
+    <string name="thread_notifications">Yazışma bildirimleri</string>
     <string name="thread_reply">Yanıtla</string>
     <string name="thread_title">Yazışma başlığı</string>
     <string name="today">Bugün</string>
