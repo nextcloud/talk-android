@@ -1574,6 +1574,7 @@ class ChatActivity :
         } while (true && pos >= 0)
     }
 
+    @Suppress("LongMethod")
     private fun initMessageHolders(): MessageHolders {
         val messageHolders = MessageHolders()
         val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, viewThemeUtils)

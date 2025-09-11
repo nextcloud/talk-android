@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.nextcloud.talk.R
 import com.nextcloud.talk.contacts.components.ContactsAppBar
@@ -66,7 +67,7 @@ fun ContactsScreen(contactsViewModel: ContactsViewModel, uiState: ContactsUiStat
             Column(
                 Modifier
                     .background(colorResource(id = R.color.bg_default))
-                    .padding(paddingValues)
+                    .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, paddingValues.calculateBottomPadding())
             ) {
                 if (!isAddParticipants) {
                     ConversationCreationOptions()

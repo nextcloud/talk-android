@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import autodagger.AutoInjector
@@ -128,7 +129,12 @@ class DiagnoseActivity : BaseActivity() {
                         Column(
                             Modifier
                                 .background(backgroundColor)
-                                .padding(paddingValues)
+                                .padding(
+                                    0.dp,
+                                    paddingValues.calculateTopPadding(),
+                                    0.dp,
+                                    paddingValues.calculateBottomPadding()
+                                )
                                 .fillMaxSize()
                         ) {
                             DiagnoseContentComposable(

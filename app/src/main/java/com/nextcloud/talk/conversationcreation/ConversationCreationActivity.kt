@@ -197,7 +197,7 @@ fun ConversationCreationScreen(
             Column(
                 modifier = Modifier
                     .background(colorResource(id = R.color.bg_default))
-                    .padding(paddingValues)
+                    .padding(0.dp, paddingValues.calculateTopPadding(), 0.dp, paddingValues.calculateBottomPadding())
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
             ) {
