@@ -10,8 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import coil.load
+import com.nextcloud.talk.R
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReferenceInsideMessageBinding
@@ -74,12 +76,18 @@ class LinkPreview {
                             }
 
                             val referenceThumbUrl = reference.openGraphObject?.thumb
+                            var backgroundId = R.drawable.link_text_background
                             if (!referenceThumbUrl.isNullOrEmpty()) {
                                 binding.referenceThumbImage.visibility = View.VISIBLE
                                 binding.referenceThumbImage.load(referenceThumbUrl)
                             } else {
+                                backgroundId = R.drawable.link_text_no_preview_background
                                 binding.referenceThumbImage.visibility = View.GONE
                             }
+                            binding.referenceMetadataContainer.background = ContextCompat.getDrawable(
+                                binding.referenceMetadataContainer.context,
+                                backgroundId
+                            )
 
                             binding.referenceWrapper.setOnClickListener {
                                 val browserIntent = Intent(Intent.ACTION_VIEW, referenceLink!!.toUri())
@@ -95,7 +103,6 @@ class LinkPreview {
                         binding.referenceDescription.visibility = View.GONE
                         binding.referenceLink.visibility = View.GONE
                         binding.referenceThumbImage.visibility = View.GONE
-                        binding.referenceIndentedSideBar.visibility = View.GONE
                     }
 
                     override fun onComplete() {
