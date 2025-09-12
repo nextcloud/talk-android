@@ -11,6 +11,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
@@ -18,6 +19,9 @@ import com.nextcloud.talk.invitation.data.InvitationsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
+import com.nextcloud.talk.utils.SpreedFeatures
+import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,6 +32,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class ConversationsListViewModel @Inject constructor(
@@ -39,6 +44,9 @@ class ConversationsListViewModel @Inject constructor(
 
     @Inject
     lateinit var invitationsRepository: InvitationsRepository
+
+    @Inject
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     // @Inject
     // lateinit var currentUserProvider: CurrentUserProviderNew
@@ -110,17 +118,72 @@ class ConversationsListViewModel @Inject constructor(
     }
 
     fun checkIfThreadsExist() {
-        val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
-            version = 1,
-            baseUrl = currentUser.baseUrl
-        )
+        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
 
-        viewModelScope.launch {
-            try {
-                val threads = threadsRepository.getThreads(credentials, threadsUrl, 1)
-                _threadsExistState.value = ThreadsExistUiState.Success(threads.ocs?.data?.isNotEmpty())
-            } catch (exception: Exception) {
-                _threadsExistState.value = ThreadsExistUiState.Error(exception)
+        fun isLastCheckTooOld(lastCheckDate: Long): Boolean {
+            val currentTimeMillis = System.currentTimeMillis()
+            val differenceMillis = currentTimeMillis - lastCheckDate
+            val checkIntervalInMillies = TimeUnit.HOURS.toMillis(2)
+            return differenceMillis > checkIntervalInMillies
+        }
+
+        fun checkIfFollowedThreadsExist() {
+            val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
+                version = 1,
+                baseUrl = currentUser.baseUrl
+            )
+
+            viewModelScope.launch {
+                try {
+                    val threads = threadsRepository.getThreads(credentials, threadsUrl, 1)
+                    val followedThreadsExistNew = threads.ocs?.data?.isNotEmpty()
+                    _threadsExistState.value = ThreadsExistUiState.Success(followedThreadsExistNew)
+                    val followedThreadsExistLastCheckNew = System.currentTimeMillis()
+                    arbitraryStorageManager.storeStorageSetting(
+                        accountId,
+                        FOLLOWED_THREADS_EXIST_LAST_CHECK,
+                        followedThreadsExistLastCheckNew.toString(),
+                        ""
+                    )
+                    arbitraryStorageManager.storeStorageSetting(
+                        accountId,
+                        FOLLOWED_THREADS_EXIST,
+                        followedThreadsExistNew.toString(),
+                        ""
+                    )
+                } catch (exception: Exception) {
+                    _threadsExistState.value = ThreadsExistUiState.Error(exception)
+                }
+            }
+        }
+
+        if (!hasSpreedFeatureCapability(currentUser.capabilities!!.spreedCapability!!, SpreedFeatures.THREADS)) {
+            _threadsExistState.value = ThreadsExistUiState.Success(false)
+            return
+        }
+
+        val followedThreadsExistOld = arbitraryStorageManager.getStorageSetting(
+            accountId,
+            FOLLOWED_THREADS_EXIST,
+            ""
+        ).blockingGet()?.value?.toBoolean() ?: false
+
+        val followedThreadsExistLastCheckOld = arbitraryStorageManager.getStorageSetting(
+            accountId,
+            FOLLOWED_THREADS_EXIST_LAST_CHECK,
+            ""
+        ).blockingGet()?.value?.toLong()
+
+        if (followedThreadsExistOld) {
+            Log.d(TAG, "followed threads exist for this user. No need to check again.")
+            _threadsExistState.value = ThreadsExistUiState.Success(true)
+        } else {
+            if (followedThreadsExistLastCheckOld == null || isLastCheckTooOld(followedThreadsExistLastCheckOld)) {
+                Log.d(TAG, "check if followed threads exist never happened or is too old. Checking now...")
+                checkIfFollowedThreadsExist()
+            } else {
+                _threadsExistState.value = ThreadsExistUiState.Success(false)
+                Log.d(TAG, "already checked in the last 2 hours if followed threads exist. Skip check.")
             }
         }
     }
@@ -160,5 +223,7 @@ class ConversationsListViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationsListViewModel::class.simpleName
+        private const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
+        private const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
     }
 }

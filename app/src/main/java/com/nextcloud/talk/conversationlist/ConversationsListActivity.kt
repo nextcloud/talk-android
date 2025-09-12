@@ -277,7 +277,7 @@ class ConversationsListActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
-        checkThreadsExistence()
+        conversationsListViewModel.checkIfThreadsExist()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -2235,12 +2235,6 @@ class ConversationsListActivity :
                     ColorRole.ON_SURFACE
                 )
             }
-        }
-    }
-
-    fun checkThreadsExistence() {
-        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.THREADS)) {
-            conversationsListViewModel.checkIfThreadsExist()
         }
     }
 
