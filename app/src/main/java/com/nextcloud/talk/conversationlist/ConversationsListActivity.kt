@@ -111,6 +111,7 @@ import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.settings.SettingsActivity
+import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
@@ -343,6 +344,7 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
+        conversationsListViewModel.checkIfThreadsExist()
     }
 
     override fun onPause() {
@@ -425,6 +427,23 @@ class ConversationsListActivity :
                 }
 
                 else -> {}
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.threadsExistState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.ThreadsExistUiState.Success -> {
+                        binding.threadsButton.visibility = if (state.threadsExistence == true) {
+                            View.VISIBLE
+                        } else {
+                            View.GONE
+                        }
+                    }
+                    else -> {
+                        binding.threadsButton.visibility = View.GONE
+                    }
+                }
             }
         }
 
@@ -1303,6 +1322,13 @@ class ConversationsListActivity :
         binding.filterConversationsButton.setOnClickListener {
             val newFragment = FilterConversationFragment.newInstance(filterState)
             newFragment.show(supportFragmentManager, FilterConversationFragment.TAG)
+        }
+
+        binding.threadsButton.setOnClickListener {
+            openFollowedThreadsOverview()
+        }
+        binding.threadsButton.let {
+            viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE)
         }
 
         binding.newMentionPopupBubble.visibility = View.GONE
@@ -2210,6 +2236,20 @@ class ConversationsListActivity :
                 )
             }
         }
+    }
+
+    fun openFollowedThreadsOverview() {
+        val threadsUrl = ApiUtils.getUrlForSubscribedThreads(
+            version = 1,
+            baseUrl = currentUser!!.baseUrl
+        )
+
+        val bundle = Bundle()
+        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.followed_threads))
+        bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
+        val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
+        threadsOverviewIntent.putExtras(bundle)
+        startActivity(threadsOverviewIntent)
     }
 
     companion object {

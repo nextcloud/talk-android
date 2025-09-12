@@ -290,7 +290,11 @@ interface NcApiCoroutines {
     suspend fun unbindRoom(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @GET
-    suspend fun getThreads(@Header("Authorization") authorization: String, @Url url: String): ThreadsOverall
+    suspend fun getThreads(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Query("limit") limit: Int?
+    ): ThreadsOverall
 
     @GET
     suspend fun getThread(@Header("Authorization") authorization: String, @Url url: String): ThreadOverall

@@ -108,8 +108,22 @@
                     android:src="@drawable/ic_baseline_filter_list_24"
                     app:layout_constraintBaseline_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/rightContainer"
+                    app:layout_constraintEnd_toStartOf="@+id/threads_button"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/threads_button"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/followed_threads"
+                    android:padding="12dp"
+                    android:src="@drawable/outline_forum_24"
+                    android:visibility="gone"
+                    app:layout_constraintBaseline_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/rightContainer"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:visibility="visible"/>
 
                 <FrameLayout
                     android:id="@+id/rightContainer"

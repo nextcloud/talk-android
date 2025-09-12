@@ -18,6 +18,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.io.AudioFocusRequestManager
 import com.nextcloud.talk.chat.data.io.MediaPlayerManager
@@ -25,6 +26,7 @@ import com.nextcloud.talk.chat.data.io.MediaRecorderManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
+import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -45,6 +47,7 @@ import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.utils.ParticipantPermissions
+import com.nextcloud.talk.utils.UserIdUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import com.nextcloud.talk.utils.preferences.AppPreferences
@@ -80,6 +83,9 @@ class ChatViewModel @Inject constructor(
     private val userProvider: CurrentUserProviderNew
 ) : ViewModel(),
     DefaultLifecycleObserver {
+
+    @Inject
+    lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
     enum class LifeCycleFlag {
         PAUSED,
@@ -459,11 +465,26 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "MagicNumber")
     fun setThreadNotificationLevel(credentials: String, url: String, level: Int) {
+        fun updateFollowedThreadsIndicator(notificationLevel: Int?) {
+            when (notificationLevel) {
+                1, 2 -> {
+                    val accountId = UserIdUtils.getIdForUser(userProvider.currentUser.blockingGet())
+                    arbitraryStorageManager.storeStorageSetting(
+                        accountId,
+                        FOLLOWED_THREADS_EXIST,
+                        true.toString(),
+                        ""
+                    )
+                }
+            }
+        }
+
         viewModelScope.launch {
             try {
                 val thread = threadsRepository.setThreadNotificationLevel(credentials, url, level)
+                updateFollowedThreadsIndicator(thread.ocs?.data?.attendee?.notificationLevel)
                 _threadRetrieveState.value = ThreadRetrieveUiState.Success(thread.ocs?.data)
             } catch (exception: Exception) {
                 _threadRetrieveState.value = ThreadRetrieveUiState.Error(exception)

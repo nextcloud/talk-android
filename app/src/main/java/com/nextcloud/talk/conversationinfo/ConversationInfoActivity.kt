@@ -603,8 +603,16 @@ class ConversationInfoActivity :
     }
 
     fun openThreadsOverview() {
+        val threadsUrl = ApiUtils.getUrlForRecentThreads(
+            version = 1,
+            baseUrl = conversationUser.baseUrl,
+            token = conversationToken
+        )
+
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, conversationToken)
+        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.recent_threads))
+        bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)
         startActivity(threadsOverviewIntent)

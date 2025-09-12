@@ -12,7 +12,7 @@ import com.nextcloud.talk.models.json.threads.ThreadsOverall
 
 interface ThreadsRepository {
 
-    suspend fun getThreads(credentials: String, url: String): ThreadsOverall
+    suspend fun getThreads(credentials: String, url: String, limit: Int?): ThreadsOverall
 
     suspend fun getThread(credentials: String, url: String): ThreadOverall
 
