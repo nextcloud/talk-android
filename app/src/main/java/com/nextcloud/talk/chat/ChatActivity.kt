@@ -484,18 +484,20 @@ class ChatActivity :
         setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.chat_container)) { view, insets ->
-                val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+            ViewCompat.setOnApplyWindowInsetsListener(binding.chatContainer) { view, insets ->
+                val systemBarInsets = insets.getInsets(
+                    WindowInsetsCompat.Type.systemBars() or
+                        WindowInsetsCompat.Type.displayCutout()
+                )
                 val imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime())
 
                 val isKeyboardVisible = insets.isVisible(WindowInsetsCompat.Type.ime())
-                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else navBarInsets.bottom
+                val bottomPadding = if (isKeyboardVisible) imeInsets.bottom else systemBarInsets.bottom
 
                 view.setPadding(
-                    view.paddingLeft,
-                    statusBarInsets.top,
-                    view.paddingRight,
+                    systemBarInsets.left,
+                    systemBarInsets.top,
+                    systemBarInsets.right,
                     bottomPadding
                 )
                 WindowInsetsCompat.CONSUMED
@@ -1572,6 +1574,7 @@ class ChatActivity :
         } while (true && pos >= 0)
     }
 
+    @Suppress("LongMethod")
     private fun initMessageHolders(): MessageHolders {
         val messageHolders = MessageHolders()
         val profileBottomSheet = ProfileBottomSheet(ncApi, conversationUser!!, viewThemeUtils)
