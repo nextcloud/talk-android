@@ -513,8 +513,9 @@
     <string name="next_week">Semana seguinte</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
-    <string name="notification_mention_only">Só as mencións con @</string>
+    <string name="notification_mention_only">Só as mencións con \@</string>
     <string name="notification_off">Apagado</string>
+    <string name="notifications_default">Predeterminado</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En liña</string>
     <string name="online_status">Estado en liña</string>

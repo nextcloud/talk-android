@@ -554,6 +554,8 @@
     <string name="no_conversations_archived">No hay conversaciones archivadas</string>
     <string name="no_offline_messages_saved">No hay mensajes fuera de línea guardados</string>
     <string name="no_phone_book_integration_due_to_permissions">No hubo integración de la agenda telefónica debido a la falta de permisos</string>
+    <string name="notification_all_messages">Todos los mensajes</string>
+    <string name="notification_mention_only">Solo las menciones con @</string>
     <string name="notification_off">Apagado</string>
     <string name="notifications_default">Predeterminado</string>
     <string name="notifications_default_description">Seguir los ajustes de la conversación</string>

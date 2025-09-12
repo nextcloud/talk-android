@@ -507,7 +507,7 @@
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegration på grund af manglende rettigheder</string>
     <string name="notification_mention_only">Kun omtalt med @</string>
-    <string name="notification_off">Deaktiver</string>
+    <string name="notification_off">Deaktivér</string>
     <string name="notifications_default">Standard</string>
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>

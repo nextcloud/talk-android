@@ -553,6 +553,8 @@
     <string name="no_conversations_archived">Keine archivierten Unterhaltungen</string>
     <string name="no_offline_messages_saved">Keine Offlinenachrichten gespeichert</string>
     <string name="no_phone_book_integration_due_to_permissions">Keine Rufnummernintegration aufgrund fehlender Berechtigungen</string>
+    <string name="notification_all_messages">Alle Nachrichten</string>
+    <string name="notification_mention_only">Nur @-Erwähnungen</string>
     <string name="notification_off">Aus</string>
     <string name="notifications_default">Standard</string>
     <string name="notifications_default_description">Unterhaltungseinstellungen folgen</string>
@@ -664,7 +666,7 @@
     <string name="this_is_a_test_message">Dies ist eine Testnachricht</string>
     <string name="this_weekend">Dieses Wochenende</string>
     <string name="thread_cancel">Themenerstellung abbrechen</string>
-    <string name="thread_notifications">Thread-Benachrichtigungen</string>
+    <string name="thread_notifications">Themen-Benachrichtigungen</string>
     <string name="thread_reply">Antwort</string>
     <string name="thread_title">Thementitel</string>
     <string name="today">Heute</string>
