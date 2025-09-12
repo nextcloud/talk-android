@@ -8,10 +8,20 @@
 package com.nextcloud.talk.camera
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Matrix
+import android.os.SystemClock
 import android.util.Log
+import androidx.core.graphics.createBitmap
+import org.opencv.android.Utils
+import org.opencv.core.Mat
+import org.opencv.core.Size
+import org.opencv.imgproc.Imgproc
 import org.webrtc.VideoFrame
 import org.webrtc.VideoProcessor
 import org.webrtc.VideoSink
+import java.nio.Buffer
+import java.nio.ByteBuffer
 
 class CameraFrameProcessor(
     val context: Context,
@@ -24,6 +34,7 @@ class CameraFrameProcessor(
 
     private var sink: VideoSink? = null
     private var segmenterHelper: ImageSegmenterHelper? = null
+    private val frameQueue = ArrayDeque<Bitmap>()
 
     // SegmentationListener Interface
 
@@ -32,19 +43,65 @@ class CameraFrameProcessor(
     }
 
     override fun onResults(resultBundle: ImageSegmenterHelper.ResultBundle) {
-        // NOTE- selfie segmentation model returns 0 for background, 1 for foreground, useful for optimizing blur
-        //  A single frame can have millions of pixels, I want this to be ran on the GPU
-        //  ideally If I can find a built in android native blurring api, else I might have to use openCV which is a
-        //  bit overkill.
+        // NOTE- selfie segmentation model returns a binary "matrix" of 0 for background, 1 for foreground.
 
-        // TODO - either renderscript for openGL fragment shader could work here
-        //  openGL is better, but renderscript is more maintainable for future devs.
-        //  however, openGL is more relevant to my studies, which could be helpful
-        //  it avoids the over head of copying the bitmap twice which is costly
-        //  as opposed to web which takes advantage of the desktops superior hardware
+        val maskBitmap: Bitmap = resultBundle.mask
+        val frameBitmap: Bitmap = frameQueue.removeFirst()
 
+        val frameMat = Mat()
+        val blurredMat = Mat()
+        val maskMat = Mat()
+        val grayMaskMat = Mat()
 
-        // sink?.onFrame(resultBundle.results as VideoFrame)
+        try {
+            Utils.bitmapToMat(frameBitmap, frameMat)
+            Utils.bitmapToMat(maskBitmap, maskMat)
+
+            Imgproc.cvtColor(
+                maskMat,
+                grayMaskMat,
+                Imgproc.COLOR_RGBA2GRAY  // single-channel (grayscale) for OpenCV functions.
+            )
+
+            val blurredMat = frameMat.clone()
+            Imgproc.GaussianBlur(
+                blurredMat,
+                blurredMat,
+                Size(7.0, 7.0),
+                0.0,
+                0.0
+            )
+
+            // Copies pixels from `frameMat` to `blurredMat` ONLY where `grayMaskMat` is non-zero.
+            // This keeps the background blurred, while leaving the foreground clear
+            frameMat.copyTo(blurredMat, grayMaskMat)
+
+            val finalFrameBitmap = createBitmap(
+                frameBitmap.width,
+                frameBitmap.height,
+                Bitmap.Config.ARGB_8888
+            )
+
+            Utils.matToBitmap(blurredMat, finalFrameBitmap)
+
+            val finalFrameBuffer = ByteBuffer.allocate(finalFrameBitmap.allocationByteCount)
+            finalFrameBitmap.copyPixelsToBuffer(finalFrameBuffer)
+
+            val timeStamp = SystemClock.elapsedRealtimeNanos()
+
+            // FIXME - I'm worried about the rotation aspect. I don't get it, and I don't want it to mess up processing
+            val finalFrame = VideoFrame(finalFrameBuffer as VideoFrame.Buffer, 0, timeStamp)
+
+            sink?.onFrame(finalFrame)
+
+            finalFrame.release()
+
+        } finally {
+            frameMat.release()
+            blurredMat.release()
+            maskMat.release()
+            grayMaskMat.release()
+        }
     }
 
     // Video Processor Interface
@@ -57,8 +114,40 @@ class CameraFrameProcessor(
         segmenterHelper?.destroyImageSegmenter()
     }
 
-    override fun onFrameCaptured(frame: VideoFrame) {
-        segmenterHelper?.segmentLiveStreamFrame(frame, isFrontFacing)
+    override fun onFrameCaptured(videoFrame: VideoFrame) {
+        val bitmapBuffer = createBitmap(videoFrame.buffer.width, videoFrame.buffer.height)
+        bitmapBuffer.copyPixelsFromBuffer(videoFrame.buffer as Buffer)
+
+        val matrix = Matrix().apply {
+            postRotate(videoFrame.rotation.toFloat())
+
+            if(isFrontFacing) {
+                postScale(
+                    -1f,
+                    1f,
+                    bitmapBuffer.width.toFloat(),
+                    bitmapBuffer.height.toFloat()
+                )
+            }
+        }
+
+        // TODO - should I convert to RBG before submitting?
+        // Imgproc.cvtColor(matrix, matrix, Imgproc.COLOR_YUV2RGB_I420)
+
+        val rotatedBitmap = Bitmap.createBitmap(
+            bitmapBuffer,
+            0,
+            0,
+            bitmapBuffer.width,
+            bitmapBuffer.height,
+            matrix,
+            true
+        )
+
+        frameQueue.add(rotatedBitmap)
+        segmenterHelper?.segmentLiveStreamFrame(rotatedBitmap)
+
+        videoFrame.release()
     }
 
     override fun setSink(sink: VideoSink?) {

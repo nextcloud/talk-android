@@ -9,21 +9,16 @@ package com.nextcloud.talk.camera
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import android.os.SystemClock
 import android.util.Log
-import androidx.core.graphics.createBitmap
+import com.google.mediapipe.framework.image.BitmapExtractor
 import com.google.mediapipe.framework.image.BitmapImageBuilder
-import com.google.mediapipe.framework.image.ByteBufferExtractor
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
-import org.webrtc.VideoFrame
-import java.nio.Buffer
-import java.nio.ByteBuffer
 
 class ImageSegmenterHelper(
     var currentDelegate: Int = DELEGATE_GPU,
@@ -113,7 +108,7 @@ class ImageSegmenterHelper(
      *
      * @throws IllegalArgumentException
      */
-    fun segmentLiveStreamFrame(videoFrame: VideoFrame, isFrontCamera: Boolean) {
+    fun segmentLiveStreamFrame(bitmap: Bitmap) {
         if (runningMode != RunningMode.LIVE_STREAM) {
             throw IllegalArgumentException(
                 "Attempting to call segmentLiveStreamFrame while not using RunningMode.LIVE_STREAM"
@@ -121,40 +116,14 @@ class ImageSegmenterHelper(
         }
 
         val frameTime = SystemClock.uptimeMillis()
-        val bitmapBuffer = createBitmap(videoFrame.buffer.width, videoFrame.buffer.height)
-        bitmapBuffer.copyPixelsFromBuffer(videoFrame.buffer as Buffer)
 
-        // Used for rotating the frame image so it matches our models
-        val matrix = Matrix().apply {
-            postRotate(videoFrame.rotation.toFloat())
-
-            if(isFrontCamera) {
-                postScale(
-                    -1f,
-                    1f,
-                    bitmapBuffer.width.toFloat(),
-                    bitmapBuffer.height.toFloat()
-                )
-            }
-        }
-
-        val rotatedBitmap = Bitmap.createBitmap(
-            bitmapBuffer,
-            0,
-            0,
-            bitmapBuffer.width,
-            bitmapBuffer.height,
-            matrix,
-            true
-        )
-
-        val mpImage = BitmapImageBuilder(rotatedBitmap).build()
+        val mpImage = BitmapImageBuilder(bitmap).build()
 
         imageSegmenter?.segmentAsync(mpImage, frameTime)
     }
 
 
-    // MPImage isn't necessary for this example, but the listener requires it
+    // MPImage isn't necessary, but the listener requires it
     private fun returnSegmentationResult(
         result: ImageSegmenterResult, image: MPImage
     ) {
@@ -168,9 +137,7 @@ class ImageSegmenterHelper(
 
         imageSegmenterListener?.onResults(
             ResultBundle(
-                ByteBufferExtractor.extract(mpImage),
-                mpImage.width,
-                mpImage.height,
+                BitmapExtractor.extract(mpImage),
                 inferenceTime
             )
         )
@@ -185,9 +152,7 @@ class ImageSegmenterHelper(
 
     // Wraps results from inference, the time it takes for inference to be performed.
     data class ResultBundle(
-        val results: ByteBuffer,
-        val width: Int,
-        val height: Int,
+        val mask: Bitmap,
         val inferenceTime: Long,
     )
 

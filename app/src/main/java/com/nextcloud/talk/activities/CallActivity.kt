@@ -75,6 +75,7 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.camera.CameraFrameProcessor
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -210,6 +211,7 @@ class CallActivity : CallBaseActivity() {
     var audioManager: WebRtcAudioManager? = null
     var callRecordingViewModel: CallRecordingViewModel? = null
     var raiseHandViewModel: RaiseHandViewModel? = null
+    // TODO need to implement my own viewmodel for background blur
     private var mReceiver: BroadcastReceiver? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
     private var audioConstraints: MediaConstraints? = null
@@ -1107,7 +1109,12 @@ class CallActivity : CallBaseActivity() {
             )
             videoSource = peerConnectionFactory!!.createVideoSource(false)
 
-            // TODO implement a FrameProcessor, attach to videoSource
+            // TODO make this an option that depends on a user setting at run time
+            //  because of hardware demands, this should not be enabled by default
+            val processor = createCameraProcessor(cameraEnumerator)
+            processor?.let {
+                videoSource?.setVideoProcessor(it)
+            }
 
             videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource!!.capturerObserver)
         }
@@ -1186,6 +1193,26 @@ class CallActivity : CallBaseActivity() {
                 }
             }
         }
+        return null
+    }
+
+    private fun createCameraProcessor(enumerator: CameraEnumerator?): CameraFrameProcessor? {
+        val deviceNames = enumerator!!.deviceNames
+
+        // First, try to find front facing camera
+        for (deviceName in deviceNames) {
+            if (enumerator.isFrontFacing(deviceName)) {
+                return CameraFrameProcessor(context, true)
+            }
+        }
+
+        // Front facing camera not found, try something else
+        for (deviceName in deviceNames) {
+            if (!enumerator.isFrontFacing(deviceName)) {
+                return CameraFrameProcessor(context, false)
+            }
+        }
+
         return null
     }
 

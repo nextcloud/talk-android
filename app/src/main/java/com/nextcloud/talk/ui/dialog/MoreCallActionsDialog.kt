@@ -86,6 +86,10 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         binding.raiseHand.setOnClickListener {
             callActivity.clickRaiseOrLowerHandButton()
         }
+
+        binding.backgroundBlur.setOnClickListener {
+            // TODO implement
+        }
     }
 
     private fun initEmojiBar() {
