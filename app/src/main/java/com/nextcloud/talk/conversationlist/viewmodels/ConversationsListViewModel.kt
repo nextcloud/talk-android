@@ -115,6 +115,7 @@ class ConversationsListViewModel @Inject constructor(
     }
 
     fun checkIfThreadsExist() {
+        val limitForFollowedThreadsExistenceCheck = 1
         val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
 
         fun isLastCheckTooOld(lastCheckDate: Long): Boolean {
@@ -132,7 +133,8 @@ class ConversationsListViewModel @Inject constructor(
 
             viewModelScope.launch {
                 try {
-                    val threads = threadsRepository.getThreads(credentials, threadsUrl, 1)
+                    val threads =
+                        threadsRepository.getThreads(credentials, threadsUrl, limitForFollowedThreadsExistenceCheck)
                     val followedThreadsExistNew = threads.ocs?.data?.isNotEmpty()
                     _threadsExistState.value = ThreadsExistUiState.Success(followedThreadsExistNew)
                     val followedThreadsExistLastCheckNew = System.currentTimeMillis()
