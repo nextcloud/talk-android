@@ -553,6 +553,8 @@
     <string name="no_conversations_archived">Нема архивираних разговора</string>
     <string name="no_offline_messages_saved">Није сачувана ниједна порука за ван мреже</string>
     <string name="no_phone_book_integration_due_to_permissions">Нема интеграције броја телефона јер недостају дозволе</string>
+    <string name="notification_all_messages">Све поруке</string>
+    <string name="notification_mention_only">Само @-помињања</string>
     <string name="notification_off">Искључено</string>
     <string name="notifications_default">Подразумевано</string>
     <string name="notifications_default_description">Прати подешавања разговора</string>

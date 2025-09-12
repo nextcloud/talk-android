@@ -455,6 +455,7 @@
     <string name="next_week">Hurrengo astea</string>
     <string name="no_phone_book_integration_due_to_permissions">Ezin izan da telefono zenbakia integratu, baimen falta dela eta</string>
     <string name="notification_off">Off</string>
+    <string name="notifications_default">Lehenetsia</string>
     <string name="oneHour">Ordu 1</string>
     <string name="online">Linean</string>
     <string name="online_status">Lineako egoera</string>

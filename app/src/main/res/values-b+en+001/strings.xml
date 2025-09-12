@@ -554,7 +554,9 @@
     <string name="no_offline_messages_saved">No offline messages saved</string>
     <string name="no_phone_book_integration_due_to_permissions">No phone number integration due to missing permissions</string>
     <string name="notification_all_messages">All messages</string>
+    <string name="notification_mention_only">\@-mentions only</string>
     <string name="notification_off">Off</string>
+    <string name="notifications_default">Default</string>
     <string name="notifications_default_description">Follow conversation settings</string>
     <string name="oneHour">1 hour</string>
     <string name="online">Online</string>

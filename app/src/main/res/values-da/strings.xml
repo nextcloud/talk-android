@@ -5,6 +5,7 @@
     <string name="add_to_notes">Tilføj til Noter</string>
     <string name="added_to_favorites">Tilføjede samtalen %1$s til favoritter</string>
     <string name="appbar_search_in">Søg i %s</string>
+    <string name="appear_offline">Er offline</string>
     <string name="archive_conversation">Arkivér samtale</string>
     <string name="archive_hint">Når en samtale er arkiveret, vil den blive skjult som standard. Vælg filteret \"Arkiveret\" for at se arkiverede samtaler. Direkte omtaler vil stadig blive modtaget.</string>
     <string name="archived">Arkiveret</string>
@@ -55,6 +56,7 @@
     <string name="error_loading_chats">Der opstod et problem med at indlæse dine chats</string>
     <string name="error_unbanning">En fejl opstod under fjernelse af blokering af deltager</string>
     <string name="failed_to_save">Kunne ikke gemme %1$s</string>
+    <string name="fifteenMinutes">15 minutter</string>
     <string name="file_list_folder">mappe</string>
     <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -88,6 +90,7 @@
     <string name="message_search_begin_typing">Start indtastning for at søge ...</string>
     <string name="message_search_hint">Søg ...</string>
     <string name="messages">Beskeder</string>
+    <string name="mute_all_notifications">Vis ikke notifikationer</string>
     <string name="nc_Server_account_imported">Den valgte konto blev importeret og kan bruges nu</string>
     <string name="nc_about">Om</string>
     <string name="nc_account_chooser_active_user">Aktiv bruger</string>
@@ -503,7 +506,9 @@
     <string name="next_week">Næste uge</string>
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegration på grund af manglende rettigheder</string>
-    <string name="notification_off">Deaktiver</string>
+    <string name="notification_mention_only">Kun omtalt med @</string>
+    <string name="notification_off">Deaktivér</string>
+    <string name="notifications_default">Standard</string>
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>

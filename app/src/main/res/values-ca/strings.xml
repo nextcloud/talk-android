@@ -5,6 +5,7 @@
     <string name="add_to_notes">Afegeix-ho a les notes</string>
     <string name="added_to_favorites">S\'ha afegit la conversa %1$s als preferits</string>
     <string name="appbar_search_in">Cerca a %s</string>
+    <string name="appear_offline">Apareixeu fora de línia</string>
     <string name="archive_conversation">Arxivar la conversa</string>
     <string name="archive_hint">Un cop arxivada una conversa, s\'ocultarà per defecte. Seleccioneu el filtre \"Arxivada\" per a veure les converses arxivades. Es continuaran rebent les mencions directes.</string>
     <string name="archived">Arxivat</string>
@@ -22,6 +23,7 @@
     <string name="ban">Prohibeix</string>
     <string name="ban_participant">Prohibeix el participant</string>
     <string name="bans_list">Llista de prohibicions</string>
+    <string name="busy">Ocupat</string>
     <string name="calendar">Calendari</string>
     <string name="call_more_actions_dialog_headline">Opcions avançades de trucada</string>
     <string name="call_running_since_one_hour">La trucada porta una hora en marxa.</string>
@@ -59,6 +61,7 @@
     <string name="error_loading_chats">S\'ha produït un problema carregant els xats</string>
     <string name="error_unbanning">S\'ha produït un error en anul·lar la prohibició del participant</string>
     <string name="failed_to_save">No s\'ha pogut desar %1$s</string>
+    <string name="fifteenMinutes">15 minuts</string>
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Carregant …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -92,6 +95,7 @@
     <string name="message_search_begin_typing">Comença a escriure per cercar …</string>
     <string name="message_search_hint">Cerca …</string>
     <string name="messages">Missatges</string>
+    <string name="mute_all_notifications">Silencieu totes les notificacions</string>
     <string name="nc_Server_account_imported">El compte que heu seleccionat s\'ha importat i ja és disponible</string>
     <string name="nc_about">Quant a</string>
     <string name="nc_account_chooser_active_user">Usuari actiu</string>
@@ -501,6 +505,8 @@
     <string name="next_week">Setmana següent</string>
     <string name="no_offline_messages_saved">No s\'han desat els missatges fora de línia</string>
     <string name="no_phone_book_integration_due_to_permissions">No hi ha integració amb el número de telèfon perquè falten permisos</string>
+    <string name="notification_off">Apagat</string>
+    <string name="notifications_default">Per defecte</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línia</string>
     <string name="online_status">Estat en línia</string>

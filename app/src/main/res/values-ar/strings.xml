@@ -5,6 +5,7 @@
     <string name="add_to_notes">إضافة إلى الملاحظات</string>
     <string name="added_to_favorites">إضافة المحادثة %1$sإلى المُفضّلة</string>
     <string name="appbar_search_in">بحث في %s</string>
+    <string name="appear_offline">الحالة غير متصل</string>
     <string name="archive_conversation">أرشفة المحادثة</string>
     <string name="archive_hint">رد أرشفة محادثة، سيتم إخفاؤها افتراضياً. حدِّد الفلتر \"مُؤرشَفة\" لعرض المحادثات المؤرشفة. الإشارات المباشرة ستظل قابلة ليُشار إليها حتى بعد الأرشفة.</string>
     <string name="archived">مؤرشفة</string>
@@ -21,6 +22,7 @@
     <string name="ban">حظر</string>
     <string name="ban_participant">حظر مشارك</string>
     <string name="bans_list">قائمة المحظورين</string>
+    <string name="busy">مشغول</string>
     <string name="calendar">التقويم Calendar</string>
     <string name="call_more_actions_dialog_headline">خيارات الاتصال المتقدمة</string>
     <string name="call_running_since_one_hour">المكالمة ما زالت مستمرة منذ حوالي الساعة.</string>
@@ -56,6 +58,7 @@
     <string name="error_loading_chats">حدثت مشكلة أثناء رفع دردشاتك</string>
     <string name="error_unbanning">حدث خطأ عند محاولة رفع الحظر عن مشارك</string>
     <string name="failed_to_save">تعذّر حفظ %1$s</string>
+    <string name="fifteenMinutes">15 دقيقة</string>
     <string name="file_list_folder">مُجلّد</string>
     <string name="file_list_loading">التحميل جارٍ …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
@@ -89,6 +92,7 @@
     <string name="message_search_begin_typing">أكتب هنا للبحث …</string>
     <string name="message_search_hint">بحث …</string>
     <string name="messages">الرسائل</string>
+    <string name="mute_all_notifications">عدم إظهار جميع التنبيهات</string>
     <string name="nc_Server_account_imported">تم استيراد الحساب المحدد وهو متاح الآن </string>
     <string name="nc_about">عن</string>
     <string name="nc_account_chooser_active_user">مستخدِم نشط</string>
@@ -509,6 +513,9 @@
     <string name="next_week">الأسبوع القادم</string>
     <string name="no_offline_messages_saved">لم يتم حفظ أي رسائل غير متصلة بالإنترنت</string>
     <string name="no_phone_book_integration_due_to_permissions">لا ارتباط لرقم الهاتف بسبب أذونات ناقصة</string>
+    <string name="notification_mention_only">\@-إشارة فقط</string>
+    <string name="notification_off">معطل</string>
+    <string name="notifications_default">التلقائي</string>
     <string name="oneHour">1 ساعة</string>
     <string name="online">مُتّصلٌ</string>
     <string name="online_status">حالة الاتصال</string>

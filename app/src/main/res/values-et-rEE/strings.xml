@@ -554,7 +554,9 @@
     <string name="no_offline_messages_saved">Ühtegi vallasrežiimis salvestatud sõnumit ei leidu</string>
     <string name="no_phone_book_integration_due_to_permissions">Telefoninumbrite lõiming ei toimi puuduvate õiguste tõttu</string>
     <string name="notification_all_messages">Kõik sõnumid</string>
+    <string name="notification_mention_only">Vaid @-mainimised</string>
     <string name="notification_off">Pole kasutusel</string>
+    <string name="notifications_default">Vaikimisi</string>
     <string name="notifications_default_description">Järgi vestluse seadistusi</string>
     <string name="oneHour">1 tund</string>
     <string name="online">Online</string>

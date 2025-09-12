@@ -403,6 +403,7 @@
     <string name="next_week">Semana siguiente</string>
     <string name="no_phone_book_integration_due_to_permissions">No hay integración de número de teléfono debido a permisos faltantes</string>
     <string name="notification_all_messages">Todos los mensajes</string>
+    <string name="notification_mention_only">Solo @-menciones</string>
     <string name="notification_off">Apagado</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En línea</string>
