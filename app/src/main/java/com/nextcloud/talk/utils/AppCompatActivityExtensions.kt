@@ -28,7 +28,7 @@ fun AppCompatActivity.adjustUIForAPILevel35(
     // general, supporting both XML and Compose system bar handling is a pain and we will have it easier without XML)
     // So in short: migrate all screens to Compose. Then it's easier to decide if navigation bar should be semi
     // transparent or not for all screens.
-    navigationBarStyle: SystemBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+    navigationBarStyle: SystemBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
 ) {
     val isApiLevel35OrHigher = (Build.VERSION.SDK_INT >= Build.VERSION_CODES.VANILLA_ICE_CREAM)
     if (!isApiLevel35OrHigher) {
