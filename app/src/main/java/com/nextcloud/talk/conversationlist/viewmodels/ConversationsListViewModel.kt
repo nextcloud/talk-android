@@ -48,9 +48,6 @@ class ConversationsListViewModel @Inject constructor(
     @Inject
     lateinit var arbitraryStorageManager: ArbitraryStorageManager
 
-    // @Inject
-    // lateinit var currentUserProvider: CurrentUserProviderNew
-
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser
     val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token) ?: ""
@@ -223,7 +220,7 @@ class ConversationsListViewModel @Inject constructor(
 
     companion object {
         private val TAG = ConversationsListViewModel::class.simpleName
-        private const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
+        const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
         const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
     }
 }

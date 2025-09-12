@@ -181,7 +181,7 @@ fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, th
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text("No threads found.")
+            Text(stringResource(R.string.threads_list_empty))
         }
         return
     }

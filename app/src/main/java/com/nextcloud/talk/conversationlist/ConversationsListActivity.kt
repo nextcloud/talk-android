@@ -277,7 +277,6 @@ class ConversationsListActivity :
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
 
         initObservers()
-        conversationsListViewModel.checkIfThreadsExist()
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
@@ -345,6 +344,7 @@ class ConversationsListActivity :
         }
 
         showSearchOrToolbar()
+        conversationsListViewModel.checkIfThreadsExist()
     }
 
     override fun onPause() {
