@@ -290,11 +290,10 @@ interface NcApiCoroutines {
     suspend fun unbindRoom(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
     @GET
-    suspend fun getThreads( // limit is broken on api side for sermo ?? Also, for requests in Insomnia i need to set
-        // format=json
+    suspend fun getThreads(
         @Header("Authorization") authorization: String,
-        @Url url: String
-        // @Query("limit") limit: Int?
+        @Url url: String,
+        @Query("limit") limit: Int?
     ): ThreadsOverall
 
     @GET
