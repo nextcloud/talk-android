@@ -49,6 +49,7 @@
             <trusting group="androidx.databinding"/>
             <trusting group="androidx.datastore"/>
             <trusting group="androidx.dynamicanimation" name="dynamicanimation" version="1.1.0"/>
+            <trusting group="androidx.emoji2"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.0"/>
             <trusting group="androidx.exifinterface" name="exifinterface" version="1.4.1"/>
             <trusting group="androidx.lifecycle"/>
