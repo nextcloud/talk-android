@@ -566,6 +566,7 @@ How to translate with transifex:
         <item quantity="other">%d replies</item>
     </plurals>
     <string name="thread_notifications">Thread notifications</string>
+    <string name="threads_list_empty">No threads found</string>
     <string name="notifications_default">Default</string>
     <string name="notifications_default_description">Follow conversation settings</string>
     <string name="notification_all_messages">All messages</string>

@@ -465,11 +465,10 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
+    @Suppress("Detekt.TooGenericExceptionCaught", "MagicNumber")
     fun setThreadNotificationLevel(credentials: String, url: String, level: Int) {
         fun updateFollowedThreadsIndicator(notificationLevel: Int?) {
             when (notificationLevel) {
-                // replace with enum
                 1, 2 -> {
                     val accountId = UserIdUtils.getIdForUser(userProvider.currentUser.blockingGet())
                     arbitraryStorageManager.storeStorageSetting(
