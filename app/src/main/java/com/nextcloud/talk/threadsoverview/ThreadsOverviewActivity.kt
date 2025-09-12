@@ -70,7 +70,8 @@ class ThreadsOverviewActivity : BaseActivity() {
 
     lateinit var threadsOverviewViewModel: ThreadsOverviewViewModel
 
-    var roomToken: String = ""
+    var threadsSourceUrl: String = ""
+    var appbarTitle: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +84,8 @@ class ThreadsOverviewActivity : BaseActivity() {
         val colorScheme = viewThemeUtils.getColorScheme(this)
 
         val extras: Bundle? = intent.extras
-        roomToken = extras?.getString(KEY_ROOM_TOKEN).orEmpty()
+        threadsSourceUrl = extras?.getString(KEY_THREADS_SOURCE_URL).orEmpty()
+        appbarTitle = extras?.getString(KEY_APPBAR_TITLE).orEmpty()
 
         setContent {
             val backgroundColor = colorResource(id = R.color.bg_default)
@@ -97,7 +99,7 @@ class ThreadsOverviewActivity : BaseActivity() {
                         .statusBarsPadding(),
                     topBar = {
                         StandardAppBar(
-                            title = stringResource(R.string.recent_threads),
+                            title = appbarTitle,
                             null
                         )
                     },
@@ -112,7 +114,6 @@ class ThreadsOverviewActivity : BaseActivity() {
                         ) {
                             ThreadsOverviewScreen(
                                 uiState,
-                                roomToken,
                                 onThreadClick = { roomToken, threadId ->
                                     navigateToChatActivity(roomToken, threadId)
                                 }
@@ -136,18 +137,19 @@ class ThreadsOverviewActivity : BaseActivity() {
     override fun onResume() {
         super.onResume()
         supportActionBar?.show()
-        threadsOverviewViewModel.init(roomToken)
+        threadsOverviewViewModel.init(threadsSourceUrl)
     }
 
     companion object {
         val TAG = ThreadsOverviewActivity::class.java.simpleName
+        val KEY_APPBAR_TITLE = "KEY_APPBAR_TITLE"
+        val KEY_THREADS_SOURCE_URL = "KEY_THREADS_SOURCE_URL"
     }
 }
 
 @Composable
 fun ThreadsOverviewScreen(
     uiState: ThreadsOverviewViewModel.ThreadsListUiState,
-    roomToken: String,
     onThreadClick: (roomToken: String, threadId: Int) -> Unit
 ) {
     when (val state = uiState) {
@@ -158,7 +160,6 @@ fun ThreadsOverviewScreen(
         is ThreadsOverviewViewModel.ThreadsListUiState.Success -> {
             ThreadsList(
                 threads = state.threadsList!!,
-                roomToken = roomToken,
                 onThreadClick = onThreadClick
             )
         }
@@ -171,11 +172,7 @@ fun ThreadsOverviewScreen(
 }
 
 @Composable
-fun ThreadsList(
-    threads: List<ThreadInfo>,
-    roomToken: String,
-    onThreadClick: (roomToken: String, threadId: Int) -> Unit
-) {
+fun ThreadsList(threads: List<ThreadInfo>, onThreadClick: (roomToken: String, threadId: Int) -> Unit) {
     val space = ' '
     if (threads.isEmpty()) {
         Box(
@@ -184,7 +181,7 @@ fun ThreadsList(
                 .padding(16.dp),
             contentAlignment = Alignment.Center
         ) {
-            Text("No threads found.")
+            Text(stringResource(R.string.threads_list_empty))
         }
         return
     }
@@ -202,7 +199,7 @@ fun ThreadsList(
             val messageModel = messageJson?.asModel()
 
             ThreadRow(
-                roomToken = roomToken,
+                roomToken = threadInfo.thread!!.roomToken,
                 threadId = threadInfo.thread!!.id,
                 title = threadInfo.thread?.title.orEmpty(),
                 numReplies = pluralStringResource(
