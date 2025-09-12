@@ -34,6 +34,7 @@ import com.nextcloud.talk.conversationlist.data.network.RetrofitConversationsNet
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.network.NetworkMonitorImpl
 import com.nextcloud.talk.data.user.UsersDao
@@ -134,6 +135,9 @@ class ComposePreviewUtils private constructor(context: Context) {
     val chatBlocksDao: ChatBlocksDao
         get() = DummyChatBlocksDaoImpl()
 
+    val fileUploadsDao: FileUploadsDao
+        get() = DummyFileUploadsDaoImpl()
+
     val conversationsDao: ConversationsDao
         get() = DummyConversationDaoImpl()
 
@@ -144,6 +148,7 @@ class ComposePreviewUtils private constructor(context: Context) {
         get() = OfflineFirstChatRepository(
             chatMessagesDao,
             chatBlocksDao,
+            fileUploadsDao,
             chatNetworkDataSource,
             networkMonitor,
             userProvider
