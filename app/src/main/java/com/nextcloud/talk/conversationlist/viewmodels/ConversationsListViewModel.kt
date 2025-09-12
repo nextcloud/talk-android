@@ -224,6 +224,6 @@ class ConversationsListViewModel @Inject constructor(
     companion object {
         private val TAG = ConversationsListViewModel::class.simpleName
         private const val FOLLOWED_THREADS_EXIST_LAST_CHECK = "FOLLOWED_THREADS_EXIST_LAST_CHECK"
-        private const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
+        const val FOLLOWED_THREADS_EXIST = "FOLLOWED_THREADS_EXIST"
     }
 }
