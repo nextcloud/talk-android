@@ -354,6 +354,7 @@
     <string name="next_week">هفتهٔ بعد</string>
     <string name="notification_all_messages">All messages</string>
     <string name="notification_mention_only">\@-mentions only</string>
+    <string name="notifications_default">پیش‌فرض</string>
     <string name="oneHour">۱ ساعت</string>
     <string name="online">برخط</string>
     <string name="online_status">وضعیت برخط</string>

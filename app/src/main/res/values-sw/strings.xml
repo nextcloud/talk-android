@@ -67,6 +67,7 @@
     <string name="file_list_folder">folda</string>
     <string name="file_list_loading">Inapakia</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Mazungumzo yaliyofuatwa</string>
     <string name="fourHours">Masaa 4</string>
     <string name="get_invitations_error">Imeshindwa kuleta mialiko ambayo haijashughulikiwa</string>
     <string name="hint_edited_message">(imehaririwa)</string>
