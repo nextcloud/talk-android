@@ -67,6 +67,7 @@
     <string name="file_list_folder">資料夾</string>
     <string name="file_list_loading">正在載入……</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">已追蹤的討論串</string>
     <string name="fourHours">4小時</string>
     <string name="get_invitations_error">擷取擱置中的邀請失敗</string>
     <string name="hint_edited_message">（已編輯）</string>

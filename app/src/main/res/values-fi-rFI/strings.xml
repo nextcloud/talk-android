@@ -345,6 +345,7 @@
     <string name="nc_webinar">Webinaari</string>
     <string name="nc_yes">Kyllä</string>
     <string name="next_week">Seuraava viikko</string>
+    <string name="notifications_default">Oletus</string>
     <string name="oneHour">1 tunti</string>
     <string name="online">Paikalla</string>
     <string name="online_status">Online-tila</string>

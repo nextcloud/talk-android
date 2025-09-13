@@ -67,6 +67,7 @@
     <string name="file_list_folder">kaust</string>
     <string name="file_list_loading">Laadimisel...</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Jutulõngad, mida sa jälgid</string>
     <string name="fourHours">4 tundi</string>
     <string name="get_invitations_error">Ootel kutsete laadimine ei õnnestunud</string>
     <string name="hint_edited_message">(muudetud)</string>

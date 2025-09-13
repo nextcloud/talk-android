@@ -67,6 +67,7 @@
     <string name="file_list_folder">fillteán</string>
     <string name="file_list_loading">Á lódáil…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Snáitheanna leanta</string>
     <string name="fourHours">4 uair an chloig</string>
     <string name="get_invitations_error">Theip ar chuirí ar feitheamh a fháil</string>
     <string name="hint_edited_message">(in eagar)</string>
@@ -556,6 +557,7 @@
     <string name="notification_all_messages">Gach teachtaireacht</string>
     <string name="notification_mention_only">\@-luaite amháin</string>
     <string name="notification_off">as</string>
+    <string name="notifications_default">Réamhshocrú</string>
     <string name="notifications_default_description">Lean socruithe comhrá</string>
     <string name="oneHour">1 uair</string>
     <string name="online">Ar líne</string>

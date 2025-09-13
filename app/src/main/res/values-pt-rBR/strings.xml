@@ -67,6 +67,7 @@
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Fios seguidos</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Falha ao buscar convites pendentes</string>
     <string name="hint_edited_message">(editado)</string>
@@ -553,6 +554,8 @@
     <string name="no_conversations_archived">Nenhuma conversa arquivada</string>
     <string name="no_offline_messages_saved">Nenhuma mensagem off-line foi salva</string>
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
+    <string name="notification_all_messages">Todas as mensagens</string>
+    <string name="notification_mention_only">Apenas menções de @</string>
     <string name="notification_off">Desativado</string>
     <string name="notifications_default">Padrão</string>
     <string name="notifications_default_description">Seguir as configurações da conversa</string>

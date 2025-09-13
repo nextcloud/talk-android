@@ -67,6 +67,7 @@
     <string name="file_list_folder">Dossier</string>
     <string name="file_list_loading">Chargement…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Conversations suivies</string>
     <string name="fourHours">4 heures</string>
     <string name="get_invitations_error">Échec de la récupération des invitations en attente</string>
     <string name="hint_edited_message">(modifié)</string>
@@ -553,6 +554,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
     <string name="notification_mention_only">Seulement les mentions @</string>
     <string name="notification_off">Désactiver</string>
+    <string name="notifications_default">Défaut</string>
     <string name="notifications_default_description">Utiliser les paramètres de la conversation</string>
     <string name="oneHour">1 heure</string>
     <string name="online">En ligne</string>
