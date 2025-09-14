@@ -110,8 +110,7 @@
     <string name="nc_about">Kuhusu</string>
     <string name="nc_account_chooser_active_user">Mtumiaji anayetumia</string>
     <string name="nc_account_chooser_add_account">Ongeza akaunti</string>
-    <string name="nc_account_scheduled_for_deletion">Akaunti imeratibiwa kufutwa, na haiwezi kubadilishwa
- </string>
+    <string name="nc_account_scheduled_for_deletion">Akaunti imeratibiwa kufutwa, na haiwezi kubadilishwa</string>
     <string name="nc_action_open_main_menu">Fungua mwongozo mkuu</string>
     <string name="nc_add_attachment">Ongeza kiambatisho</string>
     <string name="nc_add_emojis">Ongeza emoji</string>
@@ -613,7 +612,7 @@
     <string name="reset_status">Pangilia hali</string>
     <string name="restrict_join_other_room_while_call">Haiwezekani kujiunga na vyumba vingine ukiwa kwenye simu</string>
     <string name="save">Hifadhi</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Changanua Msimbo wa QR</string>
     <string name="scope_federated_description">Sawazisha kwa seva zinazoaminika pekee</string>
     <string name="scope_federated_title"> Shirikisho</string>
     <string name="scope_local_description"> Inaonekana kwa watu katika tukio hili na wageni pekee</string>
@@ -664,7 +663,7 @@
     <string name="take_photo_switch_camera">Badili kamera</string>
     <string name="take_photo_toggle_crop">Dondosha picha</string>
     <string name="take_photo_toggle_lowres">Punguza ukubwa wa picha</string>
-    <string name="take_photo_toggle_torch">Toggle torch</string>
+    <string name="take_photo_toggle_torch">Washa tochi</string>
     <string name="thirtyMinutes">Dakika 30</string>
     <string name="thisWeek">Wiki hii</string>
     <string name="this_is_a_test_message">Huu ni ujumbe wa jaribio</string>
@@ -673,6 +672,7 @@
     <string name="thread_notifications">Arifa za mjadala</string>
     <string name="thread_reply">Jibu</string>
     <string name="thread_title">Kichwa cha mjadala</string>
+    <string name="threads_list_empty">Hakuna nyuzi zilizopatikana</string>
     <string name="today">Leo</string>
     <string name="tomorrow">Kesho</string>
     <string name="translate">Tafsiri</string>

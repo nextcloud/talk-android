@@ -105,6 +105,7 @@
     <string name="message_search_begin_typing">Aramak için yazmaya başlayın…</string>
     <string name="message_search_hint">Arama…</string>
     <string name="messages">İletiler</string>
+    <string name="mute_all_notifications">Tüm bildirimleri kapat</string>
     <string name="nc_Server_account_imported">Seçilmiş hesap içe aktarıldı ve kullanılabilir</string>
     <string name="nc_about">Hakkında</string>
     <string name="nc_account_chooser_active_user">Etkin kullanıcı</string>
@@ -553,6 +554,7 @@
     <string name="no_conversations_archived">Arşivlenmiş bir görüşme yok</string>
     <string name="no_offline_messages_saved">Herhangi bir çevrim dışı iletisi kaydedilmemiş</string>
     <string name="no_phone_book_integration_due_to_permissions">İzinler eksik olduğundan telefon numarası bütünleştirmesi yok</string>
+    <string name="notification_all_messages">Tüm iletiler</string>
     <string name="notification_mention_only">Yalnızca @-anmaları</string>
     <string name="notification_off">Kapalı</string>
     <string name="notifications_default">Varsayılan</string>
@@ -668,6 +670,7 @@
     <string name="thread_notifications">Yazışma bildirimleri</string>
     <string name="thread_reply">Yanıtla</string>
     <string name="thread_title">Yazışma başlığı</string>
+    <string name="threads_list_empty">Herhangi bir yazışma bulunamadı</string>
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>
     <string name="translate">Çevir</string>

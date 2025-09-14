@@ -35,7 +35,7 @@
     <string name="close">Pechar</string>
     <string name="close_icon">Icona «Pechar»</string>
     <string name="connection_established">Estabeleceuse a conexión</string>
-    <string name="connection_lost_sent_messages_are_queued">Perdeuse a conexión – As mensaxes enviadas póñense en cola</string>
+    <string name="connection_lost_sent_messages_are_queued">Perdeuse a conexión — As mensaxes enviadas póñense en cola</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
     <string name="conversation_is_read_only">A conversa é só de lectura</string>
     <string name="conversation_read_only_failed">Produciuse un fallo ao definir a conversa como de só lectura</string>

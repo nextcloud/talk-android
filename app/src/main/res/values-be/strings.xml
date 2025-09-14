@@ -470,6 +470,7 @@
     <string name="thread_notifications">Апавяшчэнні гутаркі</string>
     <string name="thread_reply">Адказаць</string>
     <string name="thread_title">Загаловак гутаркі</string>
+    <string name="threads_list_empty">Гутарак не знойдзена</string>
     <string name="today">Сёння</string>
     <string name="tomorrow">Заўтра</string>
     <string name="translate">Перакласці</string>
