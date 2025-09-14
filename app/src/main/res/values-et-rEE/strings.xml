@@ -670,6 +670,7 @@
     <string name="thread_notifications">Jutulõngade teavitused</string>
     <string name="thread_reply">Vasta</string>
     <string name="thread_title">Jutulõnga pealkiri</string>
+    <string name="threads_list_empty">Ühtegi jutulõnga ei leidu</string>
     <string name="today">Täna</string>
     <string name="tomorrow">Homme</string>
     <string name="translate">Tõlgi</string>
