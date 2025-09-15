@@ -274,7 +274,19 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 val isChecked = match.groupValues[1].equals("X", true)
                 val taskText = match.groupValues[2].trim()
                 val checkBox = CheckBox(checkBoxContainer.context).apply {
-                    text = taskText
+                    val messageText = messageUtils.enrichChatMessageText(
+                        context,
+                        taskText,
+                        false,
+                        viewThemeUtils
+                    )
+                    text = messageUtils.processMessageParameters(
+                        context,
+                        viewThemeUtils,
+                        messageText,
+                        chatMessage,
+                        null
+                    )
                     this.isChecked = isChecked
                     this.isEnabled = messageIsEditable || isNoTimeLimitOnNoteToSelf
                     setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
@@ -287,11 +299,18 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (line.isNotBlank()) {
                 val textView = EmojiTextView(checkBoxContainer.context).apply {
-                    text = messageUtils.enrichChatMessageText(
+                    val messageText = messageUtils.enrichChatMessageText(
                         context,
                         line,
                         false,
                         viewThemeUtils
+                    )
+                    text = messageUtils.processMessageParameters(
+                        context,
+                        viewThemeUtils,
+                        messageText,
+                        chatMessage,
+                        null
                     )
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
                 }
