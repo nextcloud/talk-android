@@ -11,7 +11,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
 import android.util.Log
-import com.google.mediapipe.framework.image.BitmapExtractor
+import androidx.core.graphics.createBitmap
 import com.google.mediapipe.framework.image.BitmapImageBuilder
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
@@ -19,6 +19,7 @@ import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import java.nio.ByteBuffer
 
 class ImageSegmenterHelper(
     var currentDelegate: Int = DELEGATE_GPU,
@@ -135,9 +136,19 @@ class ImageSegmenterHelper(
         // the OutputType CATEGORY_MASK, which only provides a single mask.
         val mpImage = result.categoryMask().get()
 
+        // TODO likely an error with my mask processing here, it seems That perhaps
+        //  I'm not processing the mask to bitmap mask correctly
+        //  thus the copy mask is incorrect
+
+        val byteBuffer = ByteBuffer.allocate(mpImage.width * mpImage.height * Int.SIZE_BYTES)
+
+        val bitmap = createBitmap(mpImage.width, mpImage.height, Bitmap.Config.ARGB_8888)
+
+        bitmap.copyPixelsFromBuffer(byteBuffer)
+
         imageSegmenterListener?.onResults(
             ResultBundle(
-                BitmapExtractor.extract(mpImage),
+                bitmap,
                 inferenceTime
             )
         )
