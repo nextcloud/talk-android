@@ -7,6 +7,7 @@
  *
  * Influenced by https://gitlab.com/bitfireAT/cert4android/blob/master/src/main/java/at/bitfire/cert4android/CustomCertService.kt
  */
+
 package com.nextcloud.talk.utils.ssl;
 
 import android.content.Context;
@@ -34,7 +35,7 @@ import javax.net.ssl.X509TrustManager;
 public class TrustManager implements X509TrustManager {
     private static final String TAG = "TrustManager";
 
-    private File keystoreFile;
+    private final File keystoreFile;
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
 
@@ -155,7 +156,7 @@ public class TrustManager implements X509TrustManager {
 
     private class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
         private static final String TAG = "HostnameVerifier";
-        private javax.net.ssl.HostnameVerifier defaultHostNameVerifier;
+        private final javax.net.ssl.HostnameVerifier defaultHostNameVerifier;
 
         private HostnameVerifier(javax.net.ssl.HostnameVerifier defaultHostNameVerifier) {
             this.defaultHostNameVerifier = defaultHostNameVerifier;
@@ -165,16 +166,14 @@ public class TrustManager implements X509TrustManager {
         public boolean verify(String s, SSLSession sslSession) {
 
             if (defaultHostNameVerifier.verify(s, sslSession)) {
-                return true;
-            }
-
-            try {
-                X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                if (certificates.length > 0 && isCertInTrustStore(certificates, s)) {
-                    return true;
+                try {
+                    X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
+                    if (certificates.length > 0 && isCertInTrustStore(certificates, s)) {
+                        return true;
+                    }
+                } catch (SSLPeerUnverifiedException e) {
+                    Log.d(TAG, "Couldn't get certificate for host name verification");
                 }
-            } catch (SSLPeerUnverifiedException e) {
-                Log.d(TAG, "Couldn't get certificate for host name verification");
             }
 
             return false;
