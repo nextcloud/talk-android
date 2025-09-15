@@ -16,7 +16,7 @@ import android.view.View
 import android.widget.CheckBox
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.text.toSpanned
+import androidx.emoji2.widget.EmojiTextView
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
@@ -164,12 +164,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             // binding.messageText.text =
             //     SpannableStringBuilder(processedMessageText).append(" (" + message.jsonMessageId + ")")
         } else {
-            binding.messageText.visibility =
-                if (binding.messageText.text.isBlank()) {
-                    View.GONE
-                } else {
-                    View.VISIBLE
-                }
+            binding.messageText.visibility = View.GONE
             binding.checkboxContainer.visibility = View.VISIBLE
         }
         binding.messageText.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
@@ -247,8 +242,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private fun processCheckboxes(chatMessage: ChatMessage, user: User): Boolean {
         val chatActivity = commonMessageInterface as ChatActivity
-        val message = chatMessage.message!!.toSpanned()
-        val messageTextView = binding.messageText
+        val message = chatMessage.message ?: return false
         val checkBoxContainer = binding.checkboxContainer
         val isOlderThanTwentyFourHours = chatMessage
             .createdAt
@@ -267,44 +261,45 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             chatActivity.currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
         checkBoxContainer.removeAllViews()
-        val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
-        val matches = regex.findAll(message).toList()
-
-        if (matches.isEmpty()) return false
-
-        val firstPartIndex = matches.first().range.first
-        val firstPart = message.substring(0, firstPartIndex).trim()
-
-        messageTextView.text = messageUtils.enrichChatMessageText(
-            binding.messageText.context,
-            firstPart,
-            true,
-            viewThemeUtils
-        )
+        val checkboxRegex = """- \[(X|x| )]\s*(.+)""".toRegex()
+        val lines = message.lines()
 
         val checkboxList = mutableListOf<CheckBox>()
+        var hasCheckbox = false
 
-        matches.forEach { matchResult ->
-            val isChecked = matchResult.groupValues[CHECKED_GROUP_INDEX] == "X" ||
-                matchResult.groupValues[CHECKED_GROUP_INDEX] == "x"
-            val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-
-            val checkBox = CheckBox(checkBoxContainer.context).apply {
-                text = taskText
-                this.isChecked = isChecked
-                this.isEnabled = messageIsEditable || isNoTimeLimitOnNoteToSelf
-
-                setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
-
-                setOnCheckedChangeListener { _, _ ->
-                    updateCheckboxStates(chatMessage, user, checkboxList)
+        lines.forEach { line ->
+            val match = checkboxRegex.matchEntire(line.trim())
+            if (match != null) {
+                hasCheckbox = true
+                val isChecked = match.groupValues[1].equals("X", true)
+                val taskText = match.groupValues[2].trim()
+                val checkBox = CheckBox(checkBoxContainer.context).apply {
+                    text = taskText
+                    this.isChecked = isChecked
+                    this.isEnabled = messageIsEditable || isNoTimeLimitOnNoteToSelf
+                    setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                    setOnCheckedChangeListener { _, _ ->
+                        updateCheckboxStates(chatMessage, user, checkboxList)
+                    }
                 }
+                checkBoxContainer.addView(checkBox)
+                checkboxList.add(checkBox)
+                viewThemeUtils.platform.themeCheckbox(checkBox)
+            } else if (line.isNotBlank()) {
+                val textView = EmojiTextView(checkBoxContainer.context).apply {
+                    text = messageUtils.enrichChatMessageText(
+                        context,
+                        line,
+                        false,
+                        viewThemeUtils
+                    )
+                    viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
+                }
+                checkBoxContainer.addView(textView)
             }
-            checkBoxContainer.addView(checkBox)
-            checkboxList.add(checkBox)
-            viewThemeUtils.platform.themeCheckbox(checkBox)
         }
-        return true
+
+        return hasCheckbox
     }
 
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
@@ -339,17 +334,18 @@ class OutcomingTextMessageViewHolder(itemView: View) :
     }
 
     private fun updateMessageWithCheckboxStates(originalMessage: String, checkboxes: List<CheckBox>): String {
-        var updatedMessage = originalMessage
-        val regex = """(- \[(X|x| )])\s*(.+)""".toRegex(RegexOption.MULTILINE)
-
-        checkboxes.forEach { _ ->
-            updatedMessage = regex.replace(updatedMessage) { matchResult ->
-                val taskText = matchResult.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-                val checkboxState = if (checkboxes.find { it.text == taskText }?.isChecked == true) "X" else " "
-                "- [$checkboxState] $taskText"
+        val checkboxRegex = """- \[(X|x| )]\s*(.+)""".toRegex()
+        var index = 0
+        return originalMessage.lines().joinToString("\n") { line ->
+            val match = checkboxRegex.matchEntire(line.trim())
+            if (match != null) {
+                val taskText = match.groupValues[2].trim()
+                val state = if (checkboxes.getOrNull(index++)?.isChecked == true) "X" else " "
+                "- [$state] $taskText"
+            } else {
+                line
             }
         }
-        return updatedMessage
     }
 
     private fun updateStatus(readStatusDrawableInt: Int, description: String?) {
