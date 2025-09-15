@@ -20,7 +20,6 @@ import autodagger.AutoInjector
 import coil.load
 import com.google.android.flexbox.FlexboxLayout
 import com.google.android.material.snackbar.Snackbar
-import com.google.common.collect.Multimaps.index
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
