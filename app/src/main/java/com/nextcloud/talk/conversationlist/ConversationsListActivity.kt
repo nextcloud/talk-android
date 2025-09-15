@@ -1330,10 +1330,6 @@ class ConversationsListActivity :
             viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE_VARIANT)
         }
 
-        binding.searchText.let {
-            viewThemeUtils.platform.colorTextView(it, ColorRole.ON_SURFACE_VARIANT)
-        }
-
         binding.newMentionPopupBubble.visibility = View.GONE
         binding.newMentionPopupBubble.setOnClickListener {
             val layoutManager = binding.recyclerView.layoutManager as SmoothScrollLinearLayoutManager?
