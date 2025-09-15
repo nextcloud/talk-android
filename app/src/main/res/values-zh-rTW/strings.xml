@@ -670,6 +670,7 @@
     <string name="thread_notifications">討論串通知</string>
     <string name="thread_reply">回覆</string>
     <string name="thread_title">討論串標題</string>
+    <string name="threads_list_empty">找不到討論串</string>
     <string name="today">今天</string>
     <string name="tomorrow">明天</string>
     <string name="translate">翻譯</string>
