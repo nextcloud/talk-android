@@ -443,8 +443,6 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     companion object {
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
-        private const val CHECKED_GROUP_INDEX = 2
-        private const val TASK_TEXT_GROUP_INDEX = 3
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
     }
 }
