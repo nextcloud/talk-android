@@ -1,12 +1,25 @@
 /*
- * Nextcloud Talk - Android Client
+ * Nextcloud Talk application
  *
- * SPDX-FileCopyrightText: 2017 Mario Danic <mario@lovelyhq.com>
- * SPDX-FileCopyrightText: 2017 Ricki Hirner
- * SPDX-License-Identifier: GPL-3.0-or-later
+ * @author Mario Danic
+ * Copyright (C) 2017 Mario Danic <mario@lovelyhq.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  * Influenced by https://gitlab.com/bitfireAT/cert4android/blob/master/src/main/java/at/bitfire/cert4android/CustomCertService.kt
  */
+
 package com.nextcloud.talk.utils.ssl;
 
 import android.content.Context;
@@ -34,7 +47,7 @@ import javax.net.ssl.X509TrustManager;
 public class TrustManager implements X509TrustManager {
     private static final String TAG = "TrustManager";
 
-    private File keystoreFile;
+    private final File keystoreFile;
     private X509TrustManager systemTrustManager = null;
     private KeyStore trustedKeyStore = null;
 
@@ -155,7 +168,7 @@ public class TrustManager implements X509TrustManager {
 
     private class HostnameVerifier implements javax.net.ssl.HostnameVerifier {
         private static final String TAG = "HostnameVerifier";
-        private javax.net.ssl.HostnameVerifier defaultHostNameVerifier;
+        private final javax.net.ssl.HostnameVerifier defaultHostNameVerifier;
 
         private HostnameVerifier(javax.net.ssl.HostnameVerifier defaultHostNameVerifier) {
             this.defaultHostNameVerifier = defaultHostNameVerifier;
@@ -165,16 +178,14 @@ public class TrustManager implements X509TrustManager {
         public boolean verify(String s, SSLSession sslSession) {
 
             if (defaultHostNameVerifier.verify(s, sslSession)) {
-                return true;
-            }
-
-            try {
-                X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
-                if (certificates.length > 0 && isCertInTrustStore(certificates, s)) {
-                    return true;
+                try {
+                    X509Certificate[] certificates = (X509Certificate[]) sslSession.getPeerCertificates();
+                    if (certificates.length > 0 && isCertInTrustStore(certificates, s)) {
+                        return true;
+                    }
+                } catch (SSLPeerUnverifiedException e) {
+                    Log.d(TAG, "Couldn't get certificate for host name verification");
                 }
-            } catch (SSLPeerUnverifiedException e) {
-                Log.d(TAG, "Couldn't get certificate for host name verification");
             }
 
             return false;
