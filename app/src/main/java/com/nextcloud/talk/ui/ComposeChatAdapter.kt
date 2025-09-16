@@ -127,6 +127,7 @@ import kotlin.random.Random
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
     private var messageId: String? = null,
+    private var threadId: String? = null,
     private val utils: ComposePreviewUtils? = null
 ) {
 
@@ -354,7 +355,8 @@ class ComposeChatAdapter(
         this.isReaction() ||
             this.isPollVotedMessage() ||
             this.isEditMessage() ||
-            this.isInfoMessageAboutDeletion()
+            this.isInfoMessageAboutDeletion() ||
+            this.isThreadCreatedMessage()
 
     private fun ChatMessage.isInfoMessageAboutDeletion(): Boolean =
         this.parentMessageId != null &&
@@ -365,6 +367,9 @@ class ComposeChatAdapter(
 
     private fun ChatMessage.isEditMessage(): Boolean =
         this.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_EDITED
+
+    private fun ChatMessage.isThreadCreatedMessage(): Boolean =
+        this.systemMessageType == ChatMessage.SystemMessageType.THREAD_CREATED
 
     private fun ChatMessage.isReaction(): Boolean =
         systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -483,7 +488,11 @@ class ComposeChatAdapter(
                 val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
                 val modifier = if (includePadding) Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp) else Modifier
                 Column(modifier = modifier) {
-                    if (message.parentMessageId != null && !message.isDeleted && messagesJson != null) {
+                    if (messagesJson != null &&
+                        message.parentMessageId != null &&
+                        !message.isDeleted &&
+                        message.parentMessageId.toString() != threadId
+                    ) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
                             ?.parentMessage!!.asModel().let { CommonMessageQuote(LocalContext.current, it) }
@@ -962,7 +971,14 @@ class ComposeChatAdapter(
 @Composable
 fun AllMessageTypesPreview() {
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
-    val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null, previewUtils) }
+    val adapter = remember {
+        ComposeChatAdapter(
+            messagesJson = null,
+            messageId = null,
+            threadId = null,
+            previewUtils
+        )
+    }
 
     val sampleMessages = remember {
         listOf(

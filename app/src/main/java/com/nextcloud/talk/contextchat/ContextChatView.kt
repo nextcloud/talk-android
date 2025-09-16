@@ -166,7 +166,12 @@ fun ContextChatSuccessView(
 
                         val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
-                        val adapter = ComposeChatAdapter(contextChatRetrieveUiStateSuccess.messages, messageId)
+                        val threadId = contextChatRetrieveUiStateSuccess.threadId
+                        val adapter = ComposeChatAdapter(
+                            messagesJson = contextChatRetrieveUiStateSuccess.messages,
+                            messageId = messageId,
+                            threadId = threadId
+                        )
                         SideEffect {
                             adapter.addMessages(messages.toMutableList(), true)
                         }
