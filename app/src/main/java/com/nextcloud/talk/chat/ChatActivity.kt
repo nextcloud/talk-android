@@ -65,6 +65,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -134,6 +135,8 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.contextchat.ContextChatView
+import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationinfo.ConversationInfoActivity
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
@@ -168,7 +171,6 @@ import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
-import com.nextcloud.talk.ui.dialog.ContextChatCompose
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
@@ -246,7 +248,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.core.content.ContextCompat
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -287,6 +288,7 @@ class ChatActivity :
     lateinit var chatViewModel: ChatViewModel
 
     lateinit var conversationInfoViewModel: ConversationInfoViewModel
+    lateinit var contextChatViewModel: ContextChatViewModel
     lateinit var messageInputViewModel: MessageInputViewModel
 
     private var chatMenu: Menu? = null
@@ -336,14 +338,15 @@ class ChatActivity :
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
-                val bundle = bundleOf()
-                bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
-                bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
-                bundle.putString(KEY_ROOM_TOKEN, roomToken)
-                bundle.putString(BundleKeys.KEY_MESSAGE_ID, messageId)
-                bundle.putString(BundleKeys.KEY_THREAD_ID, threadId)
-                bundle.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
-                ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+                contextChatViewModel.getContextForChatMessages(
+                    credentials = credentials!!,
+                    baseUrl = conversationUser!!.baseUrl!!,
+                    token = roomToken,
+                    threadId = threadId,
+                    messageId = messageId!!,
+                    title = currentConversation!!.displayName
+                )
+                ContextChatView(shouldDismiss, context, contextChatViewModel)
             }
         }
         Log.d(TAG, "Should open something else")
@@ -512,6 +515,8 @@ class ChatActivity :
         chatViewModel = ViewModelProvider(this, viewModelFactory)[ChatViewModel::class.java]
 
         conversationInfoViewModel = ViewModelProvider(this, viewModelFactory)[ConversationInfoViewModel::class.java]
+
+        contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
         val urlForChatting = ApiUtils.getUrlForChat(chatApiVersion, conversationUser?.baseUrl, roomToken)
         val credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
