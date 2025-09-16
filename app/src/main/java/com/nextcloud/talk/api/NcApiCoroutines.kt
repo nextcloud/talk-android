@@ -277,7 +277,8 @@ interface NcApiCoroutines {
     suspend fun getContextOfChatMessage(
         @Header("Authorization") authorization: String,
         @Url url: String,
-        @Query("limit") limit: Int
+        @Query("limit") limit: Int,
+        @Query("threadId") threadId: Int?
     ): ChatOverall
 
     @GET

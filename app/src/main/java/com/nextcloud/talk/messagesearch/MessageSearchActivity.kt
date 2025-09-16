@@ -166,6 +166,7 @@ class MessageSearchActivity : BaseActivity() {
         if (state is MessageSearchViewModel.FinishedState) {
             val resultIntent = Intent().apply {
                 putExtra(RESULT_KEY_MESSAGE_ID, state.selectedMessageId)
+                putExtra(RESULT_KEY_THREAD_ID, state.selectedThreadId)
             }
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
@@ -244,5 +245,6 @@ class MessageSearchActivity : BaseActivity() {
 
     companion object {
         const val RESULT_KEY_MESSAGE_ID = "MessageSearchActivity.result.message"
+        const val RESULT_KEY_THREAD_ID = "MessageSearchActivity.result.thread"
     }
 }

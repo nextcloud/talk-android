@@ -66,6 +66,7 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
 
         private const val ATTRIBUTE_CONVERSATION = "conversation"
         private const val ATTRIBUTE_MESSAGE_ID = "messageId"
+        private const val ATTRIBUTE_THREAD_ID = "threadId"
 
         private fun mapToMessageResults(
             data: UnifiedSearchResponseData,
@@ -81,13 +82,15 @@ class UnifiedSearchRepositoryImpl(private val api: NcApi, private val userProvid
         private fun mapToMessage(unifiedSearchEntry: UnifiedSearchEntry, searchTerm: String): SearchMessageEntry {
             val conversation = unifiedSearchEntry.attributes?.get(ATTRIBUTE_CONVERSATION)!!
             val messageId = unifiedSearchEntry.attributes?.get(ATTRIBUTE_MESSAGE_ID)
+            val threadId = unifiedSearchEntry.attributes?.get(ATTRIBUTE_THREAD_ID)
             return SearchMessageEntry(
-                searchTerm,
-                unifiedSearchEntry.thumbnailUrl,
-                unifiedSearchEntry.title!!,
-                unifiedSearchEntry.subline!!,
-                conversation,
-                messageId
+                searchTerm = searchTerm,
+                thumbnailURL = unifiedSearchEntry.thumbnailUrl,
+                title = unifiedSearchEntry.title!!,
+                messageExcerpt = unifiedSearchEntry.subline!!,
+                conversationToken = conversation,
+                threadId = threadId,
+                messageId = messageId
             )
         }
     }

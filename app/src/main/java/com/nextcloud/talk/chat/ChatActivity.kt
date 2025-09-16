@@ -323,15 +323,16 @@ class ChatActivity :
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             executeIfResultOk(it) { intent ->
                 runBlocking {
-                    val id = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
-                    id?.let {
-                        startContextChatWindowForMessage(id)
+                    val messageId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_MESSAGE_ID)
+                    val threadId = intent?.getStringExtra(MessageSearchActivity.RESULT_KEY_THREAD_ID)
+                    messageId?.let {
+                        startContextChatWindowForMessage(messageId, threadId)
                     }
                 }
             }
         }
 
-    private fun startContextChatWindowForMessage(id: String?) {
+    private fun startContextChatWindowForMessage(messageId: String?, threadId: String?) {
         binding.genericComposeView.apply {
             val shouldDismiss = mutableStateOf(false)
             setContent {
@@ -339,11 +340,9 @@ class ChatActivity :
                 bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
                 bundle.putString(BundleKeys.KEY_BASE_URL, conversationUser!!.baseUrl)
                 bundle.putString(KEY_ROOM_TOKEN, roomToken)
-                bundle.putString(BundleKeys.KEY_MESSAGE_ID, id)
-                bundle.putString(
-                    KEY_CONVERSATION_NAME,
-                    currentConversation!!.displayName
-                )
+                bundle.putString(BundleKeys.KEY_MESSAGE_ID, messageId)
+                bundle.putString(BundleKeys.KEY_THREAD_ID, threadId)
+                bundle.putString(KEY_CONVERSATION_NAME, currentConversation!!.displayName)
                 ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
             }
         }
@@ -4431,7 +4430,7 @@ class ChatActivity :
         }
         if (!foundMessage) {
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
-            startContextChatWindowForMessage(parentMessage.id)
+            startContextChatWindowForMessage(parentMessage.id, null)
         }
     }
 

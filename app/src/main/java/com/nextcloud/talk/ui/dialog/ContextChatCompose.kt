@@ -62,6 +62,7 @@ import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.bundle.BundleKeys
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
 
 @Suppress("FunctionNaming", "LongMethod", "StaticFieldLeak")
@@ -88,9 +89,17 @@ class ContextChatCompose(val bundle: Bundle) {
             val credentials = bundle.getString(BundleKeys.KEY_CREDENTIALS)!!
             val baseUrl = bundle.getString(BundleKeys.KEY_BASE_URL)!!
             val token = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
+            val threadId = bundle.getString(KEY_THREAD_ID, null)
             val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
 
-            chatViewModel.getContextForChatMessages(credentials, baseUrl, token, messageId, LIMIT)
+            chatViewModel.getContextForChatMessages(
+                credentials = credentials,
+                baseUrl = baseUrl,
+                token = token,
+                messageId = messageId,
+                threadId = threadId,
+                limit = LIMIT
+            )
         }
     }
 
