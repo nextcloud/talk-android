@@ -42,7 +42,7 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
     object EmptyState : ViewState()
     object ErrorState : ViewState()
     class LoadedState(val results: List<SearchMessageEntry>, val hasMore: Boolean) : ViewState()
-    class FinishedState(val selectedMessageId: String) : ViewState()
+    class FinishedState(val selectedMessageId: String, val selectedThreadId: String?) : ViewState()
 
     private lateinit var messageSearchHelper: MessageSearchHelper
 
@@ -95,7 +95,7 @@ class MessageSearchViewModel @Inject constructor(private val unifiedSearchReposi
     }
 
     fun selectMessage(messageEntry: SearchMessageEntry) {
-        _state.value = FinishedState(messageEntry.messageId!!)
+        _state.value = FinishedState(messageEntry.messageId!!, messageEntry.threadId)
     }
 
     companion object {

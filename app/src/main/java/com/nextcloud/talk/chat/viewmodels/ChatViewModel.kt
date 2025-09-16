@@ -944,15 +944,27 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun getContextForChatMessages(credentials: String, baseUrl: String, token: String, messageId: String, limit: Int) {
+    fun getContextForChatMessages(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String,
+        threadId: String?,
+        limit: Int
+    ) {
         viewModelScope.launch {
-            val messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials,
-                baseUrl,
-                token,
-                messageId,
-                limit
+            var messages = chatNetworkDataSource.getContextForChatMessage(
+                credentials = credentials,
+                baseUrl = baseUrl,
+                token = token,
+                messageId = messageId,
+                limit = limit,
+                threadId = threadId?.toInt()
             )
+
+            if (threadId.isNullOrEmpty()) {
+                messages = messages.filter { it.id == it.threadId }
+            }
 
             _getContextChatMessages.value = messages
         }

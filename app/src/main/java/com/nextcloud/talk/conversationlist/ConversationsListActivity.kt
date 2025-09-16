@@ -1541,6 +1541,7 @@ class ConversationsListActivity :
                             bundle.putString(KEY_ROOM_TOKEN, token)
                             bundle.putString(BundleKeys.KEY_MESSAGE_ID, item.messageEntry.messageId)
                             bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversationName)
+                            bundle.putString(BundleKeys.KEY_THREAD_ID, item.messageEntry.threadId)
                             ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
                         }
                     }
