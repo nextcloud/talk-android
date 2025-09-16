@@ -13,7 +13,7 @@ import autodagger.AutoInjector
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel.ContextChatRetrieveUiState
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.users.UserManager
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -47,6 +47,14 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         var finalTitle: String? = title
 
         viewModelScope.launch {
+
+            val user = userManager.currentUser.blockingGet()
+
+            if (!user.hasSpreedFeatureCapability("chat-get-context") ||
+                !user.hasSpreedFeatureCapability("federation-v1")){
+                _getContextChatMessagesState.value = ContextChatRetrieveUiState.Error
+            }
+
             var messages = chatNetworkDataSource.getContextForChatMessage(
                 credentials = credentials,
                 baseUrl = baseUrl,
@@ -56,7 +64,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 threadId = threadId?.toInt()
             )
 
-            if (threadId?.isEmpty() == true) {
+            if (threadId.isNullOrEmpty()) {
                 messages = messages.filter { it.id == it.threadId }
             }
 
@@ -66,6 +74,17 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
 
             _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(messageId, messages, finalTitle)
         }
+    }
+
+    fun clearContextChatState() {
+        _getContextChatMessagesState.value = ContextChatRetrieveUiState.None
+    }
+
+    sealed class ContextChatRetrieveUiState {
+        data object None : ContextChatRetrieveUiState()
+        data class Success(val messageId: String, val messages: List<ChatMessageJson>, val title: String?) :
+            ContextChatRetrieveUiState()
+        data object Error : ContextChatRetrieveUiState()
     }
 
     companion object {

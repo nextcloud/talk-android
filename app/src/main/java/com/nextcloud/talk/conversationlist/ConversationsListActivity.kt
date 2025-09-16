@@ -38,7 +38,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
@@ -1535,7 +1534,6 @@ class ConversationsListActivity :
                         ).model.displayName
 
                     binding.genericComposeView.apply {
-                        val shouldDismiss = mutableStateOf(false)
                         setContent {
                             contextChatViewModel.getContextForChatMessages(
                                 credentials = credentials!!,
@@ -1545,7 +1543,7 @@ class ConversationsListActivity :
                                 messageId = item.messageEntry.messageId!!,
                                 title = conversationName
                             )
-                            ContextChatView(shouldDismiss, context, contextChatViewModel)
+                            ContextChatView(context, contextChatViewModel)
                         }
                     }
                 }
