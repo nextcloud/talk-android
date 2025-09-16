@@ -47,11 +47,11 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         var finalTitle: String? = title
 
         viewModelScope.launch {
-
             val user = userManager.currentUser.blockingGet()
 
             if (!user.hasSpreedFeatureCapability("chat-get-context") ||
-                !user.hasSpreedFeatureCapability("federation-v1")){
+                !user.hasSpreedFeatureCapability("federation-v1")
+            ) {
                 _getContextChatMessagesState.value = ContextChatRetrieveUiState.Error
             }
 
@@ -72,7 +72,12 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 finalTitle = messages.firstOrNull()?.threadTitle
             }
 
-            _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(messageId, messages, finalTitle)
+            _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(
+                messageId = messageId,
+                threadId = threadId,
+                messages = messages,
+                title = finalTitle
+            )
         }
     }
 
@@ -82,8 +87,12 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
 
     sealed class ContextChatRetrieveUiState {
         data object None : ContextChatRetrieveUiState()
-        data class Success(val messageId: String, val messages: List<ChatMessageJson>, val title: String?) :
-            ContextChatRetrieveUiState()
+        data class Success(
+            val messageId: String,
+            val threadId: String?,
+            val messages: List<ChatMessageJson>,
+            val title: String?
+        ) : ContextChatRetrieveUiState()
         data object Error : ContextChatRetrieveUiState()
     }
 
