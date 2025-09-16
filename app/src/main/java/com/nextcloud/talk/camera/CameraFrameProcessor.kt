@@ -58,7 +58,6 @@ class CameraFrameProcessor(
     }
 
     override fun onResults(resultBundle: ImageSegmenterHelper.ResultBundle) {
-        // NOTE- selfie segmentation model returns a binary "matrix" of 0 for background, 1 for foreground.
         if (frameQueue.isEmpty()) {
             return
         }
@@ -88,55 +87,11 @@ class CameraFrameProcessor(
             // This keeps the background blurred, while leaving the foreground clear
             frameMat.copyTo(blurredMat, maskMat)
 
-            val i420Mat = Mat()
-            Imgproc.cvtColor(blurredMat, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
-
-            // Imgproc.cvtColor(maskMat, maskMat, Imgproc.COLOR_GRAY2RGBA)
-            // Imgproc.cvtColor(maskMat, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
-
-            // Get the raw bytes from the new I420 Mat
-            val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
-            i420Mat.get(0, 0, i420ByteArray)
-
-            // Get the dimensions
-            val width = maskMat.width()
-            val height = maskMat.height()
-
-            val yPlaneSize = width * height
-            val uvPlaneSize = (width / 2) * (height / 2)
-
-            val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
-            val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
-            val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
-
-            yBuffer.put(i420ByteArray, 0, yPlaneSize)
-            uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
-            vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
-
-            yBuffer.rewind()
-            uBuffer.rewind()
-            vBuffer.rewind()
-
-            // Create the I420Buffer using the separate planes
-            val finalFrameBuffer = JavaI420Buffer.wrap(
-                width,
-                height,
-                yBuffer,
-                width,
-                uBuffer,
-                width / 2,
-                vBuffer,
-                width / 2,
-                null
-            )
-
-            val timeStamp = SystemClock.elapsedRealtimeNanos()
-            val finalFrame = VideoFrame(finalFrameBuffer, 0, timeStamp)
+            val finalFrame = blurredMat.toVideoFrame()
 
             sink?.onFrame(finalFrame)
 
             finalFrame.release()
-            i420Mat.release()
         } finally {
             frameMat.release()
             blurredMat.release()
@@ -175,7 +130,7 @@ class CameraFrameProcessor(
             Imgproc.warpAffine(frameMatrix, frameMatrix, rotationMatrix, frameMatrix.size())
 
             if (isFrontFacing) {
-                Core.flip(frameMatrix, frameMatrix, 0) // TODO flip this horizontal
+                Core.flip(frameMatrix, frameMatrix, -1)
             }
 
             val preProcessedBitmap = createBitmap(
@@ -201,6 +156,51 @@ class CameraFrameProcessor(
 
     override fun setSink(sink: VideoSink?) {
         this.sink = sink
+    }
+
+    private fun Mat.toVideoFrame(): VideoFrame {
+        val i420Mat = Mat()
+        Imgproc.cvtColor(this, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
+
+        // Get the raw bytes from the new I420 Mat
+        val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
+        i420Mat.get(0, 0, i420ByteArray)
+
+        val width = this.width()
+        val height = this.height()
+
+        val yPlaneSize = width * height
+        val uvPlaneSize = (width / 2) * (height / 2)
+
+        val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
+        val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+        val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+
+        yBuffer.put(i420ByteArray, 0, yPlaneSize)
+        uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
+        vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
+
+        yBuffer.rewind()
+        uBuffer.rewind()
+        vBuffer.rewind()
+
+        // Create the I420Buffer using the separate planes
+        val finalFrameBuffer = JavaI420Buffer.wrap(
+            width,
+            height,
+            yBuffer,
+            width,
+            uBuffer,
+            width / 2,
+            vBuffer,
+            width / 2,
+            null
+        )
+
+        i420Mat.release()
+
+        val timeStamp = SystemClock.elapsedRealtimeNanos()
+        return VideoFrame(finalFrameBuffer, 0, timeStamp)
     }
 
     private fun VideoFrame.I420Buffer.toBitmap(): Bitmap? {

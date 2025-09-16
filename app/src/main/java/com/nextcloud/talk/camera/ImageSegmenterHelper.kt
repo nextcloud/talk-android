@@ -127,7 +127,6 @@ class ImageSegmenterHelper(
         imageSegmenter?.segmentAsync(mpImage, frameTime)
     }
 
-
     // MPImage isn't necessary, but the listener requires it
     private fun returnSegmentationResult(
         result: ImageSegmenterResult, image: MPImage
@@ -180,7 +179,7 @@ class ImageSegmenterHelper(
 
     companion object {
         const val DELEGATE_CPU = 0
-        const val DELEGATE_GPU = 1
+        const val DELEGATE_GPU = 1 // DO NOT USE THIS
         const val OTHER_ERROR = 0
         const val GPU_ERROR = 1
 

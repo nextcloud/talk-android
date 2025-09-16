@@ -75,6 +75,8 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.camera.BlurBackgroundViewModel
+import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
 import com.nextcloud.talk.camera.CameraFrameProcessor
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
@@ -211,7 +213,7 @@ class CallActivity : CallBaseActivity() {
     var audioManager: WebRtcAudioManager? = null
     var callRecordingViewModel: CallRecordingViewModel? = null
     var raiseHandViewModel: RaiseHandViewModel? = null
-    // TODO need to implement my own viewmodel for background blur
+    val blurBackgroundViewModel: BlurBackgroundViewModel = BlurBackgroundViewModel()
     private var mReceiver: BroadcastReceiver? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
     private var audioConstraints: MediaConstraints? = null
@@ -1109,13 +1111,6 @@ class CallActivity : CallBaseActivity() {
             )
             videoSource = peerConnectionFactory!!.createVideoSource(false)
 
-            // TODO make this an option that depends on a user setting at run time
-            //  because of hardware demands, this should not be enabled by default
-            val processor = createCameraProcessor(cameraEnumerator)
-            processor?.let {
-                videoSource?.setVideoProcessor(it)
-            }
-
             videoCapturer!!.initialize(surfaceTextureHelper, applicationContext, videoSource!!.capturerObserver)
         }
         localVideoTrack = peerConnectionFactory!!.createVideoTrack("NCv0", videoSource)
@@ -1379,6 +1374,23 @@ class CallActivity : CallBaseActivity() {
 
     fun clickRaiseOrLowerHandButton() {
         raiseHandViewModel!!.clickHandButton()
+    }
+
+    fun toggleBackgroundBlur() {
+        blurBackgroundViewModel.toggleBackgroundBlur()
+
+        val isOn = blurBackgroundViewModel.viewState.value == BackgroundBlurOn
+
+        if (isOn) {
+            val processor = createCameraProcessor(cameraEnumerator)
+            processor?.let {
+                videoSource?.setVideoProcessor(it)
+            }
+        } else {
+            // FIXME - for some reason turning off the background blur stops the frames from being sent over the
+            //  peer connection wrapper???? Maybe something to do with my VideoSink?
+            videoSource?.setVideoProcessor(null)
+        }
     }
 
     private fun animateCallControls(show: Boolean, startDelay: Long) {
