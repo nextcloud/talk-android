@@ -86,7 +86,7 @@
                     android:layout_width="0dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="20dp"
-                    android:layout_marginEnd="18dp"
+                    android:layout_marginEnd="0dp"
                     android:ellipsize="end"
                     android:gravity="start|center_vertical"
                     android:lines="1"
@@ -101,9 +101,10 @@
 
                 <ImageView
                     android:id="@+id/filter_conversations_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:padding="12dp"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:contentDescription="@string/nc_filter"
                     android:src="@drawable/ic_baseline_filter_list_24"
                     app:layout_constraintBaseline_toTopOf="parent"
@@ -113,10 +114,11 @@
 
                 <ImageView
                     android:id="@+id/threads_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
                     android:contentDescription="@string/followed_threads"
-                    android:padding="12dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp"
                     android:src="@drawable/outline_forum_24"
                     android:visibility="gone"
                     app:layout_constraintBaseline_toTopOf="parent"
