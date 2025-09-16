@@ -269,7 +269,7 @@ class ConversationsListActivity :
         setContentView(binding.root)
         initSystemBars()
         viewThemeUtils.material.themeSearchCardView(binding.searchToolbar)
-        viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE)
+        viewThemeUtils.material.colorMaterialButtonContent(binding.menuButton, ColorRole.ON_SURFACE_VARIANT)
         viewThemeUtils.platform.colorTextView(binding.searchText, ColorRole.ON_SURFACE_VARIANT)
 
         forwardMessage = intent.getBooleanExtra(KEY_FORWARD_MSG_FLAG, false)
@@ -1013,7 +1013,7 @@ class ConversationsListActivity :
     private fun showSearchBar() {
         val layoutParams = binding.searchToolbar.layoutParams as AppBarLayout.LayoutParams
         binding.searchToolbar.visibility = View.VISIBLE
-        binding.searchText.hint = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
+        binding.searchText.text = getString(R.string.appbar_search_in, getString(R.string.nc_app_product_name))
         binding.conversationListToolbar.visibility = View.GONE
         // layoutParams.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL | AppBarLayout
         // .LayoutParams.SCROLL_FLAG_SNAP | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS);
@@ -1327,7 +1327,7 @@ class ConversationsListActivity :
             openFollowedThreadsOverview()
         }
         binding.threadsButton.let {
-            viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE)
+            viewThemeUtils.platform.colorImageView(it, ColorRole.ON_SURFACE_VARIANT)
         }
 
         binding.newMentionPopupBubble.visibility = View.GONE
@@ -2231,7 +2231,7 @@ class ConversationsListActivity :
             binding.filterConversationsButton.let {
                 viewThemeUtils.platform.colorImageView(
                     it,
-                    ColorRole.ON_SURFACE
+                    ColorRole.ON_SURFACE_VARIANT
                 )
             }
         }
