@@ -171,9 +171,8 @@ class ChatViewModel @Inject constructor(
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
 
-    private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
-    val getContextChatMessages: LiveData<List<ChatMessageJson>>
-        get() = _getContextChatMessages
+    private val _getContextChatMessages = MutableStateFlow<List<ChatMessageJson>>(emptyList())
+    val getContextChatMessages: StateFlow<List<ChatMessageJson>> = _getContextChatMessages
 
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
