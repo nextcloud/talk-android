@@ -171,9 +171,6 @@ class ChatViewModel @Inject constructor(
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
 
-    private val _getContextChatMessages = MutableStateFlow<List<ChatMessageJson>>(emptyList())
-    val getContextChatMessages: StateFlow<List<ChatMessageJson>> = _getContextChatMessages
-
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
 
@@ -943,32 +940,6 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun getContextForChatMessages(
-        credentials: String,
-        baseUrl: String,
-        token: String,
-        messageId: String,
-        threadId: String?,
-        limit: Int
-    ) {
-        viewModelScope.launch {
-            var messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials = credentials,
-                baseUrl = baseUrl,
-                token = token,
-                messageId = messageId,
-                limit = limit,
-                threadId = threadId?.toInt()
-            )
-
-            if (threadId.isNullOrEmpty()) {
-                messages = messages.filter { it.id == it.threadId }
-            }
-
-            _getContextChatMessages.value = messages
-        }
-    }
-
     fun getOpenGraph(credentials: String, baseUrl: String, urlToPreview: String) {
         viewModelScope.launch {
             _getOpenGraph.value = chatNetworkDataSource.getOpenGraph(credentials, baseUrl, urlToPreview)
@@ -1019,5 +990,12 @@ class ChatViewModel @Inject constructor(
         data object None : ThreadRetrieveUiState()
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
+    }
+
+    sealed class ContextChatRetrieveUiState {
+        data object None : ContextChatRetrieveUiState()
+        data class Success(val messageId: String, val messages: List<ChatMessageJson>, val title: String?) :
+            ContextChatRetrieveUiState()
+        data class Error(val exception: Exception) : ContextChatRetrieveUiState()
     }
 }
