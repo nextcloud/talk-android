@@ -29,6 +29,7 @@ import com.nextcloud.talk.chat.data.ChatMessageRepository
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ItemCustomIncomingTextMessageBinding
+import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
@@ -217,18 +218,17 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
             !isOlderThanTwentyFourHours
 
         checkBoxContainer.removeAllViews()
-        val checkboxRegex = """- \[(X|x| )]\s*(.+)""".toRegex()
-        val lines = message.lines()
-
+        val checkboxRegex = CHECKBOX_REGEX
         val checkboxList = mutableListOf<CheckBox>()
         var hasCheckbox = false
 
-        lines.forEach { line ->
-            val match = checkboxRegex.matchEntire(line.trim())
+        message.lines().forEach { line ->
+            val trimmedLine = line.trimEnd()
+            val match = checkboxRegex.matchEntire(trimmedLine.trim())
             if (match != null) {
                 hasCheckbox = true
-                val isChecked = match.groupValues[1].equals("X", true)
-                val taskText = match.groupValues[2].trim()
+                val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
+                val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
                 val checkBox = CheckBox(checkBoxContainer.context).apply {
                     val messageText = messageUtils.enrichChatMessageText(
                         context,
@@ -243,6 +243,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                         chatMessage,
                         null
                     )
+                    tag = taskText
                     this.isChecked = isChecked
                     this.isEnabled = (
                         chatMessage.actorType == "bots" ||
@@ -257,11 +258,11 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 checkBoxContainer.addView(checkBox)
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
-            } else if (line.isNotBlank()) {
+            } else if (trimmedLine.isNotBlank()) {
                 val textView = EmojiTextView(checkBoxContainer.context).apply {
                     val messageText = messageUtils.enrichChatMessageText(
                         context,
-                        line,
+                        trimmedLine,
                         true,
                         viewThemeUtils
                     )
@@ -281,6 +282,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         return hasCheckbox
     }
 
+
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
         job = CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {
@@ -289,10 +291,22 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     intArrayOf(1)
                 )
                 val updatedMessage = updateMessageWithCheckboxStates(chatMessage.message!!, checkboxes)
+                val messageParameters = chatMessage.messageParameters
+                val messageToSend = if (!messageParameters.isNullOrEmpty()) {
+                    val parsedMessage = ChatUtils.getParsedMessage(updatedMessage, messageParameters) ?: updatedMessage
+                    messageUtils.processEditMessageParameters(
+                        messageParameters,
+                        chatMessage,
+                        parsedMessage
+                    ).toString()
+                } else {
+                    updatedMessage
+                }
+
                 chatRepository.editChatMessage(
                     user.getCredentials(),
                     ApiUtils.getUrlForChatMessage(apiVersion, user.baseUrl!!, chatMessage.token!!, chatMessage.id),
-                    updatedMessage
+                    messageToSend
                 ).collect { result ->
                     withContext(Dispatchers.Main) {
                         if (result.isSuccess) {
@@ -313,13 +327,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     }
 
     private fun updateMessageWithCheckboxStates(originalMessage: String, checkboxes: List<CheckBox>): String {
-        val checkboxRegex = """- \[(X|x| )]\s*(.+)""".toRegex()
-        var index = 0
+        var checkboxIndex = 0
         return originalMessage.lines().joinToString("\n") { line ->
-            val match = checkboxRegex.matchEntire(line.trim())
+            val match = CHECKBOX_REGEX.matchEntire(line.trim())
             if (match != null) {
-                val taskText = match.groupValues[2].trim()
-                val state = if (checkboxes.getOrNull(index++)?.isChecked == true) "X" else " "
+                val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
+                val state = if (checkboxes.getOrNull(checkboxIndex)?.isChecked == true) "X" else " "
+                checkboxIndex++
                 "- [$state] $taskText"
             } else {
                 line
@@ -444,5 +458,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private val TAG = IncomingTextMessageViewHolder::class.java.simpleName
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
+        private val CHECKBOX_REGEX = """- \[(X|x| )]\s*(.+)""".toRegex()
+        private const val CHECKED_GROUP_INDEX = 1
+        private const val TASK_TEXT_GROUP_INDEX = 2
     }
 }
