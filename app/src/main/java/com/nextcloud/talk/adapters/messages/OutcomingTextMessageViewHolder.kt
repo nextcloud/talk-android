@@ -12,6 +12,7 @@ package com.nextcloud.talk.adapters.messages
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.CheckBox
 import androidx.core.content.ContextCompat
@@ -268,10 +269,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         val itemMarginInPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
-            8f,
+            4f,
             context.resources.displayMetrics
         ).toInt()
-
 
         message.lines().forEach { line ->
             val trimmedLine = line.trimEnd()
@@ -297,13 +297,16 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     tag = taskText
                     this.isChecked = isChecked
                     this.isEnabled = messageIsEditable || isNoTimeLimitOnNoteToSelf
+                    this.gravity = Gravity.CENTER_VERTICAL
                     setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
                     setOnCheckedChangeListener { _, _ ->
                         updateCheckboxStates(chatMessage, user, checkboxList)
                     }
                 }
                 checkBoxContainer.addView(checkBox)
-                checkBox.setPadding(0,0,0,itemMarginInPx)
+                if (chatMessage.messageParameters != null) {
+                    checkBox.setPadding(0, 0, 0, itemMarginInPx)
+                }
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmedLine.isNotBlank()) {
@@ -324,8 +327,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
                 }
 
-
-                textView.setPadding(0,0,0,itemMarginInPx)
+                if (chatMessage.messageParameters != null) {
+                    textView.setPadding(0, 0, 0, itemMarginInPx)
+                }
                 checkBoxContainer.addView(textView)
             }
         }
