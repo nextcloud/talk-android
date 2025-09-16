@@ -51,7 +51,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asFlow
 import autodagger.AutoInjector
 import com.nextcloud.talk.R
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -199,12 +198,10 @@ class ContextChatCompose(val bundle: Bundle) {
                                 modifier = Modifier.align(Alignment.CenterHorizontally)
                             )
                         } else {
-                            val contextState = contextViewModel
+                            val messagesJson by contextViewModel
                                 .chatViewModel
                                 .getContextChatMessages
-                                .asFlow()
-                                .collectAsState(listOf())
-                            val messagesJson = contextState.value
+                                .collectAsState()
                             val messages = messagesJson.map(ChatMessageJson::asModel)
                             val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
                             val adapter = ComposeChatAdapter(messagesJson, messageId)
