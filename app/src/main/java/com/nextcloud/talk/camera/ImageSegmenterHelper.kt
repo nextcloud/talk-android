@@ -11,18 +11,22 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.SystemClock
 import android.util.Log
-import androidx.core.graphics.createBitmap
 import com.google.mediapipe.framework.image.BitmapImageBuilder
+import com.google.mediapipe.framework.image.ByteBufferExtractor
 import com.google.mediapipe.framework.image.MPImage
 import com.google.mediapipe.tasks.core.BaseOptions
 import com.google.mediapipe.tasks.core.Delegate
 import com.google.mediapipe.tasks.vision.core.RunningMode
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenter
 import com.google.mediapipe.tasks.vision.imagesegmenter.ImageSegmenterResult
+import org.opencv.core.Core
+import org.opencv.core.CvType
+import org.opencv.core.Mat
+import org.opencv.core.Scalar
 import java.nio.ByteBuffer
 
 class ImageSegmenterHelper(
-    var currentDelegate: Int = DELEGATE_GPU,
+    var currentDelegate: Int = DELEGATE_CPU,
     var runningMode: RunningMode = RunningMode.LIVE_STREAM,
     val context: Context,
     var imageSegmenterListener: SegmenterListener? = null
@@ -136,19 +140,26 @@ class ImageSegmenterHelper(
         // the OutputType CATEGORY_MASK, which only provides a single mask.
         val mpImage = result.categoryMask().get()
 
-        // TODO likely an error with my mask processing here, it seems That perhaps
-        //  I'm not processing the mask to bitmap mask correctly
-        //  thus the copy mask is incorrect
+        val mask = ByteBufferExtractor.extract(mpImage)
 
-        val byteBuffer = ByteBuffer.allocate(mpImage.width * mpImage.height * Int.SIZE_BYTES)
+        val data = ByteArray(mask.capacity())
 
-        val bitmap = createBitmap(mpImage.width, mpImage.height, Bitmap.Config.ARGB_8888)
+        (mask.duplicate().rewind() as ByteBuffer).get(data)
 
-        bitmap.copyPixelsFromBuffer(byteBuffer)
+        val mat = Mat(
+            mpImage.height,
+            mpImage.width,
+            CvType.CV_8UC1 // 8 bit unsigned 1 channel
+        )
+
+        mat.put(0, 0, data)
+
+        Core.bitwise_not(mat, mat)
+        Core.multiply(mat, Scalar(255.0), mat)
 
         imageSegmenterListener?.onResults(
             ResultBundle(
-                bitmap,
+                mat,
                 inferenceTime
             )
         )
@@ -163,7 +174,7 @@ class ImageSegmenterHelper(
 
     // Wraps results from inference, the time it takes for inference to be performed.
     data class ResultBundle(
-        val mask: Bitmap,
+        val mask: Mat,
         val inferenceTime: Long,
     )
 

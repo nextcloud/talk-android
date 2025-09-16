@@ -19,10 +19,8 @@ import androidx.core.graphics.createBitmap
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Core
-import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Point
-import org.opencv.core.Scalar
 import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import org.webrtc.JavaI420Buffer
@@ -65,51 +63,15 @@ class CameraFrameProcessor(
             return
         }
 
-        resultBundle.mask
+        val maskMat = resultBundle.mask
+
         val frameBitmap: Bitmap = frameQueue.removeFirst()
 
         val frameMat = Mat()
         val blurredMat = Mat()
-        val maskMat = Mat()
-        val grayMaskMat = Mat()
 
         try {
             Utils.bitmapToMat(frameBitmap, frameMat)
-            // Utils.bitmapToMat(maskBitmap, maskMat)
-            //
-            // Imgproc.cvtColor(
-            //     maskMat,
-            //     grayMaskMat,
-            //     Imgproc.COLOR_RGBA2GRAY  // single-channel (grayscale) for OpenCV functions.
-            // )
-            //
-            // val blurredMat = frameMat.clone()
-            // Imgproc.GaussianBlur(
-            //     blurredMat,
-            //     blurredMat,
-            //     Size(25.0, 25.0),
-            //     0.0,
-            //     0.0
-            // )
-
-            // FIXME - I'm tested this out with a custom circle mask, to confirm that the problem is
-            //  indeed that my segmentation mask from MediaPipe, is not being formatted properly against the
-            //  the frame matrix, leading to improper applications of blurring
-
-            val grayMaskMat = Mat(frameMat.size(), CvType.CV_8UC1, Scalar(0.0))
-
-            // 2. Define the center and radius for your circle
-            val center = Point(frameMat.width() / 2.0, frameMat.height() / 2.0)
-            val radius = (frameMat.width() / 4) // You can adjust this value
-
-            // 3. Draw a filled, white (255.0) circle onto the black mask
-            Imgproc.circle(
-                grayMaskMat,       // The Mat to draw on
-                center,            // The center point
-                radius,            // The radius
-                Scalar(255.0),     // Color (white)
-                Imgproc.FILLED     // Thickness (filled)
-            )
 
             val blurredMat = frameMat.clone()
             Imgproc.GaussianBlur(
@@ -120,20 +82,25 @@ class CameraFrameProcessor(
                 0.0
             )
 
+            Imgproc.resize(maskMat, maskMat, frameMat.size(), .0, .0, Imgproc.INTER_LINEAR)
+
             // Copies pixels from `frameMat` to `blurredMat` ONLY where `grayMaskMat` is non-zero.
             // This keeps the background blurred, while leaving the foreground clear
-            frameMat.copyTo(blurredMat, grayMaskMat)
+            frameMat.copyTo(blurredMat, maskMat)
 
             val i420Mat = Mat()
             Imgproc.cvtColor(blurredMat, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
+
+            // Imgproc.cvtColor(maskMat, maskMat, Imgproc.COLOR_GRAY2RGBA)
+            // Imgproc.cvtColor(maskMat, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
 
             // Get the raw bytes from the new I420 Mat
             val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
             i420Mat.get(0, 0, i420ByteArray)
 
             // Get the dimensions
-            val width = blurredMat.width()
-            val height = blurredMat.height()
+            val width = maskMat.width()
+            val height = maskMat.height()
 
             val yPlaneSize = width * height
             val uvPlaneSize = (width / 2) * (height / 2)
@@ -169,12 +136,11 @@ class CameraFrameProcessor(
             sink?.onFrame(finalFrame)
 
             finalFrame.release()
-            i420Mat.release() // Release the Mat we created
+            i420Mat.release()
         } finally {
             frameMat.release()
             blurredMat.release()
             maskMat.release()
-            grayMaskMat.release()
         }
     }
 
@@ -237,7 +203,7 @@ class CameraFrameProcessor(
         this.sink = sink
     }
 
-    fun VideoFrame.I420Buffer.toBitmap(): Bitmap? {
+    private fun VideoFrame.I420Buffer.toBitmap(): Bitmap? {
         return kotlin.runCatching {
             val i420Buffer = this
 
@@ -253,14 +219,13 @@ class CameraFrameProcessor(
             val strideU = i420Buffer.strideU
             val strideV = i420Buffer.strideV
 
-
-            // 1. Copy Y Plane (respecting stride)
             val yPlaneSize = width * height
             if (strideY == width) {
                 // Fast path: contiguous data
                 dataY.get(nv21Data, 0, yPlaneSize)
             } else {
                 // Slow path: row-by-row copy
+                // TODO - this is embarrassingly parallelizable, use multiprocessing
                 for (row in 0 until height) {
                     dataY.position(row * strideY)
                     dataY.get(nv21Data, row * width, width)
@@ -268,6 +233,8 @@ class CameraFrameProcessor(
             }
 
             // 2. Copy VU Planes (interleaved, respecting strides)
+            // TODO - this is embarrassingly parallelizable, use multiprocessing
+            // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/limited-parallelism.html
             val vuPlaneOffset = width * height
             for (row in 0 until height / 2) {
                 for (col in 0 until width / 2) {
@@ -282,7 +249,6 @@ class CameraFrameProcessor(
                 }
             }
 
-            // 3. Now use YuvImage with the correctly formatted NV21 data
             val yuvImage = YuvImage(
                 nv21Data,
                 ImageFormat.NV21,
@@ -291,7 +257,6 @@ class CameraFrameProcessor(
                 null
             )
 
-            // 4. Compress to JPEG and decode
             val outputStream = ByteArrayOutputStream()
             yuvImage.compressToJpeg(
                 Rect(0, 0, width, height),
