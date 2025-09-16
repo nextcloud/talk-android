@@ -670,6 +670,7 @@
     <string name="thread_notifications">Fógraí snáithe</string>
     <string name="thread_reply">Freagra</string>
     <string name="thread_title">Teideal an snáithe</string>
+    <string name="threads_list_empty">Níor aimsíodh aon snáitheanna</string>
     <string name="today">Inniu</string>
     <string name="tomorrow">Amárach</string>
     <string name="translate">Aistrigh</string>

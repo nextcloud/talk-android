@@ -670,6 +670,7 @@
     <string name="thread_notifications">Обавештења низова</string>
     <string name="thread_reply">Одговори</string>
     <string name="thread_title">Наслов нити</string>
+    <string name="threads_list_empty">Није пронађен ниједан низ</string>
     <string name="today">Данас</string>
     <string name="tomorrow">Сутра</string>
     <string name="translate">Превођење</string>

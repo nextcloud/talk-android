@@ -62,6 +62,7 @@
     <string name="file_list_folder">cartafol</string>
     <string name="file_list_loading">Cargando…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Fíos seguidos</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Produciuse un fallo ao recuperar os convites pendentes</string>
     <string name="hint_edited_message">(editado)</string>
@@ -73,6 +74,7 @@
     <string name="leave_call">Abandonar a chamada</string>
     <string name="left_conversation">Vde. deixou a conversa %1$s</string>
     <string name="load_more_results">Cargando máis resultados</string>
+    <string name="local_time">Hora local: %1$s</string>
     <string name="lock_conversation">Bloquear a conversa</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
@@ -170,6 +172,7 @@
     <string name="nc_copy_message">Copiar</string>
     <string name="nc_create_new_conversation">Crear unha nova conversa</string>
     <string name="nc_create_poll">Crear enquisa</string>
+    <string name="nc_current_user">Vde.:</string>
     <string name="nc_date_header_today">Hoxe</string>
     <string name="nc_date_header_yesterday">Onte</string>
     <string name="nc_delete">Eliminar</string>
@@ -178,6 +181,7 @@
     <string name="nc_delete_conversation_more">Se elimina a conversa, tamén se eliminará para todos os demais participantes.</string>
     <string name="nc_delete_message">Eliminar a mensaxe</string>
     <string name="nc_delete_message_leaked_to_matterbridge">A mensaxe foi eliminada correctamente, pero é posíbel que se filtrase a outros servizos</string>
+    <string name="nc_delete_now">Eliminar agora</string>
     <string name="nc_deleted_user">O usuario %1$s foi retirado</string>
     <string name="nc_demote">Relegar de moderador</string>
     <string name="nc_description_record_voice">Gravar mensaxe de voz</string>
@@ -285,7 +289,7 @@
     <string name="nc_important_conversation_desc">Nas conversas importantes, ignorarase o estado «Non molestar»</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
-    <string name="nc_keep">Manter</string>
+    <string name="nc_keep">Conservar</string>
     <string name="nc_last_moderator_leaving_room_warning">Debe promover un novo moderador antes de poder abandonar a conversa</string>
     <string name="nc_last_modified">%1$s | Última modificación: %2$s</string>
     <string name="nc_leave">Abandonar a conversa</string>
@@ -391,6 +395,7 @@
     <string name="nc_search">Buscar</string>
     <string name="nc_search_clear">Limpar a busca</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
+    <string name="nc_send_edit_message">Actualizar a mensaxe</string>
     <string name="nc_sensitive_conversation">Conversa sensíbel</string>
     <string name="nc_sensitive_conversation_hint">A vista previa da mensaxe estará desactivada na lista de conversas e nas notificacións</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
@@ -519,11 +524,13 @@
     <string name="notification_mention_only">Só as mencións con \@</string>
     <string name="notification_off">Apagado</string>
     <string name="notifications_default">Predeterminado</string>
+    <string name="notifications_default_description">Seguir os axustes da conversa</string>
     <string name="oneHour">1 hora</string>
     <string name="online">En liña</string>
     <string name="online_status">Estado en liña</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir na aplicación de Ficheiros</string>
+    <string name="open_thread">Ir ao fío</string>
     <string name="play_pause_voice_message">Reproducir/poñer en pausa a mensaxe de voz</string>
     <string name="playback_speed_control">Control da velocidade de reprodución</string>
     <string name="polls_add_option">Engadir unha opción</string>
@@ -546,6 +553,7 @@
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Non é posible compartir ficheiros desde o almacenamento sen permisos</string>
+    <string name="recent_threads">Fíos recentes</string>
     <string name="record_active_info">Estase a gravar a chamada</string>
     <string name="record_cancel_start">Cancelar o inicio da gravación</string>
     <string name="record_failed_info">Produciuse un fallo na gravación. Póñase en contacto coa administración desta instancia.</string>
@@ -603,6 +611,7 @@
     <string name="show_banned_participants">Amosar os participantes expulsados</string>
     <string name="starred">Favorito</string>
     <string name="startCallForbidden">Vde. non ten permiso para iniciar unha chamada</string>
+    <string name="start_thread">Crear un fío</string>
     <string name="started_a_call">iniciar unha chamada</string>
     <string name="status_message">Mensaxe de estado</string>
     <string name="status_reverted">Estado revertido</string>
@@ -621,6 +630,8 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é unha mensaxe de proba</string>
     <string name="this_weekend">Este fin de semana</string>
+    <string name="thread_notifications">Notificacións de fíos</string>
+    <string name="thread_title">Título do fío</string>
     <string name="today">Hoxe</string>
     <string name="tomorrow">Mañá</string>
     <string name="translate">Traducir</string>
@@ -644,7 +655,7 @@
     <string name="upload_new_avatar_from_device">Enviar un novo avatar desde o dispositivo</string>
     <string name="user_absence">%1$s está fóra da oficina e é posíbel que non responda</string>
     <string name="user_absence_for_one_day">%1$s hoxe está fóra da oficina</string>
-    <string name="user_absence_replacement">Substitución:</string>
+    <string name="user_absence_replacement">Substitución: </string>
     <string name="user_avatar">Avatar do usuario</string>
     <string name="user_info_address">Enderezo</string>
     <string name="user_info_displayname">Nome completo</string>
@@ -661,6 +672,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">Ver %d mensaxe semellante</item>
         <item quantity="other">Ver %d mensaxes semellantes</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d resposta</item>
+        <item quantity="other">%d respostas</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d voto</item>
