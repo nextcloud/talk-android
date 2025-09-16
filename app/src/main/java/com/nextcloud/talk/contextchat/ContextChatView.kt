@@ -15,12 +15,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -31,7 +33,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -48,45 +49,65 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 
 @Composable
-fun ContextChatView(shouldDismiss: MutableState<Boolean>, context: Context, contextViewModel: ContextChatViewModel) {
+fun ContextChatView(context: Context, contextViewModel: ContextChatViewModel) {
     val contextChatMessagesState = contextViewModel.getContextChatMessagesState.collectAsState().value
 
     when (contextChatMessagesState) {
-        ChatViewModel.ContextChatRetrieveUiState.None -> {}
-        is ChatViewModel.ContextChatRetrieveUiState.Success -> {
+        ContextChatViewModel.ContextChatRetrieveUiState.None -> {}
+        is ContextChatViewModel.ContextChatRetrieveUiState.Success -> {
             ContextChatSuccessView(
-                shouldDismiss = shouldDismiss,
+                visible = true,
                 context = context,
-                contextChatRetrieveUiStateSuccess = contextChatMessagesState
+                contextChatRetrieveUiStateSuccess = contextChatMessagesState,
+                onDismiss = {
+                    contextViewModel.clearContextChatState()
+                }
             )
         }
 
-        is ChatViewModel.ContextChatRetrieveUiState.Error -> {}
+        is ContextChatViewModel.ContextChatRetrieveUiState.Error -> {
+            ContextChatErrorView()
+        }
+    }
+}
+
+@Composable
+fun ContextChatErrorView() {
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            Icons.Filled.Info,
+            contentDescription = "Info Icon"
+        )
+
+        Text(
+            stringResource(R.string.nc_capabilities_failed)
+        )
     }
 }
 
 @Composable
 fun ContextChatSuccessView(
-    shouldDismiss: MutableState<Boolean>,
+    visible: Boolean,
     context: Context,
-    contextChatRetrieveUiStateSuccess: ChatViewModel.ContextChatRetrieveUiState.Success
+    contextChatRetrieveUiStateSuccess: ContextChatViewModel.ContextChatRetrieveUiState.Success,
+    onDismiss: () -> Unit
 ) {
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
     val colorScheme = previewUtils.viewThemeUtils.getColorScheme(context)
 
-    if (!shouldDismiss.value) {
+    if (visible) {
         MaterialTheme(colorScheme) {
             Dialog(
-                onDismissRequest = {
-                    shouldDismiss.value = true
-                },
+                onDismissRequest = onDismiss,
                 properties = DialogProperties(
                     dismissOnBackPress = true,
                     dismissOnClickOutside = true,
@@ -100,16 +121,11 @@ fun ContextChatSuccessView(
                             .fillMaxHeight()
                             .padding(top = 16.dp)
                     ) {
-                        // val user = contextViewModel.userManager.currentUser.blockingGet()
-                        // val shouldShow = !user.hasSpreedFeatureCapability("chat-get-context") ||
-                        //     !user.hasSpreedFeatureCapability("federation-v1")
                         Row(
                             modifier = Modifier.Companion.align(Alignment.Companion.Start),
                             verticalAlignment = Alignment.Companion.CenterVertically
                         ) {
-                            IconButton(onClick = {
-                                shouldDismiss.value = true
-                            }) {
+                            IconButton(onClick = onDismiss) {
                                 Icon(
                                     Icons.Filled.Close,
                                     stringResource(R.string.close),
@@ -120,6 +136,10 @@ fun ContextChatSuccessView(
                             Column(verticalArrangement = Arrangement.Center) {
                                 Text(contextChatRetrieveUiStateSuccess.title ?: "", fontSize = 24.sp)
                             }
+
+                            // This code was written back then but not needed yet, but it's not deleted yet
+                            // because it may be used soon when further migrating to Compose...
+
                             // Spacer(modifier = Modifier.weight(1f))
                             // val cInt = context.resources.getColor(R.color.high_emphasis_text, null)
                             // Icon(
@@ -144,18 +164,6 @@ fun ContextChatSuccessView(
                             // ComposeChatMenu(colorScheme.background, false)
                         }
 
-                        // if (shouldShow) {
-                        //     Icon(
-                        //         Icons.Filled.Info,
-                        //         "Info Icon",
-                        //         modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
-                        //     )
-                        //
-                        //     Text(
-                        //         stringResource(R.string.nc_capabilities_failed),
-                        //         modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
-                        //     )
-                        // } else {
                         val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
                         val adapter = ComposeChatAdapter(contextChatRetrieveUiStateSuccess.messages, messageId)
@@ -163,7 +171,6 @@ fun ContextChatSuccessView(
                             adapter.addMessages(messages.toMutableList(), true)
                         }
                         adapter.GetView()
-                        // }
                     }
                 }
             }
@@ -171,6 +178,8 @@ fun ContextChatSuccessView(
     }
 }
 
+// This code was written back then but not needed yet, but it's not deleted yet
+// because it may be used soon when further migrating to Compose...
 @Composable
 private fun ComposeChatMenu(backgroundColor: Color, enabled: Boolean = true) {
     var expanded by remember { mutableStateOf(false) }

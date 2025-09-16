@@ -336,7 +336,6 @@ class ChatActivity :
 
     private fun startContextChatWindowForMessage(messageId: String?, threadId: String?) {
         binding.genericComposeView.apply {
-            val shouldDismiss = mutableStateOf(false)
             setContent {
                 contextChatViewModel.getContextForChatMessages(
                     credentials = credentials!!,
@@ -346,7 +345,7 @@ class ChatActivity :
                     messageId = messageId!!,
                     title = currentConversation!!.displayName
                 )
-                ContextChatView(shouldDismiss, context, contextChatViewModel)
+                ContextChatView(context, contextChatViewModel)
             }
         }
         Log.d(TAG, "Should open something else")

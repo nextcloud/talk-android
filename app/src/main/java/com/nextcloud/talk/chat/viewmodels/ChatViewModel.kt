@@ -991,11 +991,4 @@ class ChatViewModel @Inject constructor(
         data class Success(val thread: ThreadInfo?) : ThreadRetrieveUiState()
         data class Error(val exception: Exception) : ThreadRetrieveUiState()
     }
-
-    sealed class ContextChatRetrieveUiState {
-        data object None : ContextChatRetrieveUiState()
-        data class Success(val messageId: String, val messages: List<ChatMessageJson>, val title: String?) :
-            ContextChatRetrieveUiState()
-        data class Error(val exception: Exception) : ContextChatRetrieveUiState()
-    }
 }
