@@ -502,6 +502,8 @@ class ComposeChatAdapter(
                         Text(message.actorDisplayName.toString(), fontSize = AUTHOR_TEXT_SIZE)
                     }
 
+                    ThreadTitle(message)
+
                     Row {
                         content()
                         Spacer(modifier = Modifier.size(8.dp))
@@ -517,13 +519,32 @@ class ComposeChatAdapter(
                                 read,
                                 "",
                                 modifier = Modifier
-                                    .padding(start = 2.dp)
-                                    .size(12.dp)
+                                    .padding(start = 4.dp)
+                                    .size(16.dp)
                                     .align(Alignment.CenterVertically)
                             )
                         }
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun ThreadTitle(message: ChatMessage) {
+        val isFirstMessageOfThreadInNormalChat = threadId == null && message.isThread
+        if (isFirstMessageOfThreadInNormalChat) {
+            Row {
+                val read = painterResource(R.drawable.outline_forum_24)
+                Icon(
+                    read,
+                    "",
+                    modifier = Modifier
+                        .padding(end = 6.dp)
+                        .size(12.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(message.threadTitle ?: "", fontSize = AUTHOR_TEXT_SIZE)
             }
         }
     }
@@ -759,8 +780,8 @@ class ComposeChatAdapter(
                         read,
                         "",
                         modifier = Modifier
-                            .padding(start = 2.dp)
-                            .size(12.dp)
+                            .padding(start = 4.dp)
+                            .size(16.dp)
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -995,6 +1016,16 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 2
                 actorId = "user1_id"
                 message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 3
+                actorId = "user1_id"
+                threadTitle = "Thread title"
+                isThread = true
+                message = "Content of a first thread message"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
