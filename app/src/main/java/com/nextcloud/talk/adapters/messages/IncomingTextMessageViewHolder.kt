@@ -12,6 +12,7 @@ package com.nextcloud.talk.adapters.messages
 import android.content.Context
 import android.util.Log
 import android.util.TypedValue
+import android.view.Gravity
 import android.view.View
 import android.widget.CheckBox
 import androidx.core.content.ContextCompat
@@ -49,7 +50,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
-import androidx.core.view.isNotEmpty
 
 @AutoInjector(NextcloudTalkApplication::class)
 class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
@@ -223,7 +223,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         val checkboxList = mutableListOf<CheckBox>()
         var hasCheckbox = false
 
-        val spaceInDp = 8
+        val spaceInDp = 4
         val spaceInPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             spaceInDp.toFloat(),
@@ -258,13 +258,16 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                             chatActivity.userAllowedByPrivilages(chatMessage)
                         ) &&
                         messageIsEditable
+                    this.gravity = Gravity.CENTER_VERTICAL
                     setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
                     setOnCheckedChangeListener { _, _ ->
                         updateCheckboxStates(chatMessage, user, checkboxList)
                     }
                 }
                 checkBoxContainer.addView(checkBox)
-                checkBox.setPadding(0,0,0,spaceInPx)
+                if (chatMessage.messageParameters != null) {
+                    checkBox.setPadding(0, 0, 0, spaceInPx)
+                }
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmedLine.isNotBlank()) {
@@ -284,15 +287,15 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     )
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
                 }
-                textView.setPadding(0,0,0,spaceInPx)
-
+                if (chatMessage.messageParameters != null) {
+                    textView.setPadding(0, 0, 0, spaceInPx)
+                }
                 checkBoxContainer.addView(textView)
             }
         }
 
         return hasCheckbox
     }
-
 
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
         job = CoroutineScope(Dispatchers.Main).launch {
