@@ -49,6 +49,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.Date
 import javax.inject.Inject
+import androidx.core.view.isNotEmpty
 
 @AutoInjector(NextcloudTalkApplication::class)
 class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
@@ -222,6 +223,13 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         val checkboxList = mutableListOf<CheckBox>()
         var hasCheckbox = false
 
+        val spaceInDp = 8
+        val spaceInPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            spaceInDp.toFloat(),
+            context.resources.displayMetrics
+        ).toInt()
+
         message.lines().forEach { line ->
             val trimmedLine = line.trimEnd()
             val match = checkboxRegex.matchEntire(trimmedLine.trim())
@@ -256,6 +264,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     }
                 }
                 checkBoxContainer.addView(checkBox)
+                checkBox.setPadding(0,0,0,spaceInPx)
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmedLine.isNotBlank()) {
@@ -275,6 +284,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     )
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
                 }
+                textView.setPadding(0,0,0,spaceInPx)
+
                 checkBoxContainer.addView(textView)
             }
         }

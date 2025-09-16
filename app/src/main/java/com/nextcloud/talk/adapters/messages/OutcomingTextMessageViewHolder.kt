@@ -266,6 +266,13 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         val checkboxList = mutableListOf<CheckBox>()
         var hasCheckbox = false
 
+        val itemMarginInPx = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            8f,
+            context.resources.displayMetrics
+        ).toInt()
+
+
         message.lines().forEach { line ->
             val trimmedLine = line.trimEnd()
             val match = checkboxRegex.matchEntire(trimmedLine.trim())
@@ -296,6 +303,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     }
                 }
                 checkBoxContainer.addView(checkBox)
+                checkBox.setPadding(0,0,0,itemMarginInPx)
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmedLine.isNotBlank()) {
@@ -315,6 +323,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     )
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
                 }
+
+
+                textView.setPadding(0,0,0,itemMarginInPx)
                 checkBoxContainer.addView(textView)
             }
         }
