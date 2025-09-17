@@ -10,6 +10,7 @@
     <string name="archive_hint">Unha vez arquivada unha conversa, de xeito predeterminado vai ser agochada. Seleccione o filtro «Arquivado» para ver as conversas arquivadas. Seguirá a recibir as mencións directas.</string>
     <string name="archived">Arquivada</string>
     <string name="archived_conversation">%1$s foi arquivada</string>
+    <string name="audio_call">Chamada de voz</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Saída de son</string>
     <string name="audio_output_phone">Teléfono</string>
@@ -35,8 +36,10 @@
     <string name="close">Pechar</string>
     <string name="close_icon">Icona «Pechar»</string>
     <string name="connection_established">Estabeleceuse a conexión</string>
+    <string name="connection_lost">Non hai conexión co servidor</string>
     <string name="connection_lost_sent_messages_are_queued">Perdeuse a conexión — As mensaxes enviadas póñense en cola</string>
     <string name="continuous_voice_message_recording">Bloquear a gravación para gravar continuamente a mensaxe de voz</string>
+    <string name="conversation_archived">A conversa está arquivada</string>
     <string name="conversation_is_read_only">A conversa é só de lectura</string>
     <string name="conversation_read_only_failed">Produciuse un fallo ao definir a conversa como de só lectura</string>
     <string name="conversations">Conversas</string>
@@ -46,10 +49,12 @@
     <string name="danger_zone">Zona de perigo</string>
     <string name="deck_card_description">%1$s en %2$s</string>
     <string name="delete_avatar">Eliminar avatar</string>
+    <string name="delete_voice_recording">Eliminar a gravación de voz</string>
     <string name="deleted_conversation">A conversa %1$s foi eliminada</string>
     <string name="dnd">Non molestar</string>
     <string name="dontClear">Non limpar</string>
     <string name="edit">Editar</string>
+    <string name="edit_error_24_hours_old_message">Non é posíbel editar as mensaxes con máis de 24 horas</string>
     <string name="edit_message_icon_description">Editar a mensaxe</string>
     <string name="emoji_category_recent">Recente</string>
     <string name="encrypted">Cifrado</string>
@@ -75,6 +80,10 @@
     <string name="left_conversation">Vde. deixou a conversa %1$s</string>
     <string name="load_more_results">Cargando máis resultados</string>
     <string name="local_time">Hora local: %1$s</string>
+    <string name="location_permission_denied">Permiso de localización denegado</string>
+    <string name="location_permission_denied_msg">Actíveo nos axustes da aplicación</string>
+    <string name="location_services_disabled">Servizos de localización desactivados</string>
+    <string name="location_services_disabled_msg">Active os servizos de localización (GPS) para usar esta función</string>
     <string name="lock_conversation">Bloquear a conversa</string>
     <string name="lock_symbol">Símbolo de bloqueo</string>
     <string name="lower_hand">Baixar a man</string>
@@ -87,6 +96,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Primeiro o máis grande</string>
     <string name="menu_item_sort_by_size_smallest_first">Primeiro o máis pequeno</string>
+    <string name="message_copied">Copiouse a mensaxe</string>
+    <string name="message_delete_are_you_sure">Confirma que quere eliminar esta mensaxe?</string>
     <string name="message_deleted_by_you">Mensaxe eliminada por Vde.</string>
     <string name="message_last_edited_by">Editado por %1$s</string>
     <string name="message_poll_tap_to_open">Toque para abrir a enquisa</string>
@@ -260,6 +271,7 @@
     <string name="nc_federation_pending_invitation_hint">Vde. ten convites pendentes</string>
     <string name="nc_file_browser_back">Atrás</string>
     <string name="nc_file_storage_permission">Precísase de permiso para acceder ao ficheiro</string>
+    <string name="nc_filter">Filtrar conversas</string>
     <string name="nc_following_link">Usuario seguindo unha ligazón pública</string>
     <string name="nc_formatted_message_you">Vde.: %1$s</string>
     <string name="nc_forward_message">Reenviar</string>
@@ -287,6 +299,7 @@
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar a optimización da batería</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">Nas conversas importantes, ignorarase o estado «Non molestar»</string>
+    <string name="nc_invalid_time">Hora incorrecta</string>
     <string name="nc_invitations">Convites</string>
     <string name="nc_join_open_conversations">Unirse a conversas abertas</string>
     <string name="nc_keep">Conservar</string>
@@ -309,6 +322,12 @@
     <string name="nc_manual">Sen definir</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como sen ler</string>
+    <string name="nc_mark_conversation_as_important">Conversa marcada como importante</string>
+    <string name="nc_mark_conversation_as_insensitive">Conversa sen marcar como sensíbel</string>
+    <string name="nc_mark_conversation_as_sensitive">Conversa marcada como sensíbel</string>
+    <string name="nc_mark_conversation_as_unimportant">Conversa sen marcar como importante</string>
+    <string name="nc_meeting_ended">Rematou a xuntanza</string>
+    <string name="nc_message_added_to_notes">Mensaxe engadida ás notas</string>
     <string name="nc_message_failed">Fallado</string>
     <string name="nc_message_failed_to_send">Produciuse un fallo ao enviar a mensaxe:</string>
     <string name="nc_message_offline">Sen conexión</string>
@@ -316,6 +335,7 @@
     <string name="nc_message_read">Mensaxe lida</string>
     <string name="nc_message_sending">Enviando</string>
     <string name="nc_message_sent">Mensaxe enviada</string>
+    <string name="nc_microphone_enabled_audio_recording">O micrófono está activado e estase a gravar o son</string>
     <string name="nc_microphone_permission_hint">Para activar a comunicación por voz, conceda o permiso de «Micrófono».</string>
     <string name="nc_missed_call">Perdeu unha chamada de %s</string>
     <string name="nc_moderator">Moderador</string>
@@ -348,6 +368,7 @@
     <string name="nc_notify_me_never">Non notificar nunca</string>
     <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
     <string name="nc_ok">Aceptar</string>
+    <string name="nc_ongoing_meeting">Xuntanza en curso</string>
     <string name="nc_open_conversation_to_registered_users">Abrir a conversa a usuarios rexistrados</string>
     <string name="nc_open_to_guest_app_users">Aberta tamén aos usuarios da aplicación convidados</string>
     <string name="nc_owner">Propietario</string>
@@ -369,6 +390,9 @@
     <string name="nc_promote">Promover a moderador</string>
     <string name="nc_public_call_status">Conversa pública</string>
     <string name="nc_push_disabled">Desactivadas as notificacións emerxentes</string>
+    <string name="nc_push_notification_error"> Desculpe, algo foi mal, o erro é %1$s</string>
+    <string name="nc_push_notification_fetch_error">Desculpe, algo foi mal,, non foi posíbel obter a mensaxe emerxente de proba</string>
+    <string name="nc_push_notification_message">A notificación emerxente foi enviada satisfactoriamente. Agora ten que recibir unha notificación sobre este dispositivo co título «Probas de notificacións emerxentes»</string>
     <string name="nc_push_to_talk">Prema para falar</string>
     <string name="nc_push_to_talk_desc">Co microfono desactivado, prema e manteña para usar a función «Prema para falar»</string>
     <string name="nc_remind">Lembrarmo más adiante</string>
@@ -381,6 +405,7 @@
     <string name="nc_rename_confirm">Cambiar o nome</string>
     <string name="nc_reply">Responder</string>
     <string name="nc_reply_privately">Responder en privado</string>
+    <string name="nc_room_retention">A sala foi reservada satisfactoriamente</string>
     <string name="nc_save_message">Gardar</string>
     <string name="nc_save_success">Gardadao satisfactoriamente</string>
     <string name="nc_screen_lock_timeout_30">30 segundos</string>
@@ -396,6 +421,7 @@
     <string name="nc_search_clear">Limpar a busca</string>
     <string name="nc_select_an_account">Seleccione unha conta</string>
     <string name="nc_send_edit_message">Actualizar a mensaxe</string>
+    <string name="nc_send_voice_recording">Enviar a gravación de voz</string>
     <string name="nc_sensitive_conversation">Conversa sensíbel</string>
     <string name="nc_sensitive_conversation_hint">A vista previa da mensaxe estará desactivada na lista de conversas e nas notificacións</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s enviou un GIF.</string>
@@ -468,6 +494,7 @@
     <string name="nc_settings_server_eol">A versión do servidor é demasiado antiga e non é compatíbel con esta versión da aplicación para Android</string>
     <string name="nc_settings_server_eol_title">Servidor non admitido</string>
     <string name="nc_settings_server_notification_app_not_installed_title">A aplicación de notificacións do servidor non está instalada</string>
+    <string name="nc_settings_theme_battery_saver">Definido polo aforrador de batería</string>
     <string name="nc_settings_theme_dark">Escuro</string>
     <string name="nc_settings_theme_follow_system">Usar o predeterminado do sistema</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -495,9 +522,14 @@
     <string name="nc_show_notification_warning_description">Cando as notificacións non estean configuradas correctamente, amosa unha advertencia periódica</string>
     <string name="nc_show_notification_warning_title">Amosar a advertencia de notificación periódica</string>
     <string name="nc_sort_by">Ordenar por</string>
+    <string name="nc_start_group_chat">Iniciar unha parola en grupo</string>
     <string name="nc_start_time">Hora de comezo</string>
     <string name="nc_switch_account">Cambiar de conta</string>
     <string name="nc_team">Equipo</string>
+    <string name="nc_test_push_button">Proba das notificacións emerxentes</string>
+    <string name="nc_test_results">Resultados da proba</string>
+    <string name="nc_today_meeting">Hoxe ás %1$s</string>
+    <string name="nc_tomorrow_meeting">Mañá ás %1$s</string>
     <string name="nc_upload_choose_local_files">Escoller os ficheiros</string>
     <string name="nc_upload_confirm_send_multiple">Quere enviar estes ficheiros a %1$s?</string>
     <string name="nc_upload_confirm_send_single">Quere enviar este ficheiro a %1$s?</string>
@@ -519,8 +551,10 @@
     <string name="nc_webinar">Seminario web</string>
     <string name="nc_yes">Si</string>
     <string name="next_week">Semana seguinte</string>
+    <string name="no_conversations_archived">Non hai conversas arquivadas</string>
     <string name="no_offline_messages_saved">Non se gardou ningunha mensaxe sen conexión</string>
     <string name="no_phone_book_integration_due_to_permissions">Non hai integración do número de teléfono por mor da falta de permisos</string>
+    <string name="notification_all_messages">Todas as mensaxes</string>
     <string name="notification_mention_only">Só as mencións con \@</string>
     <string name="notification_off">Apagado</string>
     <string name="notifications_default">Predeterminado</string>
@@ -530,6 +564,7 @@
     <string name="online_status">Estado en liña</string>
     <string name="openConversations">Conversas abertas</string>
     <string name="open_in_files_app">Abrir na aplicación de Ficheiros</string>
+    <string name="open_notes">Abrir Notas</string>
     <string name="open_thread">Ir ao fío</string>
     <string name="play_pause_voice_message">Reproducir/poñer en pausa a mensaxe de voz</string>
     <string name="playback_speed_control">Control da velocidade de reprodución</string>
@@ -550,6 +585,7 @@
     <string name="polls_submit_vote">Votar</string>
     <string name="polls_voted_hidden_success">Voto enviado</string>
     <string name="previously_set">Estabelecido previamente</string>
+    <string name="qr_code_error">Non foi posíbel ler o código QR.</string>
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
     <string name="read_storage_no_permission">Non é posible compartir ficheiros desde o almacenamento sen permisos</string>
@@ -630,8 +666,11 @@
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Esta é unha mensaxe de proba</string>
     <string name="this_weekend">Este fin de semana</string>
+    <string name="thread_cancel">Cancelar a creación do fío</string>
     <string name="thread_notifications">Notificacións de fíos</string>
+    <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fío</string>
+    <string name="threads_list_empty">Non se atopou ningún fío</string>
     <string name="today">Hoxe</string>
     <string name="tomorrow">Mañá</string>
     <string name="translate">Traducir</string>
@@ -672,6 +711,10 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">Ver %d mensaxe semellante</item>
         <item quantity="other">Ver %d mensaxes semellantes</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Esta conversa eliminarase automaticamente para todos con %1$d día sen actividade.</item>
+        <item quantity="other">Esta conversa eliminarase automaticamente para todos aos %1$d días sen actividade.</item>
     </plurals>
     <plurals name="thread_replies">
         <item quantity="one">%d resposta</item>

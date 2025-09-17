@@ -5,6 +5,7 @@
     <string name="add_to_notes">Dodaj do Notatek</string>
     <string name="added_to_favorites">Dodano rozmowę %1$s do ulubionych</string>
     <string name="appbar_search_in">Szukaj w %s</string>
+    <string name="appear_offline">Wyglądaj jako offline</string>
     <string name="archive_conversation">Archiwizuj rozmowę</string>
     <string name="archive_hint">Po zarchiwizowaniu rozmowa zostanie domyślnie ukryta. Wybierz filtr „Zarchiwizowane”, aby wyświetlić zarchiwizowane rozmowy. Bezpośrednie wzmianki będą nadal otrzymywane.</string>
     <string name="archived">Zarchiwizowane</string>
@@ -79,6 +80,10 @@
     <string name="left_conversation">Opuściłeś rozmowę %1$s</string>
     <string name="load_more_results">Wczytaj więcej wyników</string>
     <string name="local_time">Czas lokalny: %1$s</string>
+    <string name="location_permission_denied">Odmowa dostępu do lokalizacji</string>
+    <string name="location_permission_denied_msg">Proszę włączyć w ustawieniach aplikacji</string>
+    <string name="location_services_disabled">Usługi lokalizacji wyłączone</string>
+    <string name="location_services_disabled_msg">Proszę włączyć usługi lokalizacji (GPS), aby użyć tej funkcji</string>
     <string name="lock_conversation">Zablokuj rozmowę</string>
     <string name="lock_symbol">Symbol zamknięcia</string>
     <string name="lower_hand">Opuścić rękę</string>
@@ -100,6 +105,7 @@
     <string name="message_search_begin_typing">Zacznij pisać, aby wyszukać…</string>
     <string name="message_search_hint">Szukaj…</string>
     <string name="messages">Wiadomości</string>
+    <string name="mute_all_notifications">Wycisz wszystkie powiadomienia</string>
     <string name="nc_Server_account_imported">Wybrane konto jest teraz zaimportowane i dostępne</string>
     <string name="nc_about">O aplikacji</string>
     <string name="nc_account_chooser_active_user">Aktywny użytkownik</string>
@@ -548,6 +554,7 @@
     <string name="no_conversations_archived">Brak zarchiwizowanych rozmów</string>
     <string name="no_offline_messages_saved">Nie zapisano żadnych wiadomości offline</string>
     <string name="no_phone_book_integration_due_to_permissions">Brak integracji numeru telefonu z powodu braku uprawnień</string>
+    <string name="notification_all_messages">Wszystkie wiadomości</string>
     <string name="notification_mention_only">Tylko, gdy @-wspomniano</string>
     <string name="notification_off">Wyłączone</string>
     <string name="notifications_default">Domyślny</string>
@@ -663,6 +670,7 @@
     <string name="thread_notifications">Powiadomienia wątków</string>
     <string name="thread_reply">Odpowiedź</string>
     <string name="thread_title">Tytuł wątku</string>
+    <string name="threads_list_empty">Nie znaleziono wątków</string>
     <string name="today">Dzisiaj</string>
     <string name="tomorrow">Jutro</string>
     <string name="translate">Tłumaczenie</string>
@@ -711,6 +719,12 @@
         <item quantity="few">Ta konwersacja zostanie automatycznie usunięta dla wszystkich po %1$d dniach braku aktywności.</item>
         <item quantity="many">Ta konwersacja zostanie automatycznie usunięta dla wszystkich po %1$d dniach braku aktywności.</item>
         <item quantity="other">Ta konwersacja zostanie automatycznie usunięta dla wszystkich po %1$d dniach braku aktywności.</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d odpowiedź</item>
+        <item quantity="few">%d odpowiedzi</item>
+        <item quantity="many">%d odpowiedzi</item>
+        <item quantity="other">%d odpowiedzi</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d głos</item>
