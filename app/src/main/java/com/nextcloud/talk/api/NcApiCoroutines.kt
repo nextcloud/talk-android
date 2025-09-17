@@ -14,10 +14,12 @@ import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.invitation.InvitationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
+import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
@@ -148,7 +150,8 @@ interface NcApiCoroutines {
         @Field("actorDisplayName") actorDisplayName: String,
         @Field("replyTo") replyTo: Int,
         @Field("silent") sendWithoutNotification: Boolean,
-        @Field("referenceId") referenceId: String
+        @Field("referenceId") referenceId: String,
+        @Field("threadTitle") threadTitle: String?
     ): ChatOverallSingleMessage
 
     @FormUrlEncoded
