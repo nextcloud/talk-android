@@ -68,15 +68,18 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 messages = messages.filter { it.id == it.threadId }
             }
 
-            if (threadId?.isNotEmpty() == true) {
-                finalTitle = messages.firstOrNull()?.threadTitle
+            val subTitle = if (threadId?.isNotEmpty() == true) {
+                messages.firstOrNull()?.threadTitle
+            } else {
+                ""
             }
 
             _getContextChatMessagesState.value = ContextChatRetrieveUiState.Success(
                 messageId = messageId,
                 threadId = threadId,
                 messages = messages,
-                title = finalTitle
+                title = finalTitle,
+                subTitle = subTitle
             )
         }
     }
@@ -91,7 +94,8 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
             val messageId: String,
             val threadId: String?,
             val messages: List<ChatMessageJson>,
-            val title: String?
+            val title: String?,
+            val subTitle: String?
         ) : ContextChatRetrieveUiState()
         data object Error : ContextChatRetrieveUiState()
     }
