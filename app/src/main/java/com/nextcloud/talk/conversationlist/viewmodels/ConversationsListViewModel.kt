@@ -162,7 +162,7 @@ class ConversationsListViewModel @Inject constructor(
                         followedThreadsExistNew.toString(),
                         ""
                     )
-                } catch (exception: Exception) {
+                } catch (exception: Throwable) {
                     _threadsExistState.value = ThreadsExistUiState.Error(exception)
                 }
             }

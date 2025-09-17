@@ -148,8 +148,7 @@ data class ChatMessage(
         MessageType.SINGLE_NC_GEOLOCATION_MESSAGE,
         MessageType.VOICE_MESSAGE,
         MessageType.POLL_MESSAGE,
-        MessageType.DECK_CARD,
-
+        MessageType.DECK_CARD
     )
 
     fun isDeckCard(): Boolean {
