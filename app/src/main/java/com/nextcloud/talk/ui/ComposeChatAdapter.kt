@@ -486,7 +486,7 @@ class ComposeChatAdapter(
                 shape = shape
             ) {
                 val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
-                val modifier = if (includePadding) Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp) else Modifier
+                val modifier = if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp) else Modifier
                 Column(modifier = modifier) {
                     if (messagesJson != null &&
                         message.parentMessageId != null &&
