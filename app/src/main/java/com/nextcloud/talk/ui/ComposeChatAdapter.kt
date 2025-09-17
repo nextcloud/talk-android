@@ -439,6 +439,16 @@ class ComposeChatAdapter(
         playAnimation: Boolean = false,
         content: @Composable () -> Unit
     ) {
+        fun shouldShowTimeNextToContent(message: ChatMessage): Boolean {
+            val containsLinebreak = message.message?.contains("\n") ?: false ||
+                message.message?.contains("\r") ?: false
+
+            return ((message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
+                !isFirstMessageOfThreadInNormalChat(message) &&
+                message.messageParameters.isNullOrEmpty() &&
+                !containsLinebreak
+        }
+
         val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
@@ -512,10 +522,7 @@ class ComposeChatAdapter(
 
                     ThreadTitle(message)
 
-                    val showTimeNextToContent = ((message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
-                        !isFirstMessageOfThreadInNormalChat(message)
-
-                    if (showTimeNextToContent) {
+                    if (shouldShowTimeNextToContent(message)) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
@@ -1076,7 +1083,15 @@ fun AllMessageTypesPreview() {
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             },
             ChatMessage().apply {
-                jsonMessageId = 3
+                jsonMessageId = 4
+                actorId = "user1_id"
+                message = "some \n linebreak"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 5
                 actorId = "user1_id"
                 threadTitle = "Thread title"
                 isThread = true
@@ -1086,7 +1101,7 @@ fun AllMessageTypesPreview() {
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             },
             ChatMessage().apply {
-                jsonMessageId = 4
+                jsonMessageId = 6
                 actorId = "user1_id"
                 threadTitle = "looooooooooooong Thread title"
                 isThread = true
@@ -1095,7 +1110,6 @@ fun AllMessageTypesPreview() {
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             }
-
         )
     }
 
