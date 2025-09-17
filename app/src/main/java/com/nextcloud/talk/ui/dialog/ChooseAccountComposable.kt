@@ -143,10 +143,13 @@ class ChooseAccountDialogCompose {
 
         MaterialTheme(colorScheme = colorScheme) {
             Dialog(onDismissRequest = { shouldDismiss.value = true }) {
-                Surface(shape = RoundedCornerShape(24.dp)) {
-                    Column(modifier = Modifier.padding(16.dp)) {
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    Column {
                         Row(
-                            modifier = Modifier.clickable {
+                            modifier = Modifier.padding(all = 16.dp).clickable {
                                 shouldDismiss.value = true
                             },
                             verticalAlignment = Alignment.CenterVertically
@@ -188,25 +191,44 @@ class ChooseAccountDialogCompose {
                             Icon(
                                 painterResource(id = R.drawable.ic_check_circle),
                                 contentDescription = null,
+                                modifier = Modifier.size(36.dp),
                                 tint = colorScheme.primary
                             )
                         }
 
                         if (isStatusAvailable) {
-                            TextButton(
-                                onClick = {
-                                    shouldDismiss.value = true
-                                    openStatus(status.value, activity)
-                                },
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    verticalAlignment = Alignment.CenterVertically
+                            Row {
+                                TextButton(
+                                    onClick = {
+                                        shouldDismiss.value = true
+                                        openSetOnlineStatusFragment(status.value, activity)
+                                    }
                                 ) {
-                                    Icon(painterResource(R.drawable.ic_edit), contentDescription = null)
-                                    Spacer(Modifier.size(8.dp))
-                                    Text(stringResource(R.string.set_status))
+                                    Icon(
+                                        painter = painterResource(R.drawable.ic_check_circle_outlined),
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = Modifier.padding(end = 8.dp))
+                                    Text(
+                                        text = stringResource(R.string.online_status)
+                                    )
+                                }
+
+                                TextButton(
+                                    onClick = {
+                                        shouldDismiss.value = true
+                                        openSetStatusMessageFragment(status.value, activity)
+                                    }
+                                ) {
+                                    Icon(
+                                        painter = painterResource(R.drawable.baseline_chat_bubble_outline_24),
+                                        contentDescription = null
+
+                                    )
+                                    Spacer(modifier = Modifier.padding(end = 8.dp))
+                                    Text(
+                                        text = stringResource(R.string.status_message)
+                                    )
                                 }
                             }
                         }
@@ -219,16 +241,6 @@ class ChooseAccountDialogCompose {
                                 if (user.userId != currentUser.userId) {
                                     AccountRow(user, invitationsState, activity) { shouldDismiss.value = true }
                                 }
-                                // val pendingInvitations = getPendingInvitations(invitationsState)
-                                //
-                                //  if(pendingInvitations > 0){
-                                //      Icon(
-                                //          painterResource(R.drawable.accent_circle),
-                                //          contentDescription = null,
-                                //          modifier = Modifier.size(24.dp),
-                                //          tint = Color.Red
-                                //      )
-                                //  }
                             }
                         }
                         if (isOnline) {
@@ -237,11 +249,11 @@ class ChooseAccountDialogCompose {
                                 addAccount(activity)
                             }, modifier = Modifier.fillMaxWidth()) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.padding(start = 16.dp).fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(painterResource(R.drawable.ic_account_plus), contentDescription = null)
-                                    Spacer(Modifier.size(8.dp))
+                                    Spacer(Modifier.size(16.dp))
                                     Text(stringResource(R.string.nc_account_chooser_add_account))
                                 }
                             }
@@ -251,11 +263,11 @@ class ChooseAccountDialogCompose {
                                 openSettings(activity)
                             }, modifier = Modifier.fillMaxWidth()) {
                                 Row(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier.padding(start = 16.dp).fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     Icon(painterResource(R.drawable.ic_settings), contentDescription = null)
-                                    Spacer(Modifier.size(8.dp))
+                                    Spacer(Modifier.size(16.dp))
                                     Text(stringResource(R.string.nc_settings))
                                 }
                             }
@@ -266,10 +278,18 @@ class ChooseAccountDialogCompose {
         }
     }
 
-    private fun openStatus(status: Status?, activity: Activity) {
+    private fun openSetOnlineStatusFragment(status: Status?, activity: Activity) {
         val fragmentActivity = activity as FragmentActivity
         status?.let {
-            val setStatusDialog = SetStatusDialogFragment.newInstance(it)
+            val setStatusDialog = OnlineStatusBottomDialogFragment.newInstance(it)
+            setStatusDialog.show(fragmentActivity.supportFragmentManager, "fragment_set_status")
+        } ?: Log.w(TAG, "status was null")
+    }
+
+    private fun openSetStatusMessageFragment(status: Status?, activity: Activity) {
+        val fragmentActivity = activity as FragmentActivity
+        status?.let {
+            val setStatusDialog = StatusMessageBottomDialogFragment.newInstance(it)
             setStatusDialog.show(fragmentActivity.supportFragmentManager, "fragment_set_status")
         } ?: Log.w(TAG, "status was null")
     }
