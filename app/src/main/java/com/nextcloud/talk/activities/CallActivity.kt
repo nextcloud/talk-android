@@ -75,9 +75,10 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
-import com.nextcloud.talk.camera.CameraFrameProcessor
+import com.nextcloud.talk.camera.DefaultFrameProcessor
 import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.CallActivityBinding
@@ -1191,20 +1192,20 @@ class CallActivity : CallBaseActivity() {
         return null
     }
 
-    private fun createCameraProcessor(enumerator: CameraEnumerator?): CameraFrameProcessor? {
+    private fun isCameraFrontFacing(enumerator: CameraEnumerator?): Boolean? {
         val deviceNames = enumerator!!.deviceNames
 
         // First, try to find front facing camera
         for (deviceName in deviceNames) {
             if (enumerator.isFrontFacing(deviceName)) {
-                return CameraFrameProcessor(context, true)
+                return true
             }
         }
 
         // Front facing camera not found, try something else
         for (deviceName in deviceNames) {
             if (!enumerator.isFrontFacing(deviceName)) {
-                return CameraFrameProcessor(context, false)
+                return false
             }
         }
 
@@ -1377,20 +1378,22 @@ class CallActivity : CallBaseActivity() {
     }
 
     fun toggleBackgroundBlur() {
-        blurBackgroundViewModel.toggleBackgroundBlur()
+        val frontFacing = isCameraFrontFacing(cameraEnumerator)
+        if (frontFacing == null) {
+            Log.e(TAG, "Camera not found")
+            return
+        }
 
+        blurBackgroundViewModel.toggleBackgroundBlur()
         val isOn = blurBackgroundViewModel.viewState.value == BackgroundBlurOn
 
-        if (isOn) {
-            val processor = createCameraProcessor(cameraEnumerator)
-            processor?.let {
-                videoSource?.setVideoProcessor(it)
-            }
+        val processor = if (isOn) {
+            BackgroundBlurFrameProcessor(context, frontFacing)
         } else {
-            // FIXME - for some reason turning off the background blur stops the frames from being sent over the
-            //  peer connection wrapper???? Maybe something to do with my VideoSink?
-            videoSource?.setVideoProcessor(null)
+            DefaultFrameProcessor()
         }
+
+        videoSource?.setVideoProcessor(processor)
     }
 
     private fun animateCallControls(show: Boolean, startDelay: Long) {

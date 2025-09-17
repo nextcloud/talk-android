@@ -19,6 +19,7 @@ import androidx.core.graphics.createBitmap
 import org.opencv.android.OpenCVLoader
 import org.opencv.android.Utils
 import org.opencv.core.Core
+import org.opencv.core.CvType
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Size
@@ -30,7 +31,7 @@ import org.webrtc.VideoSink
 import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
-class CameraFrameProcessor(
+class BackgroundBlurFrameProcessor(
     val context: Context,
     val isFrontFacing: Boolean
 ): VideoProcessor, ImageSegmenterHelper.SegmenterListener {
@@ -203,6 +204,49 @@ class CameraFrameProcessor(
         return VideoFrame(finalFrameBuffer, 0, timeStamp)
     }
 
+    // TODO - Experiment
+    fun VideoFrame.I420Buffer.toMat(): Mat {
+        val width = this.width
+        val height = this.height
+
+        val matY = Mat(height, width, CvType.CV_8UC1, this.dataY, this.strideY.toLong())
+        val matU = Mat(height / 2, width / 2, CvType.CV_8UC1, this.dataU, this.strideU.toLong())
+        val matV = Mat(height / 2, width / 2, CvType.CV_8UC1, this.dataV, this.strideV.toLong())
+
+        // OpenCV's I420 format is one tall Mat (height * 1.5) where
+        // Y, U, and V planes are stacked vertically.
+        val i420Mat = Mat(height + height/2, width, CvType.CV_8UC1)
+
+        Log.d("Julius", "i420 dimens: ${i420Mat.height()} ${i420Mat.width()}")
+        Log.d("Julius", "dstY dimens: 0 $height")
+        Log.d("Julius", "dstU dimens: $height ${height + height / 2}")
+        Log.d("Julius", "dstV dimens: ${height + height / 2} ${height + height * 3 / 2}")
+
+        // TODO - this implementation does not take into account stride, which results in an error
+        //  however, Gemini recommends a solution that involves iterating over the data, again
+        //  I wonder if there is a faster approach here. Else I'm better off with the bitmap approach
+        //  correctness > optimization. However, if it's truly just a matter of stride, perhaps I can find a
+        //  optimized matrix library that allows me to perform these advanced operations using underlying C++
+        //  parallelized loops like OpenCV does.
+
+        val dstY = i420Mat.rowRange(0, height)
+        val dstU = i420Mat.rowRange(height, height + height / 2)
+        val dstV = i420Mat.rowRange(height + height / 2, height + height * 3 / 2)
+
+
+        matY.copyTo(dstY)
+        matU.copyTo(dstU)
+        matV.copyTo(dstV)
+
+        matY.release()
+        matU.release()
+        matV.release()
+
+        this.release()
+
+        return i420Mat
+    }
+
     private fun VideoFrame.I420Buffer.toBitmap(): Bitmap? {
         return kotlin.runCatching {
             val i420Buffer = this
@@ -225,16 +269,12 @@ class CameraFrameProcessor(
                 dataY.get(nv21Data, 0, yPlaneSize)
             } else {
                 // Slow path: row-by-row copy
-                // TODO - this is embarrassingly parallelizable, use multiprocessing
                 for (row in 0 until height) {
                     dataY.position(row * strideY)
                     dataY.get(nv21Data, row * width, width)
                 }
             }
 
-            // 2. Copy VU Planes (interleaved, respecting strides)
-            // TODO - this is embarrassingly parallelizable, use multiprocessing
-            // https://kotlinlang.org/api/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines/-coroutine-dispatcher/limited-parallelism.html
             val vuPlaneOffset = width * height
             for (row in 0 until height / 2) {
                 for (col in 0 until width / 2) {
