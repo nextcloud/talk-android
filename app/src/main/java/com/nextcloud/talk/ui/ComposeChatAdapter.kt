@@ -41,6 +41,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -495,11 +496,7 @@ class ComposeChatAdapter(
                 val modifier = if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
                 else Modifier
 
-                Column(
-                    // Using IntrinsicSize.Max is problematic as it causes too much delay when opening the screen
-                    // We need to refactor it to avoid it's usage.
-                    modifier = modifier.width(IntrinsicSize.Max)
-                ) {
+                Column(modifier = modifier) {
                     if (messagesJson != null &&
                         message.parentMessageId != null &&
                         !message.isDeleted &&
@@ -517,62 +514,31 @@ class ComposeChatAdapter(
 
                     ThreadTitle(message)
 
-                    val isShort = (message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD
-
-                    if (isShort) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            content()
-                            Spacer(modifier = Modifier.size(8.dp))
-                            Spacer(modifier = Modifier.weight(1f))
-
-                            Text(
-                                timeString,
-                                fontSize = TIME_TEXT_SIZE,
-                                textAlign = TextAlign.End
+                    content()
+                    Row(
+                        modifier = Modifier.align(Alignment.End),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            timeString,
+                            fontSize = TIME_TEXT_SIZE,
+                            textAlign = TextAlign.End
+                        )
+                        if (message.readStatus == ReadStatus.NONE) {
+                            val read = painterResource(R.drawable.ic_check_all)
+                            Icon(
+                                read,
+                                "",
+                                modifier = Modifier
+                                    .padding(start = 4.dp)
+                                    .size(16.dp)
                             )
-                            if (message.readStatus == ReadStatus.NONE) {
-                                val read = painterResource(R.drawable.ic_check_all)
-                                Icon(
-                                    read,
-                                    "",
-                                    modifier = Modifier
-                                        .padding(start = 4.dp)
-                                        .size(16.dp)
-                                )
-                            }
-                        }
-                    } else {
-                        content()
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                timeString,
-                                fontSize = TIME_TEXT_SIZE,
-                                textAlign = TextAlign.End
-                            )
-                            if (message.readStatus == ReadStatus.NONE) {
-                                val read = painterResource(R.drawable.ic_check_all)
-                                Icon(
-                                    read,
-                                    "",
-                                    modifier = Modifier
-                                        .padding(start = 4.dp)
-                                        .size(16.dp)
-                                )
-                            }
                         }
                     }
                 }
             }
         }
     }
-
 
     @Composable
     private fun ThreadTitle(message: ChatMessage) {
