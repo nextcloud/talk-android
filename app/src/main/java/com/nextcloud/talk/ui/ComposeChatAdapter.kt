@@ -196,6 +196,7 @@ class ComposeChatAdapter(
         private const val ANIMATED_BLINK = 500
         private const val FLOAT_06 = 0.6f
         private const val HALF_OPACITY = 127
+        private const val MESSAGE_LENGTH_THRESHOLD = 25
     }
 
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
@@ -434,9 +435,7 @@ class ComposeChatAdapter(
         message: ChatMessage,
         includePadding: Boolean = true,
         playAnimation: Boolean = false,
-        content:
-        @Composable
-        (RowScope.() -> Unit)
+        content: @Composable () -> Unit
     ) {
         val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
@@ -485,9 +484,14 @@ class ComposeChatAdapter(
                 color = Color(color),
                 shape = shape
             ) {
-                val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
-                val modifier = if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp) else Modifier
-                Column(modifier = modifier) {
+                val timeString = DateUtils(LocalContext.current)
+                    .getLocalTimeStringFromTimestamp(message.timestamp)
+
+                val bodyModifier =
+                    if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
+                    else Modifier
+
+                Column(modifier = bodyModifier) {
                     if (messagesJson != null &&
                         message.parentMessageId != null &&
                         !message.isDeleted &&
@@ -495,7 +499,9 @@ class ComposeChatAdapter(
                     ) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
-                            ?.parentMessage!!.asModel().let { CommonMessageQuote(LocalContext.current, it) }
+                            ?.parentMessage!!.asModel().let {
+                                CommonMessageQuote(LocalContext.current, it)
+                            }
                     }
 
                     if (incoming) {
@@ -504,25 +510,54 @@ class ComposeChatAdapter(
 
                     ThreadTitle(message)
 
-                    Row {
-                        content()
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Text(
-                            timeString,
-                            fontSize = TIME_TEXT_SIZE,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        if (message.readStatus == ReadStatus.NONE) {
-                            val read = painterResource(R.drawable.ic_check_all)
-                            Icon(
-                                read,
-                                "",
-                                modifier = Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp)
-                                    .align(Alignment.CenterVertically)
+                    val isShort = (message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD
+
+                    if (isShort) {
+                        Row {
+                            content()
+                            Spacer(modifier = Modifier.size(8.dp))
+                            Text(
+                                timeString,
+                                fontSize = TIME_TEXT_SIZE,
+                                textAlign = TextAlign.End,
+                                modifier = Modifier.align(Alignment.CenterVertically)
                             )
+                            if (message.readStatus == ReadStatus.NONE) {
+                                val read = painterResource(R.drawable.ic_check_all)
+                                Icon(
+                                    read,
+                                    "",
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                        .size(16.dp)
+                                        .align(Alignment.CenterVertically)
+                                )
+                            }
+                        }
+                    } else {
+                        Column {
+                            content()
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    timeString,
+                                    fontSize = TIME_TEXT_SIZE,
+                                    textAlign = TextAlign.End
+                                )
+                                if (message.readStatus == ReadStatus.NONE) {
+                                    val read = painterResource(R.drawable.ic_check_all)
+                                    Icon(
+                                        read,
+                                        "",
+                                        modifier = Modifier
+                                            .padding(start = 4.dp)
+                                            .size(16.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -792,29 +827,30 @@ class ComposeChatAdapter(
     @Composable
     private fun VoiceMessage(message: ChatMessage, state: MutableState<Boolean>) {
         CommonMessageBody(message, playAnimation = state.value) {
-            Icon(
-                Icons.Filled.PlayArrow,
-                "play",
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterVertically)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = "play",
+                    modifier = Modifier.size(24.dp)
+                )
 
-            AndroidView(
-                factory = { ctx ->
-                    WaveformSeekBar(ctx).apply {
-                        setWaveData(FloatArray(DEFAULT_WAVE_SIZE) { Random.nextFloat() }) // READ ONLY for now
-                        setColors(
-                            colorScheme.inversePrimary.toArgb(),
-                            colorScheme.onPrimaryContainer.toArgb()
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .width(180.dp)
-                    .height(80.dp)
-            )
+                AndroidView(
+                    factory = { ctx ->
+                        WaveformSeekBar(ctx).apply {
+                            setWaveData(FloatArray(DEFAULT_WAVE_SIZE) { Random.nextFloat() }) // READ ONLY for now
+                            setColors(
+                                colorScheme.inversePrimary.toArgb(),
+                                colorScheme.onPrimaryContainer.toArgb()
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .width(180.dp)
+                        .height(80.dp)
+                )
+            }
         }
     }
 
@@ -1016,6 +1052,14 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 2
                 actorId = "user1_id"
                 message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 3
+                actorId = "user1_id"
+                message = "This is a really really really really really really really really really long message"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
