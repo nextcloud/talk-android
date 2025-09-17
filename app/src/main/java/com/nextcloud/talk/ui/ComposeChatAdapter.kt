@@ -491,8 +491,6 @@ class ComposeChatAdapter(
                 color = Color(color),
                 shape = shape
             ) {
-                val timeString = DateUtils(LocalContext.current)
-                    .getLocalTimeStringFromTimestamp(message.timestamp)
                 val modifier = if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
                 else Modifier
 
@@ -514,36 +512,66 @@ class ComposeChatAdapter(
 
                     ThreadTitle(message)
 
-                    content()
-                    Row(
-                        modifier = Modifier.align(Alignment.End),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            timeString,
-                            fontSize = TIME_TEXT_SIZE,
-                            textAlign = TextAlign.End
-                        )
-                        if (message.readStatus == ReadStatus.NONE) {
-                            val read = painterResource(R.drawable.ic_check_all)
-                            Icon(
-                                read,
-                                "",
-                                modifier = Modifier
-                                    .padding(start = 4.dp)
-                                    .size(16.dp)
-                            )
+                    val showTimeNextToContent = ((message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
+                        !isFirstMessageOfThreadInNormalChat(message)
+
+                    if (showTimeNextToContent) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            content()
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 6.dp, start = 8.dp)
+                            ) {
+                                TimeDisplay(message)
+                                ReadStatus(message)
+                            }
+                        }
+                    } else {
+                        content()
+                        Row(
+                            modifier = Modifier.align(Alignment.End),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TimeDisplay(message)
+                            ReadStatus(message)
                         }
                     }
+
                 }
             }
         }
     }
 
     @Composable
+    private fun TimeDisplay(message: ChatMessage) {
+        val timeString = DateUtils(LocalContext.current)
+            .getLocalTimeStringFromTimestamp(message.timestamp)
+        Text(
+            timeString,
+            fontSize = TIME_TEXT_SIZE,
+            textAlign = TextAlign.Center
+        )
+    }
+
+    @Composable
+    private fun ReadStatus(message: ChatMessage) {
+        if (message.readStatus == ReadStatus.NONE) {
+            val read = painterResource(R.drawable.ic_check_all)
+            Icon(
+                read,
+                "",
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .size(16.dp)
+            )
+        }
+    }
+
+    @Composable
     private fun ThreadTitle(message: ChatMessage) {
-        val isFirstMessageOfThreadInNormalChat = threadId == null && message.isThread
-        if (isFirstMessageOfThreadInNormalChat) {
+        if (isFirstMessageOfThreadInNormalChat(message)) {
             Row {
                 val read = painterResource(R.drawable.outline_forum_24)
                 Icon(
@@ -561,6 +589,10 @@ class ComposeChatAdapter(
                 )
             }
         }
+    }
+
+    fun isFirstMessageOfThreadInNormalChat(message: ChatMessage): Boolean {
+        return threadId == null && message.isThread
     }
 
     @Composable
@@ -1051,7 +1083,8 @@ fun AllMessageTypesPreview() {
                 message = "Content of a first thread message"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
-                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name            },
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
             ChatMessage().apply {
                 jsonMessageId = 4
                 actorId = "user1_id"
