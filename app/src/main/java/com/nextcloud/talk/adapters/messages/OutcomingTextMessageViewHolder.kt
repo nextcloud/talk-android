@@ -319,7 +319,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         updateCheckboxStates(chatMessage, user, checkboxList)
                     }
                 }
-                if (chatMessage.messageParameters != null) checkBox.setPadding(0, 0, 0, marginPx)
+                setPaddingForView(chatMessage, checkBox, marginPx)
                 checkBoxContainer.addView(checkBox)
                 checkboxList.add(checkBox)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
@@ -329,14 +329,19 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     text =
                         messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
-                    if (chatMessage.messageParameters != null) setPadding(0, 0, 0, marginPx)
                 }
+                setPaddingForView(chatMessage, textView, marginPx)
                 checkBoxContainer.addView(textView)
             }
         }
         return hasCheckbox
     }
 
+    private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
+        if (chatMessage.messageParameters != null) {
+            view.setPadding(0, 0, 0, paddingInPx)
+        }
+    }
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
         job = CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {

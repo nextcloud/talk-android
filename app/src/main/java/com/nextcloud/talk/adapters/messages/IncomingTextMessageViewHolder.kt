@@ -276,9 +276,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
                 setOnCheckedChangeListener { _, _ -> updateCheckboxStates(chatMessage, user, checkboxList) }
             }
-            if (chatMessage.messageParameters != null) {
-                checkBox.setPadding(0, 0, 0, spaceInPx)
-            }
+            setPaddingForView(chatMessage, checkBox, spaceInPx)
             container.addView(checkBox)
             checkboxList.add(checkBox)
             viewThemeUtils.platform.themeCheckbox(checkBox)
@@ -289,13 +287,18 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 text = messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                 viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
             }
-            if (chatMessage.messageParameters != null) {
-                textView.setPadding(0, 0, 0, spaceInPx)
-            }
+
+            setPaddingForView(chatMessage, textView, spaceInPx)
             container.addView(textView)
             false
         } else {
             false
+        }
+    }
+
+    private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
+        if (chatMessage.messageParameters != null) {
+            view.setPadding(0, 0, 0, paddingInPx)
         }
     }
 
