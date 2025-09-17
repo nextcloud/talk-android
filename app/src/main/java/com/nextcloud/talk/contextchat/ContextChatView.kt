@@ -134,7 +134,11 @@ fun ContextChatSuccessView(
                                 )
                             }
                             Column(verticalArrangement = Arrangement.Center) {
-                                Text(contextChatRetrieveUiStateSuccess.title ?: "", fontSize = 24.sp)
+                                Text(contextChatRetrieveUiStateSuccess.title ?: "", fontSize = 18.sp)
+
+                                if (!contextChatRetrieveUiStateSuccess.subTitle.isNullOrEmpty()) {
+                                    Text(contextChatRetrieveUiStateSuccess.subTitle, fontSize = 12.sp)
+                                }
                             }
 
                             // This code was written back then but not needed yet, but it's not deleted yet

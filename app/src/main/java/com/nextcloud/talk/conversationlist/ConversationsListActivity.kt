@@ -1541,7 +1541,7 @@ class ConversationsListActivity :
                                 token = token,
                                 threadId = item.messageEntry.threadId,
                                 messageId = item.messageEntry.messageId!!,
-                                title = conversationName
+                                title = item.messageEntry.title
                             )
                             ContextChatView(context, contextChatViewModel)
                         }
