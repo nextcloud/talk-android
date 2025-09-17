@@ -2246,7 +2246,7 @@ class ConversationsListActivity :
         )
 
         val bundle = Bundle()
-        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.followed_threads))
+        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.threads))
         bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)

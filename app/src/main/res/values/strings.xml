@@ -554,12 +554,12 @@ How to translate with transifex:
     <string name="typing_x_others">and %1$s others are typing …</string>
     <string name="deck_card_description">%1$s in %2$s</string>
 
+    <string name="threads">Threads</string>
     <string name="open_thread">Go to thread</string>
     <string name="start_thread">Create a thread</string>
     <string name="thread_title">Thread title</string>
     <string name="thread_cancel">Cancel thread creation</string>
     <string name="recent_threads">Recent threads</string>
-    <string name="followed_threads">Followed threads</string>
     <string name="thread_reply">Reply</string>
     <plurals name="thread_replies">
         <item quantity="one">%d reply</item>
