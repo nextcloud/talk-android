@@ -27,6 +27,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
@@ -440,9 +441,13 @@ class ComposeChatAdapter(
         val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
-                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
+                LocalContext.current.resources.getColor(
+                    R.color.bg_message_list_incoming_bubble_deleted, null
+                )
             } else {
-                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                LocalContext.current.resources.getColor(
+                    R.color.bg_message_list_incoming_bubble, null
+                )
             }
         } else {
             if (message.isDeleted) {
@@ -455,9 +460,11 @@ class ComposeChatAdapter(
 
         Row(
             modifier = (
-                if (message.id == messageId && playAnimation) Modifier.withCustomAnimation(incoming) else Modifier
+                if (message.id == messageId && playAnimation) Modifier.withCustomAnimation(incoming)
+                else Modifier
                 )
-                .fillMaxWidth(1f)
+                .fillMaxWidth(),
+            horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
         ) {
             if (incoming) {
                 val imageUri = message.actorId?.let { viewModel.contactsViewModel.getImageUri(it, true) }
@@ -469,11 +476,10 @@ class ComposeChatAdapter(
                     modifier = Modifier
                         .size(48.dp)
                         .align(Alignment.CenterVertically)
-                        .padding()
                         .padding(end = 8.dp)
                 )
             } else {
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.width(8.dp))
             }
 
             Surface(
@@ -486,12 +492,14 @@ class ComposeChatAdapter(
             ) {
                 val timeString = DateUtils(LocalContext.current)
                     .getLocalTimeStringFromTimestamp(message.timestamp)
+                val modifier = if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
+                else Modifier
 
-                val bodyModifier =
-                    if (includePadding) Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
-                    else Modifier
-
-                Column(modifier = bodyModifier) {
+                Column(
+                    // Using IntrinsicSize.Max is problematic as it causes too much delay when opening the screen
+                    // We need to refactor it to avoid it's usage.
+                    modifier = modifier.width(IntrinsicSize.Max)
+                ) {
                     if (messagesJson != null &&
                         message.parentMessageId != null &&
                         !message.isDeleted &&
@@ -499,9 +507,8 @@ class ComposeChatAdapter(
                     ) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
-                            ?.parentMessage!!.asModel().let {
-                                CommonMessageQuote(LocalContext.current, it)
-                            }
+                            ?.parentMessage!!.asModel()
+                            .let { CommonMessageQuote(LocalContext.current, it) }
                     }
 
                     if (incoming) {
@@ -513,14 +520,18 @@ class ComposeChatAdapter(
                     val isShort = (message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD
 
                     if (isShort) {
-                        Row {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
                             content()
                             Spacer(modifier = Modifier.size(8.dp))
+                            Spacer(modifier = Modifier.weight(1f))
+
                             Text(
                                 timeString,
                                 fontSize = TIME_TEXT_SIZE,
-                                textAlign = TextAlign.End,
-                                modifier = Modifier.align(Alignment.CenterVertically)
+                                textAlign = TextAlign.End
                             )
                             if (message.readStatus == ReadStatus.NONE) {
                                 val read = painterResource(R.drawable.ic_check_all)
@@ -530,33 +541,30 @@ class ComposeChatAdapter(
                                     modifier = Modifier
                                         .padding(start = 4.dp)
                                         .size(16.dp)
-                                        .align(Alignment.CenterVertically)
                                 )
                             }
                         }
                     } else {
-                        Column {
-                            content()
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.End,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Text(
-                                    timeString,
-                                    fontSize = TIME_TEXT_SIZE,
-                                    textAlign = TextAlign.End
+                        content()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                timeString,
+                                fontSize = TIME_TEXT_SIZE,
+                                textAlign = TextAlign.End
+                            )
+                            if (message.readStatus == ReadStatus.NONE) {
+                                val read = painterResource(R.drawable.ic_check_all)
+                                Icon(
+                                    read,
+                                    "",
+                                    modifier = Modifier
+                                        .padding(start = 4.dp)
+                                        .size(16.dp)
                                 )
-                                if (message.readStatus == ReadStatus.NONE) {
-                                    val read = painterResource(R.drawable.ic_check_all)
-                                    Icon(
-                                        read,
-                                        "",
-                                        modifier = Modifier
-                                            .padding(start = 4.dp)
-                                            .size(16.dp)
-                                    )
-                                }
                             }
                         }
                     }
@@ -564,6 +572,7 @@ class ComposeChatAdapter(
             }
         }
     }
+
 
     @Composable
     private fun ThreadTitle(message: ChatMessage) {
