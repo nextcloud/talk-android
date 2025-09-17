@@ -576,10 +576,14 @@ class ComposeChatAdapter(
                     "",
                     modifier = Modifier
                         .padding(end = 6.dp)
-                        .size(12.dp)
+                        .size(18.dp)
                         .align(Alignment.CenterVertically)
                 )
-                Text(message.threadTitle ?: "", fontSize = AUTHOR_TEXT_SIZE)
+                Text(
+                    text = message.threadTitle ?: "",
+                    fontSize = REGULAR_TEXT_SIZE,
+                    fontWeight = FontWeight.SemiBold
+                )
             }
         }
     }
@@ -1072,8 +1076,18 @@ fun AllMessageTypesPreview() {
                 message = "Content of a first thread message"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name            },
+            ChatMessage().apply {
+                jsonMessageId = 4
+                actorId = "user1_id"
+                threadTitle = "looooooooooooong Thread title"
+                isThread = true
+                message = "Content"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
             }
+
         )
     }
 
