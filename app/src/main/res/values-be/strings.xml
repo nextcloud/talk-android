@@ -434,6 +434,8 @@
     <string name="nc_settings_contact_admin_of">Звярніцеся да адміністратара</string>
     <string name="nc_settings_diagnose_subtitle">Адкрыйце экран дыягностыкі, каб праверыць налады або стварыць справаздачу пра памылку</string>
     <string name="nc_settings_diagnose_title">Дыягностыка</string>
+    <string name="nc_settings_incognito_keyboard_desc">Дае каманду клавіятуры адключыць персаналізаванае навучанне (без гарантый)</string>
+    <string name="nc_settings_incognito_keyboard_title">Клавіятура інкогніта</string>
     <string name="nc_settings_no_ringtone">Няма гуку</string>
     <string name="nc_settings_no_talk_installed">Праграма Talk не ўсталявана на серверы, на якім вы спрабавалі прайсці аўтэнтыфікацыю</string>
     <string name="nc_settings_notification_sounds_post_oreo">Апавяшчэнні</string>
@@ -456,6 +458,10 @@
     <string name="nc_settings_proxy_username_title">Імя карыстальніка проксі</string>
     <string name="nc_settings_remove">Выдаліць</string>
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
+    <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі экрана пры бяздзейнасці</string>
+    <string name="nc_settings_screen_lock_title">Блакіроўка экрана</string>
+    <string name="nc_settings_screen_security_desc">Забараняе рабіць здымкі экрана ў спісе нядаўняга і ўнутры праграмы</string>
+    <string name="nc_settings_screen_security_title">Бяспека экрана</string>
     <string name="nc_settings_server_almost_eol">Версія сервера вельмі старая і не будзе падтрымлівацца ў наступным выпуску!</string>
     <string name="nc_settings_server_eol">Версія сервера занадта старая і не падтрымліваецца гэтай версіяй праграмы для Android.</string>
     <string name="nc_settings_server_eol_title">Сервер не падтрымліваецца</string>
