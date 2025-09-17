@@ -325,7 +325,6 @@ class ComposeChatAdapter(
                     }
 
                     ChatMessage.MessageType.FILE_UPLOAD_MESSAGE -> {
-
                     }
 
                     ChatMessage.MessageType.REGULAR_TEXT_MESSAGE -> {
