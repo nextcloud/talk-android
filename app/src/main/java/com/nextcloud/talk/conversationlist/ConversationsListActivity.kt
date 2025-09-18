@@ -38,14 +38,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.net.toUri
-import androidx.core.os.bundleOf
 import androidx.core.view.MenuItemCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
@@ -115,7 +113,8 @@ import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
-import com.nextcloud.talk.ui.dialog.ContextChatCompose
+import com.nextcloud.talk.contextchat.ContextChatView
+import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -204,6 +203,7 @@ class ConversationsListActivity :
     lateinit var contactsViewModel: ContactsViewModel
 
     lateinit var conversationsListViewModel: ConversationsListViewModel
+    lateinit var contextChatViewModel: ContextChatViewModel
 
     override val appBarLayoutType: AppBarLayoutType
         get() = AppBarLayoutType.SEARCH_BAR
@@ -263,6 +263,7 @@ class ConversationsListActivity :
         currentUser = currentUserProvider.currentUser.blockingGet()
 
         conversationsListViewModel = ViewModelProvider(this, viewModelFactory)[ConversationsListViewModel::class.java]
+        contextChatViewModel = ViewModelProvider(this, viewModelFactory)[ContextChatViewModel::class.java]
 
         binding = ActivityConversationsBinding.inflate(layoutInflater)
         setupActionBar()
@@ -1533,15 +1534,16 @@ class ConversationsListActivity :
                         ).model.displayName
 
                     binding.genericComposeView.apply {
-                        val shouldDismiss = mutableStateOf(false)
                         setContent {
-                            val bundle = bundleOf()
-                            bundle.putString(BundleKeys.KEY_CREDENTIALS, credentials!!)
-                            bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl)
-                            bundle.putString(KEY_ROOM_TOKEN, token)
-                            bundle.putString(BundleKeys.KEY_MESSAGE_ID, item.messageEntry.messageId)
-                            bundle.putString(BundleKeys.KEY_CONVERSATION_NAME, conversationName)
-                            ContextChatCompose(bundle).GetDialogView(shouldDismiss, context)
+                            contextChatViewModel.getContextForChatMessages(
+                                credentials = credentials!!,
+                                baseUrl = currentUser!!.baseUrl!!,
+                                token = token,
+                                threadId = item.messageEntry.threadId,
+                                messageId = item.messageEntry.messageId!!,
+                                title = item.messageEntry.title
+                            )
+                            ContextChatView(context, contextChatViewModel)
                         }
                     }
                 }
@@ -2244,7 +2246,7 @@ class ConversationsListActivity :
         )
 
         val bundle = Bundle()
-        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.followed_threads))
+        bundle.putString(ThreadsOverviewActivity.KEY_APPBAR_TITLE, getString(R.string.threads))
         bundle.putString(ThreadsOverviewActivity.KEY_THREADS_SOURCE_URL, threadsUrl)
         val threadsOverviewIntent = Intent(context, ThreadsOverviewActivity::class.java)
         threadsOverviewIntent.putExtras(bundle)

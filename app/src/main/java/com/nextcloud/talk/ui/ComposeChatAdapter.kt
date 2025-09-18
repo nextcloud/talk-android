@@ -127,6 +127,7 @@ import kotlin.random.Random
 class ComposeChatAdapter(
     private var messagesJson: List<ChatMessageJson>? = null,
     private var messageId: String? = null,
+    private var threadId: String? = null,
     private val utils: ComposePreviewUtils? = null
 ) {
 
@@ -195,6 +196,7 @@ class ComposeChatAdapter(
         private const val ANIMATED_BLINK = 500
         private const val FLOAT_06 = 0.6f
         private const val HALF_OPACITY = 127
+        private const val MESSAGE_LENGTH_THRESHOLD = 25
     }
 
     private var incomingShape: RoundedCornerShape = RoundedCornerShape(2.dp, 20.dp, 20.dp, 20.dp)
@@ -354,7 +356,8 @@ class ComposeChatAdapter(
         this.isReaction() ||
             this.isPollVotedMessage() ||
             this.isEditMessage() ||
-            this.isInfoMessageAboutDeletion()
+            this.isInfoMessageAboutDeletion() ||
+            this.isThreadCreatedMessage()
 
     private fun ChatMessage.isInfoMessageAboutDeletion(): Boolean =
         this.parentMessageId != null &&
@@ -365,6 +368,9 @@ class ComposeChatAdapter(
 
     private fun ChatMessage.isEditMessage(): Boolean =
         this.systemMessageType == ChatMessage.SystemMessageType.MESSAGE_EDITED
+
+    private fun ChatMessage.isThreadCreatedMessage(): Boolean =
+        this.systemMessageType == ChatMessage.SystemMessageType.THREAD_CREATED
 
     private fun ChatMessage.isReaction(): Boolean =
         systemMessageType == ChatMessage.SystemMessageType.REACTION ||
@@ -429,16 +435,30 @@ class ComposeChatAdapter(
         message: ChatMessage,
         includePadding: Boolean = true,
         playAnimation: Boolean = false,
-        content:
-        @Composable
-        (RowScope.() -> Unit)
+        content: @Composable () -> Unit
     ) {
+        fun shouldShowTimeNextToContent(message: ChatMessage): Boolean {
+            val containsLinebreak = message.message?.contains("\n") ?: false ||
+                message.message?.contains("\r") ?: false
+
+            return ((message.message?.length ?: 0) < MESSAGE_LENGTH_THRESHOLD) &&
+                !isFirstMessageOfThreadInNormalChat(message) &&
+                message.messageParameters.isNullOrEmpty() &&
+                !containsLinebreak
+        }
+
         val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
-                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble_deleted, null)
+                LocalContext.current.resources.getColor(
+                    R.color.bg_message_list_incoming_bubble_deleted,
+                    null
+                )
             } else {
-                LocalContext.current.resources.getColor(R.color.bg_message_list_incoming_bubble, null)
+                LocalContext.current.resources.getColor(
+                    R.color.bg_message_list_incoming_bubble,
+                    null
+                )
             }
         } else {
             if (message.isDeleted) {
@@ -449,11 +469,15 @@ class ComposeChatAdapter(
         }
         val shape = if (incoming) incomingShape else outgoingShape
 
+        val rowModifier = if (message.id == messageId && playAnimation) {
+            Modifier.withCustomAnimation(incoming)
+        } else {
+            Modifier
+        }
+
         Row(
-            modifier = (
-                if (message.id == messageId && playAnimation) Modifier.withCustomAnimation(incoming) else Modifier
-                )
-                .fillMaxWidth(1f)
+            modifier = rowModifier.fillMaxWidth(),
+            horizontalArrangement = if (incoming) Arrangement.Start else Arrangement.End
         ) {
             if (incoming) {
                 val imageUri = message.actorId?.let { viewModel.contactsViewModel.getImageUri(it, true) }
@@ -465,11 +489,10 @@ class ComposeChatAdapter(
                     modifier = Modifier
                         .size(48.dp)
                         .align(Alignment.CenterVertically)
-                        .padding()
                         .padding(end = 8.dp)
                 )
             } else {
-                Spacer(Modifier.weight(1f))
+                Spacer(Modifier.width(8.dp))
             }
 
             Surface(
@@ -480,44 +503,106 @@ class ComposeChatAdapter(
                 color = Color(color),
                 shape = shape
             ) {
-                val timeString = DateUtils(LocalContext.current).getLocalTimeStringFromTimestamp(message.timestamp)
-                val modifier = if (includePadding) Modifier.padding(8.dp, 4.dp, 8.dp, 4.dp) else Modifier
+                val modifier = if (includePadding) {
+                    Modifier.padding(16.dp, 4.dp, 16.dp, 4.dp)
+                } else {
+                    Modifier
+                }
+
                 Column(modifier = modifier) {
-                    if (message.parentMessageId != null && !message.isDeleted && messagesJson != null) {
+                    if (messagesJson != null &&
+                        message.parentMessageId != null &&
+                        !message.isDeleted &&
+                        message.parentMessageId.toString() != threadId
+                    ) {
                         messagesJson!!
                             .find { it.parentMessage?.id == message.parentMessageId }
-                            ?.parentMessage!!.asModel().let { CommonMessageQuote(LocalContext.current, it) }
+                            ?.parentMessage!!.asModel()
+                            .let { CommonMessageQuote(LocalContext.current, it) }
                     }
 
                     if (incoming) {
                         Text(message.actorDisplayName.toString(), fontSize = AUTHOR_TEXT_SIZE)
                     }
 
-                    Row {
+                    ThreadTitle(message)
+
+                    if (shouldShowTimeNextToContent(message)) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            content()
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 6.dp, start = 8.dp)
+                            ) {
+                                TimeDisplay(message)
+                                ReadStatus(message)
+                            }
+                        }
+                    } else {
                         content()
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Text(
-                            timeString,
-                            fontSize = TIME_TEXT_SIZE,
-                            textAlign = TextAlign.End,
-                            modifier = Modifier.align(Alignment.CenterVertically)
-                        )
-                        if (message.readStatus == ReadStatus.NONE) {
-                            val read = painterResource(R.drawable.ic_check_all)
-                            Icon(
-                                read,
-                                "",
-                                modifier = Modifier
-                                    .padding(start = 2.dp)
-                                    .size(12.dp)
-                                    .align(Alignment.CenterVertically)
-                            )
+                        Row(
+                            modifier = Modifier.align(Alignment.End),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            TimeDisplay(message)
+                            ReadStatus(message)
                         }
                     }
                 }
             }
         }
     }
+
+    @Composable
+    private fun TimeDisplay(message: ChatMessage) {
+        val timeString = DateUtils(LocalContext.current)
+            .getLocalTimeStringFromTimestamp(message.timestamp)
+        Text(
+            timeString,
+            fontSize = TIME_TEXT_SIZE,
+            textAlign = TextAlign.Center
+        )
+    }
+
+    @Composable
+    private fun ReadStatus(message: ChatMessage) {
+        if (message.readStatus == ReadStatus.NONE) {
+            val read = painterResource(R.drawable.ic_check_all)
+            Icon(
+                read,
+                "",
+                modifier = Modifier
+                    .padding(start = 4.dp)
+                    .size(16.dp)
+            )
+        }
+    }
+
+    @Composable
+    private fun ThreadTitle(message: ChatMessage) {
+        if (isFirstMessageOfThreadInNormalChat(message)) {
+            Row {
+                val read = painterResource(R.drawable.outline_forum_24)
+                Icon(
+                    read,
+                    "",
+                    modifier = Modifier
+                        .padding(end = 6.dp)
+                        .size(18.dp)
+                        .align(Alignment.CenterVertically)
+                )
+                Text(
+                    text = message.threadTitle ?: "",
+                    fontSize = REGULAR_TEXT_SIZE,
+                    fontWeight = FontWeight.SemiBold
+                )
+            }
+        }
+    }
+
+    fun isFirstMessageOfThreadInNormalChat(message: ChatMessage): Boolean = threadId == null && message.isThread
 
     @Composable
     private fun Modifier.withCustomAnimation(incoming: Boolean): Modifier {
@@ -750,8 +835,8 @@ class ComposeChatAdapter(
                         read,
                         "",
                         modifier = Modifier
-                            .padding(start = 2.dp)
-                            .size(12.dp)
+                            .padding(start = 4.dp)
+                            .size(16.dp)
                             .align(Alignment.CenterVertically)
                     )
                 }
@@ -762,29 +847,30 @@ class ComposeChatAdapter(
     @Composable
     private fun VoiceMessage(message: ChatMessage, state: MutableState<Boolean>) {
         CommonMessageBody(message, playAnimation = state.value) {
-            Icon(
-                Icons.Filled.PlayArrow,
-                "play",
-                modifier = Modifier
-                    .size(24.dp)
-                    .align(Alignment.CenterVertically)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = "play",
+                    modifier = Modifier.size(24.dp)
+                )
 
-            AndroidView(
-                factory = { ctx ->
-                    WaveformSeekBar(ctx).apply {
-                        setWaveData(FloatArray(DEFAULT_WAVE_SIZE) { Random.nextFloat() }) // READ ONLY for now
-                        setColors(
-                            colorScheme.inversePrimary.toArgb(),
-                            colorScheme.onPrimaryContainer.toArgb()
-                        )
-                    }
-                },
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .width(180.dp)
-                    .height(80.dp)
-            )
+                AndroidView(
+                    factory = { ctx ->
+                        WaveformSeekBar(ctx).apply {
+                            setWaveData(FloatArray(DEFAULT_WAVE_SIZE) { Random.nextFloat() }) // READ ONLY for now
+                            setColors(
+                                colorScheme.inversePrimary.toArgb(),
+                                colorScheme.onPrimaryContainer.toArgb()
+                            )
+                        }
+                    },
+                    modifier = Modifier
+                        .width(180.dp)
+                        .height(80.dp)
+                )
+            }
         }
     }
 
@@ -856,6 +942,7 @@ class ComposeChatAdapter(
             message.extractedUrlToPreview!!
         )
         CommonMessageBody(message, playAnimation = state.value) {
+            EnrichedText(message)
             Row(
                 modifier = Modifier
                     .drawWithCache {
@@ -960,9 +1047,17 @@ class ComposeChatAdapter(
 
 @Preview(showBackground = true, widthDp = 380, heightDp = 800)
 @Composable
+@Suppress("MagicNumber", "LongMethod")
 fun AllMessageTypesPreview() {
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
-    val adapter = remember { ComposeChatAdapter(messagesJson = null, messageId = null, previewUtils) }
+    val adapter = remember {
+        ComposeChatAdapter(
+            messagesJson = null,
+            messageId = null,
+            threadId = null,
+            previewUtils
+        )
+    }
 
     val sampleMessages = remember {
         listOf(
@@ -979,6 +1074,42 @@ fun AllMessageTypesPreview() {
                 jsonMessageId = 2
                 actorId = "user1_id"
                 message = "I love Nextcloud"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 3
+                actorId = "user1_id"
+                message = "This is a really really really really really really really really really long message"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 4
+                actorId = "user1_id"
+                message = "some \n linebreak"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 5
+                actorId = "user1_id"
+                threadTitle = "Thread title"
+                isThread = true
+                message = "Content of a first thread message"
+                timestamp = System.currentTimeMillis()
+                actorDisplayName = "User2"
+                messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name
+            },
+            ChatMessage().apply {
+                jsonMessageId = 6
+                actorId = "user1_id"
+                threadTitle = "looooooooooooong Thread title"
+                isThread = true
+                message = "Content"
                 timestamp = System.currentTimeMillis()
                 actorDisplayName = "User2"
                 messageType = ChatMessage.MessageType.REGULAR_TEXT_MESSAGE.name

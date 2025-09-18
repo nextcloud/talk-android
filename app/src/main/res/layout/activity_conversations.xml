@@ -116,7 +116,7 @@
                     android:id="@+id/threads_button"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
-                    android:contentDescription="@string/followed_threads"
+                    android:contentDescription="@string/threads"
                     android:paddingStart="8dp"
                     android:paddingEnd="8dp"
                     android:src="@drawable/outline_forum_24"

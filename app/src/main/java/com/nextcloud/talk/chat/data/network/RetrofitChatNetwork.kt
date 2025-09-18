@@ -198,10 +198,11 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         baseUrl: String,
         token: String,
         messageId: String,
-        limit: Int
+        limit: Int,
+        threadId: Int?
     ): List<ChatMessageJson> {
         val url = ApiUtils.getUrlForChatMessageContext(baseUrl, token, messageId)
-        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit).ocs?.data ?: listOf()
+        return ncApiCoroutines.getContextOfChatMessage(credentials, url, limit, threadId).ocs?.data ?: listOf()
     }
 
     override suspend fun getOpenGraph(

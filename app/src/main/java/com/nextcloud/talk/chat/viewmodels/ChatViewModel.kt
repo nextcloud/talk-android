@@ -35,7 +35,6 @@ import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -170,10 +169,6 @@ class ChatViewModel @Inject constructor(
     private val _voiceMessagePlaybackSpeedPreferences: MutableLiveData<Map<String, PlaybackSpeed>> = MutableLiveData()
     val voiceMessagePlaybackSpeedPreferences: LiveData<Map<String, PlaybackSpeed>>
         get() = _voiceMessagePlaybackSpeedPreferences
-
-    private val _getContextChatMessages: MutableLiveData<List<ChatMessageJson>> = MutableLiveData()
-    val getContextChatMessages: LiveData<List<ChatMessageJson>>
-        get() = _getContextChatMessages
 
     private val _threadRetrieveState = MutableStateFlow<ThreadRetrieveUiState>(ThreadRetrieveUiState.None)
     val threadRetrieveState: StateFlow<ThreadRetrieveUiState> = _threadRetrieveState
@@ -941,20 +936,6 @@ class ChatViewModel @Inject constructor(
                     Log.e(TAG, "resend failed")
                 }
             }
-        }
-    }
-
-    fun getContextForChatMessages(credentials: String, baseUrl: String, token: String, messageId: String, limit: Int) {
-        viewModelScope.launch {
-            val messages = chatNetworkDataSource.getContextForChatMessage(
-                credentials,
-                baseUrl,
-                token,
-                messageId,
-                limit
-            )
-
-            _getContextChatMessages.value = messages
         }
     }
 
