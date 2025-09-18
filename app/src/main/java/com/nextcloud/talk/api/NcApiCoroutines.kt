@@ -148,8 +148,7 @@ interface NcApiCoroutines {
         @Field("actorDisplayName") actorDisplayName: String,
         @Field("replyTo") replyTo: Int,
         @Field("silent") sendWithoutNotification: Boolean,
-        @Field("referenceId") referenceId: String,
-        @Field("threadTitle") threadTitle: String?
+        @Field("referenceId") referenceId: String
     ): ChatOverallSingleMessage
 
     @FormUrlEncoded
@@ -306,4 +305,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("level") level: Int
     ): ThreadOverall
+
+    @GET
+    suspend fun getInvitations(@Header("Authorization") authorization: String, @Url url: String): InvitationOverall
+
+    @GET
+    suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
 }
