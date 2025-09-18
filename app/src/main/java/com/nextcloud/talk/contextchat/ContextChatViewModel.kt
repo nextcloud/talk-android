@@ -64,7 +64,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
             )
 
             if (threadId.isNullOrEmpty()) {
-                messages = messages.filter { it.id == it.threadId }
+                messages = messages.filter { !isThreadChildMessage(it) }
             }
 
             val subTitle = if (threadId?.isNotEmpty() == true) {
@@ -82,6 +82,10 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
             )
         }
     }
+
+    fun isThreadChildMessage(currentMessage: ChatMessageJson): Boolean =
+        currentMessage.hasThread &&
+            currentMessage.threadId != currentMessage.id
 
     fun clearContextChatState() {
         _getContextChatMessagesState.value = ContextChatRetrieveUiState.None
