@@ -27,7 +27,7 @@ class MessageSearchHelperTest {
         title: String = "foo",
         messageExcerpt: String = "foo",
         conversationToken: String = "foo",
-        messageId: String? = "foo"
+        messageId: String = "foo"
     ) = SearchMessageEntry(searchTerm, thumbnailURL, title, messageExcerpt, conversationToken, messageId)
 
     @Before
