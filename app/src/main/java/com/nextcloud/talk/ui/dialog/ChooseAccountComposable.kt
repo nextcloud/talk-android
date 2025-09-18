@@ -56,6 +56,7 @@ import autodagger.AutoInjector
 import coil.compose.AsyncImage
 import com.nextcloud.talk.R
 import com.nextcloud.talk.account.ServerSelectionActivity
+import com.nextcloud.talk.account.data.model.AccountItem
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chooseaccount.StatusUiState
 import com.nextcloud.talk.chooseaccount.StatusViewModel
@@ -405,4 +406,4 @@ class ChooseAccountDialogCompose {
     }
 }
 
-data class AccountItem(val user: User, val userId: String?)
+
