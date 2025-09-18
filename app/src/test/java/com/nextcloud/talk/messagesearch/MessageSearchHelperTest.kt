@@ -27,8 +27,9 @@ class MessageSearchHelperTest {
         title: String = "foo",
         messageExcerpt: String = "foo",
         conversationToken: String = "foo",
-        messageId: String? = "foo"
-    ) = SearchMessageEntry(searchTerm, thumbnailURL, title, messageExcerpt, conversationToken, messageId)
+        messageId: String? = "foo",
+        threadId: String? = "foo"
+    ) = SearchMessageEntry(searchTerm, thumbnailURL, title, messageExcerpt, conversationToken, threadId, messageId)
 
     @Before
     fun setUp() {
