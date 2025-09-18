@@ -43,6 +43,7 @@
     <string name="file_list_folder">cartella</string>
     <string name="file_list_loading">Caricamento …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
+    <string name="followed_threads">Argomenti seguiti</string>
     <string name="fourHours">4 ore</string>
     <string name="invisible">Invisibile</string>
     <string name="later_today">Più tardi oggi</string>
@@ -171,6 +172,7 @@
     <string name="nc_external_server_failed">Recupero delle impostazioni di segnalazione non riuscito</string>
     <string name="nc_federation_invitation_accept">Accetta</string>
     <string name="nc_federation_invitation_reject">Rifiuta</string>
+    <string name="nc_federation_no_invitations">Nessun invito in attesa</string>
     <string name="nc_file_browser_back">Indietro</string>
     <string name="nc_following_link">Utente che segue un collegamento pubblico</string>
     <string name="nc_formatted_message_you">Tu: %1$s</string>
@@ -410,6 +412,7 @@
     <string name="recording_consent_all">Il permesso di registrazione è richiesto per tutte le call</string>
     <string name="recording_consent_for_conversation_description">Richiedi il consenso alla registrazione prima di partecipare alla chiamata in questa conversazione</string>
     <string name="recording_consent_for_conversation_title">Permesso di registrazione</string>
+    <string name="recording_consent_title">La chiamata potrebbe essere registrata.</string>
     <string name="recording_settings_title">Registrazione</string>
     <string name="reset_status">Ripristina stato</string>
     <string name="save">Salva</string>
@@ -464,6 +467,7 @@
     <string name="translation_error_title">Traduzione fallita</string>
     <string name="translation_from">Da</string>
     <string name="translation_to">A</string>
+    <string name="unarchive_conversation">Disarchivia conversazione</string>
     <string name="unarchived_conversation">Non archiviato %1$s</string>
     <string name="unban">Rimuovi ban</string>
     <string name="unread">Da leggere</string>

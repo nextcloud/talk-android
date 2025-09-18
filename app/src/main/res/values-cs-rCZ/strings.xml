@@ -5,6 +5,7 @@
     <string name="add_to_notes">Přidat do Poznámek</string>
     <string name="added_to_favorites">Konverzace %1$s přidána do oblíbených</string>
     <string name="appbar_search_in">Hledat v %s</string>
+    <string name="appear_offline">Jevit se offline</string>
     <string name="archive_conversation">Archivovat konverzaci</string>
     <string name="archive_hint">Jakmile je konverzace archivována, bude ve výchozím stavu skrytá. Pokud si chcete zobrazit archivované konverzace, vyberte filtr „Archivováno“. Přímá zmínění budou chodit i nadále.</string>
     <string name="archived">Archivováno</string>
@@ -547,6 +548,7 @@
     <string name="no_conversations_archived">Žádné archivované konverzace</string>
     <string name="no_offline_messages_saved">Neuloženy žádné zprávy pro režim bez připojení</string>
     <string name="no_phone_book_integration_due_to_permissions">Není možné propojit telefonní čísla, protože chybí potřebná oprávnění</string>
+    <string name="notification_all_messages">Všechny zprávy</string>
     <string name="notification_mention_only">Pouze zmínky ve stylu @jméno</string>
     <string name="notification_off">Vypnuto</string>
     <string name="notifications_default">Výchozí</string>
@@ -710,6 +712,12 @@
         <item quantity="few">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
         <item quantity="many">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
         <item quantity="other">Tato konverzace bude automaticky smazána pro kohokoli po %1$d dnech bez jakékoli aktivity.</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d odpověď</item>
+        <item quantity="few">%d odpovědi</item>
+        <item quantity="many">%d odpovědí</item>
+        <item quantity="other">%d odpovědi</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hlas</item>
