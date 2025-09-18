@@ -134,7 +134,7 @@ class ChooseAccountDialogCompose {
             }
 
             is StatusUiState.Error -> {
-                Log.e("ChooseAccount", "Failed to get account status")
+                Log.e(TAG, "Failed to get account status")
             }
 
             StatusUiState.None -> {
