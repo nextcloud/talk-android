@@ -316,7 +316,7 @@ dependencies {
     implementation 'com.github.nextcloud-deps:android-talk-webrtc:132.6834.0'
 
     gplayImplementation 'com.google.android.gms:play-services-base:18.8.0'
-    gplayImplementation "com.google.firebase:firebase-messaging:25.0.0"
+    gplayImplementation "com.google.firebase:firebase-messaging:25.0.1"
 
     //compose
     implementation(platform("androidx.compose:compose-bom:2025.09.00"))
