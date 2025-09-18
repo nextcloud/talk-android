@@ -36,6 +36,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         MutableStateFlow<ContextChatRetrieveUiState>(ContextChatRetrieveUiState.None)
     val getContextChatMessagesState: StateFlow<ContextChatRetrieveUiState> = _getContextChatMessagesState
 
+    @Suppress("LongParameterList")
     fun getContextForChatMessages(
         credentials: String,
         baseUrl: String,
@@ -44,8 +45,6 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
         messageId: String,
         title: String
     ) {
-        var finalTitle: String? = title
-
         viewModelScope.launch {
             val user = userManager.currentUser.blockingGet()
 
@@ -78,7 +77,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 messageId = messageId,
                 threadId = threadId,
                 messages = messages,
-                title = finalTitle,
+                title = title,
                 subTitle = subTitle
             )
         }

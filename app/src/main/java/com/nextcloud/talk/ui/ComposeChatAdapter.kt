@@ -1046,6 +1046,7 @@ class ComposeChatAdapter(
 
 @Preview(showBackground = true, widthDp = 380, heightDp = 800)
 @Composable
+@Suppress("MagicNumber", "LongMethod")
 fun AllMessageTypesPreview() {
     val previewUtils = ComposePreviewUtils.getInstance(LocalContext.current)
     val adapter = remember {
