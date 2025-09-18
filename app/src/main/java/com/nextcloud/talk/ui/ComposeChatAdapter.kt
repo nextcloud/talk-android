@@ -942,6 +942,7 @@ class ComposeChatAdapter(
             message.extractedUrlToPreview!!
         )
         CommonMessageBody(message, playAnimation = state.value) {
+            EnrichedText(message)
             Row(
                 modifier = Modifier
                     .drawWithCache {
