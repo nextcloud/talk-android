@@ -4434,7 +4434,7 @@ class ChatActivity :
         }
         if (!foundMessage) {
             Log.d(TAG, "quoted message with id " + parentMessage.id + " was not found in adapter")
-            startContextChatWindowForMessage(parentMessage.id, null)
+            startContextChatWindowForMessage(parentMessage.id, conversationThreadId.toString())
         }
     }
 
