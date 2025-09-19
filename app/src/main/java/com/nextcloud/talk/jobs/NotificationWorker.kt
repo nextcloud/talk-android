@@ -85,6 +85,8 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -397,6 +399,10 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     val ncNotification = notificationOverall.ocs!!.notification
                     if (ncNotification != null) {
                         enrichPushMessageByNcNotificationData(ncNotification)
+
+                        val threadId = parseThreadId(ncNotification.objectId)
+                        threadId?.let { intent.putExtra(KEY_THREAD_ID, it) }
+
                         showNotification(intent, ncNotification)
                     }
                 }
@@ -827,6 +833,8 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
     }
 
+    private fun parseThreadId(objectId: String?): Long? = objectId?.split("/")?.getOrNull(2)?.toLongOrNull()
+
     private fun sendNotification(notificationId: Int, notification: Notification) {
         Log.d(TAG, "show notification with id $notificationId")
         if (ActivityCompat.checkSelfPermission(
@@ -982,6 +990,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val bundle = Bundle()
         bundle.putString(KEY_ROOM_TOKEN, pushMessage.id)
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
+        bundle.putBoolean(KEY_OPENED_VIA_NOTIFICATION, true)
         intent.putExtras(bundle)
         return intent
     }
