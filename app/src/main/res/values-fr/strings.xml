@@ -667,6 +667,7 @@
     <string name="thread_notifications">Notifications de conversation</string>
     <string name="thread_reply">Répondre</string>
     <string name="thread_title">Titre de la conversation</string>
+    <string name="threads">Conversations</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
     <string name="translate">Traduire</string>

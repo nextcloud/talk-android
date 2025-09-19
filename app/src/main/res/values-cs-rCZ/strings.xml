@@ -80,6 +80,9 @@
     <string name="left_conversation">Opustili jste konverzaci %1$s</string>
     <string name="load_more_results">Načíst další výsledky</string>
     <string name="local_time">Místní čas: %1$s</string>
+    <string name="location_permission_denied">Oprávnění k přístupu k poloze odepřeno</string>
+    <string name="location_permission_denied_msg">Povolte to v nastavení aplikace</string>
+    <string name="location_services_disabled">Služby určování polohy vypnuty</string>
     <string name="lock_conversation">Uzamknout konverzaci</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>
@@ -93,6 +96,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Největší jako první</string>
     <string name="menu_item_sort_by_size_smallest_first">Nejmenší jako první</string>
     <string name="message_copied">Zpráva zkopírována</string>
+    <string name="message_delete_are_you_sure">Opravdu chcete tuto zprávu smazat?</string>
     <string name="message_deleted_by_you">Zprávu jste smazali</string>
     <string name="message_last_edited_by">Upraveno %1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím anketu otevřete</string>
@@ -100,6 +104,7 @@
     <string name="message_search_begin_typing">Hledejte psaním…</string>
     <string name="message_search_hint">Hledat…</string>
     <string name="messages">Zprávy</string>
+    <string name="mute_all_notifications">Ztlumit veškerá upozornění</string>
     <string name="nc_Server_account_imported">Zvolený účet byl naimportován a je k dispozici</string>
     <string name="nc_about">O aplikaci</string>
     <string name="nc_account_chooser_active_user">Aktivní uživatel</string>
@@ -664,6 +669,8 @@
     <string name="thread_notifications">Notifikace ohledně vlákna</string>
     <string name="thread_reply">Odpověď</string>
     <string name="thread_title">Název vlákna</string>
+    <string name="threads">Vláken</string>
+    <string name="threads_list_empty">Nenalezeny žádné hrozby</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zítra</string>
     <string name="translate">Překládání</string>

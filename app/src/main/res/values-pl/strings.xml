@@ -670,6 +670,7 @@
     <string name="thread_notifications">Powiadomienia wątków</string>
     <string name="thread_reply">Odpowiedź</string>
     <string name="thread_title">Tytuł wątku</string>
+    <string name="threads">Wątki</string>
     <string name="threads_list_empty">Nie znaleziono wątków</string>
     <string name="today">Dzisiaj</string>
     <string name="tomorrow">Jutro</string>

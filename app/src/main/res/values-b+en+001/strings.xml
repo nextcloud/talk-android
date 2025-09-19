@@ -670,6 +670,8 @@
     <string name="thread_notifications">Thread notifications</string>
     <string name="thread_reply">Reply</string>
     <string name="thread_title">Thread title</string>
+    <string name="threads">Threads</string>
+    <string name="threads_list_empty">No threads found</string>
     <string name="today">Today</string>
     <string name="tomorrow">Tomorrow</string>
     <string name="translate">Translate</string>

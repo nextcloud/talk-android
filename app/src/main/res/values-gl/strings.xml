@@ -610,7 +610,7 @@
     <string name="reset_status">Restabelecer o estado</string>
     <string name="restrict_join_other_room_while_call">Non é posible unirse a outras salas mentres está nunha chamada</string>
     <string name="save">Gardar</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">Escanear o código QR</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
     <string name="scope_federated_title">Federado</string>
     <string name="scope_local_description">Visíbel só para as persoas desta instancia e os convidados</string>
@@ -670,6 +670,7 @@
     <string name="thread_notifications">Notificacións de fíos</string>
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fío</string>
+    <string name="threads">Fíos</string>
     <string name="threads_list_empty">Non se atopou ningún fío</string>
     <string name="today">Hoxe</string>
     <string name="tomorrow">Mañá</string>

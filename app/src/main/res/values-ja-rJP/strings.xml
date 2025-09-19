@@ -225,6 +225,7 @@
     <string name="nc_edit_message">編集</string>
     <string name="nc_edit_message_text">メッセージを編集</string>
     <string name="nc_edited_by_admin">管理者に編集されました</string>
+    <string name="nc_event_schedule">スケジュール</string>
     <string name="nc_expire_message_eight_hours">8時間</string>
     <string name="nc_expire_message_four_weeks">4週間</string>
     <string name="nc_expire_message_off">オフ</string>
@@ -289,6 +290,7 @@
     <string name="nc_mark_as_unread">未読にする</string>
     <string name="nc_message_failed">失敗しました</string>
     <string name="nc_message_failed_to_send">メッセージの送信に失敗しました:</string>
+    <string name="nc_message_offline">オフライン</string>
     <string name="nc_message_quote_cancel_reply">返信をキャンセル</string>
     <string name="nc_message_read">メッセージ既読</string>
     <string name="nc_message_sent">メッセージ送信済</string>
@@ -366,6 +368,7 @@
     <string name="nc_search">検索</string>
     <string name="nc_search_clear">検索をクリア</string>
     <string name="nc_select_an_account">アカウントを選択</string>
+    <string name="nc_sensitive_conversation">プライベートな会話</string>
     <string name="nc_sent_a_gif" formatted="true">%1$sがGIFを送信しました。</string>
     <string name="nc_sent_a_gif_you">GIFを送信しました。</string>
     <string name="nc_sent_a_video" formatted="true">%1$sが動画ファイルを送信しました。</string>
@@ -577,6 +580,7 @@
     <string name="thisWeek">今週</string>
     <string name="this_is_a_test_message">これはテストメッセージです</string>
     <string name="this_weekend">この週末</string>
+    <string name="thread_reply">返信</string>
     <string name="today">今日</string>
     <string name="tomorrow">明日</string>
     <string name="translate">翻訳</string>
@@ -606,6 +610,9 @@
     <string name="userinfo_no_info_headline">個人情報はありません</string>
     <string name="userinfo_no_info_text">プロフィールページに名前、写真、連絡先の詳細を追加します。</string>
     <string name="whats_your_status">現在のオンラインステータスは？</string>
+    <plurals name="thread_replies">
+        <item quantity="other">%d件の返信</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d投票数</item>
     </plurals>
