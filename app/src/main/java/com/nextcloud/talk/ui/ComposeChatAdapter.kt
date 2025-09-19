@@ -8,7 +8,6 @@
 package com.nextcloud.talk.ui
 
 import android.content.Context
-import android.content.ContextWrapper
 import android.util.Log
 import android.view.View.TEXT_ALIGNMENT_VIEW_START
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -90,7 +89,6 @@ import coil.compose.AsyncImage
 import com.elyeproj.loaderviewlibrary.LoaderImageView
 import com.elyeproj.loaderviewlibrary.LoaderTextView
 import com.nextcloud.talk.R
-import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.adapters.messages.PreviewMessageViewHolder.Companion.KEY_MIMETYPE
 import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedApplication
@@ -107,6 +105,7 @@ import com.nextcloud.talk.models.json.opengraph.Reference
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.DateUtils
+import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
@@ -219,16 +218,7 @@ class ComposeChatAdapter(
     val items = mutableStateListOf<ChatMessage>()
     val currentUser: User = viewModel.userManager.currentUser.blockingGet()
     val colorScheme = viewModel.viewThemeUtils.getColorScheme(viewModel.context)
-    val highEmphasisColorInt = viewModel.context.resources.getColor(R.color.high_emphasis_text, null)
-
-    fun Context.findMainActivityOrNull(): MainActivity? {
-        var context = this
-        while (context is ContextWrapper) {
-            if (context is MainActivity) return context
-            context = context.baseContext
-        }
-        return null
-    }
+    val highEmphasisColorInt = if (DisplayUtils.isAppThemeDarkMode(viewModel.context)) Color.White.toArgb() else Color.Black.toArgb()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
