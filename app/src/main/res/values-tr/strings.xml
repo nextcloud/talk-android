@@ -670,6 +670,7 @@
     <string name="thread_notifications">Yazışma bildirimleri</string>
     <string name="thread_reply">Yanıtla</string>
     <string name="thread_title">Yazışma başlığı</string>
+    <string name="threads">Yazışmalar</string>
     <string name="threads_list_empty">Herhangi bir yazışma bulunamadı</string>
     <string name="today">Bugün</string>
     <string name="tomorrow">Yarın</string>

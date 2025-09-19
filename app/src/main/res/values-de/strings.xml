@@ -670,6 +670,7 @@
     <string name="thread_notifications">Themen-Benachrichtigungen</string>
     <string name="thread_reply">Antwort</string>
     <string name="thread_title">Thementitel</string>
+    <string name="threads">Themen</string>
     <string name="threads_list_empty">Keine Themen gefunden</string>
     <string name="today">Heute</string>
     <string name="tomorrow">Morgen</string>

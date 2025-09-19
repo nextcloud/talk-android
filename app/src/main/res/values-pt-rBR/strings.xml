@@ -670,6 +670,8 @@
     <string name="thread_notifications">Notificações de fios</string>
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título do fio</string>
+    <string name="threads">Fios</string>
+    <string name="threads_list_empty">Nenhum fio encontrado</string>
     <string name="today">Hoje</string>
     <string name="tomorrow">Amanhã</string>
     <string name="translate">Traduzir</string>

@@ -456,8 +456,10 @@
     <string name="nc_settings_proxy_port_title">Порт проксі</string>
     <string name="nc_settings_proxy_type_title">Тып проксі</string>
     <string name="nc_settings_proxy_username_title">Імя карыстальніка проксі</string>
+    <string name="nc_settings_reauthorize">Паўторна аўтарызаваць уліковы запіс</string>
     <string name="nc_settings_remove">Выдаліць</string>
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
+    <string name="nc_settings_remove_confirmation">Пацвердзіце свой намер выдаліць бягучы ўліковы запіс.</string>
     <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі экрана пры бяздзейнасці</string>
     <string name="nc_settings_screen_lock_title">Блакіроўка экрана</string>
     <string name="nc_settings_screen_security_desc">Забараняе рабіць здымкі экрана ў спісе нядаўняга і ўнутры праграмы</string>
@@ -465,6 +467,7 @@
     <string name="nc_settings_server_almost_eol">Версія сервера вельмі старая і не будзе падтрымлівацца ў наступным выпуску!</string>
     <string name="nc_settings_server_eol">Версія сервера занадта старая і не падтрымліваецца гэтай версіяй праграмы для Android.</string>
     <string name="nc_settings_server_eol_title">Сервер не падтрымліваецца</string>
+    <string name="nc_settings_theme_battery_saver">Зададзена рэжымам эканоміі зараду батарэі</string>
     <string name="nc_settings_theme_dark">Цёмная</string>
     <string name="nc_settings_theme_follow_system">Сістэмная</string>
     <string name="nc_settings_theme_key">тэма</string>
@@ -521,10 +524,13 @@
     <string name="nc_yes">Так</string>
     <string name="next_week">На наступным тыдні</string>
     <string name="no_conversations_archived">Няма архіваваных размоў</string>
+    <string name="no_offline_messages_saved">Няма захаваных пазасеткавых паведамленняў</string>
+    <string name="no_phone_book_integration_due_to_permissions">Няма інтэграцыі нумара тэлефона з-за адсутнасці дазволаў</string>
     <string name="notification_all_messages">Усе паведамленні</string>
     <string name="notification_mention_only">Толькі згадкі з @</string>
     <string name="notification_off">Выкл.</string>
     <string name="notifications_default">Прадвызначаныя</string>
+    <string name="notifications_default_description">Прытрымлівацца налад размовы</string>
     <string name="oneHour">1 гадзіна</string>
     <string name="online">У сетцы</string>
     <string name="online_status">Статус у сетцы</string>
@@ -556,6 +562,7 @@
     <string name="read_storage_no_permission">Абагульванне файлаў са сховішча немагчыма без дазволаў</string>
     <string name="recent_threads">Нядаўнія гутаркі</string>
     <string name="record_active_info">Выклік запісваецца</string>
+    <string name="record_cancel_start">Скасаваць пачатак запісу</string>
     <string name="record_failed_info">Не ўдалося зрабіць запіс. Звярніцеся да адміністратара.</string>
     <string name="record_start_description">Пачаць запіс</string>
     <string name="record_stop_confirm_message">Вы сапраўды хочаце спыніць запіс?</string>
@@ -605,6 +612,7 @@
     <string name="starred">Абранае</string>
     <string name="startCallForbidden">Вам не дазволена пачынаць выклік</string>
     <string name="start_thread">Стварыць гутарку</string>
+    <string name="started_a_call">пачаў(-ла) выклік</string>
     <string name="status_message">Паведамленне статусу</string>
     <string name="status_reverted">Статус вернуты</string>
     <string name="switch_to_breakout_room">Пераключыцца на пакой для абмеркавання</string>
@@ -662,6 +670,12 @@
     <string name="userinfo_no_info_text">Дадайце імя, аватар і кантактную інфармацыю на старонку вашага профілю.</string>
     <string name="video_call">Відэавыклік</string>
     <string name="whats_your_status">Які ў вас статус?</string>
+    <plurals name="see_similar_system_messages">
+        <item quantity="one">Паглядзець %d падобнае паведамленне</item>
+        <item quantity="few">Паглядзець %d падобныя паведамленні</item>
+        <item quantity="many">Паглядзець %d падобных паведамленняў</item>
+        <item quantity="other">Паглядзець %d падобных паведамленняў</item>
+    </plurals>
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Гэтая размова будзе аўтаматычна выдалена для ўсіх праз %1$d дзень бяздзейнасці.</item>
         <item quantity="few">Гэтая размова будзе аўтаматычна выдалена для ўсіх праз %1$d дні бяздзейнасці.</item>

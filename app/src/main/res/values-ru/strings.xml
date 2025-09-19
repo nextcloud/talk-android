@@ -664,6 +664,7 @@
     <string name="thread_notifications">Уведомления для темы</string>
     <string name="thread_reply">Ответ</string>
     <string name="thread_title">Заголовок темы</string>
+    <string name="threads">Темы</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>

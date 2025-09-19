@@ -671,6 +671,7 @@
     <string name="thread_notifications">Notificaciones para hilos</string>
     <string name="thread_reply">Responder</string>
     <string name="thread_title">Título del hilo</string>
+    <string name="threads">Hilos</string>
     <string name="threads_list_empty">No se encontraron hilos</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
