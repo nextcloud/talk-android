@@ -9,10 +9,6 @@ package com.nextcloud.talk.camera
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.ImageFormat
-import android.graphics.Rect
-import android.graphics.YuvImage
 import android.os.SystemClock
 import android.util.Log
 import androidx.core.graphics.createBitmap
@@ -28,7 +24,6 @@ import org.webrtc.JavaI420Buffer
 import org.webrtc.VideoFrame
 import org.webrtc.VideoProcessor
 import org.webrtc.VideoSink
-import java.io.ByteArrayOutputStream
 import java.nio.ByteBuffer
 
 class BackgroundBlurFrameProcessor(
@@ -82,7 +77,14 @@ class BackgroundBlurFrameProcessor(
                 0.0
             )
 
-            Imgproc.resize(maskMat, maskMat, frameMat.size(), .0, .0, Imgproc.INTER_LINEAR)
+            Imgproc.resize(
+                maskMat,
+                maskMat,
+                frameMat.size(),
+                .0,
+                .0,
+                Imgproc.INTER_LINEAR
+            )
 
             // Copies pixels from `frameMat` to `blurredMat` ONLY where `grayMaskMat` is non-zero.
             // This keeps the background blurred, while leaving the foreground clear
@@ -111,24 +113,31 @@ class BackgroundBlurFrameProcessor(
     }
 
     override fun onFrameCaptured(videoFrame: VideoFrame) {
-        val bitmapFrame = videoFrame.buffer.toI420()?.toBitmap()
+        val buffer = videoFrame.buffer.toI420()
 
-        if (bitmapFrame == null) {
+        if (buffer == null) {
             videoFrame.release()
             return
         }
 
-        val frameMatrix = Mat()
-        var rotationMatrix = Mat()
+        val frameMatrix = buffer.toMat()
+        if (frameMatrix == null) {
+            videoFrame.release()
+            return
+        }
+
+        val center = Point(frameMatrix.width() / 2.0, frameMatrix.height() / 2.0)
+
+        var rotationMat = Mat()
 
         try {
-            Utils.bitmapToMat(bitmapFrame, frameMatrix)
+            rotationMat = Imgproc.getRotationMatrix2D(
+                center,
+                videoFrame.rotation.toDouble(),
+                1.0
+            )
 
-            val center = Point(frameMatrix.width() / 2.0, frameMatrix.height() / 2.0)
-
-            rotationMatrix = Imgproc.getRotationMatrix2D(center, videoFrame.rotation.toDouble(), 1.0)
-
-            Imgproc.warpAffine(frameMatrix, frameMatrix, rotationMatrix, frameMatrix.size())
+            Imgproc.warpAffine(frameMatrix, frameMatrix, rotationMat, frameMatrix.size())
 
             if (isFrontFacing) {
                 Core.flip(frameMatrix, frameMatrix, -1)
@@ -151,7 +160,7 @@ class BackgroundBlurFrameProcessor(
             }
         } finally {
             frameMatrix.release()
-            rotationMatrix.release()
+            rotationMat.release()
         }
     }
 
@@ -204,66 +213,27 @@ class BackgroundBlurFrameProcessor(
         return VideoFrame(finalFrameBuffer, 0, timeStamp)
     }
 
-    // TODO - Experiment
-    fun VideoFrame.I420Buffer.toMat(): Mat {
-        val width = this.width
-        val height = this.height
-
-        val matY = Mat(height, width, CvType.CV_8UC1, this.dataY, this.strideY.toLong())
-        val matU = Mat(height / 2, width / 2, CvType.CV_8UC1, this.dataU, this.strideU.toLong())
-        val matV = Mat(height / 2, width / 2, CvType.CV_8UC1, this.dataV, this.strideV.toLong())
-
-        // OpenCV's I420 format is one tall Mat (height * 1.5) where
-        // Y, U, and V planes are stacked vertically.
-        val i420Mat = Mat(height + height/2, width, CvType.CV_8UC1)
-
-        Log.d("Julius", "i420 dimens: ${i420Mat.height()} ${i420Mat.width()}")
-        Log.d("Julius", "dstY dimens: 0 $height")
-        Log.d("Julius", "dstU dimens: $height ${height + height / 2}")
-        Log.d("Julius", "dstV dimens: ${height + height / 2} ${height + height * 3 / 2}")
-
-        // TODO - this implementation does not take into account stride, which results in an error
-        //  however, Gemini recommends a solution that involves iterating over the data, again
-        //  I wonder if there is a faster approach here. Else I'm better off with the bitmap approach
-        //  correctness > optimization. However, if it's truly just a matter of stride, perhaps I can find a
-        //  optimized matrix library that allows me to perform these advanced operations using underlying C++
-        //  parallelized loops like OpenCV does.
-
-        val dstY = i420Mat.rowRange(0, height)
-        val dstU = i420Mat.rowRange(height, height + height / 2)
-        val dstV = i420Mat.rowRange(height + height / 2, height + height * 3 / 2)
-
-
-        matY.copyTo(dstY)
-        matU.copyTo(dstU)
-        matV.copyTo(dstV)
-
-        matY.release()
-        matU.release()
-        matV.release()
-
-        this.release()
-
-        return i420Mat
-    }
-
-    private fun VideoFrame.I420Buffer.toBitmap(): Bitmap? {
+    private fun VideoFrame.I420Buffer.toMat(): Mat? {
         return kotlin.runCatching {
             val i420Buffer = this
 
             val width = i420Buffer.width
             val height = i420Buffer.height
-            val nv21Data = ByteArray(width * height * 3 / 2)
+            val yPlaneSize = width * height
+
+            val nv21Height = height * 3 / 2
+            val nv21Width = width
+            val nv21Size = nv21Height * nv21Width
+            val nv21Data = ByteArray(nv21Size)
 
             val dataY = i420Buffer.dataY
             val dataU = i420Buffer.dataU
             val dataV = i420Buffer.dataV
 
-            val strideY = i420Buffer.strideY
-            val strideU = i420Buffer.strideU
+            val strideY = i420Buffer.strideY // Likely equal to the width, but not always, depending on mem alignment
+            val strideU = i420Buffer.strideU // U and V have identical dimens and strides
             val strideV = i420Buffer.strideV
 
-            val yPlaneSize = width * height
             if (strideY == width) {
                 // Fast path: contiguous data
                 dataY.get(nv21Data, 0, yPlaneSize)
@@ -289,26 +259,19 @@ class BackgroundBlurFrameProcessor(
                 }
             }
 
-            val yuvImage = YuvImage(
-                nv21Data,
-                ImageFormat.NV21,
-                width,
-                height,
-                null
+            val mat = Mat(
+                nv21Height,
+                nv21Width,
+                CvType.CV_8UC1 // 8 bit unsigned 1 channel
             )
 
-            val outputStream = ByteArrayOutputStream()
-            yuvImage.compressToJpeg(
-                Rect(0, 0, width, height),
-                100,
-                outputStream
-            )
-            val jpegData = outputStream.toByteArray()
-            val bitmap = BitmapFactory.decodeByteArray(jpegData, 0, jpegData.size)
+            mat.put(0, 0, nv21Data)
+
+            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_YUV2RGBA_NV21)
 
             i420Buffer.release()
 
-            bitmap
+            mat
         }.getOrNull()
     }
 }
