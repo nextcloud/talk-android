@@ -205,6 +205,7 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_FILE_PATHS
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_INTERNAL_USER_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_BREAKOUT_ROOM
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_IS_MODERATOR
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_RECORDING_STATE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_START_CALL_AFTER_ROOM_SWITCH
@@ -367,6 +368,7 @@ class ChatActivity :
     var sessionIdAfterRoomJoined: String? = null
     lateinit var roomToken: String
     var conversationThreadId: Long? = null
+    var openedViaNotification: Boolean = false
     var conversationThreadInfo: ThreadInfo? = null
     var conversationUser: User? = null
     lateinit var spreedCapabilities: SpreedCapability
@@ -409,12 +411,11 @@ class ChatActivity :
 
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
-            if (isChatThread()) {
+            if (!openedViaNotification && isChatThread()) {
                 isEnabled = false
                 onBackPressedDispatcher.onBackPressed()
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-                intent.putExtras(Bundle())
                 startActivity(intent)
             }
         }
@@ -594,6 +595,8 @@ class ChatActivity :
         } else {
             null
         }
+
+        openedViaNotification = extras?.getBoolean(KEY_OPENED_VIA_NOTIFICATION) ?: false
 
         sharedText = extras?.getString(BundleKeys.KEY_SHARED_TEXT).orEmpty()
 
