@@ -410,11 +410,11 @@ class ChatActivity :
     private val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             if (isChatThread()) {
-                isEnabled = false
-                onBackPressedDispatcher.onBackPressed()
+                val intent = Intent(this@ChatActivity, ChatActivity::class.java)
+                intent.putExtra(KEY_ROOM_TOKEN, roomToken)
+                startActivity(intent)
             } else {
                 val intent = Intent(this@ChatActivity, ConversationsListActivity::class.java)
-                intent.putExtras(Bundle())
                 startActivity(intent)
             }
         }
