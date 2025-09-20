@@ -67,7 +67,6 @@
     <string name="file_list_folder">složka</string>
     <string name="file_list_loading">Načítání…</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="followed_threads">Sledovaná vlákna</string>
     <string name="fourHours">4 hodiny</string>
     <string name="get_invitations_error">Nepodařilo se získat čekající pozvání</string>
     <string name="hint_edited_message">(upraveno)</string>
@@ -83,6 +82,7 @@
     <string name="location_permission_denied">Oprávnění k přístupu k poloze odepřeno</string>
     <string name="location_permission_denied_msg">Povolte to v nastavení aplikace</string>
     <string name="location_services_disabled">Služby určování polohy vypnuty</string>
+    <string name="location_services_disabled_msg">Abyste mohli používat tuto funkci zapněte polohové služby (GPS)</string>
     <string name="lock_conversation">Uzamknout konverzaci</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Přestat se hlásit</string>

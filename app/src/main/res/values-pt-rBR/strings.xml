@@ -67,7 +67,6 @@
     <string name="file_list_folder">pasta</string>
     <string name="file_list_loading">Carregando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="followed_threads">Fios seguidos</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Falha ao buscar convites pendentes</string>
     <string name="hint_edited_message">(editado)</string>
