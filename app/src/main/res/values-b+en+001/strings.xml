@@ -67,7 +67,6 @@
     <string name="file_list_folder">folder</string>
     <string name="file_list_loading">Loading …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="followed_threads">Followed threads</string>
     <string name="fourHours">4 hours</string>
     <string name="get_invitations_error">Failed to fetch pending invitations</string>
     <string name="hint_edited_message">(edited)</string>

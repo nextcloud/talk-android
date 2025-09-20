@@ -7,6 +7,7 @@
     <string name="audio_output_dialog_headline">Έξοδος ήχου</string>
     <string name="audio_output_phone">Τηλέφωνο</string>
     <string name="audio_output_speaker">Μεγάφωνο</string>
+    <string name="automatic_status_set">Η κατάστασή σας ορίστηκε αυτόματα</string>
     <string name="avatar">Εικόνα προφίλ</string>
     <string name="away">Λείπω</string>
     <string name="busy">Απασχολημένος</string>
@@ -357,14 +358,17 @@
     <string name="polls_add_option">Προσθήκη επιλογής</string>
     <string name="polls_options">Επιλογές</string>
     <string name="polls_private_poll">Ιδιωτική δημοσκόπηση</string>
+    <string name="polls_question">Ερώτηση</string>
     <string name="polls_results_subtitle">Αποτελέσματα</string>
     <string name="polls_settings">Ρυθμίσεις</string>
     <string name="polls_submit_vote">Ψήφος</string>
+    <string name="previously_set">Προηγουμένως ορισμένη</string>
     <string name="raise_hand">Σηκώστε το χέρι</string>
     <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
     <string name="record_start_description">Έναρξη εγγραφής</string>
     <string name="recording_settings_title">Καταγραφή</string>
+    <string name="reset_status">Επαναφορά κατάστασης</string>
     <string name="save">Αποθήκευση</string>
     <string name="scan_qr_code">Scan QR Code</string>
     <string name="scope_federated_description">Συγχρονισμός μόνο με έμπιστους διακομιστές.</string>

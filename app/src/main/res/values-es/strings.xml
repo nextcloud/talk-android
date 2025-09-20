@@ -67,7 +67,6 @@
     <string name="file_list_folder">carpeta</string>
     <string name="file_list_loading">Cargando …</string>
     <string name="filename_progress">%1$s (%2$d)</string>
-    <string name="followed_threads">Hilos suscritos</string>
     <string name="fourHours">4 horas</string>
     <string name="get_invitations_error">Fallo al obtener invitaciones pendientes</string>
     <string name="hint_edited_message">(editado)</string>

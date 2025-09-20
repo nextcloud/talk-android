@@ -124,6 +124,7 @@
     <string name="nc_call_button_content_description_camera">Укл./выкл. камеру</string>
     <string name="nc_call_button_content_description_hangup">Пакласці слухаўку</string>
     <string name="nc_call_button_content_description_microphone">Укл./выкл. мікрафон</string>
+    <string name="nc_call_button_content_description_pip">Адкрыць рэжым «Picture-in-Picture»</string>
     <string name="nc_call_button_content_description_switch_to_self_vide">Пераключыцца на відэа з сабой</string>
     <string name="nc_call_incoming">УВАХОДНЫ</string>
     <string name="nc_call_name">Назва размовы</string>
@@ -634,6 +635,7 @@
     <string name="thread_notifications">Апавяшчэнні гутаркі</string>
     <string name="thread_reply">Адказаць</string>
     <string name="thread_title">Загаловак гутаркі</string>
+    <string name="threads">Гутаркі</string>
     <string name="threads_list_empty">Гутарак не знойдзена</string>
     <string name="today">Сёння</string>
     <string name="tomorrow">Заўтра</string>
@@ -667,6 +669,8 @@
     <string name="user_info_twitter">Twitter</string>
     <string name="user_info_website">Вэб-сайт</string>
     <string name="user_status">Статус</string>
+    <string name="userinfo_error_text">Не ўдалося атрымаць асабістую інфармацыю карыстальніка.</string>
+    <string name="userinfo_no_info_headline">Асабістая інфармацыя не зададзена</string>
     <string name="userinfo_no_info_text">Дадайце імя, аватар і кантактную інфармацыю на старонку вашага профілю.</string>
     <string name="video_call">Відэавыклік</string>
     <string name="whats_your_status">Які ў вас статус?</string>
