@@ -331,6 +331,7 @@
     <string name="nc_sort_by">Ταξινόμηση κατά</string>
     <string name="nc_start_time">Ώρα έναρξης</string>
     <string name="nc_switch_account">Αλλαγή λογαριασμού</string>
+    <string name="nc_team">Ομάδα</string>
     <string name="nc_upload_choose_local_files">Επιλογή αρχείων</string>
     <string name="nc_upload_confirm_send_multiple">Να σταλούν αυτά τα αρχεία στον %1$s;</string>
     <string name="nc_upload_confirm_send_single">Να σταλεί αυτό το αρχείο στον %1$s;</string>
