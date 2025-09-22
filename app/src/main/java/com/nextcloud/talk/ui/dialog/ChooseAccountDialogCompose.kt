@@ -136,7 +136,6 @@ class ChooseAccountDialogCompose {
         handleStatusState(statusViewState, status)
 
         MaterialTheme(colorScheme = colorScheme) {
-
             ChooseAccountDialogContent(
                 shouldDismiss = shouldDismiss,
                 colorScheme = colorScheme,
@@ -251,7 +250,7 @@ class ChooseAccountDialogCompose {
             )
             Column(modifier = Modifier.padding(start = 8.dp).weight(1f)) {
                 Text(
-                    text = userItem.user.displayName ?: userItem.user.username ?: "",
+                    text = userItem.user.displayName ?: userItem.user.username ?: ""
                 )
                 Text(
                     text = userItem.user.baseUrl!!.toUri().host ?: "",
@@ -323,6 +322,7 @@ class ChooseAccountDialogCompose {
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun ChooseAccountDialogContent(
     shouldDismiss: MutableState<Boolean>,
@@ -380,6 +380,7 @@ private fun ChooseAccountDialogContent(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun CurrentUserSection(
     currentUser: User,
@@ -441,10 +442,7 @@ private fun CurrentUserSection(
 }
 
 @Composable
-private fun StatusActionButtons(
-    onSetOnlineStatusClick: () -> Unit,
-    onSetStatusMessageClick: () -> Unit
-) {
+private fun StatusActionButtons(onSetOnlineStatusClick: () -> Unit, onSetStatusMessageClick: () -> Unit) {
     Row {
         TextButton(onClick = onSetOnlineStatusClick) {
             Icon(
@@ -492,22 +490,23 @@ private fun AccountsList(
 }
 
 @Composable
-private fun OnlineActions(
-    onAddAccountClick: () -> Unit,
-    onOpenSettingsClick: () -> Unit
-) {
+private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: () -> Unit) {
     TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
         Row(
             modifier = Modifier.padding(start = 16.dp, top = 4.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(painterResource(R.drawable.ic_account_plus),
+            Icon(
+                painterResource(R.drawable.ic_account_plus),
                 contentDescription = null,
-                tint = colorResource(id = R.color.high_emphasis_text))
+                tint = colorResource(id = R.color.high_emphasis_text)
+            )
             Spacer(Modifier.size(16.dp))
-            Text(stringResource(R.string.nc_account_chooser_add_account),
+            Text(
+                stringResource(R.string.nc_account_chooser_add_account),
                 color = colorResource(id = R.color.high_emphasis_text),
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 
@@ -516,12 +515,17 @@ private fun OnlineActions(
             modifier = Modifier.padding(start = 16.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(painterResource(R.drawable.ic_settings), contentDescription = null,
-               tint = colorResource(id = R.color.high_emphasis_text))
+            Icon(
+                painterResource(R.drawable.ic_settings),
+                contentDescription = null,
+                tint = colorResource(id = R.color.high_emphasis_text)
+            )
             Spacer(Modifier.size(16.dp))
-            Text(stringResource(R.string.nc_settings),
+            Text(
+                stringResource(R.string.nc_settings),
                 color = colorResource(id = R.color.high_emphasis_text),
-                fontWeight = FontWeight.Bold)
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }
