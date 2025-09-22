@@ -265,6 +265,7 @@ class ChooseAccountDialogCompose {
             if (pendingInvitations > 0) {
                 Box(
                     modifier = Modifier
+                        .padding(end = 8.dp)
                         .size(16.dp)
                         .clip(CircleShape)
                         .background(Color.Red)
