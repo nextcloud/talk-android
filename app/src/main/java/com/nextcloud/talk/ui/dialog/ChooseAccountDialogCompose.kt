@@ -83,7 +83,6 @@ import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-
 class ChooseAccountDialogCompose {
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
