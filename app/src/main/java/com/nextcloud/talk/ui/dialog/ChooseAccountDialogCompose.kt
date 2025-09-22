@@ -83,6 +83,7 @@ import java.net.CookieManager
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
+
 class ChooseAccountDialogCompose {
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
@@ -322,6 +323,7 @@ class ChooseAccountDialogCompose {
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun ChooseAccountDialogContent(
     shouldDismiss: MutableState<Boolean>,
@@ -379,6 +381,7 @@ private fun ChooseAccountDialogContent(
     }
 }
 
+@Suppress("LongParameterList")
 @Composable
 private fun CurrentUserSection(
     currentUser: User,
