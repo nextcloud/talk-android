@@ -65,6 +65,7 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
             ?.subscribe(FetchInvitationsObserver())
     }
 
+    @Suppress("TooGenericExceptionCaught")
     fun getInvitations(user: User) {
         viewModelScope.launch {
             try {
