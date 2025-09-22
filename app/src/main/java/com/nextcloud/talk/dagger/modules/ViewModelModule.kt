@@ -12,8 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
-import com.nextcloud.talk.chooseaccount.StatusRepositoryViewModel
+import com.nextcloud.talk.chooseaccount.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
+import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
 import com.nextcloud.talk.conversationinfo.viewmodel.ConversationInfoViewModel
 import com.nextcloud.talk.conversationinfoedit.viewmodel.ConversationInfoEditViewModel
