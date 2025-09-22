@@ -411,6 +411,7 @@
     <string name="translation_detect_language">Ανίχνευση γλώσσας</string>
     <string name="translation_device_settings">Ρυθμίσεις συσκευής</string>
     <string name="translation_error_message">Δεν ήταν δυνατός ο εντοπισμός της γλώσσας</string>
+    <string name="translation_error_title">Η μετάφραση απέτυχε</string>
     <string name="translation_from">Από</string>
     <string name="translation_to">Έως</string>
     <string name="unread">Μη αναγνωσμένο</string>

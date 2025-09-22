@@ -88,6 +88,7 @@
     <string name="lower_hand">Апусціць руку</string>
     <string name="marked_as_read">Размова %1$s пазначана як прачытаная</string>
     <string name="marked_as_unread">Размова %1$s пазначана як непрачытаная</string>
+    <string name="mentioned">Згаданы</string>
     <string name="menu_item_sort_by_date_newest_first">Спачатку новыя</string>
     <string name="menu_item_sort_by_date_oldest_first">Спачатку старыя</string>
     <string name="menu_item_sort_by_name_a_z">А-Я</string>
@@ -213,10 +214,14 @@
     <string name="nc_diagnose_gplay_available_no">Сэрвісы Google Play недаступны. Апавяшчэнні не падтрымліваюцца</string>
     <string name="nc_diagnose_gplay_available_title">Сэрвісы Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Сэрвісы Google Play даступны</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy">Апошняя рэгістрацыя push на push-проксі</string>
+    <string name="nc_diagnose_latest_push_registration_at_push_proxy_fail">Пакуль не зарэгістраваны на push-проксі</string>
+    <string name="nc_diagnose_latest_push_registration_at_server">Апошняя рэгістрацыя push на серверы</string>
     <string name="nc_diagnose_latest_push_registration_at_server_fail">Пакуль не зарэгістраваны на серверы</string>
     <string name="nc_diagnose_meta_category_title">Метаінфармацыя</string>
     <string name="nc_diagnose_meta_system_report_date">Стварэнне сістэмнай справаздачы</string>
     <string name="nc_diagnose_notification_calls_channel_permission">Канал апавяшчэнняў аб выкліках уключаны?</string>
+    <string name="nc_diagnose_notification_messages_channel_permission">Ці ўключаны канал апавяшчэнняў пра паведамленні?</string>
     <string name="nc_diagnose_notification_permission">Дазволы на апавяшчэнні</string>
     <string name="nc_diagnose_phone_category_title">Тэлефон</string>
     <string name="nc_diagnose_server_talk_version">Версія сервера Talk</string>
@@ -261,6 +266,7 @@
     <string name="nc_forward_message">Пераслаць</string>
     <string name="nc_forward_to_three_dots">Пераслаць …</string>
     <string name="nc_gallery">Галерэя</string>
+    <string name="nc_get_from_provider">У вас яшчэ няма сервера?\nНацісніце тут, каб атрымаць яго ў пастаўшчыка</string>
     <string name="nc_get_source_code">Атрымаць зыходны код</string>
     <string name="nc_group">Група</string>
     <string name="nc_guest">Госць</string>
@@ -286,6 +292,7 @@
     <string name="nc_invitations">Запрашэнні</string>
     <string name="nc_join_open_conversations">Далучыцца да адкрытых размоў</string>
     <string name="nc_keep">Пакінуць</string>
+    <string name="nc_last_moderator_leaving_room_warning">Перш чым пакінуць размову, вам трэба прызначыць новага мадэратара</string>
     <string name="nc_last_modified">%1$s | Апошняе змяненне: %2$s</string>
     <string name="nc_leave">Выйсці з размовы</string>
     <string name="nc_leaving_call">Выхад з выкліку …</string>
@@ -342,6 +349,7 @@
     <string name="nc_notification_channel_uploads_description">Апавяшчаць пра ход выканання запампоўвання</string>
     <string name="nc_notification_settings">Налады апавяшчэнняў</string>
     <string name="nc_notification_warning">Апавяшчэнні наладжаны няправільна</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Дазвол на апавяшчэнні і налады батарэі зададзены правільна, каб атрымліваць апавяшчэнні. Калі ў вас усё адно ўзнікаюць праблемы з атрыманнем апавяшчэнняў, праверце, ці ўключаны каналы апавяшчэнняў для выклікаў і паведамленняў. Дадатковую дапамогу можна знайсці на сайце DontKillMyApp.com або ў спісе пошуку і вырашэння праблем. Калі гэта не дапаможа, перайдзіце на экран дыягностыкі і адпраўце справаздачу пра памылку.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Вырашэнне праблем з апавяшчэннямі</string>
     <string name="nc_notify_me_always">Заўсёды апавяшчаць</string>
     <string name="nc_notify_me_mention">Апавяшчаць пры згадванні</string>
@@ -367,6 +375,7 @@
     <string name="nc_plain_old_messages">Паведамленні</string>
     <string name="nc_privacy">Прыватнасць</string>
     <string name="nc_profile_personal_info_title">Асабістыя звесткі</string>
+    <string name="nc_promote">Прызначыць мадэратарам</string>
     <string name="nc_public_call_status">Публічная размова</string>
     <string name="nc_push_disabled">Push-апавяшчэнні адключаны</string>
     <string name="nc_push_notification_error">Нешта пайшло не так, памылка: %1$s</string>
@@ -461,6 +470,7 @@
     <string name="nc_settings_remove">Выдаліць</string>
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
     <string name="nc_settings_remove_confirmation">Пацвердзіце свой намер выдаліць бягучы ўліковы запіс.</string>
+    <string name="nc_settings_screen_lock_desc">Блакіраваць %1$s з дапамогай блакіроўкі экрана Android або біяметрычнага метаду, які падтрымліваецца</string>
     <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі экрана пры бяздзейнасці</string>
     <string name="nc_settings_screen_lock_title">Блакіроўка экрана</string>
     <string name="nc_settings_screen_security_desc">Забараняе рабіць здымкі экрана ў спісе нядаўняга і ўнутры праграмы</string>
@@ -468,6 +478,7 @@
     <string name="nc_settings_server_almost_eol">Версія сервера вельмі старая і не будзе падтрымлівацца ў наступным выпуску!</string>
     <string name="nc_settings_server_eol">Версія сервера занадта старая і не падтрымліваецца гэтай версіяй праграмы для Android.</string>
     <string name="nc_settings_server_eol_title">Сервер не падтрымліваецца</string>
+    <string name="nc_settings_server_notification_app_not_installed_title">Праграма для апавяшчэнняў не ўсталявана на серверы</string>
     <string name="nc_settings_theme_battery_saver">Зададзена рэжымам эканоміі зараду батарэі</string>
     <string name="nc_settings_theme_dark">Цёмная</string>
     <string name="nc_settings_theme_follow_system">Сістэмная</string>
@@ -540,6 +551,7 @@
     <string name="open_notes">Адкрыць Нататкі</string>
     <string name="open_thread">Перайсці да гутаркі</string>
     <string name="play_pause_voice_message">Прайграць/прыпыніць галасавое паведамленне</string>
+    <string name="playback_speed_control">Кіраванне хуткасцю прайгравання</string>
     <string name="polls_add_option">Дадаць варыянт</string>
     <string name="polls_edit_vote">Рэдагаваць голас</string>
     <string name="polls_end_poll">Завяршыць апытанне</string>
@@ -616,7 +628,6 @@
     <string name="started_a_call">пачаў(-ла) выклік</string>
     <string name="status_message">Паведамленне статусу</string>
     <string name="status_reverted">Статус вернуты</string>
-    <string name="switch_to_breakout_room">Пераключыцца на пакой для абмеркавання</string>
     <string name="switch_to_main_room">Пераключыцца на галоўны пакой</string>
     <string name="take_photo">Зрабіць фота</string>
     <string name="take_photo_error_deleting_picture">Памылка пры здымку</string>
