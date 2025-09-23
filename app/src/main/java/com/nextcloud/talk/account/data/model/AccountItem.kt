@@ -9,4 +9,4 @@ package com.nextcloud.talk.account.data.model
 
 import com.nextcloud.talk.data.user.model.User
 
-data class AccountItem(val user: User, val userId: String?)
+data class AccountItem(val user: User, val userId: String?, val pendingInvitation: Int)
