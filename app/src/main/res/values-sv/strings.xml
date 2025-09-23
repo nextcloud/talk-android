@@ -552,6 +552,8 @@
     <string name="no_conversations_archived">Inga arkiverade konversationer</string>
     <string name="no_offline_messages_saved">Inga offlinemeddelanden sparade</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegrering på grund av saknade behörigheter</string>
+    <string name="notification_all_messages">Alla meddelanden</string>
+    <string name="notification_mention_only">Endast @-omnämnanden</string>
     <string name="notification_off">Av</string>
     <string name="notifications_default">Förvald</string>
     <string name="notifications_default_description">Följ konversationsinställningar</string>
@@ -666,6 +668,7 @@
     <string name="thread_reply">Svara</string>
     <string name="thread_title">Trådtitel</string>
     <string name="threads">Trådar</string>
+    <string name="threads_list_empty">Inga trådar hittades</string>
     <string name="today">Idag</string>
     <string name="tomorrow">I morgon</string>
     <string name="translate">Översätt</string>

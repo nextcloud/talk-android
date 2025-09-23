@@ -166,6 +166,7 @@
     <string name="nc_copy_message">Kopier</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
+    <string name="nc_current_user">Dig:</string>
     <string name="nc_date_header_today">I dag</string>
     <string name="nc_date_header_yesterday">I går</string>
     <string name="nc_delete">Slet</string>

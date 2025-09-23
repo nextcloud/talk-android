@@ -192,6 +192,7 @@
     <string name="nc_delete_message_leaked_to_matterbridge">Паведамленне паспяхова выдалена, але яно магло трапіць у іншыя сэрвісы</string>
     <string name="nc_delete_now">Выдаліць зараз</string>
     <string name="nc_deleted_user">Карыстальнік %1$s быў выдалены</string>
+    <string name="nc_demote">Пазбавіць правоў мадэратара</string>
     <string name="nc_description_record_voice">Запісаць галасавое паведамленне</string>
     <string name="nc_description_send_message_button">Адправіць паведамленне</string>
     <string name="nc_diagnose_account_category_title">Бягучы ўліковы запіс</string>
@@ -211,6 +212,10 @@
     <string name="nc_diagnose_dialog_open_checklist">Адкрыць кантрольны спіс вырашэння праблем</string>
     <string name="nc_diagnose_dialog_open_diagnose">Адкрыць экран дыягностыкі</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Адкрыць dontkillmyapp.com</string>
+    <string name="nc_diagnose_firebase_push_token_latest_fetch">Атрыманне апошняга push-токена firebase</string>
+    <string name="nc_diagnose_firebase_push_token_latest_generated">Генерацыя апошняга push-токена firebase</string>
+    <string name="nc_diagnose_firebase_push_token_missing">Не зададзены push-токен firebase. Стварыце справаздачу пра памылку.</string>
+    <string name="nc_diagnose_firebase_push_token_title">Push-токен firebase</string>
     <string name="nc_diagnose_gplay_available_no">Сэрвісы Google Play недаступны. Апавяшчэнні не падтрымліваюцца</string>
     <string name="nc_diagnose_gplay_available_title">Сэрвісы Google Play</string>
     <string name="nc_diagnose_gplay_available_yes">Сэрвісы Google Play даступны</string>
@@ -341,6 +346,7 @@
     <string name="nc_not_allowed_to_activate_audio">Вам не дазволена ўключаць гук!</string>
     <string name="nc_not_allowed_to_activate_video">Вам не дазволена ўключаць відэа!</string>
     <string name="nc_not_now">Не цяпер</string>
+    <string name="nc_notification_channel">%1$s на канале апавяшчэнняў %2$s</string>
     <string name="nc_notification_channel_calls">Выклікі</string>
     <string name="nc_notification_channel_calls_description">Апавяшчаць пры ўваходных выкліках</string>
     <string name="nc_notification_channel_messages">Паведамленні</string>
@@ -466,6 +472,8 @@
     <string name="nc_settings_proxy_port_title">Порт проксі</string>
     <string name="nc_settings_proxy_type_title">Тып проксі</string>
     <string name="nc_settings_proxy_username_title">Імя карыстальніка проксі</string>
+    <string name="nc_settings_read_privacy_desc">Абагульваць мой статус прачытання і паказваць статус прачытання іншых</string>
+    <string name="nc_settings_read_privacy_title">Статус прачытання</string>
     <string name="nc_settings_reauthorize">Паўторна аўтарызаваць уліковы запіс</string>
     <string name="nc_settings_remove">Выдаліць</string>
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
@@ -597,6 +605,13 @@
     <string name="scan_qr_code">Сканіраваць QR-код</string>
     <string name="scope_federated_description">Сінхранізацыя толькі з даверанымі серверамі</string>
     <string name="scope_federated_title">Федэратыўны</string>
+    <string name="scope_local_description">Бачна толькі карыстальнікам гэтага сервера і гасцям</string>
+    <string name="scope_local_title">Лакальна</string>
+    <string name="scope_private_description">Бачна толькі людзям, якія супалі праз інтэграцыю нумара тэлефона з дапамогай Talk на мабільным тэлефоне</string>
+    <string name="scope_private_title">Прыватна</string>
+    <string name="scope_published_description">Сінхранізацыя з даверанымі серверамі і глабальнай і публічнай адраснай кнігай</string>
+    <string name="scope_published_title">Апублікавана</string>
+    <string name="scope_toggle">Пераключальнік бачнасці</string>
     <string name="scope_toggle_description">Змяніць узровень прыватнасці %1$s</string>
     <string name="scroll_to_bottom">Прагартаць уніз</string>
     <string name="search_icon">Значок пошуку</string>
