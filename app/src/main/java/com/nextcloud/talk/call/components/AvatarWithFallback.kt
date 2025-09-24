@@ -20,11 +20,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.nextcloud.talk.adapters.ParticipantUiState
+import com.nextcloud.talk.call.ParticipantUiState
 
 @Composable
 fun AvatarWithFallback(participant: ParticipantUiState, modifier: Modifier = Modifier) {
-    val initials = participant.nick
+    val initials = participant.nick!!
         .split(" ")
         .mapNotNull { it.firstOrNull()?.uppercase() }
         .take(2)
