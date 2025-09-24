@@ -344,6 +344,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 checkBoxContainer.addView(lineLayout)
                 checkboxList.add(checkBox)
                 Linkify.addLinks(textView, Linkify.ALL)
+                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
                 setPaddingForView(chatMessage, checkBox, marginPx)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
 
@@ -359,6 +360,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 setPaddingForView(chatMessage, textView, marginPx)
                 checkBoxContainer.addView(textView)
                 Linkify.addLinks(textView, Linkify.ALL)
+                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
             }
         }
         return hasCheckbox
