@@ -65,6 +65,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.ComposeView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
@@ -246,7 +247,6 @@ import java.util.Locale
 import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
-import androidx.core.content.ContextCompat
 
 @Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
@@ -261,11 +261,6 @@ class ChatActivity :
     PreviewMessageInterface,
     SystemMessageInterface,
     CallStartedMessageInterface {
-
-    companion object {
-        private const val NOTIFICATION_LEVEL_ALWAYS = 1
-        private const val NOTIFICATION_LEVEL_NEVER = 3
-    }
 
     var active = false
 
@@ -4604,6 +4599,8 @@ class ChatActivity :
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"
+        private const val NOTIFICATION_LEVEL_ALWAYS = 1
+        private const val NOTIFICATION_LEVEL_NEVER = 3
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
         const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5
