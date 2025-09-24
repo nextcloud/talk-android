@@ -77,6 +77,7 @@
             android:visibility="gone"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
+            app:textAutoLink ="all"
             app:layout_wrapBefore="true">
         </LinearLayout>
 
