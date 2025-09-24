@@ -264,11 +264,6 @@ class ChatActivity :
     SystemMessageInterface,
     CallStartedMessageInterface {
 
-    companion object {
-        private const val NOTIFICATION_LEVEL_ALWAYS = 1
-        private const val NOTIFICATION_LEVEL_NEVER = 3
-    }
-
     var active = false
 
     private lateinit var binding: ActivityChatBinding
@@ -4612,6 +4607,8 @@ class ChatActivity :
         private const val FIVE_MINUTES_IN_SECONDS: Long = 300
         private const val ROOM_TYPE_ONE_TO_ONE = "1"
         private const val ACTOR_TYPE = "users"
+        private const val NOTIFICATION_LEVEL_ALWAYS = 1
+        private const val NOTIFICATION_LEVEL_NEVER = 3
         const val CONVERSATION_INTERNAL_ID = "CONVERSATION_INTERNAL_ID"
         const val NO_OFFLINE_MESSAGES_FOUND = "NO_OFFLINE_MESSAGES_FOUND"
         const val VOICE_MESSAGE_CONTINUOUS_BEFORE = -5
