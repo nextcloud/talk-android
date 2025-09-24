@@ -50,8 +50,6 @@ class ParticipantDisplayItem(
     private val roomToken: String,
     private val callParticipantModel: CallParticipantModel
 ) {
-    private val participantDisplayItemNotifier = ParticipantDisplayItemNotifier()
-
     private val _uiStateFlow = MutableStateFlow(buildUiState())
     val uiStateFlow: StateFlow<ParticipantUiState> = _uiStateFlow.asStateFlow()
 
@@ -150,7 +148,6 @@ class ParticipantDisplayItem(
         }
 
         _uiStateFlow.value = buildUiState()
-        participantDisplayItemNotifier.notifyChange()
     }
 
     private fun buildUiState(): ParticipantUiState =
@@ -182,14 +179,6 @@ class ParticipantDisplayItem(
             // If there is no connection state that means that no connection is needed,
             // so it is a special case that is also seen as "connected".
             iceConnectionState == null
-
-    fun addObserver(observer: Observer?) {
-        participantDisplayItemNotifier.addObserver(observer)
-    }
-
-    fun removeObserver(observer: Observer?) {
-        participantDisplayItemNotifier.removeObserver(observer)
-    }
 
     override fun toString(): String =
         "ParticipantSession{" +
