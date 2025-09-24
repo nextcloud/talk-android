@@ -281,7 +281,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         )
     }
 
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "LongMethod")
     private fun renderCheckboxLines(
         chatMessage: ChatMessage,
         user: User,
