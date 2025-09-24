@@ -10,12 +10,16 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.emoji2.widget.EmojiTextView
@@ -277,7 +281,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         )
     }
 
-    @Suppress("LongParameterList")
+    @Suppress("LongParameterList", "LongMethod")
     private fun renderCheckboxLines(
         chatMessage: ChatMessage,
         user: User,
@@ -285,6 +289,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         editable: Boolean,
         checkBoxContainer: ViewGroup
     ): Boolean {
+        val chatActivity = commonMessageInterface as ChatActivity
         val checkboxRegex = CHECKBOX_REGEX
         val checkboxList = mutableListOf<CheckBox>()
         var hasCheckbox = false
@@ -301,8 +306,28 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 hasCheckbox = true
                 val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
                 val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-                val checkBox = CheckBox(checkBoxContainer.context).apply {
-                    val messageText = messageUtils.enrichChatMessageText(context, taskText, false, viewThemeUtils)
+                val checkBoxLayout = LinearLayout(chatActivity).apply {
+                    orientation = LinearLayout.HORIZONTAL
+                    gravity = Gravity.CENTER_VERTICAL
+                }
+                val checkBox = CheckBox(chatActivity).apply {
+                    this.isChecked = isChecked
+                    this.isEnabled = editable
+                    setOnCheckedChangeListener { _, _ ->
+                        updateCheckboxStates(chatMessage, user, checkboxList)
+                    }
+                    setLineSpacing(
+                        LINE_SPACING_ADDER,
+                        LINE_SPACING_MULTIPLIER
+                    )
+                }
+                val textView = EmojiTextView(chatActivity).apply {
+                    val messageText = messageUtils.enrichChatMessageText(
+                        context,
+                        taskText,
+                        false,
+                        viewThemeUtils
+                    )
                     text = messageUtils.processMessageParameters(
                         context,
                         viewThemeUtils,
@@ -310,19 +335,18 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         chatMessage,
                         null
                     )
-                    tag = taskText
-                    this.isChecked = isChecked
-                    this.isEnabled = editable
-                    gravity = Gravity.CENTER_VERTICAL
                     setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
-                    setOnCheckedChangeListener { _, _ ->
-                        updateCheckboxStates(chatMessage, user, checkboxList)
-                    }
-                    setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
+                    layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+                    isClickable = true
+                    movementMethod = LinkMovementMethod.getInstance()
                 }
-                setPaddingForView(chatMessage, checkBox, marginPx)
-                checkBoxContainer.addView(checkBox)
+                checkBoxLayout.addView(checkBox)
+                checkBoxLayout.addView(textView)
+                checkBoxContainer.addView(checkBoxLayout)
                 checkboxList.add(checkBox)
+                Linkify.addLinks(textView, Linkify.ALL)
+                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                setPaddingForView(chatMessage, checkBox, marginPx)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmed.isNotBlank()) {
                 val textView = EmojiTextView(checkBoxContainer.context).apply {
@@ -330,11 +354,17 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     text =
                         messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
-                    setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
+                    isClickable = true
+                    movementMethod = LinkMovementMethod.getInstance()
+                    setLineSpacing(
+                        LINE_SPACING_ADDER,
+                        LINE_SPACING_MULTIPLIER
+                    )
                 }
-
                 setPaddingForView(chatMessage, textView, marginPx)
                 checkBoxContainer.addView(textView)
+                Linkify.addLinks(textView, Linkify.ALL)
+                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
             }
         }
         return hasCheckbox
@@ -342,7 +372,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
         if (chatMessage.messageParameters != null) {
-            view.setPadding(0, paddingInPx, 0, 0)
+            view.setPadding(0, paddingInPx, 0, paddingInPx)
         }
     }
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
