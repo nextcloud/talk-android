@@ -10,12 +10,16 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.text.method.LinkMovementMethod
+import android.text.util.Linkify
 import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.CheckBox
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.emoji2.widget.EmojiTextView
 import autodagger.AutoInjector
@@ -262,35 +266,64 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         return if (match != null) {
             val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
             val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-            val checkBox = CheckBox(container.context).apply {
-                val messageText = messageUtils.enrichChatMessageText(context, taskText, true, viewThemeUtils)
-                text = messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
-                tag = taskText
+            val checkBoxLayout = LinearLayout(chatActivity).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+            }
+            val checkBox = CheckBox(chatActivity).apply {
                 this.isChecked = isChecked
                 this.isEnabled = (
                     chatMessage.actorType == "bots" ||
                         chatActivity.userAllowedByPrivilages(chatMessage)
                     ) &&
                     isEditable
-                gravity = Gravity.CENTER_VERTICAL
-                setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                setOnCheckedChangeListener { _, _ ->
+                    updateCheckboxStates(chatMessage, user, checkboxList)
+                }
                 setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
-                setOnCheckedChangeListener { _, _ -> updateCheckboxStates(chatMessage, user, checkboxList) }
             }
-            setPaddingForView(chatMessage, checkBox, spaceInPx)
-            container.addView(checkBox)
+            val textView = EmojiTextView(chatActivity).apply {
+                val messageText = messageUtils.enrichChatMessageText(
+                    context,
+                    taskText,
+                    false,
+                    viewThemeUtils
+                )
+                text = messageUtils.processMessageParameters(
+                    context,
+                    viewThemeUtils,
+                    messageText,
+                    chatMessage,
+                    null
+                )
+                setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
+                isClickable = true
+                movementMethod = LinkMovementMethod.getInstance()
+                setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
+            }
+            checkBoxLayout.addView(checkBox)
+            checkBoxLayout.addView(textView)
+            container.addView(checkBoxLayout)
             checkboxList.add(checkBox)
+            Linkify.addLinks(textView, Linkify.ALL)
+            textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+            setPaddingForView(chatMessage, checkBox, spaceInPx)
             viewThemeUtils.platform.themeCheckbox(checkBox)
             true
         } else if (line.isNotBlank()) {
-            val textView = EmojiTextView(container.context).apply {
-                val messageText = messageUtils.enrichChatMessageText(context, line, true, viewThemeUtils)
-                text = messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
+            val textView = EmojiTextView(chatActivity).apply {
+                val messageText = messageUtils.enrichChatMessageText(context, line, false, viewThemeUtils)
+                text =
+                    messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                 viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
-                setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
+                isClickable = true
+                movementMethod = LinkMovementMethod.getInstance()
             }
             setPaddingForView(chatMessage, textView, spaceInPx)
             container.addView(textView)
+            Linkify.addLinks(textView, Linkify.ALL)
+            textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
             false
         } else {
             false
