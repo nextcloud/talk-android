@@ -306,12 +306,10 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 hasCheckbox = true
                 val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
                 val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-
                 val lineLayout = LinearLayout(chatActivity).apply {
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
                 }
-
                 val checkBox = CheckBox(chatActivity).apply {
                     this.isChecked = isChecked
                     this.isEnabled = editable
@@ -319,7 +317,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         updateCheckboxStates(chatMessage, user, checkboxList)
                     }
                 }
-
                 val textView = EmojiTextView(chatActivity).apply {
                     val messageText = messageUtils.enrichChatMessageText(
                         context,
@@ -347,7 +344,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
                 setPaddingForView(chatMessage, checkBox, marginPx)
                 viewThemeUtils.platform.themeCheckbox(checkBox)
-
             } else if (trimmed.isNotBlank()) {
                 val textView = EmojiTextView(checkBoxContainer.context).apply {
                     val messageText = messageUtils.enrichChatMessageText(context, trimmed, false, viewThemeUtils)
