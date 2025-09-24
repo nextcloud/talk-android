@@ -306,7 +306,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                 hasCheckbox = true
                 val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
                 val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-                val lineLayout = LinearLayout(chatActivity).apply {
+                val checkBoxLayout = LinearLayout(chatActivity).apply {
                     orientation = LinearLayout.HORIZONTAL
                     gravity = Gravity.CENTER_VERTICAL
                 }
@@ -336,9 +336,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     isClickable = true
                     movementMethod = LinkMovementMethod.getInstance()
                 }
-                lineLayout.addView(checkBox)
-                lineLayout.addView(textView)
-                checkBoxContainer.addView(lineLayout)
+                checkBoxLayout.addView(checkBox)
+                checkBoxLayout.addView(textView)
+                checkBoxContainer.addView(checkBoxLayout)
                 checkboxList.add(checkBox)
                 Linkify.addLinks(textView, Linkify.ALL)
                 textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
