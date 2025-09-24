@@ -10,6 +10,7 @@
     <string name="archive_hint">Når en samtale er arkiveret, vil den blive skjult som standard. Vælg filteret \"Arkiveret\" for at se arkiverede samtaler. Direkte omtaler vil stadig blive modtaget.</string>
     <string name="archived">Arkiveret</string>
     <string name="archived_conversation">Arkiverede %1$s</string>
+    <string name="audio_call">Lydopkald</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Lydudgang</string>
     <string name="audio_output_phone">Telefon</string>
@@ -35,8 +36,10 @@
     <string name="close">Luk</string>
     <string name="close_icon">Luk ikon</string>
     <string name="connection_established">Forbindelse oprettet</string>
+    <string name="connection_lost">Ingen forbindelse til server</string>
     <string name="connection_lost_sent_messages_are_queued">Forbindelse mistet - Sendte beskeder er i kø</string>
     <string name="continuous_voice_message_recording">Lås optagelse for kontinuerlig optagelse af talebeskeden</string>
+    <string name="conversation_archived">Samtale er arkiveret</string>
     <string name="conversation_is_read_only">Samtalen er skrivebeskyttet</string>
     <string name="conversation_read_only_failed">Samtalen kunne ikke indstilles som skrivebeskyttet</string>
     <string name="conversations">Samtaler</string>
@@ -46,12 +49,16 @@
     <string name="danger_zone">Farezone</string>
     <string name="deck_card_description">%1$s i %2$s</string>
     <string name="delete_avatar">Slet avatar</string>
+    <string name="delete_voice_recording">Slet stemmeoptagelse</string>
     <string name="deleted_conversation">Slettede samtale %1$s</string>
     <string name="dnd">Forstyr ikke</string>
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Redigér</string>
+    <string name="edit_error_24_hours_old_message">Beskeder der er ældre end 24 timer kan ikke redigeres</string>
+    <string name="edit_message_icon_description">Rediger besked</string>
     <string name="emoji_category_recent">Nylige</string>
     <string name="encrypted">Krypteret</string>
+    <string name="end_call">Afslut opkald</string>
     <string name="end_call_for_everyone">Afslut opkald for alle</string>
     <string name="error_loading_chats">Der opstod et problem med at indlæse dine chats</string>
     <string name="error_unbanning">En fejl opstod under fjernelse af blokering af deltager</string>
@@ -71,6 +78,11 @@
     <string name="leave_call">Forlad opkald</string>
     <string name="left_conversation">Du forlod samtalen %1$s</string>
     <string name="load_more_results">Indlæs flere resultater</string>
+    <string name="local_time">Lokal tid: %1$s</string>
+    <string name="location_permission_denied">Lokationstilladelse nægtet</string>
+    <string name="location_permission_denied_msg">Aktiver det venligst under app indstillingerne</string>
+    <string name="location_services_disabled">Lokationsservice deaktiveret</string>
+    <string name="location_services_disabled_msg">Aktiver venligst lokationsservice (GPS) for at bruge denne funktion</string>
     <string name="lock_conversation">Lås samtale</string>
     <string name="lock_symbol">Låsesymbol</string>
     <string name="lower_hand">Sænk hånden</string>
@@ -83,6 +95,8 @@
     <string name="menu_item_sort_by_name_z_a">Å - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Største først</string>
     <string name="menu_item_sort_by_size_smallest_first">Mindste først</string>
+    <string name="message_copied">Besked kopieret</string>
+    <string name="message_delete_are_you_sure">Er du sikker på at du ønsker at slette denne besked?</string>
     <string name="message_deleted_by_you">Besked slettet af dig</string>
     <string name="message_last_edited_by">Redigeret af %1$s</string>
     <string name="message_poll_tap_to_open">Rør for at åbne afstemning</string>
@@ -136,6 +150,8 @@
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
     <string name="nc_change_password">Skift adgangskode</string>
+    <string name="nc_clear_edit_button">Annuller redigering</string>
+    <string name="nc_clear_edit_message">Annuller redigering</string>
     <string name="nc_clear_history">Slet alle beskeder</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_clear_history_warning">Ønsker du virkelig at slette alle beskeder i denne samtale?</string>
@@ -175,6 +191,7 @@
     <string name="nc_delete_conversation_more">Hvis du sletter konversationen, vil den også blive slettet for alle andre deltagere.</string>
     <string name="nc_delete_message">Slet besked</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Besked slettet, men kan kan være lækket til andre services</string>
+    <string name="nc_delete_now">Slet nu</string>
     <string name="nc_deleted_user">Brugeren %1$s blev fjernet</string>
     <string name="nc_demote">Degrader fra moderator</string>
     <string name="nc_description_record_voice">Optag stemmebesked</string>
@@ -233,7 +250,10 @@
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_edit_icon">Redigér</string>
     <string name="nc_edit_message">Redigér</string>
+    <string name="nc_edit_message_text">Rediger besked</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
+    <string name="nc_event_conversation_menu">Begivenheds samtale menu</string>
+    <string name="nc_event_schedule">Planlæg</string>
     <string name="nc_expire_message_eight_hours">8 timer</string>
     <string name="nc_expire_message_four_weeks">4 uger</string>
     <string name="nc_expire_message_off">Slået fra</string>
@@ -250,6 +270,7 @@
     <string name="nc_federation_pending_invitation_hint">Du har afventende invitationer</string>
     <string name="nc_file_browser_back">Tilbage</string>
     <string name="nc_file_storage_permission">Tilladelse til filadgang er krævet</string>
+    <string name="nc_filter">Filtrer samtaler</string>
     <string name="nc_following_link">Bruger følger et offentligt link</string>
     <string name="nc_formatted_message_you">Dig: %1$s</string>
     <string name="nc_forward_message">Videresend</string>
@@ -276,8 +297,11 @@
     <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering bliver ikke ignoreret. Dette bør ændres for at være sikker på at notifikationer virker i baggrunden! Klik venligst på OK og vælg \"Alle apps\" -> %1$s -> Optimer ikke</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimering</string>
     <string name="nc_important_conversation">Vigtig samtale</string>
+    <string name="nc_important_conversation_desc">Brugerstatus \"Forstyr ikke\" ignoreres ved vigtige samtaler</string>
+    <string name="nc_invalid_time">Ugyldigt tidspunkt</string>
     <string name="nc_invitations">Invitationer</string>
     <string name="nc_join_open_conversations">Deltag i åbne samtaler</string>
+    <string name="nc_keep">Behold</string>
     <string name="nc_last_moderator_leaving_room_warning">Du skal udnævne en ny moderator inden du kan forlade samtalen.</string>
     <string name="nc_last_modified">%1$s| Sidst ændret: %2$s</string>
     <string name="nc_leave">Forlad samtale</string>
@@ -297,6 +321,12 @@
     <string name="nc_manual">Ikke indstillet</string>
     <string name="nc_mark_as_read">Marker som læst</string>
     <string name="nc_mark_as_unread">Marker som ulæst</string>
+    <string name="nc_mark_conversation_as_important">Samtale markeret som vigtig</string>
+    <string name="nc_mark_conversation_as_insensitive">Samtal ikke markeret som følsom</string>
+    <string name="nc_mark_conversation_as_sensitive">Samtale markeret som følsom</string>
+    <string name="nc_mark_conversation_as_unimportant">Samtale ikke markeret som vigtig</string>
+    <string name="nc_meeting_ended">Mødet sluttede</string>
+    <string name="nc_message_added_to_notes">Besked til føjet til noter</string>
     <string name="nc_message_failed">Mislykkede</string>
     <string name="nc_message_failed_to_send">Kunne ikke sende besked:</string>
     <string name="nc_message_offline">Offline</string>
@@ -304,6 +334,7 @@
     <string name="nc_message_read">Besked læst</string>
     <string name="nc_message_sending">Sender</string>
     <string name="nc_message_sent">Beskeden blev sendt</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofon er aktiveret og lyden optages</string>
     <string name="nc_microphone_permission_hint">For at aktivere kommunikation så tillad venligst \"Mikrofon\"</string>
     <string name="nc_missed_call">Du missede et opkald fra %s</string>
     <string name="nc_moderator">Moderator</string>
@@ -336,6 +367,7 @@
     <string name="nc_notify_me_never">Giv aldrig besked</string>
     <string name="nc_offline">For nuværende offline, venligst kontroller din forbindelse</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Igangværende møde</string>
     <string name="nc_open_conversation_to_registered_users">Begynd en samtale til registrerede brugere</string>
     <string name="nc_open_to_guest_app_users">Også åben for gæste app brugere</string>
     <string name="nc_owner">Ejer</string>
@@ -357,6 +389,9 @@
     <string name="nc_promote">Forfrem til moderator</string>
     <string name="nc_public_call_status">Offentlig samtale</string>
     <string name="nc_push_disabled">Pushbeskeder er slået fra</string>
+    <string name="nc_push_notification_error"> Desværre, noget gik galt, fejlen er %1$s</string>
+    <string name="nc_push_notification_fetch_error">Desværre, noget gik galt, kan ikke hente test push besked</string>
+    <string name="nc_push_notification_message">Push notifikation afsendt. Du bør nu modtage en notifikation på apparatet med titlen \'Test push notifikationer\'</string>
     <string name="nc_push_to_talk">Tryk-for-at-tale</string>
     <string name="nc_push_to_talk_desc">Med mikrofonen deaktiveret, hold&amp;nede for at bruge Tryk-for-at-tale</string>
     <string name="nc_remind">Påmind mig senere</string>
@@ -369,6 +404,7 @@
     <string name="nc_rename_confirm">Omdøb</string>
     <string name="nc_reply">Besvar</string>
     <string name="nc_reply_privately">Svar privat</string>
+    <string name="nc_room_retention">Rummet er bevaret</string>
     <string name="nc_save_message">Gem</string>
     <string name="nc_save_success">Gemt</string>
     <string name="nc_screen_lock_timeout_30">30 sekunder</string>
@@ -383,6 +419,10 @@
     <string name="nc_search">Søg</string>
     <string name="nc_search_clear">Ryd søgning</string>
     <string name="nc_select_an_account">Vælg konto</string>
+    <string name="nc_send_edit_message">Opdater besked</string>
+    <string name="nc_send_voice_recording">Send stemmeoptagelse</string>
+    <string name="nc_sensitive_conversation">Følsom samtale</string>
+    <string name="nc_sensitive_conversation_hint">Besked forhåndsvisning vil blive deaktiveret i samtalelisten og notifikationer</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sendte en GIF.</string>
     <string name="nc_sent_a_gif_you">Du sendte en GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s sendte en video.</string>
@@ -453,6 +493,7 @@
     <string name="nc_settings_server_eol">Serverversionen er for gammel og er ikke understøttet af denne version af Android app\'en</string>
     <string name="nc_settings_server_eol_title">Ikke understøttet server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Server notifikations app ikke installeret</string>
+    <string name="nc_settings_theme_battery_saver">Sat af batterisparer</string>
     <string name="nc_settings_theme_dark">Mørk</string>
     <string name="nc_settings_theme_follow_system">Brug system default</string>
     <string name="nc_settings_theme_key">tema</string>
@@ -484,6 +525,10 @@
     <string name="nc_start_time">Start tid</string>
     <string name="nc_switch_account">Skift konto</string>
     <string name="nc_team">Team</string>
+    <string name="nc_test_push_button">Test push notifikationer</string>
+    <string name="nc_test_results">Testresultater</string>
+    <string name="nc_today_meeting">I dag kl. %1$s</string>
+    <string name="nc_tomorrow_meeting">I morgen kl. %1$s</string>
     <string name="nc_upload_choose_local_files">Vælg filer</string>
     <string name="nc_upload_confirm_send_multiple">Send disse filer til %1$s?</string>
     <string name="nc_upload_confirm_send_single">Send denne fil til %1$s?</string>
@@ -505,16 +550,21 @@
     <string name="nc_webinar">Webinar</string>
     <string name="nc_yes">Ja</string>
     <string name="next_week">Næste uge</string>
+    <string name="no_conversations_archived">Ingen arkiverede samtaler</string>
     <string name="no_offline_messages_saved">Ingen offline beskeder gemt</string>
     <string name="no_phone_book_integration_due_to_permissions">Ingen telefonnummerintegration på grund af manglende rettigheder</string>
+    <string name="notification_all_messages">Alle beskeder</string>
     <string name="notification_mention_only">Kun omtalt med @</string>
     <string name="notification_off">Deaktivér</string>
     <string name="notifications_default">Standard</string>
+    <string name="notifications_default_description">Følg samtaleindstillinger</string>
     <string name="oneHour">1 time</string>
     <string name="online">Online</string>
     <string name="online_status">Online status</string>
     <string name="openConversations">Åbne samtaler</string>
     <string name="open_in_files_app">Åben i appe\'en filer</string>
+    <string name="open_notes">Åben noter</string>
+    <string name="open_thread">Gå til tråd</string>
     <string name="play_pause_voice_message">Afspil/pauser stemmebesked</string>
     <string name="playback_speed_control">Afspilningshastighedskontrol</string>
     <string name="polls_add_option">Tilføj valg</string>
@@ -534,9 +584,11 @@
     <string name="polls_submit_vote">Stemme</string>
     <string name="polls_voted_hidden_success">Stemme indsendt</string>
     <string name="previously_set">Tidligere sat</string>
+    <string name="qr_code_error">QR koden kunne ikke læses</string>
     <string name="raise_hand">Løft hånden</string>
     <string name="reactions_tab_all">Alle</string>
     <string name="read_storage_no_permission">Deling af filer fra lager er ikke muligt uden rettigheder</string>
+    <string name="recent_threads">Seneste tråde</string>
     <string name="record_active_info">Opkaldet optages</string>
     <string name="record_cancel_start">Annuller opstagelsesstart</string>
     <string name="record_failed_info">Optagelsen fejlede. Kontakt venligst din administrator</string>
@@ -594,6 +646,7 @@
     <string name="show_banned_participants">Vis blokerede deltagere</string>
     <string name="starred">Favorit</string>
     <string name="startCallForbidden">Du har ikke tilladelse til at starte et opkald</string>
+    <string name="start_thread">Opret en tråd</string>
     <string name="started_a_call">startede et opkald</string>
     <string name="status_message">Statusbesked</string>
     <string name="status_reverted">Status omvendt</string>
@@ -612,6 +665,12 @@
     <string name="thisWeek">Denne uge</string>
     <string name="this_is_a_test_message">Dette er en testbesked</string>
     <string name="this_weekend">Denne weekend</string>
+    <string name="thread_cancel">Annuller trådoprettelse</string>
+    <string name="thread_notifications">Trådnotifikationer</string>
+    <string name="thread_reply">Svar</string>
+    <string name="thread_title">Trådtitel</string>
+    <string name="threads">Tråde</string>
+    <string name="threads_list_empty">Ingen tråde fundet</string>
     <string name="today">I dag</string>
     <string name="tomorrow">I morgen</string>
     <string name="translate">Oversæt</string>
@@ -652,6 +711,14 @@
     <plurals name="see_similar_system_messages">
         <item quantity="one">Se %d lignende besked</item>
         <item quantity="other">Se %d lignende beskeder</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Denne samtale vil automatisk blive slettet for alle efter%1$d dage med inaktivitet</item>
+        <item quantity="other">Denne samtale vil automatisk blive slettet for alle efter %1$d dage med inaktivitet</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d svar</item>
+        <item quantity="other">%d svar</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d stemme</item>

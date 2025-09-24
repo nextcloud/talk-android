@@ -245,6 +245,8 @@
     <string name="nc_dialog_save_to_storage_no">Не</string>
     <string name="nc_dialog_save_to_storage_title">Захаваць у сховішча?</string>
     <string name="nc_dialog_save_to_storage_yes">Так</string>
+    <string name="nc_display_name_not_fetched">Не ўдалося атрымаць імя для паказу, скасаванне</string>
+    <string name="nc_display_name_not_stored">Не ўдалося захаваць імя для паказу, скасаванне</string>
     <string name="nc_edit_icon">Рэдагаваць</string>
     <string name="nc_edit_message">Рэдагаваць</string>
     <string name="nc_edit_message_text">Рэдагаваць паведамленне</string>

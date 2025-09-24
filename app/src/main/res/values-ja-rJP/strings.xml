@@ -166,6 +166,7 @@
     <string name="nc_delete_conversation_more">会話を削除すると、ほかの参加者でも一緒に解除されます。</string>
     <string name="nc_delete_message">メッセージを削除</string>
     <string name="nc_delete_message_leaked_to_matterbridge">メッセージは削除されましたが、他サービスへは転送されている可能性があります。</string>
+    <string name="nc_delete_now">今すぐ削除</string>
     <string name="nc_deleted_user">ユーザー%1$sは削除されました</string>
     <string name="nc_demote">モデレータから降格</string>
     <string name="nc_description_record_voice">ボイスメッセージを録音</string>
@@ -269,6 +270,7 @@
     <string name="nc_important_conversation">重要な会議</string>
     <string name="nc_invitations">招待</string>
     <string name="nc_join_open_conversations">オープンな会話に参加する</string>
+    <string name="nc_keep">保持</string>
     <string name="nc_last_moderator_leaving_room_warning">会話から離れる前に、新しいモデレーターを昇格させる必要があります</string>
     <string name="nc_last_modified">%1$s最終更新:%2$s</string>
     <string name="nc_leave">会話を離れる</string>
