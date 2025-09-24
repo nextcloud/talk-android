@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.ParticipantUiState
+import com.nextcloud.talk.call.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
@@ -50,7 +50,7 @@ fun ParticipantTile(
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean
 ) {
-    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick)
+    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick!!)
 
     BoxWithConstraints(
         modifier = modifier
@@ -133,7 +133,11 @@ fun ParticipantTilePreview() {
         isStreamEnabled = true,
         raisedHand = true,
         avatarUrl = "",
-        mediaStream = null
+        mediaStream = null,
+        actorType = null,
+        actorId = null,
+        userId = null,
+        isInternal = false
     )
     ParticipantTile(
         participantUiState = participant,
