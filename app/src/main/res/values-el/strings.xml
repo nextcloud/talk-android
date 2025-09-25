@@ -368,6 +368,7 @@
     <string name="reactions_tab_all">\'Ολα</string>
     <string name="read_storage_no_permission">Η κοινή χρήση αρχείων από τον χώρο αποθήκευσης δεν είναι δυνατή χωρίς δικαιώματα</string>
     <string name="record_start_description">Έναρξη εγγραφής</string>
+    <string name="recording_consent_for_conversation_title">Συγκατάθεση εγγραφής</string>
     <string name="recording_settings_title">Καταγραφή</string>
     <string name="reset_status">Επαναφορά κατάστασης</string>
     <string name="save">Αποθήκευση</string>
