@@ -190,7 +190,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "ReturnCount", "LargeClass")
 class CallActivity : CallBaseActivity() {
     @JvmField
     @Inject

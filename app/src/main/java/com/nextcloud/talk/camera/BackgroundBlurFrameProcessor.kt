@@ -24,13 +24,15 @@ import org.webrtc.VideoProcessor
 import org.webrtc.VideoSink
 import java.nio.ByteBuffer
 
-class BackgroundBlurFrameProcessor(
-    val context: Context,
-    val isFrontFacing: Boolean
-): VideoProcessor, ImageSegmenterHelper.SegmenterListener {
+class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Boolean) :
+    VideoProcessor,
+    ImageSegmenterHelper.SegmenterListener {
 
     companion object {
         val TAG: String = this::class.java.simpleName
+        const val ROT_360 = 360
+        const val KERNEL_SIZE = 25.0 // must be odd
+        const val NV21_HEIGHT_MULTI = 1.5
     }
 
     init {
@@ -70,7 +72,7 @@ class BackgroundBlurFrameProcessor(
             Imgproc.GaussianBlur(
                 blurredMat,
                 blurredMat,
-                Size(25.0, 25.0),
+                Size(KERNEL_SIZE, KERNEL_SIZE),
                 0.0,
                 0.0
             )
@@ -130,7 +132,7 @@ class BackgroundBlurFrameProcessor(
 
         try {
             // weirdly rotation is 270 degree in portrait and 180 degree in landscape, no idea why
-            val angle = 360 - videoFrame.rotation.toDouble()
+            val angle = ROT_360 - videoFrame.rotation.toDouble()
             rotationMat = Imgproc.getRotationMatrix2D(
                 center,
                 angle,
@@ -208,15 +210,15 @@ class BackgroundBlurFrameProcessor(
         return VideoFrame(finalFrameBuffer, 0, time)
     }
 
-    private fun VideoFrame.I420Buffer.toMat(): Mat? {
-        return kotlin.runCatching {
+    private fun VideoFrame.I420Buffer.toMat(): Mat? =
+        kotlin.runCatching {
             val i420Buffer = this
 
             val width = i420Buffer.width
             val height = i420Buffer.height
             val yPlaneSize = width * height
 
-            val nv21Height = height * 3 / 2
+            val nv21Height = (height * NV21_HEIGHT_MULTI).toInt()
             val nv21Width = width
             val nv21Size = nv21Height * nv21Width
             val nv21Data = ByteArray(nv21Size)
@@ -267,5 +269,4 @@ class BackgroundBlurFrameProcessor(
 
             mat
         }.getOrNull()
-    }
 }

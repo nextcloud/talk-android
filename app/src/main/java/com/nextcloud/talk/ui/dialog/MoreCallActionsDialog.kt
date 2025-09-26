@@ -123,6 +123,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         }
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         callActivity.callRecordingViewModel?.viewState?.observe(this) { state ->
             when (state) {
@@ -187,7 +188,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         }
 
         callActivity.blurBackgroundViewModel.viewState.observe(this) { state ->
-            when(state) {
+            when (state) {
                 BlurBackgroundViewModel.BackgroundBlurOff -> {
                     binding.backgroundBlurText.text = context.getText(R.string.turn_on_background_blur)
                 }

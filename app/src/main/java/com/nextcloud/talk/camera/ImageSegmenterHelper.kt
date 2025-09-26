@@ -58,6 +58,7 @@ class ImageSegmenterHelper(
             DELEGATE_CPU -> {
                 baseOptionsBuilder.setDelegate(Delegate.CPU)
             }
+
             DELEGATE_GPU -> {
                 baseOptionsBuilder.setDelegate(Delegate.GPU)
             }
@@ -86,7 +87,7 @@ class ImageSegmenterHelper(
             val options = optionsBuilder.build()
             imageSegmenter = ImageSegmenter.createFromOptions(context, options)
         }.getOrElse { e ->
-            when(e) {
+            when (e) {
                 is IllegalStateException -> {
                     imageSegmenterListener?.onError(
                         "Image segmenter failed to initialize. See error logs for details"
@@ -125,10 +126,7 @@ class ImageSegmenterHelper(
     }
 
     // MPImage isn't necessary, but the listener requires it
-    private fun returnSegmentationResult(
-        result: ImageSegmenterResult, image: MPImage
-    ) {
-
+    private fun returnSegmentationResult(result: ImageSegmenterResult, image: MPImage) {
         // We only need the first mask for this sample because we are using
         // the OutputType CATEGORY_MASK, which only provides a single mask.
         val mpImage = result.categoryMask().get()
@@ -148,7 +146,7 @@ class ImageSegmenterHelper(
         mat.put(0, 0, data)
 
         Core.bitwise_not(mat, mat)
-        Core.multiply(mat, Scalar(255.0), mat)
+        Core.multiply(mat, Scalar(RGB_MAX), mat)
 
         imageSegmenterListener?.onResults(
             ResultBundle(
@@ -166,10 +164,7 @@ class ImageSegmenterHelper(
     }
 
     // Wraps results from inference, the time it takes for inference to be performed.
-    data class ResultBundle(
-        val mask: Mat,
-        val inferenceTime: Long,
-    )
+    data class ResultBundle(val mask: Mat, val inferenceTime: Long)
 
     companion object {
         const val DELEGATE_CPU = 0
@@ -178,6 +173,7 @@ class ImageSegmenterHelper(
         const val GPU_ERROR = 1
 
         const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
+        const val RGB_MAX = 255.0
 
         private const val TAG = "ImageSegmenterHelper"
     }
