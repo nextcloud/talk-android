@@ -5,6 +5,7 @@
     <string name="add_to_notes">Hozzáadás a jegyzetekhez</string>
     <string name="added_to_favorites">A(z) %1$s beszélgetés hozzáadva a kedvencekhez</string>
     <string name="appbar_search_in">Keresés itt: %s</string>
+    <string name="appear_offline">Megjelenés nem kapcsolódottként</string>
     <string name="archive_conversation">Beszélgetés archiválása</string>
     <string name="archive_hint">Ha archivál egy beszélgetést, akkor alapértelmezetten el lesz rejtve. Válassza az „Archiválva” szűrőt az archivált beszélgetések megtekintéséhez. A közvetlen említéseket továbbra is meg fogja kapni.</string>
     <string name="archived">Archiválva</string>
@@ -48,6 +49,7 @@
     <string name="danger_zone">Veszélyes területet</string>
     <string name="deck_card_description">%1$s itt: %2$s</string>
     <string name="delete_avatar">Profilkép törlése</string>
+    <string name="delete_voice_recording">Hangfelvétel törlése</string>
     <string name="deleted_conversation">%1$s beszélgetés törlése</string>
     <string name="dnd">Ne zavarjanak</string>
     <string name="dontClear">Ne törölje</string>
@@ -77,6 +79,10 @@
     <string name="left_conversation">Elhagyta a következő beszélgetést: %1$s</string>
     <string name="load_more_results">További találatok betöltése</string>
     <string name="local_time">Helyi idő: %1$s</string>
+    <string name="location_permission_denied">Hely engedély szükséges</string>
+    <string name="location_permission_denied_msg">Engedélyezze az alkalmazásbeállításokban</string>
+    <string name="location_services_disabled">Helyszolgáltatások letiltva</string>
+    <string name="location_services_disabled_msg">A funkció használatához engedélyezze a helyszolgáltatásokat (GPS)</string>
     <string name="lock_conversation">Beszélgetés zárolása</string>
     <string name="lock_symbol">Zár szimbólum</string>
     <string name="lower_hand">Kéz letétele</string>
@@ -90,6 +96,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Legnagyobb elöl</string>
     <string name="menu_item_sort_by_size_smallest_first">Legkisebb elöl</string>
     <string name="message_copied">Üzenet másolva</string>
+    <string name="message_delete_are_you_sure">Biztos, hogy törli ezt az üzenetet?</string>
     <string name="message_deleted_by_you">Törölte az üzenetet</string>
     <string name="message_last_edited_by">Szerkesztette: %1$s</string>
     <string name="message_poll_tap_to_open">Koppintson a szavazás megnyitásához</string>
@@ -97,6 +104,7 @@
     <string name="message_search_begin_typing">Kezdjen el gépelni a kereséshez…</string>
     <string name="message_search_hint">Keresés…</string>
     <string name="messages">Üzenetek</string>
+    <string name="mute_all_notifications">Összes értesítés némítása</string>
     <string name="nc_Server_account_imported">A kiválasztott fiók importálva lett és elérhető</string>
     <string name="nc_about">Leírás</string>
     <string name="nc_account_chooser_active_user">Aktív felhasználó</string>
@@ -326,6 +334,7 @@
     <string name="nc_message_read">Üzenet elolvasva</string>
     <string name="nc_message_sending">Küldés</string>
     <string name="nc_message_sent">Üzenet elküldve</string>
+    <string name="nc_microphone_enabled_audio_recording">A mikrofon engedélyezve van, és a hang felvételre kerül</string>
     <string name="nc_microphone_permission_hint">A hanghívás engedélyezéséhez meg kell adnia a „Mikrofon” engedélyt.</string>
     <string name="nc_missed_call">Nem fogadott hívás a következőtől: %s</string>
     <string name="nc_moderator">Moderátor</string>
@@ -411,6 +420,7 @@
     <string name="nc_search_clear">Keresés törlése</string>
     <string name="nc_select_an_account">Fiók kiválasztása</string>
     <string name="nc_send_edit_message">Üzenet frissítése</string>
+    <string name="nc_send_voice_recording">Hangfelvétel küldése</string>
     <string name="nc_sensitive_conversation">Érzékeny beszélgetés</string>
     <string name="nc_sensitive_conversation_hint">Az üzenet-előnézet le lesz tiltva a beszélgetési listában és az értesítésekben</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s GIF képet küldött.</string>
@@ -543,15 +553,18 @@
     <string name="no_conversations_archived">Nincs archivált beszélgetés</string>
     <string name="no_offline_messages_saved">Nincs mentett offline üzenet</string>
     <string name="no_phone_book_integration_due_to_permissions">A hiányzó engedélyek miatt nincs telefonszám-integráció</string>
-    <string name="notification_all_messages">Minden üzenet</string>
+    <string name="notification_all_messages">Összes üzenet</string>
     <string name="notification_mention_only">csak @-megemlítések</string>
+    <string name="notification_off">Ki</string>
     <string name="notifications_default">Alapértelmezett</string>
+    <string name="notifications_default_description">Beszélgetésbeállítások követése</string>
     <string name="oneHour">1 óra</string>
     <string name="online">Elérhető</string>
     <string name="online_status">Elérhető állapot</string>
     <string name="openConversations">Beszélgetések megnyitása</string>
     <string name="open_in_files_app">Megnyitás a Fájlok alkalmazásban</string>
     <string name="open_notes">Jegyzetek megnyitása</string>
+    <string name="open_thread">Ugrás a szálhoz</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
     <string name="playback_speed_control">Lejátszási sebesség vezérlése</string>
     <string name="polls_add_option">Lehetőség hozzáadása</string>
@@ -571,9 +584,11 @@
     <string name="polls_submit_vote">Szavazat leadása</string>
     <string name="polls_voted_hidden_success">Szavazat leadva</string>
     <string name="previously_set">Előzőleg beállított</string>
+    <string name="qr_code_error">A QR-kód nem olvasható el</string>
     <string name="raise_hand">Kéz felemelése</string>
     <string name="reactions_tab_all">Összes</string>
     <string name="read_storage_no_permission">A fájlok megosztása a tárhelyről engedély nélkül nem lehetséges</string>
+    <string name="recent_threads">Legutóbbi szálak</string>
     <string name="record_active_info">A hívásról felvétel készül</string>
     <string name="record_cancel_start">Felvétel indításának megszakítása</string>
     <string name="record_failed_info">A felvétel sikertelen. Lépjen kapcsolatba a rendszergazdával.</string>
@@ -594,7 +609,7 @@
     <string name="reset_status">Állapot visszaállítása</string>
     <string name="restrict_join_other_room_while_call">Hívás közben nem lehet más szobákhoz csatlakozni</string>
     <string name="save">Mentés</string>
-    <string name="scan_qr_code">Scan QR Code</string>
+    <string name="scan_qr_code">QR-kód leolvasása</string>
     <string name="scope_federated_description">Szinkronizálás csak a megbízható kiszolgálókkal</string>
     <string name="scope_federated_title">Föderált</string>
     <string name="scope_local_description">Csak az ezen a példányon lévő személyek és a vendégek láthatják</string>
@@ -631,6 +646,7 @@
     <string name="show_banned_participants">Kitiltott résztvevők megjelenítése</string>
     <string name="starred">Kedvenc</string>
     <string name="startCallForbidden">Nincs jogosultsága hívást indítani</string>
+    <string name="start_thread">Szál létrehozása</string>
     <string name="started_a_call">hívás indítás</string>
     <string name="status_message">Állapotüzenet</string>
     <string name="status_reverted">Üzenet visszaállítva</string>
@@ -649,6 +665,12 @@
     <string name="thisWeek">Ez a hét</string>
     <string name="this_is_a_test_message">Ez egy tesztüzenet</string>
     <string name="this_weekend">Ezen a hétvégén</string>
+    <string name="thread_cancel">Szál létrehozásának megszakítása</string>
+    <string name="thread_notifications">Szálértesítések</string>
+    <string name="thread_reply">Válasz</string>
+    <string name="thread_title">Szál címe</string>
+    <string name="threads">Szálak</string>
+    <string name="threads_list_empty">Nem találhatók szálak</string>
     <string name="today">Ma</string>
     <string name="tomorrow">Holnap</string>
     <string name="translate">Lefordítás</string>
@@ -693,6 +715,10 @@
     <plurals name="nc_conversation_auto_delete_info">
         <item quantity="one">Ez a beszélgetés %1$d nap tétlenség után mindenkinél törölve lesz</item>
         <item quantity="other">Ez a beszélgetés %1$d nap tétlenség után mindenkinél törölve lesz</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d válasz</item>
+        <item quantity="other">%d válasz</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d szavazat</item>
