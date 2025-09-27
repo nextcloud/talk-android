@@ -374,7 +374,7 @@
     <string name="nc_participants">Participantes</string>
     <string name="nc_participants_add">Engadir participantes</string>
     <string name="nc_password">Contrasinal</string>
-    <string name="nc_permissions_ask">Establecer os permisos</string>
+    <string name="nc_permissions_ask">Estabelecer os permisos</string>
     <string name="nc_permissions_denied">Algúns permisos foron denegados.</string>
     <string name="nc_permissions_rationale_dialog_title">Autorice os permisos</string>
     <string name="nc_permissions_settings">Abrir os axustes</string>
@@ -587,7 +587,7 @@
     <string name="qr_code_error">Non foi posíbel ler o código QR.</string>
     <string name="raise_hand">Erguer a man</string>
     <string name="reactions_tab_all">Todo</string>
-    <string name="read_storage_no_permission">Non é posible compartir ficheiros desde o almacenamento sen permisos</string>
+    <string name="read_storage_no_permission">Non é posíbel compartir ficheiros desde o almacenamento sen permisos</string>
     <string name="recent_threads">Fíos recentes</string>
     <string name="record_active_info">Estase a gravar a chamada</string>
     <string name="record_cancel_start">Cancelar o inicio da gravación</string>
@@ -607,7 +607,7 @@
     <string name="renamed_conversation">Cambióuselle o nome a conversa %1$s</string>
     <string name="resend_message">Volver enviar</string>
     <string name="reset_status">Restabelecer o estado</string>
-    <string name="restrict_join_other_room_while_call">Non é posible unirse a outras salas mentres está nunha chamada</string>
+    <string name="restrict_join_other_room_while_call">Non é posíbel unirse a outras salas mentres está nunha chamada</string>
     <string name="save">Gardar</string>
     <string name="scan_qr_code">Escanear o código QR</string>
     <string name="scope_federated_description">Sincronizar só con servidores de confianza</string>
@@ -654,7 +654,7 @@
     <string name="switch_to_main_room">Cambiar á sala principal</string>
     <string name="take_photo">Tirar unha foto</string>
     <string name="take_photo_error_deleting_picture">Produciuse un erro ao tirar a foto</string>
-    <string name="take_photo_permission">Non é posible tirar unha foto sen permisos</string>
+    <string name="take_photo_permission">Non é posíbel tirar unha foto sen permisos</string>
     <string name="take_photo_retake_photo">Volver tirar a foto</string>
     <string name="take_photo_send">Enviar</string>
     <string name="take_photo_switch_camera">Cambiar de cámara</string>
