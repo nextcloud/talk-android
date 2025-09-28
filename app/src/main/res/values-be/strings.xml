@@ -31,7 +31,7 @@
     <string name="camera_permission_granted">Дазвол на камеру атрыманы. Выберыце камеру яшчэ раз.</string>
     <string name="cancel_login">Скасаваць уваход</string>
     <string name="choose_avatar_from_cloud">Выбраць аватар з воблака</string>
-    <string name="clear_status_message">Ачысціць паведамленне статусу</string>
+    <string name="clear_status_message">Ачысціць</string>
     <string name="clear_status_message_after">Ачысціць паведамленне статусу пасля</string>
     <string name="close">Закрыць</string>
     <string name="close_icon">Значок Закрыць</string>
@@ -274,7 +274,7 @@
     <string name="nc_forward_to_three_dots">Пераслаць …</string>
     <string name="nc_gallery">Галерэя</string>
     <string name="nc_get_from_provider">У вас яшчэ няма сервера?\nНацісніце тут, каб атрымаць яго ў пастаўшчыка</string>
-    <string name="nc_get_source_code">Атрымаць зыходны код</string>
+    <string name="nc_get_source_code">Зыходны код</string>
     <string name="nc_group">Група</string>
     <string name="nc_guest">Госць</string>
     <string name="nc_guest_access">Гасцявы доступ</string>
@@ -481,7 +481,7 @@
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
     <string name="nc_settings_remove_confirmation">Пацвердзіце свой намер выдаліць бягучы ўліковы запіс.</string>
     <string name="nc_settings_screen_lock_desc">Блакіраваць %1$s з дапамогай блакіроўкі экрана Android або біяметрычнага метаду, які падтрымліваецца</string>
-    <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі экрана пры бяздзейнасці</string>
+    <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі пры бяздзейнасці</string>
     <string name="nc_settings_screen_lock_title">Блакіроўка экрана</string>
     <string name="nc_settings_screen_security_desc">Забараняе рабіць здымкі экрана ў спісе нядаўняга і ўнутры праграмы</string>
     <string name="nc_settings_screen_security_title">Бяспека экрана</string>
@@ -530,7 +530,7 @@
     <string name="nc_upload_failed">Не ўдалося запампаваць</string>
     <string name="nc_upload_failed_notification_text">Не ўдалося запампаваць %1$s</string>
     <string name="nc_upload_failed_notification_title">Няўдача</string>
-    <string name="nc_upload_from_cloud">Абагульванне ад %1$s</string>
+    <string name="nc_upload_from_cloud">Абагульванне з %1$s</string>
     <string name="nc_upload_from_device">Запампаваць з прылады</string>
     <string name="nc_upload_in_progess">Запампоўванне</string>
     <string name="nc_upload_notification_text">%1$s у %2$s - %3$s\%%</string>
@@ -553,7 +553,7 @@
     <string name="notification_off">Выкл.</string>
     <string name="notifications_default">Прадвызначаныя</string>
     <string name="notifications_default_description">Прытрымлівацца налад размовы</string>
-    <string name="oneHour">1 гадзіна</string>
+    <string name="oneHour">1 гадзіну</string>
     <string name="online">У сетцы</string>
     <string name="online_status">Статус у сетцы</string>
     <string name="openConversations">Адкрытыя размовы</string>
@@ -627,7 +627,7 @@
     <string name="set">Задаць</string>
     <string name="set_avatar_from_camera">Задаць аватар з камеры</string>
     <string name="set_status">Задаць статус</string>
-    <string name="set_status_message">Задаць паведамленне статусу</string>
+    <string name="set_status_message">Задаць</string>
     <string name="share">Абагуліць</string>
     <string name="share_link_to_conversation">Далучайцеся да размовы %1$s у %2$s</string>
     <string name="shared_items_audio">Аўдыя</string>
