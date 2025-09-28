@@ -88,7 +88,7 @@
     <string name="lower_hand">Sænk hånden</string>
     <string name="marked_as_read">Marker samtalen %1$s som læst</string>
     <string name="marked_as_unread">Marker samtalen %1$s som ulæst</string>
-    <string name="mentioned">Nævnt</string>
+    <string name="mentioned">Omtalt</string>
     <string name="menu_item_sort_by_date_newest_first">Nyeste først</string>
     <string name="menu_item_sort_by_date_oldest_first">Ældste først</string>
     <string name="menu_item_sort_by_name_a_z">A - Å</string>
