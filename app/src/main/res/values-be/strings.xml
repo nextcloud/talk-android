@@ -686,7 +686,7 @@
     <string name="unban">Разблакіраваць</string>
     <string name="unread">Непрачытанае</string>
     <string name="upload_new_avatar_from_device">Запампаваць новы аватар з прылады</string>
-    <string name="user_absence">%1$s сёння не на працы і можа не адказаць</string>
+    <string name="user_absence">%1$s не на працы і можа не адказаць</string>
     <string name="user_absence_for_one_day">%1$s сёння не на працы</string>
     <string name="user_absence_replacement">Замена:</string>
     <string name="user_avatar">Аватар карыстальніка</string>
