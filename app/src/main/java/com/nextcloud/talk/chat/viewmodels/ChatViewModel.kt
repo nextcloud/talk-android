@@ -31,6 +31,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.models.MessageDraft
+import com.nextcloud.talk.models.ScrollPositionState
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
@@ -60,6 +61,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
@@ -204,6 +206,13 @@ class ChatViewModel @Inject constructor(
         }
 
     val getGeneralUIFlow = chatRepository.generalUIFlow
+
+    sealed interface ScrollViewState
+    object InitialScrollState : ScrollViewState
+    object PostInitialScrollState : ScrollViewState
+
+    private val _scrollState: MutableStateFlow<ScrollViewState> = MutableStateFlow(InitialScrollState)
+    val scrollState = _scrollState.asStateFlow()
 
     sealed interface ViewState
 
@@ -960,6 +969,25 @@ class ChatViewModel @Inject constructor(
                 conversationRepository.updateConversation(it)
             }
         }
+    }
+
+    fun saveLastScrollPosition(lastScrollState: ScrollPositionState) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+            model?.apply {
+                scrollPositionState = lastScrollState
+                conversationRepository.updateConversation(this)
+            }
+        }
+    }
+
+    suspend fun getLastSavedScrollPosition(): ScrollPositionState? {
+        val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
+        return model?.scrollPositionState
+    }
+
+    fun updateScrollState(newState: ScrollViewState) {
+        _getScrollState.value = newState
     }
 
     fun clearThreadTitle() {

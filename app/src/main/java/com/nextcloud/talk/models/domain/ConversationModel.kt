@@ -9,6 +9,7 @@ package com.nextcloud.talk.models.domain
 
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.MessageDraft
+import com.nextcloud.talk.models.ScrollPositionState
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
@@ -65,9 +66,10 @@ data class ConversationModel(
     var hasSensitive: Boolean = false,
     var hasImportant: Boolean = false,
 
-    // attributes that don't come from API. This should be changed?!
+    // attributes that don't come from API
     var password: String? = null,
-    var messageDraft: MessageDraft? = MessageDraft()
+    var messageDraft: MessageDraft? = MessageDraft(),
+    var scrollPositionState: ScrollPositionState? = null
 ) {
 
     companion object {

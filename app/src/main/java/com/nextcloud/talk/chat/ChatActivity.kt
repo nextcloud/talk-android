@@ -153,6 +153,7 @@ import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
 import com.nextcloud.talk.location.LocationPickerActivity
 import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
+import com.nextcloud.talk.models.ScrollPositionState
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ReadStatus
@@ -647,6 +648,8 @@ class ChatActivity :
         Log.d(TAG, "initObservers Called")
 
         this.lifecycleScope.launch {
+            // Note - this is an object retrieved from the server, unless network fails, then it's local
+            //  so no local only variables, like message draft or scroll state are present here
             chatViewModel.getConversationFlow
                 .onEach { conversationModel ->
                     currentConversation = conversationModel
@@ -1013,6 +1016,26 @@ class ChatActivity :
                     processCallStartedMessages()
 
                     adapter?.notifyDataSetChanged()
+
+                    // This should only be non-null on first load, unless you re-enter the activity
+                    val scrollPosition = if (chatViewModel.scrollState.value == ChatViewModel.InitialScrollState) {
+                        chatViewModel.updateScrollState(ChatViewModel.PostInitialScrollState)
+                        chatViewModel.getLastSavedScrollPosition()
+                    } else {
+                        null
+                    }
+
+                    scrollPosition?.let {
+                        layoutManager?.scrollToPosition(it.position)
+                        binding.messagesListView.post {
+                            // By the time this code runs, the RecyclerView has been laid out
+                            val firstHolder = layoutManager?.findViewByPosition(it.position)
+                            val top = firstHolder?.top ?: 0
+                            val y = top - it.offset
+
+                            binding.messagesListView.scrollBy(0, y)
+                        }
+                    }
                 }
                 .collect()
         }
@@ -1412,6 +1435,9 @@ class ChatActivity :
 
         cancelNotificationsForCurrentConversation()
 
+        if (intent.getStringExtra(BundleKeys.KEY_MESSAGE_ID) == null) {
+            chatViewModel.updateScrollState(ChatViewModel.InitialScrollState)
+        }
         chatViewModel.getRoom(roomToken)
 
         actionBar?.show()
@@ -2729,6 +2755,15 @@ class ChatActivity :
         if (mentionAutocomplete != null && mentionAutocomplete!!.isPopupShowing) {
             mentionAutocomplete?.dismissPopup()
         }
+
+        val firstVisiblePosition = layoutManager?.findFirstVisibleItemPosition() ?: 0
+        val firstHolder = layoutManager?.findViewByPosition(firstVisiblePosition)
+
+        firstHolder?.let {
+            val scrollPositionState = ScrollPositionState(firstVisiblePosition, it.top)
+            chatViewModel.saveLastScrollPosition(scrollPositionState)
+        }
+
         adapter = null
     }
 
