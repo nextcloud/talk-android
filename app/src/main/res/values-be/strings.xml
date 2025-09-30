@@ -513,7 +513,7 @@
     <string name="nc_shared_items_empty">Няма абагуленых элементаў</string>
     <string name="nc_shared_items_location">Месцазнаходжанне</string>
     <string name="nc_shared_location">Абагуленае месцазнаходжанне</string>
-    <string name="nc_show_notification_warning_description">Калі апавяшчэнні настроены няправільна, паказваць звычайнае папярэджанне</string>
+    <string name="nc_show_notification_warning_description">Калі апавяшчэнні наладжаны няправільна, паказваць звычайнае папярэджанне</string>
     <string name="nc_show_notification_warning_title">Паказваць звычайнае папярэджанне аб апавяшчэннях</string>
     <string name="nc_sort_by">Сартаваць па</string>
     <string name="nc_start_group_chat">Пачаць супольны чат</string>
