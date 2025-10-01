@@ -156,6 +156,7 @@
     <string name="nc_edit_message">Επεξεργασία</string>
     <string name="nc_edit_message_text">Επεξεργασία μηνύματος</string>
     <string name="nc_expire_message_eight_hours">8 ώρες</string>
+    <string name="nc_expire_message_four_weeks">4 εβδομάδες</string>
     <string name="nc_expire_message_off">Απενεργοποίηση </string>
     <string name="nc_expire_message_one_day">1 μέρα</string>
     <string name="nc_expire_message_one_hour">1 ώρα</string>
@@ -208,6 +209,7 @@
     <string name="nc_mark_as_read">Σήμανση ως αναγνωσμένο</string>
     <string name="nc_mark_as_unread">επισήμανση ως μή-αναγνωσμένο</string>
     <string name="nc_message_failed">Απέτυχε</string>
+    <string name="nc_message_offline">Εκτός σύνδεσης</string>
     <string name="nc_message_quote_cancel_reply">Ακύρωση απάντησης</string>
     <string name="nc_message_read">Το μήνυμα διαβάστηκε</string>
     <string name="nc_message_sent">Το μήνυμα στάλθηκε</string>
