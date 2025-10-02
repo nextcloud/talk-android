@@ -219,16 +219,6 @@ public class RestModule {
 
         httpClient.addInterceptor(new HeadersInterceptor());
 
-        List<ConnectionSpec> specs = new ArrayList<>();
-        if (BuildConfig.DEBUG) {
-            specs.add(ConnectionSpec.COMPATIBLE_TLS);
-            specs.add(ConnectionSpec.CLEARTEXT);
-            httpClient.connectionSpecs(specs);
-        } else {
-            specs.add(ConnectionSpec.COMPATIBLE_TLS);
-            httpClient.connectionSpecs(specs);
-        }
-
         if (BuildConfig.DEBUG && !context.getResources().getBoolean(R.bool.nc_is_debug)) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
