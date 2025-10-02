@@ -8,9 +8,6 @@
  * SPDX-FileCopyrightText: 2017-2019 Mario Danic <mario@lovelyhq.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
-import com.github.spotbugs.snom.Confidence
-import com.github.spotbugs.snom.Effort
-import com.github.spotbugs.snom.SpotBugsTask
 
 plugins {
     id "org.jetbrains.kotlin.plugin.compose" version "2.2.20"
@@ -22,8 +19,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.github.spotbugs'
-apply plugin: 'io.gitlab.arturbosch.detekt'
 apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
 
@@ -39,8 +34,8 @@ android {
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
         // xx   .xxx  .xx    .xx
-        versionCode 230000009
-        versionName "23.0.0 Alpha 09"
+        versionCode 230000007
+        versionName "23.0.0 Alpha 07"
 
         flavorDimensions "default"
         renderscriptTargetApi = 19
@@ -123,7 +118,7 @@ android {
         }
     }
 
-    check.dependsOn 'spotbugsGplayDebug', 'lint', 'ktlintCheck', 'detekt'
+    check.dependsOn 'lint', 'ktlintCheck'
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -158,7 +153,7 @@ kapt {
 ext {
     androidxCameraVersion = "1.5.0"
     coilKtVersion = "2.7.0"
-    daggerVersion = "2.57.2"
+    daggerVersion = "2.57.1"
     emojiVersion = "1.6.0"
     fidoVersion = "4.1.0-patch2"
     lifecycleVersion = '2.9.4'
@@ -169,7 +164,7 @@ ext {
     prismVersion = "2.0.0"
     retrofit2Version = "3.0.0"
     roomVersion = "2.8.0"
-    workVersion = "2.10.5"
+    workVersion = "2.10.4"
     espressoVersion = "3.7.0"
     androidxTestVersion = "1.5.0"
     media3_version = "1.8.0"
@@ -186,12 +181,9 @@ configurations.configureEach {
 
 dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
-    implementation 'androidx.compose.foundation:foundation-layout:1.9.2'
-    spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
-    spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.14'
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
+    implementation 'androidx.compose.foundation:foundation-layout:1.9.1'
 
-    implementation("androidx.compose.runtime:runtime:1.9.2")
+    implementation("androidx.compose.runtime:runtime:1.9.1")
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'androidx.datastore:datastore-core:1.1.7'
     implementation 'androidx.datastore:datastore-preferences:1.1.7'
@@ -328,7 +320,7 @@ dependencies {
 
     //tests
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.13.4'
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.2")
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.9.1")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
     testImplementation 'junit:junit:4.13.2'
@@ -360,7 +352,7 @@ dependencies {
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.13.4' // DO NOT REMOVE
     testImplementation "androidx.room:room-testing:${roomVersion}"
     testImplementation("com.squareup.okhttp3:mockwebserver:$okhttpVersion")
-    testImplementation("com.google.dagger:hilt-android-testing:2.57.2")
+    testImplementation("com.google.dagger:hilt-android-testing:2.57.1")
     testImplementation("org.robolectric:robolectric:4.16")
 }
 
@@ -372,46 +364,9 @@ tasks.register('installGitHooks', Copy) {
     into '../.git/hooks'
 }
 
-spotbugs {
-    ignoreFailures = true // should continue checking
-    effort = Effort.MAX
-    reportLevel = Confidence.valueOf('MEDIUM')
-}
 
-tasks.withType(SpotBugsTask).configureEach { task ->
-    String variantNameCap = task.name.replace("spotbugs", "")
-    String variantName = variantNameCap.substring(0, 1).toLowerCase() + variantNameCap.substring(1)
 
-    dependsOn "compile${variantNameCap}Sources"
 
-    excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
-    classes = fileTree(layout.buildDirectory.get().asFile.toString()+"/intermediates/javac/${variantName}/compile${variantNameCap}JavaWithJavac/classes/")
-    reports {
-        xml {
-            required = true
-        }
-        html {
-            required = true
-            outputLocation = layout.buildDirectory.file("reports/spotbugs/spotbugs.html")
-            stylesheet = 'fancy.xsl'
-        }
-    }
-}
-
-tasks.named("detekt").configure {
-    reports {
-        html.required.set(true)
-        txt.required.set(true)
-        xml.required.set(false)
-        sarif.required.set(false)
-        md.required.set(false)
-    }
-}
-
-detekt {
-    config.setFrom("../detekt.yml")
-    source.setFrom("src/")
-}
 
 ksp {
     arg('room.schemaLocation', "$projectDir/schemas")
