@@ -100,7 +100,12 @@ object CapabilitiesUtil {
     //region SpreedCapabilities
 
     @JvmStatic
-    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability, spreedFeatures: SpreedFeatures): Boolean {
+    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability?, spreedFeatures: SpreedFeatures): Boolean {
+        if (spreedCapabilities == null) {
+            Log.e(TAG, "spreedCapabilities were null when checking capability " + spreedFeatures.value)
+            return false
+        }
+
         if (spreedCapabilities.features != null) {
             return spreedCapabilities.features!!.contains(spreedFeatures.value)
         }
@@ -136,7 +141,12 @@ object CapabilitiesUtil {
         return CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER
     }
 
-    fun isReadStatusAvailable(spreedCapabilities: SpreedCapability): Boolean {
+    fun isReadStatusAvailable(spreedCapabilities: SpreedCapability?): Boolean {
+        if (spreedCapabilities == null) {
+            Log.e(TAG, "spreedCapabilities were null when checking capability isReadStatusAvailable")
+            return false
+        }
+
         if (spreedCapabilities.config?.containsKey("chat") == true) {
             val map: Map<String, Any>? = spreedCapabilities.config!!["chat"]
             return map != null && map.containsKey("read-privacy")
@@ -200,9 +210,6 @@ object CapabilitiesUtil {
 
     fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
-
-    fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean =
-        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
 
     fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean =
         if (
