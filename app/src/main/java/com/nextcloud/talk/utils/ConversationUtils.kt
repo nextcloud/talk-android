@@ -27,11 +27,11 @@ object ConversationUtils {
             Participant.ParticipantType.GUEST_MODERATOR == conversation.participantType ||
             Participant.ParticipantType.MODERATOR == conversation.participantType
 
-    fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean =
+    fun isLockedOneToOne(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         conversation.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL &&
             CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.LOCKED_ONE_TO_ONE)
 
-    fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability): Boolean =
+    fun canModerate(conversation: ConversationModel, spreedCapabilities: SpreedCapability?): Boolean =
         isParticipantOwnerOrModerator(conversation) &&
             !isLockedOneToOne(conversation, spreedCapabilities) &&
             conversation.type != ConversationEnums.ConversationType.FORMER_ONE_TO_ONE &&
