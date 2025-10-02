@@ -387,6 +387,61 @@
                     android:textStyle="bold"/>
 
                 <LinearLayout
+                    android:id="@+id/settings_image_compression"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/standard_padding"
+                    android:background="?android:attr/selectableItemBackground">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/headline_text_size"
+                            android:text="@string/nc_settings_image_compression"/>
+
+                        <com.google.android.material.textview.MaterialTextView
+                            android:id="@+id/settings_image_compression_summary"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/nc_settings_image_compression_summary"/>
+                    </LinearLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/settings_image_compression_level_layout"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_half_margin"
+                        android:hint="@string/nc_settings_image_compression_level">
+
+                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                            android:id="@+id/settings_image_compression_level_dropdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:lines="1"
+                            android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
+                            android:text="" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:id="@+id/settings_image_compression_level_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/standard_quarter_margin"
+                        android:textSize="@dimen/supporting_text_text_size"
+                        android:text="@string/nc_image_compression_none_description"/>
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/settings_screen_lock"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

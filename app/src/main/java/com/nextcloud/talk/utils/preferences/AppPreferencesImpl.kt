@@ -554,6 +554,25 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
             }
         }
 
+    override fun getImageCompressionLevel(): String =
+        runBlocking {
+            async { readString(IMAGE_COMPRESSION_LEVEL, "none").first() }
+        }.getCompleted()
+
+    override fun setImageCompressionLevel(level: String) =
+        runBlocking<Unit> {
+            async {
+                writeString(IMAGE_COMPRESSION_LEVEL, level)
+            }
+        }
+
+    override fun removeImageCompressionLevel() =
+        runBlocking<Unit> {
+            async {
+                writeString(IMAGE_COMPRESSION_LEVEL, "none")
+            }
+        }
+
     override fun clear() {}
 
     private suspend fun writeString(key: String, value: String) =
@@ -637,6 +656,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val SHOW_REGULAR_NOTIFICATION_WARNING = "show_regular_notification_warning"
         const val LAST_NOTIFICATION_WARNING = "last_notification_warning"
         const val CONVERSATION_LIST_POSITION_OFFSET = "CONVERSATION_LIST_POSITION_OFFSET"
+        const val IMAGE_COMPRESSION_LEVEL = "image_compression_level"
         private fun String.convertStringToArray(): Array<Float> {
             var varString = this
             val floatList = mutableListOf<Float>()

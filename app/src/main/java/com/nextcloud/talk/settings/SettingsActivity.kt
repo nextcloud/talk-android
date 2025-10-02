@@ -64,6 +64,7 @@ import com.nextcloud.talk.jobs.CapabilitiesWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.checkPermission
 import com.nextcloud.talk.jobs.ContactAddressBookWorker.Companion.deleteAll
+import com.nextcloud.talk.models.ImageCompressionLevel
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.userprofile.UserProfileOverall
 import com.nextcloud.talk.profile.ProfileActivity
@@ -193,6 +194,7 @@ class SettingsActivity :
         }
 
         setupCheckables()
+        setupImageCompressionSettings()
         setupScreenLockSetting()
         setupNotificationSettings()
         setupProxyTypeSettings()
@@ -1057,6 +1059,48 @@ class SettingsActivity :
             binding.settingsScreenLock.alpha = DISABLED_ALPHA
             binding.settingsScreenLockTimeout.alpha = DISABLED_ALPHA
         }
+    }
+
+    private fun setupImageCompressionSettings() {
+        // Get current compression level from preferences
+        val currentLevelKey = appPreferences.imageCompressionLevel
+        val currentLevel = ImageCompressionLevel.fromKey(currentLevelKey)
+
+        // Set current selection in dropdown
+        val position = resources.getStringArray(R.array.image_compression_level_entry_values).indexOf(currentLevel.key)
+        if (position >= 0) {
+            binding.settingsImageCompressionLevelDropdown.setText(
+                resources.getStringArray(R.array.image_compression_level_descriptions)[position]
+            )
+            updateImageCompressionDescription(currentLevel)
+        }
+
+        // Set dropdown items
+        binding.settingsImageCompressionLevelDropdown.setSimpleItems(R.array.image_compression_level_descriptions)
+
+        // Handle dropdown selection changes
+        binding.settingsImageCompressionLevelDropdown.setOnItemClickListener { _, _, position, _ ->
+            val selectedKey = resources.getStringArray(R.array.image_compression_level_entry_values)[position]
+            val selectedLevel = ImageCompressionLevel.fromKey(selectedKey)
+
+            // Save the selection
+            appPreferences.imageCompressionLevel = selectedKey
+
+            // Update the description text
+            updateImageCompressionDescription(selectedLevel)
+
+            Log.d(TAG, "Image compression level changed to: ${selectedLevel.name}")
+        }
+    }
+
+    private fun updateImageCompressionDescription(level: ImageCompressionLevel) {
+        val descriptionResId = when (level) {
+            ImageCompressionLevel.NONE -> R.string.nc_image_compression_none_description
+            ImageCompressionLevel.LIGHT -> R.string.nc_image_compression_light_description
+            ImageCompressionLevel.MEDIUM -> R.string.nc_image_compression_medium_description
+            ImageCompressionLevel.STRONG -> R.string.nc_image_compression_strong_description
+        }
+        binding.settingsImageCompressionLevelDescription.setText(descriptionResId)
     }
 
     public override fun onDestroy() {

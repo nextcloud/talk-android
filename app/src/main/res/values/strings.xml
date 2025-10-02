@@ -43,6 +43,22 @@ How to translate with transifex:
     <string name="nc_settings">Settings</string>
     <string name="add_participants">Add</string>
 
+    <!-- Settings -->
+    <string name="nc_settings_image_compression">Image compression</string>
+    <string name="nc_settings_image_compression_summary">Compress images before upload to reduce file size</string>
+    <string name="nc_settings_image_compression_level">Compression level</string>
+    <string name="nc_settings_image_compression_level_summary">Choose the level of compression for uploaded images</string>
+
+    <!-- Image compression levels -->
+    <string name="nc_image_compression_none">None</string>
+    <string name="nc_image_compression_none_description">Upload original images without compression</string>
+    <string name="nc_image_compression_light">Light</string>
+    <string name="nc_image_compression_light_description">High quality with moderate size reduction (max 1920x1920, 95% quality)</string>
+    <string name="nc_image_compression_medium">Medium</string>
+    <string name="nc_image_compression_medium_description">Good balance between quality and size (max 1600x1600, 90% quality)</string>
+    <string name="nc_image_compression_strong">Strong</string>
+    <string name="nc_image_compression_strong_description">Noticeable size reduction for quick sharing (max 1280x1280, 80% quality)</string>
+
     <!-- Server selection -->
     <string name="nc_server_connect">Test server connection</string>
     <string name="nc_server_helper_text">The link to your %1$s web interface when you open it in the browser.</string>

@@ -187,5 +187,11 @@ public interface AppPreferences {
 
     Pair<Integer, Integer> getConversationListPositionAndOffset();
 
+    String getImageCompressionLevel();
+
+    void setImageCompressionLevel(String level);
+
+    void removeImageCompressionLevel();
+
     void clear();
 }

@@ -80,4 +80,18 @@
         <item>night_yes</item>
     </array>
 
+    <array name="image_compression_level_descriptions">
+        <item>@string/nc_image_compression_none</item>
+        <item>@string/nc_image_compression_light</item>
+        <item>@string/nc_image_compression_medium</item>
+        <item>@string/nc_image_compression_strong</item>
+    </array>
+
+    <array name="image_compression_level_entry_values">
+        <item>none</item>
+        <item>light</item>
+        <item>medium</item>
+        <item>strong</item>
+    </array>
+
 </resources>
