@@ -296,6 +296,17 @@
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
     <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
+    
+    <!-- Image compression levels -->
+    <string name="nc_image_compression_none">Keine</string>
+    <string name="nc_image_compression_none_description">Originalbilder ohne Kompression hochladen</string>
+    <string name="nc_image_compression_light">Leicht</string>
+    <string name="nc_image_compression_light_description">Hohe Qualität mit moderater Größenreduktion (max. 1920x1920, 95% Qualität)</string>
+    <string name="nc_image_compression_medium">Mittel</string>
+    <string name="nc_image_compression_medium_description">Gute Balance zwischen Qualität und Größe (max. 1600x1600, 90% Qualität)</string>
+    <string name="nc_image_compression_strong">Stark</string>
+    <string name="nc_image_compression_strong_description">Merkliche Größenreduktion für schnelles Teilen (max. 1280x1280, 80% Qualität)</string>
+    
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">\"Nicht stören\"-Benutzerstatus wird für wichtige Unterhaltungen ignoriert</string>
     <string name="nc_invalid_time">Ungültige Zeit</string>
@@ -456,6 +467,10 @@
     <string name="nc_settings_contact_admin_of">Bitte kontaktieren Sie die Administration von</string>
     <string name="nc_settings_diagnose_subtitle">Die Diagnoseseite öffnen, um die Einstellungen zu überprüfen oder einen Fehlerbericht zu erstellen</string>
     <string name="nc_settings_diagnose_title">Diagnose</string>
+    <string name="nc_settings_image_compression">Bildkompression</string>
+    <string name="nc_settings_image_compression_summary">Bilder vor dem Upload komprimieren, um die Dateigröße zu reduzieren</string>
+    <string name="nc_settings_image_compression_level">Kompressionsstufe</string>
+    <string name="nc_settings_image_compression_level_summary">Wählen Sie die Kompressionsstufe für hochgeladene Bilder</string>
     <string name="nc_settings_incognito_keyboard_desc">Weist die Tastatur an, das personalisierte Lernen zu deaktivieren (ohne Garantien)</string>
     <string name="nc_settings_incognito_keyboard_title">Inkognito-Tastatur</string>
     <string name="nc_settings_no_ringtone">Kein Ton</string>
