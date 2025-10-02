@@ -285,7 +285,7 @@
     <string name="nc_notify_me_mention">当被提及时提醒</string>
     <string name="nc_notify_me_never">从不提醒</string>
     <string name="nc_offline">当前离线，请检查您的连接</string>
-    <string name="nc_ok">OK</string>
+    <string name="nc_ok">确定</string>
     <string name="nc_open_conversation_to_registered_users">向注册用户开放对话 </string>
     <string name="nc_open_to_guest_app_users">同样对访客用户开放</string>
     <string name="nc_owner">所有者</string>
@@ -579,7 +579,7 @@
     <string name="userinfo_error_text">检索个人用户信息失败</string>
     <string name="userinfo_no_info_headline">未设置个人信息</string>
     <string name="userinfo_no_info_text">在你的个人资料页上添加姓名、图片和联系方式。</string>
-    <string name="whats_your_status">你什么状态？</string>
+    <string name="whats_your_status">您的状态如何？</string>
     <plurals name="polls_amount_voters">
         <item quantity="other">%d 票</item>
     </plurals>
