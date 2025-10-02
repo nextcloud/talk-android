@@ -532,12 +532,12 @@ class CallActivity : CallBaseActivity() {
             )
         }
 
-        when (CapabilitiesUtil.getRecordingConsentType(conversationUser!!.capabilities!!.spreedCapability!!)) {
+        when (CapabilitiesUtil.getRecordingConsentType(conversationUser.capabilities!!.spreedCapability!!)) {
             CapabilitiesUtil.RECORDING_CONSENT_NOT_REQUIRED -> initiateCall()
             CapabilitiesUtil.RECORDING_CONSENT_REQUIRED -> askForRecordingConsent()
             CapabilitiesUtil.RECORDING_CONSENT_DEPEND_ON_CONVERSATION -> {
                 val getRoomApiVersion = ApiUtils.getConversationApiVersion(
-                    conversationUser!!,
+                    conversationUser,
                     intArrayOf(ApiUtils.API_V4, 1)
                 )
                 ncApi!!.getRoom(credentials, ApiUtils.getUrlForRoom(getRoomApiVersion, baseUrl, roomToken))
