@@ -987,7 +987,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun updateScrollState(newState: ScrollViewState) {
-        _getScrollState.value = newState
+        _scrollState.value = newState
     }
 
     fun clearThreadTitle() {
