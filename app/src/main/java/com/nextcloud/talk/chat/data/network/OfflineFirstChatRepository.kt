@@ -239,23 +239,25 @@ class OfflineFirstChatRepository @Inject constructor(
         }
     }
 
-    private suspend fun handleUploadsFromDb() {
-        fileUploadsDao.getFileUploadsForConversation(internalConversationId)
-            .onEach {
-                _uploadsFlow.emit(
-                    it.map { item ->
-                        FileUploadModel(
-                            id = item.id,
-                            fileName = item.fileName,
-                            progress = item.progress
-                        )
-                    }
-                )
-            }
-            .catch {
-                Log.e(TAG, "Failed reading uploads")
-            }
-            .collect()
+    private fun handleUploadsFromDb() {
+        scope.launch {
+            fileUploadsDao.getFileUploadsForConversation(internalConversationId)
+                .onEach {
+                    _uploadsFlow.emit(
+                        it.map { item ->
+                            FileUploadModel(
+                                id = item.id,
+                                fileName = item.fileName,
+                                progress = item.progress
+                            )
+                        }
+                    )
+                }
+                .catch {
+                    Log.e(TAG, "Failed reading uploads")
+                }
+                .collect()
+        }
     }
 
     private suspend fun getCappedMessagesAmountOfChatBlock(messageId: Long): Int {
