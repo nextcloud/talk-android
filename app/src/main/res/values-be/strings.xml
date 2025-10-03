@@ -209,7 +209,7 @@
     <string name="nc_diagnose_battery_optimization_not_ignored">Аптымізацыя батарэі ўключана, што можа выклікаць праблемы. Вам варта адключыць аптымізацыю батарэі!</string>
     <string name="nc_diagnose_battery_optimization_title">Налады батарэі</string>
     <string name="nc_diagnose_device_name_title">Прылада</string>
-    <string name="nc_diagnose_dialog_open_checklist">Адкрыць кантрольны спіс вырашэння праблем</string>
+    <string name="nc_diagnose_dialog_open_checklist">Адкрыць спіс вырашэння праблем</string>
     <string name="nc_diagnose_dialog_open_diagnose">Адкрыць экран дыягностыкі</string>
     <string name="nc_diagnose_dialog_open_dontkillmyapp_website">Адкрыць dontkillmyapp.com</string>
     <string name="nc_diagnose_firebase_push_token_latest_fetch">Атрыманне апошняга push-токена firebase</string>
@@ -357,7 +357,7 @@
     <string name="nc_notification_channel_uploads_description">Апавяшчаць пра ход выканання запампоўвання</string>
     <string name="nc_notification_settings">Налады апавяшчэнняў</string>
     <string name="nc_notification_warning">Апавяшчэнні наладжаны няправільна</string>
-    <string name="nc_notifications_troubleshooting_dialog_text">Дазвол на апавяшчэнні і налады батарэі зададзены правільна, каб атрымліваць апавяшчэнні. Калі ў вас усё адно ўзнікаюць праблемы з атрыманнем апавяшчэнняў, праверце, ці ўключаны каналы апавяшчэнняў для выклікаў і паведамленняў. Дадатковую дапамогу можна знайсці на сайце DontKillMyApp.com або ў спісе пошуку і вырашэння праблем. Калі гэта не дапаможа, перайдзіце на экран дыягностыкі і адпраўце справаздачу пра памылку.</string>
+    <string name="nc_notifications_troubleshooting_dialog_text">Дазвол на апавяшчэнні і налады батарэі зададзены правільна. Калі ў вас усё адно ўзнікаюць праблемы з атрыманнем апавяшчэнняў, праверце, ці ўключаны каналы апавяшчэнняў для выклікаў і паведамленняў. Дадатковую дапамогу можна знайсці на сайце DontKillMyApp.com або ў спісе пошуку і вырашэння праблем. Калі гэта не дапаможа, перайдзіце на экран дыягностыкі і адпраўце справаздачу пра памылку.</string>
     <string name="nc_notifications_troubleshooting_dialog_title">Вырашэнне праблем з апавяшчэннямі</string>
     <string name="nc_notify_me_always">Заўсёды апавяшчаць</string>
     <string name="nc_notify_me_mention">Апавяшчаць пры згадванні</string>
@@ -480,7 +480,7 @@
     <string name="nc_settings_remove">Выдаліць</string>
     <string name="nc_settings_remove_account">Выдаліць уліковы запіс</string>
     <string name="nc_settings_remove_confirmation">Пацвердзіце свой намер выдаліць бягучы ўліковы запіс.</string>
-    <string name="nc_settings_screen_lock_desc">Блакіраваць %1$s з дапамогай блакіроўкі экрана Android або біяметрычнага метаду, які падтрымліваецца</string>
+    <string name="nc_settings_screen_lock_desc">Блакіраваць %1$s з дапамогай блакіроўкі экрана Android або даступнага біяметрычнага метаду</string>
     <string name="nc_settings_screen_lock_timeout_title">Час чакання блакіроўкі пры бяздзейнасці</string>
     <string name="nc_settings_screen_lock_title">Блакіроўка экрана</string>
     <string name="nc_settings_screen_security_desc">Забараняе рабіць здымкі экрана ў спісе нядаўняга і ўнутры праграмы</string>
