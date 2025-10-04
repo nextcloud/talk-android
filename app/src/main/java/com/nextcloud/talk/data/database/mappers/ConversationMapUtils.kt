@@ -64,7 +64,8 @@ fun ConversationModel.asEntity() =
         hasArchived = hasArchived,
         hasSensitive = hasSensitive,
         hasImportant = hasImportant,
-        messageDraft = messageDraft
+        messageDraft = messageDraft,
+        scrollPositionState = scrollPositionState
     )
 
 fun ConversationEntity.asModel() =
@@ -119,7 +120,8 @@ fun ConversationEntity.asModel() =
         hasArchived = hasArchived,
         hasSensitive = hasSensitive,
         hasImportant = hasImportant,
-        messageDraft = messageDraft
+        messageDraft = messageDraft,
+        scrollPositionState = scrollPositionState
     )
 
 fun Conversation.asEntity(accountId: Long) =
