@@ -244,7 +244,7 @@ class ProfileActivity : BaseActivity() {
                 binding.emptyList.root.visibility = View.GONE
                 binding.userinfoList.visibility = View.VISIBLE
                 if (CapabilitiesUtil.hasSpreedFeatureCapability(
-                        currentUser!!.capabilities!!.spreedCapability!!,
+                        currentUser?.capabilities?.spreedCapability,
                         SpreedFeatures.TEMP_USER_AVATAR_API
                     )
                 ) {
