@@ -364,12 +364,12 @@ private fun ChooseAccountDialogContent(
                         }
                     }
                 }
-                if (isOnline) {
-                    OnlineActions(
-                        onAddAccountClick = onAddAccountClick,
-                        onOpenSettingsClick = onOpenSettingsClick
-                    )
-                }
+
+                OnlineActions(
+                    onAddAccountClick = onAddAccountClick,
+                    onOpenSettingsClick = onOpenSettingsClick,
+                    isOnline = isOnline
+                )
             }
         }
     }
@@ -470,23 +470,25 @@ private fun StatusActionButtons(onSetOnlineStatusClick: () -> Unit, onSetStatusM
 }
 
 @Composable
-private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: () -> Unit) {
-    TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
-        Row(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp).fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painterResource(R.drawable.ic_account_plus),
-                contentDescription = null,
-                tint = colorResource(id = R.color.high_emphasis_text)
-            )
-            Spacer(Modifier.size(16.dp))
-            Text(
-                stringResource(R.string.nc_account_chooser_add_account),
-                color = colorResource(id = R.color.high_emphasis_text),
-                fontWeight = FontWeight.Bold
-            )
+private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: () -> Unit, isOnline: Boolean) {
+    if (isOnline) {
+        TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, top = 8.dp).fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_account_plus),
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.high_emphasis_text)
+                )
+                Spacer(Modifier.size(16.dp))
+                Text(
+                    stringResource(R.string.nc_account_chooser_add_account),
+                    color = colorResource(id = R.color.high_emphasis_text),
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 
