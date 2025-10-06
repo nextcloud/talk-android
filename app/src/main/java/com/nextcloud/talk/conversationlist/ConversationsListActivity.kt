@@ -89,6 +89,8 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.RoomUiState
+import com.nextcloud.talk.contextchat.ContextChatView
+import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -113,8 +115,6 @@ import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
-import com.nextcloud.talk.contextchat.ContextChatView
-import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -125,7 +125,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -319,7 +318,7 @@ class ConversationsListActivity :
                 return
             }
             currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
-                if (isUnifiedSearchAvailable(spreedCapabilities)) {
+                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)) {
                     searchHelper = MessageSearchHelper(unifiedSearchRepository)
                 }
             }
@@ -1072,7 +1071,7 @@ class ConversationsListActivity :
     }
 
     private fun fetchPendingInvitations() {
-        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1)) {
+        if (hasSpreedFeatureCapability(currentUser?.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
             binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
                 val intent = Intent(this, InvitationsActivity::class.java)
                 startActivity(intent)
@@ -1203,7 +1202,7 @@ class ConversationsListActivity :
         searchableConversationItems.clear()
         searchableConversationItems.addAll(conversationItemsWithHeader)
         if (hasSpreedFeatureCapability(
-                currentUser!!.capabilities!!.spreedCapability!!,
+                currentUser?.capabilities?.spreedCapability,
                 SpreedFeatures.LISTABLE_ROOMS
             )
         ) {
@@ -1464,7 +1463,11 @@ class ConversationsListActivity :
                 adapter?.filterItems()
             }
 
-            if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
+            if (hasSpreedFeatureCapability(
+                    currentUser?.capabilities?.spreedCapability,
+                    SpreedFeatures.UNIFIED_SEARCH
+                )
+            ) {
                 startMessageSearch(filter)
             }
         } else {
@@ -1584,7 +1587,7 @@ class ConversationsListActivity :
         selectedConversation = conversation
         if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(
-                currentUser!!.capabilities!!.spreedCapability!!,
+                currentUser?.capabilities?.spreedCapability,
                 selectedConversation!!
             )
                 .hasChatPermission()
@@ -1612,11 +1615,11 @@ class ConversationsListActivity :
 
     private fun shouldShowLobby(conversation: ConversationModel): Boolean {
         val participantPermissions = ParticipantPermissions(
-            currentUser!!.capabilities?.spreedCapability!!,
+            currentUser?.capabilities?.spreedCapability,
             selectedConversation!!
         )
         return conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-            !ConversationUtils.canModerate(conversation, currentUser!!.capabilities!!.spreedCapability!!) &&
+            !ConversationUtils.canModerate(conversation, currentUser?.capabilities?.spreedCapability) &&
             !participantPermissions.canIgnoreLobby()
     }
 
