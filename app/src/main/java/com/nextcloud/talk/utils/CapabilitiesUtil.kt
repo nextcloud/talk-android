@@ -102,14 +102,11 @@ object CapabilitiesUtil {
     @JvmStatic
     fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability?, spreedFeatures: SpreedFeatures): Boolean {
         if (spreedCapabilities == null) {
-            Log.e(TAG, "spreedCapabilities were null when checking capability " + spreedFeatures.value)
+            Log.e(TAG, "spreedCapabilities were null when checking capability ${spreedFeatures.value}")
             return false
         }
 
-        if (spreedCapabilities.features != null) {
-            return spreedCapabilities.features!!.contains(spreedFeatures.value)
-        }
-        return false
+        return spreedCapabilities.features?.contains(spreedFeatures.value) == true
     }
 
     fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
@@ -142,16 +139,15 @@ object CapabilitiesUtil {
     }
 
     fun isReadStatusAvailable(spreedCapabilities: SpreedCapability?): Boolean {
-        if (spreedCapabilities == null) {
-            Log.e(TAG, "spreedCapabilities were null when checking capability isReadStatusAvailable")
-            return false
+        val chatConfig = spreedCapabilities?.config?.get("chat") as? Map<*, *>
+        return if (chatConfig?.containsKey("read-privacy") == true) {
+            true
+        } else {
+            if (spreedCapabilities == null) {
+                Log.e(TAG, "spreedCapabilities were null when checking capability isReadStatusAvailable")
+            }
+            false
         }
-
-        if (spreedCapabilities.config?.containsKey("chat") == true) {
-            val map: Map<String, Any>? = spreedCapabilities.config!!["chat"]
-            return map != null && map.containsKey("read-privacy")
-        }
-        return false
     }
 
     fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int {
