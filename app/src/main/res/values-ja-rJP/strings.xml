@@ -565,6 +565,7 @@
     <string name="shared_items_voice">音声番号</string>
     <string name="starred">お気に入り</string>
     <string name="startCallForbidden">通話を開始することが許可されていません</string>
+    <string name="start_thread">スレッドを作成する</string>
     <string name="started_a_call">会話を開始</string>
     <string name="status_message">ステータスメッセージ</string>
     <string name="switch_to_breakout_room">ブレイクアウトルームに切り替える</string>
