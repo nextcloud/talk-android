@@ -963,7 +963,7 @@ class ComposeChatAdapter(
                         it.link?.let { Text(it, fontSize = TIME_TEXT_SIZE) }
                         it.thumb?.let {
                             val errorPlaceholderImage: Int = R.drawable.ic_mimetype_image
-                            val loadedImage = loadImage(it, LocalContext.current, errorPlaceholderImage)
+                            val loadedImage = load(it, LocalContext.current, errorPlaceholderImage)
                             AsyncImage(
                                 model = loadedImage,
                                 contentDescription = stringResource(R.string.nc_sent_an_image),
