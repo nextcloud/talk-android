@@ -109,6 +109,7 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
+import dynamiccolor.MaterialDynamicColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration
@@ -218,6 +219,7 @@ class ComposeChatAdapter(
     val items = mutableStateListOf<ChatMessage>()
     val currentUser: User = viewModel.userManager.currentUser.blockingGet()
     val colorScheme = viewModel.viewThemeUtils.getColorScheme(viewModel.context)
+    val materialDynamicColors = MaterialDynamicColors()
     val highEmphasisColorInt = if (DisplayUtils.isAppThemeDarkMode(viewModel.context)) Color.White.toArgb() else Color.Black.toArgb()
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
@@ -440,23 +442,21 @@ class ComposeChatAdapter(
         val incoming = message.actorId != currentUser.userId
         val color = if (incoming) {
             if (message.isDeleted) {
-                LocalContext.current.resources.getColor(
-                    R.color.bg_message_list_incoming_bubble_deleted,
-                    null
-                )
+                getColorFromTheme(LocalContext.current, R.color.bg_message_list_incoming_bubble_deleted)
             } else {
-                LocalContext.current.resources.getColor(
-                    R.color.bg_message_list_incoming_bubble,
-                    null
-                )
+                getColorFromTheme(LocalContext.current, R.color.bg_message_list_incoming_bubble)
             }
         } else {
+            val outgoingBubbleColor = viewModel.viewThemeUtils.talk
+                .getOutgoingMessageBubbleColor(LocalContext.current, message.isDeleted, false)
+
             if (message.isDeleted) {
-                ColorUtils.setAlphaComponent(colorScheme.surfaceVariant.toArgb(), HALF_OPACITY)
+                ColorUtils.setAlphaComponent(outgoingBubbleColor, HALF_OPACITY)
             } else {
-                colorScheme.surfaceVariant.toArgb()
+                outgoingBubbleColor
             }
         }
+
         val shape = if (incoming) incomingShape else outgoingShape
 
         val rowModifier = if (message.id == messageId && playAnimation) {
@@ -542,6 +542,19 @@ class ComposeChatAdapter(
                     }
                 }
             }
+        }
+    }
+
+    private fun getColorFromTheme(context: Context, resourceId: Int): Int {
+        val isDarkMode = DisplayUtils.isAppThemeDarkMode(context)
+        val nightConfig = android.content.res.Configuration()
+        nightConfig.uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+        val nightContext = context.createConfigurationContext(nightConfig)
+
+        return if (isDarkMode) {
+            nightContext.getColor(resourceId)
+        } else {
+            context.getColor(resourceId)
         }
     }
 
