@@ -274,6 +274,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                     isEditable
                 gravity = Gravity.CENTER_VERTICAL
                 setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
                 setOnCheckedChangeListener { _, _ -> updateCheckboxStates(chatMessage, user, checkboxList) }
             }
             setPaddingForView(chatMessage, checkBox, spaceInPx)
@@ -286,8 +287,8 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
                 val messageText = messageUtils.enrichChatMessageText(context, line, true, viewThemeUtils)
                 text = messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                 viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
+                setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
             }
-
             setPaddingForView(chatMessage, textView, spaceInPx)
             container.addView(textView)
             false
@@ -298,7 +299,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
 
     private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
         if (chatMessage.messageParameters != null) {
-            view.setPadding(0, 0, 0, paddingInPx)
+            view.setPadding(0, paddingInPx, 0, paddingInPx)
         }
     }
 
@@ -481,5 +482,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
         private const val CHECKED_GROUP_INDEX = 1
         private const val TASK_TEXT_GROUP_INDEX = 2
         private const val PADDING_FOUR = 4
+        private const val LINE_SPACING_MULTIPLIER = 1.2f
+        private const val LINE_SPACING_ADDER = 0f
     }
 }
