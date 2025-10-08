@@ -318,6 +318,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     setOnCheckedChangeListener { _, _ ->
                         updateCheckboxStates(chatMessage, user, checkboxList)
                     }
+                    setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
                 }
                 setPaddingForView(chatMessage, checkBox, marginPx)
                 checkBoxContainer.addView(checkBox)
@@ -329,7 +330,9 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                     text =
                         messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
                     viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
+                    setLineSpacing(LINE_SPACING_ADDER, LINE_SPACING_MULTIPLIER)
                 }
+
                 setPaddingForView(chatMessage, textView, marginPx)
                 checkBoxContainer.addView(textView)
             }
@@ -339,7 +342,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
     private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
         if (chatMessage.messageParameters != null) {
-            view.setPadding(0, 0, 0, paddingInPx)
+            view.setPadding(0, paddingInPx, 0, 0)
         }
     }
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
@@ -505,5 +508,7 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         private const val CHECKED_GROUP_INDEX = 1
         private const val TASK_TEXT_GROUP_INDEX = 2
         private const val PADDING_FOUR_FLOAT = 4f
+        private const val LINE_SPACING_MULTIPLIER = 1.2f
+        private const val LINE_SPACING_ADDER = 0f
     }
 }
