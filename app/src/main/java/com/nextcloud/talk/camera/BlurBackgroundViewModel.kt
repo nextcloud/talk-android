@@ -31,4 +31,8 @@ class BlurBackgroundViewModel : ViewModel() {
             _viewState.value = BackgroundBlurOn
         }
     }
+
+    fun turnOffBlur() {
+        _viewState.value = BackgroundBlurOff
+    }
 }

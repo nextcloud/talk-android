@@ -77,6 +77,12 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         } else {
             binding.raiseHand.visibility = View.GONE
         }
+
+        binding.backgroundBlur.visibility = if (callActivity.isVoiceOnlyCall) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     private fun initClickListeners() {

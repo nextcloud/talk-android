@@ -238,7 +238,7 @@ class CallActivity : CallBaseActivity() {
     private val peerConnectionWrapperList: MutableList<PeerConnectionWrapper> = ArrayList()
     private var videoOn = false
     private var microphoneOn = false
-    private var isVoiceOnlyCall = false
+    var isVoiceOnlyCall = false
     private var isCallWithoutNotification = false
     private var isIncomingCallFromNotification = false
     private val callControlHandler = Handler()
@@ -1214,7 +1214,11 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun isCameraFrontFacing(enumerator: CameraEnumerator?): Boolean? {
-        val deviceNames = enumerator!!.deviceNames
+        if (enumerator == null) {
+            return false
+        }
+
+        val deviceNames = enumerator.deviceNames
 
         // First, try to find front facing camera
         for (deviceName in deviceNames) {
@@ -1319,6 +1323,7 @@ class CallActivity : CallBaseActivity() {
             } else {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
                 binding!!.switchSelfVideoButton.visibility = View.GONE
+                blurBackgroundViewModel.turnOffBlur()
             }
             toggleMedia(videoOn, true)
         } else if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
