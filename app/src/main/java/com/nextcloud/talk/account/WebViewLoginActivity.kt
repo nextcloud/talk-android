@@ -301,11 +301,15 @@ class WebViewLoginActivity : BaseActivity() {
                     val f: Field = sslCertificate.javaClass.getDeclaredField("mX509Certificate")
                     f.isAccessible = true
                     val cert = f[sslCertificate] as X509Certificate
-                    try {
-                        trustManager.checkServerTrusted(arrayOf(cert), "generic")
-                        handler.proceed()
-                    } catch (exception: CertificateException) {
-                        eventBus.post(CertificateEvent(cert, trustManager, handler))
+                    if (cert == null) {
+                        handler.cancel()
+                    } else {
+                        try {
+                            trustManager.checkServerTrusted(arrayOf(cert), "generic")
+                            handler.proceed()
+                        } catch (exception: CertificateException) {
+                            eventBus.post(CertificateEvent(cert, trustManager, handler))
+                        }
                     }
                 } catch (exception: Exception) {
                     handler.cancel()
