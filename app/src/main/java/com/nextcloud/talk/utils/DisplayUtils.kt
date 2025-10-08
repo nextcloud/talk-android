@@ -108,7 +108,6 @@ object DisplayUtils {
             }
         }
 
-
     fun setClickableString(string: String, url: String, textView: TextView) {
         val spannableString = SpannableString(string)
         spannableString.setSpan(

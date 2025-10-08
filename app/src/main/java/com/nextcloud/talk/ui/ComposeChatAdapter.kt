@@ -109,7 +109,6 @@ import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.DrawableUtils.getDrawableResourceIdForMimeType
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
-import dynamiccolor.MaterialDynamicColors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import org.osmdroid.config.Configuration
@@ -219,8 +218,11 @@ class ComposeChatAdapter(
     val items = mutableStateListOf<ChatMessage>()
     val currentUser: User = viewModel.userManager.currentUser.blockingGet()
     val colorScheme = viewModel.viewThemeUtils.getColorScheme(viewModel.context)
-    val materialDynamicColors = MaterialDynamicColors()
-    val highEmphasisColorInt = if (DisplayUtils.isAppThemeDarkMode(viewModel.context)) Color.White.toArgb() else Color.Black.toArgb()
+    val highEmphasisColorInt = if (DisplayUtils.isAppThemeDarkMode(viewModel.context)) {
+        Color.White.toArgb()
+    } else {
+        Color.Black.toArgb()
+    }
 
     fun addMessages(messages: MutableList<ChatMessage>, append: Boolean) {
         if (messages.isEmpty()) return
