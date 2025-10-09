@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
   <resources>
-    <string name= "nc_edit">Редактирование</string>
+    <string name= "nc_edit">Редактировать</string>
     <string name="add_participants">Добавить</string>
     <string name="add_to_notes">Добавить в заметки</string>
     <string name="added_to_favorites">Обсуждение добавлено %1$s в избранное</string>
@@ -79,6 +79,10 @@
     <string name="left_conversation">Вы покинули чат %1$s </string>
     <string name="load_more_results">Показать больше результатов</string>
     <string name="local_time">Местное время: %1$s</string>
+    <string name="location_permission_denied">Нет разрешения на доступ к геолокации</string>
+    <string name="location_permission_denied_msg">Пожалуйста, включите в настройках приложения</string>
+    <string name="location_services_disabled">Сервис геолокации отключен</string>
+    <string name="location_services_disabled_msg">Пожалуйста, включите сервисы геолокации(GPS) для исползования этой функции</string>
     <string name="lock_conversation">Заблокировать обсуждение</string>
     <string name="lock_symbol">Символ блокировки</string>
     <string name="lower_hand">Опустить руку</string>
@@ -549,6 +553,8 @@
     <string name="no_conversations_archived">Отсутствуют архивированные обсуждения</string>
     <string name="no_offline_messages_saved">Нет сохраненных оффлайн сообщений</string>
     <string name="no_phone_book_integration_due_to_permissions">Отсутствуют разрешения на интеграцию номера телефона</string>
+    <string name="notification_all_messages">Все сообщения</string>
+    <string name="notification_mention_only">\@-только упоминания</string>
     <string name="notification_off">Отключить</string>
     <string name="notifications_default">По умолчанию</string>
     <string name="notifications_default_description">Следовать настройкам обсуждения</string>
@@ -664,6 +670,7 @@
     <string name="thread_reply">Ответ</string>
     <string name="thread_title">Заголовок темы</string>
     <string name="threads">Темы</string>
+    <string name="threads_list_empty">Темы не найдены</string>
     <string name="today">Сегодня</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Помочь с переводом</string>
@@ -712,6 +719,12 @@
         <item quantity="few">Данное обсуждение будет автоматически удалено для всех через %1$d дня отсутствия активности.</item>
         <item quantity="many">Данное обсуждение будет автоматически удалено для всех через %1$d дней отсутствия активности.</item>
         <item quantity="other">Данное обсуждение будет автоматически удалено для всех через %1$d дней отсутствия активности.</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%dответ</item>
+        <item quantity="few">%d ответа</item>
+        <item quantity="many">%dответов</item>
+        <item quantity="other">%dответов</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d голос</item>
