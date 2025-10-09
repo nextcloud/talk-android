@@ -64,7 +64,11 @@ import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
 import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
+import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
 import com.nextcloud.talk.utils.text.Spans.MentionChipSpan
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import org.greenrobot.eventbus.EventBus
 import third.parties.fresco.BetterImageSpan
 import java.text.DateFormat
@@ -72,7 +76,7 @@ import java.util.Date
 import java.util.regex.Pattern
 
 object DisplayUtils {
-    private val TAG = DisplayUtils::class.java.getSimpleName()
+    private val TAG = DisplayUtils::class.java.simpleName
     private const val INDEX_LUMINATION = 2
     private const val HSL_SIZE = 3
     private const val MAX_LIGHTNESS = 0.92
@@ -88,6 +92,21 @@ object DisplayUtils {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         return currentNightMode == Configuration.UI_MODE_NIGHT_YES
     }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    fun isAppThemeDarkMode(context: Context): Boolean =
+        runBlocking {
+            val appPreferences = AppPreferencesImpl(context)
+            val themeKey = context.resources.getString(R.string.nc_settings_theme_key)
+            val theme = appPreferences.readString(themeKey).first()
+            return@runBlocking when (theme) {
+                "night_no" -> false
+                "night_yes" -> true
+                "battery_saver" -> true
+                else ->
+                    return@runBlocking isDarkModeOn(context)
+            }
+        }
 
     fun setClickableString(string: String, url: String, textView: TextView) {
         val spannableString = SpannableString(string)
@@ -159,7 +178,7 @@ object DisplayUtils {
             viewThemeUtils.material.colorChipDrawable(context, chip)
         }
         val config = context.resources.configuration
-        chip.setLayoutDirection(config.layoutDirection)
+        chip.layoutDirection = config.layoutDirection
         val drawable: Int
         val isCall = "call" == type || "calls" == type
         val isGroup = "groups" == type || "user-group" == type
@@ -217,7 +236,7 @@ object DisplayUtils {
                         // A hack to refresh the chip icon
                         emojiEditText?.post {
                             emojiEditText.setTextKeepState(
-                                emojiEditText.getText(),
+                                emojiEditText.text,
                                 TextView.BufferType.SPANNABLE
                             )
                         }

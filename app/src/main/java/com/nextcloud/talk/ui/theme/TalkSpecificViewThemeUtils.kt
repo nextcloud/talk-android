@@ -120,6 +120,20 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun getOutgoingMessageBubbleColor(context: Context, deleted: Boolean, isPlayed: Boolean): Int {
+        return withScheme(context) { scheme ->
+            val bgBubbleColor = if (deleted) {
+                ColorUtils.setAlphaComponent(dynamicColor.surfaceVariant().getArgb(scheme), HALF_ALPHA_INT)
+            } else if (isPlayed) {
+                ContextCompat.getColor(context, R.color.bg_message_list_outgoing_bubble_audio_played)
+            } else {
+                dynamicColor.surfaceVariant().getArgb(scheme)
+            }
+
+            return@withScheme bgBubbleColor
+        }
+    }
+
     fun colorOutgoingQuoteText(textView: TextView) {
         withScheme(textView) { scheme ->
             textView.setTextColor(dynamicColor.onSurfaceVariant().getArgb(scheme))
