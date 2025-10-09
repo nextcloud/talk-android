@@ -5,6 +5,7 @@
     <string name="appbar_search_in">Αναζήτηση στο %s</string>
     <string name="archive_conversation">Αρχειοθέτηση συνομιλίας</string>
     <string name="archived">Αρχειοθετήθηκε</string>
+    <string name="archived_conversation">Αρχειοθετήθηκε %1$s</string>
     <string name="audio_output_dialog_headline">Έξοδος ήχου</string>
     <string name="audio_output_phone">Τηλέφωνο</string>
     <string name="audio_output_speaker">Μεγάφωνο</string>
