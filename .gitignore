@@ -88,3 +88,4 @@ freeline_project_description.json
 **/__pycache__/
 
 /gradle/verification-keyring.gpg
+/app/src/main/assets/selfie_segmenter.tflite
