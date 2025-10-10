@@ -12,7 +12,7 @@
     <string name="archived_conversation">Архівавана %1$s</string>
     <string name="audio_call">Аўдыявыклік</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
-    <string name="audio_output_dialog_headline">Аўдыё выхад</string>
+    <string name="audio_output_dialog_headline">Аўдыявыхад</string>
     <string name="audio_output_phone">Тэлефон</string>
     <string name="audio_output_speaker">Дынамік</string>
     <string name="audio_output_wired_headset">Правадная гарнітура</string>
@@ -31,7 +31,7 @@
     <string name="camera_permission_granted">Дазвол на камеру атрыманы. Выберыце камеру яшчэ раз.</string>
     <string name="cancel_login">Скасаваць уваход</string>
     <string name="choose_avatar_from_cloud">Выбраць аватар з воблака</string>
-    <string name="clear_status_message">Ачысьціць паведамленне статусу</string>
+    <string name="clear_status_message">Ачысціць</string>
     <string name="clear_status_message_after">Ачысціць паведамленне статусу праз</string>
     <string name="close">Закрыць</string>
     <string name="close_icon">Значок Закрыць</string>
@@ -61,7 +61,7 @@
     <string name="end_call">Завяршыць выклік</string>
     <string name="end_call_for_everyone">Завяршыць выклік для ўсіх</string>
     <string name="error_loading_chats">Узнікла праблема з загрузкай вашых чатаў</string>
-    <string name="error_unbanning">Адбылася памылка пры разблакаванні ўдзельніка</string>
+    <string name="error_unbanning">Адбылася памылка пры разблакіраванні ўдзельніка</string>
     <string name="failed_to_save">Не ўдалося захаваць %1$s</string>
     <string name="fifteenMinutes">15 хвілін</string>
     <string name="file_list_folder">папка</string>
