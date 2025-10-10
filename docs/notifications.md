@@ -53,12 +53,20 @@ For some smartphone models, ignoring battery optimization is not necessary while
 ![Ignore battery optimization dialog](/docs/ignoreBatteryOptimizationDialog.png "Ignore battery optimization dialog")
 
 Please follow the description to turn off battery optimization for the Talk app. In the available apps you can use the search so you don't have to scroll through the whole app list.
+The android settings may look different depending on manufacturer and android version. Below are two examples how it may look like:
 
-![Ignore battery optimization - select all apps](/docs/ignoreBatteryOptimizationSelectAllApps.png "Ignore battery optimization - select all apps")
+Example 1:
+- Search app in list. 
+  ![Ignore battery optimization - select all apps](/docs/ignoreBatteryOptimizationSelectAllApps.png "Ignore battery optimization - select all apps")
+- Please note that the switch has to be turned off.
+  ![Ignore battery optimization - turn off switch](/docs/ignoreBatteryOptimizationTurnOffSwitch.png "Ignore battery optimization - turn off switch")
 
-Please note that the switch has to be *turned off*.
-
-![Ignore battery optimization - turn off switch](/docs/ignoreBatteryOptimizationTurnOffSwitch.png "Ignore battery optimization - turn off switch")
+Example 2:
+- Select app from list.
+- Please allow background usage. The switch has to be *turned on*. Also, please click on the text to reach the next menu.
+  ![Allow background usage. Turn on switch and click on text](/docs/ignoreBatteryOptimization_newerAndroid_allowBackgroundUsage.png "Allow background usage. Turn on switch and click on text")
+- Set the background usage to "unrestricted".
+  ![Set unrestricted background usage](/docs/ignoreBatteryOptimization_newerAndroid_unrestricted.png "Set unrestricted background usage")
 
 #### Grant permissions in settings
 
