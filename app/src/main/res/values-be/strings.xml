@@ -117,7 +117,7 @@
     <string name="nc_add_participants">Дадаць удзельнікаў</string>
     <string name="nc_add_to_favorites">У абранае</string>
     <string name="nc_all_ok_operation">ОК, усё гатова!</string>
-    <string name="nc_attendee_pin">Прышпіліць: %1$s</string>
+    <string name="nc_attendee_pin">PIN-код: %1$s</string>
     <string name="nc_biometric_unlock">Разблакіраваць %1$s</string>
     <string name="nc_bluetooth_permission_hint">Каб уключыць Bluetooth дынамікі, дайце доступ да \"Прылад паблізу\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Прыняць як відэавыклік</string>

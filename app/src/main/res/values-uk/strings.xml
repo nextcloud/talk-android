@@ -79,6 +79,10 @@
     <string name="left_conversation">Ви покинули розмову %1$s</string>
     <string name="load_more_results">Завантажити більше результатів</string>
     <string name="local_time">Місцевий час: %1$s</string>
+    <string name="location_permission_denied">Відмовлено в дозволі на розміщення</string>
+    <string name="location_permission_denied_msg">Будь ласка, увімкніть її в налаштуваннях програми</string>
+    <string name="location_services_disabled">Служби визначення місцезнаходження відключені</string>
+    <string name="location_services_disabled_msg">Щоб скористатися цією функцією, увімкніть службу визначення місцезнаходження (GPS)</string>
     <string name="lock_conversation">Заблокувати розмову</string>
     <string name="lock_symbol">Символ блокування</string>
     <string name="lower_hand">Опустити руку</string>
@@ -92,6 +96,7 @@
     <string name="menu_item_sort_by_size_biggest_first">Найбільші за розміром спочатку</string>
     <string name="menu_item_sort_by_size_smallest_first">Найменші за розміром спочатку</string>
     <string name="message_copied">Повідомлення скопійовано</string>
+    <string name="message_delete_are_you_sure">Ви дійсно хочете видалити це повідомлення?</string>
     <string name="message_deleted_by_you">Ви вилучили повідомлення</string>
     <string name="message_last_edited_by">За редакцією %1$s</string>
     <string name="message_poll_tap_to_open">Натисніть, щоб відкрити опитування</string>
@@ -548,6 +553,8 @@
     <string name="no_conversations_archived">Розмови не архівуються</string>
     <string name="no_offline_messages_saved">Не збережено жодного офлайн-повідомлення</string>
     <string name="no_phone_book_integration_due_to_permissions">Відсутні дозволи на інтеграцію номера телефону</string>
+    <string name="notification_all_messages">Всі повідомлення</string>
+    <string name="notification_mention_only">\@-згадки тільки</string>
     <string name="notification_off">Вимкнено</string>
     <string name="notifications_default">Типово</string>
     <string name="notifications_default_description">Слідкувати за налаштуваннями розмови</string>
@@ -659,8 +666,11 @@
     <string name="this_is_a_test_message">Це тестове повідомлення</string>
     <string name="this_weekend">Цими вихідними</string>
     <string name="thread_cancel">Відхилити створення гілки</string>
+    <string name="thread_notifications">Сповіщення про потоки</string>
+    <string name="thread_reply">Відповісти</string>
     <string name="thread_title">Назва гілки</string>
     <string name="threads">Нитки</string>
+    <string name="threads_list_empty">Ниток не знайдено</string>
     <string name="today">Сьогодні</string>
     <string name="tomorrow">Завтра</string>
     <string name="translate">Перекласти</string>
