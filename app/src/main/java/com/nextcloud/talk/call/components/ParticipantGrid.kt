@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.isFinite
 import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
@@ -72,17 +73,27 @@ fun ParticipantGrid(
             .fillMaxSize()
             .clickable { onClick() }
     ) {
-        val availableHeight = maxHeight
+        val hasBoundedHeight = constraints.hasBoundedHeight && maxHeight.isFinite
 
-        val gridAvailableHeight = availableHeight - totalVerticalSpacing - totalVerticalPadding
-        val rawItemHeight = gridAvailableHeight / rows
-        val itemHeight = maxOf(rawItemHeight, minItemHeight)
+        val itemHeight = if (hasBoundedHeight) {
+            val gridAvailableHeight = maxHeight - totalVerticalSpacing - totalVerticalPadding
+            val rawItemHeight = gridAvailableHeight / rows
+            maxOf(rawItemHeight, minItemHeight)
+        } else {
+            minItemHeight
+        }
+
+        val gridHeight = if (hasBoundedHeight) {
+            maxHeight
+        } else {
+            (itemHeight * rows) + totalVerticalSpacing + totalVerticalPadding
+        }
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(columns),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(availableHeight),
+                .height(gridHeight),
             verticalArrangement = Arrangement.spacedBy(itemSpacing),
             horizontalArrangement = Arrangement.spacedBy(itemSpacing),
             contentPadding = PaddingValues(vertical = edgePadding, horizontal = edgePadding)
