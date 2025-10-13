@@ -60,7 +60,7 @@ fun DiagnoseContentComposable(
     onTestPushClick: () -> Unit,
     onDismissDialog: () -> Unit,
     isGooglePlayServicesAvailable: Boolean,
-    isOnline:Boolean
+    isOnline: Boolean
 ) {
     val context = LocalContext.current
     Column(
