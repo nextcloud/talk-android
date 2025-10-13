@@ -55,7 +55,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_marginBottom="8dp"
             android:visibility="gone"
             app:layout_alignSelf="flex_start"
             app:layout_flexGrow="1"
