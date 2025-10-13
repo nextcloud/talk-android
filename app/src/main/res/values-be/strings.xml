@@ -22,7 +22,7 @@
     <string name="back_button">Кнопка назад</string>
     <string name="ban">Заблакіраваць</string>
     <string name="ban_participant">Заблакіраваць удзельніка</string>
-    <string name="bans_list">Спіс блакіроўкі</string>
+    <string name="bans_list">Спіс блакіровак</string>
     <string name="busy">Заняты</string>
     <string name="calendar">Каляндар</string>
     <string name="call_more_actions_dialog_headline">Дадатковыя опцыі выкліку</string>
@@ -131,7 +131,7 @@
     <string name="nc_call_incoming">УВАХОДНЫ</string>
     <string name="nc_call_name">Назва размовы</string>
     <string name="nc_call_notifications">Апавяшчэнні аб выкліках</string>
-    <string name="nc_call_raised_hand">Паднята рука %1$s</string>
+    <string name="nc_call_raised_hand">%1$s падняў(-ла) руку</string>
     <string name="nc_call_reconnecting">Перазлучэнне ...</string>
     <string name="nc_call_ringing">ВЫКЛІК</string>
     <string name="nc_call_state_in_call">%1$s у выкліку</string>
@@ -262,7 +262,7 @@
     <string name="nc_expire_message_one_week">1 тыдзень</string>
     <string name="nc_expire_messages">Тэрмін дзеяння паведамленняў</string>
     <string name="nc_expire_messages_explanation">Тэрмін дзеяння паведамленняў у чаце можа скончыцца праз пэўны час. Заўвага: файлы, абагуленыя ў чаце, не будуць выдалены для ўладальніка, але больш не будуць абагулены ў размове.</string>
-    <string name="nc_external_server_failed">Не ўдалося атрымаць налады сыгналінга</string>
+    <string name="nc_external_server_failed">Не ўдалося атрымаць налады сігналізацыі</string>
     <string name="nc_federation_invitation_accept">Прыняць</string>
     <string name="nc_federation_invitation_reject">Адхіліць</string>
     <string name="nc_federation_invited_to_room">ад %1$s у %2$s</string>
@@ -271,7 +271,7 @@
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Патрабуецца дазвол на доступ да файлаў</string>
     <string name="nc_filter">Фільтраваць размовы</string>
-    <string name="nc_following_link">Публічная спасылка для падпіскі на карыстальніка</string>
+    <string name="nc_following_link">Карыстальнік, які перайшоў па публічнай спасылцы</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Пераслаць</string>
     <string name="nc_forward_to_three_dots">Пераслаць …</string>
@@ -431,7 +431,7 @@
     <string name="nc_sent_an_audio_you">Вы адправілі аўдыя.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s адправіў(-ла) відарыс.</string>
     <string name="nc_sent_an_image_you">Вы адправілі відарыс.</string>
-    <string name="nc_sent_deck_card" formatted="true">%1$s картка са стосу адпраўлена</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s адправіў(-ла) картку Deck</string>
     <string name="nc_server_connect">Праверыць злучэнне з серверам</string>
     <string name="nc_server_db_upgrade_needed">Абнавіце базу даных %1$s</string>
     <string name="nc_server_failed_to_import_account">Не ўдалося імпартаваць выбраны ўліковы запіс</string>
@@ -513,7 +513,7 @@
     <string name="nc_share_this_location">Абагуліць гэта месцазнаходжанне</string>
     <string name="nc_share_to_choose_account">Выберыце ўліковы запіс</string>
     <string name="nc_shared_items">Абагуленыя элементы</string>
-    <string name="nc_shared_items_deck_card">Картка са стосу</string>
+    <string name="nc_shared_items_deck_card">Картка Deck</string>
     <string name="nc_shared_items_description">Відарысы, файлы, галасавыя паведамленні…</string>
     <string name="nc_shared_items_empty">Няма абагуленых элементаў</string>
     <string name="nc_shared_items_location">Месцазнаходжанне</string>

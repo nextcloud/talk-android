@@ -551,6 +551,7 @@
     <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="notification_all_messages">Tous les messages</string>
     <string name="notification_mention_only">Seulement les mentions @</string>
     <string name="notification_off">Désactiver</string>
     <string name="notifications_default">Défaut</string>
