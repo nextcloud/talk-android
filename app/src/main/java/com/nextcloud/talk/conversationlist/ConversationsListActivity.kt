@@ -106,7 +106,6 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -447,6 +446,38 @@ class ConversationsListActivity :
         }
 
         lifecycleScope.launch {
+            conversationsListViewModel.openConversationsState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.OpenConversationsUiState.Success -> {
+                        val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+                        for (conversation in state.conversations) {
+                            val headerTitle = resources!!.getString(R.string.openConversations)
+                            var genericTextHeaderItem: GenericTextHeaderItem
+                            if (!callHeaderItems.containsKey(headerTitle)) {
+                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                                callHeaderItems[headerTitle] = genericTextHeaderItem
+                            }
+                            val conversationItem = ConversationItem(
+                                ConversationModel.mapToConversationModel(conversation, currentUser!!),
+                                currentUser!!,
+                                this@ConversationsListActivity,
+                                callHeaderItems[headerTitle],
+                                viewThemeUtils
+                            )
+                            openConversationItems.add(conversationItem)
+                        }
+                        searchableConversationItems.addAll(openConversationItems)
+                    }
+                    is ConversationsListViewModel.OpenConversationsUiState.Error -> {
+                        handleHttpExceptions(state.exception)
+                    }
+
+                    else -> {}
+                }
+            }
+        }
+
+        lifecycleScope.launch {
             conversationsListViewModel.getRoomsFlow
                 .onEach { list ->
                     setConversationList(list)
@@ -628,12 +659,7 @@ class ConversationsListActivity :
 
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
-        // Fetch Open Conversations
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            currentUser!!,
-            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-        )
-        fetchOpenConversations(apiVersion)
+        fetchOpenConversations()
     }
 
     fun applyFilter() {
@@ -1198,48 +1224,10 @@ class ConversationsListActivity :
         }
     }
 
-    private fun fetchOpenConversations(apiVersion: Int) {
+    private fun fetchOpenConversations() {
         searchableConversationItems.clear()
         searchableConversationItems.addAll(conversationItemsWithHeader)
-        if (hasSpreedFeatureCapability(
-                currentUser?.capabilities?.spreedCapability,
-                SpreedFeatures.LISTABLE_ROOMS
-            )
-        ) {
-            val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-            openConversationsQueryDisposable = ncApi.getOpenConversations(
-                credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!),
-                ""
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (ocs): RoomsOverall ->
-                    for (conversation in ocs!!.data!!) {
-                        val headerTitle = resources!!.getString(R.string.openConversations)
-                        var genericTextHeaderItem: GenericTextHeaderItem
-                        if (!callHeaderItems.containsKey(headerTitle)) {
-                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                            callHeaderItems[headerTitle] = genericTextHeaderItem
-                        }
-                        val conversationItem = ConversationItem(
-                            ConversationModel.mapToConversationModel(conversation, currentUser!!),
-                            currentUser!!,
-                            this,
-                            callHeaderItems[headerTitle],
-                            viewThemeUtils
-                        )
-                        openConversationItems.add(conversationItem)
-                    }
-                    searchableConversationItems.addAll(openConversationItems)
-                }, { throwable: Throwable ->
-                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
-                    handleHttpExceptions(throwable)
-                    dispose(openConversationsQueryDisposable)
-                }) { dispose(openConversationsQueryDisposable) }
-        } else {
-            Log.d(TAG, "no open conversations fetched because of missing capability")
-        }
+        conversationsListViewModel.fetchOpenConversations()
     }
 
     private fun fetchUsers(query: String = "") {
