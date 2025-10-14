@@ -156,7 +156,7 @@ class ConversationsListViewModel @Inject constructor(
             }
         }
 
-        if (!hasSpreedFeatureCapability(currentUser.capabilities!!.spreedCapability!!, SpreedFeatures.THREADS)) {
+        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.THREADS)) {
             _threadsExistState.value = ThreadsExistUiState.Success(false)
             return
         }
