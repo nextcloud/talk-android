@@ -902,4 +902,6 @@ How to translate with transifex:
     <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
+    <string name="turn_on_background_blur">Turn on background blur</string>
+    <string name="turn_off_background_blur">Turn off background blur</string>
 </resources>

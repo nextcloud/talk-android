@@ -18,6 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.databinding.DialogMoreCallActionsBinding
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -76,6 +77,12 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         } else {
             binding.raiseHand.visibility = View.GONE
         }
+
+        binding.backgroundBlur.visibility = if (callActivity.isVoiceOnlyCall) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
     }
 
     private fun initClickListeners() {
@@ -85,6 +92,10 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
 
         binding.raiseHand.setOnClickListener {
             callActivity.clickRaiseOrLowerHandButton()
+        }
+
+        binding.backgroundBlur.setOnClickListener {
+            callActivity.toggleBackgroundBlur()
         }
     }
 
@@ -118,6 +129,7 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
         }
     }
 
+    @Suppress("LongMethod")
     private fun initObservers() {
         callActivity.callRecordingViewModel?.viewState?.observe(this) { state ->
             when (state) {
@@ -178,6 +190,18 @@ class MoreCallActionsDialog(private val callActivity: CallActivity) : BottomShee
                 }
 
                 else -> {}
+            }
+        }
+
+        callActivity.blurBackgroundViewModel.viewState.observe(this) { state ->
+            when (state) {
+                BlurBackgroundViewModel.BackgroundBlurOff -> {
+                    binding.backgroundBlurText.text = context.getText(R.string.turn_on_background_blur)
+                }
+
+                BlurBackgroundViewModel.BackgroundBlurOn -> {
+                    binding.backgroundBlurText.text = context.getText(R.string.turn_off_background_blur)
+                }
             }
         }
     }
