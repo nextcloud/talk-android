@@ -13,6 +13,7 @@ import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
+import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
@@ -307,4 +308,11 @@ interface NcApiCoroutines {
         @Url url: String,
         @Field("level") level: Int
     ): ThreadOverall
+
+    @GET
+    suspend fun getOpenConversations(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Query("searchTerm") searchTerm: String?
+    ): RoomsOverall
 }
