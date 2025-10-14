@@ -96,6 +96,7 @@ import com.nextcloud.talk.models.json.signaling.settings.SignalingSettingsOveral
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.LoweredHandState
 import com.nextcloud.talk.raisehand.viewmodel.RaiseHandViewModel.RaisedHandState
+import com.nextcloud.talk.services.CallForegroundService
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.CallParticipantMessageListener
 import com.nextcloud.talk.signaling.SignalingMessageReceiver.LocalParticipantMessageListener
@@ -382,6 +383,7 @@ class CallActivity : CallBaseActivity() {
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
         processExtras(intent.extras!!)
+        CallForegroundService.start(applicationContext, conversationName, intent.extras)
 
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
@@ -1460,6 +1462,7 @@ class CallActivity : CallBaseActivity() {
         if (currentCallStatus !== CallStatus.LEAVING) {
             hangup(true, false)
         }
+        CallForegroundService.stop(applicationContext)
         powerManagerUtils!!.updatePhoneState(PowerManagerUtils.PhoneState.IDLE)
         super.onDestroy()
     }
