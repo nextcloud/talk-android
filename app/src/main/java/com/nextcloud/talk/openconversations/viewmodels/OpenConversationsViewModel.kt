@@ -10,12 +10,10 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.models.json.conversations.Conversation
 import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class OpenConversationsViewModel @Inject constructor(private val repository: OpenConversationsRepository) :
@@ -38,37 +36,25 @@ class OpenConversationsViewModel @Inject constructor(private val repository: Ope
 
     fun fetchConversations() {
         _viewState.value = FetchConversationsStartState
-        repository.fetchConversations(_searchTerm.value ?: "")
-            .subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(FetchConversationsObserver())
+
+        viewModelScope.launch {
+            repository.fetchConversations(_searchTerm.value ?: "")
+                .onSuccess { conversations ->
+                    if (conversations.isEmpty()) {
+                        _viewState.value = FetchConversationsEmptyState
+                    } else {
+                        _viewState.value = FetchConversationsSuccessState(conversations)
+                    }
+                }
+                .onFailure { exception ->
+                    Log.e(TAG, "Failed to fetch conversations", exception)
+                    _viewState.value = FetchConversationsErrorState
+                }
+        }
     }
 
     fun updateSearchTerm(newTerm: String) {
         _searchTerm.value = newTerm
-    }
-
-    inner class FetchConversationsObserver : Observer<List<Conversation>> {
-        override fun onSubscribe(d: Disposable) {
-            // unused atm
-        }
-
-        override fun onNext(conversations: List<Conversation>) {
-            if (conversations.isEmpty()) {
-                _viewState.value = FetchConversationsEmptyState
-            } else {
-                _viewState.value = FetchConversationsSuccessState(conversations)
-            }
-        }
-
-        override fun onError(e: Throwable) {
-            Log.e(TAG, "Error when fetching open conversations")
-            _viewState.value = FetchConversationsErrorState
-        }
-
-        override fun onComplete() {
-            // unused atm
-        }
     }
 
     companion object {

@@ -486,13 +486,6 @@ public interface NcApi {
     @DELETE
     Observable<GenericOverall> markRoomAsUnread(@Header("Authorization") String authorization, @Url String url);
 
-    /*
-    Server URL is: baseUrl + ocsApiVersion + spreedApiVersion + /listed-room
-    */
-    @GET
-    Observable<RoomsOverall> getOpenConversations(@Header("Authorization") String authorization, @Url String url,
-                                                  @Query("searchTerm") String searchTerm);
-
     @GET
     Observable<StatusOverall> status(@Header("Authorization") String authorization, @Url String url);
 
