@@ -2,6 +2,7 @@
  * Nextcloud Talk - Android Client
  *
  * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-FileCopyrightText: 2025 Sowjanya Kota <sowjanya.kch@gmail.com>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -29,6 +30,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -51,6 +53,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -338,7 +341,10 @@ class DateTimeCompose(val bundle: Bundle) {
                     DatePicker(
                         state = datePickerState,
                         modifier = Modifier
-                            .scale(scale)
+                            .scale(scale),
+                        colors = DatePickerDefaults.colors(
+                            containerColor = colorResource(R.color.bg_default)
+                        )
                     )
                 }
 
