@@ -10,19 +10,12 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
-import android.text.method.LinkMovementMethod
-import android.text.util.Linkify
 import android.util.Log
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.CheckBox
-import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.emoji2.widget.EmojiTextView
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import coil.load
@@ -49,6 +42,10 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.TextMatchers
 import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addCheckboxLine
+import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addPlainTextLine
+import com.nextcloud.talk.utils.message.MessageCheckboxUtils.matchCheckbox
+import com.nextcloud.talk.utils.message.MessageCheckboxUtils.updateMessageWithCheckboxStates
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.stfalcon.chatkit.messages.MessageHolders.OutcomingTextMessageViewHolder
 import kotlinx.coroutines.CoroutineScope
@@ -257,7 +254,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             .before(
                 Date(System.currentTimeMillis() - AGE_THRESHOLD_FOR_EDIT_MESSAGE)
             )
-
         val messageIsEditable = hasSpreedFeatureCapability(
             user.capabilities?.spreedCapability!!,
             SpreedFeatures.EDIT_MESSAGES
@@ -271,7 +267,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
             chatActivity.currentConversation?.type == ConversationEnums.ConversationType.NOTE_TO_SELF
 
         checkBoxContainer.removeAllViews()
-
         return renderCheckboxLines(
             chatMessage,
             user,
@@ -281,7 +276,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         )
     }
 
-    @Suppress("LongParameterList", "LongMethod")
     private fun renderCheckboxLines(
         chatMessage: ChatMessage,
         user: User,
@@ -289,9 +283,8 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         editable: Boolean,
         checkBoxContainer: ViewGroup
     ): Boolean {
-        val chatActivity = commonMessageInterface as ChatActivity
-        val checkboxRegex = CHECKBOX_REGEX
         val checkboxList = mutableListOf<CheckBox>()
+        val chatActivity = commonMessageInterface as ChatActivity
         var hasCheckbox = false
         val marginPx = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
@@ -301,80 +294,44 @@ class OutcomingTextMessageViewHolder(itemView: View) :
 
         message.lines().forEach { line ->
             val trimmed = line.trimEnd()
-            val match = checkboxRegex.matchEntire(trimmed.trim())
+            val match = matchCheckbox(trimmed)
             if (match != null) {
                 hasCheckbox = true
                 val isChecked = match.groupValues[CHECKED_GROUP_INDEX].equals("X", true)
                 val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-                val checkBoxLayout = LinearLayout(chatActivity).apply {
-                    orientation = LinearLayout.HORIZONTAL
-                    gravity = Gravity.CENTER_VERTICAL
+                val checkBox = addCheckboxLine(
+                    context = chatActivity,
+                    container = checkBoxContainer,
+                    chatMessage = chatMessage,
+                    taskText = taskText,
+                    isChecked = isChecked,
+                    isEnabled = editable,
+                    isIncomingMessage = false,
+                    messageUtils = messageUtils,
+                    viewThemeUtils = viewThemeUtils,
+                    linkColorRes = R.color.no_emphasis_text,
+                    paddingPx = marginPx
+                ) { _, _ ->
+                    updateCheckboxStates(chatMessage, user, checkboxList)
                 }
-                val checkBox = CheckBox(chatActivity).apply {
-                    this.isChecked = isChecked
-                    this.isEnabled = editable
-                    setOnCheckedChangeListener { _, _ ->
-                        updateCheckboxStates(chatMessage, user, checkboxList)
-                    }
-                    setLineSpacing(
-                        LINE_SPACING_ADDER,
-                        LINE_SPACING_MULTIPLIER
-                    )
-                }
-                val textView = EmojiTextView(chatActivity).apply {
-                    val messageText = messageUtils.enrichChatMessageText(
-                        context,
-                        taskText,
-                        false,
-                        viewThemeUtils
-                    )
-                    text = messageUtils.processMessageParameters(
-                        context,
-                        viewThemeUtils,
-                        messageText,
-                        chatMessage,
-                        null
-                    )
-                    setTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
-                    layoutParams = LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f)
-                    isClickable = true
-                    movementMethod = LinkMovementMethod.getInstance()
-                }
-                checkBoxLayout.addView(checkBox)
-                checkBoxLayout.addView(textView)
-                checkBoxContainer.addView(checkBoxLayout)
                 checkboxList.add(checkBox)
-                Linkify.addLinks(textView, Linkify.ALL)
-                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
-                setPaddingForView(chatMessage, checkBox, marginPx)
-                viewThemeUtils.platform.themeCheckbox(checkBox)
             } else if (trimmed.isNotBlank()) {
-                val textView = EmojiTextView(checkBoxContainer.context).apply {
-                    val messageText = messageUtils.enrichChatMessageText(context, trimmed, false, viewThemeUtils)
-                    text =
-                        messageUtils.processMessageParameters(context, viewThemeUtils, messageText, chatMessage, null)
-                    viewThemeUtils.platform.colorTextView(this, ColorRole.ON_SURFACE_VARIANT)
-                    isClickable = true
-                    movementMethod = LinkMovementMethod.getInstance()
-                    setLineSpacing(
-                        LINE_SPACING_ADDER,
-                        LINE_SPACING_MULTIPLIER
-                    )
-                }
-                setPaddingForView(chatMessage, textView, marginPx)
-                checkBoxContainer.addView(textView)
-                Linkify.addLinks(textView, Linkify.ALL)
-                textView.setLinkTextColor(ContextCompat.getColor(context, R.color.no_emphasis_text))
+                addPlainTextLine(
+                    context = checkBoxContainer.context,
+                    container = checkBoxContainer,
+                    chatMessage = chatMessage,
+                    text = trimmed,
+                    isIncomingMessage = false,
+                    messageUtils = messageUtils,
+                    viewThemeUtils = viewThemeUtils,
+                    linkColorRes = R.color.no_emphasis_text,
+                    paddingPx = marginPx
+                )
             }
         }
         return hasCheckbox
     }
 
-    private fun setPaddingForView(chatMessage: ChatMessage, view: View, paddingInPx: Int) {
-        if (chatMessage.messageParameters != null) {
-            view.setPadding(0, paddingInPx, 0, paddingInPx)
-        }
-    }
     private fun updateCheckboxStates(chatMessage: ChatMessage, user: User, checkboxes: List<CheckBox>) {
         job = CoroutineScope(Dispatchers.Main).launch {
             withContext(Dispatchers.IO) {
@@ -414,21 +371,6 @@ class OutcomingTextMessageViewHolder(itemView: View) :
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private fun updateMessageWithCheckboxStates(originalMessage: String, checkboxes: List<CheckBox>): String {
-        var checkboxIndex = 0
-        return originalMessage.lines().joinToString("\n") { line ->
-            val match = CHECKBOX_REGEX.matchEntire(line.trim())
-            if (match != null) {
-                val taskText = match.groupValues[TASK_TEXT_GROUP_INDEX].trim()
-                val state = if (checkboxes.getOrNull(checkboxIndex)?.isChecked == true) "X" else " "
-                checkboxIndex++
-                "- [$state] $taskText"
-            } else {
-                line
             }
         }
     }
@@ -534,11 +476,8 @@ class OutcomingTextMessageViewHolder(itemView: View) :
         const val TEXT_SIZE_MULTIPLIER = 2.5
         private val TAG = OutcomingTextMessageViewHolder::class.java.simpleName
         private const val AGE_THRESHOLD_FOR_EDIT_MESSAGE: Long = 86400000
-        private val CHECKBOX_REGEX = """- \[(X|x| )]\s*(.+)""".toRegex()
         private const val CHECKED_GROUP_INDEX = 1
         private const val TASK_TEXT_GROUP_INDEX = 2
         private const val PADDING_FOUR_FLOAT = 4f
-        private const val LINE_SPACING_MULTIPLIER = 1.2f
-        private const val LINE_SPACING_ADDER = 0f
     }
 }
