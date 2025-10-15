@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Позивнице су поново послате.</string>
     <string name="nc_guest_access_share_link">Дели линк разговора</string>
     <string name="nc_hint_enter_a_message">Unesite poruku …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Оптимизација батерије се не игнорише. Ово би требало да се промени тако да би обавештења могла да функционишу у позадини! Молимо вас да кликнете OK и изаберете „Све апликације” -> %1$s -> Не оптимизуј</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Игнориши оптимизацију батерије</string>
     <string name="nc_important_conversation">Битан разговор</string>
     <string name="nc_important_conversation_desc">Кориснички статус „Не узнемиравај” се игнорише за важне разговоре</string>

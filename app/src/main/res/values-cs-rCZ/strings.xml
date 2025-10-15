@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Pozvánky byly znovu odeslány.</string>
     <string name="nc_guest_access_share_link">Sdílet odkaz na konverzaci</string>
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Úspora energie z akumulátoru není ignorována. Pokud chcete, aby upozorňování na pozadí fungovalo správně, mělo by toto být změněno! Klikněte na OK a vyberte „Všechny aplikace“ -> %1$s -> neoptimalizovat</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Stav uživatele „Nevyrušovat“ bude v případě důležitých konverzací ignorován</string>

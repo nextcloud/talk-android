@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> İyileştirilmesin seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Önemli görüşmeler için \"Rahatsız etmeyin\" kullanıcı durumu yok sayılır</string>

@@ -292,7 +292,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Les invitations ont été envoyées à nouveau.</string>
     <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Ceci devrait être modifié pour vous assurer que les notifications fonctionnent en arrière-plan. Merci de cliquer OK et sélectionner \"Toutes les applications\" -> %1$s -> Ne pas optimiser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes</string>

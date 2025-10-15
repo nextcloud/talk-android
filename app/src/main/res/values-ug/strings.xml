@@ -273,7 +273,6 @@
     <string name="nc_guest_access_resend_invitations_successful">تەكلىپنامە يەنە ئەۋەتىلدى.</string>
     <string name="nc_guest_access_share_link">سۆھبەت ئۇلانمىسىنى ھەمبەھىرلەڭ</string>
     <string name="nc_hint_enter_a_message">ئۇچۇر كىرگۈزۈڭ…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">باتارېيەنى ئەلالاشتۇرۇشقا سەل قاراشقا بولمايدۇ. ئۇقتۇرۇشنىڭ ئارقا سۇپىدا ئىشلىشىگە كاپالەتلىك قىلىش ئۈچۈن بۇنى ئۆزگەرتىش كېرەك! «جەزملە» نى چېكىپ ، \ \"بارلىق ئەپلەر \" -&gt;%1$s-&gt; ئەلالاشتۇرماڭ</string>
     <string name="nc_ignore_battery_optimization_dialog_title">باتارېيەنىڭ ئەلالاشتۇرۇشىغا پەرۋا قىلماڭ</string>
     <string name="nc_important_conversation">مۇھىم سۆھبەت</string>
     <string name="nc_invitations">تەكلىپنامە</string>

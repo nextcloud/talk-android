@@ -275,7 +275,6 @@
     <string name="nc_guest_access_resend_invitations_successful">S\'han tornat a enviar les invitacions.</string>
     <string name="nc_guest_access_share_link">Comparteix l\'enllaç de la conversa</string>
     <string name="nc_hint_enter_a_message">Introduïu un missatge …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">L\'optimització de la bateria no s\'ignora. Això hauria de canviar-se per a garantir que les notificacions funcionin en segon pla. Feu clic a D\'acord i seleccioneu \"Totes les aplicacions\" ->  %1$s ->  No optimitzis</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignora l\'optimització de la bateria</string>
     <string name="nc_important_conversation">Conversa important</string>
     <string name="nc_invitations">Invitacions</string>
