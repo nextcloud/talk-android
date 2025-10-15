@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     <string name="nc_important_conversation">Wichtige Unterhaltung</string>
     <string name="nc_important_conversation_desc">\"Nicht stören\"-Benutzerstatus wird für wichtige Unterhaltungen ignoriert</string>

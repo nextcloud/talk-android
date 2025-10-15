@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Запрашэнні былі адпраўлены зноў.</string>
     <string name="nc_guest_access_share_link">Абагуліць спасылку на размову</string>
     <string name="nc_hint_enter_a_message">Увядзіце паведамленне …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Аптымізацыя батарэі не ігнаруецца. Гэта трэба змяніць, каб апавяшчэнні працавалі ў фонавым рэжыме! Націсніце \"ОК\" і выберыце \"Усе праграмы\" -> %1$s -> \"Не аптымізаваць\"</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ігнараваць аптымізацыю батарэі</string>
     <string name="nc_important_conversation">Важная размова</string>
     <string name="nc_important_conversation_desc">Статус карыстальніка \"Не турбаваць\" ігнаруецца падчас важных размоў</string>

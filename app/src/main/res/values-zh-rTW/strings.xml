@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">邀請已再次傳送。</string>
     <string name="nc_guest_access_share_link">分享對話連結</string>
     <string name="nc_hint_enter_a_message">輸入訊息 …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">未忽略電池最佳化。為確保通知在背景中正在運作，請變更設定！請點擊「確定」並選取「所有應用程式」→ %1$s → 無限制</string>
     <string name="nc_ignore_battery_optimization_dialog_title">忽略電池最佳化</string>
     <string name="nc_important_conversation">重要交談</string>
     <string name="nc_important_conversation_desc">重要對話會忽略「請勿打擾」使用者狀態</string>

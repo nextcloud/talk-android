@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Gli inviti sono stati inviati nuovamente.</string>
     <string name="nc_guest_access_share_link">Condividi collegamento della conversazione</string>
     <string name="nc_hint_enter_a_message">Digita un messaggio …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">L\'ottimizzazione della batteria non viene ignorata. Questo dovrebbe essere modificato per garantire che le notifiche funzionino in background! Fare clic su OK e selezionare \"Tutte le app\" -> %1$s -> Non ottimizzare</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignora ottimizzazione batteria</string>
     <string name="nc_important_conversation">Conversazione importante</string>
     <string name="nc_important_conversation_desc">Lo stato utente “Non disturbare” viene ignorato per le conversazioni importanti.</string>

@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os apps\" -> %1$s -> Não otimizar</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">O status de usuário \"Não perturbe\" é ignorado em conversas importantes</string>

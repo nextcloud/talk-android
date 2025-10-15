@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Do not optimize</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>

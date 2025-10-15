@@ -288,7 +288,6 @@ Kies er eentje van een provider.</string>
     <string name="nc_guest_access_resend_invitations_successful">Uitnodigingen werden opnieuw verstuurd.</string>
     <string name="nc_guest_access_share_link">Deel gesprekslink</string>
     <string name="nc_hint_enter_a_message">Voer een bericht in…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Batterijoptimalisatie staat niet uit. Dit moet aangepast worden zodat meldingen op de achtergrond werken! Druk op OK en selecteer \"Alle apps\" ->  %1$s -> Niet optimaliseren</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterijoptimalisatie negeren</string>
     <string name="nc_important_conversation">Belangrijk gesprek</string>
     <string name="nc_important_conversation_desc">De gebruikersstatus ‘Niet storen’ wordt genegeerd voor belangrijke gesprekken</string>

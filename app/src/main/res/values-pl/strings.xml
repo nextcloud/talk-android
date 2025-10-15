@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Zaproszenia zostały ponownie wysłane.</string>
     <string name="nc_guest_access_share_link">Udostępnij link do rozmowy</string>
     <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Optymalizacja baterii nie jest ignorowana. Należy to zmienić, aby mieć pewność, że powiadomienia działają w tle! Kliknij OK i wybierz \"Wszystkie aplikacje\" -> %1$s -> Nie optymalizuj</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Zignoruj optymalizację baterii</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Status użytkownika „Nie przeszkadzać” jest ignorowany dla ważnych rozmów.</string>
