@@ -681,6 +681,8 @@
     <string name="translation_error_title">Falha na tradução</string>
     <string name="translation_from">De</string>
     <string name="translation_to">Para</string>
+    <string name="turn_off_background_blur">Desativar o desfoque do plano de fundo</string>
+    <string name="turn_on_background_blur">Ativar o desfoque do plano de fundo</string>
     <string name="typing_1_other">e 1 outro está digitando …</string>
     <string name="typing_are_typing">estão digitando …</string>
     <string name="typing_is_typing">está digitando …</string>
