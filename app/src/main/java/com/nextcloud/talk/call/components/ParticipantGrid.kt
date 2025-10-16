@@ -27,10 +27,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isFinite
-import com.nextcloud.talk.call.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
 import android.util.Log
+import com.nextcloud.talk.activities.ParticipantUiState
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("LongParameterList")
