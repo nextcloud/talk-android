@@ -22,9 +22,10 @@ import org.webrtc.JavaI420Buffer
 import org.webrtc.VideoFrame
 import org.webrtc.VideoProcessor
 import org.webrtc.VideoSink
+import org.webrtc.YuvHelper
 import java.nio.ByteBuffer
 
-class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Boolean) :
+class BackgroundBlurFrameProcessor(val context: Context) :
     VideoProcessor,
     ImageSegmenterHelper.SegmenterListener {
 
@@ -92,9 +93,13 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
 
             val finalFrame = blurredMat.toVideoFrame(resultBundle.inferenceTime)
 
+            if (finalFrame == null) {
+                Log.e(TAG, "Frame was null")
+            }
+
             sink?.onFrame(finalFrame)
 
-            finalFrame.release()
+            finalFrame?.release()
         } finally {
             frameMat.release()
             blurredMat.release()
@@ -132,6 +137,7 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
 
         try {
             // weirdly rotation is 270 degree in portrait and 180 degree in landscape, no idea why
+            // regardless if this behavior is device dependant, this calculation should correct the orientation
             val angle = ROT_360 - videoFrame.rotation.toDouble()
             rotationMat = Imgproc.getRotationMatrix2D(
                 center,
@@ -166,107 +172,90 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
         this.sink = sink
     }
 
-    private fun Mat.toVideoFrame(time: Long): VideoFrame {
-        val i420Mat = Mat()
-        Imgproc.cvtColor(this, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
+    private fun Mat.toVideoFrame(time: Long): VideoFrame? =
+        runCatching {
+            val i420Mat = Mat()
+            Imgproc.cvtColor(this, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
 
-        // Get the raw bytes from the new I420 Mat
-        val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
-        i420Mat.get(0, 0, i420ByteArray)
+            // Get the raw bytes from the new I420 Mat to i420ByteArray
+            val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
+            i420Mat.get(0, 0, i420ByteArray)
 
-        val width = this.width()
-        val height = this.height()
+            val width = this.width()
+            val height = this.height()
 
-        val yPlaneSize = width * height
-        val uvPlaneSize = (width / 2) * (height / 2)
+            val yPlaneSize = width * height
+            val uvPlaneSize = (width / 2) * (height / 2)
 
-        val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
-        val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
-        val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+            val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
+            val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+            val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
 
-        yBuffer.put(i420ByteArray, 0, yPlaneSize)
-        uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
-        vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
+            yBuffer.put(i420ByteArray, 0, yPlaneSize)
+            uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
+            vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
 
-        yBuffer.rewind()
-        uBuffer.rewind()
-        vBuffer.rewind()
+            yBuffer.rewind()
+            uBuffer.rewind()
+            vBuffer.rewind()
 
-        // Create the I420Buffer using the separate planes
-        val finalFrameBuffer = JavaI420Buffer.wrap(
-            width,
-            height,
-            yBuffer,
-            width,
-            uBuffer,
-            width / 2,
-            vBuffer,
-            width / 2,
+            // Create the I420Buffer using the separate planes
+            val finalFrameBuffer = JavaI420Buffer.wrap(
+                width,
+                height,
+                yBuffer,
+                width,
+                uBuffer,
+                width / 2,
+                vBuffer,
+                width / 2,
+                null
+            )
+
+            i420Mat.release()
+
+            return VideoFrame(finalFrameBuffer, 0, time)
+        }.getOrElse { throwable ->
+            Log.e(TAG, "Error in Mat.toVideoFrame $throwable")
+
             null
-        )
-
-        i420Mat.release()
-
-        return VideoFrame(finalFrameBuffer, 0, time)
-    }
+        }
 
     private fun VideoFrame.I420Buffer.toMat(): Mat? =
-        kotlin.runCatching {
-            val i420Buffer = this
+        runCatching {
+            val chromaWidth = (width + 1) / 2
+            val chromaHeight = (height + 1) / 2
+            val minSize = width * height + chromaWidth * chromaHeight * 2
 
-            val width = i420Buffer.width
-            val height = i420Buffer.height
-            val yPlaneSize = width * height
-
-            val nv21Height = (height * NV21_HEIGHT_MULTI).toInt()
-            val nv21Width = width
-            val nv21Size = nv21Height * nv21Width
-            val nv21Data = ByteArray(nv21Size)
-
-            val dataY = i420Buffer.dataY
-            val dataU = i420Buffer.dataU
-            val dataV = i420Buffer.dataV
-
-            val strideY = i420Buffer.strideY // Likely equal to the width, but not always, depending on mem alignment
-            val strideU = i420Buffer.strideU // U and V have identical dimens and strides
-            val strideV = i420Buffer.strideV
-
-            if (strideY == width) {
-                // Fast path: contiguous data
-                dataY.get(nv21Data, 0, yPlaneSize)
-            } else {
-                // Slow path: row-by-row copy
-                for (row in 0 until height) {
-                    dataY.position(row * strideY)
-                    dataY.get(nv21Data, row * width, width)
-                }
-            }
-
-            val vuPlaneOffset = width * height
-            for (row in 0 until height / 2) {
-                for (col in 0 until width / 2) {
-                    // Get U and V values from their respective planes using row/col/stride
-                    val v = dataV[row * strideV + col]
-                    val u = dataU[row * strideU + col]
-
-                    // Put them into the NV21 buffer (V, then U)
-                    val nv21Index = vuPlaneOffset + (row * width) + (col * 2)
-                    nv21Data[nv21Index] = v
-                    nv21Data[nv21Index + 1] = u
-                }
-            }
+            val nv12ByteBuffer = ByteBuffer.allocateDirect(minSize)
+            YuvHelper.I420ToNV12(
+                this.dataY,
+                this.strideY,
+                this.dataU,
+                this.strideU,
+                this.dataV,
+                this.strideV,
+                nv12ByteBuffer,
+                width,
+                height
+            )
 
             val mat = Mat(
-                nv21Height,
-                nv21Width,
+                (height * NV21_HEIGHT_MULTI).toInt(),
+                width,
                 CvType.CV_8UC1 // 8 bit unsigned 1 channel
             )
 
-            mat.put(0, 0, nv21Data)
-            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_YUV2RGBA_NV21)
+            mat.put(0, 0, nv12ByteBuffer.array())
 
-            i420Buffer.release()
+            Imgproc.cvtColor(mat, mat, Imgproc.COLOR_YUV2RGBA_NV12)
+
+            this.release()
 
             mat
-        }.getOrNull()
+        }.getOrElse { throwable ->
+            Log.e(TAG, "Error in VideoFrame.I420Buffer.toMat $throwable")
+
+            null
+        }
 }
