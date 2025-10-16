@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.nextcloud.talk.R
-import com.nextcloud.talk.call.ParticipantUiState
+import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
