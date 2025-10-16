@@ -318,6 +318,8 @@ How to translate with transifex:
     <string name="nc_call_state_with_phone">%1$s with phone</string>
     <string name="nc_call_state_with_video">%1$s with video</string>
     <string name="nc_missed_call">You missed a call from %s</string>
+    <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
+    <string name="nc_call_ongoing_notification_content">Tap to return to your call.</string>
     <string name="nc_call_button_content_description_pip">Open picture-in-picture mode</string>
     <string name="nc_call_button_content_description_audio_output">Change audio output</string>
     <string name="nc_call_button_content_description_camera">Toggle camera</string>
