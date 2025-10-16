@@ -292,7 +292,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Les invitations ont été envoyées à nouveau.</string>
     <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Ceci devrait être modifié pour vous assurer que les notifications fonctionnent en arrière-plan. Merci de cliquer OK et sélectionner \"Toutes les applications\" -> %1$s -> Ne pas optimiser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes</string>
@@ -551,6 +550,7 @@
     <string name="no_conversations_archived">Aucune conversation archivée</string>
     <string name="no_offline_messages_saved">Aucun message hors-ligne trouvé</string>
     <string name="no_phone_book_integration_due_to_permissions">Pas d\'intégration avec le carnet d\'adresses à cause d\'autorisations manquantes</string>
+    <string name="notification_all_messages">Tous les messages</string>
     <string name="notification_mention_only">Seulement les mentions @</string>
     <string name="notification_off">Désactiver</string>
     <string name="notifications_default">Défaut</string>

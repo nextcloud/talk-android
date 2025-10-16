@@ -83,7 +83,7 @@
     <string name="location_permission_denied_msg">Por favor, ative-a nas configurações do aplicativo</string>
     <string name="location_services_disabled">Serviços de localização desativados</string>
     <string name="location_services_disabled_msg">Ative os serviços de localização (GPS) para usar este recurso</string>
-    <string name="lock_conversation">Bloquear conversa</string>
+    <string name="lock_conversation">Trancar conversa</string>
     <string name="lock_symbol">Símbolo de cadeado</string>
     <string name="lower_hand">Baixar mão</string>
     <string name="marked_as_read">Conversa %1$s marcada como lida</string>
@@ -118,7 +118,7 @@
     <string name="nc_add_to_favorites">Adicionar aos favoritos</string>
     <string name="nc_all_ok_operation">OK, tudo pronto!</string>
     <string name="nc_attendee_pin">PIN: %1$s</string>
-    <string name="nc_biometric_unlock">Desbloquear %1$s</string>
+    <string name="nc_biometric_unlock">Destrancar %1$s</string>
     <string name="nc_bluetooth_permission_hint">Para ativar os alto-falantes bluetooth, conceda a permissão \"Dispositivos próximos\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Atender como chamada de vídeo</string>
     <string name="nc_call_button_content_description_answer_voice_only">Atender apenas como chamada de voz</string>
@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os apps\" -> %1$s -> Não otimizar</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">O status de usuário \"Não perturbe\" é ignorado em conversas importantes</string>
@@ -316,8 +315,8 @@
     <string name="nc_location_current_position_description">Sua localização atual</string>
     <string name="nc_location_permission_required">permissão de localização é necessária</string>
     <string name="nc_location_unknown">Posição desconhecida</string>
-    <string name="nc_locked">Bloqueado</string>
-    <string name="nc_locked_tap_to_unlock">Toque para desbloquear</string>
+    <string name="nc_locked">Trancado</string>
+    <string name="nc_locked_tap_to_unlock">Toque para destrancar</string>
     <string name="nc_manual">Não definido</string>
     <string name="nc_mark_as_read">Marcar como lido</string>
     <string name="nc_mark_as_unread">Marcar como não lido</string>
@@ -484,9 +483,9 @@
     <string name="nc_settings_remove">Excluir</string>
     <string name="nc_settings_remove_account">Excluir conta</string>
     <string name="nc_settings_remove_confirmation">Confirme se quer realmente excluir a conta atual.</string>
-    <string name="nc_settings_screen_lock_desc">Bloquear %1$s com o bloqueio de tela do Android ou um método biométrico suportado</string>
+    <string name="nc_settings_screen_lock_desc">Trancar %1$s com o bloqueio de tela do Android ou um método biométrico suportado</string>
     <string name="nc_settings_screen_lock_timeout_title">Tempo limite para bloqueio de tela</string>
-    <string name="nc_settings_screen_lock_title">Bloquear tela</string>
+    <string name="nc_settings_screen_lock_title">Bloqueio de tela</string>
     <string name="nc_settings_screen_security_desc">Impede capturas de tela na lista recente e dentro do aplicativo</string>
     <string name="nc_settings_screen_security_title">Segurança da tela</string>
     <string name="nc_settings_server_almost_eol">A versão do servidor é muito antiga e não será suportada na próxima versão!</string>
@@ -682,6 +681,8 @@
     <string name="translation_error_title">Falha na tradução</string>
     <string name="translation_from">De</string>
     <string name="translation_to">Para</string>
+    <string name="turn_off_background_blur">Desativar o desfoque do plano de fundo</string>
+    <string name="turn_on_background_blur">Ativar o desfoque do plano de fundo</string>
     <string name="typing_1_other">e 1 outro está digitando …</string>
     <string name="typing_are_typing">estão digitando …</string>
     <string name="typing_is_typing">está digitando …</string>

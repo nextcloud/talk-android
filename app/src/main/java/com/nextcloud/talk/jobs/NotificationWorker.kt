@@ -232,7 +232,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             bundle.putInt(BundleKeys.KEY_CALL_FLAG, conversation.callFlag)
 
             val participantPermission = ParticipantPermissions(
-                userBeingCalled!!.capabilities!!.spreedCapability!!,
+                userBeingCalled?.capabilities?.spreedCapability,
                 conversation
             )
             bundle.putBoolean(

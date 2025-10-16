@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Kutsed on saadetud uuesti</string>
     <string name="nc_guest_access_share_link">Jaga vestluse linki</string>
     <string name="nc_hint_enter_a_message">Koosta sõnum…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Akukasutuse optimeerimine pole eiratud. Et teavituste saatmine toimiks taustal, siis peaksid seda muutma. Palun klõpsi „Sobib“ ja vali „Kõik rakendused“ → „%1$s“ → „Ära optimeeri“</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Eira akukasutuse optimeerimist</string>
     <string name="nc_important_conversation">Oluline vestlus</string>
     <string name="nc_important_conversation_desc">„Ära sega“ olek on oluliste vestluste puhul eiratud</string>

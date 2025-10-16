@@ -246,8 +246,7 @@
     <string name="nc_dialog_save_to_storage_no">Hapana</string>
     <string name="nc_dialog_save_to_storage_title">Ungependa kuhifadhi kwenye hifadhi?</string>
     <string name="nc_dialog_save_to_storage_yes">Ndiyo</string>
-    <string name="nc_display_name_not_fetched">Jina la onyesho halikuweza kuletwa, inaahirisha
- </string>
+    <string name="nc_display_name_not_fetched">Jina la onyesho halikuweza kuletwa, inaahirisha</string>
     <string name="nc_display_name_not_stored">Haikuweza kuhifadhi jina la onyesho, inakatisha</string>
     <string name="nc_edit_icon">Hariri</string>
     <string name="nc_edit_message">Hariri</string>
@@ -296,7 +295,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Mialiko ilitumwa nje tena</string>
     <string name="nc_guest_access_share_link">Shirikisha kiungio cha mazungumzo</string>
     <string name="nc_hint_enter_a_message">Ingiza ujumbe...</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Uboreshaji wa betri haujapuuzwa. Hii inapaswa kubadilishwa ili kuhakikisha kuwa arifa zinafanya kazi chinichini! Tafadhali bofya SAWA na uchague \"Programu zote\" -> %1$s -> Usiboresha</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Uboreshaji wa betri haujapuuzwa. Hii inapaswa kubadilishwa ili kuhakikisha kuwa arifa zinafanya kazi chinichini! Tafadhali bofya SAWA na uchague \"Programu zote\" -> %1$s na kisha \"Usiboresha\" au \"Ruhusu matumizi ya usuli -> Bila vikwazo\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Puuza uboreshaji wa betri</string>
     <string name="nc_important_conversation">Mazungumzo muhimu</string>
     <string name="nc_important_conversation_desc">\"Usisumbue\" hali ya mtumiaji inapuuzwa kwa mazungumzo muhimu</string>

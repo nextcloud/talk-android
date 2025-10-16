@@ -1,0 +1,15 @@
+/*
+ * Nextcloud Talk - Android Client
+ *
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
+
+task downloadSelfieSegmenterModelFile(type: Download) {
+    src 'https://storage.googleapis.com/mediapipe-models/image_segmenter/selfie_segmenter/float16/1/selfie_segmenter.tflite'
+    dest project.ext.ASSET_DIR + '/selfie_segmenter.tflite'
+    overwrite false
+}
+
+preBuild.dependsOn downloadSelfieSegmenterModelFile

@@ -306,6 +306,7 @@
     <string name="nc_switch_account">Perjungti paskyrą</string>
     <string name="nc_team">Komanda</string>
     <string name="nc_upload_failed_notification_title">Nesėkmė</string>
+    <string name="nc_upload_from_device">Įkelti iš įrenginio</string>
     <string name="nc_upload_in_progess">Įkeliama</string>
     <string name="nc_upload_picture_from_cam">Fotografuoti</string>
     <string name="nc_user">Naudotojas</string>

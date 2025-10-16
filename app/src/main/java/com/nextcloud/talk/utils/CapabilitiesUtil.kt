@@ -100,11 +100,13 @@ object CapabilitiesUtil {
     //region SpreedCapabilities
 
     @JvmStatic
-    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability, spreedFeatures: SpreedFeatures): Boolean {
-        if (spreedCapabilities.features != null) {
-            return spreedCapabilities.features!!.contains(spreedFeatures.value)
+    fun hasSpreedFeatureCapability(spreedCapabilities: SpreedCapability?, spreedFeatures: SpreedFeatures): Boolean {
+        if (spreedCapabilities == null) {
+            Log.e(TAG, "spreedCapabilities were null when checking capability ${spreedFeatures.value}")
+            return false
         }
-        return false
+
+        return spreedCapabilities.features?.contains(spreedFeatures.value) == true
     }
 
     fun isSharedItemsAvailable(spreedCapabilities: SpreedCapability): Boolean =
@@ -136,12 +138,16 @@ object CapabilitiesUtil {
         return CONVERSATION_DESCRIPTION_LENGTH_FOR_OLD_SERVER
     }
 
-    fun isReadStatusAvailable(spreedCapabilities: SpreedCapability): Boolean {
-        if (spreedCapabilities.config?.containsKey("chat") == true) {
-            val map: Map<String, Any>? = spreedCapabilities.config!!["chat"]
-            return map != null && map.containsKey("read-privacy")
+    fun isReadStatusAvailable(spreedCapabilities: SpreedCapability?): Boolean {
+        val chatConfig = spreedCapabilities?.config?.get("chat") as? Map<*, *>
+        return if (chatConfig?.containsKey("read-privacy") == true) {
+            true
+        } else {
+            if (spreedCapabilities == null) {
+                Log.e(TAG, "spreedCapabilities were null when checking capability isReadStatusAvailable")
+            }
+            false
         }
-        return false
     }
 
     fun retentionOfEventRooms(spreedCapabilities: SpreedCapability): Int {
@@ -200,9 +206,6 @@ object CapabilitiesUtil {
 
     fun isConversationDescriptionEndpointAvailable(spreedCapabilities: SpreedCapability): Boolean =
         hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.ROOM_DESCRIPTION)
-
-    fun isUnifiedSearchAvailable(spreedCapabilities: SpreedCapability): Boolean =
-        hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)
 
     fun isAbleToCall(spreedCapabilities: SpreedCapability): Boolean =
         if (

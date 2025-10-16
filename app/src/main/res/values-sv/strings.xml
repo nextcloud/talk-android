@@ -293,7 +293,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Inbjudningar skickades ut igen.</string>
     <string name="nc_guest_access_share_link">Dela konversationslänk</string>
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering ignoreras inte. Detta bör ändras för att säkerställa att aviseringar fungerar i bakgrunden! Klicka på OK och välj \"Alla appar\" -> %1$s -> Optimera inte</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorera batterioptimering</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Användarstatus \"Stör ej\" ignoreras för viktiga konversationer</string>

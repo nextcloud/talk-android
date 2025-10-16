@@ -89,6 +89,8 @@ import com.nextcloud.talk.contacts.ContactsActivity
 import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contacts.RoomUiState
+import com.nextcloud.talk.contextchat.ContextChatView
+import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
@@ -104,7 +106,6 @@ import com.nextcloud.talk.messagesearch.MessageSearchHelper
 import com.nextcloud.talk.messagesearch.MessageSearchHelper.MessageSearchResults
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
-import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
@@ -113,8 +114,6 @@ import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.ui.BackgroundVoiceMessageCard
 import com.nextcloud.talk.ui.dialog.ChooseAccountDialogFragment
 import com.nextcloud.talk.ui.dialog.ChooseAccountShareToDialogFragment
-import com.nextcloud.talk.contextchat.ContextChatView
-import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.ui.dialog.ConversationsListBottomDialog
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment
 import com.nextcloud.talk.ui.dialog.FilterConversationFragment.Companion.ARCHIVE
@@ -125,7 +124,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isServerEOL
-import com.nextcloud.talk.utils.CapabilitiesUtil.isUnifiedSearchAvailable
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
 import com.nextcloud.talk.utils.ConversationUtils
 import com.nextcloud.talk.utils.FileUtils
@@ -319,7 +317,7 @@ class ConversationsListActivity :
                 return
             }
             currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
-                if (isUnifiedSearchAvailable(spreedCapabilities)) {
+                if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)) {
                     searchHelper = MessageSearchHelper(unifiedSearchRepository)
                 }
             }
@@ -443,6 +441,38 @@ class ConversationsListActivity :
                     else -> {
                         binding.threadsButton.visibility = View.GONE
                     }
+                }
+            }
+        }
+
+        lifecycleScope.launch {
+            conversationsListViewModel.openConversationsState.collect { state ->
+                when (state) {
+                    is ConversationsListViewModel.OpenConversationsUiState.Success -> {
+                        val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
+                        for (conversation in state.conversations) {
+                            val headerTitle = resources!!.getString(R.string.openConversations)
+                            var genericTextHeaderItem: GenericTextHeaderItem
+                            if (!callHeaderItems.containsKey(headerTitle)) {
+                                genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
+                                callHeaderItems[headerTitle] = genericTextHeaderItem
+                            }
+                            val conversationItem = ConversationItem(
+                                ConversationModel.mapToConversationModel(conversation, currentUser!!),
+                                currentUser!!,
+                                this@ConversationsListActivity,
+                                callHeaderItems[headerTitle],
+                                viewThemeUtils
+                            )
+                            openConversationItems.add(conversationItem)
+                        }
+                        searchableConversationItems.addAll(openConversationItems)
+                    }
+                    is ConversationsListViewModel.OpenConversationsUiState.Error -> {
+                        handleHttpExceptions(state.exception)
+                    }
+
+                    else -> {}
                 }
             }
         }
@@ -629,12 +659,7 @@ class ConversationsListActivity :
 
         Handler().postDelayed({ checkToShowUnreadBubble() }, UNREAD_BUBBLE_DELAY.toLong())
 
-        // Fetch Open Conversations
-        val apiVersion = ApiUtils.getConversationApiVersion(
-            currentUser!!,
-            intArrayOf(ApiUtils.API_V4, ApiUtils.API_V3, 1)
-        )
-        fetchOpenConversations(apiVersion)
+        fetchOpenConversations()
     }
 
     fun applyFilter() {
@@ -1072,7 +1097,7 @@ class ConversationsListActivity :
     }
 
     private fun fetchPendingInvitations() {
-        if (hasSpreedFeatureCapability(currentUser!!.capabilities!!.spreedCapability!!, SpreedFeatures.FEDERATION_V1)) {
+        if (hasSpreedFeatureCapability(currentUser?.capabilities?.spreedCapability, SpreedFeatures.FEDERATION_V1)) {
             binding.conversationListHintInclude.conversationListHintLayout.setOnClickListener {
                 val intent = Intent(this, InvitationsActivity::class.java)
                 startActivity(intent)
@@ -1199,48 +1224,10 @@ class ConversationsListActivity :
         }
     }
 
-    private fun fetchOpenConversations(apiVersion: Int) {
+    private fun fetchOpenConversations() {
         searchableConversationItems.clear()
         searchableConversationItems.addAll(conversationItemsWithHeader)
-        if (hasSpreedFeatureCapability(
-                currentUser!!.capabilities!!.spreedCapability!!,
-                SpreedFeatures.LISTABLE_ROOMS
-            )
-        ) {
-            val openConversationItems: MutableList<AbstractFlexibleItem<*>> = ArrayList()
-            openConversationsQueryDisposable = ncApi.getOpenConversations(
-                credentials,
-                ApiUtils.getUrlForOpenConversations(apiVersion, currentUser!!.baseUrl!!),
-                ""
-            )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ (ocs): RoomsOverall ->
-                    for (conversation in ocs!!.data!!) {
-                        val headerTitle = resources!!.getString(R.string.openConversations)
-                        var genericTextHeaderItem: GenericTextHeaderItem
-                        if (!callHeaderItems.containsKey(headerTitle)) {
-                            genericTextHeaderItem = GenericTextHeaderItem(headerTitle, viewThemeUtils)
-                            callHeaderItems[headerTitle] = genericTextHeaderItem
-                        }
-                        val conversationItem = ConversationItem(
-                            ConversationModel.mapToConversationModel(conversation, currentUser!!),
-                            currentUser!!,
-                            this,
-                            callHeaderItems[headerTitle],
-                            viewThemeUtils
-                        )
-                        openConversationItems.add(conversationItem)
-                    }
-                    searchableConversationItems.addAll(openConversationItems)
-                }, { throwable: Throwable ->
-                    Log.e(TAG, "fetchData - getRooms - ERROR", throwable)
-                    handleHttpExceptions(throwable)
-                    dispose(openConversationsQueryDisposable)
-                }) { dispose(openConversationsQueryDisposable) }
-        } else {
-            Log.d(TAG, "no open conversations fetched because of missing capability")
-        }
+        conversationsListViewModel.fetchOpenConversations()
     }
 
     private fun fetchUsers(query: String = "") {
@@ -1464,7 +1451,11 @@ class ConversationsListActivity :
                 adapter?.filterItems()
             }
 
-            if (isUnifiedSearchAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
+            if (hasSpreedFeatureCapability(
+                    currentUser?.capabilities?.spreedCapability,
+                    SpreedFeatures.UNIFIED_SEARCH
+                )
+            ) {
                 startMessageSearch(filter)
             }
         } else {
@@ -1584,7 +1575,7 @@ class ConversationsListActivity :
         selectedConversation = conversation
         if (selectedConversation != null) {
             val hasChatPermission = ParticipantPermissions(
-                currentUser!!.capabilities!!.spreedCapability!!,
+                currentUser?.capabilities?.spreedCapability,
                 selectedConversation!!
             )
                 .hasChatPermission()
@@ -1612,11 +1603,11 @@ class ConversationsListActivity :
 
     private fun shouldShowLobby(conversation: ConversationModel): Boolean {
         val participantPermissions = ParticipantPermissions(
-            currentUser!!.capabilities?.spreedCapability!!,
+            currentUser?.capabilities?.spreedCapability,
             selectedConversation!!
         )
         return conversation.lobbyState == ConversationEnums.LobbyState.LOBBY_STATE_MODERATORS_ONLY &&
-            !ConversationUtils.canModerate(conversation, currentUser!!.capabilities!!.spreedCapability!!) &&
+            !ConversationUtils.canModerate(conversation, currentUser?.capabilities?.spreedCapability) &&
             !participantPermissions.canIgnoreLobby()
     }
 

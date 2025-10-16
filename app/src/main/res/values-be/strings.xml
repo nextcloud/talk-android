@@ -22,7 +22,7 @@
     <string name="back_button">Кнопка назад</string>
     <string name="ban">Заблакіраваць</string>
     <string name="ban_participant">Заблакіраваць удзельніка</string>
-    <string name="bans_list">Спіс блакіроўвак</string>
+    <string name="bans_list">Спіс блакіровак</string>
     <string name="busy">Заняты</string>
     <string name="calendar">Каляндар</string>
     <string name="call_more_actions_dialog_headline">Дадатковыя опцыі выкліку</string>
@@ -44,7 +44,7 @@
     <string name="conversation_read_only_failed">Не атрымалася перавесці размову ў рэжым \"толькі для чытання\"</string>
     <string name="conversations">Размовы</string>
     <string name="create_conversation">Стварыць размову</string>
-    <string name="create_issue">Стварыць справаздачу</string>
+    <string name="create_issue">Паведаміць аб праблеме</string>
     <string name="custom">Уласны</string>
     <string name="danger_zone">Небяспечная зона</string>
     <string name="deck_card_description">%1$s у %2$s</string>
@@ -54,7 +54,7 @@
     <string name="dnd">Не турбаваць</string>
     <string name="dontClear">Не ачышчаць</string>
     <string name="edit">Рэдагаваць</string>
-    <string name="edit_error_24_hours_old_message">Паведамленні, старэйшыя за 24 гадзіны, нельга рэдагаваць</string>
+    <string name="edit_error_24_hours_old_message">Паведамленні, старэйшыя за 24 гадзіны, немагчыма рэдагаваць</string>
     <string name="edit_message_icon_description">Рэдагаваць паведамленне</string>
     <string name="emoji_category_recent">Нядаўнія</string>
     <string name="encrypted">Зашыфравана</string>
@@ -96,9 +96,9 @@
     <string name="menu_item_sort_by_size_biggest_first">Спачатку вялікія</string>
     <string name="menu_item_sort_by_size_smallest_first">Спачатку малыя</string>
     <string name="message_copied">Паведамленне скапіявана</string>
-    <string name="message_delete_are_you_sure">Вы ўпэўнены, што хочаце выдаліць гэта паведамленне?</string>
+    <string name="message_delete_are_you_sure">Вы ўпэўнены, што жадаеце выдаліць гэта паведамленне?</string>
     <string name="message_deleted_by_you">Вы выдалілі паведамленне</string>
-    <string name="message_last_edited_by">Адрэдагаваў(-ла) %1$s</string>
+    <string name="message_last_edited_by">Адрэдагавана %1$s</string>
     <string name="message_poll_tap_to_open">Націсніце, каб адкрыць апытанне</string>
     <string name="message_search_begin_empty">Няма вынікаў пошуку</string>
     <string name="message_search_begin_typing">Пачніце ўводзіць тэкст для пошуку …</string>
@@ -117,6 +117,7 @@
     <string name="nc_add_participants">Дадаць удзельнікаў</string>
     <string name="nc_add_to_favorites">У абранае</string>
     <string name="nc_all_ok_operation">ОК, усё гатова!</string>
+    <string name="nc_attendee_pin">PIN-код: %1$s</string>
     <string name="nc_biometric_unlock">Разблакіраваць %1$s</string>
     <string name="nc_bluetooth_permission_hint">Каб уключыць Bluetooth дынамікі, дайце доступ да \"Прылад паблізу\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Прыняць як відэавыклік</string>
@@ -162,7 +163,7 @@
     <string name="nc_common_create">Стварыць</string>
     <string name="nc_common_disabled">Адключана</string>
     <string name="nc_common_dismiss">Адхіліць</string>
-    <string name="nc_common_error_sorry">Нешта пайшло не так!</string>
+    <string name="nc_common_error_sorry">Прабачце, нешта пайшло не так!</string>
     <string name="nc_common_more_options">Больш параметраў</string>
     <string name="nc_common_set">Задаць</string>
     <string name="nc_common_skip">Прапусціць</string>
@@ -171,13 +172,13 @@
     <string name="nc_connecting_call">Злучэнне …</string>
     <string name="nc_contacts_done">Гатова</string>
     <string name="nc_conversation_description">Апісанне размовы</string>
-    <string name="nc_conversation_menu_conversation_info">Інфармацыя пра размову</string>
+    <string name="nc_conversation_menu_conversation_info">Інфармацыя аб размове</string>
     <string name="nc_conversation_menu_video_call">Відэавыклік</string>
     <string name="nc_conversation_menu_voice_call">Галасавы выклік</string>
     <string name="nc_conversation_not_found">Размова не знойдзена</string>
     <string name="nc_conversation_settings">Налады размовы</string>
     <string name="nc_conversations_empty">Далучайцеся да размовы або пачніце новую</string>
-    <string name="nc_conversations_empty_details">Прывітайцеся з сябрамі і калегамі!</string>
+    <string name="nc_conversations_empty_details">Павітайцеся з сябрамі і калегамі!</string>
     <string name="nc_copy_message">Капіяваць</string>
     <string name="nc_create_new_conversation">Стварыць новую размову</string>
     <string name="nc_create_poll">Стварыць апытанне</string>
@@ -261,6 +262,7 @@
     <string name="nc_expire_message_one_week">1 тыдзень</string>
     <string name="nc_expire_messages">Тэрмін дзеяння паведамленняў</string>
     <string name="nc_expire_messages_explanation">Тэрмін дзеяння паведамленняў у чаце можа скончыцца праз пэўны час. Заўвага: файлы, абагуленыя ў чаце, не будуць выдалены для ўладальніка, але больш не будуць абагулены ў размове.</string>
+    <string name="nc_external_server_failed">Не ўдалося атрымаць налады сігналізацыі</string>
     <string name="nc_federation_invitation_accept">Прыняць</string>
     <string name="nc_federation_invitation_reject">Адхіліць</string>
     <string name="nc_federation_invited_to_room">ад %1$s у %2$s</string>
@@ -269,6 +271,7 @@
     <string name="nc_file_browser_back">Назад</string>
     <string name="nc_file_storage_permission">Патрабуецца дазвол на доступ да файлаў</string>
     <string name="nc_filter">Фільтраваць размовы</string>
+    <string name="nc_following_link">Карыстальнік, які перайшоў па публічнай спасылцы</string>
     <string name="nc_formatted_message_you">Вы: %1$s</string>
     <string name="nc_forward_message">Пераслаць</string>
     <string name="nc_forward_to_three_dots">Пераслаць …</string>
@@ -291,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Запрашэнні былі адпраўлены зноў.</string>
     <string name="nc_guest_access_share_link">Абагуліць спасылку на размову</string>
     <string name="nc_hint_enter_a_message">Увядзіце паведамленне …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Аптымізацыя батарэі не ігнаруецца. Гэта трэба змяніць, каб апавяшчэнні працавалі ў фонавым рэжыме! Націсніце \"ОК\" і выберыце \"Усе праграмы\" -> %1$s -> \"Не аптымізаваць\"</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ігнараваць аптымізацыю батарэі</string>
     <string name="nc_important_conversation">Важная размова</string>
     <string name="nc_important_conversation_desc">Статус карыстальніка \"Не турбаваць\" ігнаруецца падчас важных размоў</string>
@@ -428,6 +430,7 @@
     <string name="nc_sent_an_audio_you">Вы адправілі аўдыя.</string>
     <string name="nc_sent_an_image" formatted="true">%1$s адправіў(-ла) відарыс.</string>
     <string name="nc_sent_an_image_you">Вы адправілі відарыс.</string>
+    <string name="nc_sent_deck_card" formatted="true">%1$s адправіў(-ла) картку Deck</string>
     <string name="nc_server_connect">Праверыць злучэнне з серверам</string>
     <string name="nc_server_db_upgrade_needed">Абнавіце базу даных %1$s</string>
     <string name="nc_server_failed_to_import_account">Не ўдалося імпартаваць выбраны ўліковы запіс</string>
@@ -509,6 +512,7 @@
     <string name="nc_share_this_location">Абагуліць гэта месцазнаходжанне</string>
     <string name="nc_share_to_choose_account">Выберыце ўліковы запіс</string>
     <string name="nc_shared_items">Абагуленыя элементы</string>
+    <string name="nc_shared_items_deck_card">Картка Deck</string>
     <string name="nc_shared_items_description">Відарысы, файлы, галасавыя паведамленні…</string>
     <string name="nc_shared_items_empty">Няма абагуленых элементаў</string>
     <string name="nc_shared_items_location">Месцазнаходжанне</string>
@@ -645,6 +649,7 @@
     <string name="started_a_call">пачаў(-ла) выклік</string>
     <string name="status_message">Паведамленне статусу</string>
     <string name="status_reverted">Статус вернуты</string>
+    <string name="switch_to_breakout_room">Пераключыцца на групавы пакой</string>
     <string name="switch_to_main_room">Пераключыцца на галоўны пакой</string>
     <string name="take_photo">Зрабіць фота</string>
     <string name="take_photo_error_deleting_picture">Памылка пры здымку</string>

@@ -294,7 +294,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Cuireadh cuirí amach arís.</string>
     <string name="nc_guest_access_share_link">Roinn nasc an chomhrá</string>
     <string name="nc_hint_enter_a_message">Cuir isteach teachtaireacht…</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Ní thugtar aird ar bharrfheabhsú ceallraí. Ba cheart é seo a athrú chun a chinntiú go n-oibríonn fógraí sa chúlra! Cliceáil OK agus roghnaigh \"Gach aip\" -> %1$s -> Ná optamaigh le do thoil</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
     <string name="nc_important_conversation_desc">Déantar neamhaird ar stádas an úsáideora \"Ná cuir isteach\" i gcás comhráite tábhachtacha</string>

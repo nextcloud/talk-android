@@ -16,6 +16,8 @@ import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.InvitationsModel
 import com.nextcloud.talk.invitation.data.InvitationsRepository
+import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.openconversations.data.OpenConversationsRepository
 import com.nextcloud.talk.threadsoverview.data.ThreadsRepository
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
@@ -39,6 +41,7 @@ class ConversationsListViewModel @Inject constructor(
     private val repository: OfflineConversationsRepository,
     private val threadsRepository: ThreadsRepository,
     private val currentUserProvider: CurrentUserProviderNew,
+    private val openConversationsRepository: OpenConversationsRepository,
     var userManager: UserManager
 ) : ViewModel() {
 
@@ -62,6 +65,15 @@ class ConversationsListViewModel @Inject constructor(
 
     private val _threadsExistState = MutableStateFlow<ThreadsExistUiState>(ThreadsExistUiState.None)
     val threadsExistState: StateFlow<ThreadsExistUiState> = _threadsExistState
+
+    sealed class OpenConversationsUiState {
+        data object None : OpenConversationsUiState()
+        data class Success(val conversations: List<Conversation>) : OpenConversationsUiState()
+        data class Error(val exception: Throwable) : OpenConversationsUiState()
+    }
+
+    private val _openConversationsState = MutableStateFlow<OpenConversationsUiState>(OpenConversationsUiState.None)
+    val openConversationsState: StateFlow<OpenConversationsUiState> = _openConversationsState
 
     object GetRoomsStartState : ViewState
     object GetRoomsErrorState : ViewState
@@ -156,7 +168,7 @@ class ConversationsListViewModel @Inject constructor(
             }
         }
 
-        if (!hasSpreedFeatureCapability(currentUser.capabilities!!.spreedCapability!!, SpreedFeatures.THREADS)) {
+        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.THREADS)) {
             _threadsExistState.value = ThreadsExistUiState.Success(false)
             return
         }
@@ -184,6 +196,29 @@ class ConversationsListViewModel @Inject constructor(
                 _threadsExistState.value = ThreadsExistUiState.Success(false)
                 Log.d(TAG, "already checked in the last 2 hours if followed threads exist. Skip check.")
             }
+        }
+    }
+
+    fun fetchOpenConversations() {
+        _openConversationsState.value = OpenConversationsUiState.None
+
+        if (!hasSpreedFeatureCapability(currentUser.capabilities?.spreedCapability, SpreedFeatures.LISTABLE_ROOMS)) {
+            return
+        }
+
+        viewModelScope.launch {
+            openConversationsRepository.fetchConversations("")
+                .onSuccess { conversations ->
+                    if (conversations.isEmpty()) {
+                        _openConversationsState.value = OpenConversationsUiState.None
+                    } else {
+                        _openConversationsState.value = OpenConversationsUiState.Success(conversations)
+                    }
+                }
+                .onFailure { exception ->
+                    Log.e(TAG, "Failed to fetch conversations", exception)
+                    _openConversationsState.value = OpenConversationsUiState.Error(exception)
+                }
         }
     }
 

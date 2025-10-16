@@ -294,7 +294,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Es wurden erneut Einladungen verschickt.</string>
     <string name="nc_guest_access_share_link">Unterhaltungs-Link teilen</string>
     <string name="nc_hint_enter_a_message">Eine Nachricht eingeben …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Die Batterieoptimierung ist aktiviert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte klicken Sie auf OK und wählen Sie \"Alle Apps\" -> %1$s -> Nicht optimieren</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Die Akkuoptimierung wird nicht ignoriert. Dies sollte geändert werden, um sicherzustellen, dass Benachrichtigungen im Hintergrund funktionieren! Bitte dazu  auf OK klicken und \"Alle Apps“ wählen -> %1$s und anschließend \"Nicht optimieren“ bzw. \"Hintergrundnutzung zulassen -> Uneingeschränkt“ auswählen.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Batterieoptimierung ignorieren</string>
     
     <!-- Image compression levels -->
@@ -697,6 +697,8 @@
     <string name="translation_error_title">Übersetzung fehlgeschlagen</string>
     <string name="translation_from">Von</string>
     <string name="translation_to">An</string>
+    <string name="turn_off_background_blur">Hintergrundunschärfe ausschalten</string>
+    <string name="turn_on_background_blur">Hintergrundunschärfe einschalten</string>
     <string name="typing_1_other">und 1 anderer schreibt…</string>
     <string name="typing_are_typing">schreiben…</string>
     <string name="typing_is_typing">schreibt…</string>

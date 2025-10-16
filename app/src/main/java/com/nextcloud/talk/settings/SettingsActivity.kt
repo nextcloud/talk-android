@@ -947,7 +947,7 @@ class SettingsActivity :
             binding.settingsShowNotificationWarning.visibility = View.GONE
         }
 
-        if (CapabilitiesUtil.isReadStatusAvailable(currentUser!!.capabilities!!.spreedCapability!!)) {
+        if (CapabilitiesUtil.isReadStatusAvailable(currentUser?.capabilities?.spreedCapability)) {
             binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE

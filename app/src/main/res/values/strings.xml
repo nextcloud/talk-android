@@ -203,7 +203,7 @@ How to translate with transifex:
     <string name="nc_diagnose_dialog_open_diagnose">Open diagnosis screen</string>
 
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s -> Do not optimize</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimization is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s and then \"Do not optimize\" or \"Allow background usage -> Unrestricted\".</string>
     <string name="nc_show_notification_warning_title">Show regular notification warning</string>
     <string name="nc_show_notification_warning_description">When notifications are not set up correctly, show a regular warning</string>
     <string name="nc_notification_warning">Notifications are not set up correctly</string>
@@ -918,4 +918,6 @@ How to translate with transifex:
     <string name="location_permission_denied_msg">Please enable it in the app settings</string>
     <string name="location_services_disabled">Location services disabled</string>
     <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
+    <string name="turn_on_background_blur">Turn on background blur</string>
+    <string name="turn_off_background_blur">Turn off background blur</string>
 </resources>

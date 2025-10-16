@@ -79,6 +79,7 @@
     <string name="message_search_begin_typing">Hasi idazten bilatzeko …</string>
     <string name="message_search_hint">Bilatu …</string>
     <string name="messages">Mezuak</string>
+    <string name="mute_all_notifications">Isilarazi jakinarazpen guztiak</string>
     <string name="nc_Server_account_imported">Aukeratutako kontua inportatu da eta eskuragarri dago</string>
     <string name="nc_about">Honi buruz</string>
     <string name="nc_account_chooser_active_user">Erabiltzaile aktiboa</string>

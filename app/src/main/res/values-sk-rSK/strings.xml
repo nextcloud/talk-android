@@ -275,7 +275,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Pozvánky boli odoslané.</string>
     <string name="nc_guest_access_share_link">Zdieľať odkaz na konverzáciu</string>
     <string name="nc_hint_enter_a_message">Vložte správu …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Optimalizácia batérie nie je ignorovaná. Toto by sa malo zmeniť, aby ste sa uistili, že upozornenia fungujú na pozadí! Kliknite na tlačidlo OK a vyberte možnosť Všetky aplikácie -> %1$s -> Neoptimalizovať</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovať optimalizáciu batérie</string>
     <string name="nc_important_conversation">Dôležitá konverzácia</string>
     <string name="nc_invitations">Pozvánky</string>

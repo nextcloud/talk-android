@@ -60,7 +60,7 @@ class ContextChatViewModel @Inject constructor(private val chatNetworkDataSource
                 token = token,
                 messageId = messageId,
                 limit = LIMIT,
-                threadId = threadId?.toInt()
+                threadId = threadId?.toIntOrNull()
             )
 
             if (threadId.isNullOrEmpty()) {

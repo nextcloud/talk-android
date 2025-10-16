@@ -272,7 +272,6 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitasjoner ble sendt ut igjen.</string>
     <string name="nc_guest_access_share_link">Del samtalekobling</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimalisering ignoreres ikke. Dette bør endres for å sikre at varsler fungerer i bakgrunnen! Klikk OK og velg \"Alle apper\" -> %1$s -> Ikke optimaliser</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer batterioptimalisering</string>
     <string name="nc_important_conversation">Viktig samtale</string>
     <string name="nc_invitations">Invitasjoner</string>

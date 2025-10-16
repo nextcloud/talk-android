@@ -124,9 +124,9 @@ class RepositoryModule {
 
     @Provides
     fun provideOpenConversationsRepository(
-        ncApi: NcApi,
+        ncApiCoroutines: NcApiCoroutines,
         userProvider: CurrentUserProviderNew
-    ): OpenConversationsRepository = OpenConversationsRepositoryImpl(ncApi, userProvider)
+    ): OpenConversationsRepository = OpenConversationsRepositoryImpl(ncApiCoroutines, userProvider)
 
     @Provides
     fun translateRepository(ncApi: NcApi): TranslateRepository = TranslateRepositoryImpl(ncApi)
