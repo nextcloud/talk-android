@@ -6,6 +6,8 @@
  */
 package com.nextcloud.talk.call;
 
+import com.nextcloud.talk.activities.ParticipantUiState;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -74,7 +76,7 @@ public class LocalStateBroadcasterMcu extends LocalStateBroadcaster {
     }
 
     @Override
-    public void handleCallParticipantAdded(CallParticipantModel callParticipantModel) {
+    public void handleCallParticipantAdded(ParticipantUiState uiState) {
         if (sendStateWithRepetition != null) {
             sendStateWithRepetition.dispose();
         }
@@ -84,21 +86,19 @@ public class LocalStateBroadcasterMcu extends LocalStateBroadcaster {
             .concatMap(i -> Observable.just(i).delay(i, TimeUnit.SECONDS, Schedulers.io()))
             .subscribe(value -> sendState());
 
-        String sessionId = callParticipantModel.getSessionId();
-        Disposable sendStateWithRepetitionForParticipant = sendStateWithRepetitionByParticipant.get(sessionId);
+        Disposable sendStateWithRepetitionForParticipant = sendStateWithRepetitionByParticipant.get(uiState.getSessionKey());
         if (sendStateWithRepetitionForParticipant != null) {
             sendStateWithRepetitionForParticipant.dispose();
         }
 
-        sendStateWithRepetitionByParticipant.put(sessionId, Observable
+        sendStateWithRepetitionByParticipant.put(uiState.getSessionKey(), Observable
             .fromArray(new Integer[]{0, 1, 2, 4, 8, 16})
             .concatMap(i -> Observable.just(i).delay(i, TimeUnit.SECONDS, Schedulers.io()))
-            .subscribe(value -> sendState(sessionId)));
+            .subscribe(value -> sendState(uiState.getSessionKey())));
     }
 
     @Override
-    public void handleCallParticipantRemoved(CallParticipantModel callParticipantModel) {
-        String sessionId = callParticipantModel.getSessionId();
+    public void handleCallParticipantRemoved(String sessionId) {
         Disposable sendStateWithRepetitionForParticipant = sendStateWithRepetitionByParticipant.get(sessionId);
         if (sendStateWithRepetitionForParticipant != null) {
             sendStateWithRepetitionForParticipant.dispose();

@@ -6,12 +6,6 @@
  */
 package com.nextcloud.talk.call
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import org.webrtc.PeerConnection.IceConnectionState
 /**
  * Helper class to send the local participant state to the other participants in the call when an MCU is not used.
  *
@@ -34,6 +28,12 @@ import org.webrtc.PeerConnection.IceConnectionState
  * explicitly fetched from the internal signaling server, so even in case of a failed connection they will be
  * eventually received once the remote participant connects again.
  */
+import com.nextcloud.talk.activities.ParticipantUiState
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
+import org.webrtc.PeerConnection.IceConnectionState
 import java.util.concurrent.ConcurrentHashMap
 
 class LocalStateBroadcasterNoMcu(
@@ -45,15 +45,11 @@ class LocalStateBroadcasterNoMcu(
     // Map sessionId -> observer wrapper (Flow collector job)
     private val iceConnectionStateObservers = ConcurrentHashMap<String, IceConnectionStateObserver>()
 
-    private inner class IceConnectionStateObserver(val participant: CallParticipantModel) {
+    private inner class IceConnectionStateObserver(val uiState: ParticipantUiState) {
         private var job: Job? = null
 
         init {
-            job = scope.launch {
-                participant.uiState.collect { uiState ->
-                    handleStateChange(uiState)
-                }
-            }
+            handleStateChange(uiState)
         }
 
         private fun handleStateChange(uiState: ParticipantUiState) {
@@ -68,19 +64,21 @@ class LocalStateBroadcasterNoMcu(
 
         fun remove() {
             job?.cancel()
-            iceConnectionStateObservers.remove(participant.sessionId)
+            iceConnectionStateObservers.remove(uiState.sessionKey)
         }
     }
 
-    override fun handleCallParticipantAdded(callParticipantModel: CallParticipantModel) {
-        iceConnectionStateObservers[callParticipantModel.sessionId]?.remove()
+    override fun handleCallParticipantAdded(uiState: ParticipantUiState) {
+        uiState.sessionKey?.let {
+            iceConnectionStateObservers[it]?.remove()
 
-        iceConnectionStateObservers[callParticipantModel.sessionId!!] =
-            IceConnectionStateObserver(callParticipantModel)
+            iceConnectionStateObservers[it] =
+                IceConnectionStateObserver(uiState)
+        }
     }
 
-    override fun handleCallParticipantRemoved(callParticipantModel: CallParticipantModel) {
-        iceConnectionStateObservers[callParticipantModel.sessionId]?.remove()
+    override fun handleCallParticipantRemoved(sessionId: String) {
+        iceConnectionStateObservers[sessionId]?.remove()
     }
 
     override fun destroy() {
