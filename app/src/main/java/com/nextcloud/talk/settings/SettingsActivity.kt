@@ -181,6 +181,8 @@ class SettingsActivity :
         setupPhoneBookIntegration(isOnline.value)
 
         setupClientCertView()
+        showSetupClientCertView(isOnline.value)
+
     }
 
     private fun handleNetworkChange(isOnline: Boolean) {
@@ -189,6 +191,7 @@ class SettingsActivity :
         setupSourceCodeUrl(isOnline)
         setupPhoneBookIntegration(isOnline)
         setupCheckables(isOnline)
+        showSetupClientCertView(isOnline)
     }
 
     private fun handleIntent(intent: Intent) {
@@ -572,6 +575,14 @@ class SettingsActivity :
             }
         } else {
             binding.settingsLicence.visibility = View.GONE
+        }
+    }
+
+    private fun showSetupClientCertView(isOnline:Boolean){
+        if(isOnline){
+            binding.settingsClientCert.visibility = View.VISIBLE
+        }else{
+            binding.settingsClientCert.visibility = View.GONE
         }
     }
 
