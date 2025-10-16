@@ -55,7 +55,7 @@
     <string name="dontClear">Ryd ikke</string>
     <string name="edit">Redigér</string>
     <string name="edit_error_24_hours_old_message">Beskeder der er ældre end 24 timer kan ikke redigeres</string>
-    <string name="edit_message_icon_description">Rediger besked</string>
+    <string name="edit_message_icon_description">Redigér besked</string>
     <string name="emoji_category_recent">Nylige</string>
     <string name="encrypted">Krypteret</string>
     <string name="end_call">Afslut opkald</string>
@@ -150,15 +150,15 @@
     <string name="nc_certificate_error">Din SSL indstilling forhindrede forbindelse</string>
     <string name="nc_change_cert_auth">Skift godkendelsescertifikat</string>
     <string name="nc_change_password">Skift adgangskode</string>
-    <string name="nc_clear_edit_button">Annuller redigering</string>
-    <string name="nc_clear_edit_message">Annuller redigering</string>
+    <string name="nc_clear_edit_button">Annullér redigering</string>
+    <string name="nc_clear_edit_message">Annullér redigering</string>
     <string name="nc_clear_history">Slet alle beskeder</string>
     <string name="nc_clear_history_success">Alle beskeder blev slettet</string>
     <string name="nc_clear_history_warning">Ønsker du virkelig at slette alle beskeder i denne samtale?</string>
     <string name="nc_client_cert_change">Skift kliencertifikat</string>
     <string name="nc_client_cert_setup">Indstil klientcertifikat</string>
     <string name="nc_common_and">og</string>
-    <string name="nc_common_copy">Kopier</string>
+    <string name="nc_common_copy">Kopiér</string>
     <string name="nc_common_copy_success">Kopieret til udklipsholder</string>
     <string name="nc_common_create">Opret</string>
     <string name="nc_common_disabled">Deaktiveret</string>
@@ -179,7 +179,7 @@
     <string name="nc_conversation_settings">Samtale indstillinger</string>
     <string name="nc_conversations_empty">Deltag i en samtale eller start en ny</string>
     <string name="nc_conversations_empty_details">Sig hej til dine venner og kollegaer.</string>
-    <string name="nc_copy_message">Kopier</string>
+    <string name="nc_copy_message">Kopiér</string>
     <string name="nc_create_new_conversation">Opret ny samtale</string>
     <string name="nc_create_poll">Opret afstemning</string>
     <string name="nc_current_user">Dig:</string>
@@ -250,7 +250,7 @@
     <string name="nc_display_name_not_stored">Kunne ikke opbevare skærmnavn, afbryder</string>
     <string name="nc_edit_icon">Redigér</string>
     <string name="nc_edit_message">Redigér</string>
-    <string name="nc_edit_message_text">Rediger besked</string>
+    <string name="nc_edit_message_text">Redigér besked</string>
     <string name="nc_edited_by_admin">Redigeret af admin</string>
     <string name="nc_event_conversation_menu">Begivenheds samtale menu</string>
     <string name="nc_event_schedule">Planlæg</string>
@@ -674,7 +674,7 @@
     <string name="tomorrow">I morgen</string>
     <string name="translate">Oversæt</string>
     <string name="translation">Oversættelse</string>
-    <string name="translation_copy_translated_text">Kopier oversat tekst</string>
+    <string name="translation_copy_translated_text">Kopiér oversat tekst</string>
     <string name="translation_detect_language">Detekter sprog</string>
     <string name="translation_device_settings">Enhedsindstillinger</string>
     <string name="translation_error_message">Kunne ikke finde sprog</string>
