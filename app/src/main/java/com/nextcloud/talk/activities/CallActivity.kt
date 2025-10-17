@@ -913,7 +913,6 @@ class CallActivity : CallBaseActivity() {
     @SuppressLint("ClickableViewAccessibility")
     private fun initViews() {
         Log.d(TAG, "initViews")
-        binding!!.callInfosLinearLayout.visibility = View.VISIBLE
         if (!isPipModePossible) {
             binding!!.pictureInPictureButton.visibility = View.GONE
         }
@@ -2599,7 +2598,6 @@ class CallActivity : CallBaseActivity() {
     private fun handleCallStateLeaving() {
         if (!isDestroyed) {
             stopCallingSound()
-            binding!!.callModeTextView.text = descriptionForCallType
             binding!!.callStates.callStateTextView.setText(R.string.nc_leaving_call)
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
             binding!!.composeParticipantGrid.visibility = View.INVISIBLE
@@ -2628,8 +2626,6 @@ class CallActivity : CallBaseActivity() {
 
     private fun handleCallStateInConversation() {
         stopCallingSound()
-        binding!!.callModeTextView.text = descriptionForCallType
-
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
         }
@@ -2645,7 +2641,6 @@ class CallActivity : CallBaseActivity() {
     }
 
     private fun handleCallStateJoined() {
-        binding!!.callModeTextView.text = descriptionForCallType
         if (isIncomingCallFromNotification) {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_incoming)
         } else {
@@ -2668,7 +2663,6 @@ class CallActivity : CallBaseActivity() {
     private fun handleCallStateReconnecting() {
         playCallingSound()
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
-        binding!!.callModeTextView.text = descriptionForCallType
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
@@ -2686,7 +2680,6 @@ class CallActivity : CallBaseActivity() {
     private fun handleCallStatePublisherFailed() {
         // No calling sound when the publisher failed
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_reconnecting)
-        binding!!.callModeTextView.text = descriptionForCallType
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
@@ -2704,7 +2697,6 @@ class CallActivity : CallBaseActivity() {
     private fun handleCallStateCallingTimeout() {
         hangup(shutDownView = false, endCallForAll = false)
         binding!!.callStates.callStateTextView.setText(R.string.nc_call_timeout)
-        binding!!.callModeTextView.text = descriptionForCallType
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
@@ -2728,7 +2720,6 @@ class CallActivity : CallBaseActivity() {
             binding!!.callStates.callStateTextView.setText(R.string.nc_call_ringing)
         }
         binding!!.callConversationNameTextView.text = conversationName
-        binding!!.callModeTextView.text = descriptionForCallType
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.VISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.VISIBLE
         }
@@ -2742,16 +2733,6 @@ class CallActivity : CallBaseActivity() {
             binding!!.callStates.errorImageView.visibility = View.GONE
         }
     }
-
-    private val descriptionForCallType: String
-        get() {
-            val appName = resources.getString(R.string.nc_app_product_name)
-            return if (isVoiceOnlyCall) {
-                String.format(resources.getString(R.string.nc_call_voice), appName)
-            } else {
-                String.format(resources.getString(R.string.nc_call_video), appName)
-            }
-        }
 
     private fun playCallingSound() {
         stopCallingSound()
@@ -3064,7 +3045,6 @@ class CallActivity : CallBaseActivity() {
     override fun updateUiForPipMode() {
         Log.d(TAG, "updateUiForPipMode")
         binding!!.callControls.visibility = View.GONE
-        binding!!.callInfosLinearLayout.visibility = View.GONE
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
         binding!!.pipCallConversationNameTextView.text = conversationName
@@ -3106,7 +3086,6 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.callControls.visibility = View.VISIBLE
         initViews()
-        binding!!.callInfosLinearLayout.visibility = View.VISIBLE
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
     }
 

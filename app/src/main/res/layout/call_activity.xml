@@ -4,7 +4,7 @@
   ~
   ~ SPDX-FileCopyrightText: 2023 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
-  ~ SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
+  ~ SPDX-FileCopyrightText: 2021-2025 Marcel Hibbe <dev@mhibbe.de>
   ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
 -->
@@ -76,64 +76,55 @@
                 android:background="@android:color/transparent"
                 android:orientation="horizontal"
                 android:weightSum="1">
-
-                <ImageView
-                    android:id="@+id/call_recording_indicator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:contentDescription="@null"
-                    android:src="@drawable/record_stop"
-                    android:translationZ="2dp"
-                    android:visibility="gone"
-                    tools:visibility="visible">
-                </ImageView>
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/callInfosLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:paddingTop="20dp">
+                android:paddingTop="10dp">
 
-                <TextView
-                    android:id="@+id/callModeTextView"
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textColor="@color/call_incomingCallTextView"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="Voice Call" />
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
 
-                <TextView
-                    android:id="@+id/call_duration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:text="00:22" />
+                    <ImageView
+                        android:id="@+id/call_recording_indicator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription="@null"
+                        android:src="@drawable/record_stop"
+                        android:translationZ="2dp"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+                    </ImageView>
 
-                <TextView
-                    android:id="@+id/callConversationNameTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:ellipsize="marquee"
-                    android:textAlignment="center"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    android:textStyle="bold"
-                    tools:text="Marsellus Wallace" />
+                    <TextView
+                        android:id="@+id/callConversationNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:ellipsize="end"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Marsellus Wallace" />
+
+                    <TextView
+                        android:id="@+id/call_duration"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBaseline="@id/callConversationNameTextView"
+                        android:layout_alignParentEnd="true"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        tools:text="00:22"/>
+                </RelativeLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
