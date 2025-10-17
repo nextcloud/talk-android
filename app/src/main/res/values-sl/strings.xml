@@ -90,6 +90,7 @@
     <string name="nc_call_incoming">DOHODNI</string>
     <string name="nc_call_name">Naslov pogovora</string>
     <string name="nc_call_notifications">Obvestila klica</string>
+    <string name="nc_call_ongoing_notification_default_title">Klic je v teku ...</string>
     <string name="nc_call_raised_hand">Oseba %1$s je dvignila roko</string>
     <string name="nc_call_reconnecting">Poteka ponovno vzpostavljanje povezave …</string>
     <string name="nc_call_ringing">ZVONJENJE</string>

@@ -84,6 +84,7 @@
     <string name="nc_call_incoming">ВХОДЯЩИ</string>
     <string name="nc_call_name">Име на разговор</string>
     <string name="nc_call_notifications">Известия за обаждане</string>
+    <string name="nc_call_ongoing_notification_default_title">В ход е обаждане</string>
     <string name="nc_call_raised_hand">%1$s вдигна ръка</string>
     <string name="nc_call_reconnecting">Повторно свързване …</string>
     <string name="nc_call_ringing">ПОЗВЪНЯВАНЕ</string>

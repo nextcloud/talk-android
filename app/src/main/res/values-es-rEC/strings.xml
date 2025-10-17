@@ -88,6 +88,7 @@
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nombre de la conversación</string>
     <string name="nc_call_notifications">Notificaciones de llamadas</string>
+    <string name="nc_call_ongoing_notification_default_title">Llamada en progreso</string>
     <string name="nc_call_raised_hand">%1$s levantó la mano</string>
     <string name="nc_call_reconnecting">Reconectando...</string>
     <string name="nc_call_ringing">LLAMANDO</string>

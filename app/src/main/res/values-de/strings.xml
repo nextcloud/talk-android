@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">EINGEHEND</string>
     <string name="nc_call_name">Name der Unterhaltung</string>
     <string name="nc_call_notifications">Anrufbenachrichtigungen</string>
+    <string name="nc_call_ongoing_notification_default_title">Anruf ist aktiv</string>
     <string name="nc_call_raised_hand">%1$s hat die Hand gehoben</string>
     <string name="nc_call_reconnecting">Verbinde erneut …</string>
     <string name="nc_call_ringing">KLINGELT</string>

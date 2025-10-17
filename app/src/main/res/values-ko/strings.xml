@@ -86,6 +86,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">셀프 영상으로 전환</string>
     <string name="nc_call_name">대화명</string>
     <string name="nc_call_notifications">전화 알림</string>
+    <string name="nc_call_ongoing_notification_default_title">통화 진행중</string>
     <string name="nc_call_reconnecting">재연결 ...</string>
     <string name="nc_call_timeout">45초 동안 응답이 없다면 다시 시도하기를 눌러주십시오.</string>
     <string name="nc_call_unknown">%s 통화</string>

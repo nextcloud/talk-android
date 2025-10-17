@@ -117,6 +117,7 @@
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_name">Názov konverzácie</string>
     <string name="nc_call_notifications">Upozornenia na hovory</string>
+    <string name="nc_call_ongoing_notification_default_title">Prebieha hovor</string>
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znova pripájam …</string>
     <string name="nc_call_ringing">ZVONÍ</string>

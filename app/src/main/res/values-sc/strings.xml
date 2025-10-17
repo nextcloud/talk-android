@@ -64,6 +64,7 @@
     <string name="nc_call_button_content_description_hangup">Serra</string>
     <string name="nc_call_incoming">IN INTRADA</string>
     <string name="nc_call_name">Nùmene resonada</string>
+    <string name="nc_call_ongoing_notification_default_title">Mutida in cursu</string>
     <string name="nc_call_ringing">SONENDE</string>
     <string name="nc_call_state_in_call">%1$s in mutida</string>
     <string name="nc_call_state_with_phone">%1$s cun telèfonu</string>

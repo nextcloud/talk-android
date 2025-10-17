@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">SAABUV</string>
     <string name="nc_call_name">Vestluse nimi</string>
     <string name="nc_call_notifications">Kõne teavitus</string>
+    <string name="nc_call_ongoing_notification_default_title">Kõne on pooleli</string>
     <string name="nc_call_raised_hand">%1$s andis käega märku</string>
     <string name="nc_call_reconnecting">Loon uuesti ühendust…</string>
     <string name="nc_call_ringing">HELISEB</string>
@@ -294,6 +295,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Kutsed on saadetud uuesti</string>
     <string name="nc_guest_access_share_link">Jaga vestluse linki</string>
     <string name="nc_hint_enter_a_message">Koosta sõnum…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Akukasutuse optimeerimine pole eiratud. Et teavituste saatmine toimiks taustal, siis peaksid seda muutma. Palun klõpsi „Sobib“ ja vali „Kõik rakendused“ → „%1$s“ → „Ära optimeeri“ või „Luba kasutus taustal“ → „Piiramatu“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Eira akukasutuse optimeerimist</string>
     <string name="nc_important_conversation">Oluline vestlus</string>
     <string name="nc_important_conversation_desc">„Ära sega“ olek on oluliste vestluste puhul eiratud</string>
@@ -681,6 +683,8 @@
     <string name="translation_error_title">Tõlkimine ebaõnnestus</string>
     <string name="translation_from">Saatja</string>
     <string name="translation_to">Saaja</string>
+    <string name="turn_off_background_blur">Lülita tausta hägustamine välja</string>
+    <string name="turn_on_background_blur">Lülita tausta hägustamine sisse</string>
     <string name="typing_1_other">ja veel 1 osaleja kirjutab…</string>
     <string name="typing_are_typing">kirjutavad…</string>
     <string name="typing_is_typing">kirjutab…</string>

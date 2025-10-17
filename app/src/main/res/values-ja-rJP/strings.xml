@@ -107,6 +107,7 @@
     <string name="nc_call_incoming">呼び出し中</string>
     <string name="nc_call_name">会話名</string>
     <string name="nc_call_notifications">通話通知</string>
+    <string name="nc_call_ongoing_notification_default_title">呼び出し中</string>
     <string name="nc_call_raised_hand">%1$sさんが手を挙げました</string>
     <string name="nc_call_reconnecting">再接続中 …</string>
     <string name="nc_call_ringing">呼び出し中</string>

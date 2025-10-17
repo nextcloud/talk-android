@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">IN ARRIVO</string>
     <string name="nc_call_name">Nome della conversazione</string>
     <string name="nc_call_notifications">Notifiche di chiamata</string>
+    <string name="nc_call_ongoing_notification_default_title">Chiamata in corso</string>
     <string name="nc_call_raised_hand">%1$s ha alazato la mano</string>
     <string name="nc_call_reconnecting">Riconnessione in corso …</string>
     <string name="nc_call_ringing">STA SQUILLANDO</string>
