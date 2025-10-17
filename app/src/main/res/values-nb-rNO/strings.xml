@@ -114,6 +114,7 @@
     <string name="nc_call_incoming">INNKOMMENDE</string>
     <string name="nc_call_name">Samtalenavn</string>
     <string name="nc_call_notifications">Varsler om anrop</string>
+    <string name="nc_call_ongoing_notification_default_title">Samtale pågår</string>
     <string name="nc_call_raised_hand">%1$s rekte opp hånden</string>
     <string name="nc_call_reconnecting">Kobler til igjen...</string>
     <string name="nc_call_ringing">RINGER</string>

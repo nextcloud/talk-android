@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">ENTRANTE</string>
     <string name="nc_call_name">Nome da conversa</string>
     <string name="nc_call_notifications">Notificacións de chamadas</string>
+    <string name="nc_call_ongoing_notification_default_title">Chamada en curso</string>
     <string name="nc_call_raised_hand">%1$s ergueu a man</string>
     <string name="nc_call_reconnecting">Volvendo conectar…</string>
     <string name="nc_call_ringing">CHAMANDO</string>
@@ -294,6 +295,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foron enviados de novo.</string>
     <string name="nc_guest_access_share_link">Compartir a ligazón da conversa</string>
     <string name="nc_hint_enter_a_message">Escriba unha mensaxe…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Non se ignora a optimización da batería. Isto debería cambiarse para asegurarse de que as notificacións funcionan en segundo plano. Prema en Aceptar e seleccione «Todas as aplicacións» → %1$s e após «Non optimizar» ou «Permitir o uso en segundo plano → Sen restricións».</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar a optimización da batería</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">Nas conversas importantes, ignorarase o estado «Non molestar»</string>
@@ -681,6 +683,8 @@
     <string name="translation_error_title">Produciuse un fallo na tradución</string>
     <string name="translation_from">Desde:</string>
     <string name="translation_to">Para</string>
+    <string name="turn_off_background_blur">Desactivar o esvaemento do fondo</string>
+    <string name="turn_on_background_blur">Activar o esvaemento do fondo</string>
     <string name="typing_1_other">e 1 máis está a escribir…</string>
     <string name="typing_are_typing">están a escribiren…</string>
     <string name="typing_is_typing">está a escribir…</string>

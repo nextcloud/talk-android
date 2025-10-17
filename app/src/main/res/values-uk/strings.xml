@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">ВХІДНИЙ</string>
     <string name="nc_call_name">Назва розмови</string>
     <string name="nc_call_notifications">Сповіщення про дзвінки</string>
+    <string name="nc_call_ongoing_notification_default_title">Триває виклик</string>
     <string name="nc_call_raised_hand">%1$s підняв руку</string>
     <string name="nc_call_reconnecting">Відновлення зєднання...</string>
     <string name="nc_call_ringing">ВИКЛИК</string>

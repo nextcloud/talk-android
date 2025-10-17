@@ -77,6 +77,7 @@
     <string name="nc_call_incoming">SAAPUVA</string>
     <string name="nc_call_name">Keskustelun nimi</string>
     <string name="nc_call_notifications">Puheluilmoitukset</string>
+    <string name="nc_call_ongoing_notification_default_title">Puhelu meneillään</string>
     <string name="nc_call_reconnecting">Yhdistetään uudelleen …</string>
     <string name="nc_call_ringing">SOITETAAN</string>
     <string name="nc_call_timeout">Ei vastausta 45 sekunnissa, napauta yrittääksesi uudelleen</string>

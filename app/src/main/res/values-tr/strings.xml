@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
+    <string name="nc_call_ongoing_notification_default_title">Çağrı sürüyor</string>
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
     <string name="nc_call_ringing">ÇALIYOR</string>
@@ -294,6 +295,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Davetler gönderildi.</string>
     <string name="nc_guest_access_share_link">Görüşme bağlantısını kopyala</string>
     <string name="nc_hint_enter_a_message">Bir ileti yazın…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Pil iyileştirmesi yok sayılmıyor. Bildirimlerin arka planda çalıştığından emin olmak için bu durum değiştirilmelidir! Lütfen Tamam üzerine tıklayın ve \"Tüm uygulamalar\" -> %1$s -> \"İyileştirilmesin\" ya da \"Arka çalışmaya izin ver -> Kısıtlanmamış\" seçeneğini seçin</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Pil iyileştirmesi yok sayılsın</string>
     <string name="nc_important_conversation">Önemli görüşme</string>
     <string name="nc_important_conversation_desc">Önemli görüşmeler için \"Rahatsız etmeyin\" kullanıcı durumu yok sayılır</string>
@@ -681,6 +683,8 @@
     <string name="translation_error_title">Çeviri yapılamadı</string>
     <string name="translation_from">Kaynak dil</string>
     <string name="translation_to">Hedef dil</string>
+    <string name="turn_off_background_blur">Arka plan bulanıklaştırmayı kapat</string>
+    <string name="turn_on_background_blur">Arka plan bulanıklaştırmayı aç</string>
     <string name="typing_1_other">ve 1 diğer kişi yazıyor…</string>
     <string name="typing_are_typing">kişi yazıyor…</string>
     <string name="typing_is_typing">yazıyor…</string>

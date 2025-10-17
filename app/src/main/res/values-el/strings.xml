@@ -75,6 +75,7 @@
     <string name="nc_call_button_content_description_hangup">Κλείσιμο τηλεφώνου</string>
     <string name="nc_call_incoming">ΕΙΣΕΡΧΟΜΕΝΗ</string>
     <string name="nc_call_name">Όνομα συνομιλίας</string>
+    <string name="nc_call_ongoing_notification_default_title">Κλήση σε εξέλιξη</string>
     <string name="nc_call_reconnecting">Επανασύνδεση ...</string>
     <string name="nc_call_ringing">ΚΛΗΣΗ</string>
     <string name="nc_call_state_in_call">%1$s σε κλήση</string>

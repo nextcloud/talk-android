@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">Zinazoingia</string>
     <string name="nc_call_name">Jina la mazungumzo</string>
     <string name="nc_call_notifications">Arifu za simu</string>
+    <string name="nc_call_ongoing_notification_default_title">Simu inaendelea</string>
     <string name="nc_call_raised_hand">%1$s ameinua mkono</string>
     <string name="nc_call_reconnecting">Inaunganisha upya</string>
     <string name="nc_call_ringing">INAITA</string>
@@ -142,7 +143,7 @@
     <string name="nc_call_video">%s simu ya video</string>
     <string name="nc_call_voice">%s simu ya sauti</string>
     <string name="nc_camera_permission_hint">Kuwezesha mawasiliano ya video tafadhali toa ruhusa ya kamera</string>
-    <string name="nc_cancel">Cancel</string>
+    <string name="nc_cancel">Ghairi</string>
     <string name="nc_capabilities_failed">Imeshindwa kuleta uwezo, kukatisha</string>
     <string name="nc_caption">Manukuu</string>
     <string name="nc_certificate_dialog_text">Je, unaamini cheti cha SSL kisichojulikana hadi sasa, kilichotolewa na %1$s kwa %2$s, halali kutoka %3$s hadi %4$s?</string>
@@ -683,6 +684,8 @@
     <string name="translation_error_title">Utafsiri umeshindikana</string>
     <string name="translation_from">Tangu/ kutoka</string>
     <string name="translation_to">Mpaka/ hadi</string>
+    <string name="turn_off_background_blur">Zima ukungu wa mandharinyuma</string>
+    <string name="turn_on_background_blur">Washa ukungu wa mandharinyuma</string>
     <string name="typing_1_other">na mwingine 1 anachapisha</string>
     <string name="typing_are_typing">wanachapisha</string>
     <string name="typing_is_typing">anachapisha</string>

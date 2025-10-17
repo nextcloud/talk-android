@@ -106,6 +106,7 @@
     <string name="nc_call_incoming">SARRERAKOA</string>
     <string name="nc_call_name">Elkarrizketaren izena</string>
     <string name="nc_call_notifications">Dei jakinarazpenak</string>
+    <string name="nc_call_ongoing_notification_default_title">Deia abian da</string>
     <string name="nc_call_raised_hand">%1$s-k eskua altxatu du</string>
     <string name="nc_call_reconnecting">Berriro konektatzen …</string>
     <string name="nc_call_ringing">DEITZEN</string>

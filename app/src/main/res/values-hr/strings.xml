@@ -65,6 +65,7 @@
     <string name="nc_call_button_content_description_hangup">Poklopi</string>
     <string name="nc_call_incoming">DOLAZNI</string>
     <string name="nc_call_name">Naziv razgovora</string>
+    <string name="nc_call_ongoing_notification_default_title">Poziv u tijeku</string>
     <string name="nc_call_reconnecting">Ponovno povezivanje …</string>
     <string name="nc_call_ringing">ZVONI</string>
     <string name="nc_call_state_in_call">%1$s u pozivu</string>

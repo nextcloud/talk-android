@@ -85,6 +85,7 @@
     <string name="nc_call_button_content_description_switch_to_self_vide">تغییر به ویدئوی خود</string>
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">نام مکالمه</string>
+    <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
     <string name="nc_call_ringing">RINGING</string>
     <string name="nc_call_state_with_phone">%1$s with phone</string>
