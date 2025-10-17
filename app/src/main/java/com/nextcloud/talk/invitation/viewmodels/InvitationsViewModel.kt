@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.invitation.data.ActionEnum
 import com.nextcloud.talk.invitation.data.Invitation
@@ -20,6 +21,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class InvitationsViewModel @Inject constructor(private val repository: InvitationsRepository) : ViewModel() {
@@ -34,6 +38,14 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
     private val _fetchInvitationsViewState: MutableLiveData<ViewState> = MutableLiveData(FetchInvitationsStartState)
     val fetchInvitationsViewState: LiveData<ViewState>
         get() = _fetchInvitationsViewState
+
+    object GetInvitationsStartState : ViewState
+    object GetInvitationsEmptyState : ViewState
+    open class GetInvitationsErrorState(val error: Exception) : ViewState
+    open class GetInvitationsSuccessState(val invitations: List<Invitation>) : ViewState
+
+    private val _getInvitationsViewState = MutableStateFlow<ViewState>(GetInvitationsStartState)
+    val getInvitationsViewState: StateFlow<ViewState> = _getInvitationsViewState
 
     object InvitationActionStartState : ViewState
     object InvitationActionErrorState : ViewState
@@ -51,6 +63,22 @@ class InvitationsViewModel @Inject constructor(private val repository: Invitatio
             .subscribeOn(Schedulers.io())
             ?.observeOn(AndroidSchedulers.mainThread())
             ?.subscribe(FetchInvitationsObserver())
+    }
+
+    @Suppress("TooGenericExceptionCaught")
+    fun getInvitations(user: User) {
+        viewModelScope.launch {
+            try {
+                val invitationsModel = repository.getInvitations(user)
+                if (invitationsModel.invitations.isEmpty()) {
+                    _getInvitationsViewState.value = GetInvitationsEmptyState
+                } else {
+                    _getInvitationsViewState.value = GetInvitationsSuccessState(invitationsModel.invitations)
+                }
+            } catch (e: Exception) {
+                _getInvitationsViewState.value = GetInvitationsErrorState(e)
+            }
+        }
     }
 
     fun acceptInvitation(user: User, invitation: Invitation) {
