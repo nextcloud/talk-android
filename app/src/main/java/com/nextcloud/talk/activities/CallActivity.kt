@@ -40,9 +40,7 @@ import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
-import android.view.ViewGroup
 import android.widget.FrameLayout
-import android.widget.RelativeLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -188,7 +186,6 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.math.abs
-import kotlin.math.roundToInt
 
 @AutoInjector(NextcloudTalkApplication::class)
 @Suppress("TooManyFunctions", "ReturnCount", "LargeClass")
@@ -924,15 +921,6 @@ class CallActivity : CallBaseActivity() {
         binding!!.switchSelfVideoButton.visibility = View.GONE
         binding!!.cameraButton.visibility = View.GONE
         binding!!.selfVideoRenderer.visibility = View.GONE
-        val params = RelativeLayout.LayoutParams(
-            ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout)
-        val callControlsHeight =
-            applicationContext.resources.getDimension(R.dimen.call_controls_height).roundToInt()
-        params.setMargins(0, 0, 0, callControlsHeight)
-        binding!!.composeParticipantGrid.layoutParams = params
 
         if (!isVoiceOnlyCall) {
             if (cameraEnumerator!!.deviceNames.size < 2) {
@@ -954,7 +942,7 @@ class CallActivity : CallBaseActivity() {
             }
             false
         }
-        initGrid()
+        initPipMode()
         binding!!.composeParticipantGrid.z = 0f
     }
 
@@ -975,10 +963,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.pipSelfVideoRenderer.release()
     }
 
-    private fun initGrid() {
-        Log.d(TAG, "initGrid")
-        binding!!.composeParticipantGrid.visibility = View.VISIBLE
-
+    private fun initPipMode() {
         if (isInPipMode) {
             updateUiForPipMode()
         }
@@ -2445,7 +2430,7 @@ class CallActivity : CallBaseActivity() {
 
         localStateBroadcaster!!.handleCallParticipantAdded(callViewModel.getParticipant(sessionId)?.uiState?.value)
 
-        initGrid()
+        initPipMode()
     }
 
     private fun endPeerConnection(sessionId: String?, type: String) {
@@ -2484,13 +2469,13 @@ class CallActivity : CallBaseActivity() {
             signalingMessageReceiver!!.removeListener(offerAnswerNickProvider.videoWebRtcMessageListener)
             signalingMessageReceiver!!.removeListener(offerAnswerNickProvider.screenWebRtcMessageListener)
         }
-        initGrid()
+        initPipMode()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(configurationChangeEvent: ConfigurationChangeEvent?) {
         powerManagerUtils!!.setOrientation(Objects.requireNonNull(resources).configuration.orientation)
-        initGrid()
+        initPipMode()
     }
 
     private fun updateSelfVideoViewIceConnectionState(iceConnectionState: IceConnectionState) {
