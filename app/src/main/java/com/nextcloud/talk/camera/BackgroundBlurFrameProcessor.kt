@@ -25,7 +25,7 @@ import org.webrtc.VideoSink
 import org.webrtc.YuvHelper
 import java.nio.ByteBuffer
 
-class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Boolean) :
+class BackgroundBlurFrameProcessor(val context: Context) :
     VideoProcessor,
     ImageSegmenterHelper.SegmenterListener {
 
@@ -93,9 +93,13 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
 
             val finalFrame = blurredMat.toVideoFrame(resultBundle.inferenceTime)
 
+            if (finalFrame == null) {
+                Log.e(TAG, "Frame was null")
+            }
+
             sink?.onFrame(finalFrame)
 
-            finalFrame.release()
+            finalFrame?.release()
         } finally {
             frameMat.release()
             blurredMat.release()
@@ -133,6 +137,7 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
 
         try {
             // weirdly rotation is 270 degree in portrait and 180 degree in landscape, no idea why
+            // regardless if this behavior is device dependant, this calculation should correct the orientation
             val angle = ROT_360 - videoFrame.rotation.toDouble()
             rotationMat = Imgproc.getRotationMatrix2D(
                 center,
@@ -153,8 +158,6 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
             if (frameQueue.isEmpty()) {
                 frameQueue.add(preProcessedBitmap)
                 segmenterHelper?.segmentLiveStreamFrame(preProcessedBitmap, videoFrame.timestampNs)
-                val threadName = Thread.currentThread().name
-                Log.d("Julius", "Ran on $threadName")
             } else {
                 // A frame is already being processed, drop this one
                 preProcessedBitmap.recycle()
@@ -169,52 +172,57 @@ class BackgroundBlurFrameProcessor(val context: Context, val isFrontFacing: Bool
         this.sink = sink
     }
 
-    private fun Mat.toVideoFrame(time: Long): VideoFrame {
-        val i420Mat = Mat()
-        Imgproc.cvtColor(this, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
+    private fun Mat.toVideoFrame(time: Long): VideoFrame? =
+        runCatching {
+            val i420Mat = Mat()
+            Imgproc.cvtColor(this, i420Mat, Imgproc.COLOR_RGBA2YUV_I420)
 
-        // Get the raw bytes from the new I420 Mat to i420ByteArray
-        val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
-        i420Mat.get(0, 0, i420ByteArray)
+            // Get the raw bytes from the new I420 Mat to i420ByteArray
+            val i420ByteArray = ByteArray((i420Mat.total() * i420Mat.elemSize()).toInt())
+            i420Mat.get(0, 0, i420ByteArray)
 
-        val width = this.width()
-        val height = this.height()
+            val width = this.width()
+            val height = this.height()
 
-        val yPlaneSize = width * height
-        val uvPlaneSize = (width / 2) * (height / 2)
+            val yPlaneSize = width * height
+            val uvPlaneSize = (width / 2) * (height / 2)
 
-        val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
-        val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
-        val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+            val yBuffer = ByteBuffer.allocateDirect(yPlaneSize)
+            val uBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
+            val vBuffer = ByteBuffer.allocateDirect(uvPlaneSize)
 
-        yBuffer.put(i420ByteArray, 0, yPlaneSize)
-        uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
-        vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
+            yBuffer.put(i420ByteArray, 0, yPlaneSize)
+            uBuffer.put(i420ByteArray, yPlaneSize, uvPlaneSize)
+            vBuffer.put(i420ByteArray, yPlaneSize + uvPlaneSize, uvPlaneSize)
 
-        yBuffer.rewind()
-        uBuffer.rewind()
-        vBuffer.rewind()
+            yBuffer.rewind()
+            uBuffer.rewind()
+            vBuffer.rewind()
 
-        // Create the I420Buffer using the separate planes
-        val finalFrameBuffer = JavaI420Buffer.wrap(
-            width,
-            height,
-            yBuffer,
-            width,
-            uBuffer,
-            width / 2,
-            vBuffer,
-            width / 2,
+            // Create the I420Buffer using the separate planes
+            val finalFrameBuffer = JavaI420Buffer.wrap(
+                width,
+                height,
+                yBuffer,
+                width,
+                uBuffer,
+                width / 2,
+                vBuffer,
+                width / 2,
+                null
+            )
+
+            i420Mat.release()
+
+            return VideoFrame(finalFrameBuffer, 0, time)
+        }.getOrElse { throwable ->
+            Log.e(TAG, "Error in Mat.toVideoFrame $throwable")
+
             null
-        )
-
-        i420Mat.release()
-
-        return VideoFrame(finalFrameBuffer, 0, time)
-    }
+        }
 
     private fun VideoFrame.I420Buffer.toMat(): Mat? =
-        kotlin.runCatching {
+        runCatching {
             val chromaWidth = (width + 1) / 2
             val chromaHeight = (height + 1) / 2
             val minSize = width * height + chromaWidth * chromaHeight * 2

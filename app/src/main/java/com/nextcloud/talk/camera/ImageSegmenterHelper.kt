@@ -24,12 +24,7 @@ import org.opencv.core.Mat
 import org.opencv.core.Scalar
 import java.nio.ByteBuffer
 
-class ImageSegmenterHelper(
-    var currentDelegate: Int = DELEGATE_CPU,
-    var runningMode: RunningMode = RunningMode.LIVE_STREAM,
-    val context: Context,
-    var imageSegmenterListener: SegmenterListener? = null
-) {
+class ImageSegmenterHelper(val context: Context, var imageSegmenterListener: SegmenterListener? = null) {
 
     private var imageSegmenter: ImageSegmenter? = null
 
@@ -53,18 +48,10 @@ class ImageSegmenterHelper(
      * @throws IllegalStateException
      */
     fun setupImageSegmenter() {
-        val baseOptionsBuilder = BaseOptions.builder()
-        when (currentDelegate) {
-            DELEGATE_CPU -> {
-                baseOptionsBuilder.setDelegate(Delegate.CPU)
-            }
-
-            DELEGATE_GPU -> {
-                baseOptionsBuilder.setDelegate(Delegate.GPU)
-            }
+        val baseOptionsBuilder = BaseOptions.builder().apply {
+            setDelegate(Delegate.CPU)
+            setModelAssetPath(MODEL_SELFIE_SEGMENTER_PATH)
         }
-
-        baseOptionsBuilder.setModelAssetPath(MODEL_SELFIE_SEGMENTER_PATH)
 
         if (imageSegmenterListener == null) {
             throw IllegalStateException("ImageSegmenterListener must be set.")
@@ -73,19 +60,14 @@ class ImageSegmenterHelper(
         runCatching {
             val baseOptions = baseOptionsBuilder.build()
             val optionsBuilder = ImageSegmenter.ImageSegmenterOptions.builder()
-                .setRunningMode(runningMode)
+                .setRunningMode(RunningMode.LIVE_STREAM)
                 .setBaseOptions(baseOptions)
                 .setOutputCategoryMask(true)
                 .setOutputConfidenceMasks(false)
+                .setResultListener(this::returnSegmentationResult)
+                .setErrorListener(this::returnSegmentationHelperError)
 
-            if (runningMode == RunningMode.LIVE_STREAM) {
-                optionsBuilder
-                    .setResultListener(this::returnSegmentationResult)
-                    .setErrorListener(this::returnSegmentationHelperError)
-            }
-
-            val options = optionsBuilder.build()
-            imageSegmenter = ImageSegmenter.createFromOptions(context, options)
+            imageSegmenter = ImageSegmenter.createFromOptions(context, optionsBuilder.build())
         }.getOrElse { e ->
             when (e) {
                 is IllegalStateException -> {
@@ -114,12 +96,6 @@ class ImageSegmenterHelper(
      * @throws IllegalArgumentException
      */
     fun segmentLiveStreamFrame(bitmap: Bitmap, videoFrameTimeStamp: Long) {
-        if (runningMode != RunningMode.LIVE_STREAM) {
-            throw IllegalArgumentException(
-                "Attempting to call segmentLiveStreamFrame while not using RunningMode.LIVE_STREAM"
-            )
-        }
-
         val mpImage = BitmapImageBuilder(bitmap).build()
 
         imageSegmenter?.segmentAsync(mpImage, videoFrameTimeStamp)
@@ -146,6 +122,7 @@ class ImageSegmenterHelper(
         mat.put(0, 0, data)
 
         Core.bitwise_not(mat, mat)
+
         Core.multiply(mat, Scalar(RGB_MAX), mat)
 
         imageSegmenterListener?.onResults(
@@ -167,14 +144,10 @@ class ImageSegmenterHelper(
     data class ResultBundle(val mask: Mat, val inferenceTime: Long)
 
     companion object {
-        const val DELEGATE_CPU = 0
-        const val DELEGATE_GPU = 1 // DO NOT USE THIS
         const val OTHER_ERROR = 0
         const val GPU_ERROR = 1
-
         const val MODEL_SELFIE_SEGMENTER_PATH = "selfie_segmenter.tflite"
         const val RGB_MAX = 255.0
-
         private const val TAG = "ImageSegmenterHelper"
     }
 
