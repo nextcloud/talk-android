@@ -281,6 +281,7 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             isConnected = true,
             isAudioEnabled = false,
             isStreamEnabled = true,
+            isScreenStreamEnabled = true,
             raisedHand = true,
             avatarUrl = "",
             mediaStream = null,
