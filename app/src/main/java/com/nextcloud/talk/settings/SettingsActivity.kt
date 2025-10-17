@@ -182,7 +182,6 @@ class SettingsActivity :
 
         setupClientCertView()
         showSetupClientCertView(isOnline.value)
-
     }
 
     private fun handleNetworkChange(isOnline: Boolean) {
@@ -578,11 +577,13 @@ class SettingsActivity :
         }
     }
 
-    private fun showSetupClientCertView(isOnline:Boolean){
-        if(isOnline){
+    private fun showSetupClientCertView(isOnline: Boolean) {
+        if (isOnline) {
             binding.settingsClientCert.visibility = View.VISIBLE
-        }else{
+            binding.settingsProxyGroup.visibility = View.VISIBLE
+        } else {
             binding.settingsClientCert.visibility = View.GONE
+            binding.settingsProxyGroup.visibility = View.GONE
         }
     }
 
