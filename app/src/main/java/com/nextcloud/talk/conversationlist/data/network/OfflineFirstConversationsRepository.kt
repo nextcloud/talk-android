@@ -42,6 +42,7 @@ class OfflineFirstConversationsRepository @Inject constructor(
     private val networkMonitor: NetworkMonitor,
     private val currentUserProviderNew: CurrentUserProviderNew
 ) : OfflineConversationsRepository {
+
     override val roomListFlow: Flow<List<ConversationModel>>
         get() = _roomListFlow
     private val _roomListFlow: MutableSharedFlow<List<ConversationModel>> = MutableSharedFlow()

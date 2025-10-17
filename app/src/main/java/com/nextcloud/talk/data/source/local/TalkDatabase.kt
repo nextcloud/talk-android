@@ -19,9 +19,11 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.data.database.dao.ChatBlocksDao
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
 import com.nextcloud.talk.data.database.dao.ConversationsDao
+import com.nextcloud.talk.data.database.dao.FileUploadsDao
 import com.nextcloud.talk.data.database.model.ChatBlockEntity
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.database.model.ConversationEntity
+import com.nextcloud.talk.data.database.model.FileUploadEntity
 import com.nextcloud.talk.data.source.local.Migrations.AutoMigration16To17
 import com.nextcloud.talk.data.source.local.converters.ArrayListConverter
 import com.nextcloud.talk.data.source.local.converters.CapabilitiesConverter
@@ -46,14 +48,16 @@ import java.util.Locale
         ArbitraryStorageEntity::class,
         ConversationEntity::class,
         ChatMessageEntity::class,
-        ChatBlockEntity::class
+        ChatBlockEntity::class,
+        FileUploadEntity::class
     ],
-    version = 21,
+    version = 22,
     autoMigrations = [
         AutoMigration(from = 9, to = 10),
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
         AutoMigration(from = 19, to = 20),
-        AutoMigration(from = 20, to = 21)
+        AutoMigration(from = 20, to = 21),
+        AutoMigration(from = 21, to = 22)
     ],
     exportSchema = true
 )
@@ -75,6 +79,7 @@ abstract class TalkDatabase : RoomDatabase() {
     abstract fun conversationsDao(): ConversationsDao
     abstract fun chatMessagesDao(): ChatMessagesDao
     abstract fun chatBlocksDao(): ChatBlocksDao
+    abstract fun fileUploadsDao(): FileUploadsDao
     abstract fun arbitraryStoragesDao(): ArbitraryStoragesDao
 
     companion object {
