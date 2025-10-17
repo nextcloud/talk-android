@@ -27,9 +27,10 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isFinite
-import com.nextcloud.talk.adapters.ParticipantUiState
 import org.webrtc.EglBase
 import kotlin.math.ceil
+import android.util.Log
+import com.nextcloud.talk.activities.ParticipantUiState
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Suppress("LongParameterList")
@@ -41,6 +42,8 @@ fun ParticipantGrid(
     isVoiceOnlyCall: Boolean,
     onClick: () -> Unit
 ) {
+    Log.d("ParticipantGrid", "participantUiStates.size in Grid:" + participantUiStates.size)
+
     val configuration = LocalConfiguration.current
     val isPortrait = configuration.orientation == Configuration.ORIENTATION_PORTRAIT
 
@@ -100,7 +103,7 @@ fun ParticipantGrid(
         ) {
             items(
                 participantUiStates,
-                key = { it.sessionKey }
+                key = { it.sessionKey!! }
             ) { participant ->
                 ParticipantTile(
                     participantUiState = participant,
@@ -278,9 +281,14 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             isConnected = true,
             isAudioEnabled = false,
             isStreamEnabled = true,
+            isScreenStreamEnabled = true,
             raisedHand = true,
             avatarUrl = "",
-            mediaStream = null
+            mediaStream = null,
+            actorType = null,
+            actorId = null,
+            userId = null,
+            isInternal = false
         )
         participantList.add(participant)
     }

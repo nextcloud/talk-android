@@ -11,6 +11,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -33,7 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.ParticipantUiState
+import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
 
@@ -50,7 +51,7 @@ fun ParticipantTile(
     modifier: Modifier = Modifier,
     isVoiceOnlyCall: Boolean
 ) {
-    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick)
+    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick!!)
 
     BoxWithConstraints(
         modifier = modifier
@@ -87,16 +88,31 @@ fun ParticipantTile(
                 )
             }
 
-            if (!participantUiState.isAudioEnabled) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
-                    contentDescription = "Mic Off",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(6.dp)
-                        .size(24.dp),
-                    tint = Color.White
-                )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+            ) {
+                if (participantUiState.isScreenStreamEnabled) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_monitor_24),
+                        contentDescription = "Mic Off",
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
+                }
+
+                if (!participantUiState.isAudioEnabled) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
+                        contentDescription = "Mic Off",
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
+                }
             }
 
             Text(
@@ -131,9 +147,14 @@ fun ParticipantTilePreview() {
         isConnected = true,
         isAudioEnabled = false,
         isStreamEnabled = true,
+        isScreenStreamEnabled = true,
         raisedHand = true,
         avatarUrl = "",
-        mediaStream = null
+        mediaStream = null,
+        actorType = null,
+        actorId = null,
+        userId = null,
+        isInternal = false
     )
     ParticipantTile(
         participantUiState = participant,
