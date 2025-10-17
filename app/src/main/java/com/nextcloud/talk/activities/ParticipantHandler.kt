@@ -17,7 +17,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import org.webrtc.MediaStream
-import org.webrtc.PeerConnection
 import org.webrtc.PeerConnection.IceConnectionState
 
 class ParticipantHandler(
@@ -31,6 +30,7 @@ class ParticipantHandler(
             isConnected = false,
             isAudioEnabled = false,
             isStreamEnabled = false,
+            isScreenStreamEnabled = false,
             raisedHand = false,
             isInternal = false
         )
@@ -56,29 +56,39 @@ class ParticipantHandler(
 
     private val screenPeerConnectionObserver: PeerConnectionObserver = object : PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream?) {
-            _uiState.update { it.copy(screenMediaStream = mediaStream) }
+            handleScreenStreamChange(mediaStream)
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
-            _uiState.update { it.copy(screenMediaStream = null) }
+            handleScreenStreamChange(mediaStream)
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
+            // TODO
             // callParticipantModel.setScreenIceConnectionState(iceConnectionState)
         }
     }
 
     private fun handleStreamChange(mediaStream: MediaStream?) {
-        if (mediaStream == null) {
-            _uiState.update { it.copy(mediaStream = null) }
-            _uiState.update { it.copy(isStreamEnabled = false) }
-            return
+        val hasAtLeastOneVideoStream = mediaStream?.videoTracks?.isNotEmpty() == true
+
+        _uiState.update {
+            it.copy(
+                mediaStream = mediaStream,
+                isStreamEnabled = hasAtLeastOneVideoStream
+            )
         }
+    }
 
-        val hasAtLeastOneVideoStream = mediaStream.videoTracks != null && !mediaStream.videoTracks.isEmpty()
+    private fun handleScreenStreamChange(mediaStream: MediaStream?) {
+        val hasAtLeastOneVideoStream = mediaStream?.videoTracks?.isNotEmpty() == true
 
-        _uiState.update { it.copy(mediaStream = mediaStream) }
-        _uiState.update { it.copy(isStreamEnabled = hasAtLeastOneVideoStream) }
+        _uiState.update {
+            it.copy(
+                screenMediaStream = mediaStream,
+                isScreenStreamEnabled = hasAtLeastOneVideoStream
+            )
+        }
     }
 
     private fun handleIceConnectionStateChange(iceConnectionState: IceConnectionState?) {
@@ -89,10 +99,7 @@ class ParticipantHandler(
             _uiState.update { it.copy(isStreamEnabled = false) }
         }
 
-        val isConnected = iceConnectionState == IceConnectionState.CONNECTED ||
-            iceConnectionState == IceConnectionState.COMPLETED ||
-            iceConnectionState == null
-        _uiState.update { it.copy(isConnected = isConnected) }
+        _uiState.update { it.copy(isConnected = isConnected(iceConnectionState)) }
     }
 
     private val dataChannelMessageListener: DataChannelMessageListener = object : DataChannelMessageListener {
@@ -128,25 +135,12 @@ class ParticipantHandler(
         }
 
         override fun onUnshareScreen() {
-            updateMedia(null, null)
+            handleScreenStreamChange(null)
         }
     }
 
     init {
         signalingMessageReceiver.addListener(listener, sessionId)
-    }
-
-    // --- WebRTC updates ---
-    fun updateMedia(mediaStream: MediaStream?, iceState: PeerConnection.IceConnectionState?) {
-        _uiState.update {
-            it.copy(
-                mediaStream = mediaStream,
-                isConnected =
-                iceState == PeerConnection.IceConnectionState.CONNECTED ||
-                    iceState == PeerConnection.IceConnectionState.COMPLETED,
-                isStreamEnabled = mediaStream?.videoTracks?.isNotEmpty() == true
-            )
-        }
     }
 
     fun setPeerConnection(peerConnection: PeerConnectionWrapper?) {
@@ -161,7 +155,6 @@ class ParticipantHandler(
             _uiState.update { it.copy(mediaStream = null) }
             _uiState.update { it.copy(isAudioEnabled = false) }
             _uiState.update { it.copy(isStreamEnabled = false) }
-
             return
         }
 
@@ -180,7 +173,6 @@ class ParticipantHandler(
         if (this.screenPeerConnection == null) {
             // callParticipantModel.setScreenIceConnectionState(null)
             _uiState.update { it.copy(screenMediaStream = null) }
-
             return
         }
 
@@ -188,6 +180,11 @@ class ParticipantHandler(
 
         this.screenPeerConnection?.addObserver(screenPeerConnectionObserver)
     }
+
+    fun isConnected(iceConnectionState: IceConnectionState?): Boolean =
+        iceConnectionState == IceConnectionState.CONNECTED ||
+            iceConnectionState == IceConnectionState.COMPLETED ||
+            iceConnectionState == null
 
     fun updateAudio(enabled: Boolean?) = _uiState.update { it.copy(isAudioEnabled = enabled ?: it.isAudioEnabled) }
 
