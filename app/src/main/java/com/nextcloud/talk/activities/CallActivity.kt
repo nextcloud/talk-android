@@ -10,8 +10,6 @@
 package com.nextcloud.talk.activities
 
 import android.Manifest
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.RemoteAction
@@ -401,9 +399,7 @@ class CallActivity : CallBaseActivity() {
                     participantUiStates = participantUiStates,
                     eglBase = rootEglBase!!,
                     isVoiceOnlyCall = isVoiceOnlyCall,
-                    onClick = {
-                        animateCallControls(true, 0)
-                    }
+                    onClick = {}
                 )
             }
         }
@@ -924,26 +920,21 @@ class CallActivity : CallBaseActivity() {
         if (!isPipModePossible) {
             binding!!.pictureInPictureButton.visibility = View.GONE
         }
-        if (isVoiceOnlyCall) {
-            binding!!.switchSelfVideoButton.visibility = View.GONE
-            binding!!.cameraButton.visibility = View.GONE
-            binding!!.selfVideoRenderer.visibility = View.GONE
-            val params = RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout)
-            val callControlsHeight =
-                applicationContext.resources.getDimension(R.dimen.call_controls_height).roundToInt()
-            params.setMargins(0, 0, 0, callControlsHeight)
-            binding!!.composeParticipantGrid.layoutParams = params
-        } else {
-            val params = RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(0, 0, 0, 0)
-            binding!!.composeParticipantGrid.layoutParams = params
+
+        binding!!.switchSelfVideoButton.visibility = View.GONE
+        binding!!.cameraButton.visibility = View.GONE
+        binding!!.selfVideoRenderer.visibility = View.GONE
+        val params = RelativeLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+        params.addRule(RelativeLayout.BELOW, R.id.callInfosLinearLayout)
+        val callControlsHeight =
+            applicationContext.resources.getDimension(R.dimen.call_controls_height).roundToInt()
+        params.setMargins(0, 0, 0, callControlsHeight)
+        binding!!.composeParticipantGrid.layoutParams = params
+
+        if (!isVoiceOnlyCall) {
             if (cameraEnumerator!!.deviceNames.size < 2) {
                 binding!!.switchSelfVideoButton.visibility = View.GONE
             }
@@ -952,7 +943,6 @@ class CallActivity : CallBaseActivity() {
         binding!!.composeParticipantGrid.setOnTouchListener { _, me ->
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
-                animateCallControls(true, 0)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
             false
@@ -960,12 +950,10 @@ class CallActivity : CallBaseActivity() {
         binding!!.conversationRelativeLayout.setOnTouchListener { _, me ->
             val action = me.actionMasked
             if (action == MotionEvent.ACTION_DOWN) {
-                animateCallControls(true, 0)
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
             false
         }
-        animateCallControls(true, 0)
         initGrid()
         binding!!.composeParticipantGrid.z = 0f
     }
@@ -1416,100 +1404,6 @@ class CallActivity : CallBaseActivity() {
 
     fun toggleBackgroundBlur() {
         blurBackgroundViewModel.toggleBackgroundBlur()
-    }
-
-    private fun animateCallControls(show: Boolean, startDelay: Long) {
-        if (isVoiceOnlyCall) {
-            if (spotlightView != null && spotlightView!!.visibility != View.GONE) {
-                spotlightView!!.visibility = View.GONE
-            }
-        } else if (!isPushToTalkActive) {
-            val alpha: Float
-            val duration: Long
-            if (show) {
-                callControlHandler.removeCallbacksAndMessages(null)
-                callInfosHandler.removeCallbacksAndMessages(null)
-                cameraSwitchHandler.removeCallbacksAndMessages(null)
-                alpha = OPACITY_ENABLED
-                duration = SECOND_IN_MILLIS
-                if (binding!!.callControls.visibility != View.VISIBLE) {
-                    binding!!.callControls.alpha = OPACITY_INVISIBLE
-                    binding!!.callControls.visibility = View.VISIBLE
-                    binding!!.callInfosLinearLayout.alpha = OPACITY_INVISIBLE
-                    binding!!.callInfosLinearLayout.visibility = View.VISIBLE
-                    binding!!.switchSelfVideoButton.alpha = OPACITY_INVISIBLE
-                    if (videoOn) {
-                        binding!!.switchSelfVideoButton.visibility = View.VISIBLE
-                    }
-                } else {
-                    callControlHandler.postDelayed({ animateCallControls(false, 0) }, FIVE_SECONDS)
-                    return
-                }
-            } else {
-                alpha = OPACITY_INVISIBLE
-                duration = SECOND_IN_MILLIS
-            }
-            binding!!.callControls.isEnabled = false
-            binding!!.callControls.animate()
-                .translationY(0f)
-                .alpha(alpha)
-                .setDuration(duration)
-                .setStartDelay(startDelay)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        if (!show) {
-                            binding!!.callControls.visibility = View.GONE
-                            if (spotlightView != null && spotlightView!!.visibility != View.GONE) {
-                                spotlightView!!.visibility = View.GONE
-                            }
-                        } else {
-                            callControlHandler.postDelayed({
-                                if (!isPushToTalkActive) {
-                                    animateCallControls(false, 0)
-                                }
-                            }, CALL_CONTROLLS_ANIMATION_DELAY)
-                        }
-                        binding!!.callControls.isEnabled = true
-                    }
-                })
-            binding!!.callInfosLinearLayout.isEnabled = false
-            binding!!.callInfosLinearLayout.animate()
-                .translationY(0f)
-                .alpha(alpha)
-                .setDuration(duration)
-                .setStartDelay(startDelay)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        if (!show) {
-                            binding!!.callInfosLinearLayout.visibility = View.GONE
-                        } else {
-                            callInfosHandler.postDelayed({
-                                if (!isPushToTalkActive) {
-                                    animateCallControls(false, 0)
-                                }
-                            }, CALL_CONTROLLS_ANIMATION_DELAY)
-                        }
-                        binding!!.callInfosLinearLayout.isEnabled = true
-                    }
-                })
-            binding!!.switchSelfVideoButton.isEnabled = false
-            binding!!.switchSelfVideoButton.animate()
-                .translationY(0f)
-                .alpha(alpha)
-                .setDuration(duration)
-                .setStartDelay(startDelay)
-                .setListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator) {
-                        super.onAnimationEnd(animation)
-                        if (!show) {
-                            binding!!.switchSelfVideoButton.visibility = View.GONE
-                        }
-                        binding!!.switchSelfVideoButton.isEnabled = true
-                    }
-                })
-        }
     }
 
     public override fun onDestroy() {
@@ -2748,12 +2642,7 @@ class CallActivity : CallBaseActivity() {
     private fun handleCallStateInConversation() {
         stopCallingSound()
         binding!!.callModeTextView.text = descriptionForCallType
-        if (!isVoiceOnlyCall) {
-            binding!!.callInfosLinearLayout.visibility = View.GONE
-        }
-        if (!isPushToTalkActive) {
-            animateCallControls(false, FIVE_SECONDS)
-        }
+
         if (binding!!.callStates.callStateRelativeLayout.visibility != View.INVISIBLE) {
             binding!!.callStates.callStateRelativeLayout.visibility = View.INVISIBLE
         }
@@ -3113,7 +3002,6 @@ class CallActivity : CallBaseActivity() {
                 binding!!.microphoneButton.setImageResource(R.drawable.ic_mic_off_white_24px)
                 pulseAnimation!!.stop()
                 toggleMedia(false, false)
-                animateCallControls(false, FIVE_SECONDS)
             }
             return true
         }
@@ -3229,12 +3117,7 @@ class CallActivity : CallBaseActivity() {
         binding!!.pipOverlay.visibility = View.GONE
         binding!!.composeParticipantGrid.visibility = View.VISIBLE
 
-        if (isVoiceOnlyCall) {
-            binding!!.callControls.visibility = View.VISIBLE
-        } else {
-            // animateCallControls needs this to be invisible for a check.
-            binding!!.callControls.visibility = View.INVISIBLE
-        }
+        binding!!.callControls.visibility = View.VISIBLE
         initViews()
         binding!!.callInfosLinearLayout.visibility = View.VISIBLE
         binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
