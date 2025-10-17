@@ -27,16 +27,10 @@
         <RelativeLayout
             android:id="@+id/conversationRelativeLayout"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="match_parent"
             android:background="@color/grey950"
             android:visibility="visible"
             tools:visibility="visible">
-
-            <androidx.compose.ui.platform.ComposeView
-                android:id="@+id/composeParticipantGrid"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
             <FrameLayout
                 android:id="@+id/selfVideoViewWrapper"
@@ -98,7 +92,7 @@
             <LinearLayout
                 android:id="@+id/callInfosLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
                 android:gravity="center"
                 android:orientation="vertical"
@@ -140,6 +134,179 @@
                     android:textSize="22sp"
                     android:textStyle="bold"
                     tools:text="Marsellus Wallace" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1">
+
+                    <androidx.compose.ui.platform.ComposeView
+                        android:id="@+id/composeParticipantGrid"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignBottom="@id/composeParticipantGrid"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="300dp">
+
+                            <RelativeLayout
+                                android:id="@+id/reaction_animation_wrapper"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="50dp"
+                                android:layout_marginBottom="50dp"/>
+
+                            <com.google.android.flexbox.FlexboxLayout
+                                android:id="@+id/flexboxLayout"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginEnd="@dimen/standard_margin"
+                                android:layout_marginBottom="@dimen/standard_half_margin"
+                                app:alignItems="center"
+                                app:flexDirection="row"
+                                app:justifyContent="flex_end">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/end_call_popup_menu"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:backgroundTint="@android:color/white"
+                                    android:textColor="@android:color/holo_red_light"
+                                    android:visibility="gone"
+                                    app:icon="@drawable/ic_call_end_white_24px"
+                                    app:iconGravity="textEnd"
+                                    app:iconPadding="16dp"
+                                    app:iconTint="@android:color/holo_red_light"
+                                    tools:text="@string/end_call_for_everyone"
+                                    tools:visibility="visible"/>
+
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:id="@+id/lower_hand_button"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:contentDescription="@string/lower_hand"
+                                    android:visibility="gone"
+                                    app:backgroundTint="@color/call_buttons_background"
+                                    app:borderWidth="0dp"
+                                    app:fabCustomSize="40dp"
+                                    app:shapeAppearance="@style/fab_3_rounded"
+                                    app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
+                                    app:tint="@color/white"
+                                    tools:visibility = "visible"/>
+
+                            </com.google.android.flexbox.FlexboxLayout>
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <com.google.android.flexbox.FlexboxLayout
+                    android:id="@+id/callControls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="30dp"
+                    android:animateLayoutChanges="true"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:minHeight="@dimen/call_controls_height"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/standard_half_padding"
+                    android:paddingEnd="@dimen/standard_half_padding"
+                    app:alignItems="center"
+                    app:flexWrap="wrap"
+                    app:justifyContent="center">
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/pictureInPictureButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:contentDescription="@string/nc_call_button_content_description_pip"
+                        app:backgroundTint="@color/call_buttons_background"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="@dimen/fab_small"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_baseline_picture_in_picture_alt_24"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/audioOutputButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:contentDescription="@string/nc_call_button_content_description_audio_output"
+                        app:backgroundTint="@color/call_buttons_background"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="40dp"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_volume_mute_white_24dp"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/cameraButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:alpha="0.7"
+                        android:contentDescription="@string/nc_call_button_content_description_camera"
+                        app:backgroundTint="@color/call_buttons_background"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="40dp"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_videocam_white_24px"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/microphoneButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:alpha="0.7"
+                        android:contentDescription="@string/nc_call_button_content_description_microphone"
+                        app:backgroundTint="@color/call_buttons_background"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="40dp"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_mic_off_white_24px"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/more_call_actions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:contentDescription="@string/nc_common_more_options"
+                        app:backgroundTint="@color/call_buttons_background"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="40dp"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_dots_horizontal_white"
+                        app:tint="@color/white" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/hangupButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/standard_quarter_margin"
+                        android:contentDescription="@string/end_call"
+                        app:backgroundTint="@color/nc_darkRed"
+                        app:borderWidth="0dp"
+                        app:fabCustomSize="40dp"
+                        app:shapeAppearance="@style/fab_3_rounded"
+                        app:srcCompat="@drawable/ic_call_end_white_24px"
+                        app:tint="@color/white" />
+                </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
 
             <View
@@ -159,166 +326,6 @@
 
         </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/linearWrapperLayout"
-        android:gravity="center_vertical"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="300dp">
-
-            <RelativeLayout
-                android:id="@+id/reaction_animation_wrapper"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="50dp"
-                android:layout_marginBottom="50dp"/>
-
-            <com.google.android.flexbox.FlexboxLayout
-                android:id="@+id/flexboxLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/standard_margin"
-                android:layout_marginBottom="@dimen/standard_half_margin"
-                app:flexDirection="row"
-                android:layout_alignParentBottom="true"
-                app:justifyContent="flex_end"
-                app:alignItems="center">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/end_call_popup_menu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="8dp"
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:backgroundTint="@android:color/white"
-                    android:textColor="@android:color/holo_red_light"
-                    app:icon="@drawable/ic_call_end_white_24px"
-                    app:iconTint="@android:color/holo_red_light"
-                    app:iconGravity="textEnd"
-                    app:iconPadding="16dp"
-                    tools:text="@string/end_call_for_everyone"/>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/lower_hand_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/lower_hand"
-                android:visibility="gone"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_baseline_do_not_touch_24"
-                app:tint="@color/white"
-                tools:visibility = "visible"/>
-
-        </com.google.android.flexbox.FlexboxLayout>
-
-        </RelativeLayout>
-
-        <com.google.android.flexbox.FlexboxLayout
-            android:id="@+id/callControls"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
-            android:animateLayoutChanges="true"
-            android:background="@android:color/transparent"
-            android:gravity="center"
-            android:minHeight="@dimen/call_controls_height"
-            android:orientation="horizontal"
-            android:paddingStart="@dimen/standard_half_padding"
-            android:paddingEnd="@dimen/standard_half_padding"
-            app:alignItems="center"
-            app:flexWrap="wrap"
-            app:justifyContent="center">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/pictureInPictureButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:contentDescription="@string/nc_call_button_content_description_pip"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="@dimen/fab_small"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_baseline_picture_in_picture_alt_24"
-                app:tint="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/audioOutputButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:contentDescription="@string/nc_call_button_content_description_audio_output"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_volume_mute_white_24dp"
-                app:tint="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/cameraButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:alpha="0.7"
-                android:contentDescription="@string/nc_call_button_content_description_camera"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_videocam_white_24px"
-                app:tint="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/microphoneButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:alpha="0.7"
-                android:contentDescription="@string/nc_call_button_content_description_microphone"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_mic_off_white_24px"
-                app:tint="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/more_call_actions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:contentDescription="@string/nc_common_more_options"
-                app:backgroundTint="@color/call_buttons_background"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_dots_horizontal_white"
-                app:tint="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/hangupButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/standard_quarter_margin"
-                android:contentDescription="@string/end_call"
-                app:backgroundTint="@color/nc_darkRed"
-                app:borderWidth="0dp"
-                app:fabCustomSize="40dp"
-                app:shapeAppearance="@style/fab_3_rounded"
-                app:srcCompat="@drawable/ic_call_end_white_24px"
-                app:tint="@color/white" />
-        </com.google.android.flexbox.FlexboxLayout>
     </LinearLayout>
 
     <RelativeLayout
