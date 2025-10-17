@@ -59,7 +59,8 @@ fun DiagnoseContentComposable(
     viewState: NotificationUiState,
     onTestPushClick: () -> Unit,
     onDismissDialog: () -> Unit,
-    isGooglePlayServicesAvailable: Boolean
+    isGooglePlayServicesAvailable: Boolean,
+    isOnline: Boolean
 ) {
     val context = LocalContext.current
     Column(
@@ -101,7 +102,7 @@ fun DiagnoseContentComposable(
                 }
             }
         }
-        if (isGooglePlayServicesAvailable) {
+        if (isGooglePlayServicesAvailable && isOnline) {
             ShowTestPushButton(onTestPushClick)
         }
         ShowNotificationData(isLoading, showDialog, context, viewState, onDismissDialog)
@@ -259,6 +260,7 @@ fun DiagnoseContentPreview() {
         NotificationUiState.Success("Test notification successful"),
         {},
         {},
+        true,
         true
     )
 }
