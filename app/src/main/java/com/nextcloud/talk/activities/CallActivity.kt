@@ -387,8 +387,6 @@ class CallActivity : CallBaseActivity() {
         setContentView(binding!!.root)
         hideNavigationIfNoPipAvailable()
         processExtras(intent.extras!!)
-        CallForegroundService.start(applicationContext, conversationName, intent.extras)
-
         conversationUser = currentUserProvider.currentUser.blockingGet()
 
         credentials = ApiUtils.getCredentials(conversationUser!!.username, conversationUser!!.token)
@@ -1039,6 +1037,7 @@ class CallActivity : CallBaseActivity() {
         checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
+            CallForegroundService.start(applicationContext, conversationName, intent.extras)
             if (!microphoneOn) {
                 onMicrophoneClick()
             }
