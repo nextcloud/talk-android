@@ -11,6 +11,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -87,16 +88,31 @@ fun ParticipantTile(
                 )
             }
 
-            if (!participantUiState.isAudioEnabled) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
-                    contentDescription = "Mic Off",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(6.dp)
-                        .size(24.dp),
-                    tint = Color.White
-                )
+            Row(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+            ) {
+                if (participantUiState.isScreenStreamEnabled) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.outline_monitor_24),
+                        contentDescription = "Mic Off",
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
+                }
+
+                if (!participantUiState.isAudioEnabled) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
+                        contentDescription = "Mic Off",
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
+                }
             }
 
             Text(
@@ -131,6 +147,7 @@ fun ParticipantTilePreview() {
         isConnected = true,
         isAudioEnabled = false,
         isStreamEnabled = true,
+        isScreenStreamEnabled = true,
         raisedHand = true,
         avatarUrl = "",
         mediaStream = null,
