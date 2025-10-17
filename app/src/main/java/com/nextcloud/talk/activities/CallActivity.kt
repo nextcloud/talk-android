@@ -948,12 +948,14 @@ class CallActivity : CallBaseActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initSelfVideoViewForNormalMode() {
+        binding!!.selfVideoRenderer.visibility = View.VISIBLE
         try {
             binding!!.selfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
         } catch (e: IllegalStateException) {
             Log.d(TAG, "selfVideoRenderer already initialized", e)
         }
-        binding!!.selfVideoRenderer.setZOrderMediaOverlay(true)
+        // binding!!.selfVideoRenderer.setZOrderMediaOverlay(true)
+        binding!!.selfVideoRenderer.setZOrderOnTop(true)
         // disabled because it causes some devices to crash
         binding!!.selfVideoRenderer.setEnableHardwareScaler(false)
         binding!!.selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
