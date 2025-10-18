@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">УВАХОДНЫ</string>
     <string name="nc_call_name">Назва размовы</string>
     <string name="nc_call_notifications">Апавяшчэнні аб выкліках</string>
+    <string name="nc_call_ongoing_notification_default_title">Выконваецца выклік</string>
     <string name="nc_call_raised_hand">%1$s падняў(-ла) руку</string>
     <string name="nc_call_reconnecting">Перазлучэнне ...</string>
     <string name="nc_call_ringing">ВЫКЛІК</string>

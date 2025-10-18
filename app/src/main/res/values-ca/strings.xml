@@ -122,6 +122,7 @@
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversa</string>
     <string name="nc_call_notifications">Notificacions de trucada</string>
+    <string name="nc_call_ongoing_notification_default_title">S\'està fent una trucada</string>
     <string name="nc_call_raised_hand">%1$sha aixecat la mà</string>
     <string name="nc_call_reconnecting">S\'està reconnectant…</string>
     <string name="nc_call_ringing">TRUCANT</string>
