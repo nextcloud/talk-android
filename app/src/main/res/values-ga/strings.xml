@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">ISTEACH</string>
     <string name="nc_call_name">Ainm an chomhrá</string>
     <string name="nc_call_notifications">Fógraí glaonna</string>
+    <string name="nc_call_ongoing_notification_content">Tapáil chun filleadh ar do ghlao.</string>
     <string name="nc_call_ongoing_notification_default_title">Glao ar siúl</string>
     <string name="nc_call_raised_hand">%1$s d\'ardaigh an lámh</string>
     <string name="nc_call_reconnecting">Ag athcheangal…</string>
@@ -295,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Cuireadh cuirí amach arís.</string>
     <string name="nc_guest_access_share_link">Roinn nasc an chomhrá</string>
     <string name="nc_hint_enter_a_message">Cuir isteach teachtaireacht…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Ní dhéantar neamhaird ar uasmhéadú ceallraí. Ba chóir é seo a athrú lena chinntiú go n-oibríonn fógraí sa chúlra! Cliceáil OK agus roghnaigh \"Gach aip\" -> %1$s agus ansin \"Ná huasmhéadaigh\" nó \"Ceadaigh úsáid chúlra -> Gan srian\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Déan neamhaird de bharrfheabhsú ceallraí</string>
     <string name="nc_important_conversation">Comhrá tábhachtach</string>
     <string name="nc_important_conversation_desc">Déantar neamhaird ar stádas an úsáideora \"Ná cuir isteach\" i gcás comhráite tábhachtacha</string>
@@ -682,6 +684,8 @@
     <string name="translation_error_title">Theip ar an aistriúchán</string>
     <string name="translation_from">Ó</string>
     <string name="translation_to">Chun</string>
+    <string name="turn_off_background_blur">Múch doiléiriú an chúlra</string>
+    <string name="turn_on_background_blur">Cuir doiléiriú cúlra ar siúl</string>
     <string name="typing_1_other">agus tá 1 eile ag clóscríobh …</string>
     <string name="typing_are_typing">ag clóscríobh…</string>
     <string name="typing_is_typing">ag clóscríobh…</string>
