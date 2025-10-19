@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">ENTRADA </string>
     <string name="nc_call_name">Nome de conversação</string>
     <string name="nc_call_notifications">Notificações de chamadas </string>
+    <string name="nc_call_ongoing_notification_content">Toque para voltar à sua chamada.</string>
     <string name="nc_call_ongoing_notification_default_title">Chamada em andamento</string>
     <string name="nc_call_raised_hand">%1$s levantou a mão</string>
     <string name="nc_call_reconnecting">Reconectando …</string>
@@ -295,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os aplicativos\" -> %1$s e, em seguida, \"Não otimizar\" ou \"Permitir uso em segundo plano -> Irrestrito\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">O status de usuário \"Não perturbe\" é ignorado em conversas importantes</string>
