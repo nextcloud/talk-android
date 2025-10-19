@@ -130,6 +130,7 @@
     <string name="nc_call_incoming">INKOMMANDE</string>
     <string name="nc_call_name">Samtalsnamn</string>
     <string name="nc_call_notifications">Samtalsaviseringar</string>
+    <string name="nc_call_ongoing_notification_content">Tryck för att återvända till ditt samtal.</string>
     <string name="nc_call_ongoing_notification_default_title">Samtal pågår</string>
     <string name="nc_call_raised_hand">%1$s räckte upp handen</string>
     <string name="nc_call_reconnecting">Återansluter …</string>
@@ -294,6 +295,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Inbjudningar skickades ut igen.</string>
     <string name="nc_guest_access_share_link">Dela konversationslänk</string>
     <string name="nc_hint_enter_a_message">Skriv meddelande ...</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Batterioptimering ignoreras inte. Detta bör ändras för att säkerställa att aviseringar fungerar i bakgrunden! Klicka på OK, välj “Alla appar” -> %1$s och sedan “Optimera inte” eller “Tillåt bakgrundsanvändning -> Obegränsad”.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorera batterioptimering</string>
     <string name="nc_important_conversation">Viktigt samtal</string>
     <string name="nc_important_conversation_desc">Användarstatus \"Stör ej\" ignoreras för viktiga konversationer</string>
@@ -680,6 +682,8 @@
     <string name="translation_error_title">Översättning misslyckades</string>
     <string name="translation_from">Från</string>
     <string name="translation_to">Till</string>
+    <string name="turn_off_background_blur">Inaktivera suddig bakgrund</string>
+    <string name="turn_on_background_blur">Aktivera suddig bakgrund</string>
     <string name="typing_1_other">och 1 annan skriver ...</string>
     <string name="typing_are_typing">skriver ...</string>
     <string name="typing_is_typing">skriver ...</string>
