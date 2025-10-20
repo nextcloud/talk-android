@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">INCOMING</string>
     <string name="nc_call_name">Conversation name</string>
     <string name="nc_call_notifications">Call notifications</string>
+    <string name="nc_call_ongoing_notification_content">Tap to return to your call.</string>
     <string name="nc_call_ongoing_notification_default_title">Call in progress</string>
     <string name="nc_call_raised_hand">%1$s raised the hand</string>
     <string name="nc_call_reconnecting">Reconnecting …</string>
@@ -295,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Invitations were sent out again.</string>
     <string name="nc_guest_access_share_link">Share conversation link</string>
     <string name="nc_hint_enter_a_message">Enter a message …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Battery optimisation is not ignored. This should be changed to make sure that notifications work in the background! Please click OK and select \"All apps\" -> %1$s and then \"Do not optimise\" or \"Allow background usage -> Unrestricted\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignore battery optimization</string>
     <string name="nc_important_conversation">Important conversation</string>
     <string name="nc_important_conversation_desc">\"Do not disturb\" user status is ignored for important conversations</string>
@@ -682,6 +684,8 @@
     <string name="translation_error_title">Translation failed</string>
     <string name="translation_from">From</string>
     <string name="translation_to">To</string>
+    <string name="turn_off_background_blur">Turn off background blur</string>
+    <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="typing_1_other">and 1 other is typing …</string>
     <string name="typing_are_typing">are typing …</string>
     <string name="typing_is_typing">is typing …</string>
