@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">GELEN</string>
     <string name="nc_call_name">Görüşme adı</string>
     <string name="nc_call_notifications">Çağrı bildirimleri</string>
+    <string name="nc_call_ongoing_notification_content">Çağrıya dönmek için Geri dön üzerine dokunun.</string>
     <string name="nc_call_ongoing_notification_default_title">Çağrı sürüyor</string>
     <string name="nc_call_raised_hand">%1$s elini kaldırdı</string>
     <string name="nc_call_reconnecting">Bağlantı yeniden kuruluyor…</string>
