@@ -190,7 +190,7 @@ apply from: 'download_model.gradle'
 
 dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
-    implementation 'androidx.compose.foundation:foundation-layout:1.9.2'
+    implementation 'androidx.compose.foundation:foundation-layout:1.9.3'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.6.15'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
