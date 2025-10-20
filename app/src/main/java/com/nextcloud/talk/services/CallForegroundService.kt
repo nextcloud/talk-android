@@ -94,17 +94,20 @@ class CallForegroundService : Service() {
             return 0
         }
 
-        var serviceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-        val isVoiceOnlyCall = callExtras?.getBoolean(KEY_CALL_VOICE_ONLY, false) ?: false
-        val canPublishVideo = callExtras?.getBoolean(
-            KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-            false
-        ) ?: false
+        var serviceType = 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
 
-        if (!isVoiceOnlyCall && canPublishVideo) {
-            serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
+            val isVoiceOnlyCall = callExtras?.getBoolean(KEY_CALL_VOICE_ONLY, false) ?: false
+            val canPublishVideo = callExtras?.getBoolean(
+                KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+                false
+            ) ?: false
+
+            if (!isVoiceOnlyCall && canPublishVideo) {
+                serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
+            }
         }
-
         return serviceType
     }
 

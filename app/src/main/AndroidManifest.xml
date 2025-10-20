@@ -306,7 +306,7 @@
         <service
             android:name=".services.CallForegroundService"
             android:exported="false"
-            android:foregroundServiceType="phoneCall|microphone|camera" />
+            android:foregroundServiceType="microphone|camera" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
