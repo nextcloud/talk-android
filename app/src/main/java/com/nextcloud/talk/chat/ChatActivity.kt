@@ -1544,8 +1544,11 @@ class ChatActivity :
         if (file.exists() && message.voiceMessageFloatArray == null) {
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
-            CoroutineScope(Dispatchers.Default).launch {
+            CoroutineScope(Dispatchers.IO).launch {
                 val r = AudioUtils.audioFileToFloatArray(file)
+                // TODO - change this to save waveform to particular message id
+                //  requires updating the dao and viewmodel
+
                 appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
                 message.voiceMessageFloatArray = r
                 withContext(Dispatchers.Main) {
@@ -1577,7 +1580,7 @@ class ChatActivity :
                 chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
             }
             pos--
-        } while (true && pos >= 0)
+        } while (pos >= 0)
     }
 
     @Suppress("LongMethod")

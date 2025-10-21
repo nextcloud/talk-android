@@ -74,6 +74,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "lastReadMessage") var lastReadMessage: Int = 0,
     @ColumnInfo(name = "lobbyState") var lobbyState: ConversationEnums.LobbyState,
     @ColumnInfo(name = "lobbyTimer") var lobbyTimer: Long = 0,
+    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft(),
     @ColumnInfo(name = "messageExpiration") var messageExpiration: Int = 0,
     @ColumnInfo(name = "name") var name: String,
     @ColumnInfo(name = "notificationCalls") var notificationCalls: Int = 0,
@@ -97,8 +98,7 @@ data class ConversationEntity(
     @ColumnInfo(name = "unreadMessages") var unreadMessages: Int = 0,
     @ColumnInfo(name = "hasArchived") var hasArchived: Boolean = false,
     @ColumnInfo(name = "hasSensitive") var hasSensitive: Boolean = false,
-    @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false,
-    @ColumnInfo(name = "messageDraft") var messageDraft: MessageDraft? = MessageDraft()
+    @ColumnInfo(name = "hasImportant") var hasImportant: Boolean = false
     // missing/not needed: attendeeId
     // missing/not needed: attendeePin
     // missing/not needed: attendeePermissions
