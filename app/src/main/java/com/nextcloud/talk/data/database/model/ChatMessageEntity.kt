@@ -71,5 +71,5 @@ data class ChatMessageEntity(
     @ColumnInfo(name = "threadTitle") var threadTitle: String? = null,
     @ColumnInfo(name = "threadReplies") var threadReplies: Int? = 0,
     @ColumnInfo(name = "timestamp") var timestamp: Long = 0,
-    @ColumnInfo(name = "waveform") var waveform: List<Float>? = null // changing to FloatArray requires equals/hashcode
+    @ColumnInfo(name = "waveform") var waveform: ArrayList<Float>? = null // changing to FloatArray requires equals/hashcode
 )

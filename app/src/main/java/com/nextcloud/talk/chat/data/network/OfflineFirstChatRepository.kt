@@ -508,7 +508,10 @@ class OfflineFirstChatRepository @Inject constructor(
         val messageId = message.jsonMessageId.toLong()
         chatDao.getChatMessageForConversation(internalConversationId, messageId).collect { messageEntity ->
             message.voiceMessageFloatArray?.let { floatArray ->
-                messageEntity.waveform = floatArray.toList()
+                val arrayList = ArrayList<Float>()
+                val floatList = floatArray.toList()
+                arrayList.addAll(floatList)
+                messageEntity.waveform = arrayList
             }
 
             chatDao.updateChatMessage(messageEntity)

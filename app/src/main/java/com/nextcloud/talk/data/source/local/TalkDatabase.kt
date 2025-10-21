@@ -54,7 +54,7 @@ import java.util.Locale
         AutoMigration(from = 16, to = 17, spec = AutoMigration16To17::class),
         AutoMigration(from = 19, to = 20),
         AutoMigration(from = 20, to = 21),
-        AutoMigration(from = 20, to = 22)
+        AutoMigration(from = 21, to = 22)
     ],
     exportSchema = true
 )

@@ -36,4 +36,21 @@ class ArrayListConverter {
 
         return LoganSquare.parseList(value, String::class.java) as ArrayList<String>?
     }
+
+    @TypeConverter
+    fun floatArrayListToString(list: ArrayList<Float>?): String? {
+        return list?.joinToString(",")
+    }
+
+    @TypeConverter
+    fun stringToFloatArrayList(value: String?): ArrayList<Float>? {
+        return value?.let {
+            if (it.isEmpty()) {
+                ArrayList()
+            } else {
+                val list = it.drop(1).dropLast(1).split(',').map { str -> str.toFloat() }
+                ArrayList(list)
+            }
+        }
+    }
 }
