@@ -35,11 +35,8 @@ class CallForegroundService : Service() {
         val notification = buildNotification(conversationName, callExtras)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIFICATION_ID,
-                notification,
-                resolveForegroundServiceType(callExtras)
-            )
+            val foregroundServiceType = resolveForegroundServiceType(callExtras)
+            startForeground(NOTIFICATION_ID, notification, foregroundServiceType)
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
@@ -90,10 +87,6 @@ class CallForegroundService : Service() {
     }
 
     private fun resolveForegroundServiceType(callExtras: Bundle?): Int {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            return 0
-        }
-
         var serviceType = 0
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
