@@ -1,6 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
+ * SPDX-FileCopyrightText: 2025 Julius Linus <juliuslinus1@gmail.com>
  * SPDX-FileCopyrightText: 2023 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-FileCopyrightText: 2022 Tim Krüger <t@timkrueger.me>
  * SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
@@ -504,7 +505,7 @@ class CallActivity : CallBaseActivity() {
             val isOn = state == BackgroundBlurOn
 
             val processor = if (isOn) {
-                BackgroundBlurFrameProcessor(context, frontFacing)
+                BackgroundBlurFrameProcessor(context)
             } else {
                 null
             }
