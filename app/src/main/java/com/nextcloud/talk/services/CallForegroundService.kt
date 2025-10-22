@@ -29,6 +29,7 @@ class CallForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    @Suppress("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
