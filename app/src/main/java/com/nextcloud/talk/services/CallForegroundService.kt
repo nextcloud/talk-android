@@ -29,17 +29,15 @@ class CallForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? = null
 
+    @Suppress("ForegroundServiceType")
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val conversationName = intent?.getStringExtra(EXTRA_CONVERSATION_NAME)
         val callExtras = intent?.getBundleExtra(EXTRA_CALL_INTENT_EXTRAS)
         val notification = buildNotification(conversationName, callExtras)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(
-                NOTIFICATION_ID,
-                notification,
-                resolveForegroundServiceType(callExtras)
-            )
+            val foregroundServiceType = resolveForegroundServiceType(callExtras)
+            startForeground(NOTIFICATION_ID, notification, foregroundServiceType)
         } else {
             startForeground(NOTIFICATION_ID, notification)
         }
@@ -90,21 +88,20 @@ class CallForegroundService : Service() {
     }
 
     private fun resolveForegroundServiceType(callExtras: Bundle?): Int {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            return 0
+        var serviceType = 0
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
+
+            val isVoiceOnlyCall = callExtras?.getBoolean(KEY_CALL_VOICE_ONLY, false) ?: false
+            val canPublishVideo = callExtras?.getBoolean(
+                KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
+                false
+            ) ?: false
+
+            if (!isVoiceOnlyCall && canPublishVideo) {
+                serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
+            }
         }
-
-        var serviceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_MICROPHONE
-        val isVoiceOnlyCall = callExtras?.getBoolean(KEY_CALL_VOICE_ONLY, false) ?: false
-        val canPublishVideo = callExtras?.getBoolean(
-            KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO,
-            false
-        ) ?: false
-
-        if (!isVoiceOnlyCall && canPublishVideo) {
-            serviceType = serviceType or ServiceInfo.FOREGROUND_SERVICE_TYPE_CAMERA
-        }
-
         return serviceType
     }
 
