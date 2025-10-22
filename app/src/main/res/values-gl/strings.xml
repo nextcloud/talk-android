@@ -26,7 +26,7 @@
     <string name="busy">Ocupado</string>
     <string name="calendar">Calendario</string>
     <string name="call_more_actions_dialog_headline"> Opcións avanzadas de chamada</string>
-    <string name="call_running_since_one_hour">A chamada leva unha hora en curso.</string>
+    <string name="call_running_since_one_hour">A chamada leva unha hora en proceso.</string>
     <string name="call_without_notification">Chamar sen notificación</string>
     <string name="camera_permission_granted">Concedeuse o permiso para a cámara. Escolla a cámara de novo.</string>
     <string name="cancel_login">Cancelar o acceso</string>
@@ -132,7 +132,7 @@
     <string name="nc_call_name">Nome da conversa</string>
     <string name="nc_call_notifications">Notificacións de chamadas</string>
     <string name="nc_call_ongoing_notification_content">Toquea para volver á chamada.</string>
-    <string name="nc_call_ongoing_notification_default_title">Chamada en curso</string>
+    <string name="nc_call_ongoing_notification_default_title">Chamada en proceso</string>
     <string name="nc_call_raised_hand">%1$s ergueu a man</string>
     <string name="nc_call_reconnecting">Volvendo conectar…</string>
     <string name="nc_call_ringing">CHAMANDO</string>
@@ -369,7 +369,7 @@
     <string name="nc_notify_me_never">Non notificar nunca</string>
     <string name="nc_offline">Non ten conexión, verifique a súa conectividade</string>
     <string name="nc_ok">Aceptar</string>
-    <string name="nc_ongoing_meeting">Xuntanza en curso</string>
+    <string name="nc_ongoing_meeting">Xuntanza en proceso</string>
     <string name="nc_open_conversation_to_registered_users">Abrir a conversa a usuarios rexistrados</string>
     <string name="nc_open_to_guest_app_users">Aberta tamén aos usuarios da aplicación convidados</string>
     <string name="nc_owner">Propietario</string>
