@@ -682,6 +682,12 @@
 
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/settings_proxy_group"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                     android:layout_width="match_parent"
@@ -796,6 +802,7 @@
                         android:gravity="center_vertical"
                         android:clickable="false"/>
                 </LinearLayout>
+            </LinearLayout>
             </LinearLayout>
 
             <LinearLayout

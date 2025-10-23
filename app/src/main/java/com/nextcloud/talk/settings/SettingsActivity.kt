@@ -32,6 +32,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.drawable.toDrawable
@@ -56,6 +58,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.setAppTheme
 import com.nextcloud.talk.conversationlist.ConversationsListActivity
 import com.nextcloud.talk.conversationlist.ConversationsListActivity.Companion.NOTIFICATION_WARNING_DATE_NOT_SET
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySettingsBinding
 import com.nextcloud.talk.diagnose.DiagnoseActivity
@@ -114,6 +117,9 @@ class SettingsActivity :
     lateinit var ncApi: NcApi
 
     @Inject
+    lateinit var networkMonitor: NetworkMonitor
+
+    @Inject
     lateinit var ncApiCoroutines: NcApiCoroutines
 
     @Inject
@@ -136,11 +142,16 @@ class SettingsActivity :
     private var profileQueryDisposable: Disposable? = null
     private var dbQueryDisposable: Disposable? = null
     private var openedByNotificationWarning: Boolean = false
+    private var isOnline: MutableState<Boolean> = mutableStateOf(false)
 
     @SuppressLint("StringFormatInvalid")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
+        networkMonitor.isOnlineLiveData.observe(this) { online ->
+            isOnline.value = online
+            handleNetworkChange(isOnline.value)
+        }
 
         binding = ActivitySettingsBinding.inflate(layoutInflater)
         setupActionBar()
@@ -152,7 +163,7 @@ class SettingsActivity :
         getCurrentUser()
         handleIntent(intent)
 
-        setupLicenceSetting()
+        setupLicenceSetting(isOnline.value)
 
         binding.settingsScreenLockSummary.text = String.format(
             Locale.getDefault(),
@@ -161,13 +172,25 @@ class SettingsActivity :
         )
 
         setupDiagnose()
-        setupPrivacyUrl()
-        setupSourceCodeUrl()
+
+        setupPrivacyUrl(isOnline.value)
+        setupSourceCodeUrl(isOnline.value)
+
         binding.settingsVersionSummary.text = String.format("v" + BuildConfig.VERSION_NAME)
 
-        setupPhoneBookIntegration()
+        setupPhoneBookIntegration(isOnline.value)
 
         setupClientCertView()
+        showSetupClientCertView(isOnline.value)
+    }
+
+    private fun handleNetworkChange(isOnline: Boolean) {
+        setupLicenceSetting(isOnline)
+        setupPrivacyUrl(isOnline)
+        setupSourceCodeUrl(isOnline)
+        setupPhoneBookIntegration(isOnline)
+        setupCheckables(isOnline)
+        showSetupClientCertView(isOnline)
     }
 
     private fun handleIntent(intent: Intent) {
@@ -180,7 +203,7 @@ class SettingsActivity :
         supportActionBar?.show()
         dispose(null)
 
-        loadCapabilitiesAndUpdateSettings()
+        loadCapabilitiesAndUpdateSettings(isOnline.value)
 
         binding.settingsVersion.setOnClickListener {
             sendLogs()
@@ -192,7 +215,7 @@ class SettingsActivity :
             binding.settingsClientCertTitle.setText(R.string.nc_client_cert_setup)
         }
 
-        setupCheckables()
+        setupCheckables(isOnline.value)
         setupScreenLockSetting()
         setupNotificationSettings()
         setupProxyTypeSettings()
@@ -241,7 +264,7 @@ class SettingsActivity :
         }
     }
 
-    private fun loadCapabilitiesAndUpdateSettings() {
+    private fun loadCapabilitiesAndUpdateSettings(isOnline: Boolean) {
         val capabilitiesWork = OneTimeWorkRequest.Builder(CapabilitiesWorker::class.java).build()
         WorkManager.getInstance(context).enqueue(capabilitiesWork)
 
@@ -249,7 +272,7 @@ class SettingsActivity :
             .observe(this) { workInfo ->
                 if (workInfo?.state == WorkInfo.State.SUCCEEDED) {
                     getCurrentUser()
-                    setupCheckables()
+                    setupCheckables(isOnline)
                 }
             }
     }
@@ -271,11 +294,12 @@ class SettingsActivity :
         credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
     }
 
-    private fun setupPhoneBookIntegration() {
+    private fun setupPhoneBookIntegration(isOnline: Boolean) {
         if (CapabilitiesUtil.hasSpreedFeatureCapability(
                 currentUser?.capabilities?.spreedCapability!!,
                 SpreedFeatures.PHONEBOOK_SEARCH
-            )
+            ) &&
+            isOnline
         ) {
             binding.settingsPhoneBookIntegration.visibility = View.VISIBLE
         } else {
@@ -498,8 +522,9 @@ class SettingsActivity :
         }
     }
 
-    private fun setupSourceCodeUrl() {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_source_code_url))) {
+    private fun setupSourceCodeUrl(isOnline: Boolean) {
+        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_source_code_url)) && isOnline) {
+            binding.settingsSourceCode.visibility = View.VISIBLE
             binding.settingsSourceCode.setOnClickListener {
                 startActivity(
                     Intent(
@@ -520,8 +545,9 @@ class SettingsActivity :
         }
     }
 
-    private fun setupPrivacyUrl() {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_privacy_url))) {
+    private fun setupPrivacyUrl(isOnline: Boolean) {
+        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_privacy_url)) && isOnline) {
+            binding.settingsPrivacy.visibility = View.VISIBLE
             binding.settingsPrivacy.setOnClickListener {
                 startActivity(
                     Intent(
@@ -535,8 +561,9 @@ class SettingsActivity :
         }
     }
 
-    private fun setupLicenceSetting() {
-        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_gpl3_url))) {
+    private fun setupLicenceSetting(isOnline: Boolean) {
+        if (!TextUtils.isEmpty(resources!!.getString(R.string.nc_gpl3_url)) && isOnline) {
+            binding.settingsLicence.visibility = View.VISIBLE
             binding.settingsLicence.setOnClickListener {
                 startActivity(
                     Intent(
@@ -547,6 +574,16 @@ class SettingsActivity :
             }
         } else {
             binding.settingsLicence.visibility = View.GONE
+        }
+    }
+
+    private fun showSetupClientCertView(isOnline: Boolean) {
+        if (isOnline) {
+            binding.settingsClientCert.visibility = View.VISIBLE
+            binding.settingsProxyGroup.visibility = View.VISIBLE
+        } else {
+            binding.settingsClientCert.visibility = View.GONE
+            binding.settingsProxyGroup.visibility = View.GONE
         }
     }
 
@@ -928,7 +965,7 @@ class SettingsActivity :
         }
     }
 
-    private fun setupCheckables() {
+    private fun setupCheckables(isOnline: Boolean) {
         binding.settingsShowNotificationWarningSwitch.isChecked =
             appPreferences.showRegularNotificationWarning
 
@@ -945,13 +982,16 @@ class SettingsActivity :
             binding.settingsShowNotificationWarning.visibility = View.GONE
         }
 
-        if (CapabilitiesUtil.isReadStatusAvailable(currentUser?.capabilities?.spreedCapability)) {
+        if (CapabilitiesUtil.isReadStatusAvailable(currentUser?.capabilities?.spreedCapability) &&
+            isOnline
+        ) {
+            binding.settingsReadPrivacy.visibility = View.VISIBLE
             binding.settingsReadPrivacySwitch.isChecked = !CapabilitiesUtil.isReadStatusPrivate(currentUser!!)
         } else {
             binding.settingsReadPrivacy.visibility = View.GONE
         }
 
-        setupTypingStatusSetting()
+        setupTypingStatusSetting(isOnline)
         setupProxyUseSetting()
 
         binding.settingsScreenLockSwitch.isChecked = appPreferences.isScreenLocked
@@ -1015,12 +1055,13 @@ class SettingsActivity :
         }
     }
 
-    private fun setupTypingStatusSetting() {
+    private fun setupTypingStatusSetting(isOnline: Boolean) {
         if (currentUser!!.externalSignalingServer?.externalSignalingServer?.isNotEmpty() == true) {
             binding.settingsTypingStatusOnlyWithHpb.visibility = View.GONE
             Log.i(TAG, "Typing Status Available: ${CapabilitiesUtil.isTypingStatusAvailable(currentUser!!)}")
 
-            if (CapabilitiesUtil.isTypingStatusAvailable(currentUser!!)) {
+            if (CapabilitiesUtil.isTypingStatusAvailable(currentUser!!) && isOnline) {
+                binding.settingsTypingStatus.visibility = View.VISIBLE
                 binding.settingsTypingStatusSwitch.isChecked = !CapabilitiesUtil.isTypingStatusPrivate(currentUser!!)
             } else {
                 binding.settingsTypingStatus.visibility = View.GONE

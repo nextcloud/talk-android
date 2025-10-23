@@ -42,6 +42,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.arbitrarystorage.ArbitraryStorageManager
 import com.nextcloud.talk.components.ColoredStatusBar
 import com.nextcloud.talk.components.StandardAppBar
+import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.BrandingUtils
 import com.nextcloud.talk.utils.ClosedInterfaceImpl
@@ -69,6 +70,9 @@ class DiagnoseActivity : BaseActivity() {
 
     @Inject
     lateinit var userManager: UserManager
+
+    @Inject
+    lateinit var networkMonitor: NetworkMonitor
 
     @Inject
     lateinit var platformPermissionUtil: PlatformPermissionUtil
@@ -112,6 +116,7 @@ class DiagnoseActivity : BaseActivity() {
             MaterialTheme(
                 colorScheme = colorScheme
             ) {
+                val isOnline = networkMonitor.isOnline.collectAsState().value
                 ColoredStatusBar()
                 Scaffold(
                     modifier = Modifier
@@ -144,7 +149,8 @@ class DiagnoseActivity : BaseActivity() {
                                 viewState = viewState,
                                 onTestPushClick = { diagnoseViewModel.fetchTestPushResult() },
                                 onDismissDialog = { diagnoseViewModel.dismissDialog() },
-                                isGooglePlayServicesAvailable = isGooglePlayServicesAvailable
+                                isGooglePlayServicesAvailable = isGooglePlayServicesAvailable,
+                                isOnline = isOnline
                             )
                         }
                     }
