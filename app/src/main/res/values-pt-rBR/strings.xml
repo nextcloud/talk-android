@@ -296,7 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Os convites foram enviados novamente.</string>
     <string name="nc_guest_access_share_link">Compartilhar o link da conversa</string>
     <string name="nc_hint_enter_a_message">Digite uma mensagem …</string>
-    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os aplicativos\" -> %1$s e, em seguida, \"Não otimizar\" ou \"Permitir uso em segundo plano -> Irrestrito\".</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">A otimização da bateria não é ignorada. Isso deve ser alterado para garantir que as notificações funcionem em segundo plano! Clique em OK e selecione \"Todos os apps\" -> %1$s e, em seguida, \"Não otimizar\" ou \"Permitir uso em segundo plano -> Irrestrito\".</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorar otimização da bateria</string>
     <string name="nc_important_conversation">Conversa importante</string>
     <string name="nc_important_conversation_desc">O status de usuário \"Não perturbe\" é ignorado em conversas importantes</string>
@@ -557,7 +557,7 @@
     <string name="no_phone_book_integration_due_to_permissions">Sem integração de número de telefone devido à falta de permissões</string>
     <string name="notification_all_messages">Todas as mensagens</string>
     <string name="notification_mention_only">Apenas menções de @</string>
-    <string name="notification_off">Desativado</string>
+    <string name="notification_off">Desativadas</string>
     <string name="notifications_default">Padrão</string>
     <string name="notifications_default_description">Seguir as configurações da conversa</string>
     <string name="oneHour">1 hora</string>
@@ -669,7 +669,7 @@
     <string name="this_weekend">Este fim de semana</string>
     <string name="thread_cancel">Cancelar a criação do fio</string>
     <string name="thread_notifications">Notificações de fios</string>
-    <string name="thread_reply">Responder</string>
+    <string name="thread_reply">Resposta</string>
     <string name="thread_title">Título do fio</string>
     <string name="threads">Fios</string>
     <string name="threads_list_empty">Nenhum fio encontrado</string>
