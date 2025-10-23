@@ -16,6 +16,8 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.nio.ByteOrder
@@ -53,8 +55,8 @@ object AudioUtils : DefaultLifecycleObserver {
      * [0,1)
      */
     @Throws(IOException::class)
-    suspend fun audioFileToFloatArray(file: File): FloatArray {
-        return suspendCoroutine {
+    suspend fun audioFileToFloatArray(file: File): FloatArray = withContext(Dispatchers.Default) {
+        return@withContext suspendCoroutine {
             // Used to keep track of the time it took to process the audio file
             val startTime = SystemClock.elapsedRealtime()
 
@@ -143,6 +145,10 @@ object AudioUtils : DefaultLifecycleObserver {
                     val sampleLength = (samples.remaining() / numChannels)
 
                     // Squeezes the value of each sample between [0,1) using y = (x-1)/x
+                    // TODO - perhaps use min/max scaling to better preserve the waveform
+                    //  https://intuitivetutorial.com/2021/01/07/minmax-scaling/
+                    //  I would need to gather a sample of data, graph it in python and perform some
+                    //  operations on it first
                     for (i in 0 until sampleLength) {
                         val x = abs(samples[i * numChannels + index].toInt()) / VALUE_10
                         val y = (if (x > 0) ((x - 1) / x.toFloat()) else x.toFloat())

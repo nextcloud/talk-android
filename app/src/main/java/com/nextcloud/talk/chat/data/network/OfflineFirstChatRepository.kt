@@ -504,6 +504,20 @@ class OfflineFirstChatRepository @Inject constructor(
         ).map(ChatMessageEntity::asModel)
     }
 
+    override suspend fun updateSpecificMessageVariables(message: ChatMessage) {
+        val messageId = message.jsonMessageId.toLong()
+        chatDao.getChatMessageForConversation(internalConversationId, messageId).collect { messageEntity ->
+            message.voiceMessageFloatArray?.let { floatArray ->
+                val arrayList = ArrayList<Float>()
+                val floatList = floatArray.toList()
+                arrayList.addAll(floatList)
+                messageEntity.waveform = arrayList
+            }
+
+            chatDao.updateChatMessage(messageEntity)
+        }
+    }
+
     @Suppress("UNCHECKED_CAST", "MagicNumber", "Detekt.TooGenericExceptionCaught")
     private fun getMessagesFromServer(bundle: Bundle): Pair<Int, List<ChatMessageJson>>? {
         val fieldMap = bundle.getSerializable(BundleKeys.KEY_FIELD_MAP) as HashMap<String, Int>

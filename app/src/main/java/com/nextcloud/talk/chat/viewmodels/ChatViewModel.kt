@@ -802,6 +802,10 @@ class ChatViewModel @Inject constructor(
             emit(message.first())
         }
 
+    suspend fun updateSpecificMessageVariables(message: ChatMessage) {
+        chatRepository.updateSpecificMessageVariables(message)
+    }
+
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
 
     fun setPlayBack(speed: PlaybackSpeed) {

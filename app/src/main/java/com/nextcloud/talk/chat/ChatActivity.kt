@@ -1516,8 +1516,7 @@ class ChatActivity :
                     message.isPlayingVoiceMessage = false
                     adapter?.update(message)
                 } else {
-                    val retrieved = appPreferences.getWaveFormFromFile(filename)
-                    if (retrieved.isEmpty()) {
+                    if (message.voiceMessageFloatArray == null) {
                         setUpWaveform(message)
                     } else {
                         startPlayback(file, message)
@@ -1541,19 +1540,22 @@ class ChatActivity :
     private fun setUpWaveform(message: ChatMessage, thenPlay: Boolean = true, backgroundPlayAllowed: Boolean = false) {
         val filename = message.selectedIndividualHashMap!!["name"]
         val file = File(context.cacheDir, filename!!)
-        if (file.exists() && message.voiceMessageFloatArray == null) {
+        if (file.exists()) {
             message.isDownloadingVoiceMessage = true
             adapter?.update(message)
-            CoroutineScope(Dispatchers.Default).launch {
-                val r = AudioUtils.audioFileToFloatArray(file)
-                appPreferences.saveWaveFormForFile(filename, r.toTypedArray())
-                message.voiceMessageFloatArray = r
+            CoroutineScope(Dispatchers.IO).launch {
+                val waveform = AudioUtils.audioFileToFloatArray(file)
+
+                message.voiceMessageFloatArray = waveform
+
+                chatViewModel.updateSpecificMessageVariables(message)
+
                 withContext(Dispatchers.Main) {
                     startPlayback(file, message)
                 }
             }
         } else {
-            startPlayback(file, message)
+            Log.e(TAG, "Tried to set up waveform for a file that doesn't exists")
         }
     }
 
@@ -1577,7 +1579,7 @@ class ChatActivity :
                 chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
             }
             pos--
-        } while (true && pos >= 0)
+        } while (pos >= 0)
     }
 
     @Suppress("LongMethod")

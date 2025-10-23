@@ -7,9 +7,9 @@
 
 package com.nextcloud.talk.data.database.mappers
 
-import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 
 fun ChatMessageJson.asEntity(accountId: Long) =
@@ -78,7 +78,8 @@ fun ChatMessageEntity.asModel() =
         readStatus = ReadStatus.NONE,
         silent = silent,
         threadTitle = threadTitle,
-        threadReplies = threadReplies
+        threadReplies = threadReplies,
+        voiceMessageFloatArray = waveform?.toFloatArray()
     )
 
 fun ChatMessageJson.asModel() =
