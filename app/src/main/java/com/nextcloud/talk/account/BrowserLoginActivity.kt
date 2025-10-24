@@ -62,6 +62,7 @@ import javax.inject.Inject
 import javax.net.ssl.SSLHandshakeException
 import javax.net.ssl.SSLSession
 
+@Suppress("TooManyFunctions")
 @AutoInjector(NextcloudTalkApplication::class)
 class BrowserLoginActivity : BaseActivity() {
 
