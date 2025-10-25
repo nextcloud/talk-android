@@ -15,10 +15,12 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.conversations.RoomsOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
+import com.nextcloud.talk.models.json.invitation.InvitationOverall
 import com.nextcloud.talk.models.json.participants.AddParticipantOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.participants.TalkBanOverall
 import com.nextcloud.talk.models.json.profile.ProfileOverall
+import com.nextcloud.talk.models.json.status.StatusOverall
 import com.nextcloud.talk.models.json.testNotification.TestNotificationOverall
 import com.nextcloud.talk.models.json.threads.ThreadOverall
 import com.nextcloud.talk.models.json.threads.ThreadsOverall
@@ -315,4 +317,10 @@ interface NcApiCoroutines {
         @Url url: String,
         @Query("searchTerm") searchTerm: String?
     ): RoomsOverall
+
+    @GET
+    suspend fun getInvitations(@Header("Authorization") authorization: String, @Url url: String): InvitationOverall
+
+    @GET
+    suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
 }

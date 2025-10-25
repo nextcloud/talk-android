@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
+import com.nextcloud.talk.chooseaccount.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
 import com.nextcloud.talk.contextchat.ContextChatViewModel
 import com.nextcloud.talk.conversationcreation.ConversationCreationViewModel
@@ -172,4 +173,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ContextChatViewModel::class)
     abstract fun contextChatViewModel(viewModel: ContextChatViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(StatusViewModel::class)
+    abstract fun statusRepositoryViewModel(viewModel: StatusViewModel): ViewModel
 }
