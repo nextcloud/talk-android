@@ -158,7 +158,7 @@ class AccountVerificationActivity : BaseActivity() {
                         bundle.putString(KEY_USERNAME, username)
                         bundle.putString(KEY_PASSWORD, "")
 
-                        val intent = Intent(context, WebViewLoginActivity::class.java)
+                        val intent = Intent(context, BrowserLoginActivity::class.java)
                         intent.putExtras(bundle)
                         startActivity(intent)
                     } else {
