@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">PŘÍCHOZÍ</string>
     <string name="nc_call_name">Název konverzace</string>
     <string name="nc_call_notifications">Upozornění na hovor</string>
+    <string name="nc_call_ongoing_notification_content">Klepnutím se vrátíte k hovoru.</string>
     <string name="nc_call_ongoing_notification_default_title">Probíhá hovor</string>
     <string name="nc_call_raised_hand">%1$s se hlásí</string>
     <string name="nc_call_reconnecting">Znovunavazování spojení…</string>
@@ -295,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Pozvánky byly znovu odeslány.</string>
     <string name="nc_guest_access_share_link">Sdílet odkaz na konverzaci</string>
     <string name="nc_hint_enter_a_message">Zadejte zprávu…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Úspora energie z akumulátoru není ignorována. Pokud chcete, aby upozorňování na pozadí fungovalo správně, mělo by toto být změněno! Klikněte na OK a vyberte „Všechny aplikace“ -> %1$s a pak „Neoptimalizovat“ nebo „Umožnit používání na pozadí“ -> Neomezené</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovat úsporu energie z akumulátoru</string>
     <string name="nc_important_conversation">Důležitá konverzace</string>
     <string name="nc_important_conversation_desc">Stav uživatele „Nevyrušovat“ bude v případě důležitých konverzací ignorován</string>
@@ -682,6 +684,8 @@
     <string name="translation_error_title">Překlad se nezdařil</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pro</string>
+    <string name="turn_off_background_blur">Vypnout rozmazávání pozadí za vámi</string>
+    <string name="turn_on_background_blur">Zapnout rozmazávání pozadí za vámi</string>
     <string name="typing_1_other">a 1 další píše…</string>
     <string name="typing_are_typing">píší…</string>
     <string name="typing_is_typing">píše…</string>
