@@ -436,9 +436,9 @@
     <string name="nc_server_db_upgrade_needed">Opdater venligst din %1$s database</string>
     <string name="nc_server_failed_to_import_account">Den valgte konto kunne ikke importeres</string>
     <string name="nc_server_helper_text">Linket til dit %1$s web interface når du åbner den i browseren.</string>
-    <string name="nc_server_import_account">Importer konto fra %1$s appen</string>
+    <string name="nc_server_import_account">Importér konto fra %1$s appen</string>
     <string name="nc_server_import_account_plain">Importér konto</string>
-    <string name="nc_server_import_accounts">Importer konti fra %1$s appen</string>
+    <string name="nc_server_import_accounts">Importér konti fra %1$s appen</string>
     <string name="nc_server_import_accounts_plain">Importér konti</string>
     <string name="nc_server_maintenance">Få venligst  %1$s ud fra vedligeholdelse </string>
     <string name="nc_server_not_installed">Afslut venligst din %1$s installation</string>
