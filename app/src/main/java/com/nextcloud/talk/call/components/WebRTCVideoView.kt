@@ -11,24 +11,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
-import com.nextcloud.talk.activities.ParticipantUiState
 import org.webrtc.EglBase
+import org.webrtc.MediaStream
 import org.webrtc.SurfaceViewRenderer
 
 @Composable
-fun WebRTCVideoView(participant: ParticipantUiState, eglBase: EglBase?) {
+fun WebRTCVideoView(mediaStream: MediaStream, eglBase: EglBase?) {
     AndroidView(
         factory = { context ->
             SurfaceViewRenderer(context).apply {
                 init(eglBase?.eglBaseContext, null)
                 setEnableHardwareScaler(true)
                 setMirror(false)
-                participant.mediaStream?.videoTracks?.firstOrNull()?.addSink(this)
+                mediaStream.videoTracks?.firstOrNull()?.addSink(this)
             }
         },
         modifier = Modifier.fillMaxSize(),
         onRelease = {
-            participant.mediaStream?.videoTracks?.firstOrNull()?.removeSink(it)
+            mediaStream.videoTracks?.firstOrNull()?.removeSink(it)
             it.release()
         }
     )
