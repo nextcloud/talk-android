@@ -7,11 +7,13 @@
 package com.nextcloud.talk.invitation.data
 
 import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 
-class InvitationsRepositoryImpl(private val ncApi: NcApi) : InvitationsRepository {
+class InvitationsRepositoryImpl(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
+    InvitationsRepository {
 
     override fun fetchInvitations(user: User): Observable<InvitationsModel> {
         val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
@@ -38,6 +40,16 @@ class InvitationsRepositoryImpl(private val ncApi: NcApi) : InvitationsRepositor
             credentials,
             ApiUtils.getUrlForInvitationReject(user.baseUrl!!, invitation.id)
         ).map { InvitationActionModel(ActionEnum.REJECT, it.ocs?.meta?.statusCode!!, invitation) }
+    }
+
+    override suspend fun getInvitations(user: User): InvitationsModel {
+        val credentials: String = ApiUtils.getCredentials(user.username, user.token)!!
+
+        val invitationsOverall = ncApiCoroutines.getInvitations(
+            credentials,
+            ApiUtils.getUrlForInvitation(user.baseUrl!!)
+        )
+        return mapToInvitationsModel(user, invitationsOverall.ocs?.data!!)
     }
 
     private fun mapToInvitationsModel(
