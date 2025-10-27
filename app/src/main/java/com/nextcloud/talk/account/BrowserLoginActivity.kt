@@ -26,6 +26,7 @@ import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -55,6 +56,7 @@ import okhttp3.RequestBody
 import org.json.JSONException
 import org.json.JSONObject
 import java.io.IOException
+import java.net.URLDecoder
 import java.util.concurrent.Executors
 import java.util.concurrent.ScheduledExecutorService
 import java.util.concurrent.TimeUnit
@@ -115,7 +117,6 @@ class BrowserLoginActivity : BaseActivity() {
         initViews()
         onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
         handleIntent()
-        anonymouslyPostLoginRequest()
         lifecycle.addObserver(lifecycleEventObserver)
     }
 
@@ -130,6 +131,17 @@ class BrowserLoginActivity : BaseActivity() {
 
         if (extras.containsKey(BundleKeys.KEY_PASSWORD)) {
             password = extras.getString(BundleKeys.KEY_PASSWORD)
+        }
+
+        if (extras.containsKey(BundleKeys.KEY_FROM_QR)) {
+            val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
+            val loginData = startLoginFlowFromQR(uri, reauthorizeAccount)
+            loginData?.let {
+                baseUrl = loginData.serverUrl
+                startAccountVerification(it)
+            } ?: Log.e(TAG, "Error in startLoginFlowFromQR")
+        } else if (baseUrl != null) {
+            anonymouslyPostLoginRequest()
         }
     }
 
@@ -343,6 +355,46 @@ class BrowserLoginActivity : BaseActivity() {
             }
     }
 
+    private fun startLoginFlowFromQR(dataString: String, reAuth: Boolean = false): LoginData? {
+        if (!dataString.startsWith(PREFIX)) {
+            Log.e(LoginRepository.Companion.TAG, "Invalid login URL detected")
+            return null
+        }
+
+        val data = dataString.removePrefix(PREFIX)
+        val values = data.split('&')
+
+        if (values.size !in 1..MAX_ARGS) {
+            Log.e(LoginRepository.Companion.TAG, "Illegal number of login URL elements detected: ${values.size}")
+            return null
+        }
+
+        var server = ""
+        var loginName = ""
+        var appPassword = ""
+        values.forEach { value ->
+            when {
+                value.startsWith(USER_KEY) -> {
+                    loginName = URLDecoder.decode(value.removePrefix(USER_KEY), "UTF-8")
+                }
+
+                value.startsWith(PASS_KEY) -> {
+                    appPassword = URLDecoder.decode(value.removePrefix(PASS_KEY), "UTF-8")
+                }
+
+                value.startsWith(SERVER_KEY) -> {
+                    server = URLDecoder.decode(value.removePrefix(SERVER_KEY), "UTF-8")
+                }
+            }
+        }
+
+        return if (server.isNotEmpty() && loginName.isNotEmpty() && appPassword.isNotEmpty()) {
+            LoginData(server, loginName, appPassword)
+        } else {
+            null
+        }
+    }
+
     public override fun onDestroy() {
         super.onDestroy()
         dispose()
@@ -359,5 +411,10 @@ class BrowserLoginActivity : BaseActivity() {
         private val TAG = BrowserLoginActivity::class.java.simpleName
         private const val INTERVAL = 30L
         private const val HTTP_OK = 200
+        private const val USER_KEY = "user:"
+        private const val SERVER_KEY = "server:"
+        private const val PASS_KEY = "password:"
+        private const val PREFIX = "nc://login/"
+        private const val MAX_ARGS = 3
     }
 }
