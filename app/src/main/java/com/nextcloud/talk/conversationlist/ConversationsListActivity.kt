@@ -679,10 +679,9 @@ class ConversationsListActivity :
     }
 
     private fun isFutureEvent(conversation: ConversationModel): Boolean {
-        if (!conversation.objectId.contains("#")) {
-            return false
-        }
-        val eventTimeStart = conversation.objectId.split("#")[0].toLong()
+        val eventTimeStart = conversation.objectId
+            .substringBefore("#")
+            .toLongOrNull() ?: return false
         val currentTimeStampInSeconds = System.currentTimeMillis() / LONG_1000
         val sixteenHoursAfterTimeStamp = (eventTimeStart - currentTimeStampInSeconds) > SIXTEEN_HOURS_IN_SECONDS
         return conversation.objectType == ConversationEnums.ObjectType.EVENT && sixteenHoursAfterTimeStamp
