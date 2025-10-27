@@ -70,6 +70,7 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.call.components.ScreenShareView
 import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
@@ -384,6 +385,7 @@ class CallActivity : CallBaseActivity() {
 
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
+                val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 val participantUiStates by callViewModel.participants.collectAsState(initial = emptyList())
 
                 LaunchedEffect(participantUiStates) {
@@ -392,12 +394,26 @@ class CallActivity : CallBaseActivity() {
                     }
                 }
 
-                ParticipantGrid(
-                    participantUiStates = participantUiStates,
-                    eglBase = rootEglBase!!,
-                    isVoiceOnlyCall = isVoiceOnlyCall,
-                    onClick = {}
-                )
+                if (screenShareParticipantUiState != null) {
+                    ScreenShareView(
+                        participantUiState = screenShareParticipantUiState!!,
+                        eglBase = rootEglBase!!,
+                        // modifier = null,
+                        onCloseIconClick = {
+                            callViewModel.setActiveScreenShareSession(null)
+                        }
+                    )
+                } else {
+                    ParticipantGrid(
+                        participantUiStates = participantUiStates,
+                        eglBase = rootEglBase!!,
+                        isVoiceOnlyCall = isVoiceOnlyCall,
+                        onClick = {},
+                        onScreenShareIconClick = {
+                            callViewModel.setActiveScreenShareSession(it)
+                        }
+                    )
+                }
             }
         }
 

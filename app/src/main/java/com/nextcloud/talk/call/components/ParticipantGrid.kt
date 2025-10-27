@@ -40,7 +40,8 @@ fun ParticipantGrid(
     eglBase: EglBase?,
     participantUiStates: List<ParticipantUiState>,
     isVoiceOnlyCall: Boolean,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
     Log.d("ParticipantGrid", "participantUiStates.size in Grid:" + participantUiStates.size)
 
@@ -111,7 +112,8 @@ fun ParticipantGrid(
                         .height(itemHeight)
                         .fillMaxWidth(),
                     eglBase = eglBase,
-                    isVoiceOnlyCall = isVoiceOnlyCall
+                    isVoiceOnlyCall = isVoiceOnlyCall,
+                    onScreenShareIconClick = onScreenShareIconClick
                 )
             }
         }
@@ -124,8 +126,10 @@ fun ParticipantGridPreview() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(1),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -134,8 +138,10 @@ fun TwoParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(2),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -144,8 +150,10 @@ fun ThreeParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(3),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -154,8 +162,10 @@ fun FourParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(4),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -164,8 +174,10 @@ fun FiveParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(5),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -174,8 +186,10 @@ fun SevenParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(7),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview
@@ -184,8 +198,10 @@ fun FiftyParticipants() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(50),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -198,8 +214,10 @@ fun OneParticipantLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(1),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -212,8 +230,10 @@ fun TwoParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(2),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -226,8 +246,10 @@ fun ThreeParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(3),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -240,8 +262,10 @@ fun FourParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(4),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -254,8 +278,10 @@ fun SevenParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(7),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 @Preview(
@@ -268,8 +294,10 @@ fun FiftyParticipantsLandscape() {
     ParticipantGrid(
         participantUiStates = getTestParticipants(50),
         eglBase = null,
-        isVoiceOnlyCall = false
-    ) {}
+        isVoiceOnlyCall = false,
+        onClick = {},
+        onScreenShareIconClick = {}
+    )
 }
 
 fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
