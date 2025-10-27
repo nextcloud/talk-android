@@ -16,10 +16,10 @@ import android.widget.ProgressBar;
 
 import com.google.android.material.card.MaterialCardView;
 import com.nextcloud.talk.R;
+import com.nextcloud.talk.chat.data.model.ChatMessage;
 import com.nextcloud.talk.databinding.ItemCustomIncomingPreviewMessageBinding;
 import com.nextcloud.talk.databinding.ItemThreadTitleBinding;
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding;
-import com.nextcloud.talk.chat.data.model.ChatMessage;
 import com.nextcloud.talk.utils.TextMatchers;
 
 import java.util.HashMap;
@@ -89,6 +89,12 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
                                                                 R.color.no_emphasis_text));
         binding.messageTime.setTextColor(ContextCompat.getColor(binding.messageText.getContext(),
                                                                 R.color.no_emphasis_text));
+
+        if(!message.isThread()) {
+            binding.threadTitleWrapperContainer.setVisibility(View.GONE);
+        } else {
+            binding.threadTitleWrapperContainer.setVisibility(View.VISIBLE);
+        }
     }
 
     @NonNull
