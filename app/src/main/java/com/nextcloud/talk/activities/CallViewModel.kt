@@ -22,6 +22,9 @@ class CallViewModel @Inject constructor() : ViewModel() {
     private val _participants = MutableStateFlow<List<ParticipantUiState>>(emptyList())
     val participants: StateFlow<List<ParticipantUiState>> = _participants.asStateFlow()
 
+    private val _activeScreenShareSession = MutableStateFlow<ParticipantUiState?>(null)
+    val activeScreenShareSession: StateFlow<ParticipantUiState?> = _activeScreenShareSession.asStateFlow()
+
     fun getParticipant(sessionId: String?): ParticipantHandler? = participantHandlers[sessionId]
 
     fun doesParticipantExist(sessionId: String?): Boolean = (participantHandlers.containsKey(sessionId))
@@ -43,6 +46,12 @@ class CallViewModel @Inject constructor() : ViewModel() {
         participantHandlers[sessionId]?.destroy()
         participantHandlers.remove(sessionId)
         _participants.value = participantHandlers.values.map { it.uiState.value }
+    }
+
+    fun setActiveScreenShareSession(session: String?) {
+        _activeScreenShareSession.value = session?.let {
+            participantHandlers[it]?.uiState?.value
+        }
     }
 
     override fun onCleared() {

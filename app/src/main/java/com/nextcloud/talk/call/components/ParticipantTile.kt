@@ -9,6 +9,7 @@ package com.nextcloud.talk.call.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
@@ -49,7 +50,8 @@ fun ParticipantTile(
     participantUiState: ParticipantUiState,
     eglBase: EglBase?,
     modifier: Modifier = Modifier,
-    isVoiceOnlyCall: Boolean
+    isVoiceOnlyCall: Boolean,
+    onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
     val colorInt = ColorGenerator.usernameToColor(participantUiState.nick!!)
 
@@ -61,7 +63,7 @@ fun ParticipantTile(
         val avatarSize = min(maxWidth, maxHeight) * AVATAR_SIZE_FACTOR
 
         if (!isVoiceOnlyCall && participantUiState.isStreamEnabled && participantUiState.mediaStream != null) {
-            WebRTCVideoView(participantUiState, eglBase)
+            WebRTCVideoView(participantUiState.mediaStream, eglBase)
         } else {
             AvatarWithFallback(
                 participant = participantUiState,
@@ -98,7 +100,10 @@ fun ParticipantTile(
                         contentDescription = "Mic Off",
                         modifier = Modifier
                             .padding(6.dp)
-                            .size(24.dp),
+                            .size(24.dp)
+                            .clickable {
+                                onScreenShareIconClick?.invoke(participantUiState.sessionKey)
+                            },
                         tint = Color.White
                     )
                 }
@@ -162,6 +167,7 @@ fun ParticipantTilePreview() {
             .fillMaxWidth()
             .height(300.dp),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        onScreenShareIconClick = null
     )
 }
