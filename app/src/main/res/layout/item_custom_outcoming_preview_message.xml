@@ -32,6 +32,7 @@
         app:justifyContent="flex_end">
 
         <LinearLayout
+            android:id="@+id/threadTitleWrapperContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp">
