@@ -119,7 +119,7 @@
     <string name="nc_all_ok_operation">Sawa, zote zimefanyika!</string>
     <string name="nc_attendee_pin">Pin: %1$s</string>
     <string name="nc_biometric_unlock">Fungua %1$s</string>
-    <string name="nc_bluetooth_permission_hint">To enable bluetooth speakers please grant \"Nearby devices\" permission.</string>
+    <string name="nc_bluetooth_permission_hint">Ili kuwezesha spika za bluetooth tafadhali toa ruhusa ya \"Vifaa vya Karibu\".</string>
     <string name="nc_call_button_content_description_answer_video_call">Jibu kama simu ya video</string>
     <string name="nc_call_button_content_description_answer_voice_only">Jibu kama simu ya sauti tu</string>
     <string name="nc_call_button_content_description_audio_output">Badili maingilio ya sauti</string>
@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">Zinazoingia</string>
     <string name="nc_call_name">Jina la mazungumzo</string>
     <string name="nc_call_notifications">Arifu za simu</string>
+    <string name="nc_call_ongoing_notification_content">Gusa ili urudi kwenye simu yako.</string>
     <string name="nc_call_ongoing_notification_default_title">Simu inaendelea</string>
     <string name="nc_call_raised_hand">%1$s ameinua mkono</string>
     <string name="nc_call_reconnecting">Inaunganisha upya</string>
