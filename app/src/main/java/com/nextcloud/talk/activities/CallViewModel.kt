@@ -32,13 +32,32 @@ class CallViewModel @Inject constructor() : ViewModel() {
     fun addParticipant(sessionId: String, signalingMessageReceiver: SignalingMessageReceiver) {
         if (participantHandlers.containsKey(sessionId)) return
 
-        val participantHandler = ParticipantHandler(sessionId, signalingMessageReceiver)
+        val participantHandler = ParticipantHandler(
+            sessionId,
+            signalingMessageReceiver,
+            onParticipantShareScreen = {
+                onShareScreen(it)
+            },
+            onParticipantUnshareScreen = {
+                onUnshareScreen(it)
+            }
+        )
         participantHandlers[sessionId] = participantHandler
 
         viewModelScope.launch {
             participantHandler.uiState.collect {
                 _participants.value = participantHandlers.values.map { it.uiState.value }
             }
+        }
+    }
+
+    fun onShareScreen(sessionId: String?) {
+        setActiveScreenShareSession(sessionId)
+    }
+
+    fun onUnshareScreen(sessionId: String?) {
+        if (_activeScreenShareSession.value?.sessionKey.equals(sessionId)) {
+            setActiveScreenShareSession(null)
         }
     }
 
