@@ -7,12 +7,18 @@
 
 package com.nextcloud.talk.call.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -21,24 +27,32 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
+import kotlinx.coroutines.delay
 import org.webrtc.EglBase
 import org.webrtc.MediaStream
 import org.webrtc.RendererCommon
@@ -50,49 +64,118 @@ fun ScreenShareView(
     participantUiState: ParticipantUiState,
     eglBase: EglBase?,
     modifier: Modifier = Modifier,
-    onCloseIconClick: () -> Unit?
+    onCloseIconClick: () -> Unit
 ) {
+    var controlsVisible by remember { mutableStateOf(true) }
+
+    LaunchedEffect(controlsVisible) {
+        if (controlsVisible) {
+            delay(5000)
+            controlsVisible = false
+        }
+    }
+
     Box(
         modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopEnd
+        contentAlignment = Alignment.TopCenter
     ) {
-        if (participantUiState.isScreenStreamEnabled && participantUiState.screenMediaStream != null) {
-            WebRTCScreenShareView(participantUiState.screenMediaStream, eglBase)
-        }
+        ScreenShareVideo(
+            participantUiState = participantUiState,
+            eglBase = eglBase,
+            onSingleTap = { controlsVisible = true }
+        )
 
-        IconButton(
-            onClick = { onCloseIconClick() },
-            modifier = Modifier
-                .padding(12.dp)
-                .size(36.dp)
-                .background(
-                    color = Color.Black.copy(alpha = 0.4f),
-                    shape = CircleShape
-                )
-                .border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape)
+        AnimatedVisibility(
+            visible = controlsVisible,
+            enter = fadeIn(),
+            exit = fadeOut()
         ) {
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = stringResource(R.string.close),
-                tint = Color.White
+            ScreenShareControls(
+                nick = participantUiState.nick.orEmpty(),
+                onCloseClick = onCloseIconClick
             )
         }
     }
 }
 
 @Composable
-fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?) {
+private fun ScreenShareVideo(participantUiState: ParticipantUiState, eglBase: EglBase?, onSingleTap: () -> Unit) {
+    if (participantUiState.isScreenStreamEnabled && participantUiState.screenMediaStream != null) {
+        WebRTCScreenShareView(
+            mediaStream = participantUiState.screenMediaStream,
+            eglBase = eglBase,
+            onSingleTap = onSingleTap
+        )
+    }
+}
+
+@Composable
+private fun ScreenShareControls(nick: String, onCloseClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                Brush.verticalGradient(
+                    listOf(Color.Black.copy(alpha = 0.6f), Color.Transparent)
+                )
+            )
+            .padding(top = 8.dp, start = 12.dp, end = 12.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 8.dp, vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = nick,
+                color = Color.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+
+            CloseButton(onClick = onCloseClick)
+        }
+    }
+}
+
+@Composable
+private fun CloseButton(onClick: () -> Unit) {
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier
+            .padding(4.dp)
+            .size(36.dp)
+            .background(
+                color = Color.Black.copy(alpha = 0.4f),
+                shape = CircleShape
+            )
+            .border(1.dp, Color.White.copy(alpha = 0.8f), CircleShape)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Close,
+            contentDescription = stringResource(R.string.close),
+            tint = Color.White
+        )
+    }
+}
+
+@Composable
+fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?, onSingleTap: () -> Unit) {
     val context = LocalContext.current
     val renderer = remember { SurfaceViewRenderer(context) }
     val videoTrack = remember(mediaStream) { mediaStream.videoTracks.firstOrNull() }
 
     SetupSurfaceRenderer(renderer, eglBase, videoTrack)
 
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-    var videoWidth by remember { mutableStateOf(0f) }
-    var videoHeight by remember { mutableStateOf(0f) }
+    var scale by remember { mutableFloatStateOf(1f) }
+    var offsetX by remember { mutableFloatStateOf(0f) }
+    var offsetY by remember { mutableFloatStateOf(0f) }
+    var videoWidth by remember { mutableFloatStateOf(0f) }
+    var videoHeight by remember { mutableFloatStateOf(0f) }
 
     Box(
         modifier = Modifier
@@ -108,7 +191,8 @@ fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?) {
                     offsetY = y
                 },
                 videoWidthState = { videoWidth },
-                videoHeightState = { videoHeight }
+                videoHeightState = { videoHeight },
+                onSingleTap = onSingleTap
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -116,9 +200,9 @@ fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?) {
             factory = { renderer },
             modifier = Modifier
                 .wrapContentSize()
-                .onGloballyPositioned { coords ->
-                    videoWidth = coords.size.width.toFloat()
-                    videoHeight = coords.size.height.toFloat()
+                .onGloballyPositioned { coordinates ->
+                    videoWidth = coordinates.size.width.toFloat()
+                    videoHeight = coordinates.size.height.toFloat()
                 }
                 .graphicsLayer(
                     scaleX = scale,
@@ -145,6 +229,7 @@ private fun SetupSurfaceRenderer(renderer: SurfaceViewRenderer, eglBase: EglBase
         }
     }
 }
+
 fun Modifier.zoomableVideo(
     scaleState: () -> Float,
     onScaleChange: (Float) -> Unit,
@@ -154,7 +239,8 @@ fun Modifier.zoomableVideo(
     videoWidthState: () -> Float,
     videoHeightState: () -> Float,
     minScale: Float = 1f,
-    maxScale: Float = 5f
+    maxScale: Float = 5f,
+    onSingleTap: () -> Unit = {}
 ): Modifier =
     pointerInput(Unit) {
         detectTransformGestures { centroid, pan, zoom, _ ->
@@ -176,8 +262,11 @@ fun Modifier.zoomableVideo(
             onOffsetChange(offsetX, offsetY)
         }
     }.pointerInput(Unit) {
-        detectTapGestures(onDoubleTap = {
-            onScaleChange(1f)
-            onOffsetChange(0f, 0f)
-        })
+        detectTapGestures(
+            onTap = { onSingleTap() },
+            onDoubleTap = {
+                onScaleChange(1f)
+                onOffsetChange(0f, 0f)
+            }
+        )
     }
