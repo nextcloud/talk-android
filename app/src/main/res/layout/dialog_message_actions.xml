@@ -630,7 +630,7 @@
                         android:paddingStart="@dimen/standard_padding"
                         android:paddingEnd="@dimen/zero"
                         android:src="@drawable/ic_delete"
-                        app:tint="@color/nc_darkRed" />
+                        app:tint="@color/high_emphasis_menu_icon" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/menu_text_delete_message"
