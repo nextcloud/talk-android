@@ -408,7 +408,7 @@ class CallActivity : CallBaseActivity() {
 
                 LaunchedEffect(participantUiStates) {
                     participantUiStates.forEach {
-                        Log.d("CallActivity", "Participant: ${it.nick} (${it.sessionKey})")
+                        Log.d(TAG, "Participant: ${it.nick} (${it.sessionKey})")
                     }
                 }
 
@@ -3156,7 +3156,7 @@ class CallActivity : CallBaseActivity() {
 
         // const val VIDEO_STREAM_TYPE_SCREEN = "screen"
         const val VIDEO_STREAM_TYPE_VIDEO = "video"
-        const val TAG = "CallActivity"
+        private val TAG = CallActivity::class.java.simpleName
         private val PERMISSIONS_CAMERA = arrayOf(
             Manifest.permission.CAMERA
         )

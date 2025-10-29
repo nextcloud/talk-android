@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.activities
 
+import android.util.Log
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
@@ -21,7 +22,9 @@ import org.webrtc.PeerConnection.IceConnectionState
 
 class ParticipantHandler(
     private val sessionId: String,
-    private val signalingMessageReceiver: SignalingMessageReceiver
+    private val signalingMessageReceiver: SignalingMessageReceiver,
+    onParticipantShareScreen: ((String?) -> Unit?),
+    onParticipantUnshareScreen: ((String?) -> Unit?)
 ) {
     private val _uiState = MutableStateFlow(
         ParticipantUiState(
@@ -57,6 +60,7 @@ class ParticipantHandler(
     private val screenPeerConnectionObserver: PeerConnectionObserver = object : PeerConnectionObserver {
         override fun onStreamAdded(mediaStream: MediaStream?) {
             handleScreenStreamChange(mediaStream)
+            onParticipantShareScreen.invoke(_uiState.value.sessionKey)
         }
 
         override fun onStreamRemoved(mediaStream: MediaStream?) {
@@ -64,7 +68,7 @@ class ParticipantHandler(
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
-            // TODO
+            Log.d(TAG, "onIceConnectionStateChanged")
             // callParticipantModel.setScreenIceConnectionState(iceConnectionState)
         }
     }
@@ -124,7 +128,6 @@ class ParticipantHandler(
         }
     }
 
-    // --- Signaling listeners ---
     private val listener = object : SignalingMessageReceiver.CallParticipantMessageListener {
         override fun onRaiseHand(state: Boolean, timestamp: Long) {
             _uiState.update { it.copy(raisedHand = state) }
@@ -136,6 +139,7 @@ class ParticipantHandler(
 
         override fun onUnshareScreen() {
             handleScreenStreamChange(null)
+            onParticipantUnshareScreen.invoke(_uiState.value.sessionKey)
         }
     }
 
@@ -212,5 +216,9 @@ class ParticipantHandler(
 
         peerConnection = null
         screenPeerConnection = null
+    }
+
+    companion object {
+        private val TAG = ParticipantHandler::class.java.simpleName
     }
 }
