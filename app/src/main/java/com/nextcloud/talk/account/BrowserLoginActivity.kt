@@ -26,7 +26,6 @@ import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.JsonParser
 import com.nextcloud.talk.R
-import com.nextcloud.talk.account.data.LoginRepository
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
@@ -356,16 +355,21 @@ class BrowserLoginActivity : BaseActivity() {
     }
 
     private fun startLoginFlowFromQR(dataString: String, reAuth: Boolean = false): LoginData? {
+        var error = false
         if (!dataString.startsWith(PREFIX)) {
-            Log.e(LoginRepository.Companion.TAG, "Invalid login URL detected")
-            return null
+            Log.e(TAG, "Invalid login URL detected")
+            error = true
         }
 
         val data = dataString.removePrefix(PREFIX)
         val values = data.split('&')
 
         if (values.size !in 1..MAX_ARGS) {
-            Log.e(LoginRepository.Companion.TAG, "Illegal number of login URL elements detected: ${values.size}")
+            Log.e(TAG, "Illegal number of login URL elements detected: ${values.size}")
+            error = true
+        }
+
+        if (error) {
             return null
         }
 
