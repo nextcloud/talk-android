@@ -32,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,7 @@ import org.webrtc.EglBase
 import org.webrtc.MediaStream
 import org.webrtc.RendererCommon
 import org.webrtc.SurfaceViewRenderer
+import org.webrtc.VideoTrack
 
 @Composable
 fun ScreenShareView(
@@ -81,10 +83,55 @@ fun ScreenShareView(
 @Composable
 fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?) {
     val context = LocalContext.current
+    val renderer = remember { SurfaceViewRenderer(context) }
     val videoTrack = remember(mediaStream) { mediaStream.videoTracks.firstOrNull() }
 
-    val renderer = remember { SurfaceViewRenderer(context) }
+    SetupSurfaceRenderer(renderer, eglBase, videoTrack)
 
+    var scale by remember { mutableStateOf(1f) }
+    var offsetX by remember { mutableStateOf(0f) }
+    var offsetY by remember { mutableStateOf(0f) }
+    var videoWidth by remember { mutableStateOf(0f) }
+    var videoHeight by remember { mutableStateOf(0f) }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black)
+            .zoomableVideo(
+                scaleState = { scale },
+                onScaleChange = { scale = it },
+                offsetXState = { offsetX },
+                offsetYState = { offsetY },
+                onOffsetChange = { x, y ->
+                    offsetX = x
+                    offsetY = y
+                },
+                videoWidthState = { videoWidth },
+                videoHeightState = { videoHeight }
+            ),
+        contentAlignment = Alignment.Center
+    ) {
+        AndroidView(
+            factory = { renderer },
+            modifier = Modifier
+                .wrapContentSize()
+                .onGloballyPositioned { coords ->
+                    videoWidth = coords.size.width.toFloat()
+                    videoHeight = coords.size.height.toFloat()
+                }
+                .graphicsLayer(
+                    scaleX = scale,
+                    scaleY = scale,
+                    translationX = offsetX,
+                    translationY = offsetY
+                )
+        )
+    }
+}
+
+@Composable
+private fun SetupSurfaceRenderer(renderer: SurfaceViewRenderer, eglBase: EglBase?, videoTrack: VideoTrack?) {
     DisposableEffect(renderer, eglBase, videoTrack) {
         renderer.init(eglBase?.eglBaseContext, null)
         renderer.setEnableHardwareScaler(true)
@@ -97,52 +144,40 @@ fun WebRTCScreenShareView(mediaStream: MediaStream, eglBase: EglBase?) {
             renderer.release()
         }
     }
-
-    var scale by remember { mutableStateOf(1f) }
-    var offsetX by remember { mutableStateOf(0f) }
-    var offsetY by remember { mutableStateOf(0f) }
-
-    val minScale = 1f
-    val maxScale = 5f
-
-    val modifier = Modifier.pointerInput(Unit) {
-        detectTransformGestures(
-            onGesture = { centroid, pan, zoom, _ ->
-                val newScale = (scale * zoom).coerceIn(minScale, maxScale)
-                val scaleFactor = newScale / scale
-                scale = newScale
-
-                offsetX = (offsetX + pan.x * scaleFactor)
-                offsetY = (offsetY + pan.y * scaleFactor)
-            }
-        )
-    }.pointerInput(Unit) {
-        detectTapGestures(
-            onDoubleTap = {
-                scale = 1f
-                offsetX = 0f
-                offsetY = 0f
-            }
-        )
-    }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black)
-            .then(modifier),
-        contentAlignment = Alignment.Center
-    ) {
-        AndroidView(
-            factory = { renderer },
-            modifier = Modifier
-                .wrapContentSize()
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offsetX,
-                    translationY = offsetY
-                )
-        )
-    }
 }
+fun Modifier.zoomableVideo(
+    scaleState: () -> Float,
+    onScaleChange: (Float) -> Unit,
+    offsetXState: () -> Float,
+    offsetYState: () -> Float,
+    onOffsetChange: (Float, Float) -> Unit,
+    videoWidthState: () -> Float,
+    videoHeightState: () -> Float,
+    minScale: Float = 1f,
+    maxScale: Float = 5f
+): Modifier =
+    pointerInput(Unit) {
+        detectTransformGestures { centroid, pan, zoom, _ ->
+            val prevScale = scaleState()
+            val newScale = (prevScale * zoom).coerceIn(minScale, maxScale)
+
+            val focusX = centroid.x - offsetXState() - videoWidthState() / 2
+            val focusY = centroid.y - offsetYState() - videoHeightState() / 2
+
+            var offsetX = offsetXState() - focusX * (newScale / prevScale - 1) + pan.x
+            var offsetY = offsetYState() - focusY * (newScale / prevScale - 1) + pan.y
+
+            val maxOffsetX = (videoWidthState() * (newScale - 1)) / 2
+            val maxOffsetY = (videoHeightState() * (newScale - 1)) / 2
+            offsetX = offsetX.coerceIn(-maxOffsetX, maxOffsetX)
+            offsetY = offsetY.coerceIn(-maxOffsetY, maxOffsetY)
+
+            onScaleChange(newScale)
+            onOffsetChange(offsetX, offsetY)
+        }
+    }.pointerInput(Unit) {
+        detectTapGestures(onDoubleTap = {
+            onScaleChange(1f)
+            onOffsetChange(0f, 0f)
+        })
+    }
