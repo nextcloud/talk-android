@@ -70,7 +70,7 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
-import com.nextcloud.talk.call.components.ScreenShareView
+import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
 import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
 import com.nextcloud.talk.camera.BlurBackgroundViewModel.BackgroundBlurOn
@@ -388,10 +388,9 @@ class CallActivity : CallBaseActivity() {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 if (screenShareParticipantUiState != null) {
                     binding!!.selfVideoRenderer.visibility = View.GONE
-                    ScreenShareView(
+                    ScreenShareComponent(
                         participantUiState = screenShareParticipantUiState!!,
                         eglBase = rootEglBase!!,
-                        // modifier = null,
                         onCloseIconClick = {
                             callViewModel.setActiveScreenShareSession(null)
                             initViews()
