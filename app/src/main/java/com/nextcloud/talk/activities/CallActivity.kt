@@ -383,6 +383,22 @@ class CallActivity : CallBaseActivity() {
         binding = CallActivityBinding.inflate(layoutInflater)
         setContentView(binding!!.root)
 
+        binding!!.screenShareFullscreenView.setContent {
+            MaterialTheme {
+                val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
+                if (screenShareParticipantUiState != null) {
+                    ScreenShareView(
+                        participantUiState = screenShareParticipantUiState!!,
+                        eglBase = rootEglBase!!,
+                        // modifier = null,
+                        onCloseIconClick = {
+                            callViewModel.setActiveScreenShareSession(null)
+                        }
+                    )
+                }
+            }
+        }
+
         binding!!.composeParticipantGrid.setContent {
             MaterialTheme {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
@@ -394,16 +410,7 @@ class CallActivity : CallBaseActivity() {
                     }
                 }
 
-                if (screenShareParticipantUiState != null) {
-                    ScreenShareView(
-                        participantUiState = screenShareParticipantUiState!!,
-                        eglBase = rootEglBase!!,
-                        // modifier = null,
-                        onCloseIconClick = {
-                            callViewModel.setActiveScreenShareSession(null)
-                        }
-                    )
-                } else {
+                if (screenShareParticipantUiState == null) {
                     ParticipantGrid(
                         participantUiStates = participantUiStates,
                         eglBase = rootEglBase!!,
