@@ -387,12 +387,14 @@ class CallActivity : CallBaseActivity() {
             MaterialTheme {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 if (screenShareParticipantUiState != null) {
+                    binding!!.selfVideoRenderer.visibility = View.GONE
                     ScreenShareView(
                         participantUiState = screenShareParticipantUiState!!,
                         eglBase = rootEglBase!!,
                         // modifier = null,
                         onCloseIconClick = {
                             callViewModel.setActiveScreenShareSession(null)
+                            initViews()
                         }
                     )
                 }
