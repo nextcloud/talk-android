@@ -30,6 +30,7 @@
             android:layout_height="match_parent"
             android:background="@color/grey950"
             android:visibility="visible"
+            tools:ignore="UselessParent"
             tools:visibility="visible">
 
             <FrameLayout
@@ -86,11 +87,23 @@
                 android:orientation="vertical"
                 android:paddingTop="10dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp">
+
+                    <TextView
+                        android:id="@+id/callConversationNameTextView"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textColor="@color/white"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        tools:text="Marsellus Wallace" />
 
                     <ImageView
                         android:id="@+id/call_recording_indicator"
@@ -104,27 +117,14 @@
                     </ImageView>
 
                     <TextView
-                        android:id="@+id/callConversationNameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerHorizontal="true"
-                        android:ellipsize="end"
-                        android:textColor="@color/white"
-                        android:textSize="16sp"
-                        android:textStyle="bold"
-                        tools:text="Marsellus Wallace" />
-
-                    <TextView
                         android:id="@+id/call_duration"
-                        android:layout_width="wrap_content"
+                        android:layout_width="60dp"
                         android:layout_height="wrap_content"
-                        android:layout_alignBaseline="@id/callConversationNameTextView"
-                        android:layout_alignParentEnd="true"
                         android:textAlignment="center"
                         android:textColor="@color/white"
                         android:textSize="16sp"
-                        tools:text="00:22"/>
-                </RelativeLayout>
+                        tools:text="200:22"/>
+                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -145,7 +145,8 @@
 
                         <RelativeLayout
                             android:layout_width="match_parent"
-                            android:layout_height="300dp">
+                            android:layout_height="300dp"
+                            tools:ignore="UselessParent">
 
                             <RelativeLayout
                                 android:id="@+id/reaction_animation_wrapper"
