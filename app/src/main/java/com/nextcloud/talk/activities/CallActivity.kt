@@ -2484,29 +2484,6 @@ class CallActivity : CallBaseActivity() {
         initPipMode()
     }
 
-    // private fun updateSelfVideoViewPosition(isPortrait: Boolean) {
-    //     Log.d(TAG, "updateSelfVideoViewPosition")
-    //     if (!isInPipMode) {
-    //         val layoutParams = binding!!.selfVideoViewWrapper.layoutParams as FrameLayout.LayoutParams
-    //         if (!isPortrait) {
-    //             layoutParams.height =
-    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
-    //             layoutParams.width =
-    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
-    //             binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_LANDSCAPE
-    //             binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_LANDSCAPE
-    //         } else {
-    //             layoutParams.height =
-    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
-    //             layoutParams.width =
-    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
-    //             binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_PORTRAIT
-    //             binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_PORTRAIT
-    //         }
-    //         binding!!.selfVideoViewWrapper.layoutParams = layoutParams
-    //     }
-    // }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(proximitySensorEvent: ProximitySensorEvent) {
         if (!isVoiceOnlyCall) {
@@ -3097,26 +3074,9 @@ class CallActivity : CallBaseActivity() {
         ) ||
             isBreakoutRoom
 
-    private inner class SelfVideoTouchListener : OnTouchListener {
-        @SuppressLint("ClickableViewAccessibility")
-        override fun onTouch(view: View, event: MotionEvent): Boolean {
-            val duration = event.eventTime - event.downTime
-            if (event.actionMasked == MotionEvent.ACTION_MOVE) {
-                val newY = event.rawY - binding!!.selfVideoViewWrapper.height / 2f
-                val newX = event.rawX - binding!!.selfVideoViewWrapper.width / 2f
-                binding!!.selfVideoViewWrapper.y = newY
-                binding!!.selfVideoViewWrapper.x = newX
-            } else if (event.actionMasked == MotionEvent.ACTION_UP && duration < SWITCH_CAMERA_THRESHOLD_DURATION) {
-                switchCamera()
-            }
-            return true
-        }
-    }
-
     companion object {
         var active = false
 
-        // const val VIDEO_STREAM_TYPE_SCREEN = "screen"
         const val VIDEO_STREAM_TYPE_VIDEO = "video"
         private val TAG = CallActivity::class.java.simpleName
         private val PERMISSIONS_CAMERA = arrayOf(
@@ -3140,8 +3100,6 @@ class CallActivity : CallBaseActivity() {
         const val CALL_DURATION_EMPTY = "--:--"
         const val API_RETRIES: Long = 3
 
-        const val SWITCH_CAMERA_THRESHOLD_DURATION = 100
-
         private const val SAMPLE_RATE = 8000
         private const val MICROPHONE_VALUE_THRESHOLD = 20
         private const val MICROPHONE_VALUE_SLEEP: Long = 1000
@@ -3163,22 +3121,10 @@ class CallActivity : CallBaseActivity() {
         private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MIN = 260
         private const val ANGLE_LANDSCAPE_LEFT_THRESHOLD_MAX = 280
 
-        private const val SELFVIDEO_WIDTH_4_TO_3_RATIO = 80
-        private const val SELFVIDEO_HEIGHT_4_TO_3_RATIO = 104
-        private const val SELFVIDEO_WIDTH_16_TO_9_RATIO = 136
-        private const val SELFVIDEO_HEIGHT_16_TO_9_RATIO = 80
-
-        private const val SELFVIDEO_POSITION_X_LANDSCAPE = 50F
-        private const val SELFVIDEO_POSITION_Y_LANDSCAPE = 50F
-        private const val SELFVIDEO_POSITION_X_PORTRAIT = 300F
-        private const val SELFVIDEO_POSITION_Y_PORTRAIT = 50F
-
-        private const val FIVE_SECONDS: Long = 5000
         private const val CALLING_TIMEOUT: Long = 45000
         private const val INTRO_ANIMATION_DURATION: Long = 300
         private const val FADE_IN_ANIMATION_DURATION: Long = 400
         private const val PULSE_ANIMATION_DURATION: Int = 310
-        private const val CALL_CONTROLLS_ANIMATION_DELAY: Long = 7500
 
         private const val SPOTLIGHT_HEADING_SIZE: Int = 20
         private const val SPOTLIGHT_SUBHEADING_SIZE: Int = 16
