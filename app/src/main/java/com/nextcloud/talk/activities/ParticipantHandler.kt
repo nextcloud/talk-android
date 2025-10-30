@@ -68,8 +68,7 @@ class ParticipantHandler(
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
-            Log.d(TAG, "onIceConnectionStateChanged")
-            // callParticipantModel.setScreenIceConnectionState(iceConnectionState)
+            handleIceConnectionStateChange(iceConnectionState)
         }
     }
 
