@@ -403,6 +403,16 @@ class TalkSpecificViewThemeUtils @Inject constructor(
         }
     }
 
+    fun themeReactions(quoteColoredView: View, @ColorRes quoteColorNonSelf: Int = R.color.textColorMaxContrast) {
+        withScheme(quoteColoredView) { scheme ->
+            val shapeRectangle = ContextCompat.getDrawable(
+                quoteColoredView.context,
+                R.drawable.reactions_background
+            ) as LayerDrawable
+            quoteColoredView.background = shapeRectangle
+        }
+    }
+
     fun getTextColor(isOutgoingMessage: Boolean, isSelfReaction: Boolean, binding: ReactionsInsideMessageBinding): Int {
         return withScheme(binding.root) { scheme ->
             return@withScheme if (!isOutgoingMessage || isSelfReaction) {
