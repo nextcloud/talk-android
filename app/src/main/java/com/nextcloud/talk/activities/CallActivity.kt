@@ -48,6 +48,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
@@ -70,6 +73,7 @@ import com.nextcloud.talk.call.MessageSenderNoMcu
 import com.nextcloud.talk.call.MutableLocalCallParticipantModel
 import com.nextcloud.talk.call.ReactionAnimator
 import com.nextcloud.talk.call.components.ParticipantGrid
+import com.nextcloud.talk.call.components.SelfVideoView
 import com.nextcloud.talk.call.components.screenshare.ScreenShareComponent
 import com.nextcloud.talk.camera.BackgroundBlurFrameProcessor
 import com.nextcloud.talk.camera.BlurBackgroundViewModel
@@ -371,6 +375,8 @@ class CallActivity : CallBaseActivity() {
 
     private var recordingConsentGiven = false
 
+    private var isFrontCamera by mutableStateOf(true)
+
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate")
@@ -387,7 +393,7 @@ class CallActivity : CallBaseActivity() {
             MaterialTheme {
                 val screenShareParticipantUiState by callViewModel.activeScreenShareSession.collectAsState()
                 if (screenShareParticipantUiState != null) {
-                    binding!!.selfVideoRenderer.visibility = View.GONE
+                    binding!!.selfVideoViewWrapper.visibility = View.GONE
                     ScreenShareComponent(
                         participantUiState = screenShareParticipantUiState!!,
                         eglBase = rootEglBase!!,
@@ -714,9 +720,6 @@ class CallActivity : CallBaseActivity() {
                     cameraSwitchHandler.removeCallbacksAndMessages(null)
                     isPushToTalkActive = true
                     binding!!.callControls.visibility = View.VISIBLE
-                    if (!isVoiceOnlyCall) {
-                        binding!!.switchSelfVideoButton.visibility = View.VISIBLE
-                    }
                 }
                 onMicrophoneClick()
                 true
@@ -799,8 +802,6 @@ class CallActivity : CallBaseActivity() {
                 binding!!.endCallPopupMenu.visibility = View.GONE
             }
         }
-
-        binding!!.switchSelfVideoButton.setOnClickListener { switchCamera() }
 
         binding!!.lowerHandButton.setOnClickListener { l: View? -> raiseHandViewModel!!.lowerHand() }
         binding!!.pictureInPictureButton.setOnClickListener { enterPipMode() }
@@ -941,14 +942,10 @@ class CallActivity : CallBaseActivity() {
             binding!!.pictureInPictureButton.visibility = View.GONE
         }
 
-        binding!!.switchSelfVideoButton.visibility = View.GONE
-        binding!!.cameraButton.visibility = View.GONE
-        binding!!.selfVideoRenderer.visibility = View.GONE
-
-        if (!isVoiceOnlyCall) {
-            if (cameraEnumerator!!.deviceNames.size < 2) {
-                binding!!.switchSelfVideoButton.visibility = View.GONE
-            }
+        if (isVoiceOnlyCall) {
+            binding!!.cameraButton.visibility = View.GONE
+            binding!!.selfVideoViewWrapper.visibility = View.GONE
+        } else {
             initSelfVideoViewForNormalMode()
         }
         binding!!.composeParticipantGrid.setOnTouchListener { _, me ->
@@ -971,18 +968,16 @@ class CallActivity : CallBaseActivity() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initSelfVideoViewForNormalMode() {
-        binding!!.selfVideoRenderer.visibility = View.VISIBLE
-        try {
-            binding!!.selfVideoRenderer.init(rootEglBase!!.eglBaseContext, null)
-        } catch (e: IllegalStateException) {
-            Log.d(TAG, "selfVideoRenderer already initialized", e)
+        binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
+
+        binding!!.selfVideoComposeView.setContent {
+            SelfVideoView(
+                eglBase = rootEglBase!!.eglBaseContext,
+                videoTrack = localVideoTrack,
+                isFrontCamera = isFrontCamera,
+                onSwitchCamera = { switchCamera() }
+            )
         }
-        // binding!!.selfVideoRenderer.setZOrderMediaOverlay(true)
-        binding!!.selfVideoRenderer.setZOrderOnTop(true)
-        // disabled because it causes some devices to crash
-        binding!!.selfVideoRenderer.setEnableHardwareScaler(false)
-        binding!!.selfVideoRenderer.setScalingType(RendererCommon.ScalingType.SCALE_ASPECT_FIT)
-        binding!!.selfVideoRenderer.setOnTouchListener(SelfVideoTouchListener())
 
         binding!!.pipSelfVideoRenderer.clearImage()
         binding!!.pipSelfVideoRenderer.release()
@@ -1041,7 +1036,7 @@ class CallActivity : CallBaseActivity() {
     private fun prepareCall() {
         basicInitialization()
         initViews()
-        updateSelfVideoViewPosition(true)
+        // updateSelfVideoViewPosition(true)
         checkRecordingConsentAndInitiateCall()
 
         if (permissionUtil!!.isMicrophonePermissionGranted()) {
@@ -1058,9 +1053,6 @@ class CallActivity : CallBaseActivity() {
             onCameraClick()
             if (cameraEnumerator!!.deviceNames.isEmpty()) {
                 binding!!.cameraButton.visibility = View.GONE
-            }
-            if (cameraEnumerator!!.deviceNames.size > 1) {
-                binding!!.switchSelfVideoButton.visibility = View.VISIBLE
             }
         }
     }
@@ -1147,7 +1139,6 @@ class CallActivity : CallBaseActivity() {
         localVideoTrack = peerConnectionFactory!!.createVideoTrack("NCv0", videoSource)
         localStream!!.addTrack(localVideoTrack)
         localVideoTrack!!.setEnabled(false)
-        localVideoTrack!!.addSink(binding!!.selfVideoRenderer)
         localCallParticipantModel.isVideoEnabled = false
     }
 
@@ -1201,7 +1192,7 @@ class CallActivity : CallBaseActivity() {
                 Logging.d(TAG, "Creating front facing camera capturer.")
                 val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
                 if (videoCapturer != null) {
-                    binding!!.selfVideoRenderer.setMirror(true)
+                    isFrontCamera = true
                     return videoCapturer
                 }
             }
@@ -1214,7 +1205,7 @@ class CallActivity : CallBaseActivity() {
                 Logging.d(TAG, "Creating other camera capturer.")
                 val videoCapturer: VideoCapturer? = enumerator.createCapturer(deviceName, null)
                 if (videoCapturer != null) {
-                    binding!!.selfVideoRenderer.setMirror(false)
+                    isFrontCamera = false
                     return videoCapturer
                 }
             }
@@ -1319,19 +1310,14 @@ class CallActivity : CallBaseActivity() {
         if (!canPublishVideoStream) {
             videoOn = false
             binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
-            binding!!.switchSelfVideoButton.visibility = View.GONE
             return
         }
         if (permissionUtil!!.isCameraPermissionGranted()) {
             videoOn = !videoOn
             if (videoOn) {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_white_24px)
-                if (cameraEnumerator!!.deviceNames.size > 1) {
-                    binding!!.switchSelfVideoButton.visibility = View.VISIBLE
-                }
             } else {
                 binding!!.cameraButton.setImageResource(R.drawable.ic_videocam_off_white_24px)
-                binding!!.switchSelfVideoButton.visibility = View.GONE
                 blurBackgroundViewModel.turnOffBlur()
             }
             toggleMedia(videoOn, true)
@@ -1349,7 +1335,7 @@ class CallActivity : CallBaseActivity() {
         val cameraVideoCapturer = videoCapturer as CameraVideoCapturer?
         cameraVideoCapturer?.switchCamera(object : CameraSwitchHandler {
             override fun onCameraSwitchDone(currentCameraIsFront: Boolean) {
-                binding!!.selfVideoRenderer.setMirror(currentCameraIsFront)
+                isFrontCamera = currentCameraIsFront
             }
 
             override fun onCameraSwitchError(s: String) {
@@ -1381,16 +1367,13 @@ class CallActivity : CallBaseActivity() {
                 localCallParticipantModel.isVideoEnabled = enable
             }
             if (enable) {
-                binding!!.selfVideoRenderer.visibility = View.VISIBLE
+                binding!!.selfVideoViewWrapper.visibility = View.VISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.VISIBLE
 
                 initSelfVideoViewForNormalMode()
             } else {
-                binding!!.selfVideoRenderer.visibility = View.INVISIBLE
+                binding!!.selfVideoViewWrapper.visibility = View.INVISIBLE
                 binding!!.pipSelfVideoRenderer.visibility = View.INVISIBLE
-
-                binding!!.selfVideoRenderer.clearImage()
-                binding!!.selfVideoRenderer.release()
 
                 binding!!.pipSelfVideoRenderer.clearImage()
                 binding!!.pipSelfVideoRenderer.release()
@@ -2049,8 +2032,6 @@ class CallActivity : CallBaseActivity() {
             videoCapturer!!.dispose()
             videoCapturer = null
         }
-        binding!!.selfVideoRenderer.clearImage()
-        binding!!.selfVideoRenderer.release()
 
         binding!!.pipSelfVideoRenderer.clearImage()
         binding!!.pipSelfVideoRenderer.release()
@@ -2140,7 +2121,7 @@ class CallActivity : CallBaseActivity() {
             it.stopCapture()
             it.startCapture(width, height, FRAME_RATE)
         }
-        updateSelfVideoViewPosition(isPortrait)
+        // updateSelfVideoViewPosition(isPortrait)
     }
 
     private fun setupOrientationListener(context: Context) {
@@ -2503,42 +2484,28 @@ class CallActivity : CallBaseActivity() {
         initPipMode()
     }
 
-    private fun updateSelfVideoViewIceConnectionState(iceConnectionState: IceConnectionState) {
-        val connected = iceConnectionState == IceConnectionState.CONNECTED ||
-            iceConnectionState == IceConnectionState.COMPLETED
-
-        // FIXME In voice only calls there is no video view, so the progress bar would appear floating in the middle of
-        // nowhere. However, a way to signal that the local participant is not connected to the HPB is still need in
-        // that case.
-        if (!connected && !isVoiceOnlyCall) {
-            binding!!.selfVideoViewProgressBar.visibility = View.VISIBLE
-        } else {
-            binding!!.selfVideoViewProgressBar.visibility = View.GONE
-        }
-    }
-
-    private fun updateSelfVideoViewPosition(isPortrait: Boolean) {
-        Log.d(TAG, "updateSelfVideoViewPosition")
-        if (!isInPipMode) {
-            val layoutParams = binding!!.selfVideoRenderer.layoutParams as FrameLayout.LayoutParams
-            if (!isPortrait) {
-                layoutParams.height =
-                    DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
-                layoutParams.width =
-                    DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
-                binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_LANDSCAPE
-                binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_LANDSCAPE
-            } else {
-                layoutParams.height =
-                    DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
-                layoutParams.width =
-                    DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
-                binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_PORTRAIT
-                binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_PORTRAIT
-            }
-            binding!!.selfVideoRenderer.layoutParams = layoutParams
-        }
-    }
+    // private fun updateSelfVideoViewPosition(isPortrait: Boolean) {
+    //     Log.d(TAG, "updateSelfVideoViewPosition")
+    //     if (!isInPipMode) {
+    //         val layoutParams = binding!!.selfVideoViewWrapper.layoutParams as FrameLayout.LayoutParams
+    //         if (!isPortrait) {
+    //             layoutParams.height =
+    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
+    //             layoutParams.width =
+    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_16_TO_9_RATIO.toFloat(), applicationContext).toInt()
+    //             binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_LANDSCAPE
+    //             binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_LANDSCAPE
+    //         } else {
+    //             layoutParams.height =
+    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_HEIGHT_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
+    //             layoutParams.width =
+    //                 DisplayUtils.convertDpToPixel(SELFVIDEO_WIDTH_4_TO_3_RATIO.toFloat(), applicationContext).toInt()
+    //             binding!!.selfVideoViewWrapper.y = SELFVIDEO_POSITION_X_PORTRAIT
+    //             binding!!.selfVideoViewWrapper.x = SELFVIDEO_POSITION_Y_PORTRAIT
+    //         }
+    //         binding!!.selfVideoViewWrapper.layoutParams = layoutParams
+    //     }
+    // }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onMessageEvent(proximitySensorEvent: ProximitySensorEvent) {
@@ -2897,7 +2864,6 @@ class CallActivity : CallBaseActivity() {
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState) {
             runOnUiThread {
-                updateSelfVideoViewIceConnectionState(iceConnectionState)
                 if (iceConnectionState == IceConnectionState.FAILED) {
                     setCallState(CallStatus.PUBLISHER_FAILED)
                     webSocketClient!!.clearResumeId()
@@ -3072,9 +3038,6 @@ class CallActivity : CallBaseActivity() {
         binding!!.selfVideoViewWrapper.visibility = View.GONE
         binding!!.callStates.callStateRelativeLayout.visibility = View.GONE
         binding!!.pipCallConversationNameTextView.text = conversationName
-
-        binding!!.selfVideoRenderer.clearImage()
-        binding!!.selfVideoRenderer.release()
 
         if (callViewModel.participants.value.size == 1) {
             binding!!.pipOverlay.visibility = View.GONE
