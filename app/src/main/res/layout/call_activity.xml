@@ -33,41 +33,6 @@
             tools:ignore="UselessParent"
             tools:visibility="visible">
 
-            <FrameLayout
-                android:id="@+id/selfVideoViewWrapper"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                tools:visibility="visible">
-
-                <org.webrtc.SurfaceViewRenderer
-                    android:id="@+id/selfVideoRenderer"
-                    android:layout_width="80dp"
-                    android:layout_height="104dp"
-                    android:layout_gravity="center"
-                    android:layout_margin="16dp"
-                    android:clickable="false"
-                    android:visibility="invisible"
-                    tools:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/switchSelfVideoButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center_horizontal|bottom"
-                    android:layout_marginBottom="20dp"
-                    android:contentDescription="@string/nc_call_button_content_description_switch_to_self_vide"
-                    app:srcCompat="@drawable/ic_switch_video_white_24px" />
-
-                <ProgressBar
-                    android:id="@+id/selfVideoViewProgressBar"
-                    style="?android:attr/progressBarStyle"
-                    android:layout_width="@dimen/call_self_participant_progress_bar_size"
-                    android:layout_height="@dimen/call_self_participant_progress_bar_size"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
-            </FrameLayout>
-
             <LinearLayout
                 android:id="@+id/call_indicator_controls"
                 android:layout_width="match_parent"
@@ -300,6 +265,21 @@
                         app:tint="@color/white" />
                 </com.google.android.flexbox.FlexboxLayout>
             </LinearLayout>
+
+            <FrameLayout
+                android:id="@+id/selfVideoViewWrapper"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="100dp">
+
+                <androidx.compose.ui.platform.ComposeView
+                    android:id="@+id/selfVideoComposeView"
+                    android:layout_width="80dp"
+                    android:layout_height="104dp"
+                    android:visibility="visible" />
+            </FrameLayout>
 
             <View
                 android:id="@+id/verticalCenter"
