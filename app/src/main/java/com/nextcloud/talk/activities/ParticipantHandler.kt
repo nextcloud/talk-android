@@ -134,7 +134,7 @@ class ParticipantHandler(
         }
 
         override fun onReaction(reaction: String?) {
-            // TODO: handle reactions
+            Log.d(TAG, "onReaction")
         }
 
         override fun onUnshareScreen() {
