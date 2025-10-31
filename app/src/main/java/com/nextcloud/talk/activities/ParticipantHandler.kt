@@ -7,9 +7,15 @@
 
 package com.nextcloud.talk.activities
 
+import android.text.TextUtils
 import android.util.Log
 import com.nextcloud.talk.models.json.participants.Participant
+import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
+import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
+import com.nextcloud.talk.utils.DisplayUtils.isDarkModeOn
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
@@ -195,8 +201,15 @@ class ParticipantHandler(
 
     fun updateIsInternal(isInternal: Boolean) = _uiState.update { it.copy(isInternal = isInternal) }
 
-    fun updateActor(actorType: Participant.ActorType?, actorId: String?) =
-        _uiState.update { it.copy(actorType = actorType, actorId = actorId) }
+    // fun updateActor(actorType: Participant.ActorType?, actorId: String?) =
+    //     _uiState.update { it.copy(actorType = actorType, actorId = actorId) }
+
+    fun updateAvatarUrl(avatarUrl: String?) =
+        _uiState.update {
+            it.copy(
+                avatarUrl = avatarUrl,
+            )
+        }
 
     fun destroy() {
         signalingMessageReceiver.removeListener(listener)
