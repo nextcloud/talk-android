@@ -46,6 +46,7 @@ object DrawableUtils {
         drawableMap["application/postscript"] = R.drawable.ic_mimetype_image
         drawableMap["application/rss+xml"] = R.drawable.ic_mimetype_text_code
         drawableMap["application/vnd.android.package-archive"] = R.drawable.ic_mimetype_package_x_generic
+        drawableMap["application/vnd.excalidraw+json"] = R.drawable.ic_mimetype_whiteboard
         drawableMap["application/vnd.lotus-wordpro"] = R.drawable.ic_mimetype_x_office_document
         drawableMap["application/vnd.garmin.tcx+xml"] = R.drawable.ic_mimetype_location
         drawableMap["application/vnd.google-earth.kml+xml"] = R.drawable.ic_mimetype_location
