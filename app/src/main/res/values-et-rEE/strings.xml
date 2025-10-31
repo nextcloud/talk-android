@@ -681,7 +681,7 @@
     <string name="translation_detect_language">Tuvasta keel</string>
     <string name="translation_device_settings">Seadme seadistused</string>
     <string name="translation_error_message">Ei suutnud keelt tuvastada</string>
-    <string name="translation_error_title">Tõlkimine ebaõnnestus</string>
+    <string name="translation_error_title">Tõlkimine ei õnnestunud</string>
     <string name="translation_from">Saatja</string>
     <string name="translation_to">Saaja</string>
     <string name="turn_off_background_blur">Lülita tausta hägustamine välja</string>
