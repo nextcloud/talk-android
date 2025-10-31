@@ -107,9 +107,13 @@ import com.nextcloud.talk.ui.dialog.AudioOutputDialog
 import com.nextcloud.talk.ui.dialog.MoreCallActionsDialog
 import com.nextcloud.talk.users.UserManager
 import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.ApiUtils.getUrlForAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForFederatedAvatar
+import com.nextcloud.talk.utils.ApiUtils.getUrlForGuestAvatar
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
+import com.nextcloud.talk.utils.DisplayUtils.isDarkModeOn
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ReceiverFlag
@@ -2236,6 +2240,29 @@ class CallActivity : CallBaseActivity() {
         joined: Collection<Participant>,
         currentSessionId: String?
     ) {
+        fun getUrlForAvatar(
+            participant: Participant,
+            nick: String
+        ): String {
+            val localBaseUrl = baseUrl
+            val localRoomToken = roomToken
+
+            return if (
+                localBaseUrl != null &&
+                localRoomToken != null &&
+                participant.actorType != null &&
+                participant.actorId != null &&
+                participant.actorType == Participant.ActorType.FEDERATED
+            ) {
+                val darkTheme = if (isDarkModeOn(context)) 1 else 0
+                getUrlForFederatedAvatar(localBaseUrl, localRoomToken, participant.actorId!!, darkTheme, true)
+            } else if (!TextUtils.isEmpty(participant.userId)) {
+                getUrlForAvatar(localBaseUrl, participant.userId, true)
+            } else {
+                getUrlForGuestAvatar(localBaseUrl, nick, true)
+            }
+        }
+
         var selfJoined = false
         val selfParticipantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(selfParticipant)
         for (participant in joined) {
@@ -2251,10 +2278,6 @@ class CallActivity : CallBaseActivity() {
             Log.d(TAG, "   newSession joined: $sessionId")
             addCallParticipant(sessionId)
 
-            if (participant.actorType != null && participant.actorId != null) {
-                callViewModel.getParticipant(sessionId)?.updateActor(participant.actorType, participant.actorId)
-            }
-
             val userId = participant.userId
             if (userId != null) {
                 callViewModel.getParticipant(sessionId)?.updateUserId(userId)
@@ -2264,11 +2287,14 @@ class CallActivity : CallBaseActivity() {
                 callViewModel.getParticipant(sessionId)?.updateIsInternal(participant.internal == true)
             }
 
-            val nick: String? = if (hasExternalSignalingServer) {
+            val nick: String = if (hasExternalSignalingServer) {
                 webSocketClient!!.getDisplayNameForSession(sessionId)
             } else {
                 if (offerAnswerNickProviders[sessionId] != null) offerAnswerNickProviders[sessionId]?.nick else ""
-            }
+            } ?: resources.getString(R.string.nc_nick_guest)
+
+            val avatarUrl = getUrlForAvatar(participant, nick)
+            callViewModel.getParticipant(sessionId)?.updateAvatarUrl(avatarUrl)
 
             callViewModel.getParticipant(sessionId)?.updateNick(nick)
             val participantHasAudioOrVideo = participantInCallFlagsHaveAudioOrVideo(participant)
