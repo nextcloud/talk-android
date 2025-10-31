@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.call
 
+import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -21,11 +22,11 @@ class LocalStateBroadcasterTest {
         messageSender: MessageSender?
     ) : com.nextcloud.talk.call.LocalStateBroadcaster(localCallParticipantModel, messageSender) {
 
-        override fun handleCallParticipantAdded(callParticipantModel: CallParticipantModel) {
+        override fun handleCallParticipantAdded(uiState: ParticipantUiState) {
             // Not used in base class tests
         }
 
-        override fun handleCallParticipantRemoved(callParticipantModel: CallParticipantModel) {
+        override fun handleCallParticipantRemoved(sessionId: String) {
             // Not used in base class tests
         }
     }
