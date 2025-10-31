@@ -616,7 +616,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/standard_half_margin"
-                            android:hint="@string/nc_settings_typing_status_hpb_description"/>
+                            android:text="@string/nc_settings_typing_status_hpb_description"/>
                     </LinearLayout>
 
                     <com.google.android.material.materialswitch.MaterialSwitch
