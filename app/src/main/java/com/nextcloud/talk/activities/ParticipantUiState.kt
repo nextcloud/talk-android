@@ -21,8 +21,6 @@ data class ParticipantUiState(
     val screenMediaStream: MediaStream? = null,
     val raisedHand: Boolean,
     val avatarUrl: String? = null,
-    val actorType: Participant.ActorType? = null,
-    val actorId: String? = null,
     val userId: String? = null,
     val isInternal: Boolean
 )
