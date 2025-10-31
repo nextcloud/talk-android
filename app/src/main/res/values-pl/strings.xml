@@ -131,6 +131,7 @@
     <string name="nc_call_incoming">PRZYCHODZĄCA</string>
     <string name="nc_call_name">Nazwa rozmowy</string>
     <string name="nc_call_notifications">Powiadomienia połączenia</string>
+    <string name="nc_call_ongoing_notification_content">Naciśnij, aby powrócić do rozmowy.</string>
     <string name="nc_call_ongoing_notification_default_title">Trwa połączenie</string>
     <string name="nc_call_raised_hand">%1$s podniósł rękę</string>
     <string name="nc_call_reconnecting">Ponowne łączenie…</string>
@@ -682,6 +683,8 @@
     <string name="translation_error_title">Tłumaczenie nie powiodło się</string>
     <string name="translation_from">Z</string>
     <string name="translation_to">Na</string>
+    <string name="turn_off_background_blur">Wyłącz rozmycie tła</string>
+    <string name="turn_on_background_blur">Włącz rozmycie tła</string>
     <string name="typing_1_other">i 1 inny pisze…</string>
     <string name="typing_are_typing">piszą…</string>
     <string name="typing_is_typing">pisze…</string>
