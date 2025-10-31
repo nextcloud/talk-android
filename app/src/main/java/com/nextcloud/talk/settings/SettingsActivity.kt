@@ -1071,7 +1071,6 @@ class SettingsActivity :
             binding.settingsTypingStatusSwitch.isChecked = false
             binding.settingsTypingStatusOnlyWithHpb.visibility = View.VISIBLE
             binding.settingsTypingStatus.isEnabled = false
-            binding.settingsTypingStatusOnlyWithHpb.alpha = DISABLED_ALPHA
             binding.settingsTypingStatus.alpha = DISABLED_ALPHA
         }
     }
