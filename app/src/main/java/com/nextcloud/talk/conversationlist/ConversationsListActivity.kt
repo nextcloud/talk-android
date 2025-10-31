@@ -69,8 +69,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.android.common.ui.theme.utils.ColorRole
 import com.nextcloud.talk.R
+import com.nextcloud.talk.account.BrowserLoginActivity
 import com.nextcloud.talk.account.ServerSelectionActivity
-import com.nextcloud.talk.account.WebViewLoginActivity
 import com.nextcloud.talk.activities.BaseActivity
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.activities.MainActivity
@@ -1525,7 +1525,7 @@ class ConversationsListActivity :
             when (item) {
                 is MessageResultItem -> {
                     val token = item.messageEntry.conversationToken
-                    val conversationName = (
+                    (
                         conversationItems.first {
                             (it is ConversationItem) && it.model.token == token
                         } as ConversationItem
@@ -1989,7 +1989,7 @@ class ConversationsListActivity :
                     deleteUserAndRestartApp()
                 }
                 .setNegativeButton(R.string.nc_settings_reauthorize) { _, _ ->
-                    val intent = Intent(context, WebViewLoginActivity::class.java)
+                    val intent = Intent(context, BrowserLoginActivity::class.java)
                     val bundle = Bundle()
                     bundle.putString(BundleKeys.KEY_BASE_URL, currentUser!!.baseUrl!!)
                     bundle.putBoolean(BundleKeys.KEY_REAUTHORIZE_ACCOUNT, true)
