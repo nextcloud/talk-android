@@ -45,7 +45,7 @@ import com.nextcloud.talk.activities.ParticipantUiState
 import kotlinx.coroutines.delay
 import org.webrtc.EglBase
 
-private const val DELAY_SCREEN_SHARE_TOPBAR_ANIMATION : Long = 5000
+private const val DELAY_SCREEN_SHARE_TOPBAR_ANIMATION: Long = 5000
 
 @Composable
 fun ScreenShareComponent(
