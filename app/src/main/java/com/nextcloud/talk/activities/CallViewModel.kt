@@ -73,7 +73,9 @@ class CallViewModel @Inject constructor() : ViewModel() {
         }
     }
 
-    override fun onCleared() {
+    public override fun onCleared() {
         participantHandlers.values.forEach { it.destroy() }
+        participantHandlers.clear()
+        _participants.value = emptyList()
     }
 }
