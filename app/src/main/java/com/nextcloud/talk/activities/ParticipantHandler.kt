@@ -189,10 +189,6 @@ class ParticipantHandler(
             iceConnectionState == IceConnectionState.COMPLETED ||
             iceConnectionState == null
 
-    fun updateAudio(enabled: Boolean?) = _uiState.update { it.copy(isAudioEnabled = enabled ?: it.isAudioEnabled) }
-
-    fun updateVideo(enabled: Boolean?) = _uiState.update { it.copy(isStreamEnabled = enabled ?: it.isStreamEnabled) }
-
     fun updateNick(nick: String?) = _uiState.update { it.copy(nick = nick ?: "Guest") }
 
     fun updateUserId(userId: String?) = _uiState.update { it.copy(userId = userId) }

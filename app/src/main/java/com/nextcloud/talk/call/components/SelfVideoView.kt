@@ -1,7 +1,7 @@
 /*
  * Nextcloud Talk - Android Client
  *
- * SPDX-FileCopyrightText: 2025 Your Name <your@email.com>
+ * SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
@@ -70,8 +70,3 @@ fun SelfVideoView(
         onDispose { videoTrack?.removeSink(renderer) }
     }
 }
-
-
-
-
-
