@@ -40,7 +40,6 @@ import android.view.MotionEvent
 import android.view.OrientationEventListener
 import android.view.View
 import android.view.View.OnTouchListener
-import android.widget.FrameLayout
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AlertDialog
@@ -50,7 +49,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.net.toUri
@@ -112,7 +110,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.CapabilitiesUtil.isCallRecordingAvailable
-import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.NotificationUtils.cancelExistingNotificationsForRoom
 import com.nextcloud.talk.utils.NotificationUtils.getCallRingtoneUri
 import com.nextcloud.talk.utils.ReceiverFlag

@@ -34,11 +34,7 @@ import org.webrtc.SurfaceViewRenderer
 import org.webrtc.VideoTrack
 
 @Composable
-fun WebRTCScreenShareComponent(
-    mediaStream: MediaStream,
-    eglBase: EglBase?,
-    onSingleTap: () -> Unit
-) {
+fun WebRTCScreenShareComponent(mediaStream: MediaStream, eglBase: EglBase?, onSingleTap: () -> Unit) {
     val context = LocalContext.current
     val renderer = remember { SurfaceViewRenderer(context) }
     val videoTrack = remember(mediaStream) { mediaStream.videoTracks.firstOrNull() }
@@ -89,11 +85,7 @@ fun WebRTCScreenShareComponent(
 }
 
 @Composable
-private fun SetupSurfaceRenderer(
-    renderer: SurfaceViewRenderer,
-    eglBase: EglBase?,
-    videoTrack: VideoTrack?
-) {
+private fun SetupSurfaceRenderer(renderer: SurfaceViewRenderer, eglBase: EglBase?, videoTrack: VideoTrack?) {
     DisposableEffect(renderer, eglBase, videoTrack) {
         renderer.init(eglBase?.eglBaseContext, null)
         renderer.setEnableHardwareScaler(true)
