@@ -61,8 +61,8 @@
     <string name="marked_as_read">已将对话%1$s标记为已读</string>
     <string name="marked_as_unread">已将对话%1$s标记为未读</string>
     <string name="mentioned">已提及</string>
-    <string name="menu_item_sort_by_date_newest_first">最新的在前</string>
-    <string name="menu_item_sort_by_date_oldest_first">最旧的在前</string>
+    <string name="menu_item_sort_by_date_newest_first">从新到旧</string>
+    <string name="menu_item_sort_by_date_oldest_first">从旧到新</string>
     <string name="menu_item_sort_by_name_a_z">A - Z</string>
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">大文件在前</string>
