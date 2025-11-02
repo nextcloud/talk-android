@@ -569,6 +569,7 @@
     <string name="open_thread">Zu Thema gehen</string>
     <string name="play_pause_voice_message">Sprachnachricht wiedergeben/pausieren</string>
     <string name="playback_speed_control">Steuerung der Wiedergabegeschwindigkeit</string>
+    <string name="please_continue_the_login_process_in_the_browser">Bitte den Anmeldeprozess im Browser fortsetzen</string>
     <string name="polls_add_option">Option hinzufügen</string>
     <string name="polls_edit_vote">Abstimmung bearbeiten</string>
     <string name="polls_end_poll">Umfrage beenden</string>

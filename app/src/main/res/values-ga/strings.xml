@@ -569,6 +569,7 @@
     <string name="open_thread">Téigh go dtí an snáithe</string>
     <string name="play_pause_voice_message">Seinn/cuir teachtaireacht gutha ar sos</string>
     <string name="playback_speed_control">Rialú luas athsheinm</string>
+    <string name="please_continue_the_login_process_in_the_browser">Lean ar aghaidh le logáil isteach sa bhrabhsálaí</string>
     <string name="polls_add_option">Cuir rogha leis</string>
     <string name="polls_edit_vote">Cuir vóta in eagar</string>
     <string name="polls_end_poll">Deireadh vótaíocht</string>
