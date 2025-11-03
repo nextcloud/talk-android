@@ -8,8 +8,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="@dimen/standard_quarter_margin">
+    android:orientation="horizontal">
 
     <androidx.compose.ui.platform.ComposeView
         android:id="@+id/thread_button"
@@ -30,9 +29,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/standard_half_margin"
-            android:background="@drawable/reactions_background"
-            android:paddingStart="@dimen/standard_quarter_margin"
-            android:paddingEnd="0dp"
             android:gravity="center_vertical"
             android:orientation="horizontal" />
     </HorizontalScrollView>

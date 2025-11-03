@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.databinding.ReactionsInsideMessageBinding
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
@@ -31,11 +30,6 @@ class Reaction {
         isBubbled: Boolean = true
     ) {
         binding.reactionsEmojiWrapper.removeAllViews()
-
-        viewThemeUtils.talk.themeReactions(
-            binding.reactionsEmojiWrapper,
-            R.color.high_emphasis_text
-        )
 
         if (message.reactions != null && message.reactions!!.isNotEmpty()) {
             binding.reactionsEmojiWrapper.visibility = View.VISIBLE
@@ -104,27 +98,19 @@ class Reaction {
         emojiWithAmountWrapper.addView(getReactionCount(context, layoutInfo.textColor, amount, layoutInfo.amountParams))
         emojiWithAmountWrapper.layoutParams = layoutInfo.wrapperParams
 
-        if (layoutInfo.isSelfReaction) {
-            layoutInfo.viewThemeUtils.talk.setCheckedBackground(
-                emojiWithAmountWrapper,
-                layoutInfo.isOutgoingMessage,
-                isBubbled
-            )
+        layoutInfo.viewThemeUtils.talk.setReactionsBackground(
+            emojiWithAmountWrapper,
+            layoutInfo.isOutgoingMessage,
+            layoutInfo.isSelfReaction
+        )
 
-            emojiWithAmountWrapper.setPaddingRelative(
-                layoutInfo.paddingSide,
-                layoutInfo.paddingTop,
-                layoutInfo.paddingSide,
-                layoutInfo.paddingBottom
-            )
-        } else {
-            emojiWithAmountWrapper.setPaddingRelative(
-                0,
-                layoutInfo.paddingTop,
-                layoutInfo.paddingSide,
-                layoutInfo.paddingBottom
-            )
-        }
+        emojiWithAmountWrapper.setPaddingRelative(
+            layoutInfo.paddingSide,
+            layoutInfo.paddingTop,
+            layoutInfo.paddingSide,
+            layoutInfo.paddingBottom
+        )
+
         return emojiWithAmountWrapper
     }
 
