@@ -569,6 +569,7 @@
     <string name="open_thread">Ir para fio</string>
     <string name="play_pause_voice_message">Reproduzir/pausar mensagem de voz</string>
     <string name="playback_speed_control">Controle de velocidade de reprodução</string>
+    <string name="please_continue_the_login_process_in_the_browser">Por favor, continue o login no navegador</string>
     <string name="polls_add_option">Adicionar opção</string>
     <string name="polls_edit_vote">Editar voto</string>
     <string name="polls_end_poll">Encerrar enquete</string>

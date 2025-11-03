@@ -545,7 +545,7 @@
     <string name="nc_upload_video_from_cam">Зняць відэа</string>
     <string name="nc_user">Карыстальнік</string>
     <string name="nc_video_filename">Відэазапіс ад %1$s</string>
-    <string name="nc_voice_message_filename">Запіс размовы ад %1$s (%2$s)</string>
+    <string name="nc_voice_message_filename">Галасавое паведамленне ад %1$s (%2$s)</string>
     <string name="nc_voice_message_hold_to_record_info">Утрымлівайце для запісу, адпусціце для адпраўкі.</string>
     <string name="nc_voice_message_missing_audio_permission">Патрабуецца дазвол на аўдыязапіс</string>
     <string name="nc_voice_message_slide_to_cancel">« Правядзіце пальцам, каб скасаваць</string>
