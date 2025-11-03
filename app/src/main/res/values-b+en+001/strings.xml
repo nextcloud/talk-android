@@ -569,6 +569,7 @@
     <string name="open_thread">Go to thread</string>
     <string name="play_pause_voice_message">Play/pause voice message</string>
     <string name="playback_speed_control">Playback speed control</string>
+    <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
     <string name="polls_add_option">Add option</string>
     <string name="polls_edit_vote">Edit vote</string>
     <string name="polls_end_poll">End poll</string>

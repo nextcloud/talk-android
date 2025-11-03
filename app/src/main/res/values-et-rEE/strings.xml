@@ -569,6 +569,7 @@
     <string name="open_thread">Ava jutulõng</string>
     <string name="play_pause_voice_message">Esita häälsõnumit või peata esitus</string>
     <string name="playback_speed_control">Taasesituse kiiruse juhtimine</string>
+    <string name="please_continue_the_login_process_in_the_browser">Palun jätka sisselogimist veebibrauseris</string>
     <string name="polls_add_option">Lisa valik</string>
     <string name="polls_edit_vote">Muuda oma häält</string>
     <string name="polls_end_poll">Lõpeta küsitlus</string>
