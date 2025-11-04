@@ -13,11 +13,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
 class CallViewModel @Inject constructor() : ViewModel() {
 
-    private val participantHandlers = mutableMapOf<String, ParticipantHandler>()
+    private val participantHandlers: MutableMap<String, ParticipantHandler> = ConcurrentHashMap()
 
     private val _participants = MutableStateFlow<List<ParticipantUiState>>(emptyList())
     val participants: StateFlow<List<ParticipantUiState>> = _participants.asStateFlow()
