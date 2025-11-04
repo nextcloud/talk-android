@@ -568,6 +568,7 @@
     <string name="open_thread">Gå till tråd</string>
     <string name="play_pause_voice_message">Spela/pausa röstmeddelande</string>
     <string name="playback_speed_control">Kontroll av uppspelningshastighet</string>
+    <string name="please_continue_the_login_process_in_the_browser">Fortsätt inloggningen i webbläsaren</string>
     <string name="polls_add_option">Lägg till alternativ</string>
     <string name="polls_edit_vote">Redigera röst</string>
     <string name="polls_end_poll">Avsluta omröstning</string>
