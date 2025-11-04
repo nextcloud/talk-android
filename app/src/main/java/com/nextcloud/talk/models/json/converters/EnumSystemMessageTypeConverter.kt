@@ -54,11 +54,14 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MATTERBR
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MESSAGE_DELETED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MESSAGE_EXPIRATION_DISABLED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MESSAGE_EXPIRATION_ENABLED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MESSAGE_PINNED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MESSAGE_UNPINNED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MODERATOR_DEMOTED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.MODERATOR_PROMOTED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.OBJECT_SHARED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PASSWORD_REMOVED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PASSWORD_SET
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PHONE_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.POLL_CLOSED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.POLL_VOTED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.REACTION
@@ -69,10 +72,9 @@ import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.READ_ONL
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_FAILED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STARTED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.RECORDING_STOPPED
+import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_CREATED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_ADDED
 import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.USER_REMOVED
-import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.PHONE_ADDED
-import com.nextcloud.talk.chat.data.model.ChatMessage.SystemMessageType.THREAD_CREATED
 
 /*
 * see https://nextcloud-talk.readthedocs.io/en/latest/chat/#system-messages
@@ -145,6 +147,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             "federated_user_removed" -> FEDERATED_USER_REMOVED
             "phone_added" -> PHONE_ADDED
             "thread_created" -> THREAD_CREATED
+            "message_pinned" -> MESSAGE_PINNED
+            "message_unpinned" -> MESSAGE_UNPINNED
             else -> DUMMY
         }
 
@@ -215,6 +219,8 @@ class EnumSystemMessageTypeConverter : StringBasedTypeConverter<ChatMessage.Syst
             FEDERATED_USER_REMOVED -> "federated_user_removed"
             PHONE_ADDED -> "phone_added"
             THREAD_CREATED -> "thread_created"
+            MESSAGE_PINNED -> "message_pinned"
+            MESSAGE_UNPINNED -> "message_unpinned"
             else -> ""
         }
 }

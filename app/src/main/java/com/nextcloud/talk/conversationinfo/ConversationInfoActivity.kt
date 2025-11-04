@@ -608,6 +608,10 @@ class ConversationInfoActivity :
             SharedItemsActivity.KEY_USER_IS_OWNER_OR_MODERATOR,
             ConversationUtils.isParticipantOwnerOrModerator(conversation!!)
         )
+        intent.putExtra(
+            SharedItemsActivity.KEY_IS_ONE_2_ONE,
+            conversation?.type == ConversationEnums.ConversationType.ROOM_TYPE_ONE_TO_ONE_CALL
+        )
         startActivity(intent)
     }
 

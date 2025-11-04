@@ -905,4 +905,15 @@ How to translate with transifex:
     <string name="location_services_disabled">Location services disabled</string>
     <string name="location_services_disabled_msg">Please enable location services (GPS) to use this feature</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
+    <string name="pin_message">Pin message</string>
+    <string name="unpin_message">Unpin message</string>
+    <string name="pin_24hr">Pin for 24 hours</string>
+    <string name="pin_7_days">Pin for 7 days</string>
+    <string name="pin_30_days">Pin for 30 days</string>
+    <string name="pin_indefinitely">Pin indefinitely</string>
+    <string name="pinned_indefinitely">Pinned indefinitely</string>
+    <string name="pinned_until">Pinned until</string>
+    <string name="pinned_by">Pinned by</string>
+    <string name="pinned">Pinned</string>
+    <string name="until_unpin">Until unpin</string>
 </resources>

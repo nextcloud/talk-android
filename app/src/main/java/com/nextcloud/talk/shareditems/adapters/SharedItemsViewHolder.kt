@@ -20,6 +20,7 @@ import com.nextcloud.talk.shareditems.model.SharedFileItem
 import com.nextcloud.talk.shareditems.model.SharedItem
 import com.nextcloud.talk.shareditems.model.SharedLocationItem
 import com.nextcloud.talk.shareditems.model.SharedOtherItem
+import com.nextcloud.talk.shareditems.model.SharedPinnedItem
 import com.nextcloud.talk.shareditems.model.SharedPollItem
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.FileViewerUtils
@@ -89,4 +90,10 @@ abstract class SharedItemsViewHolder(
     open fun onBind(item: SharedOtherItem) {}
 
     open fun onBind(item: SharedDeckCardItem) {}
+
+    open fun onBind(
+        item: SharedPinnedItem,
+        openMessage: (item: SharedItem, context: Context) -> Unit,
+        unpinMessage: (item: SharedItem, context: Context) -> Unit
+    ) {}
 }
