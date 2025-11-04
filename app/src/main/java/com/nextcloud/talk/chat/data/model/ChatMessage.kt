@@ -130,7 +130,17 @@ data class ChatMessage(
 
     var sendStatus: SendStatus? = null,
 
-    var silent: Boolean = false
+    var silent: Boolean = false,
+
+    var pinnedActorType: String? = null,
+
+    var pinnedActorId: String? = null,
+
+    var pinnedActorDisplayName: String? = null,
+
+    var pinnedAt: Long? = null,
+
+    var pinnedUntil: Long? = null
 
 ) : MessageContentType,
     MessageContentType.Image {

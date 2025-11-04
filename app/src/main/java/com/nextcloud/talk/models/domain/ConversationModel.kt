@@ -64,6 +64,8 @@ data class ConversationModel(
     var hasArchived: Boolean = false,
     var hasSensitive: Boolean = false,
     var hasImportant: Boolean = false,
+    var lastPinnedId: Long? = null,
+    var hiddenPinnedId: Long? = null,
 
     // attributes that don't come from API. This should be changed?!
     var password: String? = null,
