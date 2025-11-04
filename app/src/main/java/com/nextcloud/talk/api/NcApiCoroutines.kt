@@ -323,4 +323,18 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun status(@Header("Authorization") authorization: String, @Url url: String): StatusOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun pinMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("pinUntil") pinUntil: Int
+    ): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun unPinMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun hidePinnedMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 }
