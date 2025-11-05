@@ -116,4 +116,19 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
+
+    suspend fun pinMessage(
+        credentials: String,
+        url: String
+    ): Flow<ChatOverallSingleMessage>
+
+    suspend fun unPinMessage(
+        credentials: String,
+        url: String
+    ): Flow<ChatOverallSingleMessage>
+
+    suspend fun hidePinnedMessage(
+        credentials: String,
+        url: String
+    )
 }

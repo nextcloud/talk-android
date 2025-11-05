@@ -341,5 +341,4 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String
     ): GenericOverall
-
 }
