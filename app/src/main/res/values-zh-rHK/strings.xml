@@ -569,6 +569,7 @@
     <string name="open_thread">前往討論串</string>
     <string name="play_pause_voice_message">播放﹨暫停話音短訊</string>
     <string name="playback_speed_control">播放速度控制</string>
+    <string name="please_continue_the_login_process_in_the_browser">請在瀏覽器中繼續登入</string>
     <string name="polls_add_option">添加選項</string>
     <string name="polls_edit_vote">編輯選票</string>
     <string name="polls_end_poll">結束民意調查</string>
