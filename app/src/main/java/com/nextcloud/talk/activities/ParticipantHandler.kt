@@ -10,7 +10,6 @@ package com.nextcloud.talk.activities
 import android.util.Log
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
-import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.DataChannelMessageListener
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper.PeerConnectionObserver
@@ -32,6 +31,8 @@ class ParticipantHandler(
     private val _uiState = MutableStateFlow(
         ParticipantUiState(
             sessionKey = sessionId,
+            baseUrl = baseUrl,
+            roomToken = roomToken,
             nick = "Guest",
             isConnected = false,
             isAudioEnabled = false,
@@ -126,7 +127,6 @@ class ParticipantHandler(
 
         override fun onNickChanged(nick: String?) {
             _uiState.update { it.copy(nick = nick) }
-            updateAvatarUrl()
         }
     }
 
@@ -200,39 +200,6 @@ class ParticipantHandler(
 
     fun updateActor(actorType: Participant.ActorType?, actorId: String?) {
         _uiState.update { it.copy(actorType = actorType, actorId = actorId) }
-        updateAvatarUrl()
-    }
-    fun updateAvatarUrl() {
-        fun getUrlForAvatar(): String {
-            var url = ApiUtils.getUrlForAvatar(baseUrl, _uiState.value.actorId, false)
-            if (Participant.ActorType.GUESTS == _uiState.value.actorType ||
-                Participant.ActorType.EMAILS == _uiState.value.actorType
-            ) {
-                url = ApiUtils.getUrlForGuestAvatar(
-                    baseUrl,
-                    _uiState.value.nick,
-                    true
-                )
-            }
-            if (_uiState.value.actorType == Participant.ActorType.FEDERATED) {
-                // val darkTheme = if (isDarkModeOn(context)) 1 else 0
-                val darkTheme = 1
-                url = ApiUtils.getUrlForFederatedAvatar(
-                    baseUrl,
-                    roomToken,
-                    _uiState.value.actorId!!,
-                    darkTheme,
-                    false
-                )
-            }
-            return url
-        }
-
-        _uiState.update {
-            it.copy(
-                avatarUrl = getUrlForAvatar()
-            )
-        }
     }
 
     fun destroy() {

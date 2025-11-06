@@ -305,13 +305,14 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
     for (i: Int in 1..numberOfParticipants) {
         val participant = ParticipantUiState(
             sessionKey = i.toString(),
+            baseUrl = "",
+            roomToken = "",
             nick = "test$i user",
             isConnected = true,
             isAudioEnabled = false,
             isStreamEnabled = true,
             isScreenStreamEnabled = true,
             raisedHand = true,
-            avatarUrl = "",
             mediaStream = null,
             actorType = null,
             actorId = null,
