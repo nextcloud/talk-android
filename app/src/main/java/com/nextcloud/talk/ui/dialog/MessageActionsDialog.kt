@@ -167,6 +167,10 @@ class MessageActionsDialog(
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
                     isOnline
             )
+            initMenuPinMessage(!message.isDeleted &&
+                hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PINNED_MESSAGES) &&
+                isOnline
+            )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
                     ChatMessage.MessageType.SYSTEM_MESSAGE != message.getCalculateMessageType() &&
@@ -387,6 +391,30 @@ class MessageActionsDialog(
 
         dialogMessageActionsBinding.menuNotifyMessage.visibility = getVisibility(visible)
     }
+
+    private fun initMenuPinMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuPinMessage.setOnClickListener {
+                if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                    chatActivity.unPinMessage(message)
+                } else {
+                    chatActivity.pinMessage(message)
+                }
+                dismiss()
+            }
+
+            if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                dialogMessageActionsBinding.menuPinMessageText.text = context.getString(R.string.unpin_message)
+                val unpinnedDrawable = context.getDrawable(R.drawable.keep_off_24px)
+                dialogMessageActionsBinding.menuPinMessageIcon.setImageDrawable(unpinnedDrawable)
+            }
+        }
+
+
+        dialogMessageActionsBinding.menuPinMessage.visibility = getVisibility(visible)
+    }
+
+
 
     private fun initMenuDeleteMessage(visible: Boolean) {
         if (visible) {

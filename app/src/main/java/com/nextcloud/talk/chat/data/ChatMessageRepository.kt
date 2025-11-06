@@ -131,5 +131,5 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun hidePinnedMessage(
         credentials: String,
         url: String
-    )
+    ): Flow<Boolean>
 }

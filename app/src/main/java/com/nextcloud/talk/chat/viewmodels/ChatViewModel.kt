@@ -962,23 +962,28 @@ class ChatViewModel @Inject constructor(
 
     fun pinMessage(credentials: String, url: String, pinUntil: Int = 0) {
         viewModelScope.launch {
-            chatRepository.pinMessage(credentials, url, pinUntil).collect { pinnedMessage ->
-                // TODO - notify UI
+            chatRepository.pinMessage(credentials, url, pinUntil).collect {
+                // UI is updated from room change observer
+                getRoom(chatRoomToken)
             }
         }
     }
 
     fun unPinMessage(credentials: String, url: String) {
         viewModelScope.launch {
-            chatRepository.unPinMessage(credentials, url).collect { unPinnedMessage ->
-                // TODO - notify UI
+            chatRepository.unPinMessage(credentials, url).collect {
+                // This updates the room if there are other pinned messages we need to show
+
+                getRoom(chatRoomToken)
             }
         }
     }
 
     fun hidePinnedMessage(credentials: String, url: String) {
         viewModelScope.launch {
-            chatRepository.hidePinnedMessage(credentials, url)
+            chatRepository.hidePinnedMessage(credentials, url).collect {
+                getRoom(chatRoomToken)
+            }
         }
     }
 

@@ -1041,9 +1041,10 @@ class OfflineFirstChatRepository @Inject constructor(
         }.getOrElse { throwable -> Log.e(TAG, "Error in unPinMessage: $throwable") }
     }
 
-    override suspend fun hidePinnedMessage(credentials: String, url: String) {
+    override suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean> = flow {
         runCatching {
             network.hidePinnedMessage(credentials, url)
+            emit(true)
         }.getOrElse { throwable -> Log.e(TAG, "Error in hidePinnedMessage: $throwable") }
     }
 

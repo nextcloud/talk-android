@@ -3915,6 +3915,16 @@ class ChatActivity :
         }
     }
 
+    fun pinMessage(message: ChatMessage) {
+        // TODO need dialog for time, can copy code from reminder me later
+        ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+    }
+
+    fun unPinMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.unPinMessage(credentials!!, url)
+    }
+
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
