@@ -79,18 +79,6 @@ fun ParticipantTile(
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
-            if (participantUiState.raisedHand) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_hand_back_left),
-                    contentDescription = "Raised Hand",
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .padding(6.dp)
-                        .size(24.dp),
-                    tint = Color.White
-                )
-            }
-
             Row(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
@@ -121,19 +109,34 @@ fun ParticipantTile(
                 }
             }
 
-            Text(
-                text = participantUiState.nick,
-                color = Color.White,
+            Row(
                 modifier = Modifier
-                    .align(Alignment.BottomStart),
-                style = MaterialTheme.typography.bodyMedium.copy(
-                    shadow = Shadow(
-                        color = Color.Black,
-                        offset = Offset(NICK_OFFSET, NICK_OFFSET),
-                        blurRadius = NICK_BLUR_RADIUS
+                    .align(Alignment.BottomStart)
+            ) {
+                if (participantUiState.raisedHand) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_hand_back_left),
+                        contentDescription = "Raised Hand",
+                        modifier = Modifier
+                            .padding(6.dp)
+                            .size(24.dp),
+                        tint = Color.White
+                    )
+                }
+
+                Text(
+                    text = participantUiState.nick,
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        shadow = Shadow(
+                            color = Color.Black,
+                            offset = Offset(NICK_OFFSET, NICK_OFFSET),
+                            blurRadius = NICK_BLUR_RADIUS
+                        )
                     )
                 )
-            )
+            }
+
 
             if (!participantUiState.isConnected) {
                 CircularProgressIndicator(
