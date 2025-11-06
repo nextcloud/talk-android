@@ -156,6 +156,8 @@ fun ParticipantTilePreview() {
         raisedHand = true,
         avatarUrl = "",
         mediaStream = null,
+        actorType = null,
+        actorId = null,
         userId = null,
         isInternal = false
     )
