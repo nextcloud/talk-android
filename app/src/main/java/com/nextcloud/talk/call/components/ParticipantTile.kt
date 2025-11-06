@@ -38,6 +38,7 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
+import kotlin.String
 
 const val NICK_OFFSET = 4f
 const val NICK_BLUR_RADIUS = 4f
@@ -148,13 +149,14 @@ fun ParticipantTile(
 fun ParticipantTilePreview() {
     val participant = ParticipantUiState(
         sessionKey = "",
+        baseUrl = "",
+        roomToken = "",
         nick = "testuser one",
         isConnected = true,
         isAudioEnabled = false,
         isStreamEnabled = true,
         isScreenStreamEnabled = true,
         raisedHand = true,
-        avatarUrl = "",
         mediaStream = null,
         actorType = null,
         actorId = null,
