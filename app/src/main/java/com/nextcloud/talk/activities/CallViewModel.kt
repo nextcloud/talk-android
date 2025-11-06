@@ -30,11 +30,18 @@ class CallViewModel @Inject constructor() : ViewModel() {
 
     fun doesParticipantExist(sessionId: String?): Boolean = (participantHandlers.containsKey(sessionId))
 
-    fun addParticipant(sessionId: String, signalingMessageReceiver: SignalingMessageReceiver) {
+    fun addParticipant(
+        baseUrl: String,
+        roomToken: String,
+        sessionId: String,
+        signalingMessageReceiver: SignalingMessageReceiver
+    ) {
         if (participantHandlers.containsKey(sessionId)) return
 
         val participantHandler = ParticipantHandler(
             sessionId,
+            baseUrl,
+            roomToken,
             signalingMessageReceiver,
             onParticipantShareScreen = {
                 onShareScreen(it)

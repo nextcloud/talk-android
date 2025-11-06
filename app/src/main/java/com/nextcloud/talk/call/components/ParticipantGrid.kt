@@ -313,6 +313,8 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             raisedHand = true,
             avatarUrl = "",
             mediaStream = null,
+            actorType = null,
+            actorId = null,
             userId = null,
             isInternal = false
         )
