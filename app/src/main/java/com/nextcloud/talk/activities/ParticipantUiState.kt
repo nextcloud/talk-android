@@ -12,6 +12,8 @@ import org.webrtc.MediaStream
 
 data class ParticipantUiState(
     val sessionKey: String?,
+    val baseUrl: String,
+    val roomToken: String,
     val nick: String?,
     val isConnected: Boolean,
     val isAudioEnabled: Boolean,
@@ -20,7 +22,6 @@ data class ParticipantUiState(
     val isScreenStreamEnabled: Boolean,
     val screenMediaStream: MediaStream? = null,
     val raisedHand: Boolean,
-    val avatarUrl: String? = null,
     val actorType: Participant.ActorType? = null,
     val actorId: String? = null,
     val userId: String? = null,
