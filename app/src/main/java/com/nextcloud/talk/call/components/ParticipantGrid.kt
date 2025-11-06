@@ -316,7 +316,6 @@ fun getTestParticipants(numberOfParticipants: Int): List<ParticipantUiState> {
             mediaStream = null,
             actorType = null,
             actorId = null,
-            userId = null,
             isInternal = false
         )
         participantList.add(participant)

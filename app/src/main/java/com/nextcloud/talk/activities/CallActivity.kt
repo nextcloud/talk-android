@@ -2256,11 +2256,6 @@ class CallActivity : CallBaseActivity() {
                 callViewModel.getParticipant(sessionId)?.updateActor(participant.actorType, participant.actorId)
             }
 
-            val userId = participant.userId
-            if (userId != null) {
-                callViewModel.getParticipant(sessionId)?.updateUserId(userId)
-            }
-
             if (participant.internal != null) {
                 callViewModel.getParticipant(sessionId)?.updateIsInternal(participant.internal == true)
             }
