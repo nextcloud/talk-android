@@ -24,6 +24,5 @@ data class ParticipantUiState(
     val raisedHand: Boolean,
     val actorType: Participant.ActorType? = null,
     val actorId: String? = null,
-    val userId: String? = null,
     val isInternal: Boolean
 )

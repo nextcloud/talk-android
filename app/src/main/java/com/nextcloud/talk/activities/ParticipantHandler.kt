@@ -194,8 +194,6 @@ class ParticipantHandler(
 
     fun updateNick(nick: String?) = _uiState.update { it.copy(nick = nick ?: "Guest") }
 
-    fun updateUserId(userId: String?) = _uiState.update { it.copy(userId = userId) }
-
     fun updateIsInternal(isInternal: Boolean) = _uiState.update { it.copy(isInternal = isInternal) }
 
     fun updateActor(actorType: Participant.ActorType?, actorId: String?) {
