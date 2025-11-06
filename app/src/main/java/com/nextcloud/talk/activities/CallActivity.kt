@@ -877,13 +877,7 @@ class CallActivity : CallBaseActivity() {
         sdpConstraints = MediaConstraints()
         sdpConstraintsForMCUPublisher = MediaConstraints()
         sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        var offerToReceiveVideoString = "true"
-        if (isVoiceOnlyCall) {
-            offerToReceiveVideoString = "false"
-        }
-        sdpConstraints!!.mandatory.add(
-            MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString)
-        )
+        sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"))
         sdpConstraintsForMCUPublisher!!.optional.add(MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
