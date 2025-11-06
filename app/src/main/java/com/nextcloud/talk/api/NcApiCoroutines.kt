@@ -327,7 +327,8 @@ interface NcApiCoroutines {
     @POST
     suspend fun pinMessage(
         @Header("Authorization") authorization: String,
-        @Url url: String
+        @Url url: String,
+        @Field("pinUntil") pinUntil: Int
     ): ChatOverallSingleMessage
 
     @DELETE

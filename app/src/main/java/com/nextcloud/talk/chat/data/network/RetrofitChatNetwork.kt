@@ -225,9 +225,10 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
 
     override suspend fun pinMessage(
         credentials: String,
-        url: String
+        url: String,
+        pinUntil: Int
     ): ChatOverallSingleMessage {
-        return ncApiCoroutines.pinMessage(credentials, url)
+        return ncApiCoroutines.pinMessage(credentials, url, pinUntil)
     }
 
     override suspend fun unPinMessage(

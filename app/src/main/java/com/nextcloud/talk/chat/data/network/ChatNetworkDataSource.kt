@@ -81,7 +81,8 @@ interface ChatNetworkDataSource {
     suspend fun unbindRoom(credentials: String, baseUrl: String, roomToken: String): GenericOverall
     suspend fun pinMessage(
         credentials: String,
-        url: String
+        url: String,
+        pinUntil: Int
     ): ChatOverallSingleMessage
 
     suspend fun unPinMessage(

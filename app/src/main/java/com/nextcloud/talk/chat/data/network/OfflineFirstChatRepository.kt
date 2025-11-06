@@ -1022,10 +1022,11 @@ class OfflineFirstChatRepository @Inject constructor(
 
     override suspend fun pinMessage(
         credentials: String,
-        url: String
+        url: String,
+        pinUntil: Int
     ): Flow<ChatMessage?> = flow {
         runCatching {
-            val overall = network.pinMessage(credentials, url)
+            val overall = network.pinMessage(credentials, url, pinUntil)
             emit(overall.ocs?.data?.asModel())
         }.getOrElse { throwable -> Log.e(TAG, "Error in pinMessage: $throwable") }
     }

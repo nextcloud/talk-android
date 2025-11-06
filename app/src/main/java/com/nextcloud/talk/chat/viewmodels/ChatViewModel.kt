@@ -960,9 +960,9 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun pinMessage(credentials: String, url: String) {
+    fun pinMessage(credentials: String, url: String, pinUntil: Int = 0) {
         viewModelScope.launch {
-            chatRepository.pinMessage(credentials, url).collect { pinnedMessage ->
+            chatRepository.pinMessage(credentials, url, pinUntil).collect { pinnedMessage ->
                 // TODO - notify UI
             }
         }

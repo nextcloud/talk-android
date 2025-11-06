@@ -119,7 +119,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     suspend fun pinMessage(
         credentials: String,
-        url: String
+        url: String,
+        pinUntil: Int
     ): Flow<ChatMessage?>
 
     suspend fun unPinMessage(
