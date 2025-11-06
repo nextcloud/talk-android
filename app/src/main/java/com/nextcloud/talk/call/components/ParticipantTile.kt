@@ -160,7 +160,6 @@ fun ParticipantTilePreview() {
         mediaStream = null,
         actorType = null,
         actorId = null,
-        userId = null,
         isInternal = false
     )
     ParticipantTile(
