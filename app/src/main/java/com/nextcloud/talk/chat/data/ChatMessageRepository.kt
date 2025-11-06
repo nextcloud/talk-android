@@ -120,12 +120,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun pinMessage(
         credentials: String,
         url: String
-    ): Flow<ChatOverallSingleMessage>
+    ): Flow<ChatMessage?>
 
     suspend fun unPinMessage(
         credentials: String,
         url: String
-    ): Flow<ChatOverallSingleMessage>
+    ): Flow<ChatMessage?>
 
     suspend fun hidePinnedMessage(
         credentials: String,

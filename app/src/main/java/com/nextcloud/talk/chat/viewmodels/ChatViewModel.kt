@@ -54,8 +54,6 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -806,7 +804,7 @@ class ChatViewModel @Inject constructor(
 
     fun setPlayBack(speed: PlaybackSpeed) {
         mediaPlayerManager.setPlayBackSpeed(speed)
-        CoroutineScope(Dispatchers.Default).launch {
+        viewModelScope.launch {
             _voiceMessagePlayBackUIFlow.emit(speed)
         }
     }
@@ -953,12 +951,34 @@ class ChatViewModel @Inject constructor(
     }
 
     fun saveMessageDraft() {
-        CoroutineScope(Dispatchers.IO).launch {
+        viewModelScope.launch {
             val model = conversationRepository.getLocallyStoredConversation(chatRoomToken)
             model?.let {
                 it.messageDraft = messageDraft
                 conversationRepository.updateConversation(it)
             }
+        }
+    }
+
+    fun pinMessage(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.pinMessage(credentials, url).collect { pinnedMessage ->
+                // TODO - notify UI
+            }
+        }
+    }
+
+    fun unPinMessage(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.unPinMessage(credentials, url).collect { unPinnedMessage ->
+                // TODO - notify UI
+            }
+        }
+    }
+
+    fun hidePinnedMessage(credentials: String, url: String) {
+        viewModelScope.launch {
+            chatRepository.hidePinnedMessage(credentials, url)
         }
     }
 

@@ -1023,20 +1023,20 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun pinMessage(
         credentials: String,
         url: String
-    ): Flow<ChatOverallSingleMessage> = flow {
+    ): Flow<ChatMessage?> = flow {
         runCatching {
             val overall = network.pinMessage(credentials, url)
-            emit(overall)
+            emit(overall.ocs?.data?.asModel())
         }.getOrElse { throwable -> Log.e(TAG, "Error in pinMessage: $throwable") }
     }
 
     override suspend fun unPinMessage(
         credentials: String,
         url: String
-    ): Flow<ChatOverallSingleMessage> = flow {
+    ): Flow<ChatMessage?> = flow {
         runCatching {
             val overall = network.unPinMessage(credentials, url)
-            emit(overall)
+            emit(overall.ocs?.data?.asModel())
         }.getOrElse { throwable -> Log.e(TAG, "Error in unPinMessage: $throwable") }
     }
 
