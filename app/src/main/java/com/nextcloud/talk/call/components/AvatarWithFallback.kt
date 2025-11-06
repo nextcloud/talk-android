@@ -72,7 +72,10 @@ private fun FallbackAvatar(participant: ParticipantUiState) {
 
 @Composable
 fun getUrlForAvatar(participant: ParticipantUiState): String {
-    var url = ApiUtils.getUrlForAvatar(participant.baseUrl, participant.actorId, false)
+    var url = ApiUtils.getUrlForAvatar(
+        participant.baseUrl,
+        participant.actorId, true
+    )
     if (Participant.ActorType.GUESTS == participant.actorType ||
         Participant.ActorType.EMAILS == participant.actorType
     ) {
@@ -89,7 +92,7 @@ fun getUrlForAvatar(participant: ParticipantUiState): String {
             participant.roomToken,
             participant.actorId!!,
             darkTheme,
-            false
+            true
         )
     }
     return url
