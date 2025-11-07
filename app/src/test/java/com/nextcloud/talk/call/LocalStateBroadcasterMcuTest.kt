@@ -93,18 +93,7 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val participantUiState = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState = createTestParticipantUiState()
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
@@ -197,18 +186,7 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val participantUiState = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState = createTestParticipantUiState()
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
@@ -319,18 +297,7 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val participantUiState = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState = createTestParticipantUiState()
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
@@ -389,18 +356,7 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(signalingMessageCount1)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
-        val participantUiState2 = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState2 = createTestParticipantUiState()
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState2)
 
@@ -528,18 +484,7 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val participantUiState = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState = createTestParticipantUiState()
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
@@ -635,31 +580,9 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val participantUiState = ParticipantUiState(
-            sessionKey = "theSessionId",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState = createTestParticipantUiState()
 
-        val participantUiState2 = ParticipantUiState(
-            sessionKey = "theSessionId2",
-            nick = "Guest",
-            isConnected = false,
-            isAudioEnabled = false,
-            isStreamEnabled = false,
-            isScreenStreamEnabled = false,
-            raisedHand = false,
-            isInternal = false,
-            baseUrl = "",
-            roomToken = ""
-        )
+        val participantUiState2 = createTestParticipantUiState("theSessionId2")
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState2)
@@ -717,4 +640,17 @@ class LocalStateBroadcasterMcuTest {
 
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
+
+    private fun createTestParticipantUiState(sessionId: String = "theSessionId"): ParticipantUiState = ParticipantUiState(
+        sessionKey = sessionId,
+        nick = "Guest",
+        isConnected = false,
+        isAudioEnabled = false,
+        isStreamEnabled = false,
+        isScreenStreamEnabled = false,
+        raisedHand = false,
+        isInternal = false,
+        baseUrl = "",
+        roomToken = ""
+    )
 }
