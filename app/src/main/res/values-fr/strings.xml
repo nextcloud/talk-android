@@ -80,7 +80,9 @@
     <string name="load_more_results">Charger plus de résultats</string>
     <string name="local_time">Heure locale : %1$s</string>
     <string name="location_permission_denied">Autorisation de localisation refusée</string>
+    <string name="location_permission_denied_msg">Veuillez l\'activer dans les paramètres de l\'application.</string>
     <string name="location_services_disabled">Services de localisation désactivés</string>
+    <string name="location_services_disabled_msg">Veuillez activer les services de localisation (GPS) pour utiliser cette fonctionnalité</string>
     <string name="lock_conversation">Verrouiller la conversation</string>
     <string name="lock_symbol">Symbole de verrouillage</string>
     <string name="lower_hand">Baisser la main</string>
@@ -129,6 +131,7 @@
     <string name="nc_call_incoming">ENTRANT</string>
     <string name="nc_call_name">Nom de la conversation</string>
     <string name="nc_call_notifications">Notifications d\'appel</string>
+    <string name="nc_call_ongoing_notification_content">Appuyez pour revenir à votre appel.</string>
     <string name="nc_call_ongoing_notification_default_title">Appel en cours</string>
     <string name="nc_call_raised_hand">%1$s a levé la main</string>
     <string name="nc_call_reconnecting">Reconnexion…</string>
@@ -293,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Les invitations ont été envoyées à nouveau.</string>
     <string name="nc_guest_access_share_link">Partager le lien de conversation</string>
     <string name="nc_hint_enter_a_message">Saisir un message…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">L\'optimisation de la batterie n\'est pas ignorée. Cela doit être modifié pour garantir le bon fonctionnement des notifications en arrière-plan ! Veuillez cliquer sur OK et sélectionner « Toutes les applications » ->%1$s puis « Ne pas optimiser » ou « Autoriser l\'utilisation en arrière-plan -> Sans restriction ».</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorer l\'optimisation de batterie</string>
     <string name="nc_important_conversation">Conversation importante</string>
     <string name="nc_important_conversation_desc">Le statut utilisateur  \"Ne pas déranger\" est ignoré pour les conversations importantes</string>
@@ -565,6 +569,7 @@
     <string name="open_thread">Aller à la conversation</string>
     <string name="play_pause_voice_message">Jouer / mettre en pause le message vocal</string>
     <string name="playback_speed_control">Contrôle de la vitesse de lecture</string>
+    <string name="please_continue_the_login_process_in_the_browser">Veuillez continuer la connexion dans votre navigateur</string>
     <string name="polls_add_option">Ajouter une option</string>
     <string name="polls_edit_vote">Modifier le vote</string>
     <string name="polls_end_poll">Fin du sondage</string>
@@ -668,6 +673,7 @@
     <string name="thread_reply">Répondre</string>
     <string name="thread_title">Titre de la conversation</string>
     <string name="threads">Conversations</string>
+    <string name="threads_list_empty">Aucun fil de discussion trouvé</string>
     <string name="today">Aujourd\'hui</string>
     <string name="tomorrow">Demain</string>
     <string name="translate">Traduire</string>
@@ -679,6 +685,8 @@
     <string name="translation_error_title">Échec de la traduction</string>
     <string name="translation_from">De</string>
     <string name="translation_to">À</string>
+    <string name="turn_off_background_blur">Désactiver le flou d\'arrière-plan</string>
+    <string name="turn_on_background_blur">Activer le flou d\'arrière-plan</string>
     <string name="typing_1_other">et 1 autre sont en train de taper…</string>
     <string name="typing_are_typing">sont en train de taper...</string>
     <string name="typing_is_typing">est en train de taper...</string>
