@@ -179,6 +179,8 @@ import org.webrtc.PeerConnection
 import org.webrtc.PeerConnection.IceConnectionState
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.RendererCommon
+import org.webrtc.SoftwareVideoDecoderFactory
+import org.webrtc.SoftwareVideoEncoderFactory
 import org.webrtc.SurfaceTextureHelper
 import org.webrtc.VideoCapturer
 import org.webrtc.VideoSource
@@ -220,6 +222,7 @@ class CallActivity : CallBaseActivity() {
     val blurBackgroundViewModel: BlurBackgroundViewModel = BlurBackgroundViewModel()
     private var mReceiver: BroadcastReceiver? = null
     private var peerConnectionFactory: PeerConnectionFactory? = null
+    private var screenSharePeerConnectionFactory: PeerConnectionFactory? = null
     private var audioConstraints: MediaConstraints? = null
     private var videoConstraints: MediaConstraints? = null
     private var sdpConstraints: MediaConstraints? = null
@@ -2365,16 +2368,42 @@ class CallActivity : CallBaseActivity() {
         sessionId: String?,
         type: String
     ): PeerConnectionWrapper {
+        fun getPeerConnectionFactory(type: String): PeerConnectionFactory? {
+            fun initScreenSharePeerConnectionFactory(): PeerConnectionFactory? {
+                val options = PeerConnectionFactory.Options()
+                val softwareVideoEncoderFactory = SoftwareVideoEncoderFactory()
+                val softwareVideoDecoderFactory = SoftwareVideoDecoderFactory()
+                screenSharePeerConnectionFactory = PeerConnectionFactory.builder()
+                    .setOptions(options)
+                    .setVideoEncoderFactory(softwareVideoEncoderFactory)
+                    .setVideoDecoderFactory(softwareVideoDecoderFactory)
+                    .createPeerConnectionFactory()
+                return screenSharePeerConnectionFactory
+            }
+
+            val tempPeerConnectionFactory = if (type == "screen") {
+                screenSharePeerConnectionFactory ?: run {
+                    initScreenSharePeerConnectionFactory()
+                }
+            } else {
+                peerConnectionFactory
+            }
+            return tempPeerConnectionFactory
+        }
+
+        val tempPeerConnectionFactory: PeerConnectionFactory?
         val tempSdpConstraints: MediaConstraints?
         val tempIsMCUPublisher: Boolean
         val tempHasMCU: Boolean
         val tempLocalStream: MediaStream?
         if (hasMCU && publisher) {
+            tempPeerConnectionFactory = peerConnectionFactory
             tempSdpConstraints = sdpConstraintsForMCUPublisher
             tempIsMCUPublisher = true
             tempHasMCU = true
             tempLocalStream = localStream
         } else if (hasMCU) {
+            tempPeerConnectionFactory = getPeerConnectionFactory(type)
             tempSdpConstraints = MediaConstraintsHelper(sdpConstraints)
                 .copy()
                 .applyIf(type == "screen") { replaceOrAddConstraint("OfferToReceiveVideo", "true") }
@@ -2383,6 +2412,7 @@ class CallActivity : CallBaseActivity() {
             tempHasMCU = true
             tempLocalStream = null
         } else {
+            tempPeerConnectionFactory = getPeerConnectionFactory(type)
             tempSdpConstraints = MediaConstraintsHelper(sdpConstraints)
                 .copy()
                 .applyIf(type == "screen") { replaceOrAddConstraint("OfferToReceiveVideo", "true") }
@@ -2397,7 +2427,7 @@ class CallActivity : CallBaseActivity() {
         }
 
         return PeerConnectionWrapper(
-            peerConnectionFactory,
+            tempPeerConnectionFactory,
             iceServers,
             tempSdpConstraints,
             sessionId,
