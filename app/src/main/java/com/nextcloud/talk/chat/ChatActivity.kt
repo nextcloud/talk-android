@@ -167,6 +167,7 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
+import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
@@ -660,6 +661,27 @@ class ChatActivity :
                         initAdapter()
                         binding.messagesListView.setAdapter(adapter)
                         layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
+                    }
+
+                    Log.d("Julius", "LastPinnedId: ${conversationModel.lastPinnedId}")
+                    Log.d("Julius", "HiddenPinnedId: ${conversationModel.hiddenPinnedId}")
+                    if (conversationModel.lastPinnedId != null && conversationModel.lastPinnedId != 0L) {
+                        // TODO make the pinned UI distinct later, I think I'll force it to be outgoing somehow
+                        chatViewModel
+                            .getMessageById(
+                                conversationUser?.baseUrl!!,
+                                conversationModel,
+                                conversationModel.lastPinnedId!!
+                            )
+                            .collect { message ->
+                                binding.pinnedMessageContainer.visibility = View.VISIBLE
+                                binding.pinnedMessageComposeView.setContent {
+                                    message.incoming = true
+                                    ComposeChatAdapter().GetComposableForMessage(message)
+                                }
+                            }
+                    } else {
+                        binding.pinnedMessageContainer.visibility = View.GONE
                     }
 
                     chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
@@ -3917,7 +3939,9 @@ class ChatActivity :
 
     fun pinMessage(message: ChatMessage) {
         // TODO need dialog for time, can copy code from reminder me later
-        ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        Log.d("Julius", "Pinned: $url")
+        chatViewModel.pinMessage(credentials!!, url)
     }
 
     fun unPinMessage(message: ChatMessage) {

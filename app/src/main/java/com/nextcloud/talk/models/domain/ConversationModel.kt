@@ -133,7 +133,9 @@ data class ConversationModel(
                 remoteToken = conversation.remoteToken,
                 hasArchived = conversation.hasArchived,
                 hasSensitive = conversation.hasSensitive,
-                hasImportant = conversation.hasImportant
+                hasImportant = conversation.hasImportant,
+                lastPinnedId = conversation.lastPinnedId,
+                hiddenPinnedId = conversation.hiddenPinnedId
             )
     }
 }

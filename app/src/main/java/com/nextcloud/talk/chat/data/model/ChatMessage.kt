@@ -94,6 +94,8 @@ data class ChatMessage(
 
     var lastEditTimestamp: Long? = 0,
 
+    var incoming: Boolean = false,
+
     var isDownloadingVoiceMessage: Boolean = false,
 
     var resetVoiceMessage: Boolean = false,

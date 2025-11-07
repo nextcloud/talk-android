@@ -94,6 +94,25 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+    <LinearLayout
+        android:id="@+id/pinnedMessageContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/standard_half_padding"
+        android:layout_margin="@dimen/standard_half_margin"
+        android:visibility="gone"
+        tools:layout_height="100dp"
+        tools:backgroundTint="@color/hwSecurityBlue"
+        android:background="@drawable/reply_background">
+
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/pinnedMessageComposeView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
