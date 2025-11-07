@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.activities
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.signaling.SignalingMessageReceiver
@@ -26,7 +27,13 @@ class CallViewModel @Inject constructor() : ViewModel() {
     private val _activeScreenShareSession = MutableStateFlow<ParticipantUiState?>(null)
     val activeScreenShareSession: StateFlow<ParticipantUiState?> = _activeScreenShareSession.asStateFlow()
 
-    fun getParticipant(sessionId: String?): ParticipantHandler? = participantHandlers[sessionId]
+    fun getParticipant(sessionId: String?): ParticipantHandler? {
+        if (sessionId == null) {
+            Log.w(TAG, "Attempted to get participant with null sessionId.")
+            return null
+        }
+        return participantHandlers[sessionId]
+    }
 
     fun doesParticipantExist(sessionId: String?): Boolean = (participantHandlers.containsKey(sessionId))
 
@@ -85,5 +92,9 @@ class CallViewModel @Inject constructor() : ViewModel() {
         participantHandlers.values.forEach { it.destroy() }
         participantHandlers.clear()
         _participants.value = emptyList()
+    }
+
+    companion object {
+        private val TAG = CallViewModel::class.java.simpleName
     }
 }

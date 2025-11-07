@@ -2120,7 +2120,6 @@ class CallActivity : CallBaseActivity() {
             it.stopCapture()
             it.startCapture(width, height, FRAME_RATE)
         }
-        // updateSelfVideoViewPosition(isPortrait)
     }
 
     private fun setupOrientationListener(context: Context) {
@@ -2453,13 +2452,12 @@ class CallActivity : CallBaseActivity() {
             peerConnectionWrapper.removeObserver(selfPeerConnectionObserver)
         }
 
-        if (!callViewModel.doesParticipantExist(sessionId)) {
-            if ("screen" == type) {
-                callViewModel.getParticipant(sessionId)?.setScreenPeerConnection(null)
-            } else {
-                callViewModel.getParticipant(sessionId)?.setPeerConnection(null)
-            }
+        if ("screen" == type) {
+            callViewModel.getParticipant(sessionId)?.setScreenPeerConnection(null)
+        } else {
+            callViewModel.getParticipant(sessionId)?.setPeerConnection(null)
         }
+
         peerConnectionWrapper.removePeerConnection()
         peerConnectionWrapperList.remove(peerConnectionWrapper)
     }
@@ -2797,9 +2795,7 @@ class CallActivity : CallBaseActivity() {
 
         private fun onOfferOrAnswer(nick: String?) {
             this.nick = nick
-            if (callViewModel.doesParticipantExist(sessionId)) {
-                callViewModel.getParticipant(sessionId)?.updateNick(nick)
-            }
+            callViewModel.getParticipant(sessionId)?.updateNick(nick)
         }
     }
 
