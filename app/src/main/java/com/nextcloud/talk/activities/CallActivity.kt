@@ -65,6 +65,7 @@ import com.nextcloud.talk.call.CallParticipantList
 import com.nextcloud.talk.call.LocalStateBroadcaster
 import com.nextcloud.talk.call.LocalStateBroadcasterMcu
 import com.nextcloud.talk.call.LocalStateBroadcasterNoMcu
+import com.nextcloud.talk.call.MediaConstraintsHelper
 import com.nextcloud.talk.call.MessageSender
 import com.nextcloud.talk.call.MessageSenderMcu
 import com.nextcloud.talk.call.MessageSenderNoMcu
@@ -877,7 +878,13 @@ class CallActivity : CallBaseActivity() {
         sdpConstraints = MediaConstraints()
         sdpConstraintsForMCUPublisher = MediaConstraints()
         sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"))
-        sdpConstraints!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
+        var offerToReceiveVideoString = "true"
+        if (isVoiceOnlyCall) {
+            offerToReceiveVideoString = "false"
+        }
+        sdpConstraints!!.mandatory.add(
+            MediaConstraints.KeyValuePair("OfferToReceiveVideo", offerToReceiveVideoString)
+        )
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveAudio", "false"))
         sdpConstraintsForMCUPublisher!!.mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "false"))
         sdpConstraintsForMCUPublisher!!.optional.add(MediaConstraints.KeyValuePair("internalSctpDataChannels", "true"))
@@ -2369,12 +2376,18 @@ class CallActivity : CallBaseActivity() {
             tempHasMCU = true
             tempLocalStream = localStream
         } else if (hasMCU) {
-            tempSdpConstraints = sdpConstraints
+            tempSdpConstraints = MediaConstraintsHelper(sdpConstraints)
+                .copy()
+                .applyIf(type == "screen") { replaceOrAddConstraint("OfferToReceiveVideo", "true") }
+                .build()
             tempIsMCUPublisher = false
             tempHasMCU = true
             tempLocalStream = null
         } else {
-            tempSdpConstraints = sdpConstraints
+            tempSdpConstraints = MediaConstraintsHelper(sdpConstraints)
+                .copy()
+                .applyIf(type == "screen") { replaceOrAddConstraint("OfferToReceiveVideo", "true") }
+                .build()
             tempIsMCUPublisher = false
             tempHasMCU = false
             tempLocalStream = if ("screen" != type) {
