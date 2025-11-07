@@ -52,6 +52,8 @@ class ParticipantHandlerTest {
             // When
             handler = ParticipantHandler(
                 sessionId = sessionId,
+                baseUrl = "",
+                roomToken = "",
                 signalingMessageReceiver = signalingMessageReceiver,
                 onParticipantShareScreen = onParticipantShareScreen,
                 onParticipantUnshareScreen = onParticipantUnshareScreen
@@ -60,6 +62,8 @@ class ParticipantHandlerTest {
             // Then
             val expectedState = ParticipantUiState(
                 sessionKey = sessionId,
+                baseUrl = "",
+                roomToken = "",
                 nick = "Guest",
                 isConnected = false,
                 isAudioEnabled = false,
