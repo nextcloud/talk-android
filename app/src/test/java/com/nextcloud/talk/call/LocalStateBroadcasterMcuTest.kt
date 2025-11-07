@@ -101,7 +101,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
@@ -203,7 +205,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
@@ -323,7 +327,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
@@ -391,7 +397,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState2)
@@ -528,7 +536,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
@@ -633,7 +643,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         val participantUiState2 = ParticipantUiState(
@@ -644,7 +656,9 @@ class LocalStateBroadcasterMcuTest {
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
             raisedHand = false,
-            isInternal = false
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
         )
 
         localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
