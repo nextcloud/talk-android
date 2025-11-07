@@ -5,10 +5,12 @@
     <string name="add_to_notes">Pridať do poznámok</string>
     <string name="added_to_favorites">Pridať konverzáciu %1$s k obľúbeným</string>
     <string name="appbar_search_in">Hľadať v %s</string>
+    <string name="appear_offline">Zdá sa byť offline</string>
     <string name="archive_conversation">Archivovať konverzáciu</string>
     <string name="archive_hint">Keď je konverzácia archivovaná, bude predvolene skrytá. Ak chcete zobraziť archivované konverzácie, vyberte filter „Archivované“. Priame zmienky budú stále prijímané.</string>
     <string name="archived">Archivované</string>
     <string name="archived_conversation">Archivované %1$s</string>
+    <string name="audio_call">Audio hovor</string>
     <string name="audio_output_bluetooth">Bluetooth</string>
     <string name="audio_output_dialog_headline">Zvukový výstup</string>
     <string name="audio_output_phone">Telefón</string>
@@ -34,8 +36,10 @@
     <string name="close">Zatvoriť</string>
     <string name="close_icon">Ikona Zavrieť</string>
     <string name="connection_established">Pripojenie vytvorené</string>
+    <string name="connection_lost">Nie je dostupné pripojenie k serveru</string>
     <string name="connection_lost_sent_messages_are_queued">Pripojenie bolo stratené - Odoslané správy počkajú v rade</string>
     <string name="continuous_voice_message_recording">Zamknúť nahrávanie pre nepretržité nahrávanie hlasovej správy</string>
+    <string name="conversation_archived">Konverzácia je archivovaná</string>
     <string name="conversation_is_read_only">Konverzácia je len na čítanie</string>
     <string name="conversation_read_only_failed">Nepodarilo sa nastaviť konverzáciu na Iba na čítanie</string>
     <string name="conversations">Konverzácie</string>
@@ -45,10 +49,12 @@
     <string name="danger_zone">Nebezpečná oblasť</string>
     <string name="deck_card_description">%1$s v %2$s</string>
     <string name="delete_avatar">Zmazať avatara</string>
+    <string name="delete_voice_recording">Odstrániť hlasový záznam</string>
     <string name="deleted_conversation">Odstránená konverzácia %1$s</string>
     <string name="dnd">Nerušiť</string>
     <string name="dontClear">Nemazať</string>
     <string name="edit">Upraviť</string>
+    <string name="edit_error_24_hours_old_message">Správy staršie ako 24 hodín nie je možné upravovať</string>
     <string name="edit_message_icon_description">Upraviť správu</string>
     <string name="emoji_category_recent">Nedávne</string>
     <string name="encrypted">Šifrované</string>
@@ -72,6 +78,12 @@
     <string name="leave_call">Opustiť hovor</string>
     <string name="left_conversation">Opustili ste konverzáciu %1$s</string>
     <string name="load_more_results">Načítať viac výsledkov</string>
+    <string name="local_time">Miestny čas: %1$s</string>
+    <string name="location_permission_denied">Prístup k polohe bol zamietnutý</string>
+    <string name="location_permission_denied_msg">Prosím, povoľte to v nastaveniach aplikácie
+</string>
+    <string name="location_services_disabled">Služby lokalizácie sú vypnuté</string>
+    <string name="location_services_disabled_msg">Ak chcete používať túto funkciu, povoľte lokalizačné služby (GPS)</string>
     <string name="lock_conversation">Zamknúť konverzáciu</string>
     <string name="lock_symbol">Symbol zámku</string>
     <string name="lower_hand">Dať ruku dole</string>
@@ -84,6 +96,8 @@
     <string name="menu_item_sort_by_name_z_a">Z - A</string>
     <string name="menu_item_sort_by_size_biggest_first">Najväčšie prvé</string>
     <string name="menu_item_sort_by_size_smallest_first">Najmenšie prvé</string>
+    <string name="message_copied">Správa skopírovaná</string>
+    <string name="message_delete_are_you_sure">Naozaj chcete túto správu odstrániť?</string>
     <string name="message_deleted_by_you">Správu ste odstránili</string>
     <string name="message_last_edited_by">Upravil%1$s</string>
     <string name="message_poll_tap_to_open">Klepnutím otvoríte anketu</string>
@@ -91,6 +105,7 @@
     <string name="message_search_begin_typing">Začnite písať pre vyhľadanie …</string>
     <string name="message_search_hint">Hľadať …</string>
     <string name="messages">Správy</string>
+    <string name="mute_all_notifications">Stlmiť všetky upozornenia</string>
     <string name="nc_Server_account_imported">Vybraný účet je teraz importovaný a dostupný</string>
     <string name="nc_about">O aplikácii</string>
     <string name="nc_account_chooser_active_user">Aktívny používateľ</string>
@@ -117,6 +132,7 @@
     <string name="nc_call_incoming">PRICHÁDZAJÚCI</string>
     <string name="nc_call_name">Názov konverzácie</string>
     <string name="nc_call_notifications">Upozornenia na hovory</string>
+    <string name="nc_call_ongoing_notification_content">Klepnutím sa vrátite k hovoru.</string>
     <string name="nc_call_ongoing_notification_default_title">Prebieha hovor</string>
     <string name="nc_call_raised_hand">%1$s sa prihlásil(a)</string>
     <string name="nc_call_reconnecting">Znovu pripájam …</string>
@@ -169,6 +185,7 @@
     <string name="nc_copy_message">Kopírovať</string>
     <string name="nc_create_new_conversation">Vytvoriť novú konverzáciu</string>
     <string name="nc_create_poll">Vytvoriť anketu</string>
+    <string name="nc_current_user">Vy</string>
     <string name="nc_date_header_today">Dnes</string>
     <string name="nc_date_header_yesterday">Včera</string>
     <string name="nc_delete">Zmazať</string>
@@ -177,6 +194,7 @@
     <string name="nc_delete_conversation_more">Ak zmažete konverzáciu, bude takisto zmazaná pre všetkých ostatných zúčastnených</string>
     <string name="nc_delete_message">Zmazať správu</string>
     <string name="nc_delete_message_leaked_to_matterbridge">Správa úspešne odstránená, ale mohla uniknúť na iné serveri.</string>
+    <string name="nc_delete_now">Odstrániť teraz</string>
     <string name="nc_deleted_user">Používateľ %1$s bol vymazaný</string>
     <string name="nc_demote">Odobrať moderovanie</string>
     <string name="nc_description_record_voice">Nahrať hlasovú správu</string>
@@ -237,6 +255,8 @@
     <string name="nc_edit_message">Úprava</string>
     <string name="nc_edit_message_text">Upraviť správu</string>
     <string name="nc_edited_by_admin">Upravené adminom</string>
+    <string name="nc_event_conversation_menu">Menu konverzácie udalosti</string>
+    <string name="nc_event_schedule">Program</string>
     <string name="nc_expire_message_eight_hours">8 hodín</string>
     <string name="nc_expire_message_four_weeks">4 týždne</string>
     <string name="nc_expire_message_off">Vypnúť</string>
@@ -253,6 +273,7 @@
     <string name="nc_federation_pending_invitation_hint">Máte čakajúce pozvánky</string>
     <string name="nc_file_browser_back">Späť</string>
     <string name="nc_file_storage_permission">Vyžaduje sa oprávnenie na prístup k súborom</string>
+    <string name="nc_filter">Filtrovať konverzácie</string>
     <string name="nc_following_link">Používateľ z verejného odkazu</string>
     <string name="nc_formatted_message_you">Vy: %1$s</string>
     <string name="nc_forward_message">Preposlať</string>
@@ -276,10 +297,14 @@
     <string name="nc_guest_access_resend_invitations_successful">Pozvánky boli odoslané.</string>
     <string name="nc_guest_access_share_link">Zdieľať odkaz na konverzáciu</string>
     <string name="nc_hint_enter_a_message">Vložte správu …</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Optimalizácia batérie sa neignoruje. Toto by sa malo zmeniť, aby sa zabezpečilo, že upozornenia budú fungovať na pozadí! Kliknite na OK a vyberte možnosť „Všetky aplikácie“ -> %1$s a potom „Neoptimalizovať“ alebo „Povoliť používanie na pozadí -> Neobmedzené“.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Ignorovať optimalizáciu batérie</string>
     <string name="nc_important_conversation">Dôležitá konverzácia</string>
+    <string name="nc_important_conversation_desc">Stav používateľa „Nerušiť“ sa pri dôležitých konverzáciách ignoruje.</string>
+    <string name="nc_invalid_time">Neplatný čas</string>
     <string name="nc_invitations">Pozvánky</string>
     <string name="nc_join_open_conversations">Pripojiť sa k prebiehajúcim konverzáciam</string>
+    <string name="nc_keep">Ponechať</string>
     <string name="nc_last_moderator_leaving_room_warning">Skôr než budete môcť opustiť rozhovor, je potrebné niekomu odovzdať rolu moderátora.</string>
     <string name="nc_last_modified">%1$s | Posledná úprava: %2$s</string>
     <string name="nc_leave">Opustiť konverzáciu</string>
@@ -299,6 +324,12 @@
     <string name="nc_manual">Nenastavené</string>
     <string name="nc_mark_as_read">Označiť ako prečítané</string>
     <string name="nc_mark_as_unread">Označiť ako neprečítané</string>
+    <string name="nc_mark_conversation_as_important">Konverzácia označená ako dôležitá</string>
+    <string name="nc_mark_conversation_as_insensitive">Konverzácia bola zrušená ako citlivá</string>
+    <string name="nc_mark_conversation_as_sensitive">Konverzácia označená ako citlivá</string>
+    <string name="nc_mark_conversation_as_unimportant">Konverzácia bola zrušená ako dôležitá</string>
+    <string name="nc_meeting_ended">Stretnutie sa skončilo</string>
+    <string name="nc_message_added_to_notes">Správa pridaná do poznámok</string>
     <string name="nc_message_failed">Zlyhalo</string>
     <string name="nc_message_failed_to_send">Chyba pri posielaní správy:</string>
     <string name="nc_message_offline">Odpojené</string>
@@ -306,6 +337,7 @@
     <string name="nc_message_read">Správa bola prečítaná</string>
     <string name="nc_message_sending">Posielam</string>
     <string name="nc_message_sent">Správa bola odoslaná</string>
+    <string name="nc_microphone_enabled_audio_recording">Mikrofón je zapnutý a zvuk sa nahráva</string>
     <string name="nc_microphone_permission_hint">Ak chcete povoliť hlasovú komunikáciu, udeľte povolenie „Mikrofón“.</string>
     <string name="nc_missed_call">Zmeškali ste hovor od %s</string>
     <string name="nc_moderator">Moderátor</string>
@@ -338,6 +370,7 @@
     <string name="nc_notify_me_never">Nikdy nenotifikuj</string>
     <string name="nc_offline">Práve ste odpojený. Prosím, skontrolujte vaše pripojenie.</string>
     <string name="nc_ok">OK</string>
+    <string name="nc_ongoing_meeting">Prebiehajúce stretnutie</string>
     <string name="nc_open_conversation_to_registered_users">Otvoriť konverzáciu pre registrovaných používateľov</string>
     <string name="nc_open_to_guest_app_users">Povoliť i pre používateľov aplikácií pre hostí</string>
     <string name="nc_owner">Vlastník</string>
@@ -359,6 +392,9 @@
     <string name="nc_promote">Povýšiť na moderátora</string>
     <string name="nc_public_call_status">Verejný rozhovor</string>
     <string name="nc_push_disabled">Push notifikácie vypnuté</string>
+    <string name="nc_push_notification_error">Prepáč, niečo sa pokazilo, chyba je%1$s</string>
+    <string name="nc_push_notification_fetch_error">Prepáčte, niečo sa pokazilo, nepodarilo sa načítať testovaciu push správu.</string>
+    <string name="nc_push_notification_message">Push notifikácia bola úspešne odoslaná. Teraz by ste mali na tomto zariadení dostať notifikáciu s názvom „Testovanie push notifikácií“.</string>
     <string name="nc_push_to_talk">Stlač a hovor PTT</string>
     <string name="nc_push_to_talk_desc">S vypnutým mikrofónom, ťuknite &amp;podržte pre použitie funkcie Stlač a hovor PTT</string>
     <string name="nc_remind">Pripomenúť neskôr</string>
@@ -371,6 +407,7 @@
     <string name="nc_rename_confirm">Premenovať</string>
     <string name="nc_reply">Odpoveď</string>
     <string name="nc_reply_privately">Odpovedať súkromne</string>
+    <string name="nc_room_retention">Miestnosť bola úspešne uchovaná</string>
     <string name="nc_save_message">Uložiť</string>
     <string name="nc_save_success">Úspešne uložené</string>
     <string name="nc_screen_lock_timeout_30">30 sekúnd</string>
@@ -385,6 +422,10 @@
     <string name="nc_search">Hľadať</string>
     <string name="nc_search_clear">Vymazať hľadanie</string>
     <string name="nc_select_an_account">Zvoľte si účet</string>
+    <string name="nc_send_edit_message">Aktualizovať správu</string>
+    <string name="nc_send_voice_recording">Odoslať hlasovú nahrávku</string>
+    <string name="nc_sensitive_conversation">Citlivá konverzácia</string>
+    <string name="nc_sensitive_conversation_hint">Ukážka správy bude v zozname konverzácií a v upozorneniach vypnutá</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s poslal(a)  GIF.</string>
     <string name="nc_sent_a_gif_you">Odoslali ste GIF.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s poslal(a) video.</string>
@@ -455,6 +496,7 @@
     <string name="nc_settings_server_eol">Verzia tohoto serveru je veľmi stará a nebude podporovaná v ďalšej verzii Android aplikácie!</string>
     <string name="nc_settings_server_eol_title">Nepodporovaný server</string>
     <string name="nc_settings_server_notification_app_not_installed_title">Aplikácia upozornení zo servera nie je nainštalovaná</string>
+    <string name="nc_settings_theme_battery_saver">Nastavené šetričom batérie</string>
     <string name="nc_settings_theme_dark">Tmavý</string>
     <string name="nc_settings_theme_follow_system">Použiť systémové nastavenia</string>
     <string name="nc_settings_theme_key">motív vzhľadu</string>
@@ -486,6 +528,10 @@
     <string name="nc_start_time">Čas začiatku</string>
     <string name="nc_switch_account">Prepnúť účet</string>
     <string name="nc_team">Tím</string>
+    <string name="nc_test_push_button">Otestovať push notifikácie</string>
+    <string name="nc_test_results">Výsledky testu</string>
+    <string name="nc_today_meeting">Dnes o %1$s</string>
+    <string name="nc_tomorrow_meeting">Zajtra o%1$s</string>
     <string name="nc_upload_choose_local_files">Vyberte súbory</string>
     <string name="nc_upload_confirm_send_multiple">Poslať tieto súbory do %1$s?</string>
     <string name="nc_upload_confirm_send_single">Poslať tento súbor do %1$s?</string>
@@ -507,18 +553,24 @@
     <string name="nc_webinar">Webinár</string>
     <string name="nc_yes">Áno</string>
     <string name="next_week">Nasledujúci týždeň</string>
+    <string name="no_conversations_archived">Žiadne archivované konverzácie</string>
     <string name="no_offline_messages_saved">Žiadne správy pri odpojení neboli uložené</string>
     <string name="no_phone_book_integration_due_to_permissions">Registrácia telefónneho čísla nie je povolená pre chýbajúce oprávnenia</string>
+    <string name="notification_all_messages">Všetky správy</string>
     <string name="notification_mention_only">Iba zmienky v tvare @-meno</string>
     <string name="notification_off">Vypnúť</string>
     <string name="notifications_default">Predvolené</string>
+    <string name="notifications_default_description">Sledovať nastavenia konverzácie</string>
     <string name="oneHour">1 hodina</string>
     <string name="online">Pripojený</string>
     <string name="online_status">Stav pripojenia</string>
     <string name="openConversations">Otvoriť konverzácie</string>
     <string name="open_in_files_app">Otvoriť v aplikácii Súbory</string>
+    <string name="open_notes">Otvoriť Poznámky</string>
+    <string name="open_thread">Prejsť na vlákno</string>
     <string name="play_pause_voice_message">Prehrať/pozastaviť hlasovú správu</string>
     <string name="playback_speed_control">Ovládanie rýchlosti prehrávania</string>
+    <string name="please_continue_the_login_process_in_the_browser">Pokračujte v prihlásení v prehliadači</string>
     <string name="polls_add_option">Pridajte možnosť</string>
     <string name="polls_edit_vote">Upraviť hlasovanie</string>
     <string name="polls_end_poll">Ukončiť anketu</string>
@@ -536,9 +588,11 @@
     <string name="polls_submit_vote">Hlas</string>
     <string name="polls_voted_hidden_success">Hlasovanie odoslané</string>
     <string name="previously_set">Predtým nastavené</string>
+    <string name="qr_code_error">QR kód sa nepodarilo prečítať</string>
     <string name="raise_hand">Zdvihnúť ruku</string>
     <string name="reactions_tab_all">Všetko</string>
     <string name="read_storage_no_permission">Zdieľanie súborov z úložiska nie je možné bez oprávnenia</string>
+    <string name="recent_threads">Nedávne vlákna</string>
     <string name="record_active_info">Hovor sa nahráva</string>
     <string name="record_cancel_start">Zrušiť začiatok nahrávania</string>
     <string name="record_failed_info">Nahrávanie zlyhalo. Prosím, kontaktujte správcu.</string>
@@ -596,6 +650,7 @@
     <string name="show_banned_participants">Zobraziť zabanovaných účastníkov</string>
     <string name="starred">Obľúbené</string>
     <string name="startCallForbidden">Nemáte oprávnenie začat rozhovor</string>
+    <string name="start_thread">Vytvoriť vlákno</string>
     <string name="started_a_call">začal(a) hovor</string>
     <string name="status_message">Správa o stave</string>
     <string name="status_reverted">Stav vrátený</string>
@@ -614,7 +669,12 @@
     <string name="thisWeek">Tento týždeň</string>
     <string name="this_is_a_test_message">Toto je skúšobná správa</string>
     <string name="this_weekend">Tento víkend</string>
+    <string name="thread_cancel">Zrušiť vytváranie vlákna</string>
+    <string name="thread_notifications">Upozornenia na vlákna</string>
     <string name="thread_reply">Odpovedať</string>
+    <string name="thread_title">Názov vlákna</string>
+    <string name="threads">Vlákna</string>
+    <string name="threads_list_empty">Nenašli sa žiadne vlákna</string>
     <string name="today">Dnes</string>
     <string name="tomorrow">Zajtra</string>
     <string name="translate">Preložiť</string>
@@ -626,6 +686,8 @@
     <string name="translation_error_title">Preklad zlyhal</string>
     <string name="translation_from">Od</string>
     <string name="translation_to">Pre</string>
+    <string name="turn_off_background_blur">Vypnúť rozmazanie pozadia</string>
+    <string name="turn_on_background_blur">Zapnúť rozmazanie pozadia</string>
     <string name="typing_1_other">a jeden ďalší píše…</string>
     <string name="typing_are_typing">píšu…</string>
     <string name="typing_is_typing">píše…</string>
@@ -657,6 +719,18 @@
         <item quantity="few">Zobraziť %d podobné správy</item>
         <item quantity="many">Zobraziť %d podobných správ</item>
         <item quantity="other">Zobraziť %d podobných správ</item>
+    </plurals>
+    <plurals name="nc_conversation_auto_delete_info">
+        <item quantity="one">Táto konverzácia bude automaticky vymazaná po %1$d dni nečinnosti</item>
+        <item quantity="few">Táto konverzácia bude automaticky vymazaná po %1$d dňoch nečinnosti</item>
+        <item quantity="many">Táto konverzácia bude automaticky vymazaná po%1$d dňoch nečinnosti</item>
+        <item quantity="other">Táto konverzácia bude automaticky vymazaná po %1$d dňoch nečinnosti</item>
+    </plurals>
+    <plurals name="thread_replies">
+        <item quantity="one">%d odpoveď</item>
+        <item quantity="few">%d odpovede</item>
+        <item quantity="many">%d odpovedí</item>
+        <item quantity="other">%d odpovedí</item>
     </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d hlas</item>

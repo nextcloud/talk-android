@@ -570,6 +570,7 @@
     <string name="open_thread">Nenda kwenye mjadala</string>
     <string name="play_pause_voice_message">Cheza/simamisha ujumbe wa sauti</string>
     <string name="playback_speed_control">Udhibiti wa kasi ya mshindonyuma</string>
+    <string name="please_continue_the_login_process_in_the_browser">Tafadhali endelea kuingia katika kivinjari</string>
     <string name="polls_add_option">Ongeza mbadala</string>
     <string name="polls_edit_vote">Hariri kura</string>
     <string name="polls_end_poll">Maliza kura ya maoni</string>
