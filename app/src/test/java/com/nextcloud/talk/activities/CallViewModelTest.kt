@@ -41,7 +41,12 @@ class CallViewModelTest {
             val sessionId = "session1"
             val mockReceiver = mock<SignalingMessageReceiver>()
 
-            viewModel.addParticipant(sessionId, mockReceiver)
+            viewModel.addParticipant(
+                baseUrl = "",
+                roomToken = "",
+                sessionId = sessionId,
+                signalingMessageReceiver = mockReceiver
+            )
             testDispatcher.scheduler.advanceUntilIdle()
 
             assertTrue(viewModel.doesParticipantExist(sessionId))
@@ -53,7 +58,12 @@ class CallViewModelTest {
         val sessionId = "session2"
         val receiver = mock<SignalingMessageReceiver>()
 
-        viewModel.addParticipant(sessionId, receiver)
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = sessionId,
+            signalingMessageReceiver = receiver
+        )
         assertTrue(viewModel.doesParticipantExist(sessionId))
     }
 
@@ -66,7 +76,12 @@ class CallViewModelTest {
     fun `onShareScreen sets active screen share session`() {
         val sessionId = "screen1"
         val receiver = mock<SignalingMessageReceiver>()
-        viewModel.addParticipant(sessionId, receiver)
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = sessionId,
+            signalingMessageReceiver = receiver
+        )
         viewModel.onShareScreen(sessionId)
 
         val activeSession = viewModel.activeScreenShareSession.value
@@ -77,7 +92,12 @@ class CallViewModelTest {
     fun `onUnshareScreen clears active session when same session unshares`() {
         val sessionId = "screen2"
         val receiver = mock<SignalingMessageReceiver>()
-        viewModel.addParticipant(sessionId, receiver)
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = sessionId,
+            signalingMessageReceiver = receiver
+        )
         viewModel.onShareScreen(sessionId)
         viewModel.onUnshareScreen(sessionId)
 
@@ -90,7 +110,12 @@ class CallViewModelTest {
             val sessionId = "session3"
             val receiver = mock<SignalingMessageReceiver>()
 
-            viewModel.addParticipant(sessionId, receiver)
+            viewModel.addParticipant(
+                baseUrl = "",
+                roomToken = "",
+                sessionId = sessionId,
+                signalingMessageReceiver = receiver
+            )
             viewModel.removeParticipant(sessionId)
 
             assertFalse(viewModel.doesParticipantExist(sessionId))
@@ -102,7 +127,12 @@ class CallViewModelTest {
         val sessionId = "screen3"
         val receiver = mock<SignalingMessageReceiver>()
 
-        viewModel.addParticipant(sessionId, receiver)
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = sessionId,
+            signalingMessageReceiver = receiver
+        )
         viewModel.setActiveScreenShareSession(sessionId)
 
         val active = viewModel.activeScreenShareSession.value
@@ -116,7 +146,12 @@ class CallViewModelTest {
             val sessionId = "session1"
             val mockReceiver = mock<SignalingMessageReceiver>()
 
-            viewModel.addParticipant(sessionId, mockReceiver)
+            viewModel.addParticipant(
+                baseUrl = "",
+                roomToken = "",
+                sessionId = sessionId,
+                signalingMessageReceiver = mockReceiver
+            )
             testDispatcher.scheduler.advanceUntilIdle()
 
             assertEquals(1, viewModel.participants.value.size)
