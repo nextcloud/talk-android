@@ -145,6 +145,7 @@
     <string name="nc_description_send_message_button">Изпрати съобщение</string>
     <string name="nc_diagnose_account_category_title">Текущ профил</string>
     <string name="nc_diagnose_account_server">Сървър</string>
+    <string name="nc_diagnose_account_user_name">Потребител</string>
     <string name="nc_diagnose_android_version_title">Версия на Android</string>
     <string name="nc_diagnose_app_category_title">Приложение</string>
     <string name="nc_diagnose_app_name_title">Име на приложението</string>
@@ -375,6 +376,7 @@
     <string name="nc_sort_by">Сортиране по</string>
     <string name="nc_start_time">Начало</string>
     <string name="nc_switch_account">Смяна на профил</string>
+    <string name="nc_team">Екип</string>
     <string name="nc_upload_choose_local_files">Избор на файлове</string>
     <string name="nc_upload_confirm_send_multiple">Да се ​​изпратят ли тези файлове до %1$s?</string>
     <string name="nc_upload_confirm_send_single">Да се ​​изпрати ли този файл до %1$s?</string>
