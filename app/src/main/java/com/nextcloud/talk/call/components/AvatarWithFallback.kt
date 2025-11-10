@@ -74,7 +74,8 @@ private fun FallbackAvatar(participant: ParticipantUiState) {
 fun getUrlForAvatar(participant: ParticipantUiState): String {
     var url = ApiUtils.getUrlForAvatar(
         participant.baseUrl,
-        participant.actorId, true
+        participant.actorId,
+        true
     )
     if (Participant.ActorType.GUESTS == participant.actorType ||
         Participant.ActorType.EMAILS == participant.actorType

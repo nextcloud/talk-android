@@ -15,12 +15,16 @@ class MediaConstraintsHelper(constraints: MediaConstraints? = null) {
 
     fun copy(): MediaConstraintsHelper {
         val newConstraints = MediaConstraints()
-        newConstraints.mandatory.addAll(this.constraints.mandatory.map {
-            MediaConstraints.KeyValuePair(it.key, it.value)
-        })
-        newConstraints.optional.addAll(this.constraints.optional.map {
-            MediaConstraints.KeyValuePair(it.key, it.value)
-        })
+        newConstraints.mandatory.addAll(
+            this.constraints.mandatory.map {
+                MediaConstraints.KeyValuePair(it.key, it.value)
+            }
+        )
+        newConstraints.optional.addAll(
+            this.constraints.optional.map {
+                MediaConstraints.KeyValuePair(it.key, it.value)
+            }
+        )
         return MediaConstraintsHelper(newConstraints)
     }
 
@@ -43,5 +47,3 @@ class MediaConstraintsHelper(constraints: MediaConstraints? = null) {
 
     fun build(): MediaConstraints = constraints
 }
-
-

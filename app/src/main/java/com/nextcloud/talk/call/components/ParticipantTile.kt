@@ -135,11 +135,7 @@ fun ParticipantTile(
 }
 
 @Composable
-private fun OverlayIcon(
-    @DrawableRes iconRes: Int,
-    description: String,
-    onClick: (() -> Unit)? = null
-) {
+private fun OverlayIcon(@DrawableRes iconRes: Int, description: String, onClick: (() -> Unit)? = null) {
     val clickableModifier = onClick?.let { Modifier.clickable { it() } } ?: Modifier
 
     Icon(
