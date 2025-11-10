@@ -2,8 +2,8 @@
 <!--
   ~ Nextcloud Talk - Android Client
   ~
+  ~ SPDX-FileCopyrightText: 2021, 2025 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2024 Christian Reiner <foss@christian-reiner.info>
-  ~ SPDX-FileCopyrightText: 2021 Andy Scherzinger <info@andy-scherzinger.de>
   ~ SPDX-FileCopyrightText: 2021 Marcel Hibbe <dev@mhibbe.de>
   ~ SPDX-FileCopyrightText: 2017-2018 Mario Danic <mario@lovelyhq.com>
   ~ SPDX-License-Identifier: GPL-3.0-or-later
@@ -18,18 +18,29 @@
     android:layout_marginRight="16dp"
     android:layout_marginBottom="2dp">
 
-        <ImageView
-            android:id="@id/messageUserAvatar"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="8dp"
-            android:contentDescription="@string/avatar" />
+    <ImageView
+        android:id="@id/messageUserAvatar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/avatar" />
+
+    <androidx.emoji2.widget.EmojiTextView
+        android:id="@+id/messageAuthor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_toEndOf="@id/messageUserAvatar"
+        android:textAlignment="viewStart"
+        android:textColor="@color/textColorMaxContrast"
+        android:textSize="12sp" />
 
     <com.google.android.flexbox.FlexboxLayout
         android:id="@id/bubble"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/messageAuthor"
         android:layout_marginEnd="@dimen/message_incoming_bubble_margin_right"
         android:layout_toEndOf="@id/messageUserAvatar"
         android:orientation="vertical"
@@ -42,15 +53,6 @@
             android:id="@+id/message_quote"
             layout="@layout/item_message_quote"
             android:visibility="gone" />
-
-        <androidx.emoji2.widget.EmojiTextView
-            android:id="@+id/messageAuthor"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:textAlignment="viewStart"
-            android:textColor="@color/textColorMaxContrast"
-            android:textSize="12sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
