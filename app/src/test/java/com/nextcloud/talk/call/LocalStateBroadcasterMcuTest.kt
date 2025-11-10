@@ -641,16 +641,17 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
 
-    private fun createTestParticipantUiState(sessionId: String = "theSessionId"): ParticipantUiState = ParticipantUiState(
-        sessionKey = sessionId,
-        nick = "Guest",
-        isConnected = false,
-        isAudioEnabled = false,
-        isStreamEnabled = false,
-        isScreenStreamEnabled = false,
-        raisedHand = false,
-        isInternal = false,
-        baseUrl = "",
-        roomToken = ""
-    )
+    private fun createTestParticipantUiState(sessionId: String = "theSessionId"): ParticipantUiState =
+        ParticipantUiState(
+            sessionKey = sessionId,
+            nick = "Guest",
+            isConnected = false,
+            isAudioEnabled = false,
+            isStreamEnabled = false,
+            isScreenStreamEnabled = false,
+            raisedHand = false,
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
+        )
 }
