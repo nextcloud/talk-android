@@ -368,7 +368,7 @@ dependencies {
     testImplementation("org.robolectric:robolectric:4.16")
 
     // Computer Vision - for background effects during video calls
-    implementation 'com.google.mediapipe:tasks-vision:0.10.26'
+    implementation 'com.google.mediapipe:tasks-vision:0.20230731'
     implementation 'org.opencv:opencv:4.12.0'
 }
 
