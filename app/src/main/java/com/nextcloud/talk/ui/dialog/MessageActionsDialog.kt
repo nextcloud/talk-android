@@ -169,7 +169,8 @@ class MessageActionsDialog(
             )
             initMenuPinMessage(!message.isDeleted &&
                 hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PINNED_MESSAGES) &&
-                isOnline
+                isOnline &&
+                isUserAllowedToEdit
             )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&

@@ -94,17 +94,15 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
+
     <LinearLayout
         android:id="@+id/pinnedMessageContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="@dimen/standard_half_padding"
-        android:layout_margin="@dimen/standard_half_margin"
         android:visibility="gone"
-        tools:layout_height="100dp"
-        tools:backgroundTint="@color/hwSecurityBlue"
-        android:background="@drawable/reply_background">
+        tools:visibility="visible">
 
         <androidx.compose.ui.platform.ComposeView
             android:id="@+id/pinnedMessageComposeView"

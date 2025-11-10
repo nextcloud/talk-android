@@ -59,11 +59,31 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -663,10 +683,11 @@ class ChatActivity :
                         layoutManager = binding.messagesListView.layoutManager as LinearLayoutManager?
                     }
 
+                    chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
+
                     Log.d("Julius", "LastPinnedId: ${conversationModel.lastPinnedId}")
                     Log.d("Julius", "HiddenPinnedId: ${conversationModel.hiddenPinnedId}")
                     if (conversationModel.lastPinnedId != null && conversationModel.lastPinnedId != 0L) {
-                        // TODO make the pinned UI distinct later, I think I'll force it to be outgoing somehow
                         chatViewModel
                             .getMessageById(
                                 conversationUser?.baseUrl!!,
@@ -677,14 +698,69 @@ class ChatActivity :
                                 binding.pinnedMessageContainer.visibility = View.VISIBLE
                                 binding.pinnedMessageComposeView.setContent {
                                     message.incoming = true
-                                    ComposeChatAdapter().GetComposableForMessage(message)
+                                    val scrollState = rememberScrollState()
+                                    val outgoingBubbleColor = remember {
+                                        val colorInt = viewThemeUtils.talk
+                                            .getOutgoingMessageBubbleColor(context, message.isDeleted, false)
+
+                                        Color(colorInt)
+                                    }
+
+                                    val incomingBubbleColor = remember {
+                                        val colorInt = resources
+                                            .getColor(R.color.bg_message_list_incoming_bubble,null)
+
+                                        Color(colorInt)
+                                    }
+
+                                    val isAllowed = remember {
+                                        userAllowedByPrivilages(message)
+                                    }
+
+                                    Column(
+                                        verticalArrangement = Arrangement.spacedBy((-16).dp),
+                                        modifier = Modifier
+                                            .heightIn(70.dp, 140.dp)
+                                    ) {
+
+                                        Box(
+                                            modifier = Modifier
+                                                .background(incomingBubbleColor, RoundedCornerShape(16.dp))
+                                                .padding(16.dp)
+                                                .verticalScroll(scrollState)
+                                        ) {
+                                            ComposeChatAdapter().GetComposableForMessage(message)
+                                        }
+
+                                        Row(
+                                            modifier = Modifier
+                                                .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
+                                                .padding(16.dp)
+                                        ) {
+                                            Icon(
+                                                Icons.Filled.Close,
+                                                "Hide pin",
+                                                modifier = Modifier
+                                                    .size(16.dp)
+                                            )
+
+                                            if (isAllowed) {
+                                                Spacer(modifier = Modifier.size(16.dp))
+                                                val read = painterResource(R.drawable.keep_off_24px)
+                                                Icon(
+                                                    read,
+                                                    "Hide pin",
+                                                    modifier = Modifier
+                                                        .size(16.dp)
+                                                )
+                                            }
+                                        }
+                                    }
                                 }
                             }
                     } else {
                         binding.pinnedMessageContainer.visibility = View.GONE
                     }
-
-                    chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
                 }.collect()
         }
 
