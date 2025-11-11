@@ -60,6 +60,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -71,10 +72,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -687,7 +687,10 @@ class ChatActivity :
 
                     Log.d("Julius", "LastPinnedId: ${conversationModel.lastPinnedId}")
                     Log.d("Julius", "HiddenPinnedId: ${conversationModel.hiddenPinnedId}")
-                    if (conversationModel.lastPinnedId != null && conversationModel.lastPinnedId != 0L) {
+                    if (conversationModel.lastPinnedId != null &&
+                        conversationModel.lastPinnedId != 0L &&
+                        conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
+                        ) {
                         chatViewModel
                             .getMessageById(
                                 conversationUser?.baseUrl!!,
@@ -697,65 +700,7 @@ class ChatActivity :
                             .collect { message ->
                                 binding.pinnedMessageContainer.visibility = View.VISIBLE
                                 binding.pinnedMessageComposeView.setContent {
-                                    message.incoming = true
-                                    val scrollState = rememberScrollState()
-                                    val outgoingBubbleColor = remember {
-                                        val colorInt = viewThemeUtils.talk
-                                            .getOutgoingMessageBubbleColor(context, message.isDeleted, false)
-
-                                        Color(colorInt)
-                                    }
-
-                                    val incomingBubbleColor = remember {
-                                        val colorInt = resources
-                                            .getColor(R.color.bg_message_list_incoming_bubble,null)
-
-                                        Color(colorInt)
-                                    }
-
-                                    val isAllowed = remember {
-                                        userAllowedByPrivilages(message)
-                                    }
-
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy((-16).dp),
-                                        modifier = Modifier
-                                            .heightIn(70.dp, 140.dp)
-                                    ) {
-
-                                        Box(
-                                            modifier = Modifier
-                                                .background(incomingBubbleColor, RoundedCornerShape(16.dp))
-                                                .padding(16.dp)
-                                                .verticalScroll(scrollState)
-                                        ) {
-                                            ComposeChatAdapter().GetComposableForMessage(message)
-                                        }
-
-                                        Row(
-                                            modifier = Modifier
-                                                .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
-                                                .padding(16.dp)
-                                        ) {
-                                            Icon(
-                                                Icons.Filled.Close,
-                                                "Hide pin",
-                                                modifier = Modifier
-                                                    .size(16.dp)
-                                            )
-
-                                            if (isAllowed) {
-                                                Spacer(modifier = Modifier.size(16.dp))
-                                                val read = painterResource(R.drawable.keep_off_24px)
-                                                Icon(
-                                                    read,
-                                                    "Hide pin",
-                                                    modifier = Modifier
-                                                        .size(16.dp)
-                                                )
-                                            }
-                                        }
-                                    }
+                                    PinnedMessageView(message)
                                 }
                             }
                     } else {
@@ -1406,6 +1351,79 @@ class ChatActivity :
                         conversationThreadInfo = uiState.thread
                         invalidateOptionsMenu()
                     }
+                }
+            }
+        }
+    }
+
+    @Composable
+    private fun PinnedMessageView(message: ChatMessage) {
+        message.incoming = true
+        val scrollState = rememberScrollState()
+
+        val outgoingBubbleColor = remember {
+            val colorInt = viewThemeUtils.talk
+                .getOutgoingMessageBubbleColor(context, message.isDeleted, false)
+
+            Color(colorInt)
+        }
+
+        val incomingBubbleColor = remember {
+            val colorInt = resources
+                .getColor(R.color.bg_message_list_incoming_bubble, null)
+
+            Color(colorInt)
+        }
+
+        val isAllowed = remember {
+            userAllowedByPrivilages(message)
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy((-16).dp),
+            modifier = Modifier
+                .heightIn(70.dp, 140.dp)
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .background(incomingBubbleColor, RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+                    .verticalScroll(scrollState)
+            ) {
+                ComposeChatAdapter().GetComposableForMessage(message)
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                val hiddenEye = painterResource(R.drawable.ic_eye_off)
+                Icon(
+                    hiddenEye,
+                    "Hide pin",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable {
+                            hidePinnedMessage(message)
+                        }
+                )
+
+                if (isAllowed) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                    val read = painterResource(R.drawable.keep_off_24px)
+                    Icon(
+                        read,
+                        "Unpin",
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable {
+                                unPinMessage(message)
+                            }
+                    )
+
                 }
             }
         }
@@ -4011,6 +4029,11 @@ class ChatActivity :
                 DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
+    }
+
+    fun hidePinnedMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.hidePinnedMessage(credentials!!, url)
     }
 
     fun pinMessage(message: ChatMessage) {
