@@ -80,6 +80,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.res.painterResource
@@ -1376,7 +1377,7 @@ class ChatActivity :
         }
 
         val isAllowed = remember {
-            userAllowedByPrivilages(message)
+            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
         }
 
         Column(
@@ -1387,6 +1388,7 @@ class ChatActivity :
 
             Box(
                 modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(16.dp))
                     .background(incomingBubbleColor, RoundedCornerShape(16.dp))
                     .padding(16.dp)
                     .verticalScroll(scrollState)
