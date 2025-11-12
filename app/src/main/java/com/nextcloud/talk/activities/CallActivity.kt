@@ -310,8 +310,7 @@ class CallActivity : CallBaseActivity() {
     private var handler: Handler? = null
     private var currentCallStatus: CallStatus? = null
     private var mediaPlayer: MediaPlayer? = null
-
-    // private val participantItems = mutableStateListOf<ParticipantDisplayItem>()
+    
     private var binding: CallActivityBinding? = null
     private var audioOutputDialog: AudioOutputDialog? = null
     private var moreCallActionsDialog: MoreCallActionsDialog? = null

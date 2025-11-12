@@ -57,6 +57,7 @@ class ParticipantHandler(
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
+            Log.d(TAG, "onIceConnectionStateChanged " + _uiState.value.nick + " " + iceConnectionState)
             handleIceConnectionStateChange(iceConnectionState)
         }
     }
@@ -98,6 +99,8 @@ class ParticipantHandler(
     }
 
     private fun handleIceConnectionStateChange(iceConnectionState: IceConnectionState?) {
+        Log.d(TAG, "handleIceConnectionStateChange " + _uiState.value.nick + " " + iceConnectionState)
+
         if (iceConnectionState == IceConnectionState.NEW ||
             iceConnectionState == IceConnectionState.CHECKING
         ) {
@@ -163,6 +166,8 @@ class ParticipantHandler(
             _uiState.update { it.copy(isStreamEnabled = false) }
             return
         }
+
+        Log.d(TAG, "setPeerConnection " + _uiState.value.nick + " " + this.peerConnection?.peerConnection?.iceConnectionState())
 
         handleIceConnectionStateChange(this.peerConnection?.peerConnection?.iceConnectionState())
         handleStreamChange(this.peerConnection?.stream)
