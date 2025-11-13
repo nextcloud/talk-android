@@ -195,6 +195,7 @@ import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
+import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
@@ -4039,10 +4040,18 @@ class ChatActivity :
     }
 
     fun pinMessage(message: ChatMessage) {
-        // TODO need dialog for time, can copy code from reminder me later
         val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
-        Log.d("Julius", "Pinned: $url")
-        chatViewModel.pinMessage(credentials!!, url)
+        binding.genericComposeView.setContent {
+            val shouldDismiss = mutableStateOf(false)
+
+            GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
+                zonedDateTime?.let {
+                    chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
+                } ?: chatViewModel.pinMessage(credentials!!, url)
+
+                shouldDismiss.value = true
+            }
+        }
     }
 
     fun unPinMessage(message: ChatMessage) {
