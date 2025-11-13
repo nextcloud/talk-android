@@ -73,6 +73,7 @@ class ParticipantHandler(
         }
 
         override fun onIceConnectionStateChanged(iceConnectionState: IceConnectionState?) {
+            // do nothing
         }
     }
 
@@ -167,7 +168,11 @@ class ParticipantHandler(
             return
         }
 
-        Log.d(TAG, "setPeerConnection " + _uiState.value.nick + " " + this.peerConnection?.peerConnection?.iceConnectionState())
+        Log.d(
+            TAG,
+            "setPeerConnection " + _uiState.value.nick + " " +
+                this.peerConnection?.peerConnection?.iceConnectionState()
+        )
 
         handleIceConnectionStateChange(this.peerConnection?.peerConnection?.iceConnectionState())
         handleStreamChange(this.peerConnection?.stream)
@@ -182,7 +187,6 @@ class ParticipantHandler(
         this.screenPeerConnection = screenPeerConnectionWrapper
 
         if (this.screenPeerConnection == null) {
-            // callParticipantModel.setScreenIceConnectionState(null)
             _uiState.update { it.copy(screenMediaStream = null) }
             return
         }
@@ -195,6 +199,8 @@ class ParticipantHandler(
     fun isConnected(iceConnectionState: IceConnectionState?): Boolean =
         iceConnectionState == IceConnectionState.CONNECTED ||
             iceConnectionState == IceConnectionState.COMPLETED ||
+            // If there is no connection state that means that no connection is needed,
+            // so it is a special case that is also seen as "connected".
             iceConnectionState == null
 
     fun updateNick(nick: String?) = _uiState.update { it.copy(nick = nick ?: "Guest") }
