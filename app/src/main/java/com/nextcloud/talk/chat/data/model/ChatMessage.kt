@@ -363,7 +363,8 @@ data class ChatMessage(
         SINGLE_NC_GEOLOCATION_MESSAGE,
         POLL_MESSAGE,
         VOICE_MESSAGE,
-        DECK_CARD
+        DECK_CARD,
+        FILE_UPLOAD_MESSAGE
     }
 
     /**
