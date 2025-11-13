@@ -123,65 +123,66 @@ class MessageSenderTest {
     }
 
     @Test
-    fun testSendSignalingMessageToAll() = testScope.runTest {
-        val sentTo: MutableList<String?> = ArrayList()
-        doAnswer { invocation: InvocationOnMock ->
-            val arguments = invocation.arguments
-            val message = (arguments[0] as NCSignalingMessage)
+    fun testSendSignalingMessageToAll() =
+        testScope.runTest {
+            val sentTo: MutableList<String?> = ArrayList()
+            doAnswer { invocation: InvocationOnMock ->
+                val arguments = invocation.arguments
+                val message = (arguments[0] as NCSignalingMessage)
 
-            sentTo.add(message.to)
-            null
-        }.`when`(signalingMessageSender!!).send(any())
+                sentTo.add(message.to)
+                null
+            }.`when`(signalingMessageSender!!).send(any())
 
-        val message = NCSignalingMessage()
-        messageSender!!.sendToAll(message)
+            val message = NCSignalingMessage()
+            messageSender!!.sendToAll(message)
 
-        assertTrue(sentTo.contains("theSessionId1"))
-        assertTrue(sentTo.contains("theSessionId2"))
-        assertTrue(sentTo.contains("theSessionId3"))
-        assertTrue(sentTo.contains("theSessionId4"))
-        Mockito.verify(signalingMessageSender!!, times(4)).send(message)
-        Mockito.verifyNoMoreInteractions(signalingMessageSender)
-    }
+            assertTrue(sentTo.contains("theSessionId1"))
+            assertTrue(sentTo.contains("theSessionId2"))
+            assertTrue(sentTo.contains("theSessionId3"))
+            assertTrue(sentTo.contains("theSessionId4"))
+            Mockito.verify(signalingMessageSender!!, times(4)).send(message)
+            Mockito.verifyNoMoreInteractions(signalingMessageSender)
+        }
 
     @Test
-    fun testSendSignalingMessageToAllWhenParticipantsWereUpdated() = testScope.runTest {
-        viewModel.addParticipant(
-            baseUrl = "",
-            roomToken = "",
-            sessionId = "theSessionId5",
-            signalingMessageReceiver = mockReceiver
-        )
-        testDispatcher.scheduler.advanceUntilIdle()
+    fun testSendSignalingMessageToAllWhenParticipantsWereUpdated() =
+        testScope.runTest {
+            viewModel.addParticipant(
+                baseUrl = "",
+                roomToken = "",
+                sessionId = "theSessionId5",
+                signalingMessageReceiver = mockReceiver
+            )
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        viewModel.removeParticipant("theSessionId2")
-        testDispatcher.scheduler.advanceUntilIdle()
-        viewModel.removeParticipant("theSessionId3")
-        testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.removeParticipant("theSessionId2")
+            testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.removeParticipant("theSessionId3")
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        val updatedSessionKeys = viewModel.participants.value
-            .mapNotNull { it.sessionKey }
-            .toSet()
+            val updatedSessionKeys = viewModel.participants.value
+                .mapNotNull { it.sessionKey }
+                .toSet()
 
-        messageSender = MessageSender(signalingMessageSender, updatedSessionKeys, emptyList())
+            messageSender = MessageSender(signalingMessageSender, updatedSessionKeys, emptyList())
 
+            val sentTo: MutableList<String?> = ArrayList()
+            doAnswer { invocation: InvocationOnMock ->
+                val arguments = invocation.arguments
+                val message = (arguments[0] as NCSignalingMessage)
 
-        val sentTo: MutableList<String?> = ArrayList()
-        doAnswer { invocation: InvocationOnMock ->
-            val arguments = invocation.arguments
-            val message = (arguments[0] as NCSignalingMessage)
+                sentTo.add(message.to)
+                null
+            }.`when`(signalingMessageSender!!).send(any())
 
-            sentTo.add(message.to)
-            null
-        }.`when`(signalingMessageSender!!).send(any())
+            val message = NCSignalingMessage()
+            messageSender!!.sendToAll(message)
 
-        val message = NCSignalingMessage()
-        messageSender!!.sendToAll(message)
-
-        assertTrue(sentTo.contains("theSessionId1"))
-        assertTrue(sentTo.contains("theSessionId4"))
-        assertTrue(sentTo.contains("theSessionId5"))
-        Mockito.verify(signalingMessageSender!!, times(3)).send(message)
-        Mockito.verifyNoMoreInteractions(signalingMessageSender)
-    }
+            assertTrue(sentTo.contains("theSessionId1"))
+            assertTrue(sentTo.contains("theSessionId4"))
+            assertTrue(sentTo.contains("theSessionId5"))
+            Mockito.verify(signalingMessageSender!!, times(3)).send(message)
+            Mockito.verifyNoMoreInteractions(signalingMessageSender)
+        }
 }
