@@ -169,6 +169,13 @@
             android:theme="@style/AppTheme" />
 
         <activity
+            android:name=".chat.BubbleActivity"
+            android:theme="@style/AppTheme"
+            android:allowEmbedded="true"
+            android:resizeableActivity="true"
+            android:documentLaunchMode="always" />
+
+        <activity
             android:name=".activities.CallActivity"
             android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:excludeFromRecents="true"

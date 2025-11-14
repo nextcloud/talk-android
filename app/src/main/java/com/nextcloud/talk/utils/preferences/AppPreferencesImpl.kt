@@ -269,6 +269,30 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         setNotificationChannelIsUpgradedToV3(false)
     }
 
+    override fun areBubblesEnabled(): Boolean =
+        runBlocking {
+            async { readBoolean(BUBBLES_ENABLED, true).first() }
+        }.getCompleted()
+
+    override fun setBubblesEnabled(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(BUBBLES_ENABLED, value)
+            }
+        }
+
+    override fun areBubblesForced(): Boolean =
+        runBlocking {
+            async { readBoolean(BUBBLES_FORCE_ALL).first() }
+        }.getCompleted()
+
+    override fun setBubblesForced(value: Boolean) =
+        runBlocking<Unit> {
+            async {
+                writeBoolean(BUBBLES_FORCE_ALL, value)
+            }
+        }
+
     override fun getIsScreenSecured(): Boolean =
         runBlocking {
             async { readBoolean(SCREEN_SECURITY).first() }
@@ -621,6 +645,8 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
         const val MESSAGE_RINGTONE = "message_ringtone"
         const val NOTIFY_UPGRADE_V2 = "notification_channels_upgrade_to_v2"
         const val NOTIFY_UPGRADE_V3 = "notification_channels_upgrade_to_v3"
+    const val BUBBLES_ENABLED = "bubbles_enabled"
+    const val BUBBLES_FORCE_ALL = "bubbles_force_all"
         const val SCREEN_SECURITY = "screen_security"
         const val SCREEN_LOCK = "screen_lock"
         const val INCOGNITO_KEYBOARD = "incognito_keyboard"

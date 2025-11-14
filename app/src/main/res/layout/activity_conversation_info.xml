@@ -50,6 +50,7 @@
         tools:visibility="gone" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/conversation_info_scroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
