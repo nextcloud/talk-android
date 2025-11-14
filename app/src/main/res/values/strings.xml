@@ -355,6 +355,15 @@ How to translate with transifex:
     <string name="nc_notify_me_mention">Notify when mentioned</string>
     <string name="nc_notify_me_never">Never notify</string>
     <string name="nc_call_notifications">Call notifications</string>
+    <string name="nc_conversation_notification_bubble">Bubble</string>
+    <string name="nc_conversation_notification_bubble_desc">Open new messages from this conversation as floating bubbles.</string>
+    <string name="nc_conversation_notification_bubble_forced">Overridden by general bubble settings.</string>
+    <string name="nc_conversation_notification_bubble_disabled">Enable bubbles in general settings to adjust per conversation.</string>
+    <string name="nc_conversation_notification_bubble_enable_conversation">Enable bubbles for this conversation in the conversation info.</string>
+    <string name="nc_notification_settings_bubbles">Bubbles</string>
+    <string name="nc_notification_settings_bubbles_desc">Allow Talk notifications to appear as floating bubbles.</string>
+    <string name="nc_notification_settings_bubbles_force">All conversations can bubble</string>
+    <string name="nc_notification_settings_bubbles_force_desc">Override individual conversation bubble settings.</string>
     <string name="nc_sensitive_conversation">Sensitive conversation</string>
     <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
@@ -432,6 +441,8 @@ How to translate with transifex:
     <string name="nc_conversation_menu_video_call">Video call</string>
     <string name="nc_event_conversation_menu">Event conversation menu</string>
     <string name="nc_conversation_menu_conversation_info">Conversation info</string>
+    <string name="nc_create_bubble">Create bubble</string>
+    <string name="nc_open_in_app">Open in app</string>
     <string name="nc_new_messages">Unread messages</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s sent a GIF.</string>
     <string name="nc_sent_an_audio" formatted="true">%1$s sent an audio.</string>
