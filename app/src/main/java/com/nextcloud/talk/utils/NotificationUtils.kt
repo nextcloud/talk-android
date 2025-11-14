@@ -56,6 +56,8 @@ object NotificationUtils {
     const val TAG = "NotificationUtils"
     private const val BUBBLE_ICON_SIZE_DP = 96
     private const val BUBBLE_ICON_CONTENT_RATIO = 0.68f
+    private const val BUBBLE_SIZE_MULTIPLIER = 4
+    private const val MIN_BUBBLE_CONTENT_RATIO = 0.5f
     private val bubbleIconCache = ConcurrentHashMap<String, IconCompat>()
 
     enum class NotificationChannels {
@@ -84,7 +86,8 @@ object NotificationUtils {
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val isMessagesChannel = notificationChannel.id == NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
-        val shouldSupportBubbles = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R && isMessagesChannel
+        val shouldSupportBubbles =
+            android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R && isMessagesChannel
 
         val existingChannel = notificationManager.getNotificationChannel(notificationChannel.id)
         val needsRecreation = shouldSupportBubbles && existingChannel != null && !existingChannel.canBubble()
@@ -273,15 +276,11 @@ object NotificationUtils {
         }
     }
 
-    private fun dismissBubbles(
-        context: Context?,
-        conversationUser: User,
-        predicate: (String) -> Boolean
-    ) {
+    private fun dismissBubbles(context: Context?, conversationUser: User, predicate: (String) -> Boolean) {
         if (context == null) return
 
         val shortcutsToRemove = mutableListOf<String>()
-        
+
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             val roomToken = notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
             if (roomToken != null && predicate(roomToken)) {
@@ -393,7 +392,7 @@ object NotificationUtils {
             .build()
 
         context.imageLoader.executeBlocking(request)
-        
+
         return avatarIcon
     }
 
@@ -403,25 +402,24 @@ object NotificationUtils {
             return null
         }
 
-        bubbleIconCache[url]?.let { return it }
+        return bubbleIconCache[url] ?: run {
+            var avatarIcon: IconCompat? = null
+            val bubbleSizePx = context.bubbleIconSizePx()
 
-        var avatarIcon: IconCompat? = null
-        val bubbleSizePx = context.bubbleIconSizePx()
+            val requestBuilder = ImageRequest.Builder(context)
+                .data(url)
+                .placeholder(R.drawable.account_circle_96dp)
+                .size(bubbleSizePx * BUBBLE_SIZE_MULTIPLIER, bubbleSizePx * BUBBLE_SIZE_MULTIPLIER)
+                .precision(Precision.EXACT)
+                .scale(Scale.FIT)
+                .allowHardware(false)
+                .bitmapConfig(Bitmap.Config.ARGB_8888)
 
-        val requestBuilder = ImageRequest.Builder(context)
-            .data(url)
-            .placeholder(R.drawable.account_circle_96dp)
-            .size(bubbleSizePx * 4, bubbleSizePx * 4)
-            .precision(Precision.EXACT)
-            .scale(Scale.FIT)
-            .allowHardware(false)
-            .bitmapConfig(Bitmap.Config.ARGB_8888)
-            
-        if (!credentials.isNullOrEmpty()) {
-            requestBuilder.addHeader("Authorization", credentials)
-        }
-        
-        val request = requestBuilder.target(
+            if (!credentials.isNullOrEmpty()) {
+                requestBuilder.addHeader("Authorization", credentials)
+            }
+
+            val request = requestBuilder.target(
                 onSuccess = { result ->
                     avatarIcon = IconCompat.createWithAdaptiveBitmap(
                         result.toBubbleBitmap(bubbleSizePx, BUBBLE_ICON_CONTENT_RATIO)
@@ -435,14 +433,13 @@ object NotificationUtils {
                     }
                 }
             )
-            .build()
+                .build()
 
-        context.imageLoader.executeBlocking(request)
+            context.imageLoader.executeBlocking(request)
 
-        avatarIcon?.let { bubbleIconCache[url] = it }
-        return avatarIcon
+            avatarIcon?.also { bubbleIconCache[url] = it }
+        }
     }
-
 
     private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)
 
@@ -450,7 +447,7 @@ object NotificationUtils {
         (BUBBLE_ICON_SIZE_DP * resources.displayMetrics.density).roundToInt().coerceAtLeast(1)
 
     private fun Drawable.toBubbleBitmap(size: Int, contentRatio: Float): Bitmap {
-        val safeRatio = contentRatio.coerceIn(0.5f, 1f)
+        val safeRatio = contentRatio.coerceIn(MIN_BUBBLE_CONTENT_RATIO, 1f)
         val drawable = this.constantState?.newDrawable()?.mutate() ?: this.mutate()
 
         val sourceWidth = max(1, if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else size)

@@ -510,9 +510,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         }
 
         // Bubbles need the notification to stay alive
-        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type && 
-                                TYPE_CHAT != pushMessage.type && 
-                                TYPE_REMINDER != pushMessage.type
+        val autoCancelOnClick = TYPE_RECORDING != pushMessage.type &&
+            TYPE_CHAT != pushMessage.type &&
+            TYPE_REMINDER != pushMessage.type
 
         val notificationBuilder =
             createNotificationBuilder(category, contentTitle, contentText, baseUrl, pendingIntent, autoCancelOnClick)
@@ -736,16 +736,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
             person.setIcon(loadAvatarSync(avatarUrl, context!!))
         }
-        
+
         val personBuilt = person.build()
         notificationBuilder.setStyle(getStyle(personBuilt, style))
         notificationBuilder.addPerson(personBuilt)
     }
 
-    private fun addBubbleMetadata(
-        notificationBuilder: NotificationCompat.Builder,
-        suppressNotification: Boolean
-    ) {
+    private fun addBubbleMetadata(notificationBuilder: NotificationCompat.Builder, suppressNotification: Boolean) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.R) {
             return // Bubbles require API 30+ (Android 11)
         }
@@ -757,7 +754,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
             val conversationName = pushMessage.subject
             val shortcutId = "conversation_$roomToken"
-            
+
             val bubbleIcon = resolveBubbleIcon(roomToken) ?: run {
                 val fallbackBitmap = getLargeIcon() ?: return
                 androidx.core.graphics.drawable.IconCompat.createWithBitmap(fallbackBitmap)
@@ -780,9 +777,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 .setCategories(setOf(Notification.CATEGORY_MESSAGE))
                 .setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
                 .build()
-            
+
             androidx.core.content.pm.ShortcutManagerCompat.pushDynamicShortcut(context!!, shortcut)
-            
+
             val bubbleRequestCode = NotificationUtils.calculateCRC32("bubble_$roomToken").toInt()
             val bubbleIntent = android.app.PendingIntent.getActivity(
                 context,
@@ -790,22 +787,23 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 com.nextcloud.talk.chat.BubbleActivity.newIntent(context!!, roomToken, conversationName),
                 android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
             )
-            
+
             val bubbleData = androidx.core.app.NotificationCompat.BubbleMetadata.Builder(
                 bubbleIntent,
                 bubbleIcon
             )
-                .setDesiredHeight(600)
+                .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
                 .setAutoExpandBubble(false)
                 .setSuppressNotification(suppressNotification)
                 .build()
-            
+
             notificationBuilder.setBubbleMetadata(bubbleData)
             notificationBuilder.setShortcutId(shortcutId)
             notificationBuilder.setLocusId(androidx.core.content.LocusIdCompat(shortcutId))
-            
-        } catch (e: Exception) {
-            android.util.Log.e(TAG, "Error adding bubble metadata", e)
+        } catch (e: IllegalArgumentException) {
+            android.util.Log.e(TAG, "Error adding bubble metadata: Invalid argument", e)
+        } catch (e: IllegalStateException) {
+            android.util.Log.e(TAG, "Error adding bubble metadata: Invalid state", e)
         }
     }
 
@@ -1219,5 +1217,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
         private const val BUBBLE_SWITCH_KEY = "bubble_switch"
+        private const val BUBBLE_DESIRED_HEIGHT_PX = 600
     }
 }

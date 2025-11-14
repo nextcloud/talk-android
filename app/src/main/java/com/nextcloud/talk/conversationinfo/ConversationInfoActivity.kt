@@ -1950,7 +1950,11 @@ class ConversationInfoActivity :
                 module.saveBoolean(BUBBLE_SWITCH_KEY, newValue)
             }
             if (!newValue) {
-                NotificationUtils.dismissBubbleForRoom(this@ConversationInfoActivity, conversationUser, conversationToken)
+                NotificationUtils.dismissBubbleForRoom(
+                    this@ConversationInfoActivity,
+                    conversationUser,
+                    conversationToken
+                )
             }
         }
 

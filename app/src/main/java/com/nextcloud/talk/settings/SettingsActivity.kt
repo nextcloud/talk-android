@@ -442,7 +442,7 @@ class SettingsActivity :
             binding.settingsBubblesSwitch.isChecked = newValue
             appPreferences.setBubblesEnabled(newValue)
             updateBubbleForceRowState(newValue)
-            
+
             // Dismiss all active bubbles when disabling globally
             if (!newValue) {
                 currentUser?.let { user ->
@@ -458,10 +458,13 @@ class SettingsActivity :
             val newValue = !binding.settingsBubblesForceSwitch.isChecked
             binding.settingsBubblesForceSwitch.isChecked = newValue
             appPreferences.setBubblesForced(newValue)
-            
+
             // When disabling "force all", dismiss bubbles without explicit per-conversation settings
             if (!newValue) {
-                NotificationUtils.dismissBubblesWithoutExplicitSettings(this, currentUserProvider.currentUser.blockingGet())
+                NotificationUtils.dismissBubblesWithoutExplicitSettings(
+                    this,
+                    currentUserProvider.currentUser.blockingGet()
+                )
             }
         }
     }
