@@ -3329,8 +3329,8 @@ open class ChatActivity :
             hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.THREADS)
 
         val threadNotificationIcon = when (conversationThreadInfo?.attendee?.notificationLevel) {
-            1 -> R.drawable.outline_notifications_active_24
-            3 -> R.drawable.ic_baseline_notifications_off_24
+            NOTIFICATION_LEVEL_DEFAULT -> R.drawable.outline_notifications_active_24
+            NOTIFICATION_LEVEL_NEVER -> R.drawable.ic_baseline_notifications_off_24
             else -> R.drawable.baseline_notifications_24
         }
         threadNotificationItem.icon = ContextCompat.getDrawable(context, threadNotificationIcon)
@@ -3416,12 +3416,17 @@ open class ChatActivity :
                 val shortcutId = "conversation_$roomToken"
                 val conversationName = currentConversation?.displayName ?: getString(R.string.nc_app_name)
 
-                val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as android.app.NotificationManager
+                val notificationManager = getSystemService(
+                    Context.NOTIFICATION_SERVICE
+                ) as android.app.NotificationManager
                 val notificationId = NotificationUtils.calculateCRC32(roomToken).toInt()
 
                 notificationManager.cancel(notificationId)
-                androidx.core.content.pm.ShortcutManagerCompat.removeDynamicShortcuts(this@ChatActivity, listOf(shortcutId))
-                
+                androidx.core.content.pm.ShortcutManagerCompat.removeDynamicShortcuts(
+                    this@ChatActivity,
+                    listOf(shortcutId)
+                )
+
                 // Load conversation avatar on background thread
                 val avatarIcon = withContext(Dispatchers.IO) {
                     try {
@@ -3438,23 +3443,26 @@ open class ChatActivity :
                                 roomToken
                             )
                         }
-                        
+
                         if (DisplayUtils.isDarkModeOn(this@ChatActivity)) {
                             avatarUrl = "$avatarUrl/dark"
                         }
-                        
+
                         NotificationUtils.loadAvatarSyncForBubble(avatarUrl, this@ChatActivity, credentials)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Error loading bubble avatar", e)
+                    } catch (e: IOException) {
+                        Log.e(TAG, "Error loading bubble avatar: IO error", e)
+                        null
+                    } catch (e: IllegalArgumentException) {
+                        Log.e(TAG, "Error loading bubble avatar: Invalid argument", e)
                         null
                     }
                 }
-                
+
                 val icon = avatarIcon ?: androidx.core.graphics.drawable.IconCompat.createWithResource(
                     this@ChatActivity,
                     R.drawable.ic_logo
                 )
-                
+
                 val person = androidx.core.app.Person.Builder()
                     .setName(conversationName)
                     .setKey(shortcutId)
@@ -3464,7 +3472,7 @@ open class ChatActivity :
 
                 // Use the same request code calculation as NotificationWorker
                 val bubbleRequestCode = NotificationUtils.calculateCRC32("bubble_$roomToken").toInt()
-                
+
                 val bubbleIntent = android.app.PendingIntent.getActivity(
                     this@ChatActivity,
                     bubbleRequestCode,
@@ -3489,7 +3497,7 @@ open class ChatActivity :
                     bubbleIntent,
                     icon
                 )
-                    .setDesiredHeight(600)
+                    .setDesiredHeight(BUBBLE_DESIRED_HEIGHT_PX)
                     .setAutoExpandBubble(false)
                     .setSuppressNotification(true)
                     .build()
@@ -3523,7 +3531,7 @@ open class ChatActivity :
 
                 // Check if notification channel supports bubbles and recreate if needed
                 val channel = notificationManager.getNotificationChannel(channelId)
-                
+
                 if (channel == null || !channel.canBubble()) {
                     NotificationUtils.registerNotificationChannels(
                         applicationContext,
@@ -3534,9 +3542,11 @@ open class ChatActivity :
                 // Use the same notification ID calculation as NotificationWorker
                 // Show notification with bubble
                 notificationManager.notify(notificationId, notification)
-
-            } catch (e: Exception) {
-                Log.e(TAG, "Error creating bubble", e)
+            } catch (e: SecurityException) {
+                Log.e(TAG, "Error creating bubble: Permission denied", e)
+                Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
+            } catch (e: IllegalArgumentException) {
+                Log.e(TAG, "Error creating bubble: Invalid argument", e)
                 Toast.makeText(this@ChatActivity, R.string.nc_common_error_sorry, Toast.LENGTH_SHORT).show()
             }
         }
@@ -3547,8 +3557,11 @@ open class ChatActivity :
         return withContext(Dispatchers.IO) {
             try {
                 DatabaseStorageModule(user, roomToken).getBoolean(BUBBLE_SWITCH_KEY, false)
-            } catch (e: Exception) {
-                Log.e(TAG, "Failed to read conversation bubble preference", e)
+            } catch (e: IOException) {
+                Log.e(TAG, "Failed to read conversation bubble preference: IO error", e)
+                false
+            } catch (e: IllegalStateException) {
+                Log.e(TAG, "Failed to read conversation bubble preference: Invalid state", e)
                 false
             }
         }
@@ -3608,7 +3621,7 @@ open class ChatActivity :
                                 subtitle = null,
                                 icon = R.drawable.ic_baseline_notifications_off_24,
                                 onClick = {
-                                    setThreadNotificationLevel(3)
+                                    setThreadNotificationLevel(NOTIFICATION_LEVEL_NEVER)
                                 }
                             )
                         )
@@ -4279,8 +4292,8 @@ open class ChatActivity :
                             displayName = currentConversation?.displayName ?: ""
                         )
                         showSnackBar(roomToken)
-                    } catch (e: Exception) {
-                        Log.w(TAG, "File corresponding to the uri does not exist $shareUri", e)
+                    } catch (e: IOException) {
+                        Log.w(TAG, "File corresponding to the uri does not exist: IO error $shareUri", e)
                         downloadFileToCache(message, false) {
                             uploadFile(
                                 fileUri = shareUri.toString(),
@@ -4766,6 +4779,9 @@ open class ChatActivity :
         private const val HTTP_FORBIDDEN = 403
         private const val HTTP_NOT_FOUND = 404
         private const val MESSAGE_PULL_LIMIT = 100
+        private const val NOTIFICATION_LEVEL_DEFAULT = 1
+        private const val NOTIFICATION_LEVEL_NEVER = 3
+        private const val BUBBLE_DESIRED_HEIGHT_PX = 600
         private const val INVITE_LENGTH = 6
         private const val ACTOR_LENGTH = 6
         private const val CHUNK_SIZE: Int = 10
