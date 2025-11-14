@@ -66,7 +66,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -694,12 +693,12 @@ class ChatActivity :
                         conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
                         ) {
 
-                        // TODO get this from the server, store it, emit it down stream, all form it's own function
                         chatViewModel
-                            .getMessageById(
+                            .getIndividualMessageFromServer(
+                                credentials!!,
                                 conversationUser?.baseUrl!!,
-                                conversationModel,
-                                conversationModel.lastPinnedId!!
+                                roomToken,
+                                conversationModel.lastPinnedId.toString()
                             )
                             .collect { message ->
                                 binding.pinnedMessageContainer.visibility = View.VISIBLE
@@ -1386,7 +1385,6 @@ class ChatActivity :
         Column(
             verticalArrangement = Arrangement.spacedBy((-16).dp),
             modifier = Modifier
-                .heightIn(70.dp, 140.dp)
         ) {
 
             Box(

@@ -27,6 +27,7 @@ import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.chat.data.network.ChatNetworkDataSource
 import com.nextcloud.talk.conversationlist.data.OfflineConversationsRepository
 import com.nextcloud.talk.conversationlist.viewmodels.ConversationsListViewModel.Companion.FOLLOWED_THREADS_EXIST
+import com.nextcloud.talk.data.database.mappers.asModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.extensions.toIntOrZero
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
@@ -798,6 +799,26 @@ class ChatViewModel @Inject constructor(
 
             val message = chatRepository.getMessage(messageId, bundle)
             emit(message.first())
+        }
+
+    fun getIndividualMessageFromServer(
+        credentials: String,
+        baseUrl: String,
+        token: String,
+        messageId: String
+    ): Flow<ChatMessage> =
+        flow {
+            val messages = chatNetworkDataSource.getContextForChatMessage(
+                credentials = credentials,
+                baseUrl = baseUrl,
+                token = token,
+                messageId = messageId,
+                limit = 1,
+                threadId = null
+            )
+
+            val message = messages[0]
+            emit(message.asModel())
         }
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)
