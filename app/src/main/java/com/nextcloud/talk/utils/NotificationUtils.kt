@@ -11,17 +11,30 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.media.AudioAttributes
 import android.net.Uri
 import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.ContextCompat
+import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import coil.executeBlocking
 import coil.imageLoader
 import coil.request.ImageRequest
+import coil.size.Precision
+import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.BuildConfig
@@ -31,11 +44,19 @@ import com.nextcloud.talk.models.RingtoneSettings
 import com.nextcloud.talk.utils.bundle.BundleKeys
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import java.io.IOException
+import java.util.concurrent.ConcurrentHashMap
+import java.util.zip.CRC32
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
 
 @Suppress("TooManyFunctions")
 object NotificationUtils {
 
     const val TAG = "NotificationUtils"
+    private const val BUBBLE_ICON_SIZE_DP = 96
+    private const val BUBBLE_ICON_CONTENT_RATIO = 0.68f
+    private val bubbleIconCache = ConcurrentHashMap<String, IconCompat>()
 
     enum class NotificationChannels {
         NOTIFICATION_CHANNEL_MESSAGES_V4,
@@ -62,27 +83,33 @@ object NotificationUtils {
         audioAttributes: AudioAttributes?
     ) {
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val isMessagesChannel = notificationChannel.id == NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name
+        val shouldSupportBubbles = android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.R && isMessagesChannel
 
-        if (
-            notificationManager.getNotificationChannel(notificationChannel.id) == null
-        ) {
+        val existingChannel = notificationManager.getNotificationChannel(notificationChannel.id)
+        val needsRecreation = shouldSupportBubbles && existingChannel != null && !existingChannel.canBubble()
+
+        if (existingChannel == null || needsRecreation) {
+            if (needsRecreation) {
+                notificationManager.deleteNotificationChannel(notificationChannel.id)
+            }
+
             val importance = if (notificationChannel.isImportant) {
                 NotificationManager.IMPORTANCE_HIGH
             } else {
                 NotificationManager.IMPORTANCE_LOW
             }
 
-            val channel = NotificationChannel(
-                notificationChannel.id,
-                notificationChannel.name,
-                importance
-            )
-
-            channel.description = notificationChannel.description
-            channel.enableLights(true)
-            channel.lightColor = R.color.colorPrimary
-            channel.setSound(sound, audioAttributes)
-            channel.setBypassDnd(false)
+            val channel = NotificationChannel(notificationChannel.id, notificationChannel.name, importance).apply {
+                description = notificationChannel.description
+                enableLights(true)
+                lightColor = R.color.colorPrimary
+                setSound(sound, audioAttributes)
+                setBypassDnd(false)
+                if (shouldSupportBubbles) {
+                    setAllowBubbles(true)
+                }
+            }
 
             notificationManager.createNotificationChannel(channel)
         }
@@ -212,7 +239,13 @@ object NotificationUtils {
     fun cancelNotification(context: Context?, conversationUser: User, notificationId: Long?) {
         scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
             if (notificationId == notification.extras.getLong(BundleKeys.KEY_NOTIFICATION_ID)) {
-                notificationManager.cancel(statusBarNotification.id)
+                if (notification.extras.getBoolean(BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION)) {
+                    if (BuildConfig.DEBUG) {
+                        Log.d(TAG, "Skip cancelling protected notification ${statusBarNotification.id}")
+                    }
+                } else {
+                    notificationManager.cancel(statusBarNotification.id)
+                }
             }
         }
     }
@@ -240,35 +273,57 @@ object NotificationUtils {
         }
     }
 
-    fun isNotificationVisible(context: Context?, notificationId: Int): Boolean {
-        var isVisible = false
+    private fun dismissBubbles(
+        context: Context?,
+        conversationUser: User,
+        predicate: (String) -> Boolean
+    ) {
+        if (context == null) return
 
-        val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        val notifications = notificationManager.activeNotifications
-        for (notification in notifications) {
-            if (notification.id == notificationId) {
-                isVisible = true
-                break
+        val shortcutsToRemove = mutableListOf<String>()
+        
+        scanNotifications(context, conversationUser) { notificationManager, statusBarNotification, notification ->
+            val roomToken = notification.extras.getString(BundleKeys.KEY_ROOM_TOKEN)
+            if (roomToken != null && predicate(roomToken)) {
+                notificationManager.cancel(statusBarNotification.id)
+                shortcutsToRemove.add("conversation_$roomToken")
             }
         }
-        return isVisible
+
+        if (shortcutsToRemove.isNotEmpty()) {
+            ShortcutManagerCompat.removeDynamicShortcuts(context, shortcutsToRemove)
+        }
     }
 
-    fun isCallsNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
-        if (channel != null) {
-            return isNotificationChannelEnabled(channel)
-        }
-        return false
+    fun dismissBubbleForRoom(context: Context?, conversationUser: User, roomTokenOrId: String) {
+        dismissBubbles(context, conversationUser) { it == roomTokenOrId }
     }
 
-    fun isMessagesNotificationChannelEnabled(context: Context): Boolean {
-        val channel = getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
-        if (channel != null) {
-            return isNotificationChannelEnabled(channel)
-        }
-        return false
+    fun dismissAllBubbles(context: Context?, conversationUser: User) {
+        dismissBubbles(context, conversationUser) { true }
     }
+
+    fun dismissBubblesWithoutExplicitSettings(context: Context?, conversationUser: User) {
+        dismissBubbles(context, conversationUser) { roomToken ->
+            !com.nextcloud.talk.utils.preferences.preferencestorage.DatabaseStorageModule(
+                conversationUser,
+                roomToken
+            ).getBoolean("bubble_switch", false)
+        }
+    }
+
+    fun isNotificationVisible(context: Context?, notificationId: Int): Boolean {
+        val notificationManager = context!!.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return notificationManager.activeNotifications.any { it.id == notificationId }
+    }
+
+    fun isCallsNotificationChannelEnabled(context: Context): Boolean =
+        getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_CALLS_V4.name)
+            ?.let { isNotificationChannelEnabled(it) } ?: false
+
+    fun isMessagesNotificationChannelEnabled(context: Context): Boolean =
+        getNotificationChannel(context, NotificationChannels.NOTIFICATION_CHANNEL_MESSAGES_V4.name)
+            ?.let { isNotificationChannelEnabled(it) } ?: false
 
     private fun isNotificationChannelEnabled(channel: NotificationChannel): Boolean =
         channel.importance != NotificationManager.IMPORTANCE_NONE
@@ -338,9 +393,113 @@ object NotificationUtils {
             .build()
 
         context.imageLoader.executeBlocking(request)
-
+        
         return avatarIcon
     }
 
+    fun loadAvatarSyncForBubble(url: String?, context: Context, credentials: String?): IconCompat? {
+        if (url.isNullOrEmpty()) {
+            Log.w(TAG, "Avatar URL is null or empty for bubble")
+            return null
+        }
+
+        bubbleIconCache[url]?.let { return it }
+
+        var avatarIcon: IconCompat? = null
+        val bubbleSizePx = context.bubbleIconSizePx()
+
+        val requestBuilder = ImageRequest.Builder(context)
+            .data(url)
+            .placeholder(R.drawable.account_circle_96dp)
+            .size(bubbleSizePx * 4, bubbleSizePx * 4)
+            .precision(Precision.EXACT)
+            .scale(Scale.FIT)
+            .allowHardware(false)
+            .bitmapConfig(Bitmap.Config.ARGB_8888)
+            
+        if (!credentials.isNullOrEmpty()) {
+            requestBuilder.addHeader("Authorization", credentials)
+        }
+        
+        val request = requestBuilder.target(
+                onSuccess = { result ->
+                    avatarIcon = IconCompat.createWithAdaptiveBitmap(
+                        result.toBubbleBitmap(bubbleSizePx, BUBBLE_ICON_CONTENT_RATIO)
+                    )
+                },
+                onError = { error ->
+                    (error ?: ContextCompat.getDrawable(context, R.drawable.account_circle_96dp))?.let {
+                        avatarIcon = IconCompat.createWithAdaptiveBitmap(
+                            it.toBubbleBitmap(bubbleSizePx, BUBBLE_ICON_CONTENT_RATIO)
+                        )
+                    }
+                }
+            )
+            .build()
+
+        context.imageLoader.executeBlocking(request)
+
+        avatarIcon?.let { bubbleIconCache[url] = it }
+        return avatarIcon
+    }
+
+
     private data class Channel(val id: String, val name: String, val description: String, val isImportant: Boolean)
+
+    private fun Context.bubbleIconSizePx(): Int =
+        (BUBBLE_ICON_SIZE_DP * resources.displayMetrics.density).roundToInt().coerceAtLeast(1)
+
+    private fun Drawable.toBubbleBitmap(size: Int, contentRatio: Float): Bitmap {
+        val safeRatio = contentRatio.coerceIn(0.5f, 1f)
+        val drawable = this.constantState?.newDrawable()?.mutate() ?: this.mutate()
+
+        val sourceWidth = max(1, if (drawable.intrinsicWidth > 0) drawable.intrinsicWidth else size)
+        val sourceHeight = max(1, if (drawable.intrinsicHeight > 0) drawable.intrinsicHeight else size)
+        val sourceBitmap = drawable.toBitmap(sourceWidth, sourceHeight, Bitmap.Config.ARGB_8888)
+
+        val minDimension = min(sourceWidth, sourceHeight)
+        val cropX = (sourceWidth - minDimension) / 2
+        val cropY = (sourceHeight - minDimension) / 2
+        val squareBitmap = Bitmap.createBitmap(sourceBitmap, cropX, cropY, minDimension, minDimension)
+        if (squareBitmap != sourceBitmap) {
+            sourceBitmap.recycle()
+        }
+
+        val resultBitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(resultBitmap)
+        val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+            isFilterBitmap = true
+            isDither = true
+        }
+
+        canvas.drawARGB(0, 0, 0, 0)
+        paint.color = Color.BLACK
+        canvas.drawCircle(size / 2f, size / 2f, size / 2f, paint)
+
+        paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+        val targetDiameter = (size * safeRatio).roundToInt().coerceAtLeast(1)
+        val destRect = Rect(
+            ((size - targetDiameter) / 2f).roundToInt(),
+            ((size - targetDiameter) / 2f).roundToInt(),
+            ((size + targetDiameter) / 2f).roundToInt(),
+            ((size + targetDiameter) / 2f).roundToInt()
+        )
+        canvas.drawBitmap(squareBitmap, null, destRect, paint)
+        paint.xfermode = null
+
+        if (!squareBitmap.isRecycled) {
+            squareBitmap.recycle()
+        }
+
+        return resultBitmap
+    }
+
+    /**
+     * Calculate CRC32 hash for a string, commonly used for generating notification IDs
+     */
+    fun calculateCRC32(s: String): Long {
+        val crc32 = CRC32()
+        crc32.update(s.toByteArray())
+        return crc32.value
+    }
 }
