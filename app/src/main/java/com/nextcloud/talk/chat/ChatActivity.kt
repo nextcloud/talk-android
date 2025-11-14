@@ -693,6 +693,8 @@ class ChatActivity :
                         conversationModel.lastPinnedId != 0L &&
                         conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
                         ) {
+
+                        // TODO get this from the server, store it, emit it down stream, all form it's own function
                         chatViewModel
                             .getMessageById(
                                 conversationUser?.baseUrl!!,

@@ -445,7 +445,9 @@ data class ChatMessage(
         FEDERATED_USER_ADDED,
         FEDERATED_USER_REMOVED,
         PHONE_ADDED,
-        THREAD_CREATED
+        THREAD_CREATED,
+        MESSAGE_PINNED,
+        MESSAGE_UNPINNED
     }
 
     companion object {
