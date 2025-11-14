@@ -12,7 +12,10 @@ package com.nextcloud.talk.conversationinfo.ui
 import android.content.res.Configuration
 import android.widget.ImageView
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
@@ -32,9 +35,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material3.Card
@@ -53,6 +58,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -112,7 +118,8 @@ data class ConversationInfoScreenCallbacks(
     val onArchiveClick: () -> Unit = {},
     val onLeaveConversationClick: () -> Unit = {},
     val onClearHistoryClick: () -> Unit = {},
-    val onDeleteConversationClick: () -> Unit = {}
+    val onDeleteConversationClick: () -> Unit = {},
+    val onBubbleClick: () -> Unit = {}
 )
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -476,6 +483,41 @@ private fun NotificationSettingsSection(state: ConversationInfoUiState, callback
             checked = state.callNotificationsEnabled,
             onClick = callbacks.onCallNotificationsClick
         )
+    }
+    if (state.showBubblesSetting) {
+        val bubbleSummaryText = when {
+            !state.globalBubblesEnabled -> R.string.nc_conversation_notification_bubble_disabled
+            state.forceAllBubbles -> R.string.nc_conversation_notification_bubble_forced
+            else -> R.string.nc_conversation_notification_bubble_desc
+        }
+
+        val highlightColor by animateColorAsState(
+            targetValue = if (state.focusBubbleSetting) {
+                MaterialTheme.colorScheme.primary
+            } else {
+                Color.Transparent
+            },
+            animationSpec = tween(durationMillis = 500)
+        )
+
+        Box(
+            modifier = Modifier
+                .wrapContentSize()
+                .alpha(if (state.globalBubblesEnabled && !state.forceAllBubbles) 1.0f else 0.5f)
+                .border(
+                    width = 2.dp,
+                    color = highlightColor,
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(2.dp)
+        ) {
+            SettingsRow(
+                title = stringResource(R.string.nc_notification_settings_bubbles),
+                subtitle = stringResource(bubbleSummaryText),
+                checked = state.shouldBubble,
+                onClick = callbacks.onBubbleClick
+            )
+        }
     }
     if (state.showSensitiveConversation) {
         SettingsRow(

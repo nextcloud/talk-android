@@ -167,6 +167,8 @@ class ConversationInfoActivity : BaseActivity() {
             intent.getStringExtra(KEY_ROOM_TOKEN)
         ) { "Missing room token" }
 
+        val shouldFocus = intent.getBooleanExtra(BundleKeys.KEY_FOCUS_CONVERSATION_BUBBLE, false)
+
         val upcomingEvent = intent.getParcelableExtraProvider<UpcomingEvent>(BundleKeys.KEY_UPCOMING_EVENT)
         val upcomingEventSummary = upcomingEvent?.summary
         val upcomingEventTime = upcomingEvent?.start?.let { start ->
@@ -186,6 +188,7 @@ class ConversationInfoActivity : BaseActivity() {
                     if (upcomingEventSummary != null || upcomingEventTime != null) {
                         viewModel.setUpcomingEvent(upcomingEventSummary, upcomingEventTime)
                     }
+                    viewModel.setFocusBubble(shouldFocus)
                 }
                 .onFailure {
                     Log.e(TAG, "Failed to get current user")
@@ -325,7 +328,10 @@ class ConversationInfoActivity : BaseActivity() {
             onArchiveClick = { conversationUser?.let { viewModel.toggleArchive(it, conversationToken) } },
             onLeaveConversationClick = { leaveConversation() },
             onClearHistoryClick = { showClearHistoryDialog() },
-            onDeleteConversationClick = { showDeleteConversationDialog() }
+            onDeleteConversationClick = { showDeleteConversationDialog() },
+            onBubbleClick = {
+                viewModel.toggleBubble(this, this.lifecycleScope)
+            }
         )
 
     private fun showSharedItems() {
