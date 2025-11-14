@@ -222,4 +222,26 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
         val url = ApiUtils.getUrlForUnbindingRoom(baseUrl, roomToken)
         return ncApiCoroutines.unbindRoom(credentials, url)
     }
+
+    override suspend fun pinMessage(
+        credentials: String,
+        url: String,
+        pinUntil: Int
+    ): ChatOverallSingleMessage {
+        return ncApiCoroutines.pinMessage(credentials, url, pinUntil)
+    }
+
+    override suspend fun unPinMessage(
+        credentials: String,
+        url: String
+    ): ChatOverallSingleMessage {
+        return ncApiCoroutines.unPinMessage(credentials, url)
+    }
+
+    override suspend fun hidePinnedMessage(
+        credentials: String,
+        url: String
+    ): GenericOverall {
+        return ncApiCoroutines.hidePinnedMessage(credentials, url)
+    }
 }
