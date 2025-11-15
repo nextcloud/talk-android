@@ -28,7 +28,7 @@ class MessageSenderNoMcuTest {
     fun setUp() {
         val signalingMessageSender = Mockito.mock(SignalingMessageSender::class.java)
 
-        val callParticipants = HashMap<String, CallParticipant>()
+        val callParticipants = HashMap<String, Set<String>>()
 
         peerConnectionWrappers = ArrayList()
 
