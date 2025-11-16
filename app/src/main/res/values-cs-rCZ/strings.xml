@@ -569,6 +569,7 @@
     <string name="open_thread">Přejít na vlákno</string>
     <string name="play_pause_voice_message">Přehrát/pozastavit hlasovou zprávu</string>
     <string name="playback_speed_control">Ovládání rychlosti přehrávání</string>
+    <string name="please_continue_the_login_process_in_the_browser">Pokračujte v přihlášení ve webovém prohlížeči</string>
     <string name="polls_add_option">Přidat volbu</string>
     <string name="polls_edit_vote">Upravit hlas</string>
     <string name="polls_end_poll">Ukončit anketu</string>
