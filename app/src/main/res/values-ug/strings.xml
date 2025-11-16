@@ -70,6 +70,7 @@
     <string name="leave_call">تېلېفون قىلىڭ</string>
     <string name="left_conversation">You left the conversation %1$s</string>
     <string name="load_more_results">تېخىمۇ كۆپ نەتىجىلەرنى يۈكلەڭ</string>
+    <string name="local_time">يەرلىك ۋاقىت:%1$s</string>
     <string name="lock_conversation">سۆھبەتنى قۇلۇپلاڭ</string>
     <string name="lock_symbol">قۇلۇپ بەلگىسى</string>
     <string name="lower_hand">تۆۋەن قول</string>
