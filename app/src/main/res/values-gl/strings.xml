@@ -573,7 +573,7 @@
     <string name="polls_add_option">Engadir unha opción</string>
     <string name="polls_edit_vote">Editar o voto</string>
     <string name="polls_end_poll">Finalizar a enquisa</string>
-    <string name="polls_end_poll_confirm">Confirma que quere rematar esta enquisa? Isto non pode desfacerse.</string>
+    <string name="polls_end_poll_confirm">Confirma que quere rematar esta enquisa? Isto non é posíbel desfacelo.</string>
     <string name="polls_max_votes_reached">Non é posíbel votar con máis opcións para esta enquisa.</string>
     <string name="polls_multiple_answers">Varias respostas</string>
     <string name="polls_option_delete">Eliminar a opción %1$d</string>
