@@ -65,7 +65,7 @@ class ParticipantHandlerTest {
                 baseUrl = "",
                 roomToken = "",
                 nick = "Guest",
-                isConnected = false,
+                isConnected = true,
                 isAudioEnabled = false,
                 isStreamEnabled = false,
                 isScreenStreamEnabled = false,

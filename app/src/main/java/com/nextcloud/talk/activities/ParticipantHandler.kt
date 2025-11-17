@@ -34,7 +34,7 @@ class ParticipantHandler(
             baseUrl = baseUrl,
             roomToken = roomToken,
             nick = "Guest",
-            isConnected = false,
+            isConnected = true,
             isAudioEnabled = false,
             isStreamEnabled = false,
             isScreenStreamEnabled = false,
@@ -162,9 +162,12 @@ class ParticipantHandler(
         this.peerConnection = peerConnection
 
         if (this.peerConnection == null) {
+            // special case when participant has no permission. -> no streams are transmitted but he must be shown as
+            // connected
             _uiState.update { it.copy(mediaStream = null) }
             _uiState.update { it.copy(isAudioEnabled = false) }
             _uiState.update { it.copy(isStreamEnabled = false) }
+            _uiState.update { it.copy(isConnected = true) }
             return
         }
 
