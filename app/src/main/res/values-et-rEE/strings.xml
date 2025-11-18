@@ -480,7 +480,7 @@
     <string name="nc_settings_proxy_port_title">Proksiserveri port</string>
     <string name="nc_settings_proxy_type_title">Proksiserveri tüüp</string>
     <string name="nc_settings_proxy_username_title">Proksiserveri kasutajanimi</string>
-    <string name="nc_settings_read_privacy_desc">Jagaminu lugemise olekuid ning näita teiste kasutajate omi</string>
+    <string name="nc_settings_read_privacy_desc">Jaga minu lugemise olekuid ning näita teiste kasutajate omi</string>
     <string name="nc_settings_read_privacy_title">Lugemise olek</string>
     <string name="nc_settings_reauthorize">Autoriseeri kasutajakonto uuesti</string>
     <string name="nc_settings_remove">Eemalda</string>
@@ -501,7 +501,7 @@
     <string name="nc_settings_theme_key">kujundus</string>
     <string name="nc_settings_theme_light">Hele kujundus</string>
     <string name="nc_settings_theme_title">Kujundus</string>
-    <string name="nc_settings_typing_status_desc">Jagaminu kirjutamisteatisi ning näita teiste kasutajate omi</string>
+    <string name="nc_settings_typing_status_desc">Jaga minu kirjutamisteatisi ning näita teiste kasutajate omi</string>
     <string name="nc_settings_typing_status_hpb_description">Kirjutamisteatised on kasutatavad vaid siis, kui kasutusel on suure jõudlusega taustateenus (HPB)</string>
     <string name="nc_settings_typing_status_title">Kirjutamisteatised</string>
     <string name="nc_settings_use_credentials_title">Proksiserveri kasutamine eeldab tuvastamist</string>

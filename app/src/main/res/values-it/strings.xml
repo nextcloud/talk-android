@@ -455,7 +455,7 @@
     <string name="nc_settings_call_ringtone">Chiamate</string>
     <string name="nc_settings_contact_admin_of">Per favore, contatta l\'amministratore di</string>
     <string name="nc_settings_diagnose_subtitle">Apri la schermata di diagnosi per controllare le impostazioni o creare un rapporto sui bug</string>
-    <string name="nc_settings_diagnose_title">Diagonsi</string>
+    <string name="nc_settings_diagnose_title">Diagnosi</string>
     <string name="nc_settings_incognito_keyboard_desc">Ordina alla tastiera di disattivare l\'apprendimento personalizzato (senza garanzie)</string>
     <string name="nc_settings_incognito_keyboard_title">Tastiera incognito</string>
     <string name="nc_settings_no_ringtone">Nessun suono</string>
