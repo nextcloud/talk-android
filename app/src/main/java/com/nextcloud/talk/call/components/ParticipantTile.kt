@@ -57,7 +57,13 @@ fun ParticipantTile(
     isVoiceOnlyCall: Boolean,
     onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
-    val color = Color(ColorGenerator.usernameToColor(participantUiState.nick ?: ""))
+    val displayName = if (participantUiState.nick.isNullOrEmpty()) {
+        stringResource(R.string.nc_nick_guest)
+    } else {
+        participantUiState.nick
+    }
+
+    val color = Color(ColorGenerator.usernameToColor(displayName))
 
     BoxWithConstraints(
         modifier = modifier
@@ -71,6 +77,7 @@ fun ParticipantTile(
         } else {
             AvatarWithFallback(
                 participant = participantUiState,
+                displayName = displayName,
                 modifier = Modifier
                     .size(avatarSize)
                     .align(Alignment.Center)
@@ -115,7 +122,7 @@ fun ParticipantTile(
             }
 
             Text(
-                text = participantUiState.nick ?: stringResource(R.string.nc_nick_guest),
+                text = displayName,
                 color = Color.White,
                 modifier = Modifier
                     .align(Alignment.BottomStart),
