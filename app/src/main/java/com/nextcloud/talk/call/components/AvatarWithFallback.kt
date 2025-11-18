@@ -19,8 +19,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.utils.ApiUtils
@@ -36,7 +38,7 @@ fun AvatarWithFallback(participant: ParticipantUiState, modifier: Modifier = Mod
         val avatarUrl = getUrlForAvatar(participant = participant)
         if (avatarUrl.isNotEmpty()) {
             AsyncImage(
-                model = getUrlForAvatar(participant = participant),
+                model = avatarUrl,
                 contentDescription = "Avatar",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -82,7 +84,7 @@ fun getUrlForAvatar(participant: ParticipantUiState): String {
     ) {
         url = ApiUtils.getUrlForGuestAvatar(
             participant.baseUrl,
-            participant.nick,
+            participant.nick ?: stringResource(R.string.nc_nick_guest),
             true
         )
     }
