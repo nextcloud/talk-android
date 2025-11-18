@@ -82,6 +82,18 @@ fun ParticipantTile(
                 .fillMaxSize()
                 .padding(8.dp)
         ) {
+            if (participantUiState.raisedHand) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_hand_back_left),
+                    contentDescription = "Raised Hand",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(6.dp)
+                        .size(24.dp),
+                    tint = Color.White
+                )
+            }
+
             Row(
                 modifier = Modifier.align(Alignment.BottomEnd),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
@@ -102,31 +114,19 @@ fun ParticipantTile(
                 }
             }
 
-            Row(
-                modifier = Modifier.align(Alignment.BottomStart),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.Bottom
-            ) {
-                if (participantUiState.raisedHand) {
-                    OverlayIcon(
-                        iconRes = R.drawable.ic_hand_back_left,
-                        description = "Raised Hand"
+            Text(
+                text = participantUiState.nick ?: stringResource(R.string.nc_nick_guest),
+                color = Color.White,
+                modifier = Modifier
+                    .align(Alignment.BottomStart),
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    shadow = Shadow(
+                        color = Color.Black,
+                        offset = Offset(NICK_OFFSET, NICK_OFFSET),
+                        blurRadius = NICK_BLUR_RADIUS
                     )
-                }
-
-                Text(
-                    text = participantUiState.nick ?: stringResource(R.string.nc_nick_guest),
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        shadow = Shadow(
-                            color = Color.Black,
-                            offset = Offset(NICK_OFFSET, NICK_OFFSET),
-                            blurRadius = NICK_BLUR_RADIUS
-                        )
-                    ),
-                    modifier = Modifier.padding(bottom = 2.dp)
                 )
-            }
+            )
 
             if (!participantUiState.isConnected) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
