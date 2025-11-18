@@ -11,6 +11,7 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -41,9 +42,13 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
     val postLoginState: StateFlow<PostLoginViewState> = _postLoginState
 
+    var waitingForBrowser: Boolean = false
+    var savedResponse: LoginResponse? = null
+
     fun loginNormally(baseUrl: String, reAuth: Boolean = false) {
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth)
+            savedResponse = response
 
             if (response == null) {
                 _initialLoginRequestState.value = InitialLoginViewState.InitialLoginRequestError
@@ -52,7 +57,11 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
             _initialLoginRequestState.value =
                 InitialLoginViewState.InitialLoginRequestSuccess(response.loginUrl)
+        }
+    }
 
+    fun loginNormally2(response: LoginResponse) {
+        viewModelScope.launch {
             val loginCompletionResponse = repository.pollLogin(response)
 
             if (loginCompletionResponse == null) {
