@@ -103,7 +103,15 @@ fun ParticipantGrid(
             contentPadding = PaddingValues(vertical = edgePadding, horizontal = edgePadding)
         ) {
             items(
-                participantUiStates,
+                items = participantUiStates.sortedWith(
+                    compareBy(
+                        { !it.isScreenStreamEnabled },
+                        { !it.isStreamEnabled },
+                        { !it.isAudioEnabled },
+                        { !it.raisedHand },
+                        { !it.isConnected }
+                    )
+                ),
                 key = { it.sessionKey!! }
             ) { participant ->
                 ParticipantTile(
