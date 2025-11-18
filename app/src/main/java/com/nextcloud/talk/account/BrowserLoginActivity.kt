@@ -62,6 +62,17 @@ class BrowserLoginActivity : BaseActivity() {
         observe()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (viewModel.waitingForBrowser) {
+            viewModel.savedResponse?.let {
+                viewModel.waitingForBrowser = false
+                viewModel.loginNormally2(it)
+            }
+        }
+    }
+
     init {
         sharedApplication!!.componentApplication.inject(this)
     }
@@ -75,6 +86,7 @@ class BrowserLoginActivity : BaseActivity() {
                     }
                     is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
                         launchDefaultWebBrowser(state.loginUrl)
+                        viewModel.waitingForBrowser = true
                     }
                     BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                 }
