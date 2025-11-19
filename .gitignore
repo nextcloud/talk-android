@@ -88,4 +88,3 @@ freeline_project_description.json
 **/__pycache__/
 
 /gradle/verification-keyring.gpg
-*.tflite
