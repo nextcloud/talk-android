@@ -6,10 +6,18 @@
  */
 package com.nextcloud.talk.call
 
+import com.nextcloud.talk.activities.CallViewModel
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
+import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.webrtc.PeerConnectionWrapper
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.test.setMain
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +26,9 @@ import org.mockito.Mockito.any
 import org.mockito.Mockito.doAnswer
 import org.mockito.Mockito.times
 import org.mockito.invocation.InvocationOnMock
+import org.mockito.kotlin.mock
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class MessageSenderTest {
 
     private class MessageSender(
@@ -38,31 +48,60 @@ class MessageSenderTest {
 
     private var signalingMessageSender: SignalingMessageSender? = null
 
-    private var callParticipants: MutableMap<String, CallParticipant>? = null
+    private lateinit var viewModel: CallViewModel
+    private val testDispatcher = StandardTestDispatcher()
+    private val testScope = TestScope(testDispatcher)
 
     private var messageSender: MessageSender? = null
 
+    val mockReceiver = mock<SignalingMessageReceiver>()
+
     @Before
     fun setUp() {
+        Dispatchers.setMain(testDispatcher)
+        viewModel = CallViewModel()
+
         signalingMessageSender = Mockito.mock(SignalingMessageSender::class.java)
 
-        callParticipants = HashMap()
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = "theSessionId1",
+            signalingMessageReceiver = mockReceiver
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        val callParticipant1: CallParticipant = Mockito.mock(CallParticipant::class.java)
-        callParticipants!!["theSessionId1"] = callParticipant1
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = "theSessionId2",
+            signalingMessageReceiver = mockReceiver
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        val callParticipant2: CallParticipant = Mockito.mock(CallParticipant::class.java)
-        callParticipants!!["theSessionId2"] = callParticipant2
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = "theSessionId3",
+            signalingMessageReceiver = mockReceiver
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
 
-        val callParticipant3: CallParticipant = Mockito.mock(CallParticipant::class.java)
-        callParticipants!!["theSessionId3"] = callParticipant3
-
-        val callParticipant4: CallParticipant = Mockito.mock(CallParticipant::class.java)
-        callParticipants!!["theSessionId4"] = callParticipant4
+        viewModel.addParticipant(
+            baseUrl = "",
+            roomToken = "",
+            sessionId = "theSessionId4",
+            signalingMessageReceiver = mockReceiver
+        )
+        testDispatcher.scheduler.advanceUntilIdle()
 
         val peerConnectionWrappers = ArrayList<PeerConnectionWrapper>()
 
-        messageSender = MessageSender(signalingMessageSender, callParticipants!!.keys, peerConnectionWrappers)
+        val sessionKeys = viewModel.participants.value
+            .mapNotNull { it.sessionKey }
+            .toSet()
+
+        messageSender = MessageSender(signalingMessageSender, sessionKeys, peerConnectionWrappers)
     }
 
     @Test
@@ -84,51 +123,66 @@ class MessageSenderTest {
     }
 
     @Test
-    fun testSendSignalingMessageToAll() {
-        val sentTo: MutableList<String?> = ArrayList()
-        doAnswer { invocation: InvocationOnMock ->
-            val arguments = invocation.arguments
-            val message = (arguments[0] as NCSignalingMessage)
+    fun testSendSignalingMessageToAll() =
+        testScope.runTest {
+            val sentTo: MutableList<String?> = ArrayList()
+            doAnswer { invocation: InvocationOnMock ->
+                val arguments = invocation.arguments
+                val message = (arguments[0] as NCSignalingMessage)
 
-            sentTo.add(message.to)
-            null
-        }.`when`(signalingMessageSender!!).send(any())
+                sentTo.add(message.to)
+                null
+            }.`when`(signalingMessageSender!!).send(any())
 
-        val message = NCSignalingMessage()
-        messageSender!!.sendToAll(message)
+            val message = NCSignalingMessage()
+            messageSender!!.sendToAll(message)
 
-        assertTrue(sentTo.contains("theSessionId1"))
-        assertTrue(sentTo.contains("theSessionId2"))
-        assertTrue(sentTo.contains("theSessionId3"))
-        assertTrue(sentTo.contains("theSessionId4"))
-        Mockito.verify(signalingMessageSender!!, times(4)).send(message)
-        Mockito.verifyNoMoreInteractions(signalingMessageSender)
-    }
+            assertTrue(sentTo.contains("theSessionId1"))
+            assertTrue(sentTo.contains("theSessionId2"))
+            assertTrue(sentTo.contains("theSessionId3"))
+            assertTrue(sentTo.contains("theSessionId4"))
+            Mockito.verify(signalingMessageSender!!, times(4)).send(message)
+            Mockito.verifyNoMoreInteractions(signalingMessageSender)
+        }
 
     @Test
-    fun testSendSignalingMessageToAllWhenParticipantsWereUpdated() {
-        val callParticipant5: CallParticipant = Mockito.mock(CallParticipant::class.java)
-        callParticipants!!["theSessionId5"] = callParticipant5
+    fun testSendSignalingMessageToAllWhenParticipantsWereUpdated() =
+        testScope.runTest {
+            viewModel.addParticipant(
+                baseUrl = "",
+                roomToken = "",
+                sessionId = "theSessionId5",
+                signalingMessageReceiver = mockReceiver
+            )
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        callParticipants!!.remove("theSessionId2")
-        callParticipants!!.remove("theSessionId3")
+            viewModel.removeParticipant("theSessionId2")
+            testDispatcher.scheduler.advanceUntilIdle()
+            viewModel.removeParticipant("theSessionId3")
+            testDispatcher.scheduler.advanceUntilIdle()
 
-        val sentTo: MutableList<String?> = ArrayList()
-        doAnswer { invocation: InvocationOnMock ->
-            val arguments = invocation.arguments
-            val message = (arguments[0] as NCSignalingMessage)
+            val updatedSessionKeys = viewModel.participants.value
+                .mapNotNull { it.sessionKey }
+                .toSet()
 
-            sentTo.add(message.to)
-            null
-        }.`when`(signalingMessageSender!!).send(any())
+            messageSender = MessageSender(signalingMessageSender, updatedSessionKeys, emptyList())
 
-        val message = NCSignalingMessage()
-        messageSender!!.sendToAll(message)
+            val sentTo: MutableList<String?> = ArrayList()
+            doAnswer { invocation: InvocationOnMock ->
+                val arguments = invocation.arguments
+                val message = (arguments[0] as NCSignalingMessage)
 
-        assertTrue(sentTo.contains("theSessionId1"))
-        assertTrue(sentTo.contains("theSessionId4"))
-        assertTrue(sentTo.contains("theSessionId5"))
-        Mockito.verify(signalingMessageSender!!, times(3)).send(message)
-        Mockito.verifyNoMoreInteractions(signalingMessageSender)
-    }
+                sentTo.add(message.to)
+                null
+            }.`when`(signalingMessageSender!!).send(any())
+
+            val message = NCSignalingMessage()
+            messageSender!!.sendToAll(message)
+
+            assertTrue(sentTo.contains("theSessionId1"))
+            assertTrue(sentTo.contains("theSessionId4"))
+            assertTrue(sentTo.contains("theSessionId5"))
+            Mockito.verify(signalingMessageSender!!, times(3)).send(message)
+            Mockito.verifyNoMoreInteractions(signalingMessageSender)
+        }
 }

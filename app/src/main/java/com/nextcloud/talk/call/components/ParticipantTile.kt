@@ -8,9 +8,13 @@
 package com.nextcloud.talk.call.components
 
 import android.annotation.SuppressLint
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,13 +33,15 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.min
 import com.nextcloud.talk.R
-import com.nextcloud.talk.adapters.ParticipantUiState
+import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.utils.ColorGenerator
 import org.webrtc.EglBase
+import kotlin.String
 
 const val NICK_OFFSET = 4f
 const val NICK_BLUR_RADIUS = 4f
@@ -48,22 +54,30 @@ fun ParticipantTile(
     participantUiState: ParticipantUiState,
     eglBase: EglBase?,
     modifier: Modifier = Modifier,
-    isVoiceOnlyCall: Boolean
+    isVoiceOnlyCall: Boolean,
+    onScreenShareIconClick: ((String?) -> Unit?)?
 ) {
-    val colorInt = ColorGenerator.usernameToColor(participantUiState.nick)
+    val displayName = if (participantUiState.nick.isNullOrEmpty()) {
+        stringResource(R.string.nc_nick_guest)
+    } else {
+        participantUiState.nick
+    }
+
+    val color = Color(ColorGenerator.usernameToColor(displayName))
 
     BoxWithConstraints(
         modifier = modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color(colorInt))
+            .background(color)
     ) {
         val avatarSize = min(maxWidth, maxHeight) * AVATAR_SIZE_FACTOR
 
         if (!isVoiceOnlyCall && participantUiState.isStreamEnabled && participantUiState.mediaStream != null) {
-            WebRTCVideoView(participantUiState, eglBase)
+            WebRTCVideoView(participantUiState.mediaStream, eglBase)
         } else {
             AvatarWithFallback(
                 participant = participantUiState,
+                displayName = displayName,
                 modifier = Modifier
                     .size(avatarSize)
                     .align(Alignment.Center)
@@ -87,20 +101,28 @@ fun ParticipantTile(
                 )
             }
 
-            if (!participantUiState.isAudioEnabled) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_mic_off_white_24px),
-                    contentDescription = "Mic Off",
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(6.dp)
-                        .size(24.dp),
-                    tint = Color.White
-                )
+            Row(
+                modifier = Modifier.align(Alignment.BottomEnd),
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                if (participantUiState.isScreenStreamEnabled) {
+                    OverlayIcon(
+                        iconRes = R.drawable.outline_monitor_24,
+                        description = "Screen Share",
+                        onClick = { onScreenShareIconClick?.invoke(participantUiState.sessionKey) }
+                    )
+                }
+
+                if (!participantUiState.isAudioEnabled) {
+                    OverlayIcon(
+                        iconRes = R.drawable.ic_mic_off_white_24px,
+                        description = "Mic Off"
+                    )
+                }
             }
 
             Text(
-                text = participantUiState.nick,
+                text = displayName,
                 color = Color.White,
                 modifier = Modifier
                     .align(Alignment.BottomStart),
@@ -114,12 +136,25 @@ fun ParticipantTile(
             )
 
             if (!participantUiState.isConnected) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
         }
     }
+}
+
+@Composable
+private fun OverlayIcon(@DrawableRes iconRes: Int, description: String, onClick: (() -> Unit)? = null) {
+    val clickableModifier = onClick?.let { Modifier.clickable { it() } } ?: Modifier
+
+    Icon(
+        painter = painterResource(id = iconRes),
+        contentDescription = description,
+        modifier = Modifier
+            .padding(6.dp)
+            .size(24.dp)
+            .then(clickableModifier),
+        tint = Color.White
+    )
 }
 
 @Preview(showBackground = false)
@@ -127,13 +162,18 @@ fun ParticipantTile(
 fun ParticipantTilePreview() {
     val participant = ParticipantUiState(
         sessionKey = "",
+        baseUrl = "",
+        roomToken = "",
         nick = "testuser one",
         isConnected = true,
         isAudioEnabled = false,
         isStreamEnabled = true,
+        isScreenStreamEnabled = true,
         raisedHand = true,
-        avatarUrl = "",
-        mediaStream = null
+        mediaStream = null,
+        actorType = null,
+        actorId = null,
+        isInternal = false
     )
     ParticipantTile(
         participantUiState = participant,
@@ -141,6 +181,7 @@ fun ParticipantTilePreview() {
             .fillMaxWidth()
             .height(300.dp),
         eglBase = null,
-        isVoiceOnlyCall = false
+        isVoiceOnlyCall = false,
+        onScreenShareIconClick = null
     )
 }
