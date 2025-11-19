@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.call
 
+import com.nextcloud.talk.activities.ParticipantUiState
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -92,9 +93,9 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val callParticipantModel = MutableCallParticipantModel("theSessionId")
+        val participantUiState = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
         // Sending will be done in another thread, so just adding the participant does not send anything until that
         // other thread could run.
@@ -185,9 +186,9 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val callParticipantModel = MutableCallParticipantModel("theSessionId")
+        val participantUiState = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
         // Sending will be done in another thread, so just adding the participant does not send anything until that
         // other thread could run.
@@ -296,9 +297,9 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val callParticipantModel = MutableCallParticipantModel("theSessionId")
+        val participantUiState = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
         // Sending will be done in another thread, so just adding the participant does not send anything until that
         // other thread could run.
@@ -355,9 +356,9 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(signalingMessageCount1)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
-        val callParticipantModel2 = MutableCallParticipantModel("theSessionId2")
+        val participantUiState2 = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel2)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState2)
 
         testScheduler.advanceTimeBy(0, TimeUnit.SECONDS)
 
@@ -483,9 +484,9 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val callParticipantModel = MutableCallParticipantModel("theSessionId")
+        val participantUiState = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
 
         // Sending will be done in another thread, so just adding the participant does not send anything until that
         // other thread could run.
@@ -542,7 +543,7 @@ class LocalStateBroadcasterMcuTest {
         Mockito.verify(mockedMessageSender!!, times(signalingMessageCount)).send(expectedUnmuteVideo, "theSessionId")
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
 
-        localStateBroadcasterMcu!!.handleCallParticipantRemoved(callParticipantModel)
+        localStateBroadcasterMcu!!.handleCallParticipantRemoved(participantUiState.sessionKey)
 
         testScheduler.advanceTimeBy(8, TimeUnit.SECONDS)
 
@@ -579,11 +580,12 @@ class LocalStateBroadcasterMcuTest {
             mockedMessageSender
         )
 
-        val callParticipantModel = MutableCallParticipantModel("theSessionId")
-        val callParticipantModel2 = MutableCallParticipantModel("theSessionId2")
+        val participantUiState = createTestParticipantUiState()
 
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel)
-        localStateBroadcasterMcu!!.handleCallParticipantAdded(callParticipantModel2)
+        val participantUiState2 = createTestParticipantUiState("theSessionId2")
+
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState)
+        localStateBroadcasterMcu!!.handleCallParticipantAdded(participantUiState2)
 
         // Sending will be done in another thread, so just adding the participant does not send anything until that
         // other thread could run.
@@ -638,4 +640,18 @@ class LocalStateBroadcasterMcuTest {
 
         Mockito.verifyNoMoreInteractions(mockedMessageSender)
     }
+
+    private fun createTestParticipantUiState(sessionId: String = "theSessionId"): ParticipantUiState =
+        ParticipantUiState(
+            sessionKey = sessionId,
+            nick = "Guest",
+            isConnected = false,
+            isAudioEnabled = false,
+            isStreamEnabled = false,
+            isScreenStreamEnabled = false,
+            raisedHand = false,
+            isInternal = false,
+            baseUrl = "",
+            roomToken = ""
+        )
 }
