@@ -109,8 +109,9 @@ class NetworkLoginDataSource(val okHttpClient: OkHttpClient) {
                 is NullPointerException,
                 is SSLHandshakeException,
                 is IllegalStateException,
+                is java.net.UnknownHostException,
                 is IOException -> {
-                    Log.e(TAG, "Error caught at performLoginFlowV2: $e")
+                    Log.e(TAG, "Error caught at performLoginFlowV2: with url ${request.url} $e")
                 }
 
                 else -> throw e
