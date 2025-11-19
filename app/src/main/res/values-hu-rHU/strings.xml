@@ -296,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">A meghívások újra ki lettek küldve.</string>
     <string name="nc_guest_access_share_link">Beszélgetés hivatkozásának megosztása</string>
     <string name="nc_hint_enter_a_message">Írjon üzenetet…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Az akkumulátoroptimalizálás nincs mellőzve. Ezt módosítania kell, hogy biztosan működjenek az értesítések a háttérben! Kattintson az OK gombra, és válassza az „Összes alkalmazás” -> %1$s lehetőséget, majd a „Ne optimalizálja” vagy a „Használat a háttérben -> Korlátlan” egyikét.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Akkumulátoroptimalizálás mellőzése</string>
     <string name="nc_important_conversation">Fontos beszélgetés</string>
     <string name="nc_important_conversation_desc">A „Ne zavarjanak” felhasználói állapot figyelmen kívül hagyása a fontos beszélgetéseknél</string>
@@ -568,6 +569,7 @@
     <string name="open_thread">Ugrás a szálhoz</string>
     <string name="play_pause_voice_message">Hangüzenet lejátszása/szüneteltetése</string>
     <string name="playback_speed_control">Lejátszási sebesség vezérlése</string>
+    <string name="please_continue_the_login_process_in_the_browser">Folytassa a bejelentkezést a böngészőben</string>
     <string name="polls_add_option">Lehetőség hozzáadása</string>
     <string name="polls_edit_vote">Szavazat szerkesztése</string>
     <string name="polls_end_poll">Szavazás befejezése</string>
@@ -683,6 +685,8 @@
     <string name="translation_error_title">A fordítás sikertelen</string>
     <string name="translation_from">Feladó</string>
     <string name="translation_to">Címzett</string>
+    <string name="turn_off_background_blur">Háttér elmosásának kikapcsolása</string>
+    <string name="turn_on_background_blur">Háttér elmosásának bekapcsolása</string>
     <string name="typing_1_other">és még 1 felhasználó gépel…</string>
     <string name="typing_are_typing">gépelnek…</string>
     <string name="typing_is_typing">gépel…</string>
