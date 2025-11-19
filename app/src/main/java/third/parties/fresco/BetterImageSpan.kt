@@ -28,7 +28,7 @@ open class BetterImageSpan @JvmOverloads constructor(
     val drawable: Drawable,
     @param:BetterImageSpanAlignment private val mAlignment: Int = ALIGN_BASELINE
 ) : ReplacementSpan() {
-    @IntDef(*[ALIGN_BASELINE, ALIGN_BOTTOM, ALIGN_CENTER])
+    @IntDef(ALIGN_BASELINE, ALIGN_BOTTOM, ALIGN_CENTER)
     @Retention(AnnotationRetention.SOURCE)
     annotation class BetterImageSpanAlignment
 
