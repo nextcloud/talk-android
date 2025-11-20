@@ -28,6 +28,11 @@ jobs:
     analysis:
         runs-on: ubuntu-latest
         steps:
+            - name: Memory info
+              run: |
+                  free -h
+                  df -h
+                  ulimit -a
             - name: Disabled on forks
               if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
               run: |
@@ -68,13 +73,12 @@ jobs:
                 env:
                     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-                # Memory that is set in jvmargs must be wisely chosen.
-                # E.g. with -Xmx5g and -Xmx1g android talk builds always failed with "The operation was canceled". -Xmx3g seems to work so far.
                 run: |
                     mkdir -p "$HOME/.gradle"
                     {
                         echo "org.gradle.jvmargs=-Xmx5g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8 -XX:+UseParallelGC -XX:MaxMetaspaceSize=1g"
                         echo "org.gradle.configureondemand=true"
+                        echo "org.gradle.parallel=false"
                         echo "org.gradle.configuration-cache=false"
                         echo "kapt.incremental.apt=true"
                     } > "$HOME/.gradle/gradle.properties"
