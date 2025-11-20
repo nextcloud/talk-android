@@ -601,7 +601,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 "one2one" -> {
                     pushMessage.subject = ""
                     largeIcon =
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_person_black_24)?.toBitmap()!!
                 }
 
                 "group" ->
