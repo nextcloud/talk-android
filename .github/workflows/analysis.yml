@@ -8,6 +8,8 @@
 # SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+#TESTTEST
+
 name: "Analysis"
 
 on:
