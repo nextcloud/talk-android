@@ -524,12 +524,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
-            pushMessage.notificationUser != null
-        ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification)
-            addReplyAction(notificationBuilder, systemNotificationId)
-            addMarkAsReadAction(notificationBuilder, systemNotificationId)
+        if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
+            notificationBuilder.setOnlyAlertOnce(false)
+            if (pushMessage.notificationUser != null) {
+                styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                addReplyAction(notificationBuilder, systemNotificationId)
+                addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            }
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -631,12 +632,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return crc32.value
     }
 
-    private fun prepareChatNotification(
+    private fun styleChatNotification(
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?
     ) {
-        val notificationUser = pushMessage.notificationUser
-        val userType = notificationUser!!.type
+        val notificationUser = pushMessage.notificationUser ?: return
+
+        val userType = notificationUser.type
         var style: NotificationCompat.MessagingStyle? = null
         if (activeStatusBarNotification != null) {
             style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
@@ -647,7 +649,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
-        notificationBuilder.setOnlyAlertOnce(false)
 
         if ("user" == userType || "guest" == userType) {
             val baseUrl = signatureVerification.user!!.baseUrl
