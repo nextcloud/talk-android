@@ -192,11 +192,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleNonCallPushMessage() {
         val mainActivityIntent = createMainActivityIntent()
-        if (pushMessage.notificationId != Long.MIN_VALUE) {
-            getNcDataAndShowNotification(mainActivityIntent)
-        } else {
-            showNotification(mainActivityIntent, null)
-        }
+        getNcDataAndShowNotification(mainActivityIntent)
     }
 
     private fun handleRemoteTalkSharePushMessage() {
@@ -206,12 +202,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
         mainActivityIntent.putExtras(bundle)
-
-        if (pushMessage.notificationId != Long.MIN_VALUE) {
-            getNcDataAndShowNotification(mainActivityIntent)
-        } else {
-            showNotification(mainActivityIntent, null)
-        }
+        getNcDataAndShowNotification(mainActivityIntent)
     }
 
     private fun handleCallPushMessage() {
@@ -387,7 +378,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             credentials,
             ApiUtils.getUrlForNcNotificationWithId(
                 user!!.baseUrl!!,
-                (pushMessage.notificationId!!).toString()
+                pushMessage.notificationId.toString()
             )
         )
             .blockingSubscribe(object : Observer<NotificationOverall> {
@@ -408,7 +399,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to get NC notification", e)
+                    fun setContentsFromPushNotificationSubject() {
+                        if (pushMessage.subject.contains(LINEBREAK)) {
+                            pushMessage.text = pushMessage.subject.substringAfter(LINEBREAK)
+                            pushMessage.subject = pushMessage.subject.substringBefore(LINEBREAK)
+                        }
+                    }
+
+                    setContentsFromPushNotificationSubject()
+                    showNotification(intent, null)
+
+                    Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
                             Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
@@ -505,7 +506,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         var contentText: CharSequence? = ""
         if (!TextUtils.isEmpty(pushMessage.text)) {
-            contentText = EmojiCompat.get().process(pushMessage.text!!)
+            contentText = EmojiCompat.get().process(pushMessage.text)
         }
 
         val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
@@ -1023,5 +1024,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
+        private const val LINEBREAK: String = "\n"
     }
 }
