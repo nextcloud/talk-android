@@ -10,7 +10,7 @@
 
 #TESTTEST
 
-name: "Analysis"
+name: "Analysis Self-Hosted"
 
 on:
     pull_request:
@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
     analysis:
-        runs-on: ubuntu-latest
+        runs-on: [ubuntu-latest, self-hosted]
         steps:
             - name: Disabled on forks
               if: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
