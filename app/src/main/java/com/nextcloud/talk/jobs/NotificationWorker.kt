@@ -512,7 +512,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
 
         val notificationBuilder =
-            createNotificationBuilder(category, contentTitle, contentText, baseUrl, pendingIntent, autoCancelOnClick)
+            createNotificationBuilder(
+                category,
+                contentTitle,
+                contentText,
+                baseUrl,
+                pendingIntent,
+                autoCancelOnClick
+            )
+
+        if (ncNotification != null) {
+            notificationBuilder.setLargeIcon(getLargeIcon())
+        }
+
         val activeStatusBarNotification = findNotificationForRoom(
             context,
             signatureVerification.user!!,
@@ -551,7 +563,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
-            .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
