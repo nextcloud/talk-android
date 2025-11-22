@@ -296,6 +296,7 @@
     <string name="nc_guest_access_resend_invitations_successful">Zaproszenia zostały ponownie wysłane.</string>
     <string name="nc_guest_access_share_link">Udostępnij link do rozmowy</string>
     <string name="nc_hint_enter_a_message">Wpisz wiadomość…</string>
+    <string name="nc_ignore_battery_optimization_dialog_text">Optymalizacja baterii nie jest ignorowana. Należy to zmienić, aby mieć pewność, że powiadomienia działają w tle! Kliknij OK i wybierz \"Wszystkie aplikacje\" -> %1$s -> \"Nie optymalizuj\" lub \"Zezwól na używanie w tle -> Bez ograniczeń”.</string>
     <string name="nc_ignore_battery_optimization_dialog_title">Zignoruj optymalizację baterii</string>
     <string name="nc_important_conversation">Ważna rozmowa</string>
     <string name="nc_important_conversation_desc">Status użytkownika „Nie przeszkadzać” jest ignorowany dla ważnych rozmów.</string>
@@ -568,6 +569,7 @@
     <string name="open_thread">Przejdź do wątku</string>
     <string name="play_pause_voice_message">Odtwórz/wstrzymaj wiadomość głosową</string>
     <string name="playback_speed_control">Kontrola prędkości odtwarzania</string>
+    <string name="please_continue_the_login_process_in_the_browser">Proszę kontynuować logowanie w przeglądarce</string>
     <string name="polls_add_option">Dodaj opcję</string>
     <string name="polls_edit_vote">Edytuj głos</string>
     <string name="polls_end_poll">Zakończ sondę</string>
