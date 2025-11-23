@@ -314,6 +314,7 @@
     <string name="nc_server_unsupported">Сървърът не поддържа инсталираното приложение Talk/разговор/</string>
     <string name="nc_server_url">Адрес на сървъра https://…</string>
     <string name="nc_server_version">%1$s работи само с %2$s 13 и нагоре</string>
+    <string name="nc_set_new_password">Задайте нова парола</string>
     <string name="nc_settings">Настройки</string>
     <string name="nc_settings_account_updated">Вашият, вече съществуващ профил е актуализиран, вместо да добавите нов</string>
     <string name="nc_settings_advanced_title">Допълнителни</string>

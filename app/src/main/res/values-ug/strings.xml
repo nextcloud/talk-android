@@ -277,6 +277,7 @@
     <string name="nc_hint_enter_a_message">ئۇچۇر كىرگۈزۈڭ…</string>
     <string name="nc_ignore_battery_optimization_dialog_title">باتارېيەنىڭ ئەلالاشتۇرۇشىغا پەرۋا قىلماڭ</string>
     <string name="nc_important_conversation">مۇھىم سۆھبەت</string>
+    <string name="nc_important_conversation_desc">\"دەخلى قىلما\" ئىشلەتكۈچى ھالىتى مۇھىم سۆھبەتلەرگە ئىشلىمەيدۇ</string>
     <string name="nc_invitations">تەكلىپنامە</string>
     <string name="nc_join_open_conversations">ئوچۇق سۆھبەتكە قاتنىشىڭ</string>
     <string name="nc_keep">ساقلاڭ</string>
@@ -382,6 +383,8 @@
     <string name="nc_search">ئىزدەش</string>
     <string name="nc_search_clear">ئىزدەشنى تازىلاش</string>
     <string name="nc_select_an_account">ھېسابات تاللاڭ</string>
+    <string name="nc_sensitive_conversation">نازۇك سۆھبەت</string>
+    <string name="nc_sensitive_conversation_hint">سۆھبەت تىزىملىكى ۋە ئۇقتۇرۇشلاردا خەۋەرنى ئالدىن كۆرۈش چەكلىنىدۇ</string>
     <string name="nc_sent_a_gif" formatted="true">%1$s s GIF ئەۋەتتى.</string>
     <string name="nc_sent_a_gif_you">سىز بىر سوۋغات ئەۋەتتىڭىز.</string>
     <string name="nc_sent_a_video" formatted="true">%1$s سىن ئەۋەتتى.</string>
