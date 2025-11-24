@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.filebrowser.webdav;
 
+import android.net.Uri;
 import android.util.Log;
 
 import com.nextcloud.talk.filebrowser.models.BrowserFile;
@@ -47,7 +48,7 @@ public class ReadFilesystemOperation {
                                          );
         this.okHttpClient = okHttpClientBuilder.build();
         this.basePath = currentUser.getBaseUrl() + DavUtils.DAV_PATH + currentUser.getUserId();
-        this.url = basePath + path;
+        this.url = basePath + Uri.encode(path, "/");
         this.depth = depth;
     }
 
