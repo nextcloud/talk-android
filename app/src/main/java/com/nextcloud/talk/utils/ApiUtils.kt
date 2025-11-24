@@ -407,8 +407,10 @@ object ApiUtils {
 
     fun getUrlForChunkedUpload(baseUrl: String, user: String): String = "$baseUrl/remote.php/dav/uploads/$user"
 
-    fun getUrlForFileDownload(baseUrl: String, user: String, remotePath: String): String =
-        "$baseUrl/remote.php/dav/files/$user/$remotePath"
+    fun getUrlForFileDownload(baseUrl: String, user: String, remotePath: String): String {
+        val encodedRemotePath = Uri.encode(remotePath, "/")
+        return "$baseUrl/remote.php/dav/files/$user/$encodedRemotePath"
+    }
 
     fun userFileUploadPath(baseUrl: String, user: String): String = "$baseUrl/remote.php/dav/files/$user"
 
