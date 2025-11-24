@@ -14,7 +14,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -30,8 +29,6 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.Person
 import androidx.core.app.RemoteInput
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import androidx.core.net.toUri
 import androidx.emoji2.text.EmojiCompat
 import androidx.work.Data
@@ -80,13 +77,13 @@ import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MESSAGE_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_RESTRICT_DELETION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_NOTIFICATION_TIMESTAMP
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_REMOTE_TALK_SHARE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_ONE_TO_ONE
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SHARE_RECORDING_TO_CHAT_URL
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_SYSTEM_NOTIFICATION_ID
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
-import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_OPENED_VIA_NOTIFICATION
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -549,7 +546,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
-            .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -589,39 +585,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
         notificationBuilder.setGroup(calculateCRC32(groupName).toString())
         return notificationBuilder
-    }
-
-    private fun getLargeIcon(): Bitmap {
-        val largeIcon: Bitmap
-        if (pushMessage.type == TYPE_RECORDING) {
-            largeIcon = ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_videocam_24)?.toBitmap()!!
-        } else {
-            when (conversationType) {
-                "one2one" -> {
-                    pushMessage.subject = ""
-                    largeIcon =
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
-                }
-
-                "group" ->
-                    largeIcon =
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
-
-                "public" ->
-                    largeIcon =
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_link_black_24px)?.toBitmap()!!
-
-                else -> // assuming one2one
-                    largeIcon = if (TYPE_CHAT == pushMessage.type || TYPE_ROOM == pushMessage.type) {
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_comment)?.toBitmap()!!
-                    } else if (TYPE_REMINDER == pushMessage.type) {
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_timer_black_24dp)?.toBitmap()!!
-                    } else {
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_call_black_24dp)?.toBitmap()!!
-                    }
-            }
-        }
-        return largeIcon
     }
 
     private fun calculateCRC32(s: String): Long {
