@@ -192,11 +192,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
     private fun handleNonCallPushMessage() {
         val mainActivityIntent = createMainActivityIntent()
-        if (pushMessage.notificationId != Long.MIN_VALUE) {
-            getNcDataAndShowNotification(mainActivityIntent)
-        } else {
-            showNotification(mainActivityIntent, null)
-        }
+        getNcDataAndShowNotification(mainActivityIntent)
     }
 
     private fun handleRemoteTalkSharePushMessage() {
@@ -206,12 +202,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         bundle.putLong(KEY_INTERNAL_USER_ID, signatureVerification.user!!.id!!)
         bundle.putBoolean(KEY_REMOTE_TALK_SHARE, true)
         mainActivityIntent.putExtras(bundle)
-
-        if (pushMessage.notificationId != Long.MIN_VALUE) {
-            getNcDataAndShowNotification(mainActivityIntent)
-        } else {
-            showNotification(mainActivityIntent, null)
-        }
+        getNcDataAndShowNotification(mainActivityIntent)
     }
 
     private fun handleCallPushMessage() {
@@ -387,7 +378,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             credentials,
             ApiUtils.getUrlForNcNotificationWithId(
                 user!!.baseUrl!!,
-                (pushMessage.notificationId!!).toString()
+                pushMessage.notificationId.toString()
             )
         )
             .blockingSubscribe(object : Observer<NotificationOverall> {
@@ -408,7 +399,17 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 }
 
                 override fun onError(e: Throwable) {
-                    Log.e(TAG, "Failed to get NC notification", e)
+                    fun setContentsFromPushNotificationSubject() {
+                        if (pushMessage.subject.contains(LINEBREAK)) {
+                            pushMessage.text = pushMessage.subject.substringAfter(LINEBREAK)
+                            pushMessage.subject = pushMessage.subject.substringBefore(LINEBREAK)
+                        }
+                    }
+
+                    setContentsFromPushNotificationSubject()
+                    showNotification(intent, null)
+
+                    Log.e(TAG, "Failed to get NC notification. Using decrypted data from push notification itself", e)
                     if (BuildConfig.DEBUG) {
                         Handler(Looper.getMainLooper()).post {
                             Toast.makeText(context, "Failed to get NC notification", Toast.LENGTH_LONG).show()
@@ -505,13 +506,25 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
 
         var contentText: CharSequence? = ""
         if (!TextUtils.isEmpty(pushMessage.text)) {
-            contentText = EmojiCompat.get().process(pushMessage.text!!)
+            contentText = EmojiCompat.get().process(pushMessage.text)
         }
 
         val autoCancelOnClick = TYPE_RECORDING != pushMessage.type
 
         val notificationBuilder =
-            createNotificationBuilder(category, contentTitle, contentText, baseUrl, pendingIntent, autoCancelOnClick)
+            createNotificationBuilder(
+                category,
+                contentTitle,
+                contentText,
+                baseUrl,
+                pendingIntent,
+                autoCancelOnClick
+            )
+
+        if (ncNotification != null) {
+            notificationBuilder.setLargeIcon(getLargeIcon())
+        }
+
         val activeStatusBarNotification = findNotificationForRoom(
             context,
             signatureVerification.user!!,
@@ -523,12 +536,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val systemNotificationId: Int =
             activeStatusBarNotification?.id ?: calculateCRC32(System.currentTimeMillis().toString()).toInt()
 
-        if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
-            pushMessage.notificationUser != null
-        ) {
-            prepareChatNotification(notificationBuilder, activeStatusBarNotification)
-            addReplyAction(notificationBuilder, systemNotificationId)
-            addMarkAsReadAction(notificationBuilder, systemNotificationId)
+        if (TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) {
+            notificationBuilder.setOnlyAlertOnce(false)
+            if (pushMessage.notificationUser != null) {
+                styleChatNotification(notificationBuilder, activeStatusBarNotification)
+                addReplyAction(notificationBuilder, systemNotificationId)
+                addMarkAsReadAction(notificationBuilder, systemNotificationId)
+            }
         }
 
         if (TYPE_RECORDING == pushMessage.type && ncNotification != null) {
@@ -549,7 +563,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val notificationBuilder = NotificationCompat.Builder(context!!, "1")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
-            .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -600,7 +613,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                 "one2one" -> {
                     pushMessage.subject = ""
                     largeIcon =
-                        ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
+                        ContextCompat.getDrawable(context!!, R.drawable.ic_baseline_person_black_24)?.toBitmap()!!
                 }
 
                 "group" ->
@@ -630,12 +643,13 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         return crc32.value
     }
 
-    private fun prepareChatNotification(
+    private fun styleChatNotification(
         notificationBuilder: NotificationCompat.Builder,
         activeStatusBarNotification: StatusBarNotification?
     ) {
-        val notificationUser = pushMessage.notificationUser
-        val userType = notificationUser!!.type
+        val notificationUser = pushMessage.notificationUser ?: return
+
+        val userType = notificationUser.type
         var style: NotificationCompat.MessagingStyle? = null
         if (activeStatusBarNotification != null) {
             style = NotificationCompat.MessagingStyle.extractMessagingStyleFromNotification(
@@ -646,7 +660,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             .setKey(signatureVerification.user!!.id.toString() + "@" + notificationUser.id)
             .setName(EmojiCompat.get().process(notificationUser.name!!))
             .setBot("bot" == userType)
-        notificationBuilder.setOnlyAlertOnce(false)
 
         if ("user" == userType || "guest" == userType) {
             val baseUrl = signatureVerification.user!!.baseUrl
@@ -1023,5 +1036,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         private const val TIMER_START = 1
         private const val TIMER_COUNT = 12
         private const val TIMER_DELAY: Long = 5
+        private const val LINEBREAK: String = "\n"
     }
 }
