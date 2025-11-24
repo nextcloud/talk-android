@@ -169,6 +169,7 @@
     <string name="nc_copy_message">كۆچۈرۈڭ</string>
     <string name="nc_create_new_conversation">يېڭى سۆھبەت قۇر</string>
     <string name="nc_create_poll">راي سىناش</string>
+    <string name="nc_current_user">سىز:</string>
     <string name="nc_date_header_today">بۈگۈن</string>
     <string name="nc_date_header_yesterday">تۈنۈگۈن</string>
     <string name="nc_delete">ئۆچۈرۈش</string>
@@ -177,6 +178,7 @@
     <string name="nc_delete_conversation_more">ئەگەر سۆھبەتنى ئۆچۈرسىڭىز ، ئۇ باشقا بارلىق قاتناشقۇچىلار ئۈچۈن ئۆچۈرۈلىدۇ.</string>
     <string name="nc_delete_message">ئۇچۇرنى ئۆچۈرۈڭ</string>
     <string name="nc_delete_message_leaked_to_matterbridge">ئۇچۇر مۇۋەپپەقىيەتلىك ئۆچۈرۈلدى ، ئەمما ئۇ باشقا مۇلازىمەتلەرگە ئاشكارىلانغان بولۇشى مۇمكىن</string>
+    <string name="nc_delete_now">ھازىرلا ئۆچۈر</string>
     <string name="nc_deleted_user">ئىشلەتكۈچى%1$s چىقىرىۋېتىلدى</string>
     <string name="nc_demote">رىياسەتچىدىن تۆۋەنلەش</string>
     <string name="nc_description_record_voice">ئاۋازلىق ئۇچۇرنى خاتىرىلەڭ</string>
@@ -507,11 +509,13 @@
     <string name="notification_mention_only">\@ -mentions only</string>
     <string name="notification_off">Off</string>
     <string name="notifications_default">كۆڭۈلدىكى</string>
+    <string name="notifications_default_description">سۆھبەت تەڭشەكلىرىگە ئەگەش</string>
     <string name="oneHour">1 سائەت</string>
     <string name="online">توردا</string>
     <string name="online_status">توردىكى ئورنى</string>
     <string name="openConversations">ئوچۇق سۆھبەت</string>
     <string name="open_in_files_app">ھۆججەتلەر دېتالىدا ئېچىڭ</string>
+    <string name="open_thread">يىپقا بار</string>
     <string name="play_pause_voice_message">ئاۋازلىق ئۇچۇرنى قويۇش / توختىتىش</string>
     <string name="polls_add_option">تاللاش قوشۇڭ</string>
     <string name="polls_edit_vote">بېلەتنى تەھرىرلەش</string>
@@ -531,6 +535,7 @@
     <string name="raise_hand">قولىنى كۆتۈرۈڭ</string>
     <string name="reactions_tab_all">ھەممىسى</string>
     <string name="read_storage_no_permission">ھۆججەتلەرنى ساقلاشتىن ئورتاقلىشىش رۇخسەتسىز مۇمكىن ئەمەس</string>
+    <string name="recent_threads">يېقىنقى يىپلار</string>
     <string name="record_active_info">تېلېفون خاتىرىلىنىۋاتىدۇ</string>
     <string name="record_cancel_start">خاتىرىلەشنى باشلاشنى ئەمەلدىن قالدۇرۇڭ</string>
     <string name="record_failed_info">خاتىرىلەش مەغلۇپ بولدى. باشقۇرغۇچىڭىز بىلەن ئالاقىلىشىڭ.</string>
@@ -587,6 +592,7 @@
     <string name="show_banned_participants">چەكلەنگەن قاتناشقۇچىلارنى كۆرسىتىش</string>
     <string name="starred">ئامراق</string>
     <string name="startCallForbidden">سىزنىڭ تېلېفوننى باشلىشىڭىزغا رۇخسەت قىلىنمايدۇ</string>
+    <string name="start_thread">بىر يىپ قۇر</string>
     <string name="started_a_call">تېلېفون باشلىدى</string>
     <string name="status_message">ھالەت ئۇچۇرى</string>
     <string name="switch_to_breakout_room">بۆسۈش ئۆيىگە ئالماشتۇرۇڭ</string>
@@ -604,7 +610,10 @@
     <string name="thisWeek">بۇ ھەپتە</string>
     <string name="this_is_a_test_message">بۇ بىر سىناق ئۇچۇرى</string>
     <string name="this_weekend">بۇ ھەپتە ئاخىرى</string>
+    <string name="thread_notifications">يىپ ئۇقتۇرۇشى</string>
     <string name="thread_reply">جاۋاب</string>
+    <string name="thread_title">يىپ ماۋزوسى</string>
+    <string name="threads">يىپلار</string>
     <string name="today">بۈگۈن</string>
     <string name="tomorrow">ئەتە</string>
     <string name="translate">تەرجىمە</string>
@@ -639,6 +648,10 @@
     <string name="userinfo_no_info_text">ئارخىپ بېتىڭىزگە ئىسىم ، رەسىم ۋە ئالاقىلىشىش تەپسىلاتلىرىنى قوشۇڭ.</string>
     <string name="video_call">سىنلىق تېلېفون</string>
     <string name="whats_your_status">ئەھۋالىڭىز نېمە؟</string>
+    <plurals name="thread_replies">
+        <item quantity="one">%d جاۋاپ</item>
+        <item quantity="other">%d جاۋاپلار</item>
+    </plurals>
     <plurals name="polls_amount_voters">
         <item quantity="one">%d vote</item>
         <item quantity="other">%d votes</item>
