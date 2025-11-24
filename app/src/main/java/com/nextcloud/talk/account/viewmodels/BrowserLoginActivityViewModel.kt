@@ -45,7 +45,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     var waitingForBrowser: Boolean = false
     var savedResponse: LoginResponse? = null
 
-    fun loginNormally(baseUrl: String, reAuth: Boolean = false) {
+    fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false) {
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth)
             savedResponse = response
@@ -60,7 +60,7 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
         }
     }
 
-    fun loginNormally2(response: LoginResponse) {
+    fun handleWebBrowserLogin(response: LoginResponse) {
         viewModelScope.launch {
             val loginCompletionResponse = repository.pollLogin(response)
 

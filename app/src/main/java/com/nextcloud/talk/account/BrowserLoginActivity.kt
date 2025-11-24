@@ -68,7 +68,7 @@ class BrowserLoginActivity : BaseActivity() {
         if (viewModel.waitingForBrowser) {
             viewModel.savedResponse?.let {
                 viewModel.waitingForBrowser = false
-                viewModel.loginNormally2(it)
+                viewModel.handleWebBrowserLogin(it)
             }
         }
     }
@@ -126,7 +126,7 @@ class BrowserLoginActivity : BaseActivity() {
             val uri = extras.getString(BundleKeys.KEY_FROM_QR)!!
             viewModel.loginWithQR(uri, reauthorizeAccount)
         } else if (baseUrl != null) {
-            viewModel.loginNormally(baseUrl, reauthorizeAccount)
+            viewModel.startWebBrowserLogin(baseUrl, reauthorizeAccount)
         }
     }
 
