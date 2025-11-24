@@ -806,7 +806,7 @@ class ChatViewModel @Inject constructor(
         baseUrl: String,
         token: String,
         messageId: String
-    ): Flow<ChatMessage> =
+    ): Flow<ChatMessage?> =
         flow {
             val messages = chatNetworkDataSource.getContextForChatMessage(
                 credentials = credentials,
@@ -817,8 +817,12 @@ class ChatViewModel @Inject constructor(
                 threadId = null
             )
 
-            val message = messages[0]
-            emit(message.asModel())
+            if (messages.isNotEmpty()) {
+                val message = messages[0]
+                emit(message.asModel())
+            } else {
+                emit(null)
+            }
         }
 
     suspend fun getNumberOfThreadReplies(threadId: Long): Int = chatRepository.getNumberOfThreadReplies(threadId)

@@ -673,7 +673,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
-                .onEach { conversationModel ->
+                .collect { conversationModel ->
                     currentConversation = conversationModel
                     chatViewModel.updateConversation(
                         currentConversation!!
@@ -701,15 +701,17 @@ class ChatActivity :
                                 conversationModel.lastPinnedId.toString()
                             )
                             .collect { message ->
-                                binding.pinnedMessageContainer.visibility = View.VISIBLE
-                                binding.pinnedMessageComposeView.setContent {
-                                    PinnedMessageView(message)
+                                message?.let {
+                                    binding.pinnedMessageContainer.visibility = View.VISIBLE
+                                    binding.pinnedMessageComposeView.setContent {
+                                        PinnedMessageView(message)
+                                    }
                                 }
                             }
                     } else {
                         binding.pinnedMessageContainer.visibility = View.GONE
                     }
-                }.collect()
+                }
         }
 
         chatViewModel.getRoomViewState.observe(this) { state ->
