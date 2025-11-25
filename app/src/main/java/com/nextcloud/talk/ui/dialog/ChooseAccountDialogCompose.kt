@@ -181,7 +181,7 @@ class ChooseAccountDialogCompose {
         userManager.users.blockingGet().forEach { user ->
             if (!user.current) {
                 val pendingCount = getPendingInvitations(invitationsUiState)
-                addAccountToList(user, user.userId ?: user.username, pendingCount)
+                addAccountToList(user, pendingCount)
             }
         }
     }
@@ -248,7 +248,7 @@ class ChooseAccountDialogCompose {
             AsyncImage(
                 model = ApiUtils.getUrlForAvatar(
                     userItem.user.baseUrl,
-                    userItem.user.userId ?: userItem.user.username,
+                    userItem.user.userId,
                     true
                 ),
                 contentDescription = null,
@@ -310,8 +310,8 @@ class ChooseAccountDialogCompose {
         private val TAG = ChooseAccountDialogCompose::class.simpleName
     }
 
-    private fun addAccountToList(user: User, userId: String?, pendingInvitations: Int) {
-        userItems.add(AccountItem(user, userId, pendingInvitations))
+    private fun addAccountToList(user: User, pendingInvitations: Int) {
+        userItems.add(AccountItem(user, pendingInvitations))
     }
 }
 
@@ -359,7 +359,7 @@ private fun ChooseAccountDialogContent(
                 )
                 LazyColumn(modifier = Modifier.padding(start = 8.dp).weight(1f, fill = false)) {
                     items(accountItems) { user ->
-                        if (user.userId != currentUser.userId) {
+                        if (user.user.userId != currentUser.userId) {
                             accountRowContent(user)
                         }
                     }
