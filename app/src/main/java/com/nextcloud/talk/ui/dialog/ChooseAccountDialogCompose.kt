@@ -359,7 +359,7 @@ private fun ChooseAccountDialogContent(
                 )
                 LazyColumn(modifier = Modifier.padding(start = 8.dp).weight(1f, fill = false)) {
                     items(accountItems) { user ->
-                        if (user.user.userId != currentUser.userId) {
+                        if (user.user.userId + user.user.baseUrl != currentUser.userId + currentUser.baseUrl) {
                             accountRowContent(user)
                         }
                     }
