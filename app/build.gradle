@@ -149,6 +149,7 @@ android {
         abortOnError = false
         disable 'MissingTranslation','PrivateResource'
         htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
+        sarifOutput = layout.buildDirectory.file("reports/lint/lint-results.sarif").get().asFile
         htmlReport = true
     }
 }
@@ -402,6 +403,10 @@ tasks.withType(SpotBugsTask).configureEach { task ->
             required = true
             outputLocation = layout.buildDirectory.file("reports/spotbugs/spotbugs.html")
             stylesheet = 'fancy.xsl'
+        }
+        sarif {
+            required.set(true)
+            outputLocation.set(layout.buildDirectory.file("reports/spotbugs/spotbugs-results.sarif"))
         }
     }
 }
