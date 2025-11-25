@@ -42,9 +42,7 @@ jobs:
 
             - name: Run Lint
               run: |
-                  mkdir -p build/reports/lint/sarif
-                  ./gradlew lintGplayDebug \
-                    -Pandroid.lintOptions.sarifOutput=build/reports/lint/sarif/lint-results.sarif
+                  ./gradlew lintGplayDebug
 
             - name: Run SpotBugs
               run: |
@@ -56,9 +54,9 @@ jobs:
             - name: Filter new Lint issues
               run: |
                   if [ -f analysis/baselines/lint-baseline.sarif ]; then
-                    npx sarif-diff analysis/baselines/lint-baseline.sarif build/reports/lint/sarif/lint-results.sarif > build/reports/lint/sarif/lint-new.sarif
+                    npx sarif-diff analysis/baselines/lint-baseline.sarif build/reports/lint-results-gplayDebug.sarif > build/reports/lint-new.sarif
                   else
-                    cp build/reports/lint/sarif/lint-results.sarif build/reports/lint/sarif/lint-new.sarif
+                    cp build/reports/lint/sarif/lint-results.sarif build/reports/lint-new.sarif
                   fi
 
             - name: Filter new SpotBugs issues
@@ -72,7 +70,7 @@ jobs:
             - name: Upload new Lint issues
               uses: github/codeql-action/upload-sarif@v2
               with:
-                  sarif_file: build/reports/lint/sarif/lint-new.sarif
+                  sarif_file: build/reports/lint-new.sarif
 
             - name: Upload new SpotBugs issues
               uses: github/codeql-action/upload-sarif@v2

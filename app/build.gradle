@@ -148,9 +148,8 @@ android {
     lint {
         abortOnError = false
         disable 'MissingTranslation','PrivateResource'
-        htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
-        sarifOutput = layout.buildDirectory.file("reports/lint/lint-results.sarif").get().asFile
         htmlReport = true
+        sarifReport = true
     }
 }
 kapt {
