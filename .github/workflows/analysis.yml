@@ -42,12 +42,12 @@ jobs:
 
             - name: Run Lint
               run: |
-                  ./gradlew lintGplayDebug
+                  ./gradlew --no-daemon --no-configuration-cache clean lintGplayDebug
 
             - name: Run SpotBugs
               run: |
                   mkdir -p build/reports/spotbugs/sarif
-                  ./gradlew spotbugsGplayDebug \
+                  ./gradlew --no-configuration-cache spotbugsGplayDebug \
                     -Pspotbugs.reportFormat=sarif \
                     -Pspotbugs.sarifOutput=build/reports/spotbugs/sarif/spotbugs-results.sarif
 
