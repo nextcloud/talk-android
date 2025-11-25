@@ -15,7 +15,9 @@ import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.core.net.toUri
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import autodagger.AutoInjector
 import com.google.android.material.snackbar.Snackbar
 import com.nextcloud.talk.R
@@ -62,52 +64,50 @@ class BrowserLoginActivity : BaseActivity() {
         observe()
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        if (viewModel.waitingForBrowser) {
-            viewModel.savedResponse?.let {
-                viewModel.waitingForBrowser = false
-                viewModel.handleWebBrowserLogin(it)
-            }
-        }
-    }
-
     init {
         sharedApplication!!.componentApplication.inject(this)
     }
 
     private fun observe() {
         lifecycleScope.launch {
-            viewModel.initialLoginRequestState.collect { state ->
-                when (state) {
-                    BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestError -> {
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.initialLoginRequestState.collect { state ->
+                    when (state) {
+                        BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestError -> {
+                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                        }
+                        is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
+                            if (viewModel.waitingForBrowserState.value) {
+                                viewModel.setWaitingForBrowser(false)
+                                viewModel.handleWebBrowserLogin()
+                            } else {
+                                viewModel.setWaitingForBrowser(true)
+                                launchDefaultWebBrowser(state.loginUrl)
+                            }
+                        }
+                        BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                     }
-                    is BrowserLoginActivityViewModel.InitialLoginViewState.InitialLoginRequestSuccess -> {
-                        launchDefaultWebBrowser(state.loginUrl)
-                        viewModel.waitingForBrowser = true
-                    }
-                    BrowserLoginActivityViewModel.InitialLoginViewState.None -> {}
                 }
             }
         }
 
         lifecycleScope.launch {
-            viewModel.postLoginState.collect { state ->
-                when (state) {
-                    BrowserLoginActivityViewModel.PostLoginViewState.None -> {}
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.postLoginState.collect { state ->
+                    when (state) {
+                        BrowserLoginActivityViewModel.PostLoginViewState.None -> {}
 
-                    is BrowserLoginActivityViewModel.PostLoginViewState.PostLoginContinue -> {
-                        if (!state.data.isEmpty) {
-                            startAccountVerification(state.data)
+                        is BrowserLoginActivityViewModel.PostLoginViewState.PostLoginContinue -> {
+                            if (!state.data.isEmpty) {
+                                startAccountVerification(state.data)
+                            }
                         }
-                    }
-                    BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
-                        Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
-                    }
-                    BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
-                        restartApp()
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginError -> {
+                            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_SHORT).show()
+                        }
+                        BrowserLoginActivityViewModel.PostLoginViewState.PostLoginRestartApp -> {
+                            restartApp()
+                        }
                     }
                 }
             }
