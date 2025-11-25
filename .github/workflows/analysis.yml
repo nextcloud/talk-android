@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2025 Marcel Hibbe <dev@mhibbe.de>
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-name: "PR Analysis with SARIF"
+name: "PR Analysis"
 
 on:
     pull_request:
@@ -10,8 +10,8 @@ on:
         branches: [ "master", "main", "stable-*" ]
 
 permissions:
-    pull-requests: write
     contents: write
+    pull-requests: write
 
 concurrency:
     group: analysis-wrapper-${{ github.head_ref || github.run_id }}
@@ -20,25 +20,19 @@ concurrency:
 jobs:
     analysis:
         runs-on: ubuntu-latest
+
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
               with:
                   fetch-depth: 0
 
-            - name: Setup Node.js
-              uses: actions/setup-node@v3
-              with:
-                  node-version: 20
-
             - name: Setup JDK 17
               uses: actions/setup-java@v3
               with:
                   distribution: temurin
                   java-version: 17
-
-            - name: Install dependencies
-              run: sudo apt install -y python3-defusedxml
+                  cache: gradle
 
             - name: Run Lint
               run: |
@@ -54,28 +48,12 @@ jobs:
               run: |
                   ./gradlew --no-configuration-cache spotbugsGplayDebug
 
-            - name: Filter new Lint issues
-              run: |
-                  if [ -f analysis/baselines/lint-baseline.sarif ]; then
-                    npx sarif-diff analysis/baselines/lint-baseline.sarif build/reports/lint-results-gplayDebug.sarif > build/reports/lint-new.sarif
-                  else
-                    cp build/reports/lint-results-gplayDebug.sarif build/reports/lint-new.sarif
-                  fi
-
-            - name: Filter new SpotBugs issues
-              run: |
-                  if [ -f analysis/baselines/spotbugs-baseline.sarif ]; then
-                    npx sarif-diff analysis/baselines/spotbugs-baseline.sarif build/reports/spotbugs-results-gplayDebug.sarif > build/reports/spotbugs-new.sarif
-                  else
-                    cp build/reports/spotbugs-results-gplayDebug.sarif build/reports/spotbugs-new.sarif
-                  fi
-
-            - name: Upload new Lint issues
-              uses: github/codeql-action/upload-sarif@v2
+            - name: Upload Lint SARIF
+              uses: github/codeql-action/upload-sarif@v3
               with:
-                  sarif_file: build/reports/lint-new.sarif
+                  sarif_file: build/reports/lint-results-gplayDebug.sarif
 
-            - name: Upload new SpotBugs issues
-              uses: github/codeql-action/upload-sarif@v2
+            - name: Upload SpotBugs SARIF
+              uses: github/codeql-action/upload-sarif@v3
               with:
-                  sarif_file: build/reports/spotbugs-new.sarif
+                  sarif_file: build/reports/spotbugs-results.sarif

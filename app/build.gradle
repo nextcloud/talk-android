@@ -394,19 +394,30 @@ tasks.withType(SpotBugsTask).configureEach { task ->
 
     excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
     classes = fileTree(layout.buildDirectory.get().asFile.toString()+"/intermediates/javac/${variantName}/compile${variantNameCap}JavaWithJavac/classes/")
+
+    classes = files(
+        fileTree(layout.buildDirectory.get().asFile.toString()+"/intermediates/javac/${variantName}/compile${variantNameCap}JavaWithJavac/classes/"),
+        fileTree(layout.buildDirectory.get().asFile.toString()+"/tmp/kotlin-classes/${variantName}")
+    )
+
+    classpath = files(
+        configurations.compileClasspath,
+        configurations.runtimeClasspath
+    )
+
     reports {
         xml {
             required = true
-            outputLocation = layout.buildDirectory.file("reports/spotbugs-results-${variantName}.xml")
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results.xml")
         }
         html {
             required = true
-            outputLocation = layout.buildDirectory.file("reports/spotbugs-results-${variantName}.html")
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results.html")
             stylesheet = 'fancy.xsl'
         }
         sarif {
             required.set(true)
-            outputLocation.set(layout.buildDirectory.file("reports/spotbugs-results-${variantName}.sarif"))
+            outputLocation.set(layout.buildDirectory.file("reports/spotbugs-results.sarif"))
         }
     }
 }
