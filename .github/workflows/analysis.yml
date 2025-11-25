@@ -59,7 +59,7 @@ jobs:
                   if [ -f analysis/baselines/lint-baseline.sarif ]; then
                     npx sarif-diff analysis/baselines/lint-baseline.sarif build/reports/lint-results-gplayDebug.sarif > build/reports/lint-new.sarif
                   else
-                    cp build/reports/lint/sarif/lint-results.sarif build/reports/lint-new.sarif
+                    cp build/reports/lint-results-gplayDebug.sarif build/reports/lint-new.sarif
                   fi
 
             - name: Filter new SpotBugs issues
@@ -67,7 +67,7 @@ jobs:
                   if [ -f analysis/baselines/spotbugs-baseline.sarif ]; then
                     npx sarif-diff analysis/baselines/spotbugs-baseline.sarif build/reports/spotbugs-results-gplayDebug.sarif > build/reports/spotbugs-new.sarif
                   else
-                    cp build/reports/spotbugs-results.sarif build/reports/spotbugs-new.sarif
+                    cp build/reports/spotbugs-results-gplayDebug.sarif build/reports/spotbugs-new.sarif
                   fi
 
             - name: Upload new Lint issues
