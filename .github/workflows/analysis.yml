@@ -46,10 +46,7 @@ jobs:
 
             - name: Run SpotBugs
               run: |
-                  mkdir -p build/reports/spotbugs/sarif
-                  ./gradlew --no-configuration-cache spotbugsGplayDebug \
-                    -Pspotbugs.reportFormat=sarif \
-                    -Pspotbugs.sarifOutput=build/reports/spotbugs/sarif/spotbugs-results.sarif
+                  ./gradlew --no-configuration-cache spotbugsGplayDebug
 
             - name: Filter new Lint issues
               run: |
@@ -62,9 +59,9 @@ jobs:
             - name: Filter new SpotBugs issues
               run: |
                   if [ -f analysis/baselines/spotbugs-baseline.sarif ]; then
-                    npx sarif-diff analysis/baselines/spotbugs-baseline.sarif build/reports/spotbugs/sarif/spotbugs-results.sarif > build/reports/spotbugs/sarif/spotbugs-new.sarif
+                    npx sarif-diff analysis/baselines/spotbugs-baseline.sarif build/reports/spotbugs-results-gplayDebug.sarif > build/reports/spotbugs-new.sarif
                   else
-                    cp build/reports/spotbugs/sarif/spotbugs-results.sarif build/reports/spotbugs/sarif/spotbugs-new.sarif
+                    cp build/reports/spotbugs-results.sarif build/reports/spotbugs-new.sarif
                   fi
 
             - name: Upload new Lint issues
@@ -75,4 +72,4 @@ jobs:
             - name: Upload new SpotBugs issues
               uses: github/codeql-action/upload-sarif@v2
               with:
-                  sarif_file: build/reports/spotbugs/sarif/spotbugs-new.sarif
+                  sarif_file: build/reports/spotbugs-new.sarif

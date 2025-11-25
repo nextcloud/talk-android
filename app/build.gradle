@@ -397,15 +397,16 @@ tasks.withType(SpotBugsTask).configureEach { task ->
     reports {
         xml {
             required = true
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results-${variantName}.xml")
         }
         html {
             required = true
-            outputLocation = layout.buildDirectory.file("reports/spotbugs/spotbugs.html")
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results-${variantName}.html")
             stylesheet = 'fancy.xsl'
         }
         sarif {
             required.set(true)
-            outputLocation.set(layout.buildDirectory.file("reports/spotbugs/spotbugs-results.sarif"))
+            outputLocation.set(layout.buildDirectory.file("reports/spotbugs-results-${variantName}.sarif"))
         }
     }
 }
