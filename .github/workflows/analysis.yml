@@ -42,6 +42,12 @@ jobs:
 
             - name: Run Lint
               run: |
+                  mkdir -p "$HOME/.gradle"
+                  {
+                  echo "org.gradle.jvmargs=-Xmx1g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+                  echo "org.gradle.configureondemand=true"
+                  echo "kapt.incremental.apt=true"
+                  } > "$HOME/.gradle/gradle.properties"
                   ./gradlew --no-daemon --no-configuration-cache clean lintGplayDebug
 
             - name: Run SpotBugs
