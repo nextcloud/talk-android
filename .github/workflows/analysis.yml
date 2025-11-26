@@ -49,11 +49,11 @@ jobs:
                   ./gradlew --no-configuration-cache spotbugsGplayDebug
 
             - name: Upload Lint SARIF
-              uses: github/codeql-action/upload-sarif@v3
+              uses: github/codeql-action/upload-sarif@v4
               with:
-                  sarif_file: build/reports/lint-results-gplayDebug.sarif
+                  sarif_file: app/build/reports/lint-results-gplayDebug.sarif
 
             - name: Upload SpotBugs SARIF
-              uses: github/codeql-action/upload-sarif@v3
+              uses: github/codeql-action/upload-sarif@v4
               with:
-                  sarif_file: build/reports/spotbugs-results.sarif
+                  sarif_file: app/build/reports/spotbugs-results.sarif
