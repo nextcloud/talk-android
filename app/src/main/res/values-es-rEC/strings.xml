@@ -490,6 +490,8 @@
     <string name="thirtyMinutes">30 minutos</string>
     <string name="thisWeek">Esta semana</string>
     <string name="this_is_a_test_message">Este es un mensaje de prueba</string>
+    <string name="thread_reply">Responder</string>
+    <string name="threads">Hilos</string>
     <string name="today">Hoy</string>
     <string name="tomorrow">Mañana</string>
     <string name="translate">Traducir</string>
