@@ -1396,7 +1396,6 @@ class SettingsActivity :
             })
     }
 
-    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun observeReadPrivacy() {
         lifecycleScope.launch {
             var state = appPreferences.readPrivacy

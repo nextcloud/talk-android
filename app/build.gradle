@@ -148,8 +148,8 @@ android {
     lint {
         abortOnError = false
         disable 'MissingTranslation','PrivateResource'
-        htmlOutput = layout.buildDirectory.file("reports/lint/lint.html").get().asFile
         htmlReport = true
+        sarifReport = true
     }
 }
 kapt {
@@ -390,18 +390,29 @@ tasks.withType(SpotBugsTask).configureEach { task ->
     String variantNameCap = task.name.replace("spotbugs", "")
     String variantName = variantNameCap.substring(0, 1).toLowerCase() + variantNameCap.substring(1)
 
-    dependsOn "compile${variantNameCap}Sources"
+    def javaCompile = tasks.named("compile${variantNameCap}JavaWithJavac")
+    dependsOn javaCompile
 
     excludeFilter = file("${project.rootDir}/spotbugs-filter.xml")
-    classes = fileTree(layout.buildDirectory.get().asFile.toString()+"/intermediates/javac/${variantName}/compile${variantNameCap}JavaWithJavac/classes/")
+
+    classes = files(
+        javaCompile.get().destinationDirectory,
+        fileTree("${layout.buildDirectory.get().asFile}/tmp/kotlin-classes/${variantName}")
+    )
+
     reports {
         xml {
             required = true
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results.xml")
         }
         html {
             required = true
-            outputLocation = layout.buildDirectory.file("reports/spotbugs/spotbugs.html")
+            outputLocation = layout.buildDirectory.file("reports/spotbugs-results.html")
             stylesheet = 'fancy.xsl'
+        }
+        sarif {
+            required.set(true)
+            outputLocation.set(layout.buildDirectory.file("reports/spotbugs-results.sarif"))
         }
     }
 }
