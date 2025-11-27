@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import com.nextcloud.talk.R
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
@@ -19,6 +20,12 @@ class BubbleActivity : ChatActivity() {
         super.onCreate(savedInstanceState)
         supportActionBar?.setDisplayHomeAsUpEnabled(false)
         supportActionBar?.setDisplayShowHomeEnabled(false)
+        
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                moveTaskToBack(false)
+            }
+        })
     }
 
     override fun onPrepareOptionsMenu(menu: android.view.Menu): Boolean {
@@ -45,10 +52,6 @@ class BubbleActivity : ChatActivity() {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         startActivity(intent)
-        moveTaskToBack(false)
-    }
-
-    override fun onBackPressed() {
         moveTaskToBack(false)
     }
 
