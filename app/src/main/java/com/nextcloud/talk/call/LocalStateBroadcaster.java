@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.call;
 
+import com.nextcloud.talk.activities.ParticipantUiState;
 import com.nextcloud.talk.models.json.signaling.DataChannelMessage;
 import com.nextcloud.talk.models.json.signaling.NCMessagePayload;
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage;
@@ -81,8 +82,8 @@ public abstract class LocalStateBroadcaster {
         this.localCallParticipantModel.removeObserver(localCallParticipantModelObserver);
     }
 
-    public abstract void handleCallParticipantAdded(CallParticipantModel callParticipantModel);
-    public abstract void handleCallParticipantRemoved(CallParticipantModel callParticipantModel);
+    public abstract void handleCallParticipantAdded(ParticipantUiState uiState);
+    public abstract void handleCallParticipantRemoved(String sessionId);
 
     protected DataChannelMessage getDataChannelMessageForAudioState() {
         String type = "audioOff";
