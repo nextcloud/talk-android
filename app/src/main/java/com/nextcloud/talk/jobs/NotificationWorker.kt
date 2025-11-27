@@ -596,12 +596,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
                     }
                 }
             }
-            if (!effectiveShortcutId.isNullOrEmpty()) {
-                val ensuredShortcutId = effectiveShortcutId!!
-                val locusId = androidx.core.content.LocusIdCompat(ensuredShortcutId)
-                notificationBuilder.setShortcutId(ensuredShortcutId)
-                notificationBuilder.setLocusId(locusId)
-            }
+            applyShortcutAndLocus(notificationBuilder, effectiveShortcutId)
             addReplyAction(notificationBuilder, systemNotificationId)
             addMarkAsReadAction(notificationBuilder, systemNotificationId)
         }
@@ -627,6 +622,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         )
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setCategory(category)
+            .setLargeIcon(getLargeIcon())
             .setSmallIcon(R.drawable.ic_notification)
             .setContentTitle(contentTitle)
             .setContentText(contentText)
@@ -669,6 +665,19 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         val groupName = signatureVerification.user!!.id.toString() + "@" + pushMessage.id
         notificationBuilder.setGroup(NotificationUtils.calculateCRC32(groupName).toString())
         return notificationBuilder
+    }
+
+    private fun applyShortcutAndLocus(
+        notificationBuilder: NotificationCompat.Builder,
+        shortcutId: String?
+    ) {
+        if (shortcutId.isNullOrEmpty()) {
+            return
+        }
+        val ensuredShortcutId = shortcutId
+        val locusId = androidx.core.content.LocusIdCompat(ensuredShortcutId)
+        notificationBuilder.setShortcutId(ensuredShortcutId)
+        notificationBuilder.setLocusId(locusId)
     }
 
     private fun getLargeIcon(): Bitmap {
