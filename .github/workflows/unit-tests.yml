@@ -36,7 +36,18 @@ jobs:
                 uses: gradle/actions/setup-gradle@4d9f0ba0025fe599b4ebab900eb7f3a1d93ef4c2 # v5.0.0
 
             -   name: Run unit tests with coverage
-                run: ./gradlew --no-daemon testGplayDebugUnit
+                run: |
+                    mkdir -p "$HOME/.gradle"
+                    {
+                      echo "org.gradle.jvmargs=-Xmx4g -XX:+HeapDumpOnOutOfMemoryError -Dfile.encoding=UTF-8"
+                      echo "kotlin.daemon.jvmargs=-Xmx2g"
+                      echo "android.experimental.lint.heapSize=2048M"
+                      echo "org.gradle.parallel=true"
+                      echo "org.gradle.configureondemand=true"
+                      echo "kapt.incremental.apt=true"
+                      echo "kapt.use.worker.api=true"
+                    } > "$HOME/.gradle/gradle.properties"
+                    ./gradlew --no-daemon --no-configuration-cache clean testGplayDebugUnit
 
             -   name: Upload test artifacts
                 if: ${{ failure() }}
