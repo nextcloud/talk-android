@@ -11,8 +11,10 @@ import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.account.data.LoginRepository
+import com.nextcloud.talk.account.data.model.LoginResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,9 +43,19 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
     private val _postLoginState = MutableStateFlow<PostLoginViewState>(PostLoginViewState.None)
     val postLoginState: StateFlow<PostLoginViewState> = _postLoginState
 
-    fun loginNormally(baseUrl: String, reAuth: Boolean = false) {
+    private val _waitingForBrowserState = MutableStateFlow(false)
+    val waitingForBrowserState = _waitingForBrowserState.asStateFlow()
+
+    fun setWaitingForBrowser(value: Boolean) {
+        _waitingForBrowserState.value = value
+    }
+
+    private var savedResponse: LoginResponse? = null
+
+    fun startWebBrowserLogin(baseUrl: String, reAuth: Boolean = false) {
         viewModelScope.launch {
             val response = repository.startLoginFlow(baseUrl, reAuth)
+            savedResponse = response
 
             if (response == null) {
                 _initialLoginRequestState.value = InitialLoginViewState.InitialLoginRequestError
@@ -52,21 +64,27 @@ class BrowserLoginActivityViewModel @Inject constructor(val repository: LoginRep
 
             _initialLoginRequestState.value =
                 InitialLoginViewState.InitialLoginRequestSuccess(response.loginUrl)
+        }
+    }
 
-            val loginCompletionResponse = repository.pollLogin(response)
+    fun handleWebBrowserLogin() {
+        savedResponse?.let { response ->
+            viewModelScope.launch {
+                val loginCompletionResponse = repository.pollLogin(response)
 
-            if (loginCompletionResponse == null) {
-                _postLoginState.value = PostLoginViewState.PostLoginError
-                return@launch
+                if (loginCompletionResponse == null) {
+                    _postLoginState.value = PostLoginViewState.PostLoginError
+                    return@launch
+                }
+
+                val bundle = repository.parseAndLogin(loginCompletionResponse)
+                if (bundle == null) {
+                    _postLoginState.value = PostLoginViewState.PostLoginRestartApp
+                    return@launch
+                }
+
+                _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
             }
-
-            val bundle = repository.parseAndLogin(loginCompletionResponse)
-            if (bundle == null) {
-                _postLoginState.value = PostLoginViewState.PostLoginRestartApp
-                return@launch
-            }
-
-            _postLoginState.value = PostLoginViewState.PostLoginContinue(bundle)
         }
     }
 
