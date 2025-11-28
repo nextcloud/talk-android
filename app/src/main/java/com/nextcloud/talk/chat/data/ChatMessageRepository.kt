@@ -15,6 +15,7 @@ import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
+@Suppress("TooManyFunctions")
 interface ChatMessageRepository : LifecycleAwareManager {
 
     /**
@@ -116,4 +117,10 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
+
+    suspend fun pinMessage(credentials: String, url: String, pinUntil: Int): Flow<ChatMessage?>
+
+    suspend fun unPinMessage(credentials: String, url: String): Flow<ChatMessage?>
+
+    suspend fun hidePinnedMessage(credentials: String, url: String): Flow<Boolean>
 }
