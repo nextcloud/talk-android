@@ -257,7 +257,9 @@ class ChooseAccountDialogCompose {
                     .size(40.dp)
                     .clip(CircleShape)
             )
-            Column(modifier = Modifier.padding(start = 12.dp).weight(1f)) {
+            Column(modifier = Modifier
+                .padding(start = 12.dp)
+                .weight(1f)) {
                 Text(
                     text = userItem.user.displayName ?: userItem.user.username ?: ""
                 )
@@ -357,12 +359,15 @@ private fun ChooseAccountDialogContent(
                 HorizontalDivider(
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
-                LazyColumn(modifier = Modifier.padding(start = 8.dp).weight(1f, fill = false)) {
+                LazyColumn(modifier = Modifier
+                    .padding(start = 8.dp)
+                    .weight(1f, fill = false)) {
                     items(accountItems) { user ->
-                        if (user.userId != currentUser.userId) {
+                        if (user.user.userId + user.user.baseUrl != currentUser.userId + currentUser.baseUrl) {
                             accountRowContent(user)
                         }
                     }
+                }
                 }
 
                 OnlineActions(
@@ -474,7 +479,9 @@ private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: ()
     if (isOnline) {
         TextButton(onClick = onAddAccountClick, modifier = Modifier.fillMaxWidth()) {
             Row(
-                modifier = Modifier.padding(start = 16.dp, top = 8.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 8.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
@@ -494,7 +501,9 @@ private fun OnlineActions(onAddAccountClick: () -> Unit, onOpenSettingsClick: ()
 
     TextButton(onClick = onOpenSettingsClick, modifier = Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(start = 16.dp, top = 8.dp, bottom = 16.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
