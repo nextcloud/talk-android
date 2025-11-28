@@ -17,7 +17,11 @@ import androidx.annotation.Nullable;
 public final class TextMatchers {
 
     public static boolean isMessageWithSingleEmoticonOnly(@Nullable final String text) {
-        final EmojiInformation emojiInformation = Emojis.emojiInformation(text);
-        return (emojiInformation.isOnlyEmojis && emojiInformation.emojis.size() == 1);
+        if (text != null) {
+            final EmojiInformation emojiInformation = Emojis.emojiInformation(text);
+            return (emojiInformation.isOnlyEmojis && emojiInformation.getEmojiCount() == 1);
+        } else {
+            return false;
+        }
     }
 }
