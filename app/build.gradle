@@ -185,9 +185,6 @@ configurations.configureEach {
     exclude group: 'org.jetbrains', module: 'annotations-java5' // via prism4j, already using annotations explicitly
 }
 
-project.ext.ASSET_DIR = projectDir.toString() + '/src/main/assets'
-apply from: 'download_model.gradle'
-
 dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.9.5'
