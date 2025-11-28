@@ -402,9 +402,11 @@ object ApiUtils {
     fun getUrlForUnbindingRoom(baseUrl: String, roomToken: String): String =
         "$baseUrl/ocs/v2.php/apps/spreed/api/v4/room/$roomToken/object"
 
-    fun getUrlForFileUpload(baseUrl: String, user: String, remotePath: String): String =
-        "$baseUrl/remote.php/dav/files/$user$remotePath"
-
+    fun getUrlForFileUpload(baseUrl: String, user: String, remotePath: String): String {
+        val encodedRemotePath = Uri.encode(remotePath,"/")
+        return "$baseUrl/remote.php/dav/files/$user$encodedRemotePath"
+    }
+    
     fun getUrlForChunkedUpload(baseUrl: String, user: String): String = "$baseUrl/remote.php/dav/uploads/$user"
 
     fun getUrlForFileDownload(baseUrl: String, user: String, remotePath: String): String {
