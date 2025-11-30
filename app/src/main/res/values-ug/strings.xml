@@ -8,6 +8,7 @@
     <string name="appear_offline">تورسىز كۆرۈنۈش</string>
     <string name="archive_conversation">ئارخىپ سۆھبىتى</string>
     <string name="archived">ئارخىپلاشتۇرۇلغان</string>
+    <string name="archived_conversation">%1$s دا ئارخىپلاندى</string>
     <string name="audio_output_bluetooth">كۆك چىش</string>
     <string name="audio_output_dialog_headline">ئاۋاز چىقىرىش</string>
     <string name="audio_output_phone">تېلېفون</string>
