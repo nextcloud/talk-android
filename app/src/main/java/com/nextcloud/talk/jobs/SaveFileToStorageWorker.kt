@@ -41,7 +41,7 @@ class SaveFileToStorageWorker(val context: Context, workerParameters: WorkerPara
         try {
             val cacheFile = File(inputData.getString(KEY_SOURCE_FILE_PATH)!!)
             val contentResolver = context.contentResolver
-            val mimeType = URLConnection.guessContentTypeFromName(cacheFile.name)
+            val mimeType = URLConnection.guessContentTypeFromName(cacheFile.name)?:"application/octet-stream"
 
             val values = ContentValues().apply {
                 if (mimeType.startsWith(IMAGE_PREFIX) || mimeType.startsWith(VIDEO_PREFIX)) {
