@@ -8,8 +8,7 @@
 package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.User
-import io.reactivex.Maybe
 
 interface CurrentUserProviderNew {
-    val currentUser: Maybe<User>
+    suspend fun getCurrentUser(): User
 }
