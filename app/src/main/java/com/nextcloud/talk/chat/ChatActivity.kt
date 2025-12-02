@@ -1564,20 +1564,21 @@ class ChatActivity :
         message.isPlayingVoiceMessage = true
         adapter?.update(message)
 
-        var pos = adapter?.getMessagePositionById(message.id)!! - 1
+        var pos = adapter?.getMessagePositionById(message.id) ?: -1
         do {
             if (pos < 0) break
             val nextItem = (adapter?.items?.get(pos)?.item) ?: break
-            val nextMessage = if (nextItem is ChatMessage) nextItem else break
+            val nextMessage = nextItem as? ChatMessage ?: break
             if (!nextMessage.isVoiceMessage) break
 
             downloadFileToCache(nextMessage, false) {
-                val newFilename = nextMessage.selectedIndividualHashMap!!["name"]
-                val newFile = File(context.cacheDir, newFilename!!)
-                chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
+                nextMessage.selectedIndividualHashMap?.get("name")?.let{ newFileName ->
+                    val newFile = File(context.cacheDir, newFileName)
+                    chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
+                }
             }
             pos--
-        } while (true && pos >= 0)
+        } while (pos >= 0)
     }
 
     @Suppress("LongMethod")
