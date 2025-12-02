@@ -64,6 +64,7 @@ import com.nextcloud.talk.chat.viewmodels.MessageInputViewModel
 import com.nextcloud.talk.data.network.NetworkMonitor
 import com.nextcloud.talk.databinding.FragmentMessageInputBinding
 import com.nextcloud.talk.jobs.UploadAndShareFilesWorker
+import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.models.json.mention.Mention
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -141,12 +142,7 @@ class MessageInputFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMessageInputBinding.inflate(inflater)
         themeMessageInputView()
-        initMessageInputView()
-        initSmileyKeyboardToggler()
-        setupMentionAutocomplete()
-        initVoiceRecordButton()
-        initThreadHandling()
-        restoreState()
+
         return binding.root
     }
 
@@ -173,6 +169,22 @@ class MessageInputFragment : Fragment() {
 
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
+        // FIXME conversation state not saved on orientation change
+        chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ChatViewModel.GetCapabilitiesInitialLoadState -> {
+                    initMessageInputView(state.spreedCapabilities)
+                    initSmileyKeyboardToggler()
+                    setupMentionAutocomplete()
+                    initVoiceRecordButton()
+                    initThreadHandling()
+                    restoreState()
+                }
+
+                else -> {}
+            }
+        }
+
         chatActivity.messageInputViewModel.getReplyChatMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
                 chatActivity.chatViewModel.messageDraft.quotedMessageText = message.text
@@ -345,11 +357,11 @@ class MessageInputFragment : Fragment() {
         }
     }
 
-    private fun initMessageInputView() {
+    private fun initMessageInputView(spreedCapabilities: SpreedCapability) {
         if (!chatActivity.active) return
 
         val filters = arrayOfNulls<InputFilter>(1)
-        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(chatActivity.spreedCapabilities)
+        val lengthFilter = CapabilitiesUtil.getMessageMaxLength(spreedCapabilities)
 
         binding.fragmentEditView.editMessageView.visibility = View.GONE
         binding.fragmentMessageInputView.setPadding(0, 0, 0, 0)
@@ -451,9 +463,9 @@ class MessageInputFragment : Fragment() {
                         message,
                         inputEditText
                     )
-                    editMessageAPI(message, editedMessage.toString())
+                    editMessageAPI(message, editedMessage.toString(), spreedCapabilities)
                 } else {
-                    editMessageAPI(message, inputEditText.toString())
+                    editMessageAPI(message, inputEditText, spreedCapabilities)
                 }
             }
             clearEditUI()
@@ -465,7 +477,7 @@ class MessageInputFragment : Fragment() {
             cancelCreateThread()
         }
 
-        if (CapabilitiesUtil.hasSpreedFeatureCapability(chatActivity.spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
+        if (CapabilitiesUtil.hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.SILENT_SEND)) {
             binding.fragmentMessageInputView.button?.setOnLongClickListener {
                 showSendButtonMenu()
                 true
@@ -963,9 +975,9 @@ class MessageInputFragment : Fragment() {
         popupMenu.show()
     }
 
-    private fun editMessageAPI(message: ChatMessage, editedMessageText: String) {
+    private fun editMessageAPI(message: ChatMessage, editedMessageText: String, spreedCapabilities: SpreedCapability) {
         // FIXME Fix API checking with guests?
-        val apiVersion: Int = ApiUtils.getChatApiVersion(chatActivity.spreedCapabilities, intArrayOf(1))
+        val apiVersion: Int = ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(1))
 
         if (message.isTemporary) {
             chatActivity.messageInputViewModel.editTempChatMessage(
