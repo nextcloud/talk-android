@@ -142,6 +142,12 @@ class FullScreenImageActivity : AppCompatActivity() {
 
         val bitmap = BitmapShrinker.shrinkBitmap(path, doubleScreenWidth, doubleScreenHeight)
 
+        if (bitmap == null) {
+            Log.e(TAG, "bitmap could not be decoded from path: $path")
+            Snackbar.make(binding.root, R.string.nc_common_error_sorry, Snackbar.LENGTH_LONG).show()
+            return
+        }
+
         val bitmapSize: Int = bitmap.byteCount
 
         // info that 100MB is the limit comes from https://stackoverflow.com/a/53334563

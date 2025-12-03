@@ -21,19 +21,25 @@ object BitmapShrinker {
     private const val DEGREES_270 = 270f
 
     @JvmStatic
-    fun shrinkBitmap(path: String, reqWidth: Int, reqHeight: Int): Bitmap {
-        val bitmap = decodeBitmap(path, reqWidth, reqHeight)
+    fun shrinkBitmap(path: String, reqWidth: Int, reqHeight: Int): Bitmap? {
+        val bitmap = decodeBitmap(path, reqWidth, reqHeight) ?: return null
         return rotateBitmap(path, bitmap)
     }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
-    private fun decodeBitmap(path: String, requestedWidth: Int, requestedHeight: Int): Bitmap =
+    private fun decodeBitmap(path: String, requestedWidth: Int, requestedHeight: Int): Bitmap? =
         BitmapFactory.Options().run {
             inJustDecodeBounds = true
             BitmapFactory.decodeFile(path, this)
             inSampleSize = getInSampleSize(this, requestedWidth, requestedHeight)
             inJustDecodeBounds = false
-            BitmapFactory.decodeFile(path, this)
+            BitmapFactory.decodeFile(path, this)?.also { bitmap ->
+                Log.d(TAG, "Bitmap decoded successfully from path: $path")
+                return@run bitmap
+            }
+
+            Log.e(TAG, "Failed to decode bitmap from path: $path")
+            null
         }
 
     // solution inspired by https://developer.android.com/topic/performance/graphics/load-bitmap
