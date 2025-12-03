@@ -1572,7 +1572,7 @@ class ChatActivity :
             if (!nextMessage.isVoiceMessage) break
 
             downloadFileToCache(nextMessage, false) {
-                nextMessage.selectedIndividualHashMap?.get("name")?.let{ newFileName ->
+                nextMessage.selectedIndividualHashMap?.get("name")?.let { newFileName ->
                     val newFile = File(context.cacheDir, newFileName)
                     chatViewModel.queueInMediaPlayer(newFile.canonicalPath, nextMessage)
                 }
