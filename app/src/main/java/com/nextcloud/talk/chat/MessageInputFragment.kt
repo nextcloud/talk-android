@@ -169,9 +169,12 @@ class MessageInputFragment : Fragment() {
 
     private fun initObservers() {
         Log.d(TAG, "LifeCyclerOwner is: ${viewLifecycleOwner.lifecycle}")
-        // FIXME conversation state not saved on orientation change
         chatActivity.chatViewModel.getCapabilitiesViewState.observe(viewLifecycleOwner) { state ->
             when (state) {
+                is ChatViewModel.GetCapabilitiesUpdateState -> {
+                    restoreState()
+                }
+
                 is ChatViewModel.GetCapabilitiesInitialLoadState -> {
                     initMessageInputView(state.spreedCapabilities)
                     initSmileyKeyboardToggler()
