@@ -187,7 +187,7 @@ configurations.configureEach {
 
 dependencies {
     implementation "androidx.room:room-testing-android:${roomVersion}"
-    implementation 'androidx.compose.foundation:foundation-layout:1.9.5'
+    implementation 'androidx.compose.foundation:foundation-layout:1.10.0'
     spotbugsPlugins 'com.h3xstream.findsecbugs:findsecbugs-plugin:1.14.0'
     spotbugsPlugins 'com.mebigfatguy.fb-contrib:fb-contrib:7.7.1'
     detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.8")
