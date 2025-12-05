@@ -418,4 +418,31 @@ object Migrations {
             Log.i("Migrations", "Something went wrong when adding column silent to table ChatMessages", e)
         }
     }
+
+    fun migrateToFileUploads(db: SupportSQLiteDatabase) {
+        try {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS FileUploads (" +
+                    "id INTEGER NOT NULL, " +
+                    "internalConversationId TEXT NOT NULL, " +
+                    "fileName TEXT, " +
+                    "progress REAL NOT NULL, " +
+                    "status TEXT, " +
+                    "hidden INTEGER NOT NULL, " +
+                    "timestamp INTEGER NOT NULL, " +
+                    "PRIMARY KEY (id), " +
+                    "FOREIGN KEY (internalConversationId) " +
+                    "REFERENCES Conversations(id) " +
+                    "ON UPDATE CASCADE " +
+                    "ON DELETE CASCADE" +
+                    ")"
+            )
+
+            db.execSQL(
+                "CREATE INDEX `index_FileUploads_internalConversationId` ON `FileUploads` (`internalConversationId`);"
+            )
+        } catch (e: SQLException) {
+            Log.i("Migrations", "Something went wrong while creating the FileUploads table", e)
+        }
+    }
 }
