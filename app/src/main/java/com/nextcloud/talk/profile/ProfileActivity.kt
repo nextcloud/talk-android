@@ -128,7 +128,7 @@ class ProfileActivity : BaseActivity() {
         adapter = UserInfoAdapter(null, viewThemeUtils, this)
         binding.userinfoList.adapter = adapter
         binding.userinfoList.setItemViewCacheSize(DEFAULT_CACHE_SIZE)
-        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser = currentUserProviderOld.currentUser.blockingGet()
         val credentials = ApiUtils.getCredentials(currentUser!!.username, currentUser!!.token)
 
         pickImage = PickImage(this, currentUser)

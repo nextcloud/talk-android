@@ -61,7 +61,7 @@ class ListOpenConversationsActivity : BaseActivity() {
         viewThemeUtils.platform.colorImageView(binding.searchOpenConversations, ColorRole.ON_SURFACE)
         viewThemeUtils.material.colorTextInputLayout(binding.textInputLayout)
 
-        val user = currentUserProvider.currentUser.blockingGet()
+        val user = currentUserProviderOld.currentUser.blockingGet()
 
         adapter = OpenConversationsAdapter(user, viewThemeUtils) { conversation -> adapterOnClick(conversation) }
         binding.openConversationsRecyclerView.adapter = adapter

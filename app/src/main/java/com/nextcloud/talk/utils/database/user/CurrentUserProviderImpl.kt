@@ -19,15 +19,16 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CurrentUserProviderImpl @Inject constructor(private val userManager: UserManager) : CurrentUserProviderNew {
+class CurrentUserProviderImpl @Inject constructor(private val userManager: UserManager) : CurrentUserProvider {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    private val _currentUser: StateFlow<User?> = userManager.currentUserObservable
+    private val currentUser: StateFlow<User?> = userManager.currentUserObservable
         .asFlow()
         .stateIn(
             scope = scope,
@@ -36,11 +37,18 @@ class CurrentUserProviderImpl @Inject constructor(private val userManager: UserM
         )
 
     // only emit non-null users
-    val currentUserFlow: Flow<User> = _currentUser.filterNotNull()
+    val currentUserFlow: Flow<User> = currentUser.filterNotNull()
 
     // function for safe one-shot access
-    override suspend fun getCurrentUser(): User {
-        // suspends until a non-null user is available
-        return currentUserFlow.first()
+    override suspend fun getCurrentUser(timeout: Long): Result<User> {
+        val user = withTimeoutOrNull(timeout) {
+            currentUserFlow.first()
+        }
+
+        return if (user != null) {
+            Result.success(user)
+        } else {
+            Result.failure(IllegalStateException("No current user available"))
+        }
     }
 }

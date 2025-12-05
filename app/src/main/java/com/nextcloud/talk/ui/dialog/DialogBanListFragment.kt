@@ -24,7 +24,7 @@ import com.nextcloud.talk.databinding.BanItemListBinding
 import com.nextcloud.talk.databinding.FragmentDialogBanListBinding
 import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -39,7 +39,7 @@ class DialogBanListFragment(val roomToken: String) : DialogFragment() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     lateinit var viewModel: ConversationInfoViewModel
     private lateinit var conversationUser: User

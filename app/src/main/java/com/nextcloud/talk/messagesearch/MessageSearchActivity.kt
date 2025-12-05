@@ -73,7 +73,7 @@ class MessageSearchActivity : BaseActivity() {
         initSystemBars()
 
         viewModel = ViewModelProvider(this, viewModelFactory)[MessageSearchViewModel::class.java]
-        user = currentUserProvider.currentUser.blockingGet()
+        user = currentUserProviderOld.currentUser.blockingGet()
         val roomToken = intent.getStringExtra(BundleKeys.KEY_ROOM_TOKEN)!!
         viewModel.initialize(roomToken)
         setupStateObserver()

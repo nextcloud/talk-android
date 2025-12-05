@@ -40,7 +40,10 @@ class MessageSearchHelperTest {
     fun emptySearch() {
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(0, false, emptyList())
 
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
 
         val testObserver = sut.startMessageSearch("foo").test()
         testObserver.assertComplete()
@@ -54,7 +57,10 @@ class MessageSearchHelperTest {
         val entries = (1..5).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(5, true, entries)
 
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
 
         val observable = sut.startMessageSearch("foo")
         val expected = MessageSearchHelper.MessageSearchResults(entries, true)
@@ -66,7 +72,10 @@ class MessageSearchHelperTest {
         val entries = (1..2).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(2, false, entries)
 
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
 
         val observable = sut.startMessageSearch("foo")
         val expected = MessageSearchHelper.MessageSearchResults(entries, false)
@@ -78,7 +87,10 @@ class MessageSearchHelperTest {
         val entries = (1..2).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(2, false, entries)
 
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
 
         repeat(5) {
             val observable = sut.startMessageSearch("foo")
@@ -89,13 +101,19 @@ class MessageSearchHelperTest {
 
     @Test
     fun loadMore_noPreviousResults() {
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
         Assert.assertEquals(null, sut.loadMore())
     }
 
     @Test
     fun loadMore_previousResults_sameSearch() {
-        val sut = MessageSearchHelper(repository)
+        val sut = MessageSearchHelper(
+            repository,
+            currentUser = null
+        )
 
         val firstPageEntries = (1..5).map { createMessageEntry() }
         repository.response = UnifiedSearchRepository.UnifiedSearchResults(5, true, firstPageEntries)

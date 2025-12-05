@@ -37,6 +37,7 @@ import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.repositories.reactions.ReactionsRepository
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
+import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.nextcloud.talk.utils.CapabilitiesUtil.hasSpreedFeatureCapability
 import com.nextcloud.talk.utils.ConversationUtils
@@ -566,13 +567,34 @@ class MessageActionsDialog(
         }
 
     private fun clickOnEmoji(message: ChatMessage, emoji: String) {
+        val credentials = ApiUtils.getCredentials(user!!.username, user.token)
+        val url = ApiUtils.getUrlForMessageReaction(
+            user.baseUrl!!,
+            currentConversation!!.token,
+            message.id
+        )
+
         if (message.reactionsSelf?.contains(emoji) == true) {
-            reactionsRepository.deleteReaction(currentConversation!!.token!!, message, emoji)
+            reactionsRepository.deleteReaction(
+                credentials,
+                user.id!!,
+                url,
+                currentConversation.token,
+                message,
+                emoji
+            )
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionDeletedObserver())
         } else {
-            reactionsRepository.addReaction(currentConversation!!.token!!, message, emoji)
+            reactionsRepository.addReaction(
+                credentials,
+                user.id!!,
+                url,
+                currentConversation.token,
+                message,
+                emoji
+            )
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(ReactionAddedObserver())

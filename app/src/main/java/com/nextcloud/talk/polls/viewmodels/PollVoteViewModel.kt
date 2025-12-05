@@ -13,13 +13,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.nextcloud.talk.polls.model.Poll
 import com.nextcloud.talk.polls.repositories.PollRepository
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class PollVoteViewModel @Inject constructor(private val repository: PollRepository) : ViewModel() {
+class PollVoteViewModel @Inject constructor(
+    private val repository: PollRepository,
+    private val currentUserProvider: CurrentUserProviderOld
+) : ViewModel() {
 
     sealed interface ViewState
     object InitialState : ViewState
@@ -45,6 +50,9 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
     val selectedOptions: List<Int>
         get() = _selectedOptions
 
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
+    private val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
+
     fun initVotedOptions(selectedOptions: List<Int>) {
         _votedOptions = selectedOptions
         _selectedOptions = selectedOptions
@@ -66,7 +74,19 @@ class PollVoteViewModel @Inject constructor(private val repository: PollReposito
         if (_selectedOptions.isNotEmpty()) {
             _submitButtonEnabled.value = false
 
-            repository.vote(roomToken, pollId, _selectedOptions)
+            val url = ApiUtils.getUrlForPoll(
+                currentUser.baseUrl!!,
+                roomToken,
+                pollId
+            )
+
+            repository.vote(
+                credentials,
+                url,
+                roomToken,
+                pollId,
+                _selectedOptions
+            )
                 .doOnSubscribe { disposable = it }
                 ?.subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())

@@ -13,7 +13,7 @@ import androidx.lifecycle.viewModelScope
 import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.data.user.model.User
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @Suppress("TooGenericExceptionCaught")
 class DiagnoseViewModel @Inject constructor(
     private val ncApiCoroutines: NcApiCoroutines,
-    private val currentUserProvider: CurrentUserProviderNew
+    private val currentUserProvider: CurrentUserProviderOld
 ) : ViewModel() {
     private val _currentUser = currentUserProvider.currentUser.blockingGet()
     val currentUser: User = _currentUser

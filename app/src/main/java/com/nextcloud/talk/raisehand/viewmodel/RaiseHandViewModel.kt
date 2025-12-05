@@ -14,13 +14,18 @@ import com.nextcloud.talk.raisehand.RequestAssistanceModel
 import com.nextcloud.talk.raisehand.RequestAssistanceRepository
 import com.nextcloud.talk.raisehand.WithdrawRequestAssistanceModel
 import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.ApiUtils
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
-class RaiseHandViewModel @Inject constructor(private val repository: RequestAssistanceRepository) : ViewModel() {
+class RaiseHandViewModel @Inject constructor(
+    private val repository: RequestAssistanceRepository,
+    private val currentUserProvider: CurrentUserProviderOld
+) : ViewModel() {
 
     @Inject
     lateinit var userManager: UserManager
@@ -33,6 +38,8 @@ class RaiseHandViewModel @Inject constructor(private val repository: RequestAssi
     object RaisedHandState : ViewState
     object LoweredHandState : ViewState
     object ErrorState : ViewState
+
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(LoweredHandState)
     val viewState: LiveData<ViewState>
@@ -53,7 +60,19 @@ class RaiseHandViewModel @Inject constructor(private val repository: RequestAssi
     private fun raiseHand() {
         _viewState.value = RaisedHandState
         if (isBreakoutRoom) {
-            repository.requestAssistance(roomToken)
+            val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
+            val apiVersion = 1
+            val url = ApiUtils.getUrlForRequestAssistance(
+                apiVersion,
+                currentUser.baseUrl,
+                roomToken
+            )
+
+            repository.requestAssistance(
+                credentials,
+                url,
+                roomToken
+            )
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(RequestAssistanceObserver())
@@ -63,7 +82,19 @@ class RaiseHandViewModel @Inject constructor(private val repository: RequestAssi
     fun lowerHand() {
         _viewState.value = LoweredHandState
         if (isBreakoutRoom) {
-            repository.withdrawRequestAssistance(roomToken)
+            val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
+            val apiVersion = 1
+            val url = ApiUtils.getUrlForRequestAssistance(
+                apiVersion,
+                currentUser.baseUrl,
+                roomToken
+            )
+
+            repository.withdrawRequestAssistance(
+                credentials,
+                url,
+                roomToken
+            )
                 .subscribeOn(Schedulers.io())
                 ?.observeOn(AndroidSchedulers.mainThread())
                 ?.subscribe(WithdrawRequestAssistanceObserver())

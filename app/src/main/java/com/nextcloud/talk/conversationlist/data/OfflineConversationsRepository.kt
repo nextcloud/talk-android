@@ -7,6 +7,7 @@
 
 package com.nextcloud.talk.conversationlist.data
 
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -29,15 +30,15 @@ interface OfflineConversationsRepository {
      * emits to [roomListFlow] if the rooms list is not empty.
      *
      */
-    fun getRooms(): Job
+    fun getRooms(user: User): Job
 
     /**
      * Called once onStart to emit a conversation to [conversationFlow]
      * to be handled asynchronously.
      */
-    fun getRoom(roomToken: String): Job
+    fun getRoom(user: User, roomToken: String): Job
 
     suspend fun updateConversation(conversationModel: ConversationModel)
 
-    suspend fun getLocallyStoredConversation(roomToken: String): ConversationModel?
+    suspend fun getLocallyStoredConversation(user: User, roomToken: String): ConversationModel?
 }

@@ -7,16 +7,20 @@
 
 package com.nextcloud.talk.contacts
 
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteOverall
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 
 interface ContactsRepository {
-    suspend fun getContacts(searchQuery: String?, shareTypes: List<String>): AutocompleteOverall
+    suspend fun getContacts(user: User, searchQuery: String?, shareTypes: List<String>): AutocompleteOverall
+
     suspend fun createRoom(
+        user: User,
         roomType: String,
         sourceType: String?,
         userId: String,
         conversationName: String?
     ): RoomOverall
-    fun getImageUri(avatarId: String, requestBigSize: Boolean): String
+
+    fun getImageUri(user: User, avatarId: String, requestBigSize: Boolean): String
 }

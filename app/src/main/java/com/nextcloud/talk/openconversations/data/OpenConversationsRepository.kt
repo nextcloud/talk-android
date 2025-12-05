@@ -6,9 +6,10 @@
  */
 package com.nextcloud.talk.openconversations.data
 
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.Conversation
 
 interface OpenConversationsRepository {
 
-    suspend fun fetchConversations(searchTerm: String): Result<List<Conversation>>
+    suspend fun fetchConversations(user: User, url: String, searchTerm: String): Result<List<Conversation>>
 }

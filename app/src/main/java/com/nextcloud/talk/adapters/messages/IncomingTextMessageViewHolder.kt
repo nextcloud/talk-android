@@ -36,7 +36,7 @@ import com.nextcloud.talk.utils.ChatMessageUtils
 import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.SpreedFeatures
 import com.nextcloud.talk.utils.TextMatchers
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addCheckboxLine
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.addPlainTextLine
 import com.nextcloud.talk.utils.message.MessageCheckboxUtils.matchCheckbox
@@ -75,7 +75,7 @@ class IncomingTextMessageViewHolder(itemView: View, payload: Any) :
     lateinit var dateUtils: DateUtils
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     lateinit var commonMessageInterface: CommonMessageInterface
 

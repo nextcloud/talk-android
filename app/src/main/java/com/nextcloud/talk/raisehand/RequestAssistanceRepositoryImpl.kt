@@ -7,38 +7,29 @@
 package com.nextcloud.talk.raisehand
 
 import com.nextcloud.talk.api.NcApi
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class RequestAssistanceRepositoryImpl(private val ncApi: NcApi, currentUserProvider: CurrentUserProviderNew) :
-    RequestAssistanceRepository {
+class RequestAssistanceRepositoryImpl(private val ncApi: NcApi) : RequestAssistanceRepository {
 
-    val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
-
-    var apiVersion = 1
-
-    override fun requestAssistance(roomToken: String): Observable<RequestAssistanceModel> =
+    override fun requestAssistance(
+        credentials: String,
+        url: String,
+        roomToken: String
+    ): Observable<RequestAssistanceModel> =
         ncApi.requestAssistance(
             credentials,
-            ApiUtils.getUrlForRequestAssistance(
-                apiVersion,
-                currentUser.baseUrl,
-                roomToken
-            )
+            url
         ).map { mapToRequestAssistanceModel(it.ocs?.meta!!) }
 
-    override fun withdrawRequestAssistance(roomToken: String): Observable<WithdrawRequestAssistanceModel> =
+    override fun withdrawRequestAssistance(
+        credentials: String,
+        url: String,
+        roomToken: String
+    ): Observable<WithdrawRequestAssistanceModel> =
         ncApi.withdrawRequestAssistance(
             credentials,
-            ApiUtils.getUrlForRequestAssistance(
-                apiVersion,
-                currentUser.baseUrl,
-                roomToken
-            )
+            url
         ).map { mapToWithdrawRequestAssistanceModel(it.ocs?.meta!!) }
 
     private fun mapToRequestAssistanceModel(response: GenericMeta): RequestAssistanceModel {

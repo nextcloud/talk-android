@@ -47,8 +47,8 @@ import com.nextcloud.talk.ui.theme.MaterialSchemesProviderImpl
 import com.nextcloud.talk.ui.theme.TalkSpecificViewThemeUtils
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderImpl
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import com.nextcloud.talk.utils.message.MessageUtils
 import com.nextcloud.talk.utils.preferences.AppPreferences
 import com.nextcloud.talk.utils.preferences.AppPreferencesImpl
@@ -83,8 +83,8 @@ class ComposePreviewUtils private constructor(context: Context) {
     val userManager: UserManager
         get() = UserManager(userRepository)
 
-    val userProvider: CurrentUserProviderNew
-        get() = CurrentUserProviderImpl(userManager)
+    val userProvider: CurrentUserProviderOld
+        get() = CurrentUserProviderOldImpl(userManager)
 
     val colorUtil: ColorUtil
         get() = ColorUtil(mContext)
@@ -145,12 +145,11 @@ class ComposePreviewUtils private constructor(context: Context) {
             chatMessagesDao,
             chatBlocksDao,
             chatNetworkDataSource,
-            networkMonitor,
-            userProvider
+            networkMonitor
         )
 
     val threadsRepository: ThreadsRepository
-        get() = ThreadsRepositoryImpl(ncApiCoroutines, userProvider)
+        get() = ThreadsRepositoryImpl(ncApiCoroutines)
 
     val conversationNetworkDataSource: ConversationsNetworkDataSource
         get() = RetrofitConversationsNetwork(ncApi)
@@ -160,12 +159,11 @@ class ComposePreviewUtils private constructor(context: Context) {
             conversationsDao,
             conversationNetworkDataSource,
             chatNetworkDataSource,
-            networkMonitor,
-            userProvider
+            networkMonitor
         )
 
     val reactionsRepository: ReactionsRepository
-        get() = ReactionsRepositoryImpl(ncApi, userProvider, chatMessagesDao)
+        get() = ReactionsRepositoryImpl(ncApi, chatMessagesDao)
 
     val mediaRecorderManager: MediaRecorderManager
         get() = MediaRecorderManager()
@@ -182,13 +180,12 @@ class ComposePreviewUtils private constructor(context: Context) {
             conversationRepository,
             reactionsRepository,
             mediaRecorderManager,
-            audioFocusRequestManager,
-            userProvider
+            audioFocusRequestManager
         )
 
     val contactsRepository: ContactsRepository
-        get() = ContactsRepositoryImpl(ncApiCoroutines, userProvider)
+        get() = ContactsRepositoryImpl(ncApiCoroutines)
 
     val contactsViewModel: ContactsViewModel
-        get() = ContactsViewModel(contactsRepository)
+        get() = ContactsViewModel(contactsRepository, userProvider)
 }
