@@ -19,6 +19,7 @@ import android.widget.FrameLayout
 import androidx.annotation.OptIn
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
@@ -156,7 +157,7 @@ class FullScreenMediaActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer() {
-        val mediaItem: MediaItem = MediaItem.fromUri(path)
+        val mediaItem: MediaItem = MediaItem.fromUri(File(path).toUri())
         player?.let { exoPlayer ->
             exoPlayer.setMediaItem(mediaItem)
             exoPlayer.playWhenReady = playWhenReadyState
