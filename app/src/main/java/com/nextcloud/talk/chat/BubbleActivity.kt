@@ -12,15 +12,21 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import com.nextcloud.talk.R
+import com.nextcloud.talk.activities.MainActivity
 import com.nextcloud.talk.utils.bundle.BundleKeys
 
 class BubbleActivity : ChatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
-        supportActionBar?.setDisplayShowHomeEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_talk)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
         
+        findViewById<androidx.appcompat.widget.Toolbar>(R.id.chat_toolbar)?.setNavigationOnClickListener {
+            openConversationList()
+        }
+
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
                 moveTaskToBack(false)
@@ -43,21 +49,36 @@ class BubbleActivity : ChatActivity() {
                 openInMainApp()
                 true
             }
+            android.R.id.home -> {
+                openConversationList()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
 
     private fun openInMainApp() {
-        val intent = Intent(this, ChatActivity::class.java).apply {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
             putExtras(this@BubbleActivity.intent)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            conversationUser?.id?.let { putExtra(BundleKeys.KEY_INTERNAL_USER_ID, it) }
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
         }
         startActivity(intent)
-        moveTaskToBack(false)
+    }
+
+    private fun openConversationList() {
+        val intent = Intent(this, MainActivity::class.java).apply {
+            action = Intent.ACTION_MAIN
+            addCategory(Intent.CATEGORY_LAUNCHER)
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        }
+        startActivity(intent)
     }
 
     @Deprecated("Deprecated in Java")
     override fun onSupportNavigateUp(): Boolean {
-        moveTaskToBack(false)
+        openInMainApp()
         return true
     }
 
