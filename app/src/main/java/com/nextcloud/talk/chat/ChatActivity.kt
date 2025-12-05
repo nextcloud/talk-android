@@ -34,6 +34,7 @@ import android.provider.MediaStore
 import android.provider.Settings
 import android.text.SpannableStringBuilder
 import android.text.TextUtils
+import android.text.format.DateFormat
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -59,11 +60,33 @@ import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.cardview.widget.CardView
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -167,12 +190,14 @@ import com.nextcloud.talk.signaling.SignalingMessageReceiver
 import com.nextcloud.talk.signaling.SignalingMessageSender
 import com.nextcloud.talk.threadsoverview.ThreadsOverviewActivity
 import com.nextcloud.talk.translate.ui.TranslateActivity
+import com.nextcloud.talk.ui.ComposeChatAdapter
 import com.nextcloud.talk.ui.PlaybackSpeed
 import com.nextcloud.talk.ui.PlaybackSpeedControl
 import com.nextcloud.talk.ui.StatusDrawable
 import com.nextcloud.talk.ui.bottom.sheet.ProfileBottomSheet
 import com.nextcloud.talk.ui.dialog.DateTimeCompose
 import com.nextcloud.talk.ui.dialog.FileAttachmentPreviewFragment
+import com.nextcloud.talk.ui.dialog.GetPinnedOptionsDialog
 import com.nextcloud.talk.ui.dialog.MessageActionsDialog
 import com.nextcloud.talk.ui.dialog.SaveToStorageDialogFragment
 import com.nextcloud.talk.ui.dialog.ShowReactionsDialog
@@ -250,7 +275,7 @@ import java.util.concurrent.ExecutionException
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
-@Suppress("TooManyFunctions")
+@Suppress("TooManyFunctions", "LargeClass", "LongMethod")
 @AutoInjector(NextcloudTalkApplication::class)
 class ChatActivity :
     BaseActivity(),
@@ -648,7 +673,7 @@ class ChatActivity :
 
         this.lifecycleScope.launch {
             chatViewModel.getConversationFlow
-                .onEach { conversationModel ->
+                .collect { conversationModel ->
                     currentConversation = conversationModel
                     chatViewModel.updateConversation(
                         currentConversation!!
@@ -663,7 +688,30 @@ class ChatActivity :
                     }
 
                     chatViewModel.getCapabilities(conversationUser!!, roomToken, currentConversation!!)
-                }.collect()
+
+                    if (conversationModel.lastPinnedId != null &&
+                        conversationModel.lastPinnedId != 0L &&
+                        conversationModel.lastPinnedId != conversationModel.hiddenPinnedId
+                    ) {
+                        chatViewModel
+                            .getIndividualMessageFromServer(
+                                credentials!!,
+                                conversationUser?.baseUrl!!,
+                                roomToken,
+                                conversationModel.lastPinnedId.toString()
+                            )
+                            .collect { message ->
+                                message?.let {
+                                    binding.pinnedMessageContainer.visibility = View.VISIBLE
+                                    binding.pinnedMessageComposeView.setContent {
+                                        PinnedMessageView(message)
+                                    }
+                                }
+                            }
+                    } else {
+                        binding.pinnedMessageContainer.visibility = View.GONE
+                    }
+                }
         }
 
         chatViewModel.getRoomViewState.observe(this) { state ->
@@ -1130,6 +1178,10 @@ class ChatActivity :
                     val item = adapter?.items?.get(index)?.item
                     item?.let {
                         setMessageAsEdited(item as ChatMessage, newString)
+
+                        if (item.jsonMessageId.toLong() == currentConversation?.lastPinnedId) {
+                            chatViewModel.getRoom(roomToken)
+                        }
                     }
                 }
 
@@ -1309,6 +1361,94 @@ class ChatActivity :
                         invalidateOptionsMenu()
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun PinnedMessageView(message: ChatMessage) {
+        message.incoming = true
+        val pinnedBy = stringResource(R.string.pinned_by)
+        message.actorDisplayName = "${message.actorDisplayName}\n$pinnedBy ${message.pinnedActorDisplayName}"
+        val scrollState = rememberScrollState()
+
+        val outgoingBubbleColor = remember {
+            val colorInt = viewThemeUtils.talk
+                .getOutgoingMessageBubbleColor(context, message.isDeleted, false)
+
+            Color(colorInt)
+        }
+
+        val incomingBubbleColor = remember {
+            val colorInt = resources
+                .getColor(R.color.bg_message_list_incoming_bubble, null)
+
+            Color(colorInt)
+        }
+
+        val isAllowed = remember {
+            ConversationUtils.isParticipantOwnerOrModerator(currentConversation!!)
+        }
+
+        Column(
+            verticalArrangement = Arrangement.spacedBy((-16).dp),
+            modifier = Modifier
+        ) {
+            Box(
+                modifier = Modifier
+                    .shadow(4.dp, shape = RoundedCornerShape(16.dp))
+                    .background(incomingBubbleColor, RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+                    .verticalScroll(scrollState)
+            ) {
+                ComposeChatAdapter().GetComposableForMessage(message)
+            }
+
+            Row(
+                modifier = Modifier
+                    .padding(start = 16.dp)
+                    .background(outgoingBubbleColor, RoundedCornerShape(16.dp))
+                    .padding(16.dp)
+            ) {
+                val hiddenEye = painterResource(R.drawable.ic_eye_off)
+                Icon(
+                    hiddenEye,
+                    "Hide pin",
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clickable {
+                            hidePinnedMessage(message)
+                        }
+                )
+
+                if (isAllowed) {
+                    Spacer(modifier = Modifier.size(16.dp))
+                    val read = painterResource(R.drawable.keep_off_24px)
+                    Icon(
+                        read,
+                        "Unpin",
+                        modifier = Modifier
+                            .size(16.dp)
+                            .clickable {
+                                unPinMessage(message)
+                            }
+                    )
+                }
+
+                val pinnedUntilStr = stringResource(R.string.pinned_until)
+                val pinnedIndefinitely = stringResource(R.string.pinned_indefinitely)
+                val pinnedText = message.pinnedUntil?.let {
+                    val format = if (DateFormat.is24HourFormat(context)) "EEE, HH:mm" else "EEE, hh:mm a"
+                    val localDateTime = Instant.ofEpochMilli(it)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime()
+
+                    val timeString = localDateTime.format(DateTimeFormatter.ofPattern(format))
+
+                    "$pinnedUntilStr $timeString"
+                } ?: pinnedIndefinitely
+
+                Text(pinnedText, modifier = Modifier.padding(start = 16.dp))
             }
         }
     }
@@ -3913,6 +4053,32 @@ class ChatActivity :
                 DateTimeCompose(bundle).GetDateTimeDialog(shouldDismiss, this@ChatActivity)
             }
         }
+    }
+
+    fun hidePinnedMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.hidePinnedMessage(credentials!!, url)
+    }
+
+    fun pinMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        binding.genericComposeView.apply {
+            val shouldDismiss = mutableStateOf(false)
+            setContent {
+                GetPinnedOptionsDialog(shouldDismiss, context, viewThemeUtils) { zonedDateTime ->
+                    zonedDateTime?.let {
+                        chatViewModel.pinMessage(credentials!!, url, pinUntil = zonedDateTime.toEpochSecond().toInt())
+                    } ?: chatViewModel.pinMessage(credentials!!, url)
+
+                    shouldDismiss.value = true
+                }
+            }
+        }
+    }
+
+    fun unPinMessage(message: ChatMessage) {
+        val url = ApiUtils.getUrlForChatMessagePinning(chatApiVersion, conversationUser?.baseUrl, roomToken, message.id)
+        chatViewModel.unPinMessage(credentials!!, url)
     }
 
     fun markAsUnread(message: IMessage?) {
