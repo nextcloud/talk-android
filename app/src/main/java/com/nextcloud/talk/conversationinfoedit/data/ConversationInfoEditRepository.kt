@@ -14,11 +14,32 @@ import java.io.File
 
 interface ConversationInfoEditRepository {
 
-    fun uploadConversationAvatar(user: User, file: File, roomToken: String): Observable<ConversationModel>
+    fun uploadConversationAvatar(
+        credentials: String?,
+        url: String,
+        user: User,
+        file: File,
+        roomToken: String
+    ): Observable<ConversationModel>
 
-    fun deleteConversationAvatar(user: User, roomToken: String): Observable<ConversationModel>
+    fun deleteConversationAvatar(
+        credentials: String?,
+        url: String,
+        user: User,
+        roomToken: String
+    ): Observable<ConversationModel>
 
-    suspend fun renameConversation(roomToken: String, roomNameNew: String): GenericOverall
+    suspend fun renameConversation(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        newRoomName: String
+    ): GenericOverall
 
-    suspend fun setConversationDescription(roomToken: String, conversationDescription: String?): GenericOverall
+    suspend fun setConversationDescription(
+        credentials: String?,
+        url: String,
+        roomToken: String,
+        conversationDescription: String?
+    ): GenericOverall
 }

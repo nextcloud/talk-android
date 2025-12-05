@@ -17,30 +17,12 @@ import com.nextcloud.talk.models.json.participants.TalkBan
 import com.nextcloud.talk.models.json.profile.Profile
 import com.nextcloud.talk.repositories.conversations.ConversationsRepository.ResendInvitationsResult
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 
-class ConversationsRepositoryImpl(
-    private val api: NcApi,
-    private val coroutineApi: NcApiCoroutines,
-    private val userProvider: CurrentUserProviderNew
-) : ConversationsRepository {
-
-    private val user: User
-        get() = userProvider.currentUser.blockingGet()
-
-    private val credentials: String
-        get() = ApiUtils.getCredentials(user.username, user.token)!!
-
-    val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-
-    override suspend fun allowGuests(token: String, allow: Boolean): GenericOverall {
-        val url = ApiUtils.getUrlForRoomPublic(
-            apiVersion,
-            user.baseUrl!!,
-            token
-        )
-
+class ConversationsRepositoryImpl(private val api: NcApi, private val coroutineApi: NcApiCoroutines) :
+    ConversationsRepository {
+    override suspend fun allowGuests(user: User, url: String, token: String, allow: Boolean): GenericOverall {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
         val result: GenericOverall = if (allow) {
             coroutineApi.makeRoomPublic(
                 credentials,
@@ -55,16 +37,12 @@ class ConversationsRepositoryImpl(
         return result
     }
 
-    override fun resendInvitations(token: String): Observable<ResendInvitationsResult> {
+    override fun resendInvitations(user: User, url: String): Observable<ResendInvitationsResult> {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
         val apiObservable = api.resendParticipantInvitations(
             credentials,
-            ApiUtils.getUrlForParticipantsResendInvitations(
-                apiVersion(),
-                user.baseUrl!!,
-                token
-            )
+            url
         )
-
         return apiObservable.map {
             ResendInvitationsResult(true)
         }
@@ -76,33 +54,34 @@ class ConversationsRepositoryImpl(
     override suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall =
         coroutineApi.unarchiveConversation(credentials, url)
 
-    override fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall> =
-        api.setConversationReadOnly(credentials, url, state)
-
-    override suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall {
-        val apiVersion = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4, ApiUtils.API_V1))
-        val url = ApiUtils.getUrlForConversationReadOnly(apiVersion, user.baseUrl!!, roomToken)
-        return coroutineApi.setConversationReadOnly(credentials, url, state)
+    override suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
+        val result = coroutineApi.setConversationReadOnly(
+            credentials,
+            url,
+            state
+        )
+        return result
     }
 
-    override suspend fun setPassword(password: String, token: String): GenericOverall {
+    override suspend fun setPassword(user: User, url: String, password: String): GenericOverall {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
         val result = coroutineApi.setPassword(
             credentials,
-            ApiUtils.getUrlForRoomPassword(
-                apiVersion,
-                user.baseUrl!!,
-                token
-            ),
+            url,
             password
         )
         return result
     }
 
-    override suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall =
-        coroutineApi.clearChatHistory(
+    override suspend fun clearChatHistory(user: User, url: String): GenericOverall {
+        val credentials = ApiUtils.getCredentials(user.username, user.token)!!
+        val result = coroutineApi.clearChatHistory(
             credentials,
-            ApiUtils.getUrlForChat(apiVersion, user.baseUrl!!, roomToken)
+            url
         )
+        return result
+    }
 
     override suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall {
         val response = coroutineApi.createRoomWithBody(
@@ -167,8 +146,6 @@ class ConversationsRepositoryImpl(
 
     override suspend fun unbanActor(credentials: String, url: String): GenericOverall =
         coroutineApi.unbanActor(credentials, url)
-
-    private fun apiVersion(): Int = ApiUtils.getConversationApiVersion(user, intArrayOf(ApiUtils.API_V4))
 
     companion object {
         const val STATUS_CODE_OK = 200

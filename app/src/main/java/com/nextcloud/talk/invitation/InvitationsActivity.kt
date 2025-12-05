@@ -59,7 +59,7 @@ class InvitationsActivity : BaseActivity() {
 
         invitationsViewModel = ViewModelProvider(this, viewModelFactory)[InvitationsViewModel::class.java]
 
-        currentUser = currentUserProvider.currentUser.blockingGet()
+        currentUser = currentUserProviderOld.currentUser.blockingGet()
         invitationsViewModel.fetchInvitations(currentUser)
 
         binding = ActivityInvitationsBinding.inflate(layoutInflater)

@@ -8,13 +8,18 @@
 package com.nextcloud.talk.messagesearch
 
 import android.util.Log
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl.Companion.PROVIDER_TALK_MESSAGE
+import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepositoryImpl.Companion.PROVIDER_TALK_MESSAGE_CURRENT
+import com.nextcloud.talk.utils.ApiUtils
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
 class MessageSearchHelper @JvmOverloads constructor(
     private val unifiedSearchRepository: UnifiedSearchRepository,
+    private val currentUser: User?,
     private val fromRoom: String? = null
 ) {
 
@@ -64,22 +69,32 @@ class MessageSearchHelper @JvmOverloads constructor(
     private fun searchCall(
         search: String,
         cursor: Int
-    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> =
-        when {
+    ): Observable<UnifiedSearchRepository.UnifiedSearchResults<SearchMessageEntry>> {
+        val credentials = ApiUtils.getCredentials(currentUser?.username, currentUser?.token)
+        val result = when {
             fromRoom != null -> {
+                val url = ApiUtils.getUrlForUnifiedSearch(currentUser?.baseUrl!!, PROVIDER_TALK_MESSAGE_CURRENT)
                 unifiedSearchRepository.searchInRoom(
+                    credentials,
+                    url,
                     roomToken = fromRoom,
                     searchTerm = search,
                     cursor = cursor
                 )
             }
+
             else -> {
+                val url = ApiUtils.getUrlForUnifiedSearch(currentUser?.baseUrl!!, PROVIDER_TALK_MESSAGE)
                 unifiedSearchRepository.searchMessages(
+                    credentials,
+                    url,
                     searchTerm = search,
                     cursor = cursor
                 )
             }
         }
+        return result
+    }
 
     private fun resetCachedData() {
         previousSearch = null

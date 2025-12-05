@@ -19,17 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import com.nextcloud.talk.contacts.CompanionClass
-import com.nextcloud.talk.contacts.ContactsUiState
 import com.nextcloud.talk.contacts.ContactsViewModel
 
 @Composable
-fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsViewModel) {
+fun ContactsList(contactsUiState: ContactsViewModel.ContactsUiState, contactsViewModel: ContactsViewModel) {
     val context = LocalContext.current
     when (contactsUiState) {
-        is ContactsUiState.None -> {
+        is ContactsViewModel.ContactsUiState.None -> {
         }
 
-        is ContactsUiState.Loading -> {
+        is ContactsViewModel.ContactsUiState.Loading -> {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
@@ -38,7 +37,7 @@ fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsVi
             }
         }
 
-        is ContactsUiState.Success -> {
+        is ContactsViewModel.ContactsUiState.Success -> {
             val contacts = contactsUiState.contacts
             Log.d(CompanionClass.TAG, "Contacts:$contacts")
             if (contacts != null) {
@@ -46,7 +45,7 @@ fun ContactsList(contactsUiState: ContactsUiState, contactsViewModel: ContactsVi
             }
         }
 
-        is ContactsUiState.Error -> {
+        is ContactsViewModel.ContactsUiState.Error -> {
             val errorMessage = contactsUiState.message
             Box(
                 modifier = Modifier.fillMaxSize(),

@@ -9,12 +9,9 @@ package com.nextcloud.talk.repositories.reactions
 import com.nextcloud.talk.api.NcApi
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.dao.ChatMessagesDao
-import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ReactionAddedModel
 import com.nextcloud.talk.models.domain.ReactionDeletedModel
 import com.nextcloud.talk.models.json.generic.GenericMeta
-import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,47 +19,51 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ReactionsRepositoryImpl @Inject constructor(
-    private val ncApi: NcApi,
-    private val currentUserProvider: CurrentUserProviderNew,
-    private val dao: ChatMessagesDao
-) : ReactionsRepository {
+class ReactionsRepositoryImpl @Inject constructor(private val ncApi: NcApi, private val dao: ChatMessagesDao) :
+    ReactionsRepository {
 
-    val currentUser: User = currentUserProvider.currentUser.blockingGet()
-    val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
-
-    override fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel> {
+    override fun addReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
+        roomToken: String,
+        message: ChatMessage,
+        emoji: String
+    ): Observable<ReactionAddedModel> {
         return ncApi.sendReaction(
             credentials,
-            ApiUtils.getUrlForMessageReaction(
-                currentUser.baseUrl!!,
-                roomToken,
-                message.id
-            ),
+            url,
             emoji
         ).map {
             val model = mapToReactionAddedModel(message, emoji, it.ocs?.meta!!)
-            persistAddedModel(model, roomToken)
+            persistAddedModel(
+                userId,
+                model,
+                roomToken
+            )
             return@map model
         }
     }
 
     override fun deleteReaction(
+        credentials: String?,
+        userId: Long,
+        url: String,
         roomToken: String,
         message: ChatMessage,
         emoji: String
     ): Observable<ReactionDeletedModel> {
         return ncApi.deleteReaction(
             credentials,
-            ApiUtils.getUrlForMessageReaction(
-                currentUser.baseUrl!!,
-                roomToken,
-                message.id
-            ),
+            url,
             emoji
         ).map {
             val model = mapToReactionDeletedModel(message, emoji, it.ocs?.meta!!)
-            persistDeletedModel(model, roomToken)
+            persistDeletedModel(
+                userId,
+                model,
+                roomToken
+            )
             return@map model
         }
     }
@@ -93,12 +94,11 @@ class ReactionsRepositoryImpl @Inject constructor(
         )
     }
 
-    private fun persistAddedModel(model: ReactionAddedModel, roomToken: String) =
+    private fun persistAddedModel(userId: Long, model: ReactionAddedModel, roomToken: String) =
         CoroutineScope(Dispatchers.IO).launch {
             // 1. Call DAO, Get a singular ChatMessageEntity with model.chatMessage.{PARAM}
-            val accountId = currentUser.id!!
             val id = model.chatMessage.jsonMessageId.toLong()
-            val internalConversationId = "$accountId@$roomToken"
+            val internalConversationId = "$userId@$roomToken"
             val emoji = model.emoji
 
             val message = dao.getChatMessageForConversation(
@@ -126,12 +126,11 @@ class ReactionsRepositoryImpl @Inject constructor(
             dao.updateChatMessage(message)
         }
 
-    private fun persistDeletedModel(model: ReactionDeletedModel, roomToken: String) =
+    private fun persistDeletedModel(userId: Long, model: ReactionDeletedModel, roomToken: String) =
         CoroutineScope(Dispatchers.IO).launch {
             // 1. Call DAO, Get a singular ChatMessageEntity with model.chatMessage.{PARAM}
-            val accountId = currentUser.id!!
             val id = model.chatMessage.jsonMessageId.toLong()
-            val internalConversationId = "$accountId@$roomToken"
+            val internalConversationId = "$userId@$roomToken"
             val emoji = model.emoji
 
             val message = dao.getChatMessageForConversation(internalConversationId, id).first()

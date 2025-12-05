@@ -9,15 +9,20 @@ package com.nextcloud.talk.contacts
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.autocomplete.AutocompleteUser
 import com.nextcloud.talk.models.json.conversations.Conversation
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class ContactsViewModel @Inject constructor(private val repository: ContactsRepository) : ViewModel() {
+class ContactsViewModel @Inject constructor(
+    private val repository: ContactsRepository,
+    private val currentUserProvider: CurrentUserProviderOld
+) : ViewModel() {
 
     private val _contactsViewState = MutableStateFlow<ContactsUiState>(ContactsUiState.None)
     val contactsViewState: StateFlow<ContactsUiState> = _contactsViewState
@@ -44,6 +49,8 @@ class ContactsViewModel @Inject constructor(private val repository: ContactsRepo
     private val _clickAddButton = MutableStateFlow(false)
 
     private var hideAlreadyAddedParticipants: Boolean = false
+
+    private var currentUser: User = currentUserProvider.currentUser.blockingGet()
 
     init {
         getContactsFromSearchParams()
@@ -102,6 +109,7 @@ class ContactsViewModel @Inject constructor(private val repository: ContactsRepo
         viewModelScope.launch {
             try {
                 val contacts = repository.getContacts(
+                    currentUser,
                     if (query != "") query else searchQuery.value,
                     shareTypeList
                 )
@@ -126,6 +134,7 @@ class ContactsViewModel @Inject constructor(private val repository: ContactsRepo
         viewModelScope.launch {
             try {
                 val room = repository.createRoom(
+                    currentUser,
                     roomType,
                     sourceType,
                     userId,
@@ -139,19 +148,24 @@ class ContactsViewModel @Inject constructor(private val repository: ContactsRepo
             }
         }
     }
+
     fun getImageUri(avatarId: String, requestBigSize: Boolean): String =
-        repository.getImageUri(avatarId, requestBigSize)
-}
+        repository.getImageUri(
+            currentUser,
+            avatarId,
+            requestBigSize
+        )
 
-sealed class ContactsUiState {
-    data object None : ContactsUiState()
-    data object Loading : ContactsUiState()
-    data class Success(val contacts: List<AutocompleteUser>?) : ContactsUiState()
-    data class Error(val message: String) : ContactsUiState()
-}
+    sealed class ContactsUiState {
+        data object None : ContactsUiState()
+        data object Loading : ContactsUiState()
+        data class Success(val contacts: List<AutocompleteUser>?) : ContactsUiState()
+        data class Error(val message: String) : ContactsUiState()
+    }
 
-sealed class RoomUiState {
-    data object None : RoomUiState()
-    data class Success(val conversation: Conversation?) : RoomUiState()
-    data class Error(val message: String) : RoomUiState()
+    sealed class RoomUiState {
+        data object None : RoomUiState()
+        data class Success(val conversation: Conversation?) : RoomUiState()
+        data class Error(val message: String) : RoomUiState()
+    }
 }

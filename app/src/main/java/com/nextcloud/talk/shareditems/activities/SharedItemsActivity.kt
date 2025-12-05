@@ -47,7 +47,7 @@ class SharedItemsActivity : BaseActivity() {
         val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
 
-        val user = currentUserProvider.currentUser.blockingGet()
+        val user = currentUserProviderOld.currentUser.blockingGet()
 
         val isUserConversationOwnerOrModerator = intent.getBooleanExtra(KEY_USER_IS_OWNER_OR_MODERATOR, false)
 

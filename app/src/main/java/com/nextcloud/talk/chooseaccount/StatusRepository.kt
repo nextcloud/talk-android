@@ -10,5 +10,5 @@ package com.nextcloud.talk.chooseaccount
 import com.nextcloud.talk.models.json.status.StatusOverall
 
 interface StatusRepository {
-    suspend fun setStatus(): StatusOverall
+    suspend fun setStatus(credentials: String, url: String): StatusOverall
 }
