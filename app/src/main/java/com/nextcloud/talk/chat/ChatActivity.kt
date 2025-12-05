@@ -3480,11 +3480,28 @@ open class ChatActivity :
                     android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_MUTABLE
                 )
 
+                val contentIntent = android.app.PendingIntent.getActivity(
+                    this@ChatActivity,
+                    bubbleRequestCode,
+                    Intent(this@ChatActivity, ChatActivity::class.java).apply {
+                        putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                        conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    },
+                    android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE
+                )
+
+                val shortcutIntent = Intent(this@ChatActivity, ChatActivity::class.java).apply {
+                    action = Intent.ACTION_VIEW
+                    putExtra(BundleKeys.KEY_ROOM_TOKEN, roomToken)
+                    conversationName?.let { putExtra(BundleKeys.KEY_CONVERSATION_NAME, it) }
+                }
+
                 val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(this@ChatActivity, shortcutId)
                     .setShortLabel(conversationName)
                     .setLongLabel(conversationName)
                     .setIcon(icon)
-                    .setIntent(Intent(Intent.ACTION_DEFAULT))
+                    .setIntent(shortcutIntent)
                     .setLongLived(true)
                     .setPerson(person)
                     .setCategories(setOf(android.app.Notification.CATEGORY_MESSAGE))
@@ -3522,7 +3539,7 @@ open class ChatActivity :
                     .addPerson(person)
                     .setStyle(messagingStyle)
                     .setBubbleMetadata(bubbleData)
-                    .setContentIntent(bubbleIntent)
+                    .setContentIntent(contentIntent)
                     .setAutoCancel(true)
                     .setOngoing(false)
                     .setOnlyAlertOnce(true)
