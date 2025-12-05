@@ -35,6 +35,7 @@ public class IncomingPreviewMessageViewHolder extends PreviewMessageViewHolder {
     public IncomingPreviewMessageViewHolder(View itemView, Object payload) {
         super(itemView, payload);
         binding = ItemCustomIncomingPreviewMessageBinding.bind(itemView);
+        setVideoPlayButton(binding.videoPlayButton);
     }
 
     @Override
