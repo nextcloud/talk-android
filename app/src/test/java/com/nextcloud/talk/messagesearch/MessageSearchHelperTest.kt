@@ -7,9 +7,16 @@
  */
 package com.nextcloud.talk.messagesearch
 
+import com.nextcloud.talk.data.user.UsersDao
+import com.nextcloud.talk.data.user.UsersRepository
+import com.nextcloud.talk.data.user.UsersRepositoryImpl
 import com.nextcloud.talk.models.domain.SearchMessageEntry
 import com.nextcloud.talk.repositories.unifiedsearch.UnifiedSearchRepository
 import com.nextcloud.talk.test.fakes.FakeUnifiedSearchRepository
+import com.nextcloud.talk.users.UserManager
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOldImpl
+import com.nextcloud.talk.utils.preview.DummyUserDaoImpl
 import io.reactivex.Observable
 import org.junit.Assert
 import org.junit.Before
@@ -19,6 +26,18 @@ import org.mockito.MockitoAnnotations
 class MessageSearchHelperTest {
 
     val repository = FakeUnifiedSearchRepository()
+
+    val usersDao: UsersDao
+        get() = DummyUserDaoImpl()
+
+    val userRepository: UsersRepository
+        get() = UsersRepositoryImpl(usersDao)
+
+    val userManager: UserManager
+        get() = UserManager(userRepository)
+
+    val userProvider: CurrentUserProviderOld
+        get() = CurrentUserProviderOldImpl(userManager)
 
     @Suppress("LongParameterList")
     private fun createMessageEntry(
@@ -42,7 +61,7 @@ class MessageSearchHelperTest {
 
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
 
         val testObserver = sut.startMessageSearch("foo").test()
@@ -59,7 +78,7 @@ class MessageSearchHelperTest {
 
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
 
         val observable = sut.startMessageSearch("foo")
@@ -74,7 +93,7 @@ class MessageSearchHelperTest {
 
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
 
         val observable = sut.startMessageSearch("foo")
@@ -89,7 +108,7 @@ class MessageSearchHelperTest {
 
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
 
         repeat(5) {
@@ -103,7 +122,7 @@ class MessageSearchHelperTest {
     fun loadMore_noPreviousResults() {
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
         Assert.assertEquals(null, sut.loadMore())
     }
@@ -112,7 +131,7 @@ class MessageSearchHelperTest {
     fun loadMore_previousResults_sameSearch() {
         val sut = MessageSearchHelper(
             repository,
-            currentUser = null
+            currentUser = userProvider.currentUser.blockingGet()
         )
 
         val firstPageEntries = (1..5).map { createMessageEntry() }

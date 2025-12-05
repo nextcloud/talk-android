@@ -9,6 +9,6 @@ package com.nextcloud.talk.utils.database.user
 
 import com.nextcloud.talk.data.user.model.User
 
-interface CurrentUserProviderNew {
-    suspend fun getCurrentUser(): User
+interface CurrentUserProvider {
+    suspend fun getCurrentUser(timeout: Long = 5000L): Result<User>
 }
