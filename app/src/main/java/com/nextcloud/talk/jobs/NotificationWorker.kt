@@ -539,7 +539,7 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         // It is NOT the same as the notification ID used in communication with the server.
         // Use a consistent ID based on the room token to avoid duplicate bubbles
         val systemNotificationId: Int =
-            activeStatusBarNotification?.id ?: NotificationUtils.calculateCRC32(pushMessage.id!!).toInt()
+            activeStatusBarNotification?.id ?: NotificationUtils.calculateCRC32("${signatureVerification.user!!.id}:${pushMessage.id!!}").toInt()
 
         if ((TYPE_CHAT == pushMessage.type || TYPE_REMINDER == pushMessage.type) &&
             pushMessage.notificationUser != null
