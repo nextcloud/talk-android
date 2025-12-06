@@ -362,8 +362,11 @@ How to translate with transifex:
     <string name="nc_conversation_notification_bubble_enable_conversation">Enable bubbles for this conversation in the conversation info.</string>
     <string name="nc_notification_settings_bubbles">Bubbles</string>
     <string name="nc_notification_settings_bubbles_desc">Allow Talk notifications to appear as floating bubbles.</string>
+    <string name="nc_notification_settings_bubbles_system_disabled">Enable “All conversations can bubble” in Android notification settings to allow bubbles.</string>
     <string name="nc_notification_settings_bubbles_force">All conversations can bubble</string>
     <string name="nc_notification_settings_bubbles_force_desc">Override individual conversation bubble settings.</string>
+    <string name="nc_notification_settings_bubbles_open_failed">Unable to open Android bubble settings. Please enable bubbles for Talk from system notification settings.</string>
+    <string name="nc_notification_settings_bubbles_system_disabled_toast">Turn on “All conversations can bubble” in Android notification settings first.</string>
     <string name="nc_sensitive_conversation">Sensitive conversation</string>
     <string name="nc_sensitive_conversation_hint">Message preview will be disabled in conversation list and notifications</string>
     <string name="nc_important_conversation">Important conversation</string>
