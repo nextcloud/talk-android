@@ -271,7 +271,7 @@ class AppPreferencesImpl(val context: Context) : AppPreferences {
 
     override fun areBubblesEnabled(): Boolean =
         runBlocking {
-            async { readBoolean(BUBBLES_ENABLED, true).first() }
+            async { readBoolean(BUBBLES_ENABLED, false).first() }
         }.getCompleted()
 
     override fun setBubblesEnabled(value: Boolean) =
