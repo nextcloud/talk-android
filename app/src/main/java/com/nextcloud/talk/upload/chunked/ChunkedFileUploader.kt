@@ -14,6 +14,7 @@ import at.bitfire.dav4jvm.DavResource
 import at.bitfire.dav4jvm.Property
 import at.bitfire.dav4jvm.exception.DavException
 import at.bitfire.dav4jvm.exception.HttpException
+import at.bitfire.dav4jvm.exception.NotFoundException
 import at.bitfire.dav4jvm.property.DisplayName
 import at.bitfire.dav4jvm.property.GetContentType
 import at.bitfire.dav4jvm.property.GetLastModified
@@ -311,14 +312,19 @@ class ChunkedFileUploader(
 
     fun abortUpload(onSuccess: () -> Unit) {
         isUploadAborted = true
-        DavResource(
-            okHttpClientNoRedirects!!,
-            uploadFolderUri.toHttpUrlOrNull()!!
-        ).delete { response: Response ->
-            when {
-                response.isSuccessful -> onSuccess()
-                else -> isUploadAborted = false
+        try {
+            DavResource(
+                okHttpClientNoRedirects!!,
+                uploadFolderUri.toHttpUrlOrNull()!!
+            ).delete { response: Response ->
+                when {
+                    response.isSuccessful -> onSuccess()
+                    else -> isUploadAborted = false
+                }
             }
+        } catch (e: NotFoundException) {
+            Log.i(TAG, "Chunk upload folder could not be found", e)
+            onSuccess()
         }
     }
 
