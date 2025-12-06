@@ -687,7 +687,6 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
         } else {
             when (conversationType) {
                 "one2one" -> {
-                    pushMessage.subject = ""
                     largeIcon =
                         ContextCompat.getDrawable(context!!, R.drawable.ic_people_group_black_24px)?.toBitmap()!!
                 }
@@ -761,8 +760,9 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             if (!shouldBubble(roomToken)) {
                 return
             }
-            val conversationName = pushMessage.subject
+            val conversationName = pushMessage.subject?.takeIf { it.isNotBlank() }
             val shortcutId = "conversation_$roomToken"
+            val fallbackConversationLabel = conversationName ?: context!!.getString(R.string.nc_app_name)
 
             val bubbleIcon = resolveBubbleIcon(roomToken) ?: run {
                 val fallbackBitmap = getLargeIcon() ?: return
@@ -770,15 +770,15 @@ class NotificationWorker(context: Context, workerParams: WorkerParameters) : Wor
             }
 
             val person = androidx.core.app.Person.Builder()
-                .setName(conversationName ?: context!!.getString(R.string.nc_app_name))
+                .setName(fallbackConversationLabel)
                 .setKey(shortcutId)
                 .setImportant(true)
                 .setIcon(bubbleIcon)
                 .build()
 
             val shortcut = androidx.core.content.pm.ShortcutInfoCompat.Builder(context!!, shortcutId)
-                .setShortLabel(conversationName ?: context!!.getString(R.string.nc_app_name))
-                .setLongLabel(conversationName ?: context!!.getString(R.string.nc_app_name))
+                .setShortLabel(fallbackConversationLabel)
+                .setLongLabel(fallbackConversationLabel)
                 .setIcon(bubbleIcon)
                 .setIntent(Intent(Intent.ACTION_DEFAULT))
                 .setLongLived(true)
