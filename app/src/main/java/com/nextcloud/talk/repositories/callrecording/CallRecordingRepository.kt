@@ -12,7 +12,7 @@ import io.reactivex.Observable
 
 interface CallRecordingRepository {
 
-    fun startRecording(roomToken: String): Observable<StartCallRecordingModel>
+    fun startRecording(credentials: String?, url: String, roomToken: String): Observable<StartCallRecordingModel>
 
-    fun stopRecording(roomToken: String): Observable<StopCallRecordingModel>
+    fun stopRecording(credentials: String?, url: String, roomToken: String): Observable<StopCallRecordingModel>
 }

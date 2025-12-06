@@ -359,7 +359,7 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun setupAccountValues() {
-        val currentUser = currentUserProvider.currentUser.blockingGet()
+        val currentUser = currentUserProviderOld.currentUser.blockingGet()
 
         addHeadline(context.resources.getString(R.string.nc_diagnose_account_category_title))
 
@@ -417,7 +417,7 @@ class DiagnoseActivity : BaseActivity() {
     }
 
     private fun setupPushRegistrationDiagnose() {
-        val accountId = UserIdUtils.getIdForUser(currentUserProvider.currentUser.blockingGet())
+        val accountId = UserIdUtils.getIdForUser(currentUserProviderOld.currentUser.blockingGet())
 
         val latestPushRegistrationAtServer = arbitraryStorageManager.getStorageSetting(
             accountId,

@@ -23,7 +23,7 @@ import com.nextcloud.talk.models.json.mention.MentionOverall;
 import com.nextcloud.talk.ui.theme.ViewThemeUtils;
 import com.nextcloud.talk.users.UserManager;
 import com.nextcloud.talk.utils.ApiUtils;
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew;
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld;
 import com.otaliastudios.autocomplete.RecyclerViewPresenter;
 
 import java.util.ArrayList;
@@ -55,7 +55,7 @@ public class MentionAutocompletePresenter extends RecyclerViewPresenter<Mention>
     UserManager userManager;
 
     @Inject
-    CurrentUserProviderNew currentUserProvider;
+    CurrentUserProviderOld currentUserProvider;
 
     @Inject
     ViewThemeUtils viewThemeUtils;

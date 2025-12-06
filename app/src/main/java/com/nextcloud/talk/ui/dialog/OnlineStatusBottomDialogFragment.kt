@@ -30,7 +30,7 @@ import com.nextcloud.talk.models.json.status.Status
 import com.nextcloud.talk.models.json.status.StatusType
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -49,7 +49,7 @@ class OnlineStatusBottomDialogFragment : BottomSheetDialogFragment() {
 
     @Inject lateinit var viewThemeUtils: ViewThemeUtils
 
-    var currentUserProvider: CurrentUserProviderNew? = null
+    var currentUserProvider: CurrentUserProviderOld? = null
         @Inject set
 
     lateinit var credentials: String

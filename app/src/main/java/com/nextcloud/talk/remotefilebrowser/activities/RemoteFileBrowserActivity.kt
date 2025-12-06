@@ -39,7 +39,7 @@ import com.nextcloud.talk.utils.DateUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import com.nextcloud.talk.utils.FileSortOrder
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_MIME_TYPE_FILTER
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
@@ -52,7 +52,7 @@ class RemoteFileBrowserActivity :
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @Inject
     lateinit var viewThemeUtils: ViewThemeUtils

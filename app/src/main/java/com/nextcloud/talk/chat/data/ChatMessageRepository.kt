@@ -10,6 +10,7 @@ package com.nextcloud.talk.chat.data
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
@@ -44,7 +45,7 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val removeMessageFlow: Flow<ChatMessage>
 
-    fun initData(credentials: String, urlForChatting: String, roomToken: String, threadId: Long?)
+    fun initData(currentUser: User, credentials: String, urlForChatting: String, roomToken: String, threadId: Long?)
 
     fun updateConversation(conversationModel: ConversationModel)
 

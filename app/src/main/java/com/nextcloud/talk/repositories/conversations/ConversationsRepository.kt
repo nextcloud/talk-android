@@ -8,6 +8,7 @@
 package com.nextcloud.talk.repositories.conversations
 
 import com.nextcloud.talk.conversationinfo.CreateRoomRequest
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
 import com.nextcloud.talk.models.json.participants.TalkBan
@@ -16,16 +17,14 @@ import io.reactivex.Observable
 
 interface ConversationsRepository {
 
-    suspend fun allowGuests(token: String, allow: Boolean): GenericOverall
+    suspend fun allowGuests(user: User, url: String, token: String, allow: Boolean): GenericOverall
 
     data class ResendInvitationsResult(val successful: Boolean)
-    fun resendInvitations(token: String): Observable<ResendInvitationsResult>
+    fun resendInvitations(user: User, url: String): Observable<ResendInvitationsResult>
 
     suspend fun archiveConversation(credentials: String, url: String): GenericOverall
 
     suspend fun unarchiveConversation(credentials: String, url: String): GenericOverall
-
-    fun setConversationReadOnly(credentials: String, url: String, state: Int): Observable<GenericOverall>
 
     suspend fun banActor(
         credentials: String,
@@ -38,11 +37,11 @@ interface ConversationsRepository {
     suspend fun listBans(credentials: String, url: String): List<TalkBan>
     suspend fun unbanActor(credentials: String, url: String): GenericOverall
 
-    suspend fun setPassword(password: String, token: String): GenericOverall
+    suspend fun setPassword(user: User, url: String, password: String): GenericOverall
 
-    suspend fun setConversationReadOnly(roomToken: String, state: Int): GenericOverall
+    suspend fun setConversationReadOnly(user: User, url: String, state: Int): GenericOverall
 
-    suspend fun clearChatHistory(apiVersion: Int, roomToken: String): GenericOverall
+    suspend fun clearChatHistory(user: User, url: String): GenericOverall
 
     suspend fun createRoom(credentials: String, url: String, body: CreateRoomRequest): RoomOverall
 

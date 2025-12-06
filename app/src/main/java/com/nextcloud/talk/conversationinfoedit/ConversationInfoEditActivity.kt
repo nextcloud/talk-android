@@ -103,7 +103,7 @@ class ConversationInfoEditActivity : BaseActivity() {
 
         val extras: Bundle? = intent.extras
 
-        conversationUser = currentUserProvider.currentUser.blockingGet()
+        conversationUser = currentUserProviderOld.currentUser.blockingGet()
 
         roomToken = extras?.getString(BundleKeys.KEY_ROOM_TOKEN)!!
 

@@ -29,7 +29,7 @@ import com.nextcloud.talk.extensions.loadUserAvatar
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.users.UserManager
-import com.nextcloud.talk.utils.database.user.CurrentUserProviderNew
+import com.nextcloud.talk.utils.database.user.CurrentUserProviderOld
 import eu.davidea.flexibleadapter.FlexibleAdapter
 import eu.davidea.flexibleadapter.common.SmoothScrollLinearLayoutManager
 import java.net.CookieManager
@@ -42,7 +42,7 @@ class ChooseAccountShareToDialogFragment : DialogFragment() {
     var userManager: UserManager? = null
 
     @Inject
-    lateinit var currentUserProvider: CurrentUserProviderNew
+    lateinit var currentUserProvider: CurrentUserProviderOld
 
     @JvmField
     @Inject

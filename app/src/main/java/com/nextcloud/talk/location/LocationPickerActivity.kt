@@ -448,7 +448,7 @@ class LocationPickerActivity :
             "{\"type\":\"geo-location\",\"id\":\"geo:$selectedLat,$selectedLon\",\"latitude\":\"$selectedLat\"," +
                 "\"longitude\":\"$selectedLon\",\"name\":\"$locationNameToShare\"}"
 
-        val currentUser = currentUserProvider.currentUser.blockingGet()
+        val currentUser = currentUserProviderOld.currentUser.blockingGet()
 
         ncApi.sendLocation(
             ApiUtils.getCredentials(currentUser.username, currentUser.token),
