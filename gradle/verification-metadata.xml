@@ -193,6 +193,7 @@
             <trusting group="net.zetetic" name="android-database-sqlcipher" version="4.5.4"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.10.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.11.0"/>
+            <trusting group="net.zetetic" name="sqlcipher-android" version="4.12.0"/>
             <trusting group="net.zetetic" name="sqlcipher-android" version="4.9.0"/>
          </trusted-key>
          <trusted-key id="635EE627345F3C1DD422B2E207D3516820BCF6B1" group="com.github.ben-manes.caffeine" name="caffeine" version="2.9.3"/>
