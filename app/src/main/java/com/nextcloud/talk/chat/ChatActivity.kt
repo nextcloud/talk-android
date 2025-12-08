@@ -1564,7 +1564,7 @@ class ChatActivity :
         message.isPlayingVoiceMessage = true
         adapter?.update(message)
 
-        var pos = adapter?.getMessagePositionById(message.id) ?: -1
+        var pos = adapter?.getMessagePositionById(message.id)?.minus(1) ?: -1
         do {
             if (pos < 0) break
             val nextItem = (adapter?.items?.get(pos)?.item) ?: break
