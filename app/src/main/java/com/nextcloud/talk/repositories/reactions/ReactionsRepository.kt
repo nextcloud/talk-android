@@ -13,6 +13,7 @@ import io.reactivex.Observable
 
 interface ReactionsRepository {
 
+    @Suppress("LongParameterList")
     fun addReaction(
         credentials: String?,
         userId: Long,
@@ -22,6 +23,7 @@ interface ReactionsRepository {
         emoji: String
     ): Observable<ReactionAddedModel>
 
+    @Suppress("LongParameterList")
     fun deleteReaction(
         credentials: String?,
         userId: Long,

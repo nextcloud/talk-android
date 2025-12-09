@@ -71,6 +71,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
 
+@Suppress("TooManyFunctions")
 @Module
 class RepositoryModule {
 

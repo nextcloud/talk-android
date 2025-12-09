@@ -33,7 +33,7 @@ class PollCreateViewModel @Inject constructor(
     object PollCreatedState : ViewState
     object PollCreationFailedState : ViewState
 
-    private val _currentUser = currentUserProvider.currentUser.blockingGet()
+    private val currentUser = currentUserProvider.currentUser.blockingGet()
 
     private val _viewState: MutableLiveData<ViewState> = MutableLiveData(
         PollCreationState(
@@ -109,9 +109,9 @@ class PollCreateViewModel @Inject constructor(
         if (_question.isNotEmpty() && _options.value?.isNotEmpty() == true) {
             _viewState.value = PollCreationState(enableAddOptionButton = false, enableCreatePollButton = false)
 
-            val credentials = ApiUtils.getCredentials(_currentUser.username, _currentUser.token)
+            val credentials = ApiUtils.getCredentials(currentUser.username, currentUser.token)
             val url = ApiUtils.getUrlForPoll(
-                _currentUser.baseUrl!!,
+                currentUser.baseUrl!!,
                 roomToken
             )
 

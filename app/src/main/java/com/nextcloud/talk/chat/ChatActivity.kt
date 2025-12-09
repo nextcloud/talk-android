@@ -3649,18 +3649,20 @@ class ChatActivity :
     }
 
     private fun handleSystemMessages(chatMessageList: List<ChatMessage>): List<ChatMessage> {
-        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
-
-        val chatMessageIterator = chatMessageMap.iterator()
-        while (chatMessageIterator.hasNext()) {
-            val currentMessage = chatMessageIterator.next()
-
-            if (isInfoMessageAboutDeletion(currentMessage) ||
+        fun shouldRemoveMessage(currentMessage: MutableMap.MutableEntry<String, ChatMessage>): Boolean =
+            isInfoMessageAboutDeletion(currentMessage) ||
                 isReactionsMessage(currentMessage) ||
                 isPollVotedMessage(currentMessage) ||
                 isEditMessage(currentMessage) ||
                 isThreadCreatedMessage(currentMessage)
-            ) {
+
+        val chatMessageMap = chatMessageList.associateBy { it.id }.toMutableMap()
+        val chatMessageIterator = chatMessageMap.iterator()
+
+        while (chatMessageIterator.hasNext()) {
+            val currentMessage = chatMessageIterator.next()
+
+            if (shouldRemoveMessage(currentMessage)) {
                 chatMessageIterator.remove()
             }
         }
