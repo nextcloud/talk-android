@@ -29,13 +29,13 @@ apply plugin: "org.jlleitschuh.gradle.ktlint"
 apply plugin: 'kotlinx-serialization'
 
 android {
-    compileSdkVersion 35
+    compileSdkVersion 36
 
     namespace = 'com.nextcloud.talk'
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 35
+        targetSdkVersion 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // mayor.minor.hotfix.increment (for increment: 01-50=Alpha / 51-89=RC / 90-99=stable)
