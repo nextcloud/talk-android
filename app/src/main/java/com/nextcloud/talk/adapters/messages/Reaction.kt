@@ -7,6 +7,7 @@
 package com.nextcloud.talk.adapters.messages
 
 import android.content.Context
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -32,6 +33,16 @@ class Reaction {
         binding.reactionsEmojiWrapper.removeAllViews()
 
         if (message.reactions != null && message.reactions!!.isNotEmpty()) {
+            message.reactions!!.forEach {
+                val emoji = it.key
+
+                Log.d("emoji", emoji)
+
+                emoji.codePoints().forEach { cp ->
+                    Log.d("code", "U+${cp.toString(16).uppercase()}")
+                }
+            }
+
             binding.reactionsEmojiWrapper.visibility = View.VISIBLE
 
             binding.reactionsEmojiWrapper.setOnLongClickListener {

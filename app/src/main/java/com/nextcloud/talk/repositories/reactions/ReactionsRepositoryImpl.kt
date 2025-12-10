@@ -32,6 +32,22 @@ class ReactionsRepositoryImpl @Inject constructor(
     val credentials: String = ApiUtils.getCredentials(currentUser.username, currentUser.token)!!
 
     override fun addReaction(roomToken: String, message: ChatMessage, emoji: String): Observable<ReactionAddedModel> {
+
+        fun forceEmojiStyle(text: String): String {
+            if (text.isEmpty()) return text
+
+            val cps = text.codePoints().toArray()
+            val lastCp = cps.last()
+
+            return if (lastCp != 0xFE0F) {
+                text + "\uFE0F"
+            } else {
+                text
+            }
+        }
+
+        val styledEmoji = forceEmojiStyle(emoji)
+
         return ncApi.sendReaction(
             credentials,
             ApiUtils.getUrlForMessageReaction(
@@ -39,9 +55,9 @@ class ReactionsRepositoryImpl @Inject constructor(
                 roomToken,
                 message.id
             ),
-            emoji
+            styledEmoji
         ).map {
-            val model = mapToReactionAddedModel(message, emoji, it.ocs?.meta!!)
+            val model = mapToReactionAddedModel(message, styledEmoji, it.ocs?.meta!!)
             persistAddedModel(model, roomToken)
             return@map model
         }
