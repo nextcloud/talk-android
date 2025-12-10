@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,6 +26,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication
 import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.contextchat.ContextChatView
 import com.nextcloud.talk.contextchat.ContextChatViewModel
+import com.nextcloud.talk.dagger.modules.ViewModelFactoryWithParams
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.ActivitySharedItemsBinding
 import com.nextcloud.talk.shareditems.adapters.SharedItemsAdapter
@@ -32,7 +34,9 @@ import com.nextcloud.talk.shareditems.model.SharedItemType
 import com.nextcloud.talk.shareditems.viewmodels.SharedItemsViewModel
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CONVERSATION_NAME
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_ROOM_TOKEN
+import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_THREAD_ID
 import javax.inject.Inject
+import kotlin.getValue
 
 @AutoInjector(NextcloudTalkApplication::class)
 class SharedItemsActivity : BaseActivity() {
@@ -41,7 +45,27 @@ class SharedItemsActivity : BaseActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     @Inject
-    lateinit var chatViewModel: ChatViewModel
+    lateinit var chatViewModelFactory: ChatViewModel.ChatViewModelFactory
+
+    val roomToken: String by lazy {
+        intent.getStringExtra(KEY_ROOM_TOKEN)
+            ?: error("roomToken missing")
+    }
+
+    val conversationThreadId: Long? by lazy {
+        if (intent.hasExtra(KEY_THREAD_ID)) {
+            intent.getLongExtra(KEY_THREAD_ID, 0L)
+        } else null
+    }
+
+    val chatViewModel: ChatViewModel by viewModels {
+        ViewModelFactoryWithParams(ChatViewModel::class.java) {
+            chatViewModelFactory.create(
+                roomToken,
+                conversationThreadId
+            )
+        }
+    }
 
     @Inject
     lateinit var contextChatViewModel: ContextChatViewModel
@@ -52,8 +76,6 @@ class SharedItemsActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
-
-        val roomToken = intent.getStringExtra(KEY_ROOM_TOKEN)!!
         val conversationName = intent.getStringExtra(KEY_CONVERSATION_NAME)
 
         val user = currentUserProviderOld.currentUser.blockingGet()
@@ -156,7 +178,12 @@ class SharedItemsActivity : BaseActivity() {
                     messageId = messageId!!,
                     title = ""
                 )
-                ContextChatView(context, contextChatViewModel)
+                ContextChatView(
+                    user = currentUserProviderOld.currentUser.blockingGet(),
+                    context,
+                    viewThemeUtils = viewThemeUtils,
+                    contextChatViewModel
+                )
             }
         }
         Log.d(TAG, "Should open something else")

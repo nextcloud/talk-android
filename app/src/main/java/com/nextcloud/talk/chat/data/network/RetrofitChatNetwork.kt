@@ -12,6 +12,7 @@ import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
+import com.nextcloud.talk.models.json.chat.ChatOverall
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.conversations.RoomOverall
 import com.nextcloud.talk.models.json.generic.GenericOverall
@@ -22,7 +23,6 @@ import com.nextcloud.talk.utils.ApiUtils
 import com.nextcloud.talk.utils.message.SendMessageUtils
 import io.reactivex.Observable
 import retrofit2.Response
-import com.nextcloud.talk.models.json.chat.ChatOverall
 
 class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines: NcApiCoroutines) :
     ChatNetworkDataSource {
@@ -159,11 +159,11 @@ class RetrofitChatNetwork(private val ncApi: NcApi, private val ncApiCoroutines:
             threadTitle
         )
 
-    override fun pullChatMessages(
+    override suspend fun pullChatMessages(
         credentials: String,
         url: String,
         fieldMap: HashMap<String, Int>
-    ): Observable<Response<*>> = ncApi.pullChatMessages(credentials, url, fieldMap).map { it }
+    ): Response<ChatOverall> = ncApiCoroutines.pullChatMessages(credentials, url, fieldMap)
 
     override fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage> =
         ncApi.deleteChatMessage(credentials, url).map {

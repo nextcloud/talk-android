@@ -185,7 +185,7 @@ configurations.configureEach {
 }
 
 dependencies {
-
+    implementation 'androidx.lifecycle:lifecycle-runtime-compose:2.10.0'
     kapt "org.jetbrains.kotlin:kotlin-metadata-jvm:${kotlinVersion}"
     implementation "androidx.room:room-testing-android:${roomVersion}"
     implementation 'androidx.compose.foundation:foundation-layout:1.10.3'

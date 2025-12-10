@@ -326,18 +326,6 @@ public interface NcApi {
                                                             @Url String url);
 
     /*
-       QueryMap items are as follows:
-         - "lookIntoFuture": int (0 or 1),
-         - "limit" : int, range 100-200,
-         - "timeout": used with look into future, 30 default, 60 at most
-         - "lastKnownMessageId", int, use one from X-Chat-Last-Given
-   */
-    @GET
-    Observable<Response<ChatOverall>> pullChatMessages(@Header("Authorization") String authorization,
-                                                       @Url String url,
-                                                       @QueryMap Map<String, Integer> fields);
-
-    /*
         Fieldmap items are as follows:
           - "message": ,
           - "actorDisplayName"
