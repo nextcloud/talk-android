@@ -10,11 +10,12 @@ package com.nextcloud.talk.chat.data
 import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import com.nextcloud.talk.models.json.generic.GenericOverall
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 
 @Suppress("TooManyFunctions")
@@ -39,19 +40,21 @@ interface ChatMessageRepository : LifecycleAwareManager {
 
     val lastReadMessageFlow: Flow<Int>
 
-    /**
-     * Used for informing the user of the underlying processing behind offline support, [String] is the key
-     * which is handled in a switch statement in ChatActivity.
-     */
-    val generalUIFlow: Flow<String>
+    // /**
+    //  * Used for informing the user of the underlying processing behind offline support, [String] is the key
+    //  * which is handled in a switch statement in ChatActivity.
+    //  */
+    // val generalUIFlow: Flow<String>
 
-    val removeMessageFlow: Flow<ChatMessage>
+    // val removeMessageFlow: Flow<ChatMessage>
 
     fun initData(currentUser: User, credentials: String, urlForChatting: String, roomToken: String, threadId: Long?)
 
     fun updateConversation(conversationModel: ConversationModel)
 
-    fun initScopeAndLoadInitialMessages(withNetworkParams: Bundle)
+    suspend fun loadInitialMessages(withNetworkParams: Bundle, hasHighPerformanceBackend: Boolean)
+
+    suspend fun startMessagePolling(hasHighPerformanceBackend: Boolean)
 
     /**
      * Loads messages from local storage. If the messages are not found, then it
@@ -60,19 +63,12 @@ interface ChatMessageRepository : LifecycleAwareManager {
      *
      * [withNetworkParams] credentials and url
      */
-    fun loadMoreMessages(
+    suspend fun loadMoreMessages(
         beforeMessageId: Long,
         roomToken: String,
         withMessageLimit: Int,
         withNetworkParams: Bundle
-    ): Job
-
-    /**
-     * Long polls the server for any updates to the chat, if found, it synchronizes
-     * the database with the server and emits the new messages to [messageFlow],
-     * else it simply retries after timeout.
-     */
-    fun initMessagePolling(initialMessageId: Long): Job
+    )
 
     /**
      * Gets a individual message.
@@ -152,4 +148,8 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun deleteScheduledChatMessage(credentials: String, url: String): Flow<Result<GenericOverall>>
 
     suspend fun getScheduledChatMessages(credentials: String, url: String): Flow<Result<List<ChatMessage>>>
+
+    suspend fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson)
+
+    fun observeMessages(internalConversationId: String): Flow<List<ChatMessageEntity>>
 }
