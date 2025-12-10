@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.nextcloud.talk.account.viewmodels.BrowserLoginActivityViewModel
 import com.nextcloud.talk.activities.CallViewModel
-import com.nextcloud.talk.chat.viewmodels.ChatViewModel
 import com.nextcloud.talk.chat.viewmodels.ScheduledMessagesViewModel
 import com.nextcloud.talk.chooseaccount.StatusViewModel
 import com.nextcloud.talk.contacts.ContactsViewModel
@@ -46,6 +45,14 @@ class ViewModelFactory @Inject constructor(
     private val viewModels: MutableMap<Class<out ViewModel>, Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T = viewModels[modelClass]?.get() as T
+}
+
+class ViewModelFactoryWithParams<T : ViewModel>(private val modelClass: Class<T>, private val create: () -> T) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        @Suppress("UNCHECKED_CAST")
+        return create() as T
+    }
 }
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
@@ -120,10 +127,10 @@ abstract class ViewModelModule {
     @ViewModelKey(ConversationsListViewModel::class)
     abstract fun conversationsListViewModel(viewModel: ConversationsListViewModel): ViewModel
 
-    @Binds
-    @IntoMap
-    @ViewModelKey(ChatViewModel::class)
-    abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
+    // @Binds
+    // @IntoMap
+    // @ViewModelKey(ChatViewModel::class)
+    // abstract fun chatViewModel(viewModel: ChatViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -185,3 +192,11 @@ abstract class ViewModelModule {
     @ViewModelKey(ScheduledMessagesViewModel::class)
     abstract fun scheduledMessagesViewModel(viewModel: ScheduledMessagesViewModel): ViewModel
 }
+
+// @Module
+// interface ChatViewModelAssistedModule {
+//     @Binds
+//     fun bindChatViewModelFactory(
+//         factory: ChatViewModel.Factory
+//     ): ChatViewModel.Factory
+// }
