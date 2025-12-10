@@ -64,7 +64,12 @@ interface ChatNetworkDataSource {
         threadTitle: String?
     ): ChatOverallSingleMessage
 
-    fun pullChatMessages(credentials: String, url: String, fieldMap: HashMap<String, Int>): Observable<Response<*>>
+    suspend fun pullChatMessages(
+        credentials: String,
+        url: String,
+        fieldMap: HashMap<String, Int>
+    ): Response<ChatOverall>
+
     fun deleteChatMessage(credentials: String, url: String): Observable<ChatOverallSingleMessage>
     fun createRoom(credentials: String, url: String, map: Map<String, String>): Observable<RoomOverall>
     fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int): Observable<GenericOverall>
