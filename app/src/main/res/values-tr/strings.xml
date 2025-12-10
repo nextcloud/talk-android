@@ -569,6 +569,7 @@
     <string name="open_thread">Yazışmaya git</string>
     <string name="play_pause_voice_message">Ses iletisini oynat/duraklat</string>
     <string name="playback_speed_control">Oynatma hızı denetimi</string>
+    <string name="please_continue_the_login_process_in_the_browser">Lütfen oturum açma işlemini tarayıcınızdan sürdürün</string>
     <string name="polls_add_option">Seçenek ekle</string>
     <string name="polls_edit_vote">Oyu düzenle</string>
     <string name="polls_end_poll">Anleti sonlandır</string>
