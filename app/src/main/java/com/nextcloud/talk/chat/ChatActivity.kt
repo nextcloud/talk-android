@@ -155,6 +155,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
@@ -474,6 +475,15 @@ class ChatActivity :
                 typingParticipants.remove(userIdOrGuestSession)
                 updateTypingIndicator()
             }
+        }
+
+        override fun onMessageReceived(chatMessage: ChatMessageJson?) {
+            Log.d(
+                TAG,
+                "received message in ChatActivity. This is the chat message received via HPB. It would be " +
+                    "nicer to receive it in the ViewModel or Repository directly. Otherwise it needs to be passed into it" +
+                    " from here..."
+            )
         }
     }
 
