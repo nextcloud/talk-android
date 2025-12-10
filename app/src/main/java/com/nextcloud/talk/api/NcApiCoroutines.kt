@@ -28,6 +28,7 @@ import com.nextcloud.talk.models.json.upcomingEvents.UpcomingEventsOverall
 import com.nextcloud.talk.models.json.userAbsence.UserAbsenceOverall
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.Field
@@ -374,4 +375,11 @@ interface NcApiCoroutines {
 
     @GET
     suspend fun getScheduledMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverall
+
+    @GET
+    suspend fun pullChatMessages(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @QueryMap fields: Map<String, Int>
+    ): Response<ChatOverall>
 }

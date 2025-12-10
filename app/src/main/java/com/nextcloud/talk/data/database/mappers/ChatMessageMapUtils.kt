@@ -10,7 +10,6 @@ package com.nextcloud.talk.data.database.mappers
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.database.model.ChatMessageEntity
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.models.json.chat.ReadStatus
 
 fun ChatMessageJson.asEntity(accountId: Long) =
     ChatMessageEntity(
@@ -53,7 +52,7 @@ fun ChatMessageJson.asEntity(accountId: Long) =
         sendAt = sendAt
     )
 
-fun ChatMessageEntity.asModel() =
+fun ChatMessageEntity.toDomainModel() =
     ChatMessage(
         jsonMessageId = id.toInt(),
         message = message,
@@ -81,7 +80,7 @@ fun ChatMessageEntity.asModel() =
         referenceId = referenceId,
         isTemporary = isTemporary,
         sendStatus = sendStatus,
-        readStatus = ReadStatus.NONE,
+        // readStatus = ReadStatus.NONE,
         silent = silent,
         threadTitle = threadTitle,
         threadReplies = threadReplies,
@@ -93,7 +92,7 @@ fun ChatMessageEntity.asModel() =
         sendAt = sendAt
     )
 
-fun ChatMessageJson.asModel() =
+fun ChatMessageJson.toDomainModel() =
     ChatMessage(
         jsonMessageId = id.toInt(),
         message = message,
