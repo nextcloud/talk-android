@@ -70,7 +70,7 @@ fun ConversationModel.asEntity() =
         hiddenUpcomingEvent = hiddenUpcomingEvent
     )
 
-fun ConversationEntity.asModel() =
+fun ConversationEntity.toDomainModel() =
     ConversationModel(
         internalId = internalId,
         accountId = accountId,

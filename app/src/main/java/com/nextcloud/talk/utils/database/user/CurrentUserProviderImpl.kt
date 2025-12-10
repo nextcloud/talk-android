@@ -37,7 +37,7 @@ class CurrentUserProviderImpl @Inject constructor(private val userManager: UserM
         )
 
     // only emit non-null users
-    val currentUserFlow: Flow<User> = currentUser.filterNotNull()
+    override val currentUserFlow: Flow<User> = currentUser.filterNotNull()
 
     // function for safe one-shot access
     override suspend fun getCurrentUser(timeout: Long): Result<User> {

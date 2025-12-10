@@ -24,8 +24,12 @@ import com.nextcloud.talk.utils.CapabilitiesUtil
 import com.stfalcon.chatkit.commons.models.IUser
 import com.stfalcon.chatkit.commons.models.MessageContentType
 import java.security.MessageDigest
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Date
 
+// Domain model for chat message. No entries here that are only necessary for the database layer, nor only for UI layer
 data class ChatMessage(
     var isGrouped: Boolean = false,
 
@@ -35,6 +39,7 @@ data class ChatMessage(
 
     var activeUser: User? = null,
 
+    @Deprecated("delete with chatkit?")
     var selectedIndividualHashMap: Map<String?, String?>? = null,
 
     var isDeleted: Boolean = false,
@@ -74,6 +79,7 @@ data class ChatMessage(
 
     var parentMessageId: Long? = null,
 
+    @Deprecated("delete with chatkit")
     var readStatus: Enum<ReadStatus> = ReadStatus.NONE,
 
     var messageType: String? = null,
@@ -144,10 +150,39 @@ data class ChatMessage(
 
     var pinnedUntil: Long? = null,
 
-    var sendAt: Int? = null
+    var sendAt: Int? = null,
+
+    var avatarUrl: String? = null,
+
+    var isUnread: Boolean = false
 
 ) : MessageContentType,
     MessageContentType.Image {
+
+    val fileParameters by lazy { FileParameters(messageParameters) }
+    val geoLocationParameters by lazy { GeoLocationParameters(messageParameters) }
+    val pollParameters by lazy { PollParameters(messageParameters) }
+    val deckCardParameters by lazy { DeckCardParameters(messageParameters) }
+
+    val hasFileAttachment get() = messageParameters?.containsKey("file") == true
+    // val hasGeoLocation get() = messageParameters?.containsKey("geo-location") == true
+    val hasGeoLocation get() = messageParameters?.get("object")?.get("type") == "geo-location"
+    val hasPoll get() = messageParameters?.containsKey("talk-poll") == true
+    val hasDeckCard get() = messageParameters?.containsKey("deck-card") == true
+
+    fun getCalculateMessageType(): MessageType {
+        if (!systemMessage.isNullOrBlank()) return MessageType.SYSTEM_MESSAGE
+        if (isVoiceMessage) return MessageType.VOICE_MESSAGE
+
+        return when {
+            hasFileAttachment -> MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+            hasGeoLocation -> MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+            hasPoll -> MessageType.POLL_MESSAGE
+            hasDeckCard -> MessageType.DECK_CARD
+            else -> MessageType.REGULAR_TEXT_MESSAGE
+        }
+    }
+
 
     var extractedUrlToPreview: String? = null
 
@@ -165,102 +200,57 @@ data class ChatMessage(
         MessageType.DECK_CARD
     )
 
-    fun isDeckCard(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "deck-card")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun hasFileAttachment(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun hasGeoLocation(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "geo-location")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
-    fun isPoll(): Boolean {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "talk-poll")) {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-
     @Suppress("ReturnCount")
     fun isLinkPreview(): Boolean {
-        if (CapabilitiesUtil.isLinkPreviewAvailable(activeUser!!)) {
-            val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
+        activeUser?.let {
+            if (CapabilitiesUtil.isLinkPreviewAvailable(it)) {
+                val regexStringFromServer = activeUser?.capabilities?.coreCapability?.referenceRegex
 
-            val regexFromServer = regexStringFromServer?.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
-            val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
+                val regexFromServer = regexStringFromServer?.toRegex(
+                    setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE)
+                )
+                val regexDefault = REGEX_STRING_DEFAULT.toRegex(setOf(RegexOption.MULTILINE, RegexOption.IGNORE_CASE))
 
-            val messageCharSequence: CharSequence = StringBuffer(message!!)
+                val messageCharSequence: CharSequence = StringBuffer(message!!)
 
-            if (regexFromServer != null) {
-                val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
-                if (foundLinkInServerRegex) {
-                    extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                if (regexFromServer != null) {
+                    val foundLinkInServerRegex = regexFromServer.containsMatchIn(messageCharSequence)
+                    if (foundLinkInServerRegex) {
+                        extractedUrlToPreview = regexFromServer.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
+                        return true
+                    }
+                }
+
+                val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
+                if (foundLinkInDefaultRegex) {
+                    extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
                     return true
                 }
             }
-
-            val foundLinkInDefaultRegex = regexDefault.containsMatchIn(messageCharSequence)
-            if (foundLinkInDefaultRegex) {
-                extractedUrlToPreview = regexDefault.find(messageCharSequence)?.groups?.get(0)?.value?.trim()
-                return true
-            }
         }
+
         return false
     }
 
-    @Suppress("Detekt.NestedBlockDepth")
     override fun getImageUrl(): String? {
-        if (messageParameters != null && messageParameters!!.size > 0) {
-            for ((_, individualHashMap) in messageParameters!!) {
-                if (isHashMapEntryEqualTo(individualHashMap, "type", "file")) {
-                    // FIX-ME: this selectedIndividualHashMap stuff needs to be analyzed and most likely be refactored!
-                    //  it just feels wrong to fill this here inside getImageUrl()
-                    selectedIndividualHashMap = individualHashMap
-                    if (!isVoiceMessage) {
-                        if (activeUser != null && activeUser!!.baseUrl != null) {
-                            return ApiUtils.getUrlForFilePreviewWithFileId(
-                                activeUser!!.baseUrl!!,
-                                individualHashMap["id"]!!,
-                                sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
-                            )
-                        } else {
-                            Log.e(
-                                TAG,
-                                "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
-                            )
-                        }
-                    }
+        if (hasFileAttachment) {
+            if (!isVoiceMessage) { // TODO not yet sure why this check was done
+                if (activeUser != null && activeUser!!.baseUrl != null) {
+                    return ApiUtils.getUrlForFilePreviewWithFileId(
+                        activeUser!!.baseUrl!!,
+                        fileParameters.id,
+                        sharedApplication!!.resources.getDimensionPixelSize(R.dimen.maximum_file_preview_size)
+                    )
+                } else {
+                    Log.e(
+                        TAG,
+                        "activeUser or activeUser.getBaseUrl() were null when trying to getImageUrl()"
+                    )
                 }
             }
         }
+
+        // TODO not yet sure what this is
         return if (!messageTypesToIgnore.contains(getCalculateMessageType())) {
             message!!.trim()
         } else {
@@ -268,22 +258,24 @@ data class ChatMessage(
         }
     }
 
-    fun getCalculateMessageType(): MessageType =
-        if (!TextUtils.isEmpty(systemMessage)) {
-            MessageType.SYSTEM_MESSAGE
-        } else if (isVoiceMessage) {
-            MessageType.VOICE_MESSAGE
-        } else if (hasFileAttachment()) {
-            MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
-        } else if (hasGeoLocation()) {
-            MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
-        } else if (isPoll()) {
-            MessageType.POLL_MESSAGE
-        } else if (isDeckCard()) {
-            MessageType.DECK_CARD
-        } else {
-            MessageType.REGULAR_TEXT_MESSAGE
-        }
+
+
+    // fun getCalculateMessageType(): MessageType =
+    //     if (!TextUtils.isEmpty(systemMessage)) {
+    //         MessageType.SYSTEM_MESSAGE
+    //     } else if (isVoiceMessage) {
+    //         MessageType.VOICE_MESSAGE
+    //     } else if (hasFileAttachment()) {
+    //         MessageType.SINGLE_NC_ATTACHMENT_MESSAGE
+    //     } else if (hasGeoLocation()) {
+    //         MessageType.SINGLE_NC_GEOLOCATION_MESSAGE
+    //     } else if (isPoll()) {
+    //         MessageType.POLL_MESSAGE
+    //     } else if (isDeckCard()) {
+    //         MessageType.DECK_CARD
+    //     } else {
+    //         MessageType.REGULAR_TEXT_MESSAGE
+    //     }
 
     override fun getId(): String = jsonMessageId.toString()
 
@@ -362,6 +354,11 @@ data class ChatMessage(
         get() = "command" == messageType
     val isDeletedCommentMessage: Boolean
         get() = "comment_deleted" == messageType
+
+    fun ChatMessage.dateKey(): LocalDate =
+        Instant.ofEpochMilli(timestamp * 1000L)
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate()
 
     enum class MessageType {
         REGULAR_TEXT_MESSAGE,

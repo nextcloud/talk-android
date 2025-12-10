@@ -18,6 +18,7 @@ import android.view.View
 import androidx.core.net.toUri
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
+import com.nextcloud.talk.chat.ui.model.ChatMessageUi
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.DisplayUtils
 import io.noties.markwon.AbstractMarkwonPlugin
@@ -49,6 +50,7 @@ class MessageUtils(val context: Context) {
             )
         }
 
+    @Deprecated("delete with chatkit")
     fun enrichChatMessageText(
         context: Context,
         message: ChatMessage,
@@ -58,6 +60,19 @@ class MessageUtils(val context: Context) {
         if (message.message == null) {
             null
         } else if (message.renderMarkdown == false) {
+            SpannableString(message.message)
+        } else {
+            val newMessage = message.message!!.replace("\n", "  \n", false)
+            enrichChatMessageText(context, newMessage, incoming, viewThemeUtils)
+        }
+
+    fun enrichChatMessageUiText(
+        context: Context,
+        message: ChatMessageUi,
+        incoming: Boolean,
+        viewThemeUtils: ViewThemeUtils
+    ): Spanned? =
+        if (!message.renderMarkdown) {
             SpannableString(message.message)
         } else {
             val newMessage = message.message!!.replace("\n", "  \n", false)
