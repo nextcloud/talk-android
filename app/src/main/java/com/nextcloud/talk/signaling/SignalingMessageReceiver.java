@@ -6,6 +6,7 @@
  */
 package com.nextcloud.talk.signaling;
 
+import com.nextcloud.talk.models.json.chat.ChatMessageJson;
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter;
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter;
 import com.nextcloud.talk.models.json.participants.Participant;
@@ -156,12 +157,8 @@ public abstract class SignalingMessageReceiver {
         void onUnshareScreen();
     }
 
-    /**
-     * Listener for conversation messages.
-     */
-    public interface ConversationMessageListener {
-        void onStartTyping(String userId, String session);
-        void onStopTyping(String userId,String session);
+    protected void processChatMessageWebSocketMessage(ChatMessageJson chatMessage) {
+        conversationMessageNotifier.notifyMessageReceived(chatMessage);
     }
 
     /**
@@ -539,6 +536,15 @@ public abstract class SignalingMessageReceiver {
                 conversationMessageNotifier.notifyStopTyping(userId, sessionId);
             }
         }
+    }
+
+    /**
+     * Listener for conversation messages.
+     */
+    public interface ConversationMessageListener {
+        void onStartTyping(String userId, String session);
+        void onStopTyping(String userId,String session);
+        void onMessageReceived(ChatMessageJson chatMessage);
     }
 
     protected void processSignalingMessage(NCSignalingMessage signalingMessage) {

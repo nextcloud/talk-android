@@ -17,6 +17,7 @@ import com.nextcloud.talk.application.NextcloudTalkApplication.Companion.sharedA
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.events.NetworkEvent
 import com.nextcloud.talk.events.WebSocketCommunicationEvent
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.participants.Participant.ActorType
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
@@ -41,6 +42,7 @@ import okio.ByteString
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.json.JSONObject
 import java.io.IOException
 import java.lang.Thread.sleep
 import javax.inject.Inject
@@ -196,7 +198,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 when (target) {
                     Globals.TARGET_ROOM -> {
                         if ("message" == eventOverallWebSocketMessage.eventMap!!["type"]) {
-                            processRoomMessageMessage(eventOverallWebSocketMessage)
+                            processRoomMessageMessage(eventOverallWebSocketMessage, text)
                         } else if ("join" == eventOverallWebSocketMessage.eventMap!!["type"]) {
                             processRoomJoinMessage(eventOverallWebSocketMessage)
                         } else if ("leave" == eventOverallWebSocketMessage.eventMap!!["type"]) {
@@ -217,7 +219,25 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
     }
 
-    private fun processRoomMessageMessage(eventOverallWebSocketMessage: EventOverallWebSocketMessage) {
+    private fun processRoomMessageMessage(
+        eventOverallWebSocketMessage: EventOverallWebSocketMessage,
+        jsonString: String
+    ) {
+        fun parseChatMessage(jsonString: String): ChatMessageJson? {
+            return try {
+                val root = JSONObject(jsonString)
+                val eventObj = root.optJSONObject("event") ?: return null
+                val messageObj = eventObj.optJSONObject("message") ?: return null
+                val dataObj = messageObj.optJSONObject("data") ?: return null
+                val chatObj = dataObj.optJSONObject("chat") ?: return null
+                val commentObj = chatObj.optJSONObject("comment") ?: return null
+
+                LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
         val messageHashMap = eventOverallWebSocketMessage.eventMap?.get("message") as Map<*, *>?
 
         if (messageHashMap != null && messageHashMap.containsKey("data")) {
@@ -230,6 +250,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                     refreshChatHashMap[BundleKeys.KEY_ROOM_TOKEN] = messageHashMap["roomid"] as String?
                     refreshChatHashMap[BundleKeys.KEY_INTERNAL_USER_ID] = (conversationUser.id!!).toString()
                     eventBus!!.post(WebSocketCommunicationEvent("refreshChat", refreshChatHashMap))
+                }
+
+                if (chatMap != null && chatMap.containsKey("comment")) {
+                    val chatMessage = parseChatMessage(jsonString)
+                    chatMessage?.let {
+                        signalingMessageReceiver.process(it)
+                    }
                 }
             } else if (dataHashMap != null && dataHashMap.containsKey("recording")) {
                 val recordingMap = dataHashMap["recording"] as Map<*, *>?
@@ -480,6 +507,11 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
             } else {
                 processSignalingMessage(message?.ncSignalingMessage)
             }
+        }
+
+        fun process(message: ChatMessageJson) {
+            processChatMessageWebSocketMessage(message)
+            Log.d(TAG, "processing Received chat message")
         }
     }
 
