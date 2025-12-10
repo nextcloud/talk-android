@@ -29,7 +29,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,19 +48,27 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.nextcloud.talk.R
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
+import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
-import com.nextcloud.talk.ui.ComposeChatAdapter
+import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.preview.ComposePreviewUtils
 
 @Composable
-fun ContextChatView(context: Context, contextViewModel: ContextChatViewModel) {
+fun ContextChatView(
+    user: User,
+    context: Context,
+    viewThemeUtils: ViewThemeUtils,
+    contextViewModel: ContextChatViewModel
+) {
     val contextChatMessagesState = contextViewModel.getContextChatMessagesState.collectAsState().value
 
     when (contextChatMessagesState) {
         ContextChatViewModel.ContextChatRetrieveUiState.None -> {}
         is ContextChatViewModel.ContextChatRetrieveUiState.Success -> {
             ContextChatSuccessView(
+                user = user,
+                viewThemeUtils = viewThemeUtils,
                 visible = true,
                 context = context,
                 contextChatRetrieveUiStateSuccess = contextChatMessagesState,
@@ -96,6 +103,8 @@ fun ContextChatErrorView() {
 
 @Composable
 fun ContextChatSuccessView(
+    user: User,
+    viewThemeUtils: ViewThemeUtils,
     visible: Boolean,
     context: Context,
     contextChatRetrieveUiStateSuccess: ContextChatViewModel.ContextChatRetrieveUiState.Success,
@@ -168,20 +177,16 @@ fun ContextChatSuccessView(
                             // ComposeChatMenu(colorScheme.background, false)
                         }
 
-                        val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::asModel)
+                        val messages = contextChatRetrieveUiStateSuccess.messages.map(ChatMessageJson::toDomainModel)
                         val messageId = contextChatRetrieveUiStateSuccess.messageId
                         val threadId = contextChatRetrieveUiStateSuccess.threadId
-                        val isInspection = LocalInspectionMode.current
-                        val adapter = ComposeChatAdapter(
-                            messagesJson = contextChatRetrieveUiStateSuccess.messages,
-                            messageId = messageId,
-                            threadId = threadId,
-                            utils = if (isInspection) previewUtils else null
-                        )
-                        SideEffect {
-                            adapter.addMessages(messages.toMutableList(), true)
-                        }
-                        adapter.GetView()
+
+                        // TODO refactor context chat
+                        // GetNewChatView(
+                        //     chatItems = messages,
+                        //     conversationThreadId = threadId?.toLong(),
+                        //     null
+                        // )
                     }
                 }
             }
@@ -189,64 +194,64 @@ fun ContextChatSuccessView(
     }
 }
 
-@Preview(name = "Light Mode")
-@Composable
-fun ContextChatSuccessViewPreview(title: String = "Alice") {
-    ContextChatSuccessView(
-        visible = true,
-        context = LocalContext.current,
-        contextChatRetrieveUiStateSuccess = ContextChatViewModel.ContextChatRetrieveUiState.Success(
-            messageId = "123",
-            threadId = null,
-            messages = emptyList(),
-            title = title,
-            subTitle = null
-        ),
-        onDismiss = {}
-    )
-}
-
-@Preview(
-    name = "Dark Mode",
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun ContextChatSuccessViewDarkPreview() {
-    ContextChatSuccessViewPreview()
-}
-
-@Preview(name = "RTL / Arabic", locale = "ar")
-@Composable
-fun ContextChatSuccessViewRtlPreview() {
-    ContextChatSuccessViewPreview(title = "أليس")
-}
-
-@Preview(name = "Light Mode")
-@Composable
-fun ContextChatErrorViewPreview() {
-    val context = LocalContext.current
-    val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
-    MaterialTheme(colorScheme = colorScheme) {
-        Surface {
-            ContextChatErrorView()
-        }
-    }
-}
-
-@Preview(
-    name = "Dark Mode",
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-fun ContextChatErrorViewDarkPreview() {
-    ContextChatErrorViewPreview()
-}
-
-@Preview(name = "RTL / Arabic", locale = "ar")
-@Composable
-fun ContextChatErrorViewRtlPreview() {
-    ContextChatErrorViewPreview()
-}
+// @Preview(name = "Light Mode")
+// @Composable
+// fun ContextChatSuccessViewPreview(title: String = "Alice") {
+//     ContextChatSuccessView(
+//         visible = true,
+//         context = LocalContext.current,
+//         contextChatRetrieveUiStateSuccess = ContextChatViewModel.ContextChatRetrieveUiState.Success(
+//             messageId = "123",
+//             threadId = null,
+//             messages = emptyList(),
+//             title = title,
+//             subTitle = null
+//         ),
+//         onDismiss = {}
+//     )
+// }
+//
+// @Preview(
+//     name = "Dark Mode",
+//     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+// )
+// @Composable
+// fun ContextChatSuccessViewDarkPreview() {
+//     ContextChatSuccessViewPreview()
+// }
+//
+// @Preview(name = "RTL / Arabic", locale = "ar")
+// @Composable
+// fun ContextChatSuccessViewRtlPreview() {
+//     ContextChatSuccessViewPreview(title = "أليس")
+// }
+//
+// @Preview(name = "Light Mode")
+// @Composable
+// fun ContextChatErrorViewPreview() {
+//     val context = LocalContext.current
+//     val colorScheme = ComposePreviewUtils.getInstance(context).viewThemeUtils.getColorScheme(context)
+//     MaterialTheme(colorScheme = colorScheme) {
+//         Surface {
+//             ContextChatErrorView()
+//         }
+//     }
+// }
+//
+// @Preview(
+//     name = "Dark Mode",
+//     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+// )
+// @Composable
+// fun ContextChatErrorViewDarkPreview() {
+//     ContextChatErrorViewPreview()
+// }
+//
+// @Preview(name = "RTL / Arabic", locale = "ar")
+// @Composable
+// fun ContextChatErrorViewRtlPreview() {
+//     ContextChatErrorViewPreview()
+// }
 
 // This code was written back then but not needed yet, but it's not deleted yet
 // because it may be used soon when further migrating to Compose...
