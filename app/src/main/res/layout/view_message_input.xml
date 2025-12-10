@@ -34,7 +34,7 @@
             android:layoutDirection="ltr">
 
             <ImageButton
-                android:id="@id/attachmentButton"
+                android:id="@+id/attachmentButton"
                 android:layout_width="@dimen/min_size_clickable_area"
                 android:layout_height="@dimen/min_size_clickable_area"
                 android:layout_alignBottom="@id/messageInput"
@@ -57,12 +57,13 @@
                 app:tint="?attr/colorControlNormal" />
 
             <com.nextcloud.talk.utils.ImageEmojiEditText
-                android:id="@id/messageInput"
+                android:id="@+id/messageInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginEnd="48dp"
                 android:layout_toEndOf="@id/smileyButton"
+                android:background="@null"
                 android:imeOptions="actionDone"
                 android:inputType="textAutoCorrect|textMultiLine|textCapSentences"
                 android:layoutDirection="locale"
@@ -70,7 +71,7 @@
                 android:minHeight="@dimen/min_size_clickable_area"
                 android:paddingHorizontal="@dimen/zero"
                 android:textAlignment="viewStart"
-                tools:hint="@string/nc_hint_enter_a_message" />
+                android:hint="@string/nc_hint_enter_a_message" />
 
             <TextView
                 android:id="@+id/slideToCancelDescription"
@@ -136,7 +137,7 @@
                 android:background="?android:attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/nc_send_voice_recording"
                 android:scaleType="centerInside"
-                android:src="@drawable/ic_send"
+                android:src="@drawable/ic_send_24px"
                 android:visibility="gone" />
 
             <!-- the height of this ImageView is used to define the overall height of the
@@ -204,16 +205,18 @@
                 tools:visibility="gone" />
 
             <ImageButton
-                android:id="@id/messageSendButton"
+                android:id="@+id/messageSendButton"
                 android:layout_width="@dimen/min_size_clickable_area"
                 android:layout_height="@dimen/min_size_clickable_area"
                 android:layout_alignBottom="@id/messageInput"
                 android:layout_alignParentEnd="true"
                 android:layout_gravity="bottom"
                 android:adjustViewBounds="true"
+                android:background="@color/transparent"
                 android:contentDescription="@string/nc_description_send_message_button"
                 android:padding="12dp"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_send_24px" />
 
             <ImageButton
                 android:id="@+id/scheduledMessagesButton"
@@ -259,14 +262,14 @@
                 tools:visibility="visible" />
 
             <Space
-                android:id="@id/attachmentButtonSpace"
+                android:id="@+id/attachmentButtonSpace"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_toEndOf="@id/attachmentButton"
                 android:visibility="gone" />
 
             <Space
-                android:id="@id/sendButtonSpace"
+                android:id="@+id/sendButtonSpace"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_toStartOf="@id/smileyButton" />

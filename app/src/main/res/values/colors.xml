@@ -50,6 +50,8 @@
     <color name="grey_600">#757575</color>
     <color name="nc_grey">#D5D5D5</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="transparent">#00000000</color>
     <color name="call_incomingCallTextView">#E9FFFFFF</color>
     <color name="grey950">#111111</color>
     <color name="textColorMaxContrast">#767676</color>
@@ -58,7 +60,6 @@
     <color name="fg_inverse">#FFFFFF</color>
 
     <color name="bg_default">#FFFFFF</color>
-    <color name="bg_default_semitransparent">#99FFFFFF</color>
     <color name="bg_dark_mention_chips">#333333</color>
 
     <color name="bg_message_list_incoming_bubble">#EFEFEF</color>

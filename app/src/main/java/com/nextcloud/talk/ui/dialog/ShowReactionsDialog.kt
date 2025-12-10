@@ -23,21 +23,16 @@ import com.nextcloud.talk.R
 import com.nextcloud.talk.adapters.ReactionItem
 import com.nextcloud.talk.adapters.ReactionItemClickListener
 import com.nextcloud.talk.adapters.ReactionsAdapter
-import com.nextcloud.talk.api.NcApi
+import com.nextcloud.talk.api.NcApiCoroutines
 import com.nextcloud.talk.application.NextcloudTalkApplication
-import com.nextcloud.talk.chat.ChatActivity
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.databinding.DialogMessageReactionsBinding
 import com.nextcloud.talk.databinding.ItemReactionsTabBinding
-import com.nextcloud.talk.models.json.generic.GenericOverall
-import com.nextcloud.talk.models.json.reactions.ReactionsOverall
 import com.nextcloud.talk.ui.theme.ViewThemeUtils
 import com.nextcloud.talk.utils.ApiUtils
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import java.util.Collections
 import java.util.Locale
 import javax.inject.Inject
@@ -47,9 +42,9 @@ class ShowReactionsDialog(
     val activity: Activity,
     private val roomToken: String,
     private val chatMessage: ChatMessage,
-    private val user: User?,
+    private val user: User,
     private val hasReactPermission: Boolean,
-    private val ncApi: NcApi
+    private val ncApiCoroutines: NcApiCoroutines
 ) : BottomSheetDialog(activity),
     ReactionItemClickListener {
 
@@ -135,95 +130,71 @@ class ShowReactionsDialog(
         adapter?.notifyDataSetChanged()
     }
 
+    @Suppress("Detekt.TooGenericExceptionCaught")
     private fun updateParticipantsForEmoji(chatMessage: ChatMessage, emoji: String?) {
         adapter?.list?.clear()
 
-        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
 
-        ncApi.getReactions(
-            credentials,
-            ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl!!,
-                roomToken,
-                chatMessage.id
-            ),
-            emoji
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<ReactionsOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
-
-                override fun onNext(reactionsOverall: ReactionsOverall) {
-                    val reactionVoters: ArrayList<ReactionItem> = ArrayList()
-                    if (reactionsOverall.ocs?.data != null) {
-                        val map = reactionsOverall.ocs?.data
-                        for (key in map!!.keys) {
-                            for (reactionVoter in reactionsOverall.ocs?.data!![key]!!) {
-                                reactionVoters.add(ReactionItem(reactionVoter, key))
-                            }
+        (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycleScope?.launch {
+            try {
+                val reactionsOverall = ncApiCoroutines.getReactions(
+                    credentials,
+                    ApiUtils.getUrlForMessageReaction(
+                        baseUrl = user.baseUrl!!,
+                        roomToken = roomToken,
+                        messageId = chatMessage.jsonMessageId.toString()
+                    ),
+                    emoji
+                )
+                val reactionVoters: ArrayList<ReactionItem> = ArrayList()
+                if (reactionsOverall.ocs?.data != null) {
+                    val map = reactionsOverall.ocs?.data
+                    for (key in map!!.keys) {
+                        for (reactionVoter in reactionsOverall.ocs?.data!![key]!!) {
+                            reactionVoters.add(ReactionItem(reactionVoter, key))
                         }
-
-                        Collections.sort(reactionVoters, ReactionComparator(user.userId))
-
-                        adapter?.list?.addAll(reactionVoters)
-                        adapter?.notifyDataSetChanged()
-                    } else {
-                        Log.e(TAG, "no voters for this reaction")
                     }
+                    Collections.sort(reactionVoters, ReactionComparator(user.userId))
+                    adapter?.list?.addAll(reactionVoters)
+                    adapter?.notifyDataSetChanged()
+                } else {
+                    Log.e(TAG, "no voters for this reaction")
                 }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "failed to retrieve list of reaction voters")
-                }
-
-                override fun onComplete() {
-                    // unused atm
-                }
-            })
+            } catch (e: Exception) {
+                Log.e(TAG, "failed to retrieve list of reaction voters")
+            }
+        }
     }
 
     override fun onClick(reactionItem: ReactionItem) {
-        if (hasReactPermission && reactionItem.reactionVoter.actorId?.equals(user?.userId) == true) {
+        if (hasReactPermission && reactionItem.reactionVoter.actorId?.equals(user.userId) == true) {
             deleteReaction(chatMessage, reactionItem.reaction!!)
-            adapter?.list?.remove(reactionItem)
             dismiss()
         }
     }
 
     private fun deleteReaction(message: ChatMessage, emoji: String) {
-        val credentials = ApiUtils.getCredentials(user?.username, user?.token)
-        ncApi.deleteReaction(
-            credentials,
-            ApiUtils.getUrlForMessageReaction(
-                user?.baseUrl!!,
-                roomToken,
-                message.id
-            ),
-            emoji
-        )
-            ?.subscribeOn(Schedulers.io())
-            ?.observeOn(AndroidSchedulers.mainThread())
-            ?.subscribe(object : Observer<GenericOverall> {
-                override fun onSubscribe(d: Disposable) {
-                    // unused atm
-                }
+        val credentials = ApiUtils.getCredentials(user.username, user.token)
 
-                override fun onNext(genericOverall: GenericOverall) {
-                    Log.d(TAG, "deleted reaction: $emoji")
-                    (activity as ChatActivity).updateUiToDeleteReaction(message, emoji)
-                }
-
-                override fun onError(e: Throwable) {
-                    Log.e(TAG, "error while deleting reaction: $emoji")
-                }
-
-                override fun onComplete() {
-                    dismiss()
-                }
-            })
+        (activity as? androidx.lifecycle.LifecycleOwner)?.lifecycleScope?.launch {
+            try {
+                ncApiCoroutines.deleteReaction(
+                    credentials,
+                    ApiUtils.getUrlForMessageReaction(
+                        baseUrl = user.baseUrl!!,
+                        roomToken = roomToken,
+                        messageId = message.jsonMessageId.toString()
+                    ),
+                    emoji
+                )
+                Log.d(TAG, "deleted reaction: $emoji")
+            } catch (e: Exception) {
+                Log.e(TAG, "error while deleting reaction: $emoji")
+            } finally {
+                dismiss()
+            }
+        }
     }
 
     companion object {

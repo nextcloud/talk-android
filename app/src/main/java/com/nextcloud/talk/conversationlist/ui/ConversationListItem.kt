@@ -64,7 +64,7 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.nextcloud.talk.R
 import com.nextcloud.talk.chat.data.model.ChatMessage
-import com.nextcloud.talk.data.database.mappers.asModel
+import com.nextcloud.talk.data.database.mappers.toDomainModel
 import com.nextcloud.talk.data.user.model.User
 import com.nextcloud.talk.models.json.chat.ChatUtils
 import com.nextcloud.talk.extensions.loadNoteToSelfAvatar
@@ -143,7 +143,7 @@ fun ConversationListItem(
     searchQuery: String = ""
 ) {
     val chatMessage = remember(model.lastMessage, currentUser) {
-        model.lastMessage?.asModel()?.also { it.activeUser = currentUser }
+        model.lastMessage?.toDomainModel()?.also { it.activeUser = currentUser }
     }
 
     Row(

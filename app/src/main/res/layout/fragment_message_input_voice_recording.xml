@@ -99,7 +99,7 @@
             android:background="?android:attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/nc_send_voice_recording"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_send" />
+            android:src="@drawable/ic_send_24px" />
     </LinearLayout>
 
 </LinearLayout>

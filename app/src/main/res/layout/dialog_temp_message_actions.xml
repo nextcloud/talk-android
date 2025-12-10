@@ -43,7 +43,7 @@
                     android:contentDescription="@null"
                     android:paddingStart="@dimen/standard_dialog_padding"
                     android:paddingEnd="@dimen/zero"
-                    android:src="@drawable/ic_send"
+                    android:src="@drawable/ic_send_24px"
                     app:tint="@color/high_emphasis_menu_icon" />
 
                 <androidx.appcompat.widget.AppCompatTextView

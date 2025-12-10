@@ -79,20 +79,17 @@ import java.time.temporal.TemporalAdjusters.nextOrSame
 import javax.inject.Inject
 
 @AutoInjector(NextcloudTalkApplication::class)
-class DateTimeCompose(val bundle: Bundle) {
+class DateTimeCompose(val bundle: Bundle, val chatViewModel: ChatViewModel) {
     private var timeState = mutableStateOf(LocalDateTime.ofEpochSecond(0, 0, ZoneOffset.MIN))
 
     init {
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
         val user = currentUserProvider.currentUser.blockingGet()
         val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-        val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+        val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
         val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
-        chatViewModel.getReminder(user, roomToken, messageId, apiVersion)
+        chatViewModel.getReminder(user, roomToken, messageId.toString(), apiVersion)
     }
-
-    @Inject
-    lateinit var chatViewModel: ChatViewModel
 
     @Inject
     lateinit var currentUserProvider: CurrentUserProviderOld
@@ -146,9 +143,9 @@ class DateTimeCompose(val bundle: Bundle) {
                 onClick = {
                     val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-                    val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+                    val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
-                    chatViewModel.deleteReminder(user, roomToken, messageId, apiVersion)
+                    chatViewModel.deleteReminder(user, roomToken, messageId.toString(), apiVersion)
                     shouldDismiss.value = true
                 },
                 modifier = Modifier
@@ -174,11 +171,11 @@ class DateTimeCompose(val bundle: Bundle) {
                 onClick = {
                     val user = currentUserProvider.currentUser.blockingGet()
                     val roomToken = bundle.getString(BundleKeys.KEY_ROOM_TOKEN)!!
-                    val messageId = bundle.getString(BundleKeys.KEY_MESSAGE_ID)!!
+                    val messageId = bundle.getInt(BundleKeys.KEY_MESSAGE_ID)
                     val apiVersion = bundle.getInt(BundleKeys.KEY_CHAT_API_VERSION)
                     val offset = timeState.value.atZone(ZoneOffset.systemDefault()).offset
                     val timeVal = timeState.value.toEpochSecond(offset)
-                    chatViewModel.setReminder(user, roomToken, messageId, timeVal.toInt(), apiVersion)
+                    chatViewModel.setReminder(user, roomToken, messageId.toString(), timeVal.toInt(), apiVersion)
                     shouldDismiss.value = true
                 },
                 modifier = Modifier

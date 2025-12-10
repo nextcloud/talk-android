@@ -68,6 +68,7 @@ class ChunkedFileUploader(
     @Suppress("Detekt.TooGenericExceptionCaught")
     fun upload(localFile: File, mimeType: MediaType?, targetPath: String): Boolean {
         try {
+            var isUploadSuccessful = true
             uploadFolderUri = remoteChunkUrl + "/" + FileUtils.md5Sum(localFile)
             val davResource = DavResource(
                 okHttpClientNoRedirects!!,
@@ -83,12 +84,17 @@ class ChunkedFileUploader(
             Log.d(TAG, "missingChunks: " + missingChunks.size)
 
             for (missingChunk in missingChunks) {
-                if (isUploadAborted) return false
+                if (isUploadAborted) {
+                    isUploadSuccessful = false
+                    break
+                }
                 uploadChunk(localFile, uploadFolderUri, mimeType, missingChunk, missingChunk.length())
             }
 
-            assembleChunks(uploadFolderUri, targetPath)
-            return true
+            if (isUploadSuccessful) {
+                assembleChunks(uploadFolderUri, targetPath)
+            }
+            return isUploadSuccessful
         } catch (e: Exception) {
             Log.e(TAG, "Something went wrong in ChunkedFileUploader", e)
             return false

@@ -101,8 +101,8 @@ class RepositoryModule {
         ArbitraryStoragesRepositoryImpl(database.arbitraryStoragesDao())
 
     @Provides
-    fun provideReactionsRepository(ncApi: NcApi, dao: ChatMessagesDao): ReactionsRepository =
-        ReactionsRepositoryImpl(ncApi, dao)
+    fun provideReactionsRepository(ncApiCoroutines: NcApiCoroutines, dao: ChatMessagesDao): ReactionsRepository =
+        ReactionsRepositoryImpl(ncApiCoroutines, dao)
 
     @Provides
     fun provideCallRecordingRepository(ncApi: NcApi): CallRecordingRepository = CallRecordingRepositoryImpl(ncApi)

@@ -70,25 +70,7 @@
                 android:layout_height="wrap_content"
                 android:animateLayoutChanges="true"
                 android:inputType="textLongMessage|textAutoComplete"
-                android:maxLength="1000"
-                app:attachmentButtonBackground="@color/transparent"
-                app:attachmentButtonHeight="48dp"
-                app:attachmentButtonIcon="@drawable/ic_baseline_attach_file_24"
-                app:attachmentButtonMargin="0dp"
-                app:attachmentButtonWidth="48dp"
-                app:delayTypingStatus="200"
-                app:inputButtonDefaultBgColor="@color/transparent"
-                app:inputButtonDefaultBgDisabledColor="@color/transparent"
-                app:inputButtonDefaultBgPressedColor="@color/transparent"
-                app:inputButtonDefaultIconColor="@color/colorPrimary"
-                app:inputButtonHeight="48dp"
-                app:inputButtonMargin="0dp"
-                app:inputButtonWidth="48dp"
-                app:inputHint="@string/nc_hint_enter_a_message"
-                app:inputHintColor="@color/nc_incoming_text_default"
-                app:inputTextColor="@color/nc_incoming_text_default"
-                app:inputTextSize="16sp"
-                app:showAttachmentButton="true" />
+                android:maxLength="1000" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>
