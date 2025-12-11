@@ -86,5 +86,6 @@ freeline_project_description.json
 
 # python
 **/__pycache__/
+.vscode/
 
 /gradle/verification-keyring.gpg
