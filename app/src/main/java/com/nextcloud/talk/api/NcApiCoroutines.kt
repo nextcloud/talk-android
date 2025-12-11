@@ -337,4 +337,18 @@ interface NcApiCoroutines {
 
     @DELETE
     suspend fun hidePinnedMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
+
+    @FormUrlEncoded
+    @POST
+    suspend fun sendScheduleChatMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String,
+        @Field("actorDisplayName") actorDisplayName: String,
+        @Field("referenceId") referenceId: String,
+        @Field("replyTo") replyTo: Int,
+        @Field("silent") sendWithoutNotification: Boolean,
+        @Field("threadTitle") threadTitle: String,
+        @Field("threadId") threadId: Int
+    ): ChatOverallSingleMessage
 }
