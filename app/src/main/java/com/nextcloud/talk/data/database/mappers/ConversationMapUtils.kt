@@ -64,7 +64,9 @@ fun ConversationModel.asEntity() =
         hasArchived = hasArchived,
         hasSensitive = hasSensitive,
         hasImportant = hasImportant,
-        messageDraft = messageDraft
+        messageDraft = messageDraft,
+        hiddenPinnedId = hiddenPinnedId,
+        lastPinnedId = lastPinnedId
     )
 
 fun ConversationEntity.asModel() =
@@ -119,7 +121,9 @@ fun ConversationEntity.asModel() =
         hasArchived = hasArchived,
         hasSensitive = hasSensitive,
         hasImportant = hasImportant,
-        messageDraft = messageDraft
+        messageDraft = messageDraft,
+        hiddenPinnedId = hiddenPinnedId,
+        lastPinnedId = lastPinnedId
     )
 
 fun Conversation.asEntity(accountId: Long) =
@@ -172,5 +176,7 @@ fun Conversation.asEntity(accountId: Long) =
         remoteToken = remoteToken,
         hasArchived = hasArchived,
         hasSensitive = hasSensitive,
-        hasImportant = hasImportant
+        hasImportant = hasImportant,
+        hiddenPinnedId = hiddenPinnedId,
+        lastPinnedId = lastPinnedId
     )

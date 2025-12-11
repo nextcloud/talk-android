@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.lifecycleScope
 import autodagger.AutoInjector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -166,6 +167,12 @@ class MessageActionsDialog(
                 !message.isDeleted &&
                     hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.REMIND_ME_LATER) &&
                     isOnline
+            )
+            initMenuPinMessage(
+                !message.isDeleted &&
+                    hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.PINNED_MESSAGES) &&
+                    isOnline &&
+                    isUserAllowedToEdit
             )
             initMenuMarkAsUnread(
                 message.previousMessageId > NO_PREVIOUS_MESSAGE_ID &&
@@ -386,6 +393,27 @@ class MessageActionsDialog(
         }
 
         dialogMessageActionsBinding.menuNotifyMessage.visibility = getVisibility(visible)
+    }
+
+    private fun initMenuPinMessage(visible: Boolean) {
+        if (visible) {
+            dialogMessageActionsBinding.menuPinMessage.setOnClickListener {
+                if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                    chatActivity.unPinMessage(message)
+                } else {
+                    chatActivity.pinMessage(message)
+                }
+                dismiss()
+            }
+
+            if (currentConversation?.lastPinnedId == message.jsonMessageId.toLong()) {
+                dialogMessageActionsBinding.menuPinMessageText.text = context.getString(R.string.unpin_message)
+                val unpinnedDrawable = AppCompatResources.getDrawable(context, R.drawable.keep_off_24px)
+                dialogMessageActionsBinding.menuPinMessageIcon.setImageDrawable(unpinnedDrawable)
+            }
+        }
+
+        dialogMessageActionsBinding.menuPinMessage.visibility = getVisibility(visible)
     }
 
     private fun initMenuDeleteMessage(visible: Boolean) {
