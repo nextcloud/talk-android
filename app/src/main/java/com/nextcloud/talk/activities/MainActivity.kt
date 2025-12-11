@@ -84,7 +84,7 @@ class MainActivity :
 
         NextcloudTalkApplication.sharedApplication!!.componentApplication.inject(this)
 
-        binding.toolbar?.let { setSupportActionBar(it) }
+        setSupportActionBar(binding.toolbar)
 
         handleIntent(intent)
 

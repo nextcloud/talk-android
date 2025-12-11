@@ -907,7 +907,4 @@ How to translate with transifex:
     <string name="turn_on_background_blur">Turn on background blur</string>
     <string name="turn_off_background_blur">Turn off background blur</string>
     <string name="please_continue_the_login_process_in_the_browser">Please continue login in browser</string>
-    <string name="media">Media</string>
-    <string name="camera">Camera</string>
-    <string name="microphone">Microphone</string>
 </resources>

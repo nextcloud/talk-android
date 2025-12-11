@@ -190,63 +190,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/settings_media_category"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:id="@+id/settings_media_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/standard_margin"
-                    android:text="@string/media"
-                    android:textSize="@dimen/headline_text_size"
-                    android:textStyle="bold"/>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/camera_settings_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_half_margin"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    android:hint="@string/camera">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/settings_camera_choice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:lines="1"
-                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
-                        android:text="" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/microphone_settings_input_layout"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/standard_half_margin"
-                    android:layout_marginHorizontal="@dimen/standard_margin"
-                    android:hint="@string/microphone">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/settings_microphone_choice"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:lines="1"
-                        android:popupTheme="@style/ThemeOverlay.AppTheme.PopupMenu"
-                        android:text="" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/settings_notifications_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -491,7 +434,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/standard_half_margin"
                         android:layout_marginHorizontal="@dimen/standard_margin"
-                        android.hint="@string/nc_settings_screen_lock_timeout_title">
+                        android:hint="@string/nc_settings_screen_lock_timeout_title">
 
                         <com.google.android.material.textfield.MaterialAutoCompleteTextView
                             android:id="@+id/settings_screen_lock_timeout_layout_dropdown"
@@ -905,7 +848,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/standard_margin"
                         android:text="@string/nc_get_source_code"
-                        android.textSize="@dimen/headline_text_size"/>
+                        android:textSize="@dimen/headline_text_size"/>
 
                 </LinearLayout>
 
