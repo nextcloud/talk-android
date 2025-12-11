@@ -158,6 +158,7 @@ public abstract class SignalingMessageReceiver {
     }
 
     protected void processChatMessageWebSocketMessage(ChatMessageJson chatMessage) {
+        // TODO: pass in string an parse it as json here...
         conversationMessageNotifier.notifyMessageReceived(chatMessage);
     }
 
@@ -287,6 +288,15 @@ public abstract class SignalingMessageReceiver {
 
             return;
         }
+    }
+
+    /**
+     * Listener for conversation messages.
+     */
+    public interface ConversationMessageListener {
+        void onStartTyping(String userId, String session);
+        void onStopTyping(String userId,String session);
+        void onMessageReceived(ChatMessageJson chatMessage);
     }
 
     private void processSwitchToEvent(Map<String, Object> eventMap) {
@@ -536,15 +546,6 @@ public abstract class SignalingMessageReceiver {
                 conversationMessageNotifier.notifyStopTyping(userId, sessionId);
             }
         }
-    }
-
-    /**
-     * Listener for conversation messages.
-     */
-    public interface ConversationMessageListener {
-        void onStartTyping(String userId, String session);
-        void onStopTyping(String userId,String session);
-        void onMessageReceived(ChatMessageJson chatMessage);
     }
 
     protected void processSignalingMessage(NCSignalingMessage signalingMessage) {
