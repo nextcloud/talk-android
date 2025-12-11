@@ -16,12 +16,14 @@ import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE
 import androidx.core.content.ContextCompat
 import com.nextcloud.talk.R
 import com.nextcloud.talk.activities.CallActivity
 import com.nextcloud.talk.application.NextcloudTalkApplication
+import com.nextcloud.talk.receivers.EndCallReceiver
 import com.nextcloud.talk.utils.NotificationUtils
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_CALL_VOICE_ONLY
 import com.nextcloud.talk.utils.bundle.BundleKeys.KEY_PARTICIPANT_PERMISSION_CAN_PUBLISH_VIDEO
@@ -59,6 +61,26 @@ class CallForegroundService : Service() {
         val contentTitle = conversationName?.takeIf { it.isNotBlank() }
             ?: getString(R.string.nc_call_ongoing_notification_default_title)
         val pendingIntent = createContentIntent(callExtras)
+        
+        // Create action to return to call
+        val returnToCallAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_call_white_24dp,
+            getString(R.string.nc_call_ongoing_notification_return_action),
+            pendingIntent
+        ).build()
+        
+        // Create action to end call
+        val endCallPendingIntent = createEndCallIntent(callExtras)
+        
+        // DIAGNOSTIC: Logging icon resource availability
+        Log.d("CallForegroundService", "Creating end call action - checking icon resources")
+        Log.d("CallForegroundService", "Using ic_baseline_close_24 instead of non-existent ic_close_white_24px")
+        
+        val endCallAction = NotificationCompat.Action.Builder(
+            R.drawable.ic_baseline_close_24,  // DIAGNOSTIC: Fixed - using existing icon
+            getString(R.string.nc_call_ongoing_notification_end_action),
+            endCallPendingIntent
+        ).build()  // Already has parentheses, good!
 
         return NotificationCompat.Builder(this, channelId)
             .setContentTitle(contentTitle)
@@ -71,6 +93,9 @@ class CallForegroundService : Service() {
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setContentIntent(pendingIntent)
             .setShowWhen(false)
+            .addAction(returnToCallAction)
+            .addAction(endCallAction)
+            .setAutoCancel(false)
             .build()
     }
 
@@ -81,12 +106,27 @@ class CallForegroundService : Service() {
 
     private fun createContentIntent(callExtras: Bundle?): PendingIntent {
         val intent = Intent(this, CallActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_REORDER_TO_FRONT
             callExtras?.let { putExtras(Bundle(it)) }
         }
 
         val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         return PendingIntent.getActivity(this, 0, intent, flags)
+    }
+    
+    private fun createEndCallIntent(callExtras: Bundle?): PendingIntent {
+        // DIAGNOSTIC: Logging intent creation
+        Log.d("CallForegroundService", "Creating EndCallIntent with EndCallReceiver class")
+        
+        val intent = Intent(this, EndCallReceiver::class.java).apply {
+            action = "com.nextcloud.talk.END_CALL"
+            callExtras?.let { putExtras(Bundle(it)) }
+        }
+        
+        Log.d("CallForegroundService", "EndCallIntent created successfully with action: ${intent.action}")
+        
+        val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        return PendingIntent.getBroadcast(this, 1, intent, flags)
     }
 
     private fun resolveForegroundServiceType(callExtras: Bundle?): Int {
