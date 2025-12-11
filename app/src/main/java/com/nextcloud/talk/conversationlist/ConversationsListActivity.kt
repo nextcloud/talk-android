@@ -320,9 +320,8 @@ class ConversationsListActivity :
             currentUser?.capabilities?.spreedCapability?.let { spreedCapabilities ->
                 if (hasSpreedFeatureCapability(spreedCapabilities, SpreedFeatures.UNIFIED_SEARCH)) {
                     searchHelper = MessageSearchHelper(
-                        unifiedSearchRepository,
-                        currentUser!!,
-                        ""
+                        unifiedSearchRepository = unifiedSearchRepository,
+                        currentUser = currentUser!!
                     )
                 }
             }
