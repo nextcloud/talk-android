@@ -82,7 +82,6 @@ class ServerSelectionActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         sharedApplication!!.componentApplication.inject(this)
         binding = ActivityServerSelectionBinding.inflate(layoutInflater)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         setContentView(binding.root)
         actionBar?.hide()
         initSystemBars()
