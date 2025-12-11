@@ -351,4 +351,17 @@ interface NcApiCoroutines {
         @Field("threadTitle") threadTitle: String,
         @Field("threadId") threadId: Int
     ): ChatOverallSingleMessage
+
+    @FormUrlEncoded
+    @POST
+    suspend fun updateScheduledMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String,
+        @Field("message") message: String,
+        @Field("sendAt") sendAt:Int,
+        @Field("replyTo") replyTo: Int,
+        @Field("silent") sendWithoutNotification: Boolean,
+        @Field("threadTitle") threadTitle: String,
+        @Field("threadId") threadId: Int
+    )
 }
