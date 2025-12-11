@@ -223,20 +223,20 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         eventOverallWebSocketMessage: EventOverallWebSocketMessage,
         jsonString: String
     ) {
-        fun parseChatMessage(jsonString: String): ChatMessageJson? {
-            return try {
-                val root = JSONObject(jsonString)
-                val eventObj = root.optJSONObject("event") ?: return null
-                val messageObj = eventObj.optJSONObject("message") ?: return null
-                val dataObj = messageObj.optJSONObject("data") ?: return null
-                val chatObj = dataObj.optJSONObject("chat") ?: return null
-                val commentObj = chatObj.optJSONObject("comment") ?: return null
-
-                LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java)
-            } catch (e: Exception) {
-                null
-            }
-        }
+        // fun parseChatMessage(jsonString: String): ChatMessageJson? {
+        //     return try {
+        //         val root = JSONObject(jsonString)
+        //         val eventObj = root.optJSONObject("event") ?: return null
+        //         val messageObj = eventObj.optJSONObject("message") ?: return null
+        //         val dataObj = messageObj.optJSONObject("data") ?: return null
+        //         val chatObj = dataObj.optJSONObject("chat") ?: return null
+        //         val commentObj = chatObj.optJSONObject("comment") ?: return null
+        //
+        //         LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java)
+        //     } catch (e: Exception) {
+        //         null
+        //     }
+        // }
 
         val messageHashMap = eventOverallWebSocketMessage.eventMap?.get("message") as Map<*, *>?
 
@@ -252,12 +252,13 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                     eventBus!!.post(WebSocketCommunicationEvent("refreshChat", refreshChatHashMap))
                 }
 
-                if (chatMap != null && chatMap.containsKey("comment")) {
-                    val chatMessage = parseChatMessage(jsonString)
-                    chatMessage?.let {
-                        signalingMessageReceiver.process(it)
-                    }
-                }
+                // if (chatMap != null && chatMap.containsKey("comment")) {
+                // TODO: pass string through..
+                //     val chatMessage = parseChatMessage(jsonString)
+                //     chatMessage?.let {
+                //         signalingMessageReceiver.process(it)
+                //     }
+                // }
             } else if (dataHashMap != null && dataHashMap.containsKey("recording")) {
                 val recordingMap = dataHashMap["recording"] as Map<*, *>?
                 if (recordingMap != null && recordingMap.containsKey("status")) {
@@ -510,6 +511,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
 
         fun process(message: ChatMessageJson) {
+            // TODO: pass string through..
             processChatMessageWebSocketMessage(message)
             Log.d(TAG, "processing Received chat message")
         }
