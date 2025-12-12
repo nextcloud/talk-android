@@ -166,7 +166,7 @@ abstract class SignalingMessageReceiver {
     interface ConversationMessageListener {
         fun onStartTyping(userId: String?, session: String?)
         fun onStopTyping(userId: String?, session: String?)
-        fun onMessageReceived(chatMessage: ChatMessageJson?)
+        fun onChatMessageReceived(chatMessage: ChatMessageJson)
     }
 
     /**

@@ -33,7 +33,7 @@ internal class ConversationMessageNotifier {
     @Synchronized
     fun notifyMessageReceived(chatMessage: ChatMessageJson) {
         for (listener in ArrayList(conversationMessageListeners)) {
-            listener.onMessageReceived(chatMessage)
+            listener.onChatMessageReceived(chatMessage)
         }
     }
 
