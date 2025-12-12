@@ -358,7 +358,7 @@ interface NcApiCoroutines {
         @Header("Authorization") authorization: String,
         @Url url: String,
         @Field("message") message: String,
-        @Field("sendAt") sendAt:Int,
+        @Field("sendAt") sendAt: Int,
         @Field("replyTo") replyTo: Int,
         @Field("silent") sendWithoutNotification: Boolean,
         @Field("threadTitle") threadTitle: String,
@@ -366,12 +366,8 @@ interface NcApiCoroutines {
     ): ChatOverallSingleMessage
 
     @DELETE
-    suspend fun deleteScheduleMessage(
-        @Header("Authorization") authorization: String,
-        @Url url: String
-    ): GenericOverall
+    suspend fun deleteScheduleMessage(@Header("Authorization") authorization: String, @Url url: String): GenericOverall
 
-
-
-
+    @GET
+    suspend fun getScheduledMessage(@Header("Authorization") authorization: String, @Url url: String): ChatOverall
 }
