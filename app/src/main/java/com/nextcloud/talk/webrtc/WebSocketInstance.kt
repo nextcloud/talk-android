@@ -42,7 +42,6 @@ import okio.ByteString
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.json.JSONObject
 import java.io.IOException
 import java.lang.Thread.sleep
 import javax.inject.Inject
@@ -253,7 +252,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
                 }
 
                 // if (chatMap != null && chatMap.containsKey("comment")) {
-                // TODO: pass string through..
+                // pass string through..
                 //     val chatMessage = parseChatMessage(jsonString)
                 //     chatMessage?.let {
                 //         signalingMessageReceiver.process(it)
@@ -496,7 +495,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
      * stays connected, but it may change whenever it is connected again.
      */
     private class ExternalSignalingMessageReceiver : SignalingMessageReceiver() {
-        fun process(eventMap: Map<String, Any?>?) {
+        fun process(eventMap: Map<String, Any>?) {
             processEvent(eventMap)
         }
 
@@ -511,7 +510,7 @@ class WebSocketInstance internal constructor(conversationUser: User, connectionU
         }
 
         fun process(message: ChatMessageJson) {
-            // TODO: pass string through..
+            // pass string through..
             processChatMessageWebSocketMessage(message)
             Log.d(TAG, "processing Received chat message")
         }
