@@ -6,12 +6,14 @@
  */
 package com.nextcloud.talk.signaling
 
+import com.bluelinelabs.logansquare.LoganSquare
 import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.converters.EnumActorTypeConverter
 import com.nextcloud.talk.models.json.converters.EnumParticipantTypeConverter
 import com.nextcloud.talk.models.json.participants.Participant
 import com.nextcloud.talk.models.json.signaling.NCSignalingMessage
 import com.nextcloud.talk.models.json.websocket.CallWebSocketMessage
+import org.json.JSONObject
 import kotlin.Any
 import kotlin.Int
 import kotlin.Long
@@ -158,8 +160,13 @@ abstract class SignalingMessageReceiver {
         fun onUnshareScreen()
     }
 
-    protected fun processChatMessageWebSocketMessage(chatMessage: ChatMessageJson) {
-        conversationMessageNotifier.notifyMessageReceived(chatMessage)
+    /**
+     * Listener for conversation messages.
+     */
+    interface ConversationMessageListener {
+        fun onStartTyping(userId: String?, session: String?)
+        fun onStopTyping(userId: String?, session: String?)
+        fun onMessageReceived(chatMessage: ChatMessageJson?)
     }
 
     /**
@@ -298,15 +305,6 @@ abstract class SignalingMessageReceiver {
         }
     }
 
-    /**
-     * Listener for conversation messages.
-     */
-    interface ConversationMessageListener {
-        fun onStartTyping(userId: String?, session: String?)
-        fun onStopTyping(userId: String?, session: String?)
-        fun onMessageReceived(chatMessage: ChatMessageJson?)
-    }
-
     private fun processSwitchToEvent(eventMap: Map<String, Any>?) {
         // Message schema:
         // {
@@ -342,6 +340,29 @@ abstract class SignalingMessageReceiver {
         }
 
         localParticipantMessageNotifier.notifySwitchTo(token)
+    }
+
+    protected fun processChatMessageWebSocketMessage(jsonString: String) {
+        fun parseChatMessage(jsonString: String): ChatMessageJson? {
+            return try {
+                val root = JSONObject(jsonString)
+                val eventObj = root.optJSONObject("event") ?: return null
+                val messageObj = eventObj.optJSONObject("message") ?: return null
+                val dataObj = messageObj.optJSONObject("data") ?: return null
+                val chatObj = dataObj.optJSONObject("chat") ?: return null
+                val commentObj = chatObj.optJSONObject("comment") ?: return null
+
+                LoganSquare.parse(commentObj.toString(), ChatMessageJson::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        }
+
+        val chatMessage = parseChatMessage(jsonString)
+
+        chatMessage?.let {
+            conversationMessageNotifier.notifyMessageReceived(it)
+        }
     }
 
     private fun processUpdateEvent(eventMap: Map<String, Any>?) {
