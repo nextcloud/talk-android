@@ -428,15 +428,15 @@ class ChatActivity :
 
     var callStarted = false
 
-    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
-        override fun onSwitchTo(token: String?) {
-            if (token != null) {
-                if (CallActivity.active) {
-                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-                } else {
-                    switchToRoom(token, false, false)
-                }
-            }
+    private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+        } else {
+            switchToRoom(
+                token = token,
+                startCallAfterRoomSwitch = false,
+                isVoiceOnlyCall = false
+            )
         }
     }
 
@@ -481,8 +481,8 @@ class ChatActivity :
             Log.d(
                 TAG,
                 "received message in ChatActivity. This is the chat message received via HPB. It would be " +
-                    "nicer to receive it in the ViewModel or Repository directly. Otherwise it needs to be passed into it" +
-                    " from here..."
+                    "nicer to receive it in the ViewModel or Repository directly. " +
+                    "Otherwise it needs to be passed into it from here..."
             )
         }
     }
