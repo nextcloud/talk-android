@@ -363,5 +363,15 @@ interface NcApiCoroutines {
         @Field("silent") sendWithoutNotification: Boolean,
         @Field("threadTitle") threadTitle: String,
         @Field("threadId") threadId: Int
-    )
+    ): ChatOverallSingleMessage
+
+    @DELETE
+    suspend fun deleteScheduleMessage(
+        @Header("Authorization") authorization: String,
+        @Url url: String
+    ): GenericOverall
+
+
+
+
 }
