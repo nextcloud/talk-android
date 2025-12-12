@@ -555,8 +555,8 @@ class ChatViewModel @Inject constructor(
             })
     }
 
-    fun setChatReadMarker(credentials: String, url: String, previousMessageId: Int) {
-        chatNetworkDataSource.setChatReadMarker(credentials, url, previousMessageId)
+    fun setChatReadMarker(credentials: String, url: String, lastReadMessage: Int) {
+        chatNetworkDataSource.setChatReadMarker(credentials, url, lastReadMessage)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<GenericOverall> {
