@@ -11,6 +11,7 @@ import android.os.Bundle
 import com.nextcloud.talk.chat.data.io.LifecycleAwareManager
 import com.nextcloud.talk.chat.data.model.ChatMessage
 import com.nextcloud.talk.models.domain.ConversationModel
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ChatOverallSingleMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
@@ -116,4 +117,6 @@ interface ChatMessageRepository : LifecycleAwareManager {
     suspend fun sendUnsentChatMessages(credentials: String, url: String)
 
     suspend fun deleteTempMessage(chatMessage: ChatMessage)
+
+    fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson)
 }

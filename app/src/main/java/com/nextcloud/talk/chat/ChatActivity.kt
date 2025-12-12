@@ -477,7 +477,9 @@ class ChatActivity :
             }
         }
 
-        override fun onMessageReceived(chatMessage: ChatMessageJson?) {
+        override fun onChatMessageReceived(chatMessage: ChatMessageJson) {
+            chatViewModel.onSignalingChatMessageReceived(chatMessage)
+
             Log.d(
                 TAG,
                 "received message in ChatActivity. This is the chat message received via HPB. It would be " +

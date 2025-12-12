@@ -50,6 +50,8 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
+import kotlin.collections.any
+import kotlin.collections.map
 
 @Suppress("LargeClass", "TooManyFunctions")
 class OfflineFirstChatRepository @Inject constructor(
@@ -197,7 +199,8 @@ class OfflineFirstChatRepository @Inject constructor(
 
             handleMessagesFromDb(newestMessageIdFromDb)
 
-            initMessagePolling(newestMessageIdFromDb)
+            // temp disabled to test only signaling
+            // initMessagePolling(newestMessageIdFromDb)
         }
 
     private suspend fun handleMessagesFromDb(newestMessageIdFromDb: Long) {
@@ -349,6 +352,9 @@ class OfflineFirstChatRepository @Inject constructor(
 
                     updateUiForLastCommonRead()
 
+                    // getNewestMessageIdFromChatBlocks wont work for insurance calls. we dont want newest message
+                    // but only the newest message that came from sync (not from signaling)
+                    // -> create new var to save newest message from sync (set for initial and long polling requests)
                     val newestMessage = chatBlocksDao.getNewestMessageIdFromChatBlocks(
                         internalConversationId,
                         threadId
@@ -498,6 +504,7 @@ class OfflineFirstChatRepository @Inject constructor(
             Log.d(TAG, "Starting online request for single message (e.g. a reply)")
             sync(bundle)
         }
+        // we cant just expect here that sync succeeded??
         return chatDao.getChatMessageForConversation(
             internalConversationId,
             messageId
@@ -670,7 +677,7 @@ class OfflineFirstChatRepository @Inject constructor(
             newestMessageId = newestMessageIdForNewChatBlock,
             hasHistory = hasHistory
         )
-        chatBlocksDao.upsertChatBlock(newChatBlock) // crash when no conversation thread exists!
+        chatBlocksDao.upsertChatBlock(newChatBlock)
 
         updateBlocks(newChatBlock)
         return chatMessagesFromSyncToProcess
@@ -1018,6 +1025,27 @@ class OfflineFirstChatRepository @Inject constructor(
     override suspend fun deleteTempMessage(chatMessage: ChatMessage) {
         chatDao.deleteTempChatMessages(internalConversationId, listOf(chatMessage.referenceId.orEmpty()))
         _removeMessageFlow.emit(chatMessage)
+    }
+
+    override fun onSignalingChatMessageReceived(chatMessage: ChatMessageJson) {
+        scope.launch {
+            val chatMessageEntities = updateMessagesData(
+                chatMessagesJson = listOf(chatMessage),
+                blockContainingQueriedMessage = null,
+                lookIntoFuture = true,
+                hasHistory = true
+            )
+
+            val chatMessages = chatMessageEntities.map(ChatMessageEntity::asModel)
+
+            handleNewAndTempMessages(
+                receivedChatMessages = chatMessages,
+                lookIntoFuture = true,
+                showUnreadMessagesMarker = false
+            )
+
+            updateUiForLastCommonRead()
+        }
     }
 
     @Suppress("Detekt.TooGenericExceptionCaught")
