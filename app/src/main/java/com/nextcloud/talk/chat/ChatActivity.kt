@@ -1464,6 +1464,10 @@ class ChatActivity :
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
+
+                        (adapter?.items?.getOrNull(0)?.item as? ChatMessage)?.jsonMessageId?.let {
+                            markAsRead(it)
+                        }
                     } else {
                         if (binding.unreadMessagesPopup.isShown) {
                             binding.scrollDownButton.visibility = View.GONE
@@ -3943,9 +3947,24 @@ class ChatActivity :
         }
     }
 
+    private fun markAsRead(messageId: Int) {
+        chatViewModel.setChatReadMarker(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(
+                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+                conversationUser?.baseUrl!!,
+                roomToken
+            ),
+            messageId
+        )
+    }
+
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+            // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
+            // It should be checked if "chat-unread" capability is available and then use
+            // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
             chatViewModel.setChatReadMarker(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
