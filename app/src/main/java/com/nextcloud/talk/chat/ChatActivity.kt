@@ -155,6 +155,7 @@ import com.nextcloud.talk.messagesearch.MessageSearchActivity
 import com.nextcloud.talk.models.ExternalSignalingServer
 import com.nextcloud.talk.models.domain.ConversationModel
 import com.nextcloud.talk.models.json.capabilities.SpreedCapability
+import com.nextcloud.talk.models.json.chat.ChatMessageJson
 import com.nextcloud.talk.models.json.chat.ReadStatus
 import com.nextcloud.talk.models.json.conversations.ConversationEnums
 import com.nextcloud.talk.models.json.participants.Participant
@@ -427,15 +428,15 @@ class ChatActivity :
 
     var callStarted = false
 
-    private val localParticipantMessageListener = object : SignalingMessageReceiver.LocalParticipantMessageListener {
-        override fun onSwitchTo(token: String?) {
-            if (token != null) {
-                if (CallActivity.active) {
-                    Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
-                } else {
-                    switchToRoom(token, false, false)
-                }
-            }
+    private val localParticipantMessageListener = SignalingMessageReceiver.LocalParticipantMessageListener { token ->
+        if (CallActivity.active) {
+            Log.d(TAG, "CallActivity is running. Ignore to switch chat in ChatActivity...")
+        } else {
+            switchToRoom(
+                token = token,
+                startCallAfterRoomSwitch = false,
+                isVoiceOnlyCall = false
+            )
         }
     }
 
@@ -474,6 +475,17 @@ class ChatActivity :
                 typingParticipants.remove(userIdOrGuestSession)
                 updateTypingIndicator()
             }
+        }
+
+        override fun onChatMessageReceived(chatMessage: ChatMessageJson) {
+            chatViewModel.onSignalingChatMessageReceived(chatMessage)
+
+            Log.d(
+                TAG,
+                "received message in ChatActivity. This is the chat message received via HPB. It would be " +
+                    "nicer to receive it in the ViewModel or Repository directly. " +
+                    "Otherwise it needs to be passed into it from here..."
+            )
         }
     }
 
@@ -1442,6 +1454,17 @@ class ChatActivity :
                     if (isScrolledToBottom()) {
                         binding.unreadMessagesPopup.visibility = View.GONE
                         binding.scrollDownButton.visibility = View.GONE
+
+
+
+                        // TODO: mark chat as read here
+                        // val previousChatMessage = adapter.items?.getOrNull(1)?.item
+                        // if (previousChatMessage != null && previousChatMessage is ChatMessage) {
+                        //     chatMessage.isGrouped = groupMessages(chatMessage, previousChatMessage)
+                        // }
+                        //
+                        //
+                        // markAsRead(adapter.items......)
                     } else {
                         if (binding.unreadMessagesPopup.isShown) {
                             binding.scrollDownButton.visibility = View.GONE
@@ -3916,9 +3939,24 @@ class ChatActivity :
         }
     }
 
+    private fun markAsRead(messageId: Int) {
+        chatViewModel.setChatReadMarker(
+            credentials!!,
+            ApiUtils.getUrlForChatReadMarker(
+                ApiUtils.getChatApiVersion(spreedCapabilities, intArrayOf(ApiUtils.API_V1)),
+                conversationUser?.baseUrl!!,
+                roomToken
+            ),
+            messageId
+        )
+    }
+
     fun markAsUnread(message: IMessage?) {
         val chatMessage = message as ChatMessage?
         if (chatMessage!!.previousMessageId > NO_PREVIOUS_MESSAGE_ID) {
+            // previousMessageId is taken to mark chat as unread even when "chat-unread" capability is not available
+            // It should be checked if "chat-unread" capability is available and then use
+            // https://nextcloud-talk.readthedocs.io/en/latest/chat/#mark-chat-as-unread
             chatViewModel.setChatReadMarker(
                 credentials!!,
                 ApiUtils.getUrlForChatReadMarker(
